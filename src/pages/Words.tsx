@@ -1,4 +1,8 @@
 import { useState, type FormEvent } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { Field, LogList, LogRow, Meta, Page, PageHeader, Section } from "../components/kit";
 import { addDays, shortDate, todayIso, uid } from "../lib/date";
 import { useStore } from "../lib/store";
 import type { Word } from "../lib/state";
@@ -38,50 +42,50 @@ export default function Words() {
   const next = state.vocab.reduce((m, v) => (v.due < m ? v.due : m), "9999-99-99");
 
   return (
-    <div className="page">
-      <div className="view-head">
-        <h1>Words</h1>
-        <p>Add words you meet in passages. Cards you miss come back the same day. Cards you know come back after 1, 3, 7, 14 and 30 days.</p>
-      </div>
-      <div className="card" aria-live="polite">
-        {!state.vocab.length ? <div className="empty">No words yet. Add the first one below, from today's reading.</div>
-          : !card ? <div className="flash"><div className="w">All caught up</div><p className="muted">The next card is due on {shortDate(next)}.</p></div>
+    <Page>
+      <PageHeader title="Words">Add words you meet in passages. Cards you miss come back the same day. Cards you know come back after 1, 3, 7, 14 and 30 days.</PageHeader>
+
+      <div className="flex min-h-64 flex-col items-center justify-center gap-5 rounded-lg bg-card px-6 py-10 text-center" aria-live="polite">
+        {!state.vocab.length ? <p className="text-base text-muted-foreground">No words yet. Add the first one below, from today's reading.</p>
+          : !card ? <><p className="font-serif text-title font-semibold">All caught up</p><p className="text-base text-muted-foreground">The next card is due on {shortDate(next)}.</p></>
           : (
-            <div className="flash">
-              <span className="eyebrow">{due.length} due</span>
-              <div className="w">{card.w}</div>
+            <>
+              <Meta>{due.length} due</Meta>
+              <p className="font-serif text-[clamp(2rem,1.5rem+2vw,2.75rem)] leading-tight font-semibold break-words">{card.w}</p>
               {shown ? (
                 <>
-                  <p className="m">{card.m}</p>
-                  {card.s && <p className="muted small">Seen in {card.s}</p>}
-                  <div className="acts"><button type="button" className="btn ghost" onClick={() => answer(false)}>Again</button><button type="button" className="btn" onClick={() => answer(true)}>I knew it</button></div>
+                  <p className="measure text-lg">{card.m}</p>
+                  {card.s && <Meta>Seen in {card.s}</Meta>}
+                  <div className="flex flex-wrap justify-center gap-3"><Button variant="secondary" onClick={() => answer(false)}>Again</Button><Button onClick={() => answer(true)}>I knew it</Button></div>
                 </>
-              ) : <div className="acts"><button type="button" className="btn" onClick={() => setShown(true)}>Show meaning</button></div>}
-            </div>
+              ) : <Button onClick={() => setShown(true)}>Show meaning</Button>}
+            </>
           )}
       </div>
-      <form className="card" onSubmit={add} autoComplete="off">
-        <div className="form">
-          <label className="f">Word<input name="w" type="text" required placeholder="ostensibly" /></label>
-          <label className="f">Meaning<input name="m" type="text" required placeholder="apparently, but not actually" /></label>
-          <label className="f">Seen in<input name="s" type="text" placeholder="Aeon essay on complex systems" /></label>
-          <button className="btn" type="submit">Add word</button>
-        </div>
-      </form>
-      <div className="card">
-        <h3>{state.vocab.length ? "Your words (" + state.vocab.length + ")" : "Your words"}</h3>
-        <ul className="log">
-          {state.vocab.length ? state.vocab.slice().reverse().map((v) => (
-            <li key={v.id}>
-              <div>
-                <div className="l1"><b>{v.w}</b><span className="pips" title={"Box " + v.b + " of 5"}>{[0, 1, 2, 3, 4].map((i) => <i key={i} className={i < v.b ? "on" : ""} />)}</span></div>
-                <p className="tx">{v.m}{v.s ? " · " + v.s : ""}</p>
-              </div>
-              <button type="button" className="x" aria-label={"Delete " + v.w} onClick={() => update((st) => { st.vocab = st.vocab.filter((x) => x.id !== v.id); })}>Delete</button>
-            </li>
-          )) : <li style={{ display: "block" }}><div className="empty">Your word list shows here.</div></li>}
-        </ul>
-      </div>
-    </div>
+
+      <Section title="Add a word">
+        <form className="grid items-end gap-4 rounded-lg bg-card p-5 sm:grid-cols-[1fr_1.5fr_1.5fr_auto] sm:p-6" onSubmit={add} autoComplete="off">
+          <Field label="Word"><Input name="w" required placeholder="ostensibly" /></Field>
+          <Field label="Meaning"><Input name="m" required placeholder="apparently, but not actually" /></Field>
+          <Field label="Seen in"><Input name="s" placeholder="Aeon essay on complex systems" /></Field>
+          <Button type="submit">Add word</Button>
+        </form>
+      </Section>
+
+      <Section title={state.vocab.length ? `Your words (${state.vocab.length})` : "Your words"}>
+        <LogList empty="Your word list shows here.">
+          {state.vocab.slice().reverse().map((v) => (
+            <LogRow key={v.id} label={"Delete " + v.w} onDelete={() => update((st) => { st.vocab = st.vocab.filter((x) => x.id !== v.id); })}>
+              <span className="flex flex-wrap items-center gap-3">
+                <b className="font-serif text-lg font-semibold">{v.w}</b>
+                <span className="inline-flex gap-1" title={`Box ${v.b} of 5`} aria-label={`Box ${v.b} of 5`}>{[0, 1, 2, 3, 4].map((i) => <i key={i} className={cn("size-1.5 rounded-full", i < v.b ? "bg-primary" : "bg-secondary")} />)}</span>
+              </span>
+              <span className="text-base">{v.m}</span>
+              {v.s && <Meta>{v.s}</Meta>}
+            </LogRow>
+          ))}
+        </LogList>
+      </Section>
+    </Page>
   );
 }

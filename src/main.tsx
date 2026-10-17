@@ -5,13 +5,13 @@ import App from "./App";
 import { FocusProvider } from "./lib/focus";
 import { registerServiceWorker } from "./lib/pwa";
 import { StoreProvider } from "./lib/store";
-import "./styles.css";
+import "./index.css";
 
 registerServiceWorker();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
+    <BrowserRouter basename={import.meta.env.BASE_URL} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <StoreProvider>
         <FocusProvider>
           <App />
