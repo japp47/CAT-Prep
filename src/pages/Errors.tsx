@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Bars } from "../components/Chart";
-import { ErrorText, Field, LogList, LogRow, Meta, NativeSelect, Page, PageHeader, Section, Segmented } from "../components/kit";
+import { ErrorText, Field, LogList, LogRow, Meta, NativeSelect, Page, PageHeader, Section, Segmented, useDeleteWithUndo } from "../components/kit";
 import { TRAPS } from "../data/traps";
 import { shortDate, todayIso, uid } from "../lib/date";
 import { useStore } from "../lib/store";
@@ -12,6 +12,7 @@ import { SECTION_LABELS, sectionByLabel } from "../sections";
 
 export default function Errors() {
   const { state, update } = useStore();
+  const remove = useDeleteWithUndo();
   const [sec, setSec] = useState("VARC");
   const [err, setErr] = useState("");
   const [filter, setFilter] = useState("All");
@@ -58,7 +59,7 @@ export default function Errors() {
       <Section title={`Your log (${list.length})`} action={<Segmented label="Filter by section" value={filter} onChange={setFilter} options={["All", ...SECTION_LABELS]} />}>
         <LogList empty="No mistakes logged yet. After each timed set, add one entry per wrong or skipped question.">
           {list.map((e) => (
-            <LogRow key={e.id} label="Delete this entry" onDelete={() => update((st) => { st.errors = st.errors.filter((x) => x.id !== e.id); })}>
+            <LogRow key={e.id} label="Delete this entry" onDelete={() => remove("errors", e.id, "Entry")}>
               <span className="flex flex-wrap items-center gap-1.5">
                 <Badge variant="secondary">{e.sec}</Badge><Badge variant="default">{e.t}</Badge>{e.trap && <Badge variant="danger">{e.trap}</Badge>}
               </span>

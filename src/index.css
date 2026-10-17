@@ -130,8 +130,12 @@
 
 @layer base {
   * { @apply border-border; }
-  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
-  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  /* scroll-padding keeps a focused or linked element clear of the sticky bars. */
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 6rem; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, ::before, ::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
   body { @apply bg-background text-foreground font-sans text-base antialiased; }
   h1, h2, h3, h4 { text-wrap: balance; }
   p, li { text-wrap: pretty; }
@@ -155,3 +159,17 @@
   padding: 0 0.15em;
 }
 @utility measure { max-width: 68ch; }
+
+/* The page's side padding. On a phone held sideways it also clears the notch. */
+:root { --gutter: 1rem; }
+@media (min-width: 40rem) { :root { --gutter: 1.5rem; } }
+@media (min-width: 60rem) { :root { --gutter: 3rem; } }
+@utility px-gutter {
+  padding-left: max(var(--gutter), env(safe-area-inset-left));
+  padding-right: max(var(--gutter), env(safe-area-inset-right));
+}
+/* Lets a bar run to the edges of the page's padding. */
+@utility bleed-gutter {
+  margin-left: calc(-1 * max(var(--gutter), env(safe-area-inset-left)));
+  margin-right: calc(-1 * max(var(--gutter), env(safe-area-inset-right)));
+}

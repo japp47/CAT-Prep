@@ -19,7 +19,8 @@ export function ContentGate({ children, inline }: { children: (c: Content) => Re
       <Button onClick={retry}>Try again</Button>
     </div>
   ) : (
-    <div className="flex flex-col gap-4" aria-live="polite" aria-label="Loading practice questions">
+    <div className="flex flex-col gap-4" role="status">
+      <span className="sr-only">Loading the practice questions…</span>
       <Skeleton className="h-9 w-2/3" /><Skeleton className="h-5 w-1/2" /><Skeleton className="h-64 w-full" />
     </div>
   );

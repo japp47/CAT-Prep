@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
-import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,16 +8,18 @@ import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
 import { mediumDate, todayIso, uid } from "../../lib/date";
+import { readDraft, writeDraft } from "../../lib/draft";
 import { usePref } from "../../lib/prefs";
+import type { RcAttempt } from "../../lib/state";
 import { useStore } from "../../lib/store";
 import { ContentGate } from "../../components/Content";
-import { LinkButton, Page, TextLink } from "../../components/kit";
+import { Field, LinkButton, Page, TextLink } from "../../components/kit";
 import { RC_CATALOG } from "../../practice/catalog.gen";
 import { rcOfDay } from "../../practice/daily";
 import { fmtSecs, LETTERS, rcError, rcErrorSrc, recordRc, scoreRc } from "../../practice/record";
 import { GENRES, RC_QTYPE, setWords, type RcSet } from "../../practice/types";
 import NotFound from "../NotFound";
-import { Choice, Confirm, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, Timer, useElapsed } from "./common";
+import { Choice, ChoiceGroup, Confirm, ElapsedTimer, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard } from "./common";
 
 /** Words too common to be worth saving to flashcards. */
 const COMMON = new Set("the and for are but not you all any can had her was one our out has him his how its may new now old see two way who did get let put say she too use that with have this will your from they know want been good much some time very when come here just like long make many more only over such take than them well were what which their there these those would could should about after other where while being because through between does into also each most even then upon whose".split(" "));
@@ -58,98 +60,105 @@ export function Split({ pane, children }: { pane: "p" | "q"; children: [React.Re
   );
 }
 
-function Player({ set, reviewId }: { set: RcSet; reviewId: string | null }) {
-  const { state, update } = useStore();
-  const navigate = useNavigate();
-  const today = todayIso();
-  const past = reviewId ? state.rcAttempts.find((a) => a.id === reviewId && a.set === set.id) : undefined;
-  const n = set.questions.length;
+interface RcDraft { ans: (number | null)[]; marked: boolean[]; cur: number; secs: number; first: number | null }
 
-  const [attemptId, setAttemptId] = useState<string | null>(past?.id ?? null);
-  const [ans, setAns] = useState<(number | null)[]>(past ? past.ans : Array(n).fill(null));
-  const [marked, setMarked] = useState<boolean[]>(Array(n).fill(false));
-  const [cur, setCur] = useState(0);
+/** One RC set: answering it, then reviewing it on the same page. */
+function Player({ set, reviewId }: { set: RcSet; reviewId: string | null }) {
+  const { state } = useStore();
+  const [attemptId, setAttemptId] = useState<string | null>(() => (reviewId && state.rcAttempts.some((a) => a.id === reviewId && a.set === set.id) ? reviewId : null));
+  const attempt = attemptId ? state.rcAttempts.find((a) => a.id === attemptId) : undefined;
+  useEffect(() => { window.scrollTo(0, 0); }, [attemptId]);
+  return attempt ? <Review set={set} attempt={attempt} /> : <Attempt set={set} onDone={setAttemptId} />;
+}
+
+function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) {
+  const { update } = useStore();
+  const n = set.questions.length;
+  const draftKey = "rc:" + set.id;
+  const [saved] = useState(() => { const d = readDraft<RcDraft>(draftKey); return d && d.ans?.length === n ? d : null; });
+  const [ans, setAns] = useState<(number | null)[]>(saved?.ans ?? Array(n).fill(null));
+  const [marked, setMarked] = useState<boolean[]>(saved?.marked ?? Array(n).fill(false));
+  const [cur, setCur] = useState(saved?.cur ?? 0);
   const [pane, setPane] = useState<"p" | "q">("p");
   const [confirming, setConfirming] = useState(false);
   const [hideTimer, setHideTimer] = usePref("rcHideTimer", false);
-  const startAt = useRef(Date.now());
-  const firstAt = useRef<number | null>(null);
-  const reviewing = attemptId !== null;
-  const elapsed = useElapsed(!reviewing, startAt.current);
-  const attempt = attemptId ? state.rcAttempts.find((a) => a.id === attemptId) : undefined;
+  // A restored set carries on the clock from where it stopped, not from when it was first opened.
+  const [startAt] = useState(() => Date.now() - (saved?.secs ?? 0) * 1000);
+  const firstAt = useRef<number | null>(saved?.first != null ? startAt + saved.first * 1000 : null);
+  const submitted = useRef(false);
 
-  useEffect(() => { window.scrollTo(0, 0); }, [reviewing]);
+  // Keep the answers on every change, when the page is hidden and when it closes.
+  useEffect(() => {
+    const keep = () => {
+      if (submitted.current) return;
+      const touched = ans.some((a) => a !== null) || marked.some(Boolean);
+      const first = firstAt.current === null ? null : (firstAt.current - startAt) / 1000;
+      writeDraft(draftKey, touched ? { ans, marked, cur, secs: (Date.now() - startAt) / 1000, first } satisfies RcDraft : null);
+    };
+    keep();
+    window.addEventListener("pagehide", keep);
+    return () => { window.removeEventListener("pagehide", keep); keep(); };
+  }, [draftKey, startAt, ans, marked, cur]);
 
   const choose = (opt: number) => {
-    if (reviewing) return;
     if (firstAt.current === null) firstAt.current = Date.now();
     setAns((a) => a.map((x, i) => (i === cur ? opt : x)));
   };
   const submit = () => {
-    const secs = (Date.now() - startAt.current) / 1000;
-    const first = firstAt.current ? (firstAt.current - startAt.current) / 1000 : secs;
+    const today = todayIso();
+    const secs = (Date.now() - startAt) / 1000;
+    const first = firstAt.current ? (firstAt.current - startAt) / 1000 : secs;
     const mode = rcOfDay(today).id === set.id ? "daily" : "library";
-    const newId = uid();
-    update((st) => recordRc(st, newId, set, ans, secs, first, mode, today));
-    setAttemptId(newId);
+    const id = uid();
+    submitted.current = true;
+    writeDraft(draftKey, null);
+    update((st) => recordRc(st, id, set, ans, secs, first, mode, today));
     setConfirming(false);
-    setCur(0);
-    setPane("q");
+    onDone(id);
   };
   const blanks = ans.filter((a) => a === null).length;
   const go = (i: number) => { setCur(i); setPane("q"); };
 
   return (
     <Page className="gap-6 lg:gap-8">
-      <PlayerBar kicker={`${reviewing ? "Review" : "RC practice"}, ${GENRES[set.genre].toLowerCase()}, ${set.difficulty}`} title={set.title}>
-        {!reviewing && (hideTimer
+      <PlayerBar kicker={`RC practice, ${GENRES[set.genre].toLowerCase()}, ${set.difficulty}`} title={set.title}>
+        {hideTimer
           ? <Button variant="link" size="sm" onClick={() => setHideTimer(false)}>Show timer</Button>
-          : <Timer over={elapsed > TARGET_SECS} onClick={() => setHideTimer(true)} title="Target 7 minutes. Tap to hide.">{fmtSecs(elapsed)} / 7:00</Timer>)}
-        {!reviewing && <Button size="sm" onClick={() => setConfirming(true)}>Submit set</Button>}
-        {reviewing && <LinkButton to="/practice" variant="secondary" size="sm">Back to Practice</LinkButton>}
+          : <ElapsedTimer startAt={startAt} target={TARGET_SECS} onClick={() => setHideTimer(true)} title="Target 7 minutes. Tap to hide." />}
+        <Button size="sm" onClick={() => setConfirming(true)}>Submit set</Button>
       </PlayerBar>
-
-      {reviewing && attempt && <Summary set={set} attempt={attempt} onRetake={() => navigate(`/practice/rc/${set.id}?n=${uid()}`)} />}
+      {saved && <p className="text-base text-muted-foreground">Your answers from earlier are back, and the clock carries on from {fmtSecs(saved.secs)}.</p>}
 
       <PaneSwitch pane={pane} setPane={setPane} q={`Question ${cur + 1} of ${n}`} />
 
       <Split pane={pane}>
-        <Passage set={set} highlight={reviewing ? set.questions[cur].proof : []} wordMode={reviewing} />
+        <Passage set={set} highlight={[]} wordMode={false} />
         <>
           <div className="flex flex-wrap gap-2" role="group" aria-label="Questions">
-            {set.questions.map((q, i) => {
-              const s = reviewing ? (ans[i] === null ? "blank" : ans[i] === q.answer ? "right" : "wrong") : marked[i] ? (ans[i] !== null ? "doneMarked" : "marked") : ans[i] !== null ? "done" : "unseen";
-              return <PaletteCell key={i} n={i + 1} state={s} current={i === cur} onClick={() => go(i)} label={`Question ${i + 1}, ${s === "right" ? "correct" : s === "wrong" ? "wrong" : s === "blank" ? "skipped" : ans[i] === null ? "not answered" : "answered"}${marked[i] && !reviewing ? ", marked" : ""}`} />;
+            {set.questions.map((_, i) => {
+              const s = marked[i] ? (ans[i] !== null ? "doneMarked" : "marked") : ans[i] !== null ? "done" : "unseen";
+              return <PaletteCell key={i} n={i + 1} state={s} current={i === cur} onClick={() => go(i)} label={`Question ${i + 1}, ${ans[i] === null ? "not answered" : "answered"}${marked[i] ? ", marked" : ""}`} />;
             })}
           </div>
-          {reviewing ? <ReviewQuestion set={set} qi={cur} chosen={ans[cur]} /> : (
-            <div className="flex flex-col gap-4">
-              <p className="text-sm text-muted-foreground">Question {cur + 1} of {n}</p>
-              <p className="text-lg leading-snug font-semibold">{set.questions[cur].stem}</p>
-              <div className="flex flex-col gap-2.5" role="radiogroup" aria-label={"Options for question " + (cur + 1)}>
-                {set.questions[cur].options.map((o, i) => <Choice key={i} mark={LETTERS[i]} checked={ans[cur] === i} onClick={() => choose(i)}>{o.t}</Choice>)}
+          <div className="flex flex-col gap-4">
+            <p className="text-sm text-muted-foreground">Question {cur + 1} of {n}</p>
+            <p className="text-lg leading-snug font-semibold">{set.questions[cur].stem}</p>
+            <ChoiceGroup label={"Options for question " + (cur + 1)}>
+              {set.questions[cur].options.map((o, i) => <Choice key={i} mark={LETTERS[i]} checked={ans[cur] === i} onClick={() => choose(i)}>{o.t}</Choice>)}
+            </ChoiceGroup>
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+              <div className="flex flex-wrap gap-2">
+                <Button variant="ghost" size="sm" onClick={() => setAns((a) => a.map((x, i) => (i === cur ? null : x)))} disabled={ans[cur] === null}>Clear</Button>
+                <Button variant="ghost" size="sm" aria-pressed={marked[cur]} onClick={() => setMarked((m) => m.map((x, i) => (i === cur ? !x : x)))}>{marked[cur] ? "Unmark" : "Mark for review"}</Button>
               </div>
-              <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-                <div className="flex flex-wrap gap-2">
-                  <Button variant="ghost" size="sm" onClick={() => setAns((a) => a.map((x, i) => (i === cur ? null : x)))} disabled={ans[cur] === null}>Clear</Button>
-                  <Button variant="ghost" size="sm" aria-pressed={marked[cur]} onClick={() => setMarked((m) => m.map((x, i) => (i === cur ? !x : x)))}>{marked[cur] ? "Unmark" : "Mark for review"}</Button>
-                </div>
-                <div className="flex gap-2">
-                  <Button variant="secondary" size="sm" disabled={cur === 0} onClick={() => setCur(cur - 1)}>Previous</Button>
-                  {cur < n - 1 ? <Button size="sm" onClick={() => setCur(cur + 1)}>Next</Button> : <Button size="sm" onClick={() => setConfirming(true)}>Submit set</Button>}
-                </div>
+              <div className="flex gap-2">
+                <Button variant="secondary" size="sm" disabled={cur === 0} onClick={() => setCur(cur - 1)}>Previous</Button>
+                {cur < n - 1 ? <Button size="sm" onClick={() => setCur(cur + 1)}>Next</Button> : <Button size="sm" onClick={() => setConfirming(true)}>Submit set</Button>}
               </div>
             </div>
-          )}
-          {reviewing && (
-            <div className="flex justify-between gap-2">
-              <Button variant="secondary" size="sm" disabled={cur === 0} onClick={() => setCur(cur - 1)}>Previous question</Button>
-              <Button variant="secondary" size="sm" disabled={cur === n - 1} onClick={() => setCur(cur + 1)}>Next question</Button>
-            </div>
-          )}
+          </div>
         </>
       </Split>
-      {reviewing && <p className="text-sm text-muted-foreground">Tap any word in the passage to save it to your Words. Passages and questions are original practice material written for this site.</p>}
 
       <Confirm open={confirming} onOpenChange={setConfirming} title="Submit this set?" action="Submit set" onAction={submit}>
         {blanks ? `${blanks} question${blanks > 1 ? "s are" : " is"} unanswered. Blanks score 0; wrong answers cost 1 mark.` : "All questions answered."}
@@ -158,12 +167,50 @@ function Player({ set, reviewId }: { set: RcSet; reviewId: string | null }) {
   );
 }
 
+function Review({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
+  const n = set.questions.length;
+  const [cur, setCur] = useState(0);
+  const [pane, setPane] = useState<"p" | "q">("q");
+  const ans = attempt.ans;
+  return (
+    <Page className="gap-6 lg:gap-8">
+      <PlayerBar kicker={`Review, ${GENRES[set.genre].toLowerCase()}, ${set.difficulty}`} title={set.title}>
+        <LinkButton to="/practice" variant="secondary" size="sm">Back to Practice</LinkButton>
+      </PlayerBar>
+
+      <Summary set={set} attempt={attempt} />
+
+      <PaneSwitch pane={pane} setPane={setPane} q={`Question ${cur + 1} of ${n}`} />
+
+      <Split pane={pane}>
+        <Passage set={set} highlight={set.questions[cur].proof} wordMode />
+        <>
+          <div className="flex flex-wrap gap-2" role="group" aria-label="Questions">
+            {set.questions.map((q, i) => {
+              const s = ans[i] === null ? "blank" : ans[i] === q.answer ? "right" : "wrong";
+              return <PaletteCell key={i} n={i + 1} state={s} current={i === cur} onClick={() => { setCur(i); setPane("q"); }} label={`Question ${i + 1}, ${s === "right" ? "correct" : s === "wrong" ? "wrong" : "skipped"}`} />;
+            })}
+          </div>
+          <ReviewQuestion set={set} qi={cur} chosen={ans[cur]} />
+          <div className="flex justify-between gap-2">
+            <Button variant="secondary" size="sm" disabled={cur === 0} onClick={() => setCur(cur - 1)}>Previous question</Button>
+            <Button variant="secondary" size="sm" disabled={cur === n - 1} onClick={() => setCur(cur + 1)}>Next question</Button>
+          </div>
+        </>
+      </Split>
+      <p className="text-sm text-muted-foreground">Tap any word in the passage, or type it below the passage, to save it to your Words. Passages and questions are original practice material written for this site.</p>
+    </Page>
+  );
+}
+
 export function Passage({ set, highlight, wordMode }: { set: RcSet; highlight: number[]; wordMode: boolean }) {
   const [pick, setPick] = useState<string | null>(null);
+  const [typed, setTyped] = useState("");
   const onClick = (e: MouseEvent) => {
     const w = (e.target as HTMLElement).dataset?.w;
     if (w) setPick(w);
   };
+  const word = typed.trim().replace(/[^A-Za-z'-]/g, "");
   return (
     <>
       <article className="flex flex-col gap-4 rounded-lg bg-card px-5 py-5 sm:px-7 sm:py-6" aria-label="Passage" onClick={wordMode ? onClick : undefined}>
@@ -178,6 +225,15 @@ export function Passage({ set, highlight, wordMode }: { set: RcSet; highlight: n
         ))}
         <p className="text-sm text-muted-foreground">{setWords(set)} words</p>
       </article>
+      {/* Tapping a word needs a pointer; typing it works from the keyboard too. */}
+      {wordMode && (
+        <form className="flex flex-wrap items-end gap-2" onSubmit={(e) => { e.preventDefault(); if (word) { setPick(word); setTyped(""); } }}>
+          <Field label="Save a word from the passage" className="min-w-48 flex-1">
+            <Input name="word" value={typed} onChange={(e) => setTyped(e.target.value)} autoComplete="off" spellCheck={false} placeholder="ostensibly…" />
+          </Field>
+          <Button type="submit" variant="secondary" disabled={!word}>Save word</Button>
+        </form>
+      )}
       <WordSheet word={pick} source={set.title} onClose={() => setPick(null)} />
     </>
   );
@@ -191,7 +247,7 @@ function WordSheet({ word, source, onClose }: { word: string | null; source: str
   const add = () => {
     if (!meaning.trim()) return;
     update((st) => { st.vocab.push({ id: uid(), w, m: meaning.trim(), s: source, b: 0, due: todayIso() }); });
-    toast(`Added "${w}" to Words. It is due for review today.`);
+    toast(`Added “${w}” to Words. It is due for review today.`);
     setMeaning("");
     onClose();
   };
@@ -202,7 +258,8 @@ function WordSheet({ word, source, onClose }: { word: string | null; source: str
         <SheetDescription className="sr-only">Save this word with a meaning in your own words.</SheetDescription>
         {exists ? <p className="text-base text-muted-foreground">Already in your Words.</p> : (
           <form className="flex flex-wrap gap-2" onSubmit={(e) => { e.preventDefault(); add(); }}>
-            <Input aria-label="Meaning" placeholder="Meaning in your own words" value={meaning} onChange={(e) => setMeaning(e.target.value)} className="min-w-56 flex-1" autoFocus />
+            {/* The sheet exists to take this one answer, so the field gets focus. */}
+            <Input aria-label="Meaning" name="meaning" autoComplete="off" placeholder="Meaning in your own words…" value={meaning} onChange={(e) => setMeaning(e.target.value)} className="min-w-56 flex-1" autoFocus />
             <Button type="submit" disabled={!meaning.trim()}>Add to Words</Button>
           </form>
         )}
@@ -244,8 +301,9 @@ export function ReviewQuestion({ set, qi, chosen }: { set: RcSet; qi: number; ch
   );
 }
 
-function Summary({ set, attempt, onRetake }: { set: RcSet; attempt: { id: string; d: string; ans: (number | null)[]; secs: number; first: number }; onRetake: () => void }) {
+function Summary({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
   const { state, update } = useStore();
+  const [seed] = useState(uid);
   const s = scoreRc(set, attempt.ans);
   const wrongIdx = set.questions.map((_, i) => i).filter((i) => attempt.ans[i] !== set.questions[i].answer);
   const missing = wrongIdx.filter((i) => !state.errors.some((e) => e.src === rcErrorSrc(set, i)));
@@ -263,7 +321,7 @@ function Summary({ set, attempt, onRetake }: { set: RcSet; attempt: { id: string
       <div className="flex flex-wrap gap-3">
         {missing.length > 0 && <Button onClick={() => { update((st) => { missing.forEach((i) => st.errors.push(rcError(set, i, attempt.ans[i], todayIso()))); }); toast(`Added ${missing.length} to your Error log.`); }}>Add {missing.length} to Error log</Button>}
         <Button asChild variant="secondary"><Link to={`/practice/rc/${next.id}`}>Next set: {next.title}</Link></Button>
-        <Button variant="ghost" onClick={onRetake}>Retake</Button>
+        <Button asChild variant="ghost"><Link to={`/practice/rc/${set.id}?n=${seed}`}>Retake</Link></Button>
       </div>
     </ScoreCard>
   );

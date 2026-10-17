@@ -5,12 +5,18 @@ import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 
 // Each page loads when it is first opened, so the first visit downloads only the shell and the home page.
+// The pages in the phone's bottom bar are fetched once the browser is idle, so they open without a wait.
+const load = {
+  today: () => import("./pages/Today"),
+  practice: () => import("./pages/practice/Hub"),
+  progress: () => import("./pages/Progress"),
+};
 const Errors = lazy(() => import("./pages/Errors"));
 const Exams = lazy(() => import("./pages/Exams"));
 const GuideList = lazy(() => import("./pages/Guides").then((m) => ({ default: m.GuideList })));
 const GuidePage = lazy(() => import("./pages/Guides").then((m) => ({ default: m.GuidePage })));
 const Plan = lazy(() => import("./pages/Plan"));
-const PracticeHub = lazy(() => import("./pages/practice/Hub"));
+const PracticeHub = lazy(load.practice);
 const Library = lazy(() => import("./pages/practice/Library"));
 const RcPlayer = lazy(() => import("./pages/practice/RcPlayer"));
 const Redo = lazy(() => import("./pages/practice/Redo"));
@@ -18,12 +24,12 @@ const Sectional = lazy(() => import("./pages/practice/Sectional"));
 const SectionalReview = lazy(() => import("./pages/practice/Sectional").then((m) => ({ default: m.SectionalReview })));
 const SpeedTest = lazy(() => import("./pages/practice/SpeedTest"));
 const VaPlayer = lazy(() => import("./pages/practice/VaPlayer"));
-const Progress = lazy(() => import("./pages/Progress"));
+const Progress = lazy(load.progress);
 const Roadmap = lazy(() => import("./pages/Roadmap"));
 const Section = lazy(() => import("./pages/Section"));
 const Settings = lazy(() => import("./pages/Settings"));
 const Stories = lazy(() => import("./pages/Stories"));
-const Today = lazy(() => import("./pages/Today"));
+const Today = lazy(load.today);
 const Updates = lazy(() => import("./pages/Updates"));
 const Words = lazy(() => import("./pages/Words"));
 
@@ -42,7 +48,18 @@ function Title() {
   return null;
 }
 
+function usePreload() {
+  useEffect(() => {
+    const run = () => { load.today(); load.practice(); load.progress(); };
+    // Safari has no requestIdleCallback.
+    if ("requestIdleCallback" in window) { const id = requestIdleCallback(run, { timeout: 4000 }); return () => cancelIdleCallback(id); }
+    const id = setTimeout(run, 2000);
+    return () => clearTimeout(id);
+  }, []);
+}
+
 export default function App() {
+  usePreload();
   return (
     <>
       <Title />

@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { todayIso, uid } from "../../lib/date";
 import { useStore } from "../../lib/store";
@@ -26,7 +25,6 @@ function Panel({ title, children, action, className }: { title: React.ReactNode;
 
 export default function PracticeHub() {
   const { state } = useStore();
-  const navigate = useNavigate();
   const today = todayIso();
   const daily = rcOfDay(today);
   const dailyTry = state.rcAttempts.filter((a) => a.set === daily.id && a.d === today).pop();
@@ -35,9 +33,10 @@ export default function PracticeHub() {
   const redoDue = dueRedo(state.redo, today).length;
   const redoOpen = state.redo.filter((r) => !r.cleared).length;
   const lastSec = state.sectionals[state.sectionals.length - 1];
-  const hasDraft = !!loadDraft();
+  const [hasDraft] = useState(() => !!loadDraft());
   const [kind, setKind] = useState<VaKind | "mix">("mix");
   const [count, setCount] = useState(6);
+  const [seed] = useState(uid);
   const tried = new Set(state.rcAttempts.map((a) => a.set));
   const next = RC_CATALOG.filter((s) => !tried.has(s.id) && s.id !== daily.id).slice(0, 3);
 
@@ -73,7 +72,7 @@ export default function PracticeHub() {
             action={(redoDue > 0 || redoOpen > 0) ? <LinkButton to="/practice/redo" variant={redoDue ? "default" : "secondary"}>{redoDue ? "Start" : "See the queue"}</LinkButton> : <Meta>Nothing to redo yet.</Meta>}>
             <p className="text-muted-foreground">Missed questions come back after 1, 3 and 7 days, until you get them right three times in a row.</p>
           </Panel>
-          <Panel title="Drill one type" action={<Button onClick={() => navigate(`/practice/va?type=${kind}&n=${count}&seed=${uid()}`)}>Start drill</Button>}>
+          <Panel title="Drill one type" action={<LinkButton to={`/practice/va?type=${kind}&n=${count}&seed=${seed}`}>Start drill</LinkButton>}>
             <div className="grid grid-cols-[minmax(0,1fr)_6rem] gap-3">
               <Field label="Type">
                 <NativeSelect value={kind} onChange={(e) => setKind(e.target.value as VaKind | "mix")}>

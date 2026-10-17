@@ -3,6 +3,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useStore } from "../lib/store";
 
 /**
  * The app's building blocks on top of shadcn/ui. Every page is a Page with a PageHeader,
@@ -130,6 +131,20 @@ export function Segmented<T extends string>({ value, onChange, options, label, c
 /** A list of logged entries, each with its own delete button. */
 export function LogList({ children, empty }: { children: ReactNode[]; empty: ReactNode }) {
   return children.length ? <ul className="flex flex-col gap-1 rounded-lg bg-card p-1.5">{children}</ul> : <Empty>{empty}</Empty>;
+}
+type Logged = "practice" | "mocks" | "errors" | "vocab";
+/** Deletes a logged entry at once and offers Undo for a few seconds, so a slip costs nothing. */
+export function useDeleteWithUndo() {
+  const { state, update } = useStore();
+  return (key: Logged, id: string, what: string) => {
+    const at = (state[key] as { id: string }[]).findIndex((x) => x.id === id);
+    if (at < 0) return;
+    const item = structuredClone(state[key][at]);
+    update((st) => { const l = st[key] as { id: string }[]; const i = l.findIndex((x) => x.id === id); if (i >= 0) l.splice(i, 1); });
+    const undo = () => update((st) => { const l = st[key] as { id: string }[]; if (!l.some((x) => x.id === id)) l.splice(Math.min(at, l.length), 0, item); });
+    // sonner loads on demand, so it stays out of the first download.
+    void import("sonner").then(({ toast }) => toast(what + " deleted.", { duration: 6000, action: { label: "Undo", onClick: undo } }));
+  };
 }
 export function LogRow({ children, onDelete, label }: { children: ReactNode; onDelete: () => void; label: string }) {
   return (

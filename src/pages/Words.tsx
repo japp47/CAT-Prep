@@ -2,7 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { Field, LogList, LogRow, Meta, Page, PageHeader, Section } from "../components/kit";
+import { Field, LogList, LogRow, Meta, Page, PageHeader, Section, useDeleteWithUndo } from "../components/kit";
 import { addDays, shortDate, todayIso, uid } from "../lib/date";
 import { useStore } from "../lib/store";
 import type { Word } from "../lib/state";
@@ -16,6 +16,7 @@ export function dueWords(vocab: Word[], t = todayIso()) {
 
 export default function Words() {
   const { state, update } = useStore();
+  const remove = useDeleteWithUndo();
   const [shown, setShown] = useState(false);
   const [last, setLast] = useState<string | null>(null);
   const due = dueWords(state.vocab);
@@ -75,10 +76,10 @@ export default function Words() {
       <Section title={state.vocab.length ? `Your words (${state.vocab.length})` : "Your words"}>
         <LogList empty="Your word list shows here.">
           {state.vocab.slice().reverse().map((v) => (
-            <LogRow key={v.id} label={"Delete " + v.w} onDelete={() => update((st) => { st.vocab = st.vocab.filter((x) => x.id !== v.id); })}>
+            <LogRow key={v.id} label={"Delete " + v.w} onDelete={() => remove("vocab", v.id, "“" + v.w + "”")}>
               <span className="flex flex-wrap items-center gap-3">
                 <b className="font-serif text-lg font-semibold">{v.w}</b>
-                <span className="inline-flex gap-1" title={`Box ${v.b} of 5`} aria-label={`Box ${v.b} of 5`}>{[0, 1, 2, 3, 4].map((i) => <i key={i} className={cn("size-1.5 rounded-full", i < v.b ? "bg-primary" : "bg-secondary")} />)}</span>
+                <span className="inline-flex gap-1" role="img" title={`Box ${v.b} of 5`} aria-label={`Box ${v.b} of 5`}>{[0, 1, 2, 3, 4].map((i) => <i key={i} className={cn("size-1.5 rounded-full", i < v.b ? "bg-primary" : "bg-secondary")} />)}</span>
               </span>
               <span className="text-base">{v.m}</span>
               {v.s && <Meta>{v.s}</Meta>}

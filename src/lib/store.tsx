@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { createContext, use, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { loadState, normalize, saveState, STORAGE_KEY, type AppState } from "./state";
 
 interface Store {
@@ -44,7 +44,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 }
 
 export function useStore(): Store {
-  const s = useContext(StoreCtx);
+  const s = use(StoreCtx);
   if (!s) throw new Error("useStore outside StoreProvider");
   return s;
 }

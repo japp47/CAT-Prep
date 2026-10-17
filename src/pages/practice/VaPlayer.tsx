@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { todayIso, uid } from "../../lib/date";
+import { readDraft, writeDraft } from "../../lib/draft";
+import type { VaAttempt } from "../../lib/state";
 import { useStore } from "../../lib/store";
 import { ContentGate } from "../../components/Content";
 import { Empty, LinkButton, Page, TextLink } from "../../components/kit";
@@ -13,7 +15,7 @@ import { vaKeysOfDay } from "../../practice/daily";
 import { fmtSecs, LETTERS, recordVa, vaError, vaErrorSrc } from "../../practice/record";
 import { answerLabel, cleanAnswer, customDrill, parseKey, scoreItem, sentenceAt, sumAt, VA_KIND, type VaItem, type VaKind } from "../../practice/va/build";
 import { paraText, type VaPara } from "../../practice/types";
-import { Choice, Confirm, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, Timer, useElapsed } from "./common";
+import { Choice, ChoiceGroup, Confirm, ElapsedTimer, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard } from "./common";
 
 const SECS_PER_ITEM = 90;
 
@@ -43,84 +45,137 @@ function VaPage({ paras }: { paras: VaPara[] }) {
   });
   const doneToday = mode === "daily" && !reviewId ? state.vaAttempts.find((a) => a.mode === "daily" && a.d === today) : undefined;
   const initial = reviewId ?? doneToday?.id ?? null;
-  return <Drill key={initial ?? "new"} items={items} mode={mode} initialAttempt={initial} />;
+  const draftKey = "va:" + (mode === "daily" ? today : sp.toString());
+  return <Drill key={initial ?? "new"} items={items} mode={mode} initialAttempt={initial} draftKey={draftKey} />;
 }
 
-function Drill({ items, mode, initialAttempt }: { items: VaItem[]; mode: "daily" | "custom"; initialAttempt: string | null }) {
-  const { state, update } = useStore();
-  const navigate = useNavigate();
-  const past = initialAttempt ? state.vaAttempts.find((a) => a.id === initialAttempt) : undefined;
-  const [attemptId, setAttemptId] = useState<string | null>(past?.id ?? null);
-  const [answers, setAnswers] = useState<string[]>(past ? past.items.map((i) => i.a) : items.map(() => ""));
-  const [cur, setCur] = useState(0);
-  const [confirming, setConfirming] = useState(false);
-  const startAt = useRef(Date.now());
-  const reviewing = attemptId !== null;
-  const elapsed = useElapsed(!reviewing, startAt.current);
-  const attempt = attemptId ? state.vaAttempts.find((a) => a.id === attemptId) : undefined;
-  useEffect(() => { window.scrollTo(0, 0); }, [reviewing]);
+interface VaDraft { keys: string[]; answers: string[]; cur: number; secs: number }
 
+/** One VA drill: answering it, then reviewing it on the same page. */
+function Drill({ items, mode, initialAttempt, draftKey }: { items: VaItem[]; mode: "daily" | "custom"; initialAttempt: string | null; draftKey: string }) {
+  const { state } = useStore();
+  const [attemptId, setAttemptId] = useState<string | null>(() => (initialAttempt && state.vaAttempts.some((a) => a.id === initialAttempt) ? initialAttempt : null));
+  const attempt = attemptId ? state.vaAttempts.find((a) => a.id === attemptId) : undefined;
+  useEffect(() => { window.scrollTo(0, 0); }, [attemptId]);
   if (!items.length) return <Page><Empty action={<LinkButton to="/practice">Back to Practice</LinkButton>}>No drill questions found.</Empty></Page>;
+  return attempt
+    ? <DrillReview items={items} attempt={attempt} onRetake={() => setAttemptId(null)} />
+    : <DrillAttempt items={items} mode={mode} draftKey={draftKey} onDone={setAttemptId} />;
+}
+
+function DrillAttempt({ items, mode, draftKey, onDone }: { items: VaItem[]; mode: "daily" | "custom"; draftKey: string; onDone: (id: string) => void }) {
+  const { update } = useStore();
+  const [saved] = useState(() => {
+    const d = readDraft<VaDraft>(draftKey);
+    return d && d.keys?.join() === items.map((i) => i.key).join() ? d : null;
+  });
+  const [answers, setAnswers] = useState<string[]>(saved?.answers ?? items.map(() => ""));
+  const [cur, setCur] = useState(saved?.cur ?? 0);
+  const [confirming, setConfirming] = useState(false);
+  // A restored drill carries on the clock from where it stopped.
+  const [startAt] = useState(() => Date.now() - (saved?.secs ?? 0) * 1000);
+  const submitted = useRef(false);
+
+  // Keep the answers on every change, when the page is hidden and when it closes.
+  useEffect(() => {
+    const keep = () => {
+      if (submitted.current) return;
+      const draft: VaDraft = { keys: items.map((i) => i.key), answers, cur, secs: (Date.now() - startAt) / 1000 };
+      writeDraft(draftKey, answers.some((a) => cleanAnswer(a)) ? draft : null);
+    };
+    keep();
+    window.addEventListener("pagehide", keep);
+    return () => { window.removeEventListener("pagehide", keep); keep(); };
+  }, [draftKey, items, startAt, answers, cur]);
 
   const item = items[cur];
   const setAnswer = (v: string) => setAnswers((a) => a.map((x, i) => (i === cur ? v : x)));
   const submit = () => {
     const id = uid();
-    const secs = (Date.now() - startAt.current) / 1000;
-    update((st) => recordVa(st, id, items, answers, secs, mode, todayIso()));
-    setAttemptId(id);
+    submitted.current = true;
+    writeDraft(draftKey, null);
+    update((st) => recordVa(st, id, items, answers, (Date.now() - startAt) / 1000, mode, todayIso()));
     setConfirming(false);
-    setCur(0);
+    onDone(id);
   };
   const blanks = answers.filter((a) => !cleanAnswer(a)).length;
-  const target = items.length * SECS_PER_ITEM;
-  const score = items.reduce((s, it, i) => s + scoreItem(it, answers[i]).pts, 0);
 
   return (
     <Page width="read" className="gap-6 lg:gap-8">
-      <PlayerBar kicker={`${reviewing ? "Review" : mode === "daily" ? "Today's VA drill" : "Custom VA drill"}, ${items.length} questions`} title={VA_KIND[item.kind].label}>
-        {!reviewing && <Timer over={elapsed > target}>{fmtSecs(elapsed)} / {fmtSecs(target)}</Timer>}
-        {!reviewing && <Button size="sm" onClick={() => setConfirming(true)}>Submit drill</Button>}
-        {reviewing && <LinkButton to="/practice" variant="secondary" size="sm">Back to Practice</LinkButton>}
+      <PlayerBar kicker={`${mode === "daily" ? "Today's VA drill" : "Custom VA drill"}, ${items.length} questions`} title={VA_KIND[item.kind].label}>
+        <ElapsedTimer startAt={startAt} target={items.length * SECS_PER_ITEM} />
+        <Button size="sm" onClick={() => setConfirming(true)}>Submit drill</Button>
       </PlayerBar>
-
-      {reviewing && attempt && (
-        <ScoreCard score={(score > 0 ? "+" : "") + score} of={items.length * 3} parts={[
-          ["Correct", attempt.items.filter((i) => i.ok).length],
-          ["Wrong", attempt.items.filter((i) => !i.ok && cleanAnswer(i.a)).length],
-          ["Blank", attempt.items.filter((i) => !cleanAnswer(i.a)).length],
-          ["Time", fmtSecs(attempt.secs)],
-        ]}>
-          <p className="text-base text-muted-foreground">Para jumbles and odd sentence out are TITA: +3 or 0. Para summary and sentence insertion are MCQs: +3, −1 for a wrong answer, 0 if blank. Logged in Progress by question type. Wrong and blank questions join your <TextLink to="/practice/redo">redo queue</TextLink>.</p>
-          <div className="flex flex-wrap gap-3">
-            <Button onClick={() => navigate(`/practice/va?type=mix&n=8&seed=${uid()}`)}>New custom drill</Button>
-            <Button variant="secondary" onClick={() => { setAttemptId(null); setAnswers(items.map(() => "")); startAt.current = Date.now(); }}>Retake these questions</Button>
-          </div>
-        </ScoreCard>
-      )}
+      {saved && <p className="text-base text-muted-foreground">Your answers from earlier are back, and the clock carries on from {fmtSecs(saved.secs)}.</p>}
 
       <div className="flex flex-wrap gap-2" role="group" aria-label="Questions">
-        {items.map((it, i) => {
-          const s = scoreItem(it, answers[i]);
-          const st = reviewing ? (s.blank ? "blank" : s.ok ? "right" : "wrong") : s.blank ? "unseen" : "done";
-          return <PaletteCell key={it.key} n={i + 1} state={st} current={i === cur} onClick={() => setCur(i)} label={`Question ${i + 1}, ${VA_KIND[it.kind].label}`} />;
-        })}
+        {items.map((it, i) => (
+          <PaletteCell key={it.key} n={i + 1} state={cleanAnswer(answers[i]) ? "done" : "unseen"} current={i === cur} onClick={() => setCur(i)}
+            label={`Question ${i + 1}, ${VA_KIND[it.kind].label}, ${cleanAnswer(answers[i]) ? "answered" : "not answered"}`} />
+        ))}
       </div>
 
       <div className="flex flex-col gap-5">
         <p className="text-sm text-muted-foreground">Question {cur + 1} of {items.length}, {VA_KIND[item.kind].tita ? "TITA, no negative marks" : "MCQ, −1 if wrong"}</p>
-        {reviewing ? <ItemReview item={item} answer={answers[cur]} /> : <ItemInput key={cur} item={item} answer={answers[cur]} setAnswer={setAnswer} />}
+        <ItemInput key={cur} item={item} answer={answers[cur]} setAnswer={setAnswer} />
         <div className="flex justify-between gap-2 pt-1">
           <Button variant="secondary" size="sm" disabled={cur === 0} onClick={() => setCur(cur - 1)}>Previous</Button>
           {cur < items.length - 1
             ? <Button size="sm" onClick={() => setCur(cur + 1)}>Next</Button>
-            : !reviewing && <Button size="sm" onClick={() => setConfirming(true)}>Submit drill</Button>}
+            : <Button size="sm" onClick={() => setConfirming(true)}>Submit drill</Button>}
         </div>
       </div>
 
       <Confirm open={confirming} onOpenChange={setConfirming} title="Submit this drill?" action="Submit drill" onAction={submit}>
         {blanks ? `${blanks} question${blanks > 1 ? "s are" : " is"} blank.` : "Every question has an answer."}
       </Confirm>
+      <p className="text-sm text-muted-foreground">Paragraphs are original practice material written for this site.</p>
+    </Page>
+  );
+}
+
+function DrillReview({ items, attempt, onRetake }: { items: VaItem[]; attempt: VaAttempt; onRetake: () => void }) {
+  const [cur, setCur] = useState(0);
+  const [seed] = useState(uid);
+  const answers = items.map((_, i) => attempt.items[i]?.a ?? "");
+  const score = items.reduce((s, it, i) => s + scoreItem(it, answers[i]).pts, 0);
+  const item = items[cur];
+
+  return (
+    <Page width="read" className="gap-6 lg:gap-8">
+      <PlayerBar kicker={`Review, ${items.length} questions`} title={VA_KIND[item.kind].label}>
+        <LinkButton to="/practice" variant="secondary" size="sm">Back to Practice</LinkButton>
+      </PlayerBar>
+
+      <ScoreCard score={(score > 0 ? "+" : "") + score} of={items.length * 3} parts={[
+        ["Correct", attempt.items.filter((i) => i.ok).length],
+        ["Wrong", attempt.items.filter((i) => !i.ok && cleanAnswer(i.a)).length],
+        ["Blank", attempt.items.filter((i) => !cleanAnswer(i.a)).length],
+        ["Time", fmtSecs(attempt.secs)],
+      ]}>
+        <p className="text-base text-muted-foreground">Para jumbles and odd sentence out are TITA: +3 or 0. Para summary and sentence insertion are MCQs: +3, −1 for a wrong answer, 0 if blank. Logged in Progress by question type. Wrong and blank questions join your <TextLink to="/practice/redo">redo queue</TextLink>.</p>
+        <div className="flex flex-wrap gap-3">
+          <LinkButton to={`/practice/va?type=mix&n=8&seed=${seed}`}>New custom drill</LinkButton>
+          <Button variant="secondary" onClick={onRetake}>Retake these questions</Button>
+        </div>
+      </ScoreCard>
+
+      <div className="flex flex-wrap gap-2" role="group" aria-label="Questions">
+        {items.map((it, i) => {
+          const s = scoreItem(it, answers[i]);
+          return <PaletteCell key={it.key} n={i + 1} state={s.blank ? "blank" : s.ok ? "right" : "wrong"} current={i === cur} onClick={() => setCur(i)}
+            label={`Question ${i + 1}, ${VA_KIND[it.kind].label}, ${s.blank ? "blank" : s.ok ? "correct" : "wrong"}`} />;
+        })}
+      </div>
+
+      <div className="flex flex-col gap-5">
+        <p className="text-sm text-muted-foreground">Question {cur + 1} of {items.length}, {VA_KIND[item.kind].tita ? "TITA, no negative marks" : "MCQ, −1 if wrong"}</p>
+        <ItemReview item={item} answer={answers[cur]} />
+        <div className="flex justify-between gap-2 pt-1">
+          <Button variant="secondary" size="sm" disabled={cur === 0} onClick={() => setCur(cur - 1)}>Previous</Button>
+          {cur < items.length - 1 && <Button size="sm" onClick={() => setCur(cur + 1)}>Next</Button>}
+        </div>
+      </div>
       <p className="text-sm text-muted-foreground">Paragraphs are original practice material written for this site.</p>
     </Page>
   );
@@ -146,9 +201,9 @@ export function ItemInput({ item, answer, setAnswer }: { item: VaItem; answer: s
       <>
         <p className="text-base">{VA_KIND.ps.how}</p>
         <Para>{paraText(item.para)}</Para>
-        <div className="flex flex-col gap-2.5" role="radiogroup" aria-label="Summaries">
+        <ChoiceGroup label="Summaries">
           {item.order.map((_, i) => <Choice key={i} mark={LETTERS[i]} checked={a === String(i + 1)} onClick={() => setAnswer(String(i + 1))}>{sumAt(item, i).t}</Choice>)}
-        </div>
+        </ChoiceGroup>
         {clear}
       </>
     );
@@ -159,9 +214,9 @@ export function ItemInput({ item, answer, setAnswer }: { item: VaItem; answer: s
         <p className="text-base">{VA_KIND.si.how}</p>
         <p className="rounded-lg bg-highlight-soft px-5 py-4 text-reading">{item.para.ins}</p>
         <Gapped item={item} pick={a} onPick={(n) => setAnswer(String(n))} />
-        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4" role="radiogroup" aria-label="Gaps">
+        <ChoiceGroup label="Gaps" className="grid grid-cols-2 sm:grid-cols-4">
           {item.gaps.map((_, i) => <Choice key={i} mark={i + 1} checked={a === String(i + 1)} onClick={() => setAnswer(String(i + 1))}>Gap {i + 1}</Choice>)}
-        </div>
+        </ChoiceGroup>
         {clear}
       </>
     );

@@ -103,8 +103,8 @@ function TimeControl({ sec, d }: { sec: SectionDef; d: string }) {
         <p className="text-base font-semibold">{sec.short} time for {shortDate(d)}</p>
         <ToggleGroup type="single" value={String(budget)} onValueChange={(v) => v && setMin(+v)} className="grid w-full grid-cols-4 gap-1.5" aria-label="Minutes">
           {CHIP_MINS.map((m) => (
-            <ToggleGroupItem key={m} value={String(m)} className="h-11 flex-col gap-0 rounded-md bg-secondary px-1 text-sm font-semibold data-[state=on]:bg-foreground data-[state=on]:text-background">
-              {m === 0 ? "Rest" : m}{m === def && <span className="text-[11px] font-normal opacity-70">usual</span>}
+            <ToggleGroupItem key={m} value={String(m)} className="h-auto min-h-11 flex-col gap-0 rounded-md bg-secondary px-1 py-1 text-sm leading-tight font-semibold data-[state=on]:bg-foreground data-[state=on]:text-background">
+              {m === 0 ? "Rest" : m}{m === def && <span className="text-sm leading-tight font-normal opacity-75">usual</span>}
             </ToggleGroupItem>
           ))}
         </ToggleGroup>
@@ -164,12 +164,16 @@ function SectionDay({ sec, d, today }: { sec: SectionDef; d: string; today: stri
           const timed = rec?.spent?.[b.key] ?? 0;
           const running = focus.run?.key === b.key && focus.run.d === d;
           const core = b.pri === 1;
+          const tickId = "tick-" + sec.id + "-" + b.key;
           return (
             <li key={b.key} className={cn("relative grid grid-cols-[1.5rem_minmax(0,1fr)] gap-x-3.5 gap-y-1 overflow-hidden rounded-lg bg-card py-4 pr-4 pl-5 sm:pr-6", core && !done && "before:absolute before:inset-y-0 before:left-0 before:w-1.5 before:bg-highlight")}>
-              {canTick ? <Checkbox checked={done} onCheckedChange={(v) => toggle(b, v === true)} aria-label={"Done: " + b.name} className="mt-1" /> : <span />}
+              {canTick ? <Checkbox id={tickId} checked={done} onCheckedChange={(v) => toggle(b, v === true)} className="mt-1" /> : <span />}
               <div className={cn("flex min-w-0 flex-col gap-2", done && "opacity-60")}>
                 <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-                  <span className={cn("text-lg font-semibold", done && "line-through decoration-muted-foreground")}>{b.name}</span>
+                  {/* The block's name is the checkbox's label, so tapping it ticks the block too. */}
+                  {canTick
+                    ? <label htmlFor={tickId} className={cn("cursor-pointer text-lg font-semibold", done && "line-through decoration-muted-foreground")}>{b.name}</label>
+                    : <span className="text-lg font-semibold">{b.name}</span>}
                   <span className="text-base text-muted-foreground tabular-nums">{b.mins} min</span>
                   {core && <Badge variant="highlight">Core</Badge>}
                   {b.pri === 9 && <Badge variant="secondary">Extra time</Badge>}
@@ -180,7 +184,8 @@ function SectionDay({ sec, d, today }: { sec: SectionDef; d: string; today: stri
                 {isToday && !done && (
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
                     {running ? <span className="inline-flex items-center gap-1.5 text-base text-success"><TimerIcon className="size-4" />Focus timer running</span>
-                      : <Button variant="link" size="sm" disabled={!!focus.run} title={focus.run ? "Another block's timer is running" : undefined} className="gap-1.5"
+                      : focus.run ? <Meta>Another block's timer is running</Meta>
+                      : <Button variant="link" size="sm" className="gap-1.5"
                           onClick={() => focus.start({ key: b.key, name: sec.short + ": " + b.name, sec: sec.id, d, target: b.mins, log: !!b.kind, carryFrom: b.carryFrom })}>
                           <TimerIcon className="size-4" />Start focus timer</Button>}
                     {timed > 0 && <Meta>Timed {timed} of {b.mins} min</Meta>}
