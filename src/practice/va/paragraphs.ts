@@ -1,3 +1,4 @@
+import batch2 from "../../../content/va/paragraphs-2.json";
 import { o } from "../rc/author";
 import type { VaPara } from "../types";
 
@@ -1357,4 +1358,7 @@ export const VA_PARAS: VaPara[] = [
       o("Wikipedia proved far more accurate than predicted, roughly matching Britannica in one study, because many people catch its errors.", "Covers the prediction, the test and the explanation."),
     ],
   },
+  // From 20 Oct 2026, new paragraphs are kept as JSON in content/va/, so the server can read them later (docs/plan.md, "Where data lives").
+  // JSON has no types, so content.test.ts checks their shape.
+  ...(batch2 as unknown as VaPara[]),
 ];

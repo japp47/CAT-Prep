@@ -41,6 +41,12 @@ export interface VaAttempt { id: string; d: string; mode: "daily" | "custom"; it
 /** One reading speed test. recall is the number of recall questions answered correctly, out of 2. */
 export interface SpeedRun { id: string; d: string; set: string; words: number; secs: number; wpm: number; recall: number }
 /**
+ * One timed VARC sectional. qs holds the question keys in paper order ("rc:<set>:<question>" or a VA key such as "pj:bees"),
+ * a the answer to each ("" for blank; an RC option index such as "2"; a VA answer as typed), t the seconds spent on each.
+ * w counts only wrong answers that cost a mark (MCQs), so 3c - w is the score. updatedAt is for sync (docs/plan.md, 2D).
+ */
+export interface SectionalAttempt { id: string; d: string; qs: string[]; a: string[]; t: number[]; secs: number; c: number; w: number; updatedAt: number }
+/**
  * A question in the redo queue. k is "rc:<set>:<question>" or a VA item key such as "pj:bees".
  * box counts right answers in a row; cleared is the date it left the queue.
  */
@@ -60,6 +66,7 @@ export interface AppState {
   vaAttempts: VaAttempt[];
   speedRuns: SpeedRun[];
   redo: RedoItem[];
+  sectionals: SectionalAttempt[];
   /** False for saves from before the redo queue; RedoSeeder then builds the queue from past attempts. */
   redoSeeded: boolean;
 }
@@ -69,7 +76,7 @@ const emptyDow = () => [null, null, null, null, null, null, null] as (number | n
 export function blankState(): AppState {
   const settings = {} as Record<SectionId, TimeSettings>;
   SECTION_IDS.forEach((id) => (settings[id] = { ...DEFAULT_TIME[id], dow: emptyDow() }));
-  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], speedRuns: [], redo: [], redoSeeded: true };
+  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], speedRuns: [], redo: [], sectionals: [], redoSeeded: true };
 }
 
 type Obj = Record<string, unknown>;
@@ -132,6 +139,10 @@ export function normalize(raw: unknown): AppState {
     items: list(x.items, (i) => ({ k: str(i.k), a: str(i.a), ok: !!i.ok, pts: num(i.pts) })),
   }));
   b.speedRuns = list(raw.speedRuns, (x) => ({ id: str(x.id), d: str(x.d), set: str(x.set), words: num(x.words), secs: num(x.secs), wpm: num(x.wpm), recall: clamp(num(x.recall), 0, 2) }));
+  b.sectionals = list(raw.sectionals, (x) => ({
+    id: str(x.id), d: str(x.d), secs: num(x.secs), c: num(x.c), w: num(x.w), updatedAt: num(x.updatedAt),
+    qs: Array.isArray(x.qs) ? x.qs.map(str) : [], a: Array.isArray(x.a) ? x.a.map(str) : [], t: Array.isArray(x.t) ? x.t.map(num) : [],
+  })).filter((x) => x.id && x.qs.length && x.a.length === x.qs.length);
   if (Array.isArray(raw.redo)) {
     b.redo = list(raw.redo, (x) => {
       const r: RedoItem = { k: str(x.k), added: str(x.added), due: str(x.due), box: clamp(num(x.box), 0, 9), tries: num(x.tries) };

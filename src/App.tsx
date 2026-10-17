@@ -10,6 +10,7 @@ import Plan from "./pages/Plan";
 import PracticeHub from "./pages/practice/Hub";
 import RcPlayer from "./pages/practice/RcPlayer";
 import Redo from "./pages/practice/Redo";
+import Sectional, { SectionalReview } from "./pages/practice/Sectional";
 import SpeedTest from "./pages/practice/SpeedTest";
 import VaPlayer from "./pages/practice/VaPlayer";
 import Progress from "./pages/Progress";
@@ -50,6 +51,8 @@ export default function App() {
           <Route path="practice/va" element={<VaPlayer />} />
           <Route path="practice/speed" element={<SpeedTest />} />
           <Route path="practice/redo" element={<Redo />} />
+          <Route path="practice/sectional" element={<Sectional />} />
+          <Route path="practice/sectional/:id" element={<SectionalReview />} />
           <Route path="progress" element={<Progress />} />
           <Route path="errors" element={<Errors />} />
           <Route path="words" element={<Words />} />

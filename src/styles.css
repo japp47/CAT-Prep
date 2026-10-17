@@ -475,7 +475,25 @@ button.opt:hover{border-color:var(--accent)}
 .pal.cur{box-shadow:0 0 0 2px var(--accent)}
 .pal.ok{background:var(--good);border-color:var(--good);color:#fff}
 .pal.bad{background:var(--bad);border-color:var(--bad);color:#fff}
-.pal.skip{background:var(--surface-2);color:var(--ink-2)}
+.pal.blank{background:var(--surface-2);color:var(--ink-2)}
+/* Sectional palette: CAT's question states */
+.pal.open{border-color:var(--bad);color:var(--bad)}
+.pal.mk{border-color:var(--mark);color:var(--mark);background:color-mix(in srgb,var(--mark) 10%,var(--surface))}
+.pal.mk::after{content:"";position:absolute;top:3px;right:3px;width:7px;height:7px;border-radius:50%;background:var(--mark)}
+.sec-pal>summary{cursor:pointer;font-weight:650;list-style:none}
+.sec-pal>summary::-webkit-details-marker{display:none}
+.sec-pal[open]>summary{margin-bottom:12px}
+.sec-groups{display:flex;flex-wrap:wrap;gap:14px 32px}
+.pal-legend{list-style:none;margin:14px 0 0;padding:12px 0 0;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--ink-2)}
+.pal-legend li{display:inline-flex;align-items:center;gap:7px}
+.pal-legend b{color:var(--ink);font-variant-numeric:tabular-nums}
+.pal-legend i.pal{display:inline-block;min-width:0;width:16px;height:16px;padding:0;border-radius:4px;cursor:default}
+.pal-legend i.pal::after{top:-3px;right:-3px;width:6px;height:6px}
+.sec-rules{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.sec-rules li{display:grid;grid-template-columns:minmax(0,1fr);gap:2px 16px;padding:12px 0;border-top:1px solid var(--line)}
+.sec-rules li:first-child{border-top:0;padding-top:0}
+.sec-rules span{color:var(--ink-2);font-size:14px}
+@media (min-width:700px){.sec-rules li{grid-template-columns:220px minmax(0,1fr)}}
 .scorebox{display:flex;flex-wrap:wrap;gap:10px 28px;align-items:baseline}
 .scorebox .big{font:600 44px/1 var(--font-mono);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
 .sheet{position:fixed;left:0;right:0;bottom:calc(var(--bottom) + env(safe-area-inset-bottom,0px));z-index:50;background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -6px 24px rgba(0,0,0,.12);padding:14px 16px}
