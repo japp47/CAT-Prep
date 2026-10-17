@@ -216,4 +216,47 @@ export const ECONOMICS: RcSet[] = [
       recall("What kind of businesses did the economists survey?", ["Fast-food restaurants", "Farms", "Factories", "Banks"], 0),
     ],
   },
+  {
+    id: "econ-commons",
+    title: "Beyond the tragedy of the commons",
+    genre: "economics",
+    difficulty: "hard",
+    since: "2026-10-18",
+    paras: [
+      "In 1968 the ecologist Garrett Hardin described what he called the tragedy of the commons. Imagine a pasture open to all. Each herder gains the full benefit of adding one more animal but bears only a share of the cost of overgrazing, so each keeps adding animals until the pasture is ruined. Hardin concluded that shared resources must be either divided into private property or controlled by the state. The argument seemed to explain everything from emptied fisheries to polluted rivers, and his essay became one of the most cited in the social sciences.",
+      "The political scientist Elinor Ostrom spent decades testing the claim against the record, and found it wanting. Swiss villages had managed alpine meadows in common for centuries; Japanese villages had shared forests; farmers in Spain and the Philippines had run irrigation systems that no single owner controlled. Some of these arrangements had outlasted the governments around them. Their users were neither private owners nor agents of a distant state, yet their resources had not collapsed. Hardin, she argued, had described a pasture with no rules, which is not what most real commons were.",
+      "From hundreds of cases, successful and failed, Ostrom drew a set of design principles. Successful commons had clear boundaries, so that everyone knew who had rights to use the resource. The people bound by the rules had a say in making them. Users or their agents monitored one another, penalties for breaking the rules started small and grew with repetition, and disputes could be settled cheaply and quickly. Graduated penalties mattered because a first offence was often a mistake, and a harsh response could destroy the trust the system relied on. Outside authorities, crucially, respected the community's right to organise itself.",
+      "Ostrom did not claim that communities always succeed; her principles were drawn partly from failures, and they fit small groups who know each other better than global problems such as the atmosphere or the high seas. Nor did she reject markets or governments, insisting that no single arrangement suits every resource. Her achievement, recognised in 2009 with the Nobel prize in economics, the first awarded to a woman, was to replace a choice between two solutions with a question about institutions: what rules, made by whom, allow people to share without ruin?",
+    ],
+    questions: [
+      q("main", "Which of the following best summarises the passage?", [0, 1, 3], [
+        o("Hardin proved that shared resources are always destroyed.", "Ostrom found many commons that had not collapsed.", "Extreme wording"),
+        o("Private property is the only reliable way to protect a resource.", "Ostrom showed communities can manage resources, and rejected any single answer.", "Distorts the passage"),
+        o("Swiss villagers invented the idea of common land.", "Swiss meadows are one example among several.", "Out of scope"),
+        o("Ostrom showed that communities can manage shared resources under the right rules, turning Hardin's either-or into a question about institutions.", "Covers Hardin's claim, Ostrom's evidence, her principles and her achievement."),
+      ]),
+      q("inference", "Ostrom's remark that Hardin 'had described a pasture with no rules' implies that:", [1], [
+        o("Hardin's pasture could not have existed anywhere", "She says it is not what most real commons were, not that it is impossible.", "Extreme wording"),
+        o("his conclusion followed from leaving out the rules that real communities make", "Real commons had rules; a pasture without them is a special case."),
+        o("real pastures are always well managed", "She drew lessons from failures too.", "Extreme wording"),
+        o("rules are unnecessary for managing a commons", "Her whole argument is about rules.", "Distorts the passage"),
+      ]),
+      q("except", "Which of the following is NOT one of Ostrom's design principles as the passage describes them?", [2], [
+        o("dividing the resource into private plots", "That is one of Hardin's two solutions, not an Ostrom principle."),
+        o("clear boundaries on who may use the resource", "Named in paragraph 3.", "True but not the answer"),
+        o("penalties that grow with repeated breaches", "Named in paragraph 3.", "True but not the answer"),
+        o("cheap and quick ways to settle disputes", "Named in paragraph 3.", "True but not the answer"),
+      ]),
+      q("application", "Which of the following situations would Ostrom's principles most likely help with?", [3], [
+        o("Cutting greenhouse gas emissions across the whole world", "Her principles fit small groups better than global problems such as the atmosphere.", "Distorts the passage"),
+        o("Setting share prices on a stock exchange", "Not a shared natural resource.", "Out of scope"),
+        o("Several neighbouring villages sharing a lake for fishing", "A small group sharing a local resource is the kind of case her principles came from."),
+        o("Deciding who inherits a family farm", "A question of private ownership, not a commons.", "Out of scope"),
+      ]),
+    ],
+    recall: [
+      recall("Who described the tragedy of the commons in 1968?", ["Elinor Ostrom", "Garrett Hardin", "Adam Smith", "John Maynard Keynes"], 1),
+      recall("What did Ostrom win in 2009?", ["The Nobel prize in economics", "The Nobel peace prize", "An Olympic medal", "The Booker prize"], 0),
+    ],
+  },
 ];

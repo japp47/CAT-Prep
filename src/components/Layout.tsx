@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { SECTIONS } from "../sections";
 import { useFocus } from "../lib/focus";
 import { usePref } from "../lib/prefs";
+import { RedoSeeder } from "./Content";
 import FocusBar from "./FocusBar";
 import { IconChart, IconHome, IconMenu, IconPen, IconToday } from "./Icons";
 
@@ -86,6 +87,7 @@ export default function Layout() {
         <Outlet />
       </main>
       <FocusBar />
+      <RedoSeeder />
       <nav className="bottomnav" aria-label="Quick">
         {tab("/", "Home", IconHome, true)}
         {tab("/today", "Today", IconToday)}

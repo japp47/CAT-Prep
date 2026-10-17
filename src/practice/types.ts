@@ -50,6 +50,8 @@ export interface RcSet {
   questions: RcQuestion[];
   /** Two plain recall questions for the reading speed test */
   recall: RecallQ[];
+  /** The day this set may join the RC of the day rotation. See dailyPick in daily.ts. */
+  since?: string;
 }
 
 /**
@@ -76,6 +78,26 @@ export interface VaPara {
   insWhy: string;
   /** Four para summary options for the full paragraph. As in RC, the one option without a trap is the answer. */
   sum: [RcOption, RcOption, RcOption, RcOption];
+  /** The day this paragraph may join the daily VA rotation. See dailyPick in daily.ts. */
+  since?: string;
+}
+
+/**
+ * What lists, the daily rotation and the redo queue need to know about an RC set, without its text.
+ * catalog.gen.ts holds one of these per set, so the full passages can load only when a practice page opens.
+ */
+export interface RcMeta { id: string; title: string; genre: Genre; difficulty: Difficulty; words: number; questions: number; since?: string }
+export interface VaMeta { id: string; topic: string; difficulty: Difficulty; since?: string }
+
+export function rcMeta(s: RcSet): RcMeta {
+  const m: RcMeta = { id: s.id, title: s.title, genre: s.genre, difficulty: s.difficulty, words: setWords(s), questions: s.questions.length };
+  if (s.since) m.since = s.since;
+  return m;
+}
+export function vaMeta(p: VaPara): VaMeta {
+  const m: VaMeta = { id: p.id, topic: p.topic, difficulty: p.difficulty };
+  if (p.since) m.since = p.since;
+  return m;
 }
 
 /** The whole paragraph as a para summary question shows it: the core sentences with ins in its gap. */

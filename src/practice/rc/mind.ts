@@ -344,4 +344,133 @@ export const MIND: RcSet[] = [
       recall("Which example policy does the passage work through?", ["Building roads", "Using up or conserving a resource", "Raising taxes", "Banning cars"], 1),
     ],
   },
+  {
+    id: "phil-sentience",
+    title: "Can a lobster suffer?",
+    genre: "philosophy",
+    difficulty: "medium",
+    since: "2026-10-18",
+    paras: [
+      "Until recently, the animal welfare laws of many countries protected only vertebrates: mammals, birds, reptiles, amphibians and fish. Crabs, lobsters and octopuses fell outside them, which is why a lobster could legally be boiled alive in places where doing the same to a chicken would be a crime. The line was drawn less by evidence than by habit, and by the difficulty of knowing what, if anything, such creatures feel.",
+      "The difficulty is real. We cannot ask a crab whether it is in pain, and behaviour that looks like distress might be a reflex with nothing felt behind it. Scientists therefore look for indirect signs. Does the animal protect an injured part of its body? Will it trade off avoiding harm against other needs? Hermit crabs given small shocks inside their shells, for instance, were more likely to abandon a poor shell than a good one. Does it learn to avoid places where it was hurt, and does it seek out painkillers when injured? None of these proves feeling, but together they make it more or less likely.",
+      "In 2021 a team at the London School of Economics, led by the philosopher Jonathan Birch, reviewed more than three hundred studies using such criteria. It concluded that there was strong evidence of sentience in octopuses and other cephalopods, and substantial evidence in decapod crustaceans such as crabs and lobsters. The following year Britain extended its animal welfare law to cover both groups. The report recommended against boiling decapods alive and called for further study rather than claiming certainty.",
+      "The case shows a way of acting under uncertainty that may matter well beyond lobsters. We will probably never be sure what it is like, if anything, to be a crab. But the question for law is not whether we are certain; it is how strong the evidence must be before we take reasonable care. If the cost of precaution is small, such as stunning an animal before killing it, and the cost of being wrong is great suffering, then waiting for proof that may never come is itself a choice, and not obviously the cautious one.",
+    ],
+    questions: [
+      q("main", "Which of the following best states the main point of the passage?", [1, 2, 3], [
+        o("Indirect evidence suggests crabs, lobsters and octopuses may feel pain, and when precaution is cheap, uncertainty is a reason to act rather than wait.", "Covers the evidence, the change in law and the principle in the last paragraph."),
+        o("Scientists have proved that lobsters feel pain exactly as humans do.", "The passage stresses that none of the signs proves feeling.", "Extreme wording"),
+        o("Animal welfare laws should protect every living thing, including plants.", "Plants are never discussed.", "Out of scope"),
+        o("Since we cannot ask animals what they feel, the law should ignore the question.", "The author argues for acting on strong evidence without certainty.", "Distorts the passage"),
+      ]),
+      q("except", "All of the following are presented as signs that scientists look for EXCEPT:", [1], [
+        o("protecting an injured part of the body", "Named in paragraph 2.", "True but not the answer"),
+        o("learning to avoid places where the animal was hurt", "Named in paragraph 2.", "True but not the answer"),
+        o("making sounds like human cries of pain", "Sounds are never mentioned among the signs."),
+        o("seeking out painkillers when injured", "Named in paragraph 2.", "True but not the answer"),
+      ]),
+      q("inference", "The hermit crab study supports the view that crabs may feel pain because the crabs:", [1], [
+        o("always left their shells when shocked", "They were 'more likely' to leave poor shells, not always.", "Extreme wording"),
+        o("did not respond to the shocks", "They did respond, by leaving shells.", "Distorts the passage"),
+        o("preferred shells of a particular size", "The study is about trading off shocks against shell quality, not size.", "Out of scope"),
+        o("weighed the shock against the value of their shell, which a simple reflex would not do", "Abandoning a poor shell more readily than a good one shows a trade-off between needs."),
+      ]),
+      q("structure", "The last paragraph mainly serves to:", [3], [
+        o("summarise the evidence for sentience in crabs", "The evidence is in paragraphs 2 and 3.", "Distorts the passage"),
+        o("draw a general principle about acting under uncertainty from the case", "It moves from lobsters to how much evidence should prompt reasonable care."),
+        o("argue that octopuses are more intelligent than crabs", "Intelligence is not compared.", "Out of scope"),
+        o("criticise the report for claiming certainty", "The report 'called for further study rather than claiming certainty'.", "Distorts the passage"),
+      ]),
+    ],
+    recall: [
+      recall("Which groups did Britain add to its animal welfare law in 2022?", ["Insects and spiders", "Cephalopods and decapod crustaceans", "Fish and amphibians", "Worms and snails"], 1),
+      recall("About how many studies did the review examine?", ["Thirty", "More than three hundred", "Three thousand", "Twelve"], 1),
+    ],
+  },
+  {
+    id: "psy-anchoring",
+    title: "The number you heard first",
+    genre: "psychology",
+    difficulty: "medium",
+    since: "2026-10-18",
+    paras: [
+      "In a classic experiment from the 1970s, Amos Tversky and Daniel Kahneman spun a wheel of fortune in front of volunteers. The wheel was rigged to stop at either 10 or 65, and the volunteers knew it had nothing to do with what followed. They were then asked whether the percentage of African countries in the United Nations was higher or lower than that number, and then to estimate the true figure. Those who had seen 10 gave a median estimate of 25 per cent; those who had seen 65 gave 45 per cent. A number they knew to be random had pulled their judgement towards it.",
+      "The effect, called anchoring, has since been found far outside the laboratory. Experienced estate agents shown different asking prices for the same house valued it differently, while insisting that the listed price had not influenced them. In one study, German judges with years of experience rolled loaded dice before recommending a sentence for a shoplifter, and those who rolled higher numbers proposed longer sentences. Retailers rely on the same effect when they print a crossed-out 'original' price beside a discounted one, and in negotiations the first offer tends to shape the final deal.",
+      "Psychologists have proposed two explanations, which may both be right. In one, people start from the anchor and adjust away from it, but stop too soon, once they reach a value that seems plausible. In the other, the anchor quietly brings to mind information consistent with it: thinking about a high price makes a house's good features more vivid, and a low price its faults. Both accounts explain why the effect survives even when people know the anchor is irrelevant.",
+      "Anchoring is remarkably robust. Even absurd anchors, such as asking whether Gandhi died before or after the age of 140, can nudge later estimates, and people with real expertise are rarely immune, though they are sometimes less affected. Warnings about the effect help only a little. The most reliable remedy seems to be deliberately considering the opposite: asking why the anchor might be wrong and generating reasons for a very different answer. It is easier said than done, since the whole difficulty is that the anchor does its work without our noticing.",
+    ],
+    questions: [
+      q("main", "Which of the following best captures the main idea of the passage?", [0, 1, 3], [
+        o("Experts are immune to anchoring because they know the true values.", "Experts are 'rarely immune'.", "Distorts the passage"),
+        o("A first number, even an irrelevant one, pulls later estimates towards it, and the effect is robust and hard to undo without deliberate effort.", "Covers the finding, its reach, its explanations and its remedy."),
+        o("Most people do not know how many African countries belong to the United Nations.", "This is only the question used in one experiment.", "Too narrow or too broad"),
+        o("Negotiators should never make the first offer.", "The passage says the first offer tends to shape the deal, which favours making it.", "Distorts the passage"),
+      ]),
+      q("detail", "In the study of German judges, the dice were used to:", [1], [
+        o("decide whether the shoplifter was guilty", "The dice came before a sentencing recommendation, not a verdict.", "Distorts the passage"),
+        o("measure how experienced the judges were", "Experience was a feature of the judges, not something the dice measured.", "Out of scope"),
+        o("show that random numbers do not affect experts", "Higher rolls led to longer sentences.", "Distorts the passage"),
+        o("give the judges an irrelevant number before they recommended a sentence", "Loaded dice supplied a number that then anchored the sentence."),
+      ]),
+      q("inference", "According to the second explanation in the third paragraph, a buyer shown a very low asking price for a house would tend to:", [2], [
+        o("notice the house's faults more readily", "A low price brings to mind information consistent with it: the faults."),
+        o("start from the price and adjust upwards, stopping too soon", "That is the first explanation, not the second.", "True but not the answer"),
+        o("ignore the price entirely", "The point is that the price has an effect.", "Distorts the passage"),
+        o("value the house more highly than other buyers", "A low anchor would pull the valuation down.", "Distorts the passage"),
+      ]),
+      q("application", "Based on the passage, which strategy would best reduce the effect of an anchor on your own estimate?", [3], [
+        o("Reading a warning about anchoring before you estimate", "Warnings 'help only a little'.", "True but not the answer"),
+        o("Looking at a second, higher anchor to cancel out a low one", "The passage suggests no such remedy.", "Out of scope"),
+        o("Listing reasons why the anchor might be badly wrong before you estimate", "This is 'considering the opposite', the most reliable remedy."),
+        o("Trusting your first instinct", "The first instinct is what the anchor shapes.", "Distorts the passage"),
+      ]),
+    ],
+    recall: [
+      recall("What did Tversky and Kahneman use to produce a random number?", ["A wheel of fortune", "A deck of cards", "A pair of dice", "A coin"], 0),
+      recall("Who rolled loaded dice in one study?", ["Estate agents", "German judges", "Students", "Shopkeepers"], 1),
+    ],
+  },
+  {
+    id: "psy-marshmallow",
+    title: "What the marshmallow test measured",
+    genre: "psychology",
+    difficulty: "hard",
+    since: "2026-10-18",
+    paras: [
+      "In the late 1960s and early 1970s, the psychologist Walter Mischel offered preschool children at a Stanford nursery a choice. They could eat one treat, such as a marshmallow, straight away, or wait alone in a room for up to twenty minutes and receive two. Years later, Mischel and his colleagues followed up some of the children and reported that those who had waited longer went on to do better at school and to cope better with stress as adolescents. The marshmallow test became a famous symbol of self-control, and of the idea that the ability to delay gratification in early childhood predicts success in life.",
+      "The original follow-ups, however, involved small numbers of children, almost all from families connected with Stanford University. In 2018 a team repeated the study with a larger and more varied group of nearly a thousand children. Waiting longer was again linked to later achievement, but the link was about half as strong as before, and it shrank much further once the researchers took account of the children's family background, home environment and early abilities. Much of what the test seemed to predict, it appeared, was already captured by these other factors.",
+      "Another line of research questioned what waiting actually means. In a 2013 experiment, children first dealt with an adult who either kept or broke promises to bring better art supplies. Those whose adult had proved unreliable waited, on average, a few minutes for the second marshmallow; those whose adult had kept promises waited far longer. The researchers concluded that the decision to wait is partly a judgement about the environment. For a child whose world has taught that promises are often broken, taking the sweet now is not a failure of willpower but a sensible bet.",
+      "None of this shows that self-control is unimportant, or that Mischel's research was worthless; he himself warned against treating the test as a measure of fixed character. But the story of the marshmallow test shows how a vivid experiment can carry a message larger than its evidence. Read one way, it suggested that some children are simply born with more discipline. Read with the later findings, it suggests that the capacity to wait depends heavily on whether waiting has ever paid off.",
+    ],
+    questions: [
+      q("main", "Which of the following best expresses the main idea of the passage?", [1, 2, 3], [
+        o("Later research suggests the marshmallow test reflected children's circumstances and experience as well as self-control, so it predicts less than once claimed.", "Covers the larger study, the reliability experiment and the conclusion."),
+        o("Self-control has no effect on success in life.", "The last paragraph says self-control is not unimportant.", "Extreme wording"),
+        o("Mischel's research was fraudulent.", "The author says it was not worthless and reports no fraud.", "Distorts the passage"),
+        o("Children from Stanford families are more patient than other children.", "The passage compares no groups on patience.", "Out of scope"),
+      ]),
+      q("detail", "Compared with the original follow-ups, the 2018 study:", [1], [
+        o("found no link at all between waiting and later achievement", "A link remained, though weaker.", "Extreme wording"),
+        o("studied only children from Stanford families", "It used 'a larger and more varied group'.", "Distorts the passage"),
+        o("found a weaker link, which shrank further once family background and early abilities were considered", "Paragraph 2 says exactly this."),
+        o("showed that waiting causes later success", "It suggested much of the link came from other factors.", "Distorts the passage"),
+      ]),
+      q("inference", "The 2013 experiment implies that a child who eats the marshmallow at once may be:", [2], [
+        o("without any capacity for self-control", "The experiment suggests the choice may be a reasonable judgement.", "Extreme wording"),
+        o("less intelligent than children who wait", "Intelligence is not discussed.", "Out of scope"),
+        o("unaware that waiting brings a reward", "All the children were told of the second marshmallow.", "Distorts the passage"),
+        o("acting sensibly, given experience that promises are often broken", "Paragraph 3 calls taking the sweet 'a sensible bet' for such a child."),
+      ]),
+      q("tone", "In the last paragraph, the author's attitude to Mischel's work is best described as:", [3], [
+        o("contemptuous", "The author defends the research as not worthless.", "Distorts the passage"),
+        o("respectful, while critical of how the test was popularly interpreted", "Mischel is credited with warning against misuse; the criticism is of the 'message larger than its evidence'."),
+        o("wholly uncritical", "The paragraph criticises the popular reading of the test.", "Extreme wording"),
+        o("uninterested", "The paragraph draws a pointed lesson.", "Distorts the passage"),
+      ]),
+    ],
+    recall: [
+      recall("What were the children offered?", ["A toy", "A treat such as a marshmallow", "Money", "A book"], 1),
+      recall("What did the 2013 experiment vary?", ["The size of the treat", "Whether an adult kept promises", "The colour of the room", "The children's ages"], 1),
+    ],
+  },
 ];

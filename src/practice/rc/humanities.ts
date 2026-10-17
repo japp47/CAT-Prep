@@ -344,4 +344,90 @@ export const HUMANITIES: RcSet[] = [
       recall("What is the title of Lord's book?", ["The Iliad Explained", "The Singer of Tales", "Songs of the Balkans", "Homer's Memory"], 1),
     ],
   },
+  {
+    id: "lit-detective",
+    title: "The rules of the murder game",
+    genre: "literature",
+    difficulty: "easy",
+    since: "2026-10-18",
+    paras: [
+      "In 1929 the priest and crime writer Ronald Knox published ten commandments for detective fiction. The criminal must be mentioned early in the story; no more than one secret room or passage is allowed; the detective must not commit the crime himself; and no clue may be hidden from the reader. Knox wrote partly in jest, but his list captured a real ambition of the period's writers. A detective story, in what is now called its golden age, was meant to be a fair contest between author and reader, in which a careful reader could, in principle, solve the crime before the final chapter.",
+      "The pleasure of such books was the pleasure of a puzzle. Agatha Christie's plots turn on a single overlooked detail, a clock set wrong or a letter read in the wrong order, and her characters are drawn just firmly enough to serve as suspects. Readers who wanted psychological depth were advised to look elsewhere. The setting is usually closed, a country house or a train cut off by snow, so that the circle of possible culprits is small. Violence happens offstage, and the corpse is less a person than the starting point of an argument.",
+      "Not everyone admired the form. In 1944 the American novelist Raymond Chandler complained that such stories were artificial, written by people who knew nothing of real crime, and praised writers who had taken murder 'out of the Venetian vase and dropped it into the alley'. In the hard-boiled fiction he championed, the detective walks through a corrupt city, the solution matters less than the journey, and the crime is a symptom of a society rather than a puzzle with a single answer.",
+      "The two traditions are often presented as rivals, but they answer different appetites. The puzzle story offers order: a world briefly disturbed by one crime and then restored by reason. The hard-boiled story offers recognition: a world that cannot be restored, seen clearly by someone who refuses to look away. Many modern crime novels borrow from both, setting a fair-play mystery inside a portrait of a troubled place, which may explain why the genre has outlived every announcement of its decline.",
+    ],
+    questions: [
+      q("main", "Which of the following best expresses the main idea of the passage?", [3], [
+        o("Golden-age detective stories were badly written and have rightly been forgotten.", "The author treats the puzzle story as answering a real appetite.", "Distorts the passage"),
+        o("Ronald Knox invented the detective story in 1929.", "Knox wrote rules for a form that already existed.", "Distorts the passage"),
+        o("Puzzle stories and hard-boiled stories satisfy different desires, order and recognition, and much modern crime fiction combines them.", "This is the argument of the last paragraph, set up by the descriptions before it."),
+        o("Raymond Chandler was a better writer than Agatha Christie.", "The passage reports Chandler's complaint but does not rank the two.", "Out of scope"),
+      ]),
+      q("detail", "According to the passage, golden-age writers set their stories in closed places in order to:", [1], [
+        o("keep the circle of possible culprits small", "Paragraph 2: the setting is closed 'so that the circle of possible culprits is small'."),
+        o("make the violence more vivid", "Violence 'happens offstage'.", "Distorts the passage"),
+        o("show the corruption of modern cities", "That describes hard-boiled fiction.", "Distorts the passage"),
+        o("obey one of Knox's commandments", "None of the rules quoted concerns the setting.", "Out of scope"),
+      ]),
+      q("inference", "Chandler's image of murder taken 'out of the Venetian vase and dropped into the alley' suggests that he valued crime fiction that:", [2], [
+        o("relied on elaborate clues and timetables", "That is the puzzle story he criticised.", "Distorts the passage"),
+        o("kept violence out of sight", "He wanted crime brought into the rough world, not hidden.", "Distorts the passage"),
+        o("was written only by former police officers", "He said puzzle writers knew nothing of real crime, not that only police could write.", "Out of scope"),
+        o("placed crime in the rough real world rather than in an elegant, artificial one", "The vase is the refined puzzle; the alley is the street where real crime happens."),
+      ]),
+      q("application", "Which of the following novels best fits the author's description of many modern crime novels?", [3], [
+        o("A locked-room mystery set entirely in a country house, with thinly drawn characters", "This is a pure golden-age puzzle.", "Distorts the passage"),
+        o("A mystery that plays fair with its clues while portraying a run-down industrial town and its people", "A fair-play mystery inside a portrait of a troubled place combines both traditions."),
+        o("A story in which the detective turns out to be the murderer", "This only breaks one of Knox's rules.", "Out of scope"),
+        o("A novel about a corrupt city in which the crime is never solved or explained", "It has the portrait of a place, but no fair-play mystery.", "Half right, half wrong"),
+      ]),
+    ],
+    recall: [
+      recall("Who wrote ten commandments for detective fiction?", ["Agatha Christie", "Ronald Knox", "Raymond Chandler", "Arthur Conan Doyle"], 1),
+      recall("Where are golden-age stories often set?", ["In a city's back streets", "In a country house or a snowbound train", "In a courtroom", "On a ship at sea"], 1),
+    ],
+  },
+  {
+    id: "hist-calendar",
+    title: "The days that vanished",
+    genre: "history",
+    difficulty: "medium",
+    since: "2026-10-18",
+    paras: [
+      "The calendar that Julius Caesar introduced in 46 BCE assumed that a year lasts exactly 365 and a quarter days, and added a leap day every fourth year to keep pace. The true solar year is about eleven minutes shorter. The error is tiny, but it accumulates: by the sixteenth century the calendar had drifted about ten days away from the seasons, and the spring equinox, which the Church used to fix the date of Easter, was arriving around 11 March instead of 21 March.",
+      "In 1582 Pope Gregory XIII issued a reform, worked out largely by the astronomers and mathematicians Aloysius Lilius and Christopher Clavius. Ten days were removed at a stroke, so that Thursday 4 October was followed by Friday 15 October, and the leap-year rule was adjusted: century years would be leap years only if divisible by 400. Under the new rule, 1600 and 2000 were leap years but 1700, 1800 and 1900 were not, which keeps the calendar within a day of the sun for thousands of years.",
+      "Catholic countries such as Spain, Portugal and the Italian states adopted the change at once. Protestant states were slower, unwilling to accept a reform issued by the Pope, however sound its arithmetic. Sweden tried to switch gradually by skipping leap days, made a mess of it, and for one year had a 30 February. Britain and its colonies held out until 1752, by which time eleven days had to be dropped. Russia changed only after the revolution of 1917, which is why the October Revolution is commemorated in November.",
+      "British history adds a popular story: that crowds rioted in 1752, demanding 'Give us our eleven days!' Historians have found little evidence that any such riots took place. The slogan appears in a satirical painting by William Hogarth, and the tale seems to have grown from it, helped by a later fondness for stories of an ignorant public. The episode shows how a joke can harden into fact, and how readily we accept accounts that flatter the present at the expense of the past.",
+    ],
+    questions: [
+      q("main", "Which of the following best summarises the passage?", [0, 2, 3], [
+        o("The Julian calendar was accurate, but the Pope changed it for religious reasons.", "It drifted by about ten days; the reform corrected a real error.", "Distorts the passage"),
+        o("A small error in the Julian calendar led to a reform that spread unevenly across Europe, and a famous story about it is probably a myth.", "Covers the error, the reform, its slow adoption and the riot story."),
+        o("Protestant countries rejected the Gregorian calendar permanently.", "Britain and Sweden adopted it, only later.", "Distorts the passage"),
+        o("Easter is now celebrated on the same date every year.", "Nothing is said about Easter falling on a fixed date.", "Out of scope"),
+      ]),
+      q("detail", "Under the Gregorian rule, which of the following years was NOT a leap year?", [1], [
+        o("1600", "The passage names 1600 as a leap year.", "Distorts the passage"),
+        o("2000", "The passage names 2000 as a leap year.", "Distorts the passage"),
+        o("1996", "It is divisible by 4 and is not a century year, so it is a leap year under either rule.", "Distorts the passage"),
+        o("1900", "A century year not divisible by 400, so not a leap year; the passage names it."),
+      ]),
+      q("inference", "The fact that the October Revolution is commemorated in November shows that:", [2], [
+        o("Russia was still using the older Julian calendar in 1917", "The date was October in Russia's calendar but November in the Gregorian one used today."),
+        o("Russia had adopted the Gregorian calendar before the revolution", "It changed 'only after the revolution'.", "Distorts the passage"),
+        o("the Pope ordered Russia to change its calendar", "Nothing suggests papal involvement in Russia.", "Out of scope"),
+        o("the revolution's leaders wished to hide its true date", "No such motive is mentioned.", "Out of scope"),
+      ]),
+      q("structure", "The author's main purpose in the final paragraph is to:", [3], [
+        o("prove that Hogarth's painting caused riots", "The author doubts the riots happened.", "Distorts the passage"),
+        o("show that the British public of 1752 was ignorant", "The author criticises that very assumption.", "Distorts the passage"),
+        o("question a popular story and draw a lesson about how such stories spread", "It doubts the riots, traces the tale to a painting and draws a moral."),
+        o("explain why Britain adopted the reform so late", "That is covered in paragraph 3.", "Distorts the passage"),
+      ]),
+    ],
+    recall: [
+      recall("Who issued the 1582 calendar reform?", ["Julius Caesar", "Pope Gregory XIII", "King George II", "Christopher Columbus"], 1),
+      recall("How many days did Britain drop in 1752?", ["Ten", "Eleven", "Twelve", "Fourteen"], 1),
+    ],
+  },
 ];

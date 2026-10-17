@@ -3,8 +3,9 @@ import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom"
 import { mediumDate, todayIso, uid } from "../../lib/date";
 import { usePref } from "../../lib/prefs";
 import { useStore } from "../../lib/store";
+import { ContentGate } from "../../components/Content";
+import { RC_CATALOG } from "../../practice/catalog.gen";
 import { rcOfDay } from "../../practice/daily";
-import { RC_SETS, rcById } from "../../practice/rc";
 import { fmtSecs, LETTERS, rcError, rcErrorSrc, recordRc, scoreRc } from "../../practice/record";
 import { GENRES, RC_QTYPE, setWords, type RcSet } from "../../practice/types";
 import NotFound from "../NotFound";
@@ -17,9 +18,13 @@ const COMMON = new Set("the and for are but not you all any can had her was one 
 const TARGET_SECS = 7 * 60;
 
 export default function RcPlayer() {
+  return <ContentGate>{(c) => <RcRoute rcById={c.rcById} />}</ContentGate>;
+}
+
+function RcRoute({ rcById }: { rcById: (id: string) => RcSet | undefined }) {
   const { id } = useParams();
   const [sp] = useSearchParams();
-  const set = id === "today" ? rcOfDay(todayIso()) : rcById(id ?? "");
+  const set = rcById(id === "today" ? rcOfDay(todayIso()).id : id ?? "");
   if (!set) return <NotFound />;
   const review = sp.get("review");
   return <Player key={set.id + ":" + (review ?? "") + ":" + (sp.get("n") ?? "")} set={set} reviewId={review} />;
@@ -255,8 +260,8 @@ function Summary({ set, attempt, onRetake }: { set: RcSet; attempt: { id: string
   const missing = wrongIdx.filter((i) => !state.errors.some((e) => e.src === rcErrorSrc(set, i)));
   const next = useMemo(() => {
     const tried = new Set(state.rcAttempts.map((a) => a.set));
-    const i = RC_SETS.findIndex((x) => x.id === set.id);
-    return [...RC_SETS.slice(i + 1), ...RC_SETS.slice(0, i)].find((x) => !tried.has(x.id)) ?? RC_SETS[(i + 1) % RC_SETS.length];
+    const i = RC_CATALOG.findIndex((x) => x.id === set.id);
+    return [...RC_CATALOG.slice(i + 1), ...RC_CATALOG.slice(0, i)].find((x) => !tried.has(x.id)) ?? RC_CATALOG[(i + 1) % RC_CATALOG.length];
   }, [state.rcAttempts, set.id]);
   const wpm = attempt.first >= 30 ? Math.round(setWords(set) / (attempt.first / 60)) : null;
   return (

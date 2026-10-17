@@ -215,4 +215,90 @@ export const SCIENCE: RcSet[] = [
       recall("By when did the 2022 vote say leap seconds should stop?", ["2025", "2030", "2035", "2050"], 2),
     ],
   },
+  {
+    id: "sci-dinobirds",
+    title: "The dinosaurs that never died",
+    genre: "science",
+    difficulty: "easy",
+    since: "2026-10-18",
+    paras: [
+      "In 1861, just two years after Charles Darwin published On the Origin of Species, quarry workers in Bavaria found a fossil that seemed made to order for his theory. Archaeopteryx had feathers and wings like a bird, but also teeth, clawed fingers and a long bony tail like a small reptile. Only a dozen or so specimens have been found since, each treated as a treasure. It looked like a creature caught halfway between two groups, and it set off a debate about where birds came from that lasted for more than a century.",
+      "For much of the twentieth century, many scientists doubted that birds descended from dinosaurs. One problem was the wishbone, the fused collarbones found in birds, which dinosaurs were thought to lack. Another was the general picture of dinosaurs as slow, cold-blooded giants, very unlike any bird. Some argued that the resemblances between birds and dinosaurs were coincidences, the result of similar ways of life rather than shared ancestry. Both objections weakened as discoveries piled up: wishbones turned up in many meat-eating dinosaurs, and studies of dinosaur bones suggested fast growth and active lives.",
+      "The decisive evidence came from north-eastern China in the 1990s. Fine-grained rocks there, formed from volcanic ash settling in lakes, preserved soft tissue in extraordinary detail, and they revealed dozens of small dinosaurs covered in feathers. Some had simple filaments, like down; others had fully formed feathers on their arms and legs, though they could not have flown. One small dinosaur, Microraptor, had long feathers on all four limbs. Feathers, it became clear, had first evolved for other purposes, such as warmth or display, and were only later put to use in flight.",
+      "Today most palaeontologists regard birds not merely as descendants of dinosaurs but as dinosaurs themselves, the one branch that survived the asteroid impact sixty-six million years ago. That changes how we should picture the extinction. It did not end the dinosaurs; it ended most of them. Why birds survived when their relatives did not is still debated; their small size, and a diet of seeds that could last through the dark years after the impact, may have helped. The roughly ten thousand species of birds alive today, from sparrows to ostriches, make dinosaurs one of the most successful groups of land animals on the planet.",
+    ],
+    questions: [
+      q("main", "Which of the following best states the main idea of the passage?", [2, 3], [
+        o("Archaeopteryx is the direct ancestor of all modern birds.", "The passage presents it as a transitional form, not a proven ancestor.", "Distorts the passage"),
+        o("Dinosaurs were slow, cold-blooded giants.", "That old picture weakened as evidence piled up.", "Distorts the passage"),
+        o("Fossil evidence, above all the feathered dinosaurs of China, has shown that birds are living dinosaurs.", "Covers the old debate, the decisive evidence and the conclusion."),
+        o("Feathers evolved so that dinosaurs could fly.", "They first evolved for other purposes.", "Distorts the passage"),
+      ]),
+      q("detail", "The wishbone was an obstacle to the idea that birds came from dinosaurs because:", [1], [
+        o("dinosaurs were thought not to have one", "Paragraph 2 says exactly this."),
+        o("birds were thought not to have one", "Birds have wishbones; dinosaurs were thought to lack them.", "Distorts the passage"),
+        o("it was found only in Archaeopteryx", "Nothing of the kind is said.", "Out of scope"),
+        o("it showed that dinosaurs could fly", "Flight is not linked to the wishbone in the passage.", "Out of scope"),
+      ]),
+      q("inference", "Feathered Chinese dinosaurs that could not fly suggest that:", [2], [
+        o("they had lost the ability to fly", "Nothing suggests their ancestors flew.", "Out of scope"),
+        o("feathers were of no use to them", "Feathers served warmth or display.", "Distorts the passage"),
+        o("the fossils were forgeries", "The fossils are treated as genuine.", "Out of scope"),
+        o("feathers existed before flight and first served other purposes", "Paragraph 3 draws exactly this conclusion."),
+      ]),
+      q("structure", "The statement that the extinction 'did not end the dinosaurs; it ended most of them' depends on the idea that:", [3], [
+        o("some large dinosaurs survived the asteroid", "Only birds survived.", "Distorts the passage"),
+        o("birds are themselves dinosaurs", "If birds are dinosaurs, dinosaurs survive in them."),
+        o("the asteroid never struck", "The passage says it did.", "Distorts the passage"),
+        o("birds first appeared after the extinction", "Birds were the branch that survived it, so they existed before.", "Distorts the passage"),
+      ]),
+    ],
+    recall: [
+      recall("Where was Archaeopteryx found?", ["Bavaria", "China", "Montana", "Patagonia"], 0),
+      recall("About how many species of birds are alive today?", ["One thousand", "Ten thousand", "One hundred thousand", "One million"], 1),
+    ],
+  },
+  {
+    id: "sci-ozone",
+    title: "The hole that is closing",
+    genre: "science",
+    difficulty: "medium",
+    since: "2026-10-18",
+    paras: [
+      "In 1985 three British scientists reported that the ozone layer over Antarctica was thinning dramatically each spring. Ozone high in the atmosphere absorbs most of the sun's ultraviolet radiation, which damages DNA and causes skin cancer and cataracts. The cause was soon traced to chlorofluorocarbons, or CFCs, gases used in refrigerators, aerosol sprays and foam. Stable and harmless at ground level, CFCs drift into the stratosphere, where ultraviolet light breaks them apart and releases chlorine that destroys ozone.",
+      "The response was unusually fast. In 1987, only two years after the discovery was published, governments agreed the Montreal Protocol, which set out to phase out CFCs and related chemicals. The treaty was strengthened several times as the science improved, and it became the first in the history of the United Nations to be ratified by every member state. Production of the most damaging chemicals fell by more than ninety-nine per cent. Some of the substitutes adopted later turned out to warm the climate, and in 2016 the treaty was amended once more to cut them too.",
+      "Several features made success possible. A handful of large companies produced most CFCs, so the problem had few owners. Substitutes were available, and once the leading manufacturer accepted that a ban was coming, it had an interest in selling them. The treaty also gave poorer countries extra time and money to switch. Above all, the danger was easy to picture: a hole in the sky and a rise in skin cancer were more vivid than the slow, diffuse harms that make other environmental problems hard to act on.",
+      "The ozone layer is now recovering, though slowly, because CFCs linger in the atmosphere for decades; scientists expect the Antarctic hole to close around the 2060s. In the 2010s scientists detected a rise in new CFC emissions, traced it to factories in eastern China, and saw it fall once the source was found. The protocol had a bonus few anticipated: since CFCs are also powerful greenhouse gases, phasing them out has done more to slow warming than many treaties designed for that purpose. It is often held up as a model for climate action, though the comparison has limits, since carbon dioxide comes from almost every part of the economy rather than from a few factories.",
+    ],
+    questions: [
+      q("main", "Which of the following best summarises the passage?", [1, 2, 3], [
+        o("CFCs were harmless chemicals banned by mistake.", "They release chlorine that destroys ozone.", "Distorts the passage"),
+        o("The ozone hole has already closed completely.", "It is expected to close around the 2060s.", "Distorts the passage"),
+        o("Climate change can be solved in exactly the way the ozone problem was.", "The author says the comparison has limits.", "Extreme wording"),
+        o("The ozone threat was met by a fast, effective treaty, helped by features that may not carry over to climate change.", "Covers the problem, the treaty, why it worked and its limits as a model."),
+      ]),
+      q("detail", "According to the passage, CFCs damage the ozone layer because:", [0], [
+        o("they are poisonous at ground level", "They are 'stable and harmless at ground level'.", "Distorts the passage"),
+        o("ultraviolet light breaks them apart high in the atmosphere, releasing chlorine", "Paragraph 1 describes exactly this."),
+        o("they trap heat in the stratosphere", "Their warming effect is a separate point, not how they harm ozone.", "Distorts the passage"),
+        o("they react with carbon dioxide", "Carbon dioxide is not part of the mechanism.", "Out of scope"),
+      ]),
+      q("except", "All of the following are given as reasons the Montreal Protocol succeeded EXCEPT:", [2], [
+        o("every country could replace CFCs cheaply without any help", "The treaty gave poorer countries extra time and money, so this contradicts the passage."),
+        o("a small number of companies produced most CFCs", "Named in paragraph 3.", "True but not the answer"),
+        o("substitutes were available", "Named in paragraph 3.", "True but not the answer"),
+        o("the danger was easy to picture", "Named in paragraph 3.", "True but not the answer"),
+      ]),
+      q("inference", "The author would most likely agree that the main obstacle to using the protocol as a model for climate action is that:", [3], [
+        o("no substitutes exist for any greenhouse gas", "The passage says nothing of the kind.", "Extreme wording"),
+        o("climate scientists are less reliable than ozone scientists", "No comparison of scientists is made.", "Out of scope"),
+        o("carbon dioxide comes from almost every part of the economy, not from a few producers", "The last sentence gives this as the limit of the comparison."),
+        o("poorer countries refuse all help", "Help for poorer countries was part of the protocol's success.", "Out of scope"),
+      ]),
+    ],
+    recall: [
+      recall("Over which continent was the ozone hole found?", ["Africa", "Antarctica", "Asia", "Australia"], 1),
+      recall("In which year was the Montreal Protocol agreed?", ["1975", "1987", "1997", "2016"], 1),
+    ],
+  },
 ];

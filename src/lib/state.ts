@@ -1,6 +1,5 @@
 import { clamp, isIsoDate, todayIso } from "./date";
 import type { SectionId } from "../sections/types";
-import { seedRedo } from "../practice/redo";
 
 export const SECTION_IDS: SectionId[] = ["varc", "dilr", "quant"];
 const DEFAULT_TIME: Record<SectionId, { wd: number; we: number }> = {
@@ -61,6 +60,8 @@ export interface AppState {
   vaAttempts: VaAttempt[];
   speedRuns: SpeedRun[];
   redo: RedoItem[];
+  /** False for saves from before the redo queue; RedoSeeder then builds the queue from past attempts. */
+  redoSeeded: boolean;
 }
 
 const emptyDow = () => [null, null, null, null, null, null, null] as (number | null)[];
@@ -68,7 +69,7 @@ const emptyDow = () => [null, null, null, null, null, null, null] as (number | n
 export function blankState(): AppState {
   const settings = {} as Record<SectionId, TimeSettings>;
   SECTION_IDS.forEach((id) => (settings[id] = { ...DEFAULT_TIME[id], dow: emptyDow() }));
-  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], speedRuns: [], redo: [] };
+  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], speedRuns: [], redo: [], redoSeeded: true };
 }
 
 type Obj = Record<string, unknown>;
@@ -138,10 +139,9 @@ export function normalize(raw: unknown): AppState {
       if (isIsoDate(x.cleared)) r.cleared = x.cleared;
       return r;
     }).filter((r) => r.k && isIsoDate(r.due));
-  } else {
-    // Saves from before the redo queue: build it from past attempts.
-    seedRedo(b);
   }
+  // Saves from before the redo queue have none; it is built from their attempts once the content loads.
+  b.redoSeeded = Array.isArray(raw.redo) && raw.redoSeeded !== false;
   return b;
 }
 
