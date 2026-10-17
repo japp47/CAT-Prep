@@ -35,17 +35,25 @@ export function GuidePage() {
         <h1>{g.title}</h1>
         <p>{g.summary}</p>
       </div>
-      <article className="card read">
-        {g.parts.map((p) => (
-          <section key={p.h}>
-            <h3>{p.h}</h3>
-            {p.p?.map((x, k) => <p key={k}>{x}</p>)}
-            {p.ol && <ol>{p.ol.map((x, k) => <li key={k}>{x}</li>)}</ol>}
-            {p.ul && <ul>{p.ul.map((x, k) => <li key={k}>{x}</li>)}</ul>}
-          </section>
-        ))}
-      </article>
-      <Link to={"/guides/" + next.id} className="card tile"><span className="eyebrow">Next guide</span><h3>{next.title}</h3><p>{next.summary}</p></Link>
+      <div className="article-wrap">
+        <article className="card read article">
+          {g.parts.map((p, k) => (
+            <section key={p.h} id={"part-" + k}>
+              <h3>{p.h}</h3>
+              {p.p?.map((x, j) => <p key={j}>{x}</p>)}
+              {p.ol && <ol>{p.ol.map((x, j) => <li key={j}>{x}</li>)}</ol>}
+              {p.ul && <ul>{p.ul.map((x, j) => <li key={j}>{x}</li>)}</ul>}
+            </section>
+          ))}
+        </article>
+        <aside className="rail">
+          <nav className="card toc" aria-label="In this guide">
+            <span className="eyebrow">In this guide</span>
+            {g.parts.map((p, k) => <a key={p.h} href={"#part-" + k}>{p.h}</a>)}
+          </nav>
+          <Link to={"/guides/" + next.id} className="card tile"><span className="eyebrow">Next guide</span><h3>{next.title}</h3><p>{next.summary}</p></Link>
+        </aside>
+      </div>
     </div>
   );
 }

@@ -97,7 +97,7 @@ export const GUIDES: Guide[] = [
       { h: "Start early", ul: [
         "Keep a running list of your achievements, projects and responsibilities from now on.",
         "Read the news for 15 minutes a day from September. Interviews often ask about current affairs and your field of work or study.",
-        "Practise writing a 300-word essay in 20 minutes once a week from December.",
+        "Practice writing a 300-word essay in 20 minutes once a week from December.",
       ] },
     ],
   },

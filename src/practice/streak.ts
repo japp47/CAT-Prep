@@ -3,7 +3,7 @@ import type { AppState } from "../lib/state";
 
 export const SHIELDS_PER_MONTH = 2;
 
-/** Days on which the student did anything: ticked a block, logged a set, or practised in the app. */
+/** Days on which the student did anything: ticked a block, logged a set, or Practiced in the app. */
 export function activityDays(st: AppState): Set<string> {
   const s = new Set<string>();
   Object.entries(st.days).forEach(([d, r]) => { if (r.done && Object.values(r.done).some((m) => m > 0)) s.add(d); });

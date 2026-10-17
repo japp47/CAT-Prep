@@ -1,96 +1,188 @@
 import { Link } from "react-router-dom";
-import { CountdownNumber, Timeline, examLine, phaseCaption } from "../components/Countdown";
-import { UpdateItem } from "../components/UpdateItem";
-import { CAT_PATTERN, CHECKED_ON, EXAM_CONFIRMED } from "../data/exam";
+import { daysLeft, examLine, PhaseBar } from "../components/Countdown";
+import { CAT_PATTERN, CHECKED_ON, EXAM_CONFIRMED, EXAM_NAME, PHASES, phaseOf } from "../data/exam";
 import { UPDATES } from "../data/updates";
-import { todayIso } from "../lib/date";
+import { addDays, clamp, diffDays, longDate, mediumDate, shortDate, todayIso, weekStart } from "../lib/date";
 import { useStore } from "../lib/store";
-import { budgetFor, buildDay } from "../planner/engine";
+import { budgetFor, buildDay, doneMinutes } from "../planner/engine";
 import { LIVE_SECTIONS, SECTIONS } from "../sections";
 import { rcOfDay } from "../practice/daily";
-import { RC_CATALOG } from "../practice/catalog.gen";
+import { dueRedo } from "../practice/redo";
+import { activityDays } from "../practice/streak";
+import { GENRES } from "../practice/types";
+import { DAILY_MIX } from "../practice/va/build";
 import { StreakBadge } from "./practice/common";
 
-const TILES = [
-  { to: "/today", eyebrow: "Planner", title: "Today's timetable", text: "A plan for today that fits the time you have. 30 minutes or 3 hours." },
-  { to: "/practice", eyebrow: "Practice", title: "RC and VA practice", text: `${RC_CATALOG.length} exam-style RC sets with every option explained, a daily VA drill, a redo queue for mistakes and a reading speed test. Free, no sign-up.` },
-  { to: "/varc", eyebrow: "VARC", title: "VARC resource library", text: "About 120 hand-picked links: books, question banks, past papers, mocks, reading lists and videos." },
-  { to: "/updates", eyebrow: "News", title: "Important updates", text: "CAT, XAT, SNAP and NMAT dates and changes, marked official or expected." },
-  { to: "/exams", eyebrow: "Exams", title: "CAT and other exams", text: "Pattern, marking, timeline, and the other MBA tests worth a seat." },
-  { to: "/guides", eyebrow: "Guidance", title: "Guides", text: "Starting from zero, preparing while working, mock analysis and life after the score." },
-  { to: "/stories", eyebrow: "Stories", title: "Topper stories", text: "What 99+ percentile scorers actually did, with links to their interviews." },
+/** The site map below the fold. Each row is a page and one line on why you would open it. */
+const INDEX: { h: string; rows: { to: string; n: string; w: string; soon?: boolean }[] }[] = [
+  { h: "Study", rows: [
+    { to: "/today", n: "Today's timetable", w: "A plan that fits the time you have, from 30 minutes to 3 hours." },
+    { to: "/plan", n: "Plan and time", w: "Five phases to the exam, and your usual time per day." },
+    { to: "/practice", n: "Practice", w: "Original RC sets, VA drills, a redo queue and a speed test." },
+  ] },
+  { h: "Sections", rows: SECTIONS.map((s) => ({ to: "/" + s.id, n: s.short, w: s.name + (s.status === "live" ? ". Guides, question banks, reading lists." : "."), soon: s.status !== "live" })) },
+  { h: "Track", rows: [
+    { to: "/progress", n: "Progress", w: "Accuracy by question type and your mock scores." },
+    { to: "/errors", n: "Error log", w: "Every mistake, with the trap that caught you." },
+    { to: "/words", n: "Words", w: "Flashcards from the words you save while reading." },
+  ] },
+  { h: "Explore", rows: [
+    { to: "/guides", n: "Guides", w: "Starting out, studying while working, mock analysis." },
+    { to: "/updates", n: "Important updates", w: "Exam dates and changes, marked official or expected." },
+    { to: "/exams", n: "CAT and other exams", w: "Pattern, marking and the other MBA tests." },
+    { to: "/stories", n: "Topper stories", w: "What 99+ percentile scorers actually did." },
+  ] },
 ];
 
-export default function Home() {
+const STATUS = { official: "Official", expected: "Expected", tip: "Tip" } as const;
+const WEEK = ["M", "T", "W", "T", "F", "S", "S"];
+
+function Hero({ isNew }: { isNew: boolean }) {
+  const left = Math.max(daysLeft(), 0);
+  const t = todayIso();
+  const ph = phaseOf(t);
+  const caption = ph.kind === "phase"
+    ? <>Phase {ph.phase.id} of {PHASES.length}, <b>{ph.phase.name}</b>. {diffDays(t, ph.phase.end) + 1} days left in this phase, to {mediumDate(ph.phase.end)}.</>
+    : ph.kind === "pre" ? <>The plan starts on {mediumDate(PHASES[0].start)}.</>
+    : ph.kind === "exam" ? <>Exam day. All the best.</> : <>{EXAM_NAME} is over. Check results on iimcat.ac.in.</>;
+  return (
+    <header className="h-hero">
+      <div className="h-intro">
+        <span className="eyebrow">{longDate(t)}</span>
+        <h1>Prepare for {EXAM_NAME}, <span className="h-soft">one day at a time.</span></h1>
+        <p className="h-lede">A free study plan that fits the time you have, with original practice, hand-picked resources and plain guidance. No sign-up. Everything stays on your device.</p>
+        <div className="row">
+          <Link className="btn" to="/today">Open today's plan</Link>
+          <Link className="btn ghost" to="/practice">Practice now</Link>
+        </div>
+        {isNew && <p className="small muted">New here? <Link to="/guides/start-here">Read the start guide</Link>, about 4 minutes.</p>}
+      </div>
+      <div className="h-count">
+        <span className="h-num">{left}</span>
+        <span className="h-unit">{left === 1 ? "day" : "days"} to {EXAM_NAME}</span>
+        <span className="h-date">{examLine(EXAM_CONFIRMED)}</span>
+      </div>
+      <div className="h-year">
+        <PhaseBar />
+        <p className="small muted">{caption}</p>
+      </div>
+    </header>
+  );
+}
+
+function TodayPanel() {
   const { state } = useStore();
   const t = todayIso();
   const planned = LIVE_SECTIONS.reduce((s, sec) => s + budgetFor(sec, state, t), 0);
-  const core = LIVE_SECTIONS.map((sec) => ({ sec, b: buildDay(sec, state, t, budgetFor(sec, state, t), { today: t }).find((b) => b.pri === 1) })).filter((x) => x.b);
-  const doneToday = state.days[t]?.done ?? {};
+  const done = doneMinutes(state, t);
+  const core = LIVE_SECTIONS.map((sec) => buildDay(sec, state, t, budgetFor(sec, state, t), { today: t }).find((b) => b.pri === 1)).filter((b) => !!b);
+  const doneMap = state.days[t]?.done ?? {};
+  const active = activityDays(state);
+  const mon = weekStart(t);
+
+  const rc = rcOfDay(t);
+  const rcTry = state.rcAttempts.filter((a) => a.set === rc.id && a.d === t).pop();
+  const vaTry = state.vaAttempts.filter((a) => a.mode === "daily" && a.d === t).pop();
+  const redo = dueRedo(state.redo, t).length;
 
   return (
-    <div className="page">
-      <section className="card hero">
-        <div className="hero-top">
-          <div className="stack" style={{ gap: 8 }}>
-            <span className="eyebrow">{examLine(EXAM_CONFIRMED)}</span>
-            <h1>Prepare for CAT 2027, one day at a time</h1>
-            <p className="muted" style={{ maxWidth: "60ch" }}>A free hub with a timetable that adapts to your day, curated resources, past papers, updates and guidance. No sign-up. Your progress stays on your device.</p>
+    <section className="stack" aria-labelledby="h-today">
+      <div className="h-head"><h2 id="h-today">Today</h2><StreakBadge /></div>
+      <div className="h-panel">
+        <div className="h-cell">
+          <span className="eyebrow">Your plan</span>
+          <p className="h-fig"><b>{done}</b><span> of {planned} min</span></p>
+          <div className="meter" role="progressbar" aria-label="Minutes done today" aria-valuemin={0} aria-valuemax={planned} aria-valuenow={done}>
+            <i style={{ width: (planned ? clamp(done / planned, 0, 1) * 100 : 0) + "%" }} />
           </div>
-          <CountdownNumber />
+          {core.length
+            ? core.map((b) => <p key={b.key} className="h-line"><span className="tag t-must">Core</span> {b.name}, {b.mins} min{doneMap[b.key] ? <span className="ok"> · done</span> : null}</p>)
+            : <p className="h-line muted">Rest day. Nothing planned.</p>}
+          <ol className="h-week" aria-label="Days studied this week">
+            {WEEK.map((w, i) => {
+              const d = addDays(mon, i);
+              const on = active.has(d);
+              return <li key={d} className={(on ? "on" : "") + (d === t ? " now" : "")} title={shortDate(d) + (on ? ", studied" : "")}><i />{w}</li>;
+            })}
+          </ol>
+          <Link className="h-go" to="/today">Open the timetable →</Link>
         </div>
-        <Timeline />
-        <p className="muted">{phaseCaption()}</p>
-        <div className="row">
-          <Link className="btn" to="/today">Open today's timetable</Link>
-          <Link className="btn ghost" to="/plan">Set my study time</Link>
+        <div className="h-cell">
+          <span className="eyebrow">RC of the day · {GENRES[rc.genre]}</span>
+          <Link className="h-title" to={`/practice/rc/${rc.id}`}>{rc.title}</Link>
+          <p className="h-line muted">{rc.words} words, {rc.questions} questions, every option explained.</p>
+          {rcTry && <p className="h-line ok">Done today: {rcTry.c} of {rc.questions} correct.</p>}
+          <Link className="h-go" to={rcTry ? `/practice/rc/${rc.id}?review=${rcTry.id}` : `/practice/rc/${rc.id}`}>{rcTry ? "Review your answers →" : "Start the passage →"}</Link>
         </div>
-      </section>
+        <div className="h-cell">
+          <span className="eyebrow">Daily VA drill</span>
+          <Link className="h-title" to="/practice/va">{DAILY_MIX.length} questions, all four VA types</Link>
+          <p className="h-line muted">Para summary, sentence insertion, odd sentence out and para jumbles.</p>
+          {vaTry && <p className="h-line ok">Done today: {vaTry.items.filter((i) => i.ok).length} of {vaTry.items.length} correct.</p>}
+          {redo > 0 && <Link className="h-redo" to="/practice/redo"><b>{redo}</b> missed question{redo > 1 ? "s" : ""} due in the redo queue →</Link>}
+          <Link className="h-go" to="/practice/va">{vaTry ? "Review your answers →" : "Start the drill →"}</Link>
+        </div>
+      </div>
+    </section>
+  );
+}
 
-      <div className="grid2">
-        <div className="card stack">
-          <div className="row" style={{ justifyContent: "space-between" }}><h3>Today at a glance</h3><StreakBadge /></div>
-          <p className="summary"><span>Planned <b>{planned}</b> min</span><span>Done <b>{Object.values(doneToday).reduce((a, b) => a + b, 0)}</b> min</span></p>
-          {core.length ? core.map(({ sec, b }) => (
-            <p key={sec.id}><span className="tag t-must">{sec.short} core</span> {b!.name} · {b!.mins} min {doneToday[b!.key] ? <span className="ok">Done</span> : null}</p>
-          )) : <p className="muted">Nothing planned today. Enjoy the rest.</p>}
-          <p><span className="tag t-good">RC of the day</span> <Link to={`/practice/rc/${rcOfDay(t).id}`}>{rcOfDay(t).title}</Link></p>
-          <Link className="link" to="/today" style={{ alignSelf: "flex-start" }}>See the full timetable</Link>
-        </div>
-        <div className="card">
-          <h3>Sections</h3>
-          {SECTIONS.map((s) => (
-            <div key={s.id} className="secrow">
-              <div><b>{s.short}</b> <span className="muted small">{s.name}</span></div>
-              {s.status === "live" ? <Link className="go" to={"/" + s.id}>Open</Link> : <span className="soon">Soon</span>}
+export default function Home() {
+  const { state } = useStore();
+  const isNew = activityDays(state).size === 0;
+  const total = CAT_PATTERN.reduce((a, s) => ({ q: a.q + s.questions, m: a.m + s.minutes }), { q: 0, m: 0 });
+
+  return (
+    <div className="page home">
+      <Hero isNew={isNew} />
+      <TodayPanel />
+
+      <section className="stack" aria-labelledby="h-index">
+        <div className="h-head"><h2 id="h-index">On this site</h2></div>
+        <div className="h-index">
+          {INDEX.map((g) => (
+            <div key={g.h} className="h-group">
+              <span className="eyebrow">{g.h}</span>
+              <ul>
+                {g.rows.map((r) => (
+                  <li key={r.to}>
+                    <Link to={r.to}><b>{r.n}{r.soon && <span className="soon">Soon</span>}</b><span>{r.w}</span></Link>
+                  </li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>
-      </div>
-
-      <div className="grid3">
-        {TILES.map((x) => (
-          <Link key={x.to} to={x.to} className="card tile"><span className="eyebrow">{x.eyebrow}</span><h3>{x.title}</h3><p>{x.text}</p></Link>
-        ))}
-      </div>
-
-      <section className="stack">
-        <div className="row" style={{ justifyContent: "space-between" }}><h2>Latest updates</h2><Link className="link" to="/updates">All updates</Link></div>
-        {UPDATES.slice(0, 3).map((u) => <UpdateItem key={u.id} u={u} />)}
       </section>
 
-      <section className="stack">
-        <h2>The exam in one table</h2>
-        <div className="tbl-wrap">
-          <table>
-            <thead><tr><th>Section</th><th className="num">Questions</th><th className="num">Minutes</th><th>What it tests</th></tr></thead>
-            <tbody>{CAT_PATTERN.map((s) => <tr key={s.id}><td>{s.name}</td><td className="num">{s.questions}</td><td className="num">{s.minutes}</td><td>{s.notes}</td></tr>)}</tbody>
-          </table>
-        </div>
-        <p className="muted small">Pattern from CAT 2024 and 2025. +3 for a correct answer, −1 for a wrong MCQ, no negative marking on TITA questions. <Link to="/exams">More on the exam</Link>.</p>
-      </section>
+      <div className="h-split">
+        <section className="stack" aria-labelledby="h-upd">
+          <div className="h-head"><h2 id="h-upd">Latest updates</h2><Link className="link" to="/updates">All updates</Link></div>
+          <ul className="h-upd">
+            {UPDATES.slice(0, 4).map((u) => (
+              <li key={u.id}>
+                <span className="h-meta">{shortDate(u.date)} · {u.exam} · <span className={"st-" + u.status}>{STATUS[u.status]}</span></span>
+                <Link to="/updates">{u.title}</Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section className="stack" aria-labelledby="h-exam">
+          <div className="h-head"><h2 id="h-exam">The exam</h2><Link className="link" to="/exams">Pattern and marking</Link></div>
+          <ul className="h-exam">
+            {CAT_PATTERN.map((s) => (
+              <li key={s.id}>
+                <b>{s.id.toUpperCase()}</b>
+                <span>{s.name}</span>
+                <span className="h-qm">{s.questions} Q · {s.minutes} min</span>
+              </li>
+            ))}
+            <li className="h-total"><b>Total</b><span>+3 for a right answer, −1 for a wrong MCQ, no penalty on TITA.</span><span className="h-qm">{total.q} Q · {total.m} min</span></li>
+          </ul>
+        </section>
+      </div>
 
-      <p className="foot">Resources checked on {CHECKED_ON}. The CAT 2027 date is an estimate until the conducting IIM announces it. Score benchmarks come from coaching institutes. Not affiliated with the IIMs or any coaching institute. Avoid pirated book PDFs; the papers and free mocks listed here are legitimately free.</p>
+      <p className="foot">Resources checked on {CHECKED_ON}. The {EXAM_NAME} date is an estimate until the conducting IIM announces it. Score benchmarks come from coaching institutes. Not affiliated with the IIMs or any coaching institute. Avoid pirated book PDFs; the papers and free mocks listed here are legitimately free.</p>
     </div>
   );
 }

@@ -295,7 +295,7 @@ function PracticeToday({ today }: { today: string }) {
   const redo = dueRedo(state.redo, today).length;
   return (
     <div className="card stack">
-      <div className="row" style={{ justifyContent: "space-between" }}><h3>Practise here today</h3><Link className="link" to="/practice">All practice</Link></div>
+      <div className="row" style={{ justifyContent: "space-between" }}><h3>Practice here today</h3><Link className="link" to="/practice">All practice</Link></div>
       <ul className="plain next">
         <li>
           <div style={{ minWidth: 0 }}><span className="ct">RC of the day · {GENRES[rc.genre]}</span><Link className="res-name" to={`/practice/rc/${rc.id}`}>{rc.title}</Link>

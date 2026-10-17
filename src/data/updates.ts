@@ -46,7 +46,7 @@ export const UPDATES: Update[] = [
   {
     id: "snap26", date: "2026-10-17", exam: "SNAP", status: "expected",
     title: "SNAP 2026 runs in December with three attempts",
-    body: "Symbiosis allows up to three attempts and counts the best score. Speed matters more than depth, so practise short timed sets in the weeks after CAT.",
+    body: "Symbiosis allows up to three attempts and counts the best score. Speed matters more than depth, so Practice short timed sets in the weeks after CAT.",
     link: ["snaptest.org", "https://www.snaptest.org"],
   },
   {

@@ -7,6 +7,7 @@ export const FORMAT: [string, string][] = [
 
 export interface Topic { h: string; p?: string[]; ul?: string[]; ol?: string[]; open?: boolean }
 
+/** General advice. Each question type has its own guide in guides.ts. */
 export const TOPICS: Topic[] = [
   { h: "Starting from zero", open: true,
     p: ["Reading comes first. For the first months, the goal is to read dense prose for 30 minutes without losing the thread."],
@@ -15,28 +16,6 @@ export const TOPICS: Topic[] = [
       "Weeks 5 to 10. Guardian Long Read, Smithsonian, Psyche, Knowable.",
       "Week 11 onwards. Aeon, The Economist, JSTOR Daily, Public Books, the Stanford Encyclopedia of Philosophy.",
     ] },
-  { h: "After every article",
-    p: ["Write a two-line summary, one word for the author's tone, and one question an examiner could ask. Cracku's beginner path follows the same order: daily reading, summaries, easy RCs, CAT-level RCs, then timed sets."] },
-  { h: "Reading comprehension",
-    ul: [
-      "Question types: main idea, author's purpose and tone, inference (\"can be inferred\", \"the author would agree\"), specific detail, \"all EXCEPT\", strengthen and weaken, assumption, application and analogy, meaning in context.",
-      "Read once, actively. Take the thesis from the first paragraph and mark what each paragraph does: claim, example, counterpoint or conclusion. Notice stance words such as however, ostensibly, merely and compelling.",
-      "Go back to the specific paragraph while answering. Never re-read the whole passage.",
-      "Four passages of 450 to 500 words come to about 2,000 words. At 200 words a minute that is 10 to 11 minutes of reading, so all RC work should fit in 25 to 28 minutes.",
-      "Elimination is the skill CAT tests. Remove three options before you mark. Red flags are extreme words, claims outside the passage, options that are half right, and options that are true but do not answer the question.",
-      "Do all four RCs if your accuracy is above 80%. Otherwise do three fully and the easiest questions of the fourth. Never start a new RC in the last few minutes.",
-    ] },
-  { h: "Para jumbles (TITA)",
-    p: ["Find the opening sentence first. It stands alone, introduces the subject and has no pronoun or connector pointing back. Then lock the mandatory pairs: a pronoun with its antecedent, \"however\" or \"thus\" with the idea before it, an acronym with its expansion, a general statement with its example, anything chronological. Build the chain from the pairs, not from the start. Read the final order as one paragraph to check it."] },
-  { h: "Para summary",
-    p: ["The right summary keeps the main argument and its key qualifier, adds nothing new and does not shift the emphasis. Remove options that are too narrow (one example), too broad, or that make extreme or causal claims the passage never makes. Put the passage in one line of your own before reading the options."] },
-  { h: "Odd sentence out (TITA)",
-    p: ["Find the coherent four-sentence paragraph first. The odd sentence is often on the topic but off the focus: the same keywords with a different scope or time frame. Do not pick a sentence only because its tone differs."] },
-  { h: "Sentence insertion (para completion)",
-    p: ["CAT gives you one sentence and a paragraph with four numbered gaps, and asks which gap the sentence came from. It is an MCQ, so a wrong answer costs a mark.",
-      "Read the sentences on both sides of each gap. The right gap links to both: the sentence picks up the idea before it and sets up the pronoun, example or contrast after it. Rule out a gap when the sentence after it already follows on from the sentence before it."] },
-  { h: "Critical reasoning",
-    p: ["CAT does not ask it as a separate type, but XAT does, and it trains the same judgement RC options need. Practise assumption, strengthen, weaken and inference questions. Cracku's critical reasoning set and the GMAT verbal questions cover it."] },
 ];
 
 export const TAB_NOTES: Record<string, string[]> = {
