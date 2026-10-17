@@ -218,4 +218,130 @@ export const MIND: RcSet[] = [
       recall("What evidence later overturned many wrongful convictions?", ["Video recordings", "Confessions", "DNA evidence", "Fingerprints"], 2),
     ],
   },
+  {
+    id: "psy-choice-blind",
+    title: "Choosing without knowing why",
+    genre: "psychology",
+    difficulty: "medium",
+    paras: [
+      "In a study published in 2005, researchers showed volunteers pairs of photographs of faces and asked them to choose the more attractive one. After each choice, the experimenter slid the chosen card across the table and asked the volunteer to explain the preference. On some trials, using a simple card trick, the experimenter handed over the face the volunteer had rejected. Most of the time, no one noticed. More striking still, volunteers went on to explain why they preferred a face they had not chosen, sometimes citing features, such as earrings, that only the rejected face had.",
+      "The researchers called the phenomenon choice blindness, and they have since found it in many settings. Shoppers tasting two jams and two teas failed to notice when the samples were secretly swapped before they explained their preference; the jars had two compartments, so a quiet flip did the trick. In a survey on political questions, respondents whose answers had been reversed on the page defended positions they had just rejected, and some even shifted their later views towards the reversed answers.",
+      "Such findings fit an older argument in psychology: that people have less access to the causes of their own behaviour than they believe. In the 1970s, the psychologists Richard Nisbett and Timothy Wilson had shown that people readily give confident reasons for behaviour that experiments traced to quite different causes. When asked why we chose something, we may not be reporting a reason that drove the choice so much as constructing a plausible story after the fact. The story feels like memory, and we have no inner signal that tells us when we are inventing rather than recalling.",
+      "It would be wrong, however, to conclude that people's stated reasons are worthless. Detection rates rise sharply when the swapped options are very different, or when people care a great deal about the decision. Choice blindness shows that our sense of knowing our own minds is fallible, not that it is always mistaken. Its practical lesson may be modest: surveys, interviews and even our own diaries record what people say about their choices, which is not the same thing as why they made them.",
+    ],
+    questions: [
+      q("main", "The passage is primarily concerned with:", [0, 2, 3], [
+        o("showing that people's explanations of their choices can be built after the fact, while warning against dismissing such explanations altogether", "Paragraphs 1 to 3 show reasons being constructed; paragraph 4 says stated reasons are fallible, not worthless."),
+        o("proving that people never know why they make their decisions", "Paragraph 4 says our self-knowledge is 'fallible, not that it is always mistaken'.", "Extreme wording"),
+        o("describing a card trick that psychologists use to study attractiveness", "The trick is only the method of one study; the passage is about self-knowledge.", "Too narrow or too broad"),
+        o("arguing that political surveys should no longer be trusted", "The survey is one example, and the passage draws only a modest lesson about what surveys record.", "Out of scope"),
+      ]),
+      q("except", "All of the following are presented as evidence of choice blindness EXCEPT:", [0, 1, 3], [
+        o("volunteers explaining a preference for a face they had in fact rejected", "This is the first study's central finding.", "True but not the answer"),
+        o("tasters failing to notice that jams and teas had been swapped", "Paragraph 2 gives this as one of the settings.", "True but not the answer"),
+        o("respondents defending political positions they had just rejected", "Paragraph 2 gives this as another setting.", "True but not the answer"),
+        o("people noticing swaps more often when the options were very different", "Paragraph 4 gives this as a limit on choice blindness, not evidence for it."),
+      ]),
+      q("structure", "The author mentions earrings in the first paragraph most likely in order to:", [0], [
+        o("show how carefully the volunteers examined the photographs", "Volunteers did not even notice the swap, so they were not examining carefully.", "Distorts the passage"),
+        o("show that the explanations were drawn from the face in hand, not remembered from the choice", "Citing a feature only the rejected face had proves the reason was built on the spot."),
+        o("suggest that jewellery strongly affects judgements of attractiveness", "Nothing is said about what makes a face attractive.", "Out of scope"),
+        o("prove that the card trick sometimes failed", "The trick worked; that is why the volunteers described the wrong face.", "Distorts the passage"),
+      ]),
+      q("inference", "Which of the following would the author most likely accept?", [3], [
+        o("A customer feedback form shows exactly why customers bought a product.", "The last sentence says such records show what people say, not why they chose.", "Distorts the passage"),
+        o("With enough practice, introspection becomes an infallible guide to our motives.", "Nothing suggests self-knowledge can be made infallible.", "Extreme wording"),
+        o("People who care a great deal about a decision are more likely to notice if it is switched.", "Paragraph 4: detection rates rise sharply when people care a great deal about the decision."),
+        o("Choice blindness occurs only in laboratory tests with photographs.", "Paragraph 2 says it has been found in many settings, including tasting and surveys.", "Distorts the passage"),
+      ]),
+    ],
+    recall: [
+      recall("What were volunteers first asked to choose between?", ["Two jams", "Two photographs of faces", "Two political statements", "Two cups of tea"], 1),
+      recall("When did people notice swaps much more often?", ["When the options were very different", "When the experimenter left the room", "When they were paid", "When the photos were in colour"], 0),
+    ],
+  },
+  {
+    id: "psy-willpower",
+    title: "Is willpower a muscle?",
+    genre: "psychology",
+    difficulty: "hard",
+    paras: [
+      "In a well-known experiment from the late 1990s, hungry volunteers sat in a room that smelled of freshly baked cookies. Some were allowed to eat the cookies; others had to eat radishes instead and leave the cookies untouched. Afterwards, all of them worked on a puzzle that, unknown to them, could not be solved. Those who had resisted the cookies gave up considerably sooner. The effect was large, and the design was easy to copy. The researchers proposed that self-control draws on a limited resource, which is used up by one act of restraint and leaves less for the next.",
+      "The idea, soon called ego depletion, was attractive because it matched ordinary experience: after a day of difficult decisions, the biscuit tin is harder to resist. Hundreds of studies appeared to confirm it, and some researchers went further, suggesting that the resource was glucose and that a sugary drink could restore flagging willpower. Popular books advised readers to schedule hard choices for the morning and to treat willpower like a muscle that tires with use.",
+      "Doubts grew as psychology began to examine its own methods. Small studies, flexible analyses and a tendency to publish only positive results can together produce a literature full of effects that are not really there. In 2016, a project involving more than twenty laboratories ran the same carefully specified depletion task and found an effect close to zero. The laboratories had agreed on the procedure and published their plan before collecting any data, which left no room for flexible analysis. The glucose explanation fared no better; critics pointed out that the brain's use of sugar barely changes during demanding mental work.",
+      "The story is not simply one of a theory overturned. Later large studies have produced mixed results, and some researchers argue that the tasks used were too weak to deplete anyone. Others found that people who believe willpower is limited show depletion-like effects, while those who do not show little. If so, fatigue after effort may be real but shaped by expectation rather than by a fuel gauge in the brain. What the episode clearly shows is how a finding that seems to explain everyday life can spread far beyond the strength of its evidence.",
+    ],
+    questions: [
+      q("tone", "The author's attitude towards the theory of ego depletion is best described as:", [2, 3], [
+        o("enthusiastic support, since hundreds of studies confirmed it", "The author stresses that the evidence was weaker than those studies suggested.", "Distorts the passage"),
+        o("cautious scepticism: the evidence turned out weaker than the theory's popularity suggested", "The last paragraph keeps some effect open but says the finding spread 'far beyond the strength of its evidence'."),
+        o("outright dismissal of any link between effort and fatigue", "The author allows that 'fatigue after effort may be real'.", "Extreme wording"),
+        o("indifference, since the debate has no practical importance", "The author draws a clear lesson from the episode.", "Distorts the passage"),
+      ]),
+      q("detail", "According to the passage, the 2016 project involving many laboratories:", [2], [
+        o("found that a sugary drink restored self-control", "The glucose explanation 'fared no better'.", "Distorts the passage"),
+        o("ran the same carefully specified task and found an effect close to zero", "Paragraph 3 says exactly this."),
+        o("proved that self-control does not exist", "It tested one effect, not whether self-control exists.", "Extreme wording"),
+        o("showed that the cookie experiment had been made up", "No one is accused of inventing data.", "Out of scope"),
+      ]),
+      q("strengthen", "Which of the following, if true, would most support the suggestion in the last paragraph that depletion is shaped by expectation?", [3], [
+        o("Volunteers told that mental effort is energising persist longer after a hard task than volunteers told it is tiring.", "Changing only the belief changes the after-effect, which is what the expectation view predicts."),
+        o("The brain's use of glucose rises sharply during difficult mental tasks.", "This would support the fuel-gauge view that the paragraph sets aside, not expectation.", "Distorts the passage"),
+        o("Small studies are more likely than large ones to report positive results.", "This explains why the literature misled, but says nothing about expectation.", "True but not the answer"),
+        o("People who resist cookies always give up sooner on puzzles.", "'Always' goes beyond any finding in the passage, and it says nothing about belief.", "Extreme wording"),
+      ]),
+      q("structure", "The third paragraph serves mainly to:", [2], [
+        o("describe the original experiment in more detail", "The experiment is described in paragraph 1.", "Distorts the passage"),
+        o("show that psychology's methods are now beyond criticism", "It describes methods that went wrong.", "Extreme wording"),
+        o("argue that popular books on willpower should be withdrawn", "No such recommendation is made.", "Out of scope"),
+        o("explain why the evidence for ego depletion came to be doubted", "It gives the methodological reasons, the failed replication and the problem with glucose."),
+      ]),
+    ],
+    recall: [
+      recall("What did some volunteers have to eat instead of the cookies?", ["Apples", "Radishes", "Bread", "Carrots"], 1),
+      recall("How many laboratories took part in the 2016 project?", ["About five", "More than twenty", "Exactly two", "Over two hundred"], 1),
+    ],
+  },
+  {
+    id: "phil-future",
+    title: "Can we harm people who do not exist yet?",
+    genre: "philosophy",
+    difficulty: "hard",
+    paras: [
+      "Most of us believe we can wrong people who do not yet exist. A government that buries nuclear waste in a way that will leak in three hundred years seems to act badly towards the people living then, even though none of them is alive today. Much of what we think we owe the future rests on cases like this. The philosopher Derek Parfit showed that explaining the belief is surprisingly difficult.",
+      "His argument begins with a simple fact about reproduction. Who is born depends on exactly when conception happens, and that depends on countless details of people's lives. Had your parents met a year later, or even conceived a child a month later, someone else would have been born in your place. A major policy, such as a choice between using up a resource quickly or conserving it, changes how millions of people live, work and meet one another. Within a few generations, the people who exist under one policy will be entirely different individuals from those who would have existed under the other.",
+      "Suppose, then, that we choose rapid depletion, and that people two centuries from now have a lower, though still worthwhile, quality of life than their counterparts would have had under conservation. Have we harmed them? It seems not, in the ordinary sense of harm, which means making someone worse off than they would otherwise have been. Had we chosen conservation, these particular people would never have been born at all. Since their lives are worth living, our choice has not made any of them worse off. Yet the choice still seems wrong.",
+      "Parfit called this the non-identity problem, and he concluded that our moral thinking cannot rest entirely on harm to particular persons. What matters, he suggested, is the quality of life of whoever will exist, whoever they turn out to be. The problem bears directly on debates about climate change, where policies chosen now will shape both how future people live and which people there will be. An argument that future generations cannot complain because they owe their very existence to our choices is not a curiosity of philosophy seminars; it is a position someone could seriously advance, which is why answering it matters.",
+    ],
+    questions: [
+      q("main", "Which of the following best states the main point of the passage?", [1, 2, 3], [
+        o("Because our choices decide who will exist, they may not harm particular future people, so wrongs to future generations must be explained in other terms.", "This is the non-identity problem and Parfit's conclusion in paragraph 4."),
+        o("We have no moral duties towards people who do not yet exist.", "The choice 'still seems wrong', and Parfit looks for a better basis for the duty, not its absence.", "Distorts the passage"),
+        o("Conservation policies always produce happier future generations.", "The example compares two possible futures; nothing is claimed about 'always'.", "Extreme wording"),
+        o("Nuclear waste should be stored more safely than it is today.", "Nuclear waste is only the opening illustration.", "Out of scope"),
+      ]),
+      q("structure", "The second paragraph mainly establishes that:", [1], [
+        o("most people are born at random", "It says birth depends on countless details, not that it is random.", "Distorts the passage"),
+        o("large policies change which individuals are born, not just how they live", "This is the premise the depletion example needs."),
+        o("governments should control when people conceive children", "No such proposal is made.", "Out of scope"),
+        o("using up resources quickly lowers the birth rate", "The paragraph is about who is born, not how many.", "Distorts the passage"),
+      ]),
+      q("detail", "According to the passage, the choice of rapid depletion does not harm the future people in the example because:", [2], [
+        o("their quality of life is higher than it would have been", "It is lower than their counterparts' would have been.", "Distorts the passage"),
+        o("harm can only be done to people who are alive today", "The passage never says this; the argument rests on who would have existed.", "Extreme wording"),
+        o("the effects of depletion are two centuries away", "Distance in time is not the reason given.", "True but not the answer"),
+        o("they would not have existed under the other policy, and their lives are worth living", "Paragraph 3: had we conserved, 'these particular people would never have been born', so none is worse off."),
+      ]),
+      q("application", "Which of the following arguments is closest to the one the author says 'someone could seriously advance'?", [3], [
+        o("We must cut emissions because future people will be worse off than they would otherwise have been.", "This is the ordinary harm argument that the non-identity problem undermines.", "Distorts the passage"),
+        o("Philosophy seminars should not discuss climate change.", "The author says the problem matters well beyond seminars.", "Out of scope"),
+        o("We need not cut emissions for future people's sake, since another policy would have produced different people, and those who exist cannot complain of existing.", "This uses non-identity to excuse the choice, which is the position the last sentence warns about."),
+        o("Future people will be happier than us, so we owe them nothing.", "The argument the author warns of rests on who exists, not on how happy they are.", "Distorts the passage"),
+      ]),
+    ],
+    recall: [
+      recall("Whose argument does the passage discuss?", ["Derek Parfit", "John Rawls", "Peter Singer", "Immanuel Kant"], 0),
+      recall("Which example policy does the passage work through?", ["Building roads", "Using up or conserving a resource", "Raising taxes", "Banning cars"], 1),
+    ],
+  },
 ];

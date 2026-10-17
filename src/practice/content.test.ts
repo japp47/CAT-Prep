@@ -50,6 +50,17 @@ describe("VA paragraphs", () => {
       expect(p.cues.every((c) => c.length > 10)).toBe(true);
       expect(p.odd).not.toEqual("");
       expect(p.ins).not.toEqual("");
+      expect(p.sum).toHaveLength(4);
+      expect(p.sum.filter((o) => !o.trap)).toHaveLength(1);
+      p.sum.forEach((o) => { expect(o.why.length).toBeGreaterThan(10); if (o.trap) expect(OPTION_TRAPS).toContain(o.trap); });
     });
   }
+  it("does not make the right summary the longest one most of the time", () => {
+    // A right answer that is usually the longest option teaches students to guess by length.
+    const longest = VA_PARAS.filter((p) => {
+      const right = p.sum.find((o) => !o.trap)!;
+      return p.sum.every((o) => o === right || o.t.length < right.t.length);
+    }).length;
+    expect(longest / VA_PARAS.length).toBeLessThan(0.5);
+  });
 });

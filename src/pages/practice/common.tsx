@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { reportUrl } from "../../data/site";
 import { todayIso } from "../../lib/date";
 import { useStore } from "../../lib/store";
 import { activityDays, computeStreak } from "../../practice/streak";
@@ -30,4 +31,13 @@ export function useElapsed(running: boolean, startAt: number) {
     return () => clearInterval(t);
   }, [running]);
   return Math.max(0, Math.floor((now - startAt) / 1000));
+}
+
+/** "Report a problem" for one question. Opens a prefilled GitHub issue in a new tab. */
+export function ReportLink({ what }: { what: string }) {
+  return (
+    <a className="link small" style={{ alignSelf: "flex-start" }} href={reportUrl(what, window.location.href)} target="_blank" rel="noopener noreferrer">
+      Report a problem with this question ↗
+    </a>
+  );
 }

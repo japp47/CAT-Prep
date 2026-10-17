@@ -1,5 +1,6 @@
 import { clamp, isIsoDate, todayIso } from "./date";
 import type { SectionId } from "../sections/types";
+import { seedRedo } from "../practice/redo";
 
 export const SECTION_IDS: SectionId[] = ["varc", "dilr", "quant"];
 const DEFAULT_TIME: Record<SectionId, { wd: number; we: number }> = {
@@ -22,6 +23,8 @@ export interface DayRec {
   min?: Partial<Record<SectionId, number>>;
   /** Finished blocks, keyed "section:block", value is minutes spent */
   done?: Record<string, number>;
+  /** Minutes measured with the focus timer, keyed like done. Used as the block's time when it is ticked. */
+  spent?: Record<string, number>;
   /** The core task of this day was caught up later */
   carried?: Partial<Record<SectionId, 1>>;
   /** The catch-up for this day was skipped */
@@ -38,6 +41,11 @@ export interface RcAttempt { id: string; d: string; set: string; mode: "daily" |
 export interface VaAttempt { id: string; d: string; mode: "daily" | "custom"; items: { k: string; a: string; ok: boolean; pts: number }[]; secs: number }
 /** One reading speed test. recall is the number of recall questions answered correctly, out of 2. */
 export interface SpeedRun { id: string; d: string; set: string; words: number; secs: number; wpm: number; recall: number }
+/**
+ * A question in the redo queue. k is "rc:<set>:<question>" or a VA item key such as "pj:bees".
+ * box counts right answers in a row; cleared is the date it left the queue.
+ */
+export interface RedoItem { k: string; added: string; due: string; box: number; tries: number; last?: string; cleared?: string }
 
 export interface AppState {
   version: 4;
@@ -52,6 +60,7 @@ export interface AppState {
   rcAttempts: RcAttempt[];
   vaAttempts: VaAttempt[];
   speedRuns: SpeedRun[];
+  redo: RedoItem[];
 }
 
 const emptyDow = () => [null, null, null, null, null, null, null] as (number | null)[];
@@ -59,7 +68,7 @@ const emptyDow = () => [null, null, null, null, null, null, null] as (number | n
 export function blankState(): AppState {
   const settings = {} as Record<SectionId, TimeSettings>;
   SECTION_IDS.forEach((id) => (settings[id] = { ...DEFAULT_TIME[id], dow: emptyDow() }));
-  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], speedRuns: [] };
+  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], speedRuns: [], redo: [] };
 }
 
 type Obj = Record<string, unknown>;
@@ -100,6 +109,7 @@ export function normalize(raw: unknown): AppState {
         SECTION_IDS.forEach((id) => { const m = (v.min as Obj)[id]; if (typeof m === "number") rec.min![id] = mins(m); });
       }
       if (isObj(v.done)) { rec.done = {}; Object.keys(v.done).forEach((bk) => (rec.done![bk] = num((v.done as Obj)[bk]))); }
+      if (isObj(v.spent)) { rec.spent = {}; Object.keys(v.spent).forEach((bk) => (rec.spent![bk] = mins((v.spent as Obj)[bk]))); }
       if (v.carried) rec.carried = flags(v.carried);
       if (v.dismiss) rec.dismiss = flags(v.dismiss);
       b.days[k] = rec;
@@ -121,6 +131,17 @@ export function normalize(raw: unknown): AppState {
     items: list(x.items, (i) => ({ k: str(i.k), a: str(i.a), ok: !!i.ok, pts: num(i.pts) })),
   }));
   b.speedRuns = list(raw.speedRuns, (x) => ({ id: str(x.id), d: str(x.d), set: str(x.set), words: num(x.words), secs: num(x.secs), wpm: num(x.wpm), recall: clamp(num(x.recall), 0, 2) }));
+  if (Array.isArray(raw.redo)) {
+    b.redo = list(raw.redo, (x) => {
+      const r: RedoItem = { k: str(x.k), added: str(x.added), due: str(x.due), box: clamp(num(x.box), 0, 9), tries: num(x.tries) };
+      if (isIsoDate(x.last)) r.last = x.last;
+      if (isIsoDate(x.cleared)) r.cleared = x.cleared;
+      return r;
+    }).filter((r) => r.k && isIsoDate(r.due));
+  } else {
+    // Saves from before the redo queue: build it from past attempts.
+    seedRedo(b);
+  }
   return b;
 }
 

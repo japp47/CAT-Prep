@@ -8,7 +8,7 @@ import { RC_SETS, rcById } from "../../practice/rc";
 import { fmtSecs, LETTERS, rcError, rcErrorSrc, recordRc, scoreRc } from "../../practice/record";
 import { GENRES, RC_QTYPE, setWords, type RcSet } from "../../practice/types";
 import NotFound from "../NotFound";
-import { useElapsed } from "./common";
+import { ReportLink, useElapsed } from "./common";
 
 /** Words too common to be worth saving to flashcards. */
 const COMMON = new Set("the and for are but not you all any can had her was one our out has him his how its may new now old see two way who did get let put say she too use that with have this will your from they know want been good much some time very when come here just like long make many more only over such take than them well were what which their there these those would could should about after other where while being because through between does into also each most even then upon whose".split(" "));
@@ -154,7 +154,7 @@ function Palette({ n, cur, setCur, ans, marked, set }: { n: number; cur: number;
   );
 }
 
-function Passage({ set, highlight, wordMode }: { set: RcSet; highlight: number[]; wordMode: boolean }) {
+export function Passage({ set, highlight, wordMode }: { set: RcSet; highlight: number[]; wordMode: boolean }) {
   const [pick, setPick] = useState<string | null>(null);
   const onClick = (e: MouseEvent) => {
     const w = (e.target as HTMLElement).dataset?.w;
@@ -213,7 +213,7 @@ function WordSheet({ word, source, onClose }: { word: string; source: string; on
   );
 }
 
-function ReviewQuestion({ set, qi, chosen }: { set: RcSet; qi: number; chosen: number | null }) {
+export function ReviewQuestion({ set, qi, chosen }: { set: RcSet; qi: number; chosen: number | null }) {
   const { state, update } = useStore();
   const q = set.questions[qi];
   const ok = chosen === q.answer;
@@ -243,6 +243,7 @@ function ReviewQuestion({ set, qi, chosen }: { set: RcSet; qi: number; chosen: n
       {!ok && (inLog
         ? <p className="ok">In your Error log.</p>
         : <button type="button" className="btn ghost sm" style={{ alignSelf: "flex-start" }} onClick={() => update((st) => { st.errors.push(rcError(set, qi, chosen, todayIso())); })}>Add to Error log</button>)}
+      <ReportLink what={`${set.title}, Q${qi + 1} (${set.id})`} />
     </div>
   );
 }

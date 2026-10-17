@@ -131,4 +131,88 @@ export const SCIENCE: RcSet[] = [
       recall("Which condition improved in studies of openly labelled placebos?", ["Irritable bowel syndrome", "Cancer", "Diabetes", "Asthma"], 0),
     ],
   },
+  {
+    id: "sci-microbiome",
+    title: "The crowd inside us",
+    genre: "science",
+    difficulty: "medium",
+    paras: [
+      "Each of us carries tens of trillions of microbes in the gut, a community whose cells roughly match the number of human cells in the body. For most of medical history these organisms were treated mainly as a source of infection. Over the past two decades, cheap genetic sequencing has made it possible to catalogue them in detail, and the results have changed how scientists think about the body. The gut's microbes help digest fibre, make vitamins, train the immune system and keep harmful species in check.",
+      "Enthusiasm soon outran the evidence. Studies linked differences in gut microbes to obesity, depression, autism and dozens of other conditions, and a market in probiotic supplements grew rapidly. Many of these links, however, came from comparing the microbes of sick and healthy people, which shows that the two groups differ but not which difference came first. Illness changes diet, medication and daily habits, all of which reshape the microbial community, so the microbes may be a consequence of a disease rather than its cause.",
+      "Experiments in mice offer a way round this problem, since animals raised without any microbes can be given the microbes of a particular donor. When germ-free mice received gut microbes from obese people, some gained more fat than mice given microbes from lean people. Such results are striking, but mice differ from humans in diet, anatomy and the microbes that naturally live in them, and effects in an animal raised in a sterile bubble may not appear in a person who has carried a complex microbial community since birth. Researchers have also moved microbes from people with depression into rats and seen changes in behaviour, results that are intriguing but open to the same doubts.",
+      "The clearest success so far is narrower than the headlines. Patients with repeated infections of the bacterium Clostridioides difficile, often after courses of antibiotics, recover in most cases when given stool from a healthy donor, which restores a diverse community that keeps the bacterium in check. That treatment works because the cause is well understood. Even so, donors are now carefully screened, since stool can carry infections of its own. For most other conditions, the microbiome remains a promising field of research rather than a source of proven cures.",
+    ],
+    questions: [
+      q("main", "Which of the following best captures the main idea of the passage?", [1, 2, 3], [
+        o("Gut microbes have been shown to cause obesity, depression and autism.", "Paragraph 2 says these links may run the other way.", "Distorts the passage"),
+        o("Experiments on mice are useless for medical research.", "Mouse studies are called 'striking' but limited, not useless.", "Extreme wording"),
+        o("Gut microbes matter, but most claimed health effects are not yet shown to be causes, with a few well-understood exceptions.", "Covers the promise, the caution and the C. difficile exception."),
+        o("Probiotic supplements are the best way to improve health.", "The supplement market is mentioned only as a sign of hype.", "Out of scope"),
+      ]),
+      q("inference", "The author's point about comparing the microbes of sick and healthy people is that such studies:", [1], [
+        o("cannot show whether a microbial difference causes an illness or results from it", "Paragraph 2: they show the groups differ 'but not which difference came first'."),
+        o("always find that healthy people carry more microbes", "Nothing is said about numbers of microbes.", "Extreme wording"),
+        o("are more reliable than experiments in mice", "Mouse experiments are presented as a way round their weakness.", "Distorts the passage"),
+        o("prove that diet has no effect on the microbiome", "Paragraph 2 says diet reshapes the microbial community.", "Distorts the passage"),
+      ]),
+      q("strengthen", "Which of the following, if true, would most weaken the conclusion suggested by the mouse experiments in the third paragraph?", [2], [
+        o("Mice raised in the ordinary way carry microbes that differ from those of humans.", "The passage already notes this limit; it does not undercut the comparison between donors.", "True but not the answer"),
+        o("Germ-free mice gain the same amount of fat whether their microbes come from lean or obese donors.", "If donor type makes no difference, the experiments no longer point to obesity-related microbes."),
+        o("Obese people often eat less fibre than lean people.", "This concerns diet in people, not what the mouse results show.", "Out of scope"),
+        o("Stool transplants cure most repeated C. difficile infections.", "True, but it is about a different condition.", "True but not the answer"),
+      ]),
+      q("detail", "The treatment for Clostridioides difficile is described as working because:", [3], [
+        o("it uses antibiotics to kill every bacterium in the gut", "Antibiotics often come before the infection; the treatment restores microbes.", "Distorts the passage"),
+        o("it was first tested on germ-free mice", "Nothing is said about how it was tested.", "Out of scope"),
+        o("it also cures obesity and depression", "The paragraph calls it a narrow success.", "Distorts the passage"),
+        o("its cause is well understood, and donor stool restores a community that holds the bacterium in check", "Paragraph 4 says both."),
+      ]),
+    ],
+    recall: [
+      recall("What made it possible to catalogue gut microbes in detail?", ["Cheap genetic sequencing", "Better microscopes", "Germ-free mice", "Probiotic supplements"], 0),
+      recall("Which infection does a stool transplant treat successfully?", ["Malaria", "Clostridioides difficile", "Tuberculosis", "Influenza"], 1),
+    ],
+  },
+  {
+    id: "sci-leapsecond",
+    title: "The end of the leap second",
+    genre: "science",
+    difficulty: "hard",
+    paras: [
+      "For most of history, time was defined by the sky. A day was one turn of the Earth, and the second was a fraction of that day. In 1967 scientists cut this link, redefining the second by the vibrations of caesium atoms, which are far steadier than the planet's spin. The best atomic clocks now keep time so precisely that they would drift by less than a second over many millions of years.",
+      "The Earth, by comparison, is a poor timekeeper. Tides slowly brake its rotation, and movements of its molten core, its oceans and even its ice sheets make the length of the day wobble by fractions of a millisecond. Left alone, atomic time and the time of the sun would gradually part company. Since 1972, the world's official time scale has kept them together by occasionally adding a leap second, an extra second inserted at the end of a June or December day when the gap approaches nine-tenths of a second.",
+      "For the computers that now run telecommunications, finance and navigation, the leap second is a nuisance. Software that assumes every minute has sixty seconds can stumble on a minute with sixty-one, and a leap second in 2012 contributed to outages at several large websites. Because leap seconds depend on observations of the Earth, they are announced only months ahead and cannot be programmed in advance like leap years. Some companies have taken to 'smearing' the extra second, slowing their clocks slightly over a day, which means their systems briefly disagree with official time.",
+      "In 2022 the body that oversees international measurement voted to stop adding leap seconds by 2035. The gap between atomic and solar time will then be allowed to grow, perhaps to a minute over a century, before any correction is made. Few people will notice, since the sun's position at noon already varies by far more than that across a single time zone. Astronomers and some systems that rely on the Earth's orientation will need adjustments, and a few critics regret cutting the last formal link between our clocks and the turning planet. For most users, though, the decision trades a symbolic connection for practical reliability.",
+    ],
+    questions: [
+      q("main", "Which of the following best summarises the passage?", [1, 2, 3], [
+        o("Atomic clocks are less reliable than the Earth's rotation.", "Paragraph 2 calls the Earth 'a poor timekeeper' by comparison.", "Distorts the passage"),
+        o("The leap second, which keeps atomic and solar time together, is being dropped because it troubles computers, at the cost of a symbolic link.", "Covers why leap seconds exist, why they cause trouble and what their end means."),
+        o("The Earth's rotation is slowing so fast that days will soon be noticeably longer.", "The changes are 'fractions of a millisecond'.", "Extreme wording"),
+        o("Leap seconds and leap years exist for exactly the same reason.", "Leap years follow a fixed rule; leap seconds depend on observation.", "Distorts the passage"),
+      ]),
+      q("detail", "According to the passage, leap seconds cannot be programmed in advance like leap years because:", [2], [
+        o("caesium atoms vibrate irregularly", "Caesium atoms are 'far steadier than the planet's spin'.", "Distorts the passage"),
+        o("computers cannot handle a minute with sixty-one seconds", "That is why leap seconds are a nuisance, not why they cannot be scheduled.", "True but not the answer"),
+        o("they depend on observations of the Earth and are announced only months ahead", "Paragraph 3 says exactly this."),
+        o("the body that oversees measurement refuses to publish a schedule", "No refusal is mentioned.", "Out of scope"),
+      ]),
+      q("inference", "The author mentions that the sun's position at noon varies across a time zone in order to:", [3], [
+        o("argue that time zones should be abolished", "No such proposal is made.", "Out of scope"),
+        o("prove that solar time is more accurate than atomic time", "The point is about noticing a gap, not accuracy.", "Distorts the passage"),
+        o("explain why astronomers oppose the decision", "Astronomers are said to need adjustments, not to be convinced by this point.", "Distorts the passage"),
+        o("show that a gap of a minute or so will make little practical difference to most people", "People already live with a larger gap within one time zone, so 'few people will notice'."),
+      ]),
+      q("tone", "Which of the following best describes the author's view of the 2022 decision?", [3], [
+        o("It is a sensible trade of a symbolic link for reliability, though not without costs.", "The last paragraph weighs adjustments and regrets against practical reliability."),
+        o("It is a reckless choice that will throw navigation into chaos.", "Only 'some systems' need adjustments.", "Extreme wording"),
+        o("It is pointless, because leap seconds never caused any problems.", "Paragraph 3 describes real problems.", "Distorts the passage"),
+        o("It was forced on scientists by large technology companies.", "Nothing is said about who pushed for it.", "Out of scope"),
+      ]),
+    ],
+    recall: [
+      recall("Since 1967, the second has been defined by:", ["The Earth's rotation", "Vibrations of caesium atoms", "The movement of the moon", "The swing of a pendulum"], 1),
+      recall("By when did the 2022 vote say leap seconds should stop?", ["2025", "2030", "2035", "2050"], 2),
+    ],
+  },
 ];

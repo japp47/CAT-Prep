@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import Plan from "./pages/Plan";
 import PracticeHub from "./pages/practice/Hub";
 import RcPlayer from "./pages/practice/RcPlayer";
+import Redo from "./pages/practice/Redo";
 import SpeedTest from "./pages/practice/SpeedTest";
 import VaPlayer from "./pages/practice/VaPlayer";
 import Progress from "./pages/Progress";
@@ -21,7 +22,7 @@ import Updates from "./pages/Updates";
 import Words from "./pages/Words";
 
 const TITLES: Record<string, string> = {
-  "/": "CAT Prep Hub", "/today": "Today", "/plan": "Plan and time", "/practice": "Practice", "/practice/va": "VA drill", "/practice/speed": "Reading speed test", "/varc": "VARC", "/dilr": "DILR", "/quant": "Quant",
+  "/": "CAT Prep Hub", "/today": "Today", "/plan": "Plan and time", "/practice": "Practice", "/practice/va": "VA drill", "/practice/speed": "Reading speed test", "/practice/redo": "Redo queue", "/varc": "VARC", "/dilr": "DILR", "/quant": "Quant",
   "/progress": "Progress", "/errors": "Error log", "/words": "Words", "/updates": "Important updates", "/exams": "CAT and other exams",
   "/guides": "Guides", "/stories": "Topper stories", "/roadmap": "What's coming", "/settings": "Settings",
 };
@@ -48,6 +49,7 @@ export default function App() {
           <Route path="practice/rc/:id" element={<RcPlayer />} />
           <Route path="practice/va" element={<VaPlayer />} />
           <Route path="practice/speed" element={<SpeedTest />} />
+          <Route path="practice/redo" element={<Redo />} />
           <Route path="progress" element={<Progress />} />
           <Route path="errors" element={<Errors />} />
           <Route path="words" element={<Words />} />

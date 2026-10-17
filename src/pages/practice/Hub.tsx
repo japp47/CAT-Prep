@@ -5,6 +5,7 @@ import { usePref } from "../../lib/prefs";
 import { useStore } from "../../lib/store";
 import { DAILY_EPOCH, dayNumber, rcOfDay, vaOfDay } from "../../practice/daily";
 import { RC_SETS } from "../../practice/rc";
+import { dueRedo } from "../../practice/redo";
 import { scoreRc } from "../../practice/record";
 import { GENRES, setWords, type Genre, type RcSet } from "../../practice/types";
 import { VA_KIND, type VaKind } from "../../practice/va/build";
@@ -46,6 +47,8 @@ export default function PracticeHub() {
   const vaToday = state.vaAttempts.filter((a) => a.mode === "daily" && a.d === today).pop();
   const vaItems = vaOfDay(today);
   const best = state.speedRuns.filter((r) => r.recall === 2).reduce((m, r) => Math.max(m, r.wpm), 0);
+  const redoDue = dueRedo(state.redo, today).length;
+  const redoOpen = state.redo.filter((r) => !r.cleared).length;
 
   const [genre, setGenre] = usePref<Genre | "all">("libGenre", "all");
   const [diff, setDiff] = usePref<"all" | "easy" | "medium" | "hard">("libDiff", "all");
@@ -62,7 +65,7 @@ export default function PracticeHub() {
       <div className="view-head">
         <div className="row" style={{ justifyContent: "space-between" }}><span className="eyebrow">VARC practice</span><StreakBadge /></div>
         <h1>Practice</h1>
-        <p>Exam-style RC sets with an explanation for every option, a daily VA drill and a reading speed test. Everything you do here goes into Progress, and one tap sends a mistake to your Error log.</p>
+        <p>Exam-style RC sets with an explanation for every option, a daily VA drill, a redo queue for your mistakes and a reading speed test. Everything you do here goes into Progress, and one tap sends a mistake to your Error log.</p>
       </div>
 
       <div className="grid2">
@@ -82,10 +85,20 @@ export default function PracticeHub() {
         <div className="card stack">
           <span className="eyebrow">Daily VA drill</span>
           <h3>{vaItems.length} questions, about 12 minutes</h3>
-          <p className="muted small">3 para jumbles, 2 odd sentence out and 3 sentence insertions, marked the way CAT marks them.</p>
+          <p className="muted small">2 each of para summary, sentence insertion, odd sentence out and para jumbles, the mix CAT used in 2023 and 2025, marked the way CAT marks them.</p>
           {vaToday && <p className="ok">Done today: {vaToday.items.filter((i) => i.ok).length} of {vaToday.items.length} correct.</p>}
           <div className="row"><Link className="btn" to="/practice/va">{vaToday ? "Review" : "Start"}</Link></div>
         </div>
+      </div>
+
+      <div className={"card stack" + (redoDue ? " accent" : "")}>
+        <div className="row" style={{ justifyContent: "space-between" }}>
+          <span className="eyebrow">Redo queue</span>
+          {redoOpen > 0 && <span className="muted small">{redoOpen} open</span>}
+        </div>
+        <h3>{redoDue ? `${redoDue} question${redoDue > 1 ? "s" : ""} to redo today` : redoOpen ? "Nothing to redo today" : "No mistakes to redo yet"}</h3>
+        <p className="muted small">Questions you miss come back after 1, 3 and 7 days, until you get them right three times in a row.</p>
+        {(redoDue > 0 || redoOpen > 0) && <div className="row"><Link className={redoDue ? "btn" : "btn ghost"} to="/practice/redo">{redoDue ? "Start" : "See the queue"}</Link></div>}
       </div>
 
       <div className="grid2">

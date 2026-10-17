@@ -174,4 +174,46 @@ export const ECONOMICS: RcSet[] = [
       recall("Which of these does the passage give as a remedy?", ["Price controls", "Import taxes", "Rent limits", "Warranties"], 3),
     ],
   },
+  {
+    id: "econ-minwage",
+    title: "A natural experiment on the minimum wage",
+    genre: "economics",
+    difficulty: "medium",
+    paras: [
+      "The textbook prediction about minimum wages is simple. If the price of labour is pushed above what the market would set, employers will buy less of it, so a higher minimum wage should cost some low-paid workers their jobs. Most introductory courses still teach it with a simple diagram of supply and demand, in which any wage floor above the market rate leaves some willing workers without jobs. For decades most economists accepted this reasoning, and the debate was mainly about how many jobs would be lost.",
+      "In 1992 New Jersey raised its minimum wage while neighbouring Pennsylvania did not. The economists David Card and Alan Krueger surveyed fast-food restaurants on both sides of the border before and after the change, treating Pennsylvania as a guide to what would have happened in New Jersey without the increase. Fast-food chains were a sensible choice: they employ many low-wage workers, pay close to the minimum and sell the same products on both sides of the state line, so a difference in employment was unlikely to come from other causes. They found no fall in employment in New Jersey relative to Pennsylvania; if anything, employment there rose slightly.",
+      "The study provoked fierce criticism. Some economists questioned the survey data and produced payroll records that told a different story; others argued that a single state over a single year could not overturn a well-established principle. But the method, which treated a policy change as a natural experiment and compared similar places that happened to be treated differently, spread rapidly, and many later studies of moderate increases have found small or no effects on employment. Card shared a Nobel prize in 2021 partly for this work.",
+      "One explanation is that many low-wage labour markets are not the competitive markets of the textbook. Workers in a small town may have few other employers to turn to, so a firm that pays a little less loses few of them. Where a few large employers dominate a town, they can pay less than the value of a worker's labour, and a minimum wage can raise pay without reducing jobs, up to a point. That qualification matters. The evidence concerns moderate increases; it does not show that any minimum wage, however high, is costless, and economists still disagree about where the limit lies.",
+    ],
+    questions: [
+      q("main", "Which of the following best expresses the main idea of the passage?", [1, 2, 3], [
+        o("Minimum wages never reduce employment.", "The last paragraph limits the finding to moderate increases.", "Extreme wording"),
+        o("Pennsylvania's economy grew faster than New Jersey's in the 1990s.", "Pennsylvania serves only as a comparison.", "Out of scope"),
+        o("Card and Krueger's data were shown to be false.", "Their data were questioned, and later studies largely agreed with them.", "Distorts the passage"),
+        o("A natural experiment challenged the view that minimum wages cost jobs, showing that moderate rises can leave employment intact, within limits.", "Covers the textbook view, the study, its influence and the qualification."),
+      ]),
+      q("detail", "Why did Card and Krueger survey restaurants in Pennsylvania?", [1], [
+        o("Pennsylvania had raised its minimum wage first.", "Pennsylvania did not raise its minimum wage.", "Distorts the passage"),
+        o("To estimate what would have happened in New Jersey without the increase.", "Paragraph 2 says Pennsylvania was used as this guide."),
+        o("Because restaurants in New Jersey refused to take part.", "Nothing suggests a refusal.", "Out of scope"),
+        o("To show that fast-food workers earn more in Pennsylvania.", "The comparison was of employment, not pay.", "Out of scope"),
+      ]),
+      q("inference", "The author would most likely agree that:", [3], [
+        o("a very large rise in the minimum wage could reduce employment", "The evidence 'does not show that any minimum wage, however high, is costless'."),
+        o("the textbook model describes every labour market accurately", "Paragraph 4 says many low-wage markets are not like the textbook.", "Distorts the passage"),
+        o("the criticism of the New Jersey study had no merit at all", "The author reports the criticism without dismissing it.", "Extreme wording"),
+        o("natural experiments are less reliable than surveys", "The passage praises the natural-experiment method.", "Distorts the passage"),
+      ]),
+      q("structure", "The fourth paragraph mainly serves to:", [3], [
+        o("restate the textbook prediction", "The textbook prediction is in paragraph 1.", "Distorts the passage"),
+        o("describe the criticism of the New Jersey study", "The criticism is in paragraph 3.", "Distorts the passage"),
+        o("offer an explanation for the findings and limit how far they apply", "It explains through dominant employers, then restricts the finding to moderate increases."),
+        o("call for higher minimum wages in every country", "No policy is recommended.", "Out of scope"),
+      ]),
+    ],
+    recall: [
+      recall("Which state raised its minimum wage in 1992?", ["Pennsylvania", "New York", "New Jersey", "Delaware"], 2),
+      recall("What kind of businesses did the economists survey?", ["Fast-food restaurants", "Farms", "Factories", "Banks"], 0),
+    ],
+  },
 ];

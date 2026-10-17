@@ -1,11 +1,12 @@
 import { ROADMAP } from "../data/roadmap";
+import { REPO_URL } from "../data/site";
 
 export default function Roadmap() {
   return (
     <div className="page">
       <div className="view-head">
         <h1>What's coming</h1>
-        <p>The site grows section by section. VARC is live. DILR and Quant are next.</p>
+        <p>The site grows one step at a time. VARC is live with practice; DILR, Quant and optional sign-in come next. Found a problem or have an idea? <a href={REPO_URL + "/issues/new"} target="_blank" rel="noopener noreferrer">Tell us on GitHub ↗</a></p>
       </div>
       {ROADMAP.map((g) => (
         <section key={g.title} className="card">
