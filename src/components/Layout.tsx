@@ -1,9 +1,8 @@
-import { Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
 import { SECTIONS } from "../sections";
 import { useFocus } from "../lib/focus";
@@ -52,11 +51,15 @@ function Nav({ onPick }: { onPick?: () => void }) {
 /** Shown for the moment a page's code is loading. */
 function PageSkeleton() {
   return (
-    <div className="mx-auto flex w-full max-w-[1120px] flex-col gap-4" aria-live="polite" aria-label="Loading">
+    <div className="mx-auto flex w-full max-w-[1120px] flex-col gap-4" role="status">
+      <span className="sr-only">Loading…</span>
       <Skeleton className="h-10 w-1/3" /><Skeleton className="h-5 w-1/2" /><Skeleton className="mt-6 h-48 w-full" />
     </div>
   );
 }
+
+/** The phone's browser bar takes the top bar's colour. index.html sets both, one per system theme. */
+const BAR_COLOR = { light: "#eef0f4", dark: "#12161e" };
 
 export type Theme = "auto" | "light" | "dark";
 export function useTheme(): [Theme, (t: Theme) => void] {
@@ -64,11 +67,17 @@ export function useTheme(): [Theme, (t: Theme) => void] {
   useEffect(() => {
     const el = document.documentElement;
     if (theme === "auto") el.removeAttribute("data-theme"); else el.setAttribute("data-theme", theme);
+    document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach((m) => {
+      m.content = theme === "auto" ? (m.media.includes("dark") ? BAR_COLOR.dark : BAR_COLOR.light) : BAR_COLOR[theme];
+    });
   }, [theme]);
   return [theme, setTheme];
 }
 
 const BOTTOM_BAR = "fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t bg-card pb-[env(safe-area-inset-bottom)] lg:hidden"; // taste-skill-ignore: the edge of a fixed bar
+
+// Toasts only follow an action, so their code loads after the page.
+const Toaster = lazy(() => import("@/components/ui/sonner").then((m) => ({ default: m.Toaster })));
 
 const TABS = [
   { to: "/", label: "Home", Icon: IconHome, end: true },
@@ -94,18 +103,18 @@ export default function Layout() {
         <p className="mt-auto px-3 text-sm text-muted-foreground">Free and open. Your data stays in this browser.</p>
       </aside>
 
-      <header className="sticky top-0 z-40 flex h-14 items-center justify-between bg-sidebar px-4 pt-[env(safe-area-inset-top)] lg:hidden">
+      <header className="sticky top-0 z-40 flex h-14 items-center justify-between bg-sidebar px-gutter lg:hidden">
         <Brand />
         <button type="button" className="grid size-11 place-items-center rounded-md hover:bg-card" aria-label="Open menu" aria-expanded={open} onClick={() => setOpen(true)}><Menu className="size-6" /></button>
       </header>
 
-      <main id="main" className={cn("min-w-0 px-4 pt-6 pb-28 sm:px-6 lg:px-12 lg:pt-12 lg:pb-20", run && "pb-44 lg:pb-36")}>
+      <main id="main" className={cn("min-w-0 px-gutter pt-6 pb-28 lg:pt-12 lg:pb-20", run && "pb-44 lg:pb-36")}>
         <Suspense fallback={<PageSkeleton />}><Outlet /></Suspense>
       </main>
 
       <FocusBar />
       <RedoSeeder />
-      <Toaster />
+      <Suspense fallback={null}><Toaster /></Suspense>
 
       <nav aria-label="Quick" className={BOTTOM_BAR}>
         {TABS.map(({ to, label, Icon, end }) => (
@@ -113,11 +122,11 @@ export default function Layout() {
             <Icon />{label}
           </NavLink>
         ))}
-        <button type="button" onClick={() => setOpen(true)} className="flex h-16 flex-col items-center justify-center gap-1 text-sm font-medium text-muted-foreground"><Menu className="size-6" />Menu</button>
+        <button type="button" aria-expanded={open} onClick={() => setOpen(true)} className="flex h-16 flex-col items-center justify-center gap-1 text-sm font-medium text-muted-foreground"><Menu className="size-6" />Menu</button>
       </nav>
 
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent side="right" aria-describedby={undefined} className="w-[min(86vw,340px)] gap-6 overflow-y-auto bg-sidebar px-4 pt-6 pb-8">
+        <SheetContent side="right" aria-describedby={undefined} className="w-[min(86vw,340px)] gap-6 overflow-y-auto overscroll-contain bg-sidebar pt-6 pb-8 pl-4 pr-[max(1rem,env(safe-area-inset-right))]">
           <SheetTitle className="px-1"><Brand /></SheetTitle>
           <Nav onPick={() => setOpen(false)} />
         </SheetContent>

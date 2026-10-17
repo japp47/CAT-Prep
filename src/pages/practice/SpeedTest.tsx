@@ -9,7 +9,7 @@ import type { Content } from "../../practice/content";
 import { speedSetOfDay } from "../../practice/daily";
 import { fmtSecs, LETTERS } from "../../practice/record";
 import { setWords, type RcSet } from "../../practice/types";
-import { Choice, ScoreCard } from "./common";
+import { Choice, ChoiceGroup, ScoreCard } from "./common";
 
 /** CAT has about 2,000 words of RC; reading them in 10 minutes leaves time for the questions. */
 const EXAM_PACE = 200;
@@ -103,9 +103,9 @@ function SpeedPage({ c }: { c: Content }) {
           {set.recall.map((r, qi) => (
             <div key={qi} className="flex flex-col gap-3">
               <p className="text-lg leading-snug font-semibold">{qi + 1}. {r.q}</p>
-              <div className="flex flex-col gap-2.5" role="radiogroup">
+              <ChoiceGroup label={"Options for recall question " + (qi + 1)}>
                 {r.options.map((o, i) => <Choice key={i} mark={LETTERS[i]} checked={picks[qi] === i} onClick={() => setPicks((p) => p.map((x, k) => (k === qi ? i : x)))}>{o}</Choice>)}
-              </div>
+              </ChoiceGroup>
             </div>
           ))}
           <div><Button size="lg" disabled={picks.some((p) => p === null)} onClick={finish}>See my result</Button></div>

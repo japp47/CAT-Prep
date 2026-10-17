@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useState, type ReactNode } from "react";
+import { createContext, use, useCallback, useState, type ReactNode } from "react";
 import type { SectionId } from "../sections/types";
 import { markBlockDone } from "../planner/engine";
 import { useStore } from "./store";
@@ -89,7 +89,7 @@ export function FocusProvider({ children }: { children: ReactNode }) {
 }
 
 export function useFocus(): Focus {
-  const f = useContext(FocusCtx);
+  const f = use(FocusCtx);
   if (!f) throw new Error("useFocus outside FocusProvider");
   return f;
 }

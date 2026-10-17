@@ -100,8 +100,10 @@ function TodayPanel() {
             {WEEK.map((w, i) => {
               const d = addDays(mon, i), on = active.has(d);
               return (
-                <li key={d} className={cn("flex flex-col items-center gap-1.5", d === t && "font-semibold text-foreground")} title={shortDate(d) + (on ? ", studied" : "")}>
-                  <i className={cn("h-1.5 w-full max-w-7 rounded-full", on ? "bg-success" : "bg-secondary", d === t && "ring-2 ring-foreground/30 ring-offset-2 ring-offset-card")} />{w}
+                <li key={d} className={cn("flex flex-col items-center gap-1.5", d === t && "font-semibold text-foreground")}>
+                  <i className={cn("h-1.5 w-full max-w-7 rounded-full", on ? "bg-success" : "bg-secondary", d === t && "ring-2 ring-foreground/30 ring-offset-2 ring-offset-card")} aria-hidden />
+                  <span aria-hidden>{w}</span>
+                  <span className="sr-only">{longDate(d)}, {on ? "studied" : "not studied"}</span>
                 </li>
               );
             })}

@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useDeferredValue, useState, type ReactNode } from "react";
 import { useParams } from "react-router-dom";
 import { ChevronDown, Search } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -53,10 +53,12 @@ function Topic({ t }: { t: (typeof TOPICS)[number] }) {
   const [open, setOpen] = useState(!!t.open);
   return (
     <Collapsible open={open} onOpenChange={setOpen} className="rounded-lg bg-card">
-      <CollapsibleTrigger className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left hover:text-primary sm:px-6">
-        <span className="text-heading font-semibold">{t.h}</span>
-        <ChevronDown className={cn("size-5 shrink-0 transition-transform", open && "rotate-180")} aria-hidden />
-      </CollapsibleTrigger>
+      <h2>
+        <CollapsibleTrigger className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left hover:text-primary sm:px-6">
+          <span className="text-heading font-semibold">{t.h}</span>
+          <ChevronDown className={cn("size-5 shrink-0 transition-transform", open && "rotate-180")} aria-hidden />
+        </CollapsibleTrigger>
+      </h2>
       <CollapsibleContent className="measure flex flex-col gap-3 px-5 pb-6 text-reading sm:px-6">
         {t.p?.map((p, i) => <p key={i}>{p}</p>)}
         {t.ol && <ol className="flex list-decimal flex-col gap-2 pl-6">{t.ol.map((x, i) => <li key={i}>{x}</li>)}</ol>}
@@ -139,7 +141,8 @@ function Live({ sec }: { sec: SectionDef }) {
   const [hideDone, setHideDone] = usePref("hideDone", false);
   const [q, setQ] = usePref("q:" + sec.id, "");
   const all = sec.resources ?? [], cats = sec.categories ?? [];
-  const query = q.trim().toLowerCase();
+  // Filtering waits for typing to pause, so the field stays quick on a slow phone.
+  const query = useDeferredValue(q).trim().toLowerCase();
   const mustAll = all.filter((r) => r.p === "must");
   const doneAll = all.filter((r) => state.ticks[r.id]).length;
   const mustDone = mustAll.filter((r) => state.ticks[r.id]).length;
@@ -190,10 +193,10 @@ function Live({ sec }: { sec: SectionDef }) {
       </div>
 
       {query ? (
-        <div className="flex flex-col gap-10">{list(null, `Nothing matches "${q}". Try a site name or a question type.`)}</div>
+        <div className="flex flex-col gap-10">{list(null, `Nothing matches “${q}”. Try a site name or a question type.`)}</div>
       ) : (
         <Tabs value={tabValid} onValueChange={setVtab} className="gap-8">
-          <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+          <div className="bleed-gutter overflow-x-auto px-gutter sm:mx-0 sm:px-0">
             <TabsList className="bg-secondary">{VTABS.map((t) => <TabsTrigger key={t.id} value={t.id} className="px-3.5">{t.label}</TabsTrigger>)}</TabsList>
           </div>
           {VTABS.map((t) => (

@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { BREAK_EVERY, focusMs, useFocus } from "../lib/focus";
 import { fmtSecs } from "../practice/record";
 
-const BAR = "fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-40 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 bg-foreground px-4 py-3 text-background shadow-xl lg:inset-x-auto lg:right-6 lg:bottom-6 lg:w-[min(560px,calc(100vw-248px-48px))] lg:rounded-lg"; // taste-skill-ignore: the timer bar floats over the page
+const BAR = "fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-40 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 bg-foreground px-gutter py-3 text-background lg:px-4 shadow-xl lg:inset-x-auto lg:right-6 lg:bottom-6 lg:w-[min(560px,calc(100vw-248px-48px))] lg:rounded-lg"; // taste-skill-ignore: the timer bar floats over the page
 
 /** The running focus timer, pinned above the bottom bar on phones and to the corner on desktop. */
 export default function FocusBar() {

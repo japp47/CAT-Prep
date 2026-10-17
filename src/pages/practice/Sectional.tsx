@@ -17,7 +17,7 @@ import {
 } from "../../practice/sectional";
 import { VA_KIND } from "../../practice/va/build";
 import NotFound from "../NotFound";
-import { Choice, Confirm, PaletteCell, PlayerBar, ScoreCard, Timer } from "./common";
+import { Choice, ChoiceGroup, Confirm, PaletteCell, PlayerBar, ScoreCard, Timer } from "./common";
 import { Passage, PaneSwitch, ReviewQuestion, Split } from "./RcPlayer";
 import { ItemInput, ItemReview } from "./VaPlayer";
 
@@ -81,18 +81,28 @@ function Start({ onStart }: { onStart: (d: Draft) => void }) {
   );
 }
 
+/** The section clock. It ticks on its own, so the passage and the palette do not redraw every second. */
+function Clock({ d, onEnd }: { d: Draft; onEnd: () => void }) {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(t);
+  }, []);
+  const left = secsLeft(d, now);
+  useEffect(() => { if (left === 0) onEnd(); });
+  return <Timer over={left <= 300}>{fmtSecs(left)} left</Timer>;
+}
+
 function Exam({ start, c, onQuit }: { start: Draft; c: Content; onQuit: () => void }) {
   const { update } = useStore();
   const navigate = useNavigate();
   const [d, setD] = useState(start);
-  const [now, setNow] = useState(Date.now());
   const [pane, setPane] = useState<"p" | "q">("p");
   const [confirm, setConfirm] = useState<"submit" | "quit" | null>(null);
   // The palette starts folded on phones, so the question stays near the top of the screen.
   const [palette, setPalette] = useState(() => typeof matchMedia === "function" && matchMedia("(min-width: 960px)").matches);
   const enteredAt = useRef(Date.now());
   const done = useRef(false);
-  const left = secsLeft(d, now);
 
   /** Adds the time since the last call to the question on screen. */
   const spent = () => { const t = Date.now(), dt = (t - enteredAt.current) / 1000; enteredAt.current = t; return dt; };
@@ -120,11 +130,9 @@ function Exam({ start, c, onQuit }: { start: Draft; c: Content; onQuit: () => vo
 
   useEffect(() => { saveDraft(d); }, [d]);
   useEffect(() => {
-    const tick = setInterval(() => setNow(Date.now()), 1000);
     const flush = setInterval(() => { const dt = spent(); setD((p) => withTime(p, dt)); }, 5000);
-    return () => { clearInterval(tick); clearInterval(flush); };
+    return () => clearInterval(flush);
   }, []);
-  useEffect(() => { if (left === 0) submit(); });
 
   const ref = useMemo(() => resolveRedo(d.qs[d.cur], c), [d.qs, d.cur, c]);
   const n = d.qs.length;
@@ -152,7 +160,7 @@ function Exam({ start, c, onQuit }: { start: Draft; c: Content; onQuit: () => vo
   return (
     <Page className="gap-6 lg:gap-8">
       <PlayerBar kicker={`VARC sectional, question ${d.cur + 1} of ${n}`} title={ref?.kind === "rc" ? `Passage ${passageNo} of ${SECTIONAL_RC}` : ref ? VA_KIND[ref.item.kind].label : "Question"}>
-        <Timer over={left <= 300}>{fmtSecs(left)} left</Timer>
+        <Clock d={d} onEnd={submit} />
         <Button size="sm" onClick={() => setConfirm("submit")}>Submit section</Button>
       </PlayerBar>
 
@@ -194,9 +202,9 @@ function Exam({ start, c, onQuit }: { start: Draft; c: Content; onQuit: () => vo
             <div className="flex flex-col gap-4">
               <p className="text-sm text-muted-foreground">Question {d.cur + 1}, MCQ, −1 if wrong</p>
               <p className="text-lg leading-snug font-semibold">{ref.set.questions[ref.qi].stem}</p>
-              <div className="flex flex-col gap-2.5" role="radiogroup" aria-label={"Options for question " + (d.cur + 1)}>
+              <ChoiceGroup label={"Options for question " + (d.cur + 1)}>
                 {ref.set.questions[ref.qi].options.map((o, i) => <Choice key={i} mark={LETTERS[i]} checked={d.a[d.cur] === String(i)} onClick={() => setAnswer(String(i))}>{o.t}</Choice>)}
-              </div>
+              </ChoiceGroup>
               {actions}
             </div>
           </Split>
@@ -218,8 +226,8 @@ function Exam({ start, c, onQuit }: { start: Draft; c: Content; onQuit: () => vo
 
       <Button variant="link" size="sm" className="self-start text-muted-foreground" onClick={() => setConfirm("quit")}>Discard this sectional</Button>
 
-      <Confirm open={confirm === "submit"} onOpenChange={(o) => setConfirm(o ? "submit" : null)} title="Submit the section?" action="Submit" onAction={submit}>
-        {blank ? `${blank} question${blank > 1 ? "s are" : " is"} unanswered.` : "Every question has an answer."} {fmtSecs(left)} is left. You cannot change answers after this.
+      <Confirm open={confirm === "submit"} onOpenChange={(o) => setConfirm(o ? "submit" : null)} title="Submit the section?" action="Submit section" onAction={submit}>
+        {blank ? `${blank} question${blank > 1 ? "s are" : " is"} unanswered.` : "Every question has an answer."} {fmtSecs(secsLeft(d, Date.now()))} is left. You cannot change answers after this.
       </Confirm>
       <Confirm open={confirm === "quit"} onOpenChange={(o) => setConfirm(o ? "quit" : null)} title="Discard this sectional?" action="Discard" onAction={onQuit} danger>
         Nothing is saved to Progress. You can start a new one any time.

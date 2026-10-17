@@ -11,7 +11,7 @@ import { LETTERS, recordRedoAnswer } from "../../practice/record";
 import { answerRedo, dueRedo, REDO_GAPS, REDO_PER_SESSION, redoPracticeType, resolveRedo, upcomingRedo, type RedoRef } from "../../practice/redo";
 import { RC_QTYPE } from "../../practice/types";
 import { cleanAnswer, scoreItem, VA_KIND } from "../../practice/va/build";
-import { Choice } from "./common";
+import { Choice, ChoiceGroup } from "./common";
 import { PaneSwitch, Passage, ReviewQuestion, Split } from "./RcPlayer";
 import { ItemInput, ItemReview } from "./VaPlayer";
 
@@ -112,9 +112,9 @@ function RedoQuestion({ c, k, n, of, onAnswered, onNext }: { c: Content; k: stri
     <div className="flex flex-col gap-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <span className="text-base text-muted-foreground">Question {n} of {of}, {label(ref)}, missed {shortDate(item.added)}</span>
-        <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground" title={`Right ${item.box} of ${REDO_GAPS.length} times in a row`}>
-          {REDO_GAPS.map((_, i) => <i key={i} className={cn("size-2 rounded-full", i < box ? "bg-primary" : "bg-secondary")} />)}
-          <span className="ml-1">{box} of {REDO_GAPS.length}</span>
+        <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
+          {REDO_GAPS.map((_, i) => <i key={i} className={cn("size-2 rounded-full", i < box ? "bg-primary" : "bg-secondary")} aria-hidden />)}
+          <span className="ml-1">Right {box} of {REDO_GAPS.length} times in a row</span>
         </span>
       </div>
 
@@ -128,9 +128,9 @@ function RedoQuestion({ c, k, n, of, onAnswered, onNext }: { c: Content; k: stri
               <div className="flex flex-col gap-4">
                 <Badge variant="secondary">{ref.set.title}</Badge>
                 <p className="text-lg leading-snug font-semibold">{ref.set.questions[ref.qi].stem}</p>
-                <div className="flex flex-col gap-2.5" role="radiogroup" aria-label="Options">
+                <ChoiceGroup label="Options">
                   {ref.set.questions[ref.qi].options.map((o, i) => <Choice key={i} mark={LETTERS[i]} checked={pick === i} onClick={() => setPick(i)}>{o.t}</Choice>)}
-                </div>
+                </ChoiceGroup>
               </div>
             )}
             {actions}

@@ -1,27 +1,33 @@
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { addDays, shortDate, todayIso } from "../../lib/date";
 import { usePref } from "../../lib/prefs";
+import type { RcAttempt } from "../../lib/state";
 import { useStore } from "../../lib/store";
 import { Empty, LinkButton, Meta, NativeSelect, Page, PageHeader } from "../../components/kit";
 import { RC_CATALOG } from "../../practice/catalog.gen";
 import { DAILY_EPOCH, dayNumber, rcOfDay } from "../../practice/daily";
 import { GENRES, type Genre, type RcMeta } from "../../practice/types";
 
-function useBest() {
+interface Best { best: number; last: RcAttempt }
+
+/** Each tried set's best score and latest attempt, worked out once for the whole list. */
+function useBest(): Map<string, Best> {
   const { state } = useStore();
-  return (set: RcMeta) => {
-    const tries = state.rcAttempts.filter((a) => a.set === set.id);
-    if (!tries.length) return null;
-    const last = tries[tries.length - 1];
-    return { tries: tries.length, best: Math.max(...tries.map((a) => 3 * a.c - a.w)), last };
-  };
+  return useMemo(() => {
+    const m = new Map<string, Best>();
+    for (const a of state.rcAttempts) {
+      const marks = 3 * a.c - a.w, prev = m.get(a.set);
+      m.set(a.set, { best: prev ? Math.max(prev.best, marks) : marks, last: a });
+    }
+    return m;
+  }, [state.rcAttempts]);
 }
 
-function Row({ set, label }: { set: RcMeta; label?: string }) {
-  const best = useBest()(set);
+function Row({ set, label, best }: { set: RcMeta; label?: string; best?: Best }) {
   return (
     <li className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-md px-4 py-3 hover:bg-muted/60">
       <div className="flex min-w-0 flex-col gap-0.5">
@@ -39,13 +45,13 @@ function Row({ set, label }: { set: RcMeta; label?: string }) {
 
 /** Every RC set, with filters, and the archive of past RCs of the day. */
 export default function Library() {
-  const { state } = useStore();
   const today = todayIso();
   const [tab, setTab] = usePref<"all" | "daily">("libTab", "all");
   const [genre, setGenre] = usePref<Genre | "all">("libGenre", "all");
   const [diff, setDiff] = usePref<"all" | "easy" | "medium" | "hard">("libDiff", "all");
   const [hideDone, setHideDone] = usePref("libHideDone", false);
-  const tried = new Set(state.rcAttempts.map((a) => a.set));
+  const bests = useBest();
+  const tried = new Set(bests.keys());
   const lib = RC_CATALOG.filter((s) => (genre === "all" || s.genre === genre) && (diff === "all" || s.difficulty === diff) && !(hideDone && tried.has(s.id)));
   const archiveDays = Array.from({ length: 14 }, (_, i) => addDays(today, -i - 1)).filter((d) => d >= DAILY_EPOCH);
 
@@ -71,12 +77,12 @@ export default function Library() {
             <label className="inline-flex items-center gap-2.5 text-base"><Checkbox checked={hideDone} onCheckedChange={(v) => setHideDone(v === true)} />Hide sets I have tried</label>
           </div>
           {lib.length
-            ? <ul className="flex flex-col rounded-lg bg-card p-1.5">{lib.map((s) => <Row key={s.id} set={s} />)}</ul>
+            ? <ul className="flex flex-col rounded-lg bg-card p-1.5">{lib.map((s) => <Row key={s.id} set={s} best={bests.get(s.id)} />)}</ul>
             : <Empty>Nothing matches. Change the filters.</Empty>}
         </TabsContent>
         <TabsContent value="daily" className="flex flex-col gap-5">
           {archiveDays.length
-            ? <ul className="flex flex-col rounded-lg bg-card p-1.5">{archiveDays.map((d) => <Row key={d} set={rcOfDay(d)} label={`${shortDate(d)}, day ${dayNumber(d)}`} />)}</ul>
+            ? <ul className="flex flex-col rounded-lg bg-card p-1.5">{archiveDays.map((d) => { const s = rcOfDay(d); return <Row key={d} set={s} best={bests.get(s.id)} label={`${shortDate(d)}, day ${dayNumber(d)}`} />; })}</ul>
             : <Empty>Past RCs of the day appear here from tomorrow.</Empty>}
         </TabsContent>
       </Tabs>

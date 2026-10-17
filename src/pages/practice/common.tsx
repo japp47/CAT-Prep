@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { Flame } from "lucide-react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -6,6 +6,7 @@ import {
 import { cn } from "@/lib/utils";
 import { reportUrl } from "../../data/site";
 import { todayIso } from "../../lib/date";
+import { fmtSecs } from "../../practice/record";
 import { useStore } from "../../lib/store";
 import { activityDays, computeStreak } from "../../practice/streak";
 
@@ -14,18 +15,23 @@ export function useStreak() {
   return useMemo(() => computeStreak(activityDays(state), todayIso()), [state]);
 }
 
+const StreakNote = lazy(() => import("../../components/StreakNote"));
+
 export function StreakBadge() {
   const s = useStreak();
-  const title = s.days
+  const note = s.days
     ? `${s.days}-day streak${s.activeToday ? "" : ". Practice today to keep it going"}. ${s.shieldsLeft} of 2 shields left this month; a shield covers one missed day.`
     : "Practice or tick a timetable block to start a streak.";
-  return (
-    <span title={title} className="inline-flex items-center gap-1.5 rounded-full bg-card px-3 py-1.5 text-sm font-medium whitespace-nowrap">
+  const cls = "inline-flex items-center gap-1.5 rounded-full bg-card px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-colors hover:bg-card/70";
+  const face = (
+    <>
       <Flame className={cn("size-4", s.days ? "text-warning" : "text-muted-foreground")} aria-hidden />
       {s.days ? `${s.days}-day streak` : "No streak yet"}
       {s.days > 0 && <span className="text-muted-foreground">, {s.shieldsLeft} shield{s.shieldsLeft === 1 ? "" : "s"}</span>}
-    </span>
+    </>
   );
+  // A tap opens the note, so it reaches phones too, not only a mouse hover.
+  return <Suspense fallback={<span className={cls}>{face}</span>}><StreakNote note={note} className={cls}>{face}</StreakNote></Suspense>;
 }
 
 /** Seconds since the component mounted, ticking once a second while `running`. */
@@ -37,6 +43,12 @@ export function useElapsed(running: boolean, startAt: number) {
     return () => clearInterval(t);
   }, [running]);
   return Math.max(0, Math.floor((now - startAt) / 1000));
+}
+
+/** The practice clock. It ticks on its own, so the passage and the questions do not redraw every second. */
+export function ElapsedTimer({ startAt, target, onClick, title }: { startAt: number; target: number; onClick?: () => void; title?: string }) {
+  const secs = useElapsed(true, startAt);
+  return <Timer over={secs > target} onClick={onClick} title={title}>{fmtSecs(secs)} / {fmtSecs(target)}</Timer>;
 }
 
 /** "Report a problem" for one question. Opens a prefilled GitHub issue in a new tab. */
@@ -51,7 +63,7 @@ export function ReportLink({ what }: { what: string }) {
 /** The sticky bar on top of every practice screen: what you are doing, the clock, and the main action. */
 export function PlayerBar({ kicker, title, children }: { kicker: ReactNode; title: ReactNode; children?: ReactNode }) {
   return (
-    <div className="sticky top-14 z-30 -mx-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 bg-background/95 px-4 py-3 backdrop-blur-sm sm:-mx-6 sm:px-6 lg:top-0 lg:-mx-12 lg:px-12">
+    <div className="sticky top-14 z-30 bleed-gutter flex flex-wrap items-center justify-between gap-x-4 gap-y-2 bg-background/95 px-gutter py-3 backdrop-blur-sm lg:top-0">
       <div className="flex min-w-0 flex-col">
         <span className="text-sm text-muted-foreground">{kicker}</span>
         <h1 className="truncate text-heading font-semibold">{title}</h1>
@@ -77,6 +89,32 @@ export function Choice({ mark, checked, onClick, children, className }: { mark: 
       <span className="pt-0.5">{children}</span>
     </button>
   );
+}
+
+const STEP: Record<string, number> = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 };
+
+/**
+ * The options of one question. Like native radio buttons: Tab lands on the picked option
+ * (or the first), and the arrow keys move to the next option and pick it.
+ */
+export function ChoiceGroup({ label, className, children }: { label: string; className?: string; children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const radios = () => [...(ref.current?.querySelectorAll<HTMLElement>('[role="radio"]') ?? [])];
+  useEffect(() => {
+    const r = radios();
+    const on = Math.max(0, r.findIndex((x) => x.getAttribute("aria-checked") === "true"));
+    r.forEach((x, i) => { x.tabIndex = i === on ? 0 : -1; });
+  });
+  const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    const step = STEP[e.key];
+    const r = radios(), i = r.indexOf(document.activeElement as HTMLElement);
+    if (!step || i < 0) return;
+    e.preventDefault();
+    const next = r[(i + step + r.length) % r.length];
+    next.focus();
+    next.click();
+  };
+  return <div ref={ref} role="radiogroup" aria-label={label} className={cn("flex flex-col gap-2.5", className)} onKeyDown={onKeyDown}>{children}</div>;
 }
 
 /** One answer choice after marking: green for the answer, red for a wrong pick, with the reason in full ink. */

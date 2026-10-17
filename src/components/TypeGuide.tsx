@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -48,24 +48,26 @@ function Example({ g }: { g: Guide }) {
 }
 
 function Drill({ g }: { g: Guide }) {
-  const navigate = useNavigate();
+  const [seed] = useState(uid);
   if (!g.drill) return null;
   if (g.drill === "rc") return <Button asChild variant="secondary"><Link to="/practice">Practice RC on this site</Link></Button>;
   const kind = g.drill;
-  return <Button variant="secondary" onClick={() => navigate(`/practice/va?type=${kind}&n=6&seed=${uid()}`)}>Drill 6 {VA_KIND[kind].label.toLowerCase()} questions here</Button>;
+  return <Button asChild variant="secondary"><Link to={`/practice/va?type=${kind}&n=6&seed=${seed}`}>Drill 6 {VA_KIND[kind].label.toLowerCase()} questions here</Link></Button>;
 }
 
 /** One question type's guide, folded on the VARC Learn tab. */
 export function TypeGuide({ g, open, onOpenChange }: { g: Guide; open: boolean; onOpenChange: (o: boolean) => void }) {
   return (
     <Collapsible open={open} onOpenChange={onOpenChange} id={"type-" + g.id} className="scroll-mt-24 rounded-lg bg-card">
-      <CollapsibleTrigger className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left hover:text-primary sm:px-6">
-        <span className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
-          <span className="text-heading font-semibold">{g.h}</span>
-          <span className="text-sm text-muted-foreground">{g.tag}</span>
-        </span>
-        <ChevronDown className={cn("size-5 shrink-0 transition-transform", open && "rotate-180")} aria-hidden />
-      </CollapsibleTrigger>
+      <h3>
+        <CollapsibleTrigger className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left hover:text-primary sm:px-6">
+          <span className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
+            <span className="text-heading font-semibold">{g.h}</span>
+            <span className="text-sm font-normal text-muted-foreground">{g.tag}</span>
+          </span>
+          <ChevronDown className={cn("size-5 shrink-0 transition-transform", open && "rotate-180")} aria-hidden />
+        </CollapsibleTrigger>
+      </h3>
       <CollapsibleContent className="flex flex-col gap-7 px-5 pt-1 pb-6 sm:px-6">
         <p className="measure text-base">{g.what}</p>
         {g.kinds && <ul className="grid gap-x-8 gap-y-2 text-base md:grid-cols-2">{g.kinds.map(([k, v]) => <li key={k}><b className="font-semibold">{k}:</b> {v}</li>)}</ul>}
@@ -115,7 +117,7 @@ export function TypeIndex({ guides, onOpen }: { guides: Guide[]; onOpen: (id: st
       {guides.map((g) => (
         <Button key={g.id} variant="secondary" size="sm" className="rounded-full" onClick={() => {
           onOpen(g.id);
-          requestAnimationFrame(() => document.getElementById("type-" + g.id)?.scrollIntoView({ behavior: "smooth", block: "start" }));
+          requestAnimationFrame(() => document.getElementById("type-" + g.id)?.scrollIntoView({ block: "start" }));
         }}>{g.h}</Button>
       ))}
     </nav>

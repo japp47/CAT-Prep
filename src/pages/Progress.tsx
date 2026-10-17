@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { MockChart } from "../components/Chart";
-import { ErrorText, Field, LogList, LogRow, Meta, NativeSelect, Page, PageHeader, Section, Segmented, Stat } from "../components/kit";
+import { ErrorText, Field, LogList, LogRow, Meta, NativeSelect, Page, PageHeader, Section, Segmented, Stat, useDeleteWithUndo } from "../components/kit";
 import { shortDate, todayIso, uid } from "../lib/date";
 import { useStore } from "../lib/store";
 import { SECTIONS, sectionByLabel } from "../sections";
@@ -14,6 +14,7 @@ const sortDesc = <T extends { d: string }>(a: T, b: T) => (a.d < b.d ? 1 : a.d >
 
 export default function Progress() {
   const { state, update } = useStore();
+  const remove = useDeleteWithUndo();
   const [sec, setSec] = useState("VARC");
   const def = sectionByLabel(sec);
 
@@ -130,7 +131,7 @@ export default function Progress() {
         <Section title="Recent practice">
           <LogList empty="Practice sets you log from the timetable or the form above show here.">
             {practice.map((p) => (
-              <LogRow key={p.id} label="Delete this set" onDelete={() => update((st) => { st.practice = st.practice.filter((x) => x.id !== p.id); })}>
+              <LogRow key={p.id} label="Delete this set" onDelete={() => remove("practice", p.id, "Practice set")}>
                 <span className="text-base font-semibold">{p.t} <span className="font-normal text-muted-foreground">· {shortDate(p.d)}</span></span>
                 <span className="text-base tabular-nums">{p.c} of {p.a} correct, {Math.round((p.c / Math.max(p.a, 1)) * 100)}%</span>
                 {p.src && <Meta>{p.src}</Meta>}
@@ -141,7 +142,7 @@ export default function Progress() {
         <Section title="Papers and mocks">
           <LogList empty="Timed papers you log from the timetable or the form above show here.">
             {[...mocksAsc].reverse().map((x) => (
-              <LogRow key={x.id} label={"Delete result from " + shortDate(x.d)} onDelete={() => update((st) => { st.mocks = st.mocks.filter((m) => m.id !== x.id); })}>
+              <LogRow key={x.id} label={"Delete result from " + shortDate(x.d)} onDelete={() => remove("mocks", x.id, "Result")}>
                 <span className="flex flex-wrap items-center gap-2 text-base font-semibold">{x.n || x.k}<Badge variant="secondary">{x.k}</Badge></span>
                 <span className="text-base tabular-nums">{x.c} correct, {x.w} wrong, raw score {3 * x.c - x.w}</span>
                 <Meta>{shortDate(x.d)}</Meta>
