@@ -2,12 +2,12 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { todayIso, uid } from "../../lib/date";
 import { useStore } from "../../lib/store";
-import { vaOfDay } from "../../practice/daily";
+import { ContentGate } from "../../components/Content";
+import { vaKeysOfDay } from "../../practice/daily";
 import { fmtSecs, LETTERS, recordVa, vaError, vaErrorSrc } from "../../practice/record";
 import { answerLabel, cleanAnswer, customDrill, parseKey, scoreItem, sentenceAt, sumAt, VA_KIND, type VaItem, type VaKind } from "../../practice/va/build";
-import { paraText } from "../../practice/types";
+import { paraText, type VaPara } from "../../practice/types";
 import { ReportLink } from "./common";
-import { VA_PARAS } from "../../practice/va/paragraphs";
 import { useElapsed } from "./common";
 
 const SECS_PER_ITEM = 90;
@@ -15,10 +15,10 @@ const SECS_PER_ITEM = 90;
 /** A new query string (a new custom drill) starts a fresh page. */
 export default function VaPlayer() {
   const loc = useLocation();
-  return <VaPage key={loc.search} />;
+  return <ContentGate>{(c) => <VaPage key={loc.search} paras={c.vaParas} />}</ContentGate>;
 }
 
-function VaPage() {
+function VaPage({ paras }: { paras: VaPara[] }) {
   const [sp] = useSearchParams();
   const { state } = useStore();
   const today = todayIso();
@@ -29,11 +29,12 @@ function VaPage() {
   // Fix the item list when the page opens, so finishing a drill does not reshuffle it.
   const [items] = useState<VaItem[]>(() => {
     const past = reviewId ? state.vaAttempts.find((a) => a.id === reviewId) : undefined;
-    if (past) return past.items.map((i) => parseKey(i.k, VA_PARAS)).filter((x): x is VaItem => !!x);
-    if (mode === "daily") return vaOfDay(today);
+    const build = (keys: string[]) => keys.map((k) => parseKey(k, paras)).filter((x): x is VaItem => !!x);
+    if (past) return build(past.items.map((i) => i.k));
+    if (mode === "daily") return build(vaKeysOfDay(today));
     const n = Math.min(Math.max(parseInt(sp.get("n") ?? "6", 10) || 6, 2), 12);
     const seen = new Set(state.vaAttempts.flatMap((a) => a.items.map((i) => i.k)));
-    return customDrill(VA_PARAS, type && (type === "mix" || type in VA_KIND) ? type : "mix", n, sp.get("seed") ?? "x", seen);
+    return customDrill(paras, type && (type === "mix" || type in VA_KIND) ? type : "mix", n, sp.get("seed") ?? "x", seen);
   });
   const doneToday = mode === "daily" && !reviewId ? state.vaAttempts.find((a) => a.mode === "daily" && a.d === today) : undefined;
   const initial = reviewId ?? doneToday?.id ?? null;

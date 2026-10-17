@@ -5,17 +5,21 @@ A free, open CAT preparation website built with React, TypeScript and Vite. It w
 - **Today's timetable.** A daily plan built from your phase and the time you have. Defaults are 1 hour on weekdays and 2 hours on Saturday and Sunday. Change any single day (Rest, 30 min to 3 hours, or a custom number), set a different time per day of the week, or lower a whole date range for an exam week. Missed core tasks come back as a catch-up.
 - **Plan.** Five phases to CAT 2027 (Foundation, Build, Apply, Mock phase, Taper), with time presets and a preview of a typical weekday and Saturday in each phase.
 - **Sections.** VARC is live with about 120 curated resources, concept notes, a reading rotation and topper data. DILR and Quant are placeholders that are ready to fill.
-- **Practice.** 20 original RC sets (4 questions each, an explanation for every option, a trap label on every wrong one), an RC of the day with an archive, a daily VA drill (para jumbles, odd sentence out, sentence insertion) plus custom drills, and a reading speed test. Results go into Progress, a wrong answer goes to the Error log in one tap, and tapping a word in a reviewed passage saves it to Words. A streak with two shields a month counts any day with activity.
+- **Practice.** 40 original RC sets (4 questions each, an explanation for every option, a trap label on every wrong one), an RC of the day with an archive, a daily VA drill with all four CAT types (para summary, sentence insertion, odd sentence out, para jumbles) plus custom drills, and a reading speed test. Results go into Progress, a wrong answer goes to the Error log in one tap, and tapping a word in a reviewed passage saves it to Words. A streak with two shields a month counts any day with activity. Every question has a "Report a problem" link that opens a prefilled GitHub issue.
+- **Redo queue.** Every question missed in Practice comes back after 1, 3 and 7 days, until it is right three times in a row.
+- **Focus timer.** Start a timer on any timetable block. It keeps running across pages, suggests a break every 25 minutes, and records real minutes against the plan.
 - **Track.** Practice accuracy by question type, a mock score chart, an error log and spaced-repetition flashcards.
 - **Explore.** Important updates (marked official or expected), the CAT pattern and yearly timeline, other MBA exams, guides and topper stories.
 - **Your data stays in the browser** (localStorage), with backup download and restore in Settings.
+- **Installable and offline.** A web app manifest and a small service worker (written by `vite.config.ts` at build time, no extra dependency) let students install the site and open it without internet. Settings also adds a daily study reminder to Google, Apple or Outlook calendar.
 
 ## Run locally
 
 ```bash
 npm install
 npm run dev        # http://localhost:5173
-npm test           # timetable engine tests
+npm test           # planner, practice, content and redo-queue tests
+npm run catalog    # rebuild the content catalog after editing practice content
 npm run build      # production build in dist/
 ```
 
@@ -29,10 +33,12 @@ src/
     index.ts      section registry (VARC live, DILR and Quant "soon")
     varc/         resources, phase templates, concept notes
   planner/        engine that fits blocks into the day's minutes, plus tests
-  practice/       RC sets (rc/), VA paragraphs (va/), daily picks, streaks, attempt recording, plus tests
-  lib/            dates, saved state, store, per-browser preferences
+  practice/       RC sets (rc/), VA paragraphs (va/), daily picks, streaks, redo queue, attempt recording, plus tests
+  lib/            dates, saved state, store, preferences, focus timer, install and calendar helpers
   pages/          one file per route
-  components/     layout, links, chart, resource list
+  components/     layout, links, chart, resource list, focus bar
+pwa/sw.js         service worker template, filled in at build time
+docs/plan.md      product and backend plan
 ```
 
 ### Posting an update
@@ -49,9 +55,12 @@ The Today page, Plan page, navigation, Progress and Error log pick it up automat
 ### Adding practice content
 
 - **RC set:** add an object to one of the files in `src/practice/rc/`. Build options with `o(text, why, trap)`: leave the trap off the one right answer. `npm test` checks every set (4 questions, one answer each, a trap on every wrong option, valid proof paragraphs).
-- **VA paragraph:** add to `src/practice/va/paragraphs.ts`: four core sentences in order, a cue for each, an odd sentence, and an insertion sentence with its gap. Each paragraph becomes a para jumble, an odd sentence out and a sentence insertion.
+- **VA paragraph:** add to `src/practice/va/paragraphs.ts`: four core sentences in order, a cue for each, an odd sentence, an insertion sentence with its gap, and four para summary options built with `o()` like RC options. Each paragraph becomes a para summary, a para jumble, an odd sentence out and a sentence insertion. The tests also check that the right summary is not usually the longest option, so students cannot guess by length.
+- **Before publishing new content,** have a second person check the answer keys. Students can report problems from any question's review.
 
-The RC of the day and the daily VA drill rotate through everything automatically.
+After adding or changing content, run `npm run catalog`. It writes `src/practice/catalog.gen.ts` (titles, genres, word counts and dates), which the main bundle uses; the full passages load as a separate file only when a practice page opens. `npm run build` regenerates it too, and `npm test` fails if it is out of date.
+
+Give every new RC set or VA paragraph `since: "YYYY-MM-DD"`, set to the day after you publish. The RC of the day and the daily VA drill rotate in cycles, and new content joins at the next cycle after that date, so days already served never change. A test freezes the first days of the series to catch mistakes.
 
 ### Moving the exam date
 

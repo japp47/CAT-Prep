@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { shortDate, todayIso } from "../../lib/date";
+import { ContentGate } from "../../components/Content";
 import { useStore } from "../../lib/store";
+import type { Content } from "../../practice/content";
 import { LETTERS, recordRedoAnswer } from "../../practice/record";
 import { answerRedo, dueRedo, REDO_GAPS, REDO_PER_SESSION, redoPracticeType, resolveRedo, upcomingRedo, type RedoRef } from "../../practice/redo";
 import { RC_QTYPE } from "../../practice/types";
@@ -49,14 +51,19 @@ export default function Redo() {
           </div>
         </div>
       ) : (
-        <RedoQuestion
-          key={session[pos]}
-          k={session[pos]}
-          n={pos + 1}
-          of={session.length}
-          onAnswered={(ok, done) => setResults((r) => [...r, { ok, cleared: done }])}
-          onNext={() => setPos((p) => p + 1)}
-        />
+        <ContentGate inline>
+          {(c) => (
+            <RedoQuestion
+              key={session[pos]}
+              c={c}
+              k={session[pos]}
+              n={pos + 1}
+              of={session.length}
+              onAnswered={(ok, done) => setResults((r) => [...r, { ok, cleared: done }])}
+              onNext={() => setPos((p) => p + 1)}
+            />
+          )}
+        </ContentGate>
       )}
 
       <div className="card">
@@ -76,9 +83,9 @@ export default function Redo() {
   );
 }
 
-function RedoQuestion({ k, n, of, onAnswered, onNext }: { k: string; n: number; of: number; onAnswered: (ok: boolean, cleared: boolean) => void; onNext: () => void }) {
+function RedoQuestion({ c, k, n, of, onAnswered, onNext }: { c: Content; k: string; n: number; of: number; onAnswered: (ok: boolean, cleared: boolean) => void; onNext: () => void }) {
   const { state, update } = useStore();
-  const ref = resolveRedo(k);
+  const ref = resolveRedo(k, c);
   const [pick, setPick] = useState<number | null>(null);
   const [typed, setTyped] = useState("");
   const [result, setResult] = useState<{ ok: boolean; cleared: boolean; box: number; gaveUp: boolean } | null>(null);

@@ -173,4 +173,90 @@ export const SOCIETY: RcSet[] = [
       recall("Which of these does the passage say cash cannot do?", ["Pay school fees", "Build a road", "Buy livestock", "Start a business"], 1),
     ],
   },
+  {
+    id: "soc-streets",
+    title: "Eyes on the street",
+    genre: "society",
+    difficulty: "medium",
+    since: "2026-10-18",
+    paras: [
+      "In 1961 the writer and activist Jane Jacobs published a book that attacked the planners then rebuilding American cities. Their ideal was order: homes in one zone, offices in another, shops in a third, with wide roads and open lawns between towers. Many of the neighbourhoods Jacobs defended were labelled slums and marked for clearance. Jacobs, who lived on a busy street in Greenwich Village, argued that the planners' tidy vision destroyed the very things that made cities work.",
+      "Her central observation was about safety. A street feels safe, she wrote, not because of police patrols or walls but because people are using it at all hours and watching it, often without meaning to. Shopkeepers, residents at their windows, people heading to work or out for the evening: these 'eyes on the street' notice trouble and, by being there, discourage it. A street with a mix of homes, shops, workplaces and bars has people on it from morning to night; a street of offices alone is busy at noon and empty, and so more threatening, after dark.",
+      "Many of her ideas have since become orthodox. Planners now speak of mixed use and short blocks, and cities from Copenhagen to Bogotá have narrowed roads to give space back to walking. Some research supports her intuition about watchfulness, finding that busy, mixed streets have fewer street robberies. Yet the evidence is not simple: a crowd can shelter pickpockets as well as deter muggers, and the same busy bar that keeps a street lively at night may also be the source of its fights.",
+      "A sharper criticism concerns who benefits. The lively neighbourhoods Jacobs admired have become some of the most expensive places to live, and the residents who once supplied the 'eyes' have often been priced out. Jacobs saw a diversity of people and uses as a city's strength, but she offered few tools for protecting it once a neighbourhood became fashionable. Her defenders reply that a book written to stop bulldozers cannot be blamed for a housing market it did not foresee. Both sides agree on one thing: a street is not just a channel for traffic but a place where people keep an eye on each other.",
+    ],
+    questions: [
+      q("main", "Which of the following best captures the main point of the passage?", [1, 2, 3], [
+        o("Cities should separate homes, offices and shops into their own zones.", "That is the planners' ideal Jacobs attacked.", "Distorts the passage"),
+        o("Police patrols are the main reason streets feel safe.", "Jacobs says safety comes from people using and watching the street, not patrols.", "Distorts the passage"),
+        o("Jane Jacobs single-handedly stopped the rebuilding of American cities.", "Nothing claims she stopped it alone.", "Extreme wording"),
+        o("Jacobs's idea that busy, mixed streets keep people safe has been influential, though the evidence is mixed and such neighbourhoods face new problems.", "Covers the idea, its influence, the mixed evidence and the criticism about cost."),
+      ]),
+      q("inference", "By Jacobs's reasoning, a street lined only with offices would be:", [1], [
+        o("safer at night, since fewer people are about to cause trouble", "She argues the opposite: emptiness makes a street threatening.", "Distorts the passage"),
+        o("busy at all hours", "It is 'busy at noon and empty' after dark.", "Distorts the passage"),
+        o("less safe after dark, because no one is there to watch it", "Paragraph 2 says such a street is 'more threatening, after dark'."),
+        o("the ideal design for a modern city", "This is the planners' view, not hers.", "Distorts the passage"),
+      ]),
+      q("except", "The passage mentions all of the following as complications for Jacobs's ideas EXCEPT:", [2, 3], [
+        o("crowds can shelter pickpockets", "Named in paragraph 3.", "True but not the answer"),
+        o("short blocks make streets harder to police", "Short blocks are mentioned only as an idea planners adopted, not as a problem."),
+        o("a busy bar may also be the source of fights", "Named in paragraph 3.", "True but not the answer"),
+        o("lively neighbourhoods become expensive and push residents out", "Named in paragraph 4.", "True but not the answer"),
+      ]),
+      q("tone", "The author's attitude towards Jacobs is best described as:", [2, 3], [
+        o("appreciative, but aware of the limits of her ideas", "The author credits her influence while reporting mixed evidence and fair criticism."),
+        o("dismissive of her as an amateur", "Her ideas are said to have become orthodox.", "Distorts the passage"),
+        o("uncritical admiration", "The author gives space to criticisms.", "Extreme wording"),
+        o("indifferent, since her ideas are now outdated", "The closing sentence affirms her central point.", "Distorts the passage"),
+      ]),
+    ],
+    recall: [
+      recall("In which year did Jacobs publish her book?", ["1951", "1961", "1971", "1981"], 1),
+      recall("What phrase does the passage use for people who watch a street?", ["Eyes on the street", "Neighbourhood watch", "Street guardians", "Public eyes"], 0),
+    ],
+  },
+  {
+    id: "soc-corrections",
+    title: "Do corrections backfire?",
+    genre: "society",
+    difficulty: "hard",
+    since: "2026-10-18",
+    paras: [
+      "In 2010 two political scientists reported a troubling result. When people who held a false belief were shown a correction, some of them held the belief more firmly than before. The finding, soon called the backfire effect, seemed to explain a great deal about politics and the internet: facts, it appeared, could not only fail to persuade but actively entrench error. Journalists and fact-checkers began to wonder whether their work was doing more harm than good.",
+      "Later research was more reassuring. Large studies across many topics, including some by the original authors, found that the backfire effect was rare and hard to reproduce. One widely cited study, testing dozens of claims on thousands of participants, found almost no instances of it. In most cases, people shown a correction moved, at least somewhat, towards the accurate view, even when the correction cut against their political loyalties. The earlier result may have reflected particular questions, small samples, or the noise that appears when many effects are tested and only the striking ones are reported.",
+      "That corrections work does not mean they work well. Their effects are often modest and fade within weeks, while the original falsehood, repeated often enough, can feel familiar and therefore true. People may also accept a correction of a specific claim while keeping the broader attitude it supported, much as one might concede that a particular statistic was wrong without changing one's mind about the policy it was used to defend.",
+      "Some researchers have therefore turned from correcting to 'prebunking'. Rather than chasing each false claim, they teach people in advance to recognise the techniques common to many of them, such as false dilemmas, emotional language or fake experts. Short games and videos built on this idea, sometimes compared to a vaccine that exposes people to a weakened dose of manipulation, have produced measurable improvements in people's ability to spot misleading posts. Whether such training lasts, or reaches the people most exposed to falsehoods, is still an open question. But the shift reflects a sober conclusion from the backfire debate: the problem was never that facts are useless, only that a single correction is a weak tool against a story told a thousand times.",
+    ],
+    questions: [
+      q("main", "Which of the following best summarises the passage?", [1, 2, 3], [
+        o("Correcting a false belief usually makes people hold it more firmly.", "Later research found backfire rare.", "Distorts the passage"),
+        o("Fact-checking is useless and should be abandoned.", "The author says facts are not useless.", "Extreme wording"),
+        o("Corrections rarely backfire, but their modest, fading effects have led researchers to teach people to spot manipulation in advance.", "Covers the reassuring research, its limits and the turn to prebunking."),
+        o("The political scientists invented the backfire effect.", "Their result is said to be hard to reproduce, not invented.", "Distorts the passage"),
+      ]),
+      q("strengthen", "Which finding would most support the explanation offered at the end of the second paragraph for the 2010 result?", [1], [
+        o("In the large studies, corrections moved people towards accuracy.", "This shows backfire is rare but does not explain why the first study found it.", "True but not the answer"),
+        o("Repeating the 2010 study with much larger samples and the same questions produced no backfire.", "It points to small samples, which is one of the explanations offered."),
+        o("People forget corrections within a few weeks.", "This is about the limits of corrections, not the 2010 result.", "True but not the answer"),
+        o("Prebunking games improve people's ability to spot misleading posts.", "It concerns a different approach altogether.", "Out of scope"),
+      ]),
+      q("inference", "The example of conceding a statistic while keeping a view on policy illustrates that:", [2], [
+        o("people never change their minds", "They do change their minds on the specific claim.", "Extreme wording"),
+        o("statistics in political debates are usually wrong", "The passage makes no such claim.", "Out of scope"),
+        o("corrections always fade within weeks", "Fading is a separate point, and 'always' is too strong.", "Extreme wording"),
+        o("a correction can succeed on its narrow point without changing the wider attitude", "This is exactly what the comparison describes."),
+      ]),
+      q("application", "Which of the following is an example of prebunking as the passage describes it?", [3], [
+        o("A short online game that shows players how fake experts are used to make claims look credible", "It teaches a common technique in advance, before any particular false claim."),
+        o("A newspaper article correcting a false statistic that a politician repeated", "This corrects one claim after the fact.", "Distorts the passage"),
+        o("A vaccination campaign run by a health ministry", "The vaccine is only a comparison.", "Out of scope"),
+        o("Repeating a false claim often so that people remember it", "That is how falsehoods spread, not how prebunking works.", "Distorts the passage"),
+      ]),
+    ],
+    recall: [
+      recall("In which year was the backfire effect first reported?", ["2000", "2010", "2016", "2020"], 1),
+      recall("What is prebunking compared to?", ["A vaccine", "A firewall", "A filter", "A lie detector"], 0),
+    ],
+  },
 ];

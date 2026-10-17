@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { blankState, normalize, type AppState } from "../lib/state";
+import { CONTENT } from "./bank";
 import { RC_SETS } from "./rc";
 import { recordRc, recordRedoAnswer, recordVa, REDO_SRC } from "./record";
-import { answerRedo, dueRedo, queueMiss, rcRedoKey, resolveRedo, seedRedo, upcomingRedo } from "./redo";
+import { answerRedo, dueRedo, queueMiss, rcRedoKey, redoKeyExists, resolveRedo, seedRedo, upcomingRedo } from "./redo";
 import { buildItem } from "./va/build";
 import { VA_PARAS } from "./va/paragraphs";
 
@@ -51,11 +52,14 @@ describe("redo queue", () => {
     expect(upcomingRedo(st.redo, "2026-10-12")).toEqual([["2026-10-16", 1]]);
   });
   it("resolves RC and VA keys", () => {
-    const rc = resolveRedo(rcRedoKey(set.id, 3));
+    const rc = resolveRedo(rcRedoKey(set.id, 3), CONTENT);
     expect(rc?.kind === "rc" && rc.qi).toBe(3);
-    const va = resolveRedo("ps:" + VA_PARAS[0].id);
+    const va = resolveRedo("ps:" + VA_PARAS[0].id, CONTENT);
     expect(va?.kind === "va" && va.item.kind).toBe("ps");
-    expect(resolveRedo("zz:nothing")).toBeNull();
+    expect(resolveRedo("zz:nothing", CONTENT)).toBeNull();
+    expect(redoKeyExists(rcRedoKey(set.id, 3))).toBe(true);
+    expect(redoKeyExists(rcRedoKey(set.id, 9))).toBe(false);
+    expect(redoKeyExists("ps:" + VA_PARAS[0].id)).toBe(true);
   });
 });
 
@@ -89,13 +93,16 @@ describe("saves from before the queue", () => {
     const st = fresh();
     st.rcAttempts.push({ id: "1", d: "2026-10-12", set: set.id, mode: "library", ans: wrongAt(0), c: 3, w: 1, secs: 1, first: 1 });
     st.rcAttempts.push({ id: "2", d: "2026-10-13", set: set.id, mode: "library", ans: wrongAt(1), c: 3, w: 1, secs: 1, first: 1 });
-    seedRedo(st);
+    seedRedo(st, CONTENT);
     expect(st.redo.map((r) => r.k)).toEqual([rcRedoKey(set.id, 1)]);
     expect(st.redo[0].due).toBe("2026-10-14");
   });
-  it("seeds when the saved state has no queue, and keeps a saved queue as it is", () => {
+  it("marks saves without a queue for seeding, and keeps a saved queue as it is", () => {
     const old = { rcAttempts: [{ id: "1", d: "2026-10-12", set: set.id, mode: "library", ans: wrongAt(2), c: 3, w: 1, secs: 1, first: 1 }] };
-    expect(normalize(old).redo.map((r) => r.k)).toEqual([rcRedoKey(set.id, 2)]);
-    expect(normalize({ ...old, redo: [] }).redo).toEqual([]);
+    expect(normalize(old).redoSeeded).toBe(false);
+    const saved = normalize({ ...old, redo: [{ k: rcRedoKey(set.id, 0), added: "2026-10-12", due: "2026-10-13", box: 0, tries: 0 }] });
+    expect(saved.redoSeeded).toBe(true);
+    expect(saved.redo.map((r) => r.k)).toEqual([rcRedoKey(set.id, 0)]);
+    expect(blankState().redoSeeded).toBe(true);
   });
 });

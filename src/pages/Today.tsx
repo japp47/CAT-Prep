@@ -10,10 +10,10 @@ import { buildDay, budgetFor, carryInfo, defaultMin, doneKey, doneMinutes, coreO
 import { useFocus } from "../lib/focus";
 import { LIVE_SECTIONS, SECTIONS } from "../sections";
 import type { SectionDef } from "../sections/types";
-import { rcOfDay, vaOfDay } from "../practice/daily";
+import { rcOfDay } from "../practice/daily";
 import { dueRedo } from "../practice/redo";
-import { scoreRc } from "../practice/record";
 import { GENRES } from "../practice/types";
+import { DAILY_MIX } from "../practice/va/build";
 import { StreakBadge } from "./practice/common";
 
 const CHIP_MINS = [0, 30, 45, 60, 90, 120, 150, 180];
@@ -299,11 +299,11 @@ function PracticeToday({ today }: { today: string }) {
       <ul className="plain next">
         <li>
           <div style={{ minWidth: 0 }}><span className="ct">RC of the day · {GENRES[rc.genre]}</span><Link className="res-name" to={`/practice/rc/${rc.id}`}>{rc.title}</Link>
-            {rcTry && <span className="ok small"> · {scoreRc(rc, rcTry.ans).c} of 4 correct</span>}</div>
+            {rcTry && <span className="ok small"> · {rcTry.c} of {rc.questions} correct</span>}</div>
           <Link className="go" to={rcTry ? `/practice/rc/${rc.id}?review=${rcTry.id}` : `/practice/rc/${rc.id}`}>{rcTry ? "Review" : "Start"}</Link>
         </li>
         <li>
-          <div style={{ minWidth: 0 }}><span className="ct">Daily VA drill</span><Link className="res-name" to="/practice/va">{vaOfDay(today).length} questions: para summary, sentence insertion, odd sentence out, para jumbles</Link>
+          <div style={{ minWidth: 0 }}><span className="ct">Daily VA drill</span><Link className="res-name" to="/practice/va">{DAILY_MIX.length} questions: para summary, sentence insertion, odd sentence out, para jumbles</Link>
             {vaTry && <span className="ok small"> · {vaTry.items.filter((i) => i.ok).length} of {vaTry.items.length} correct</span>}</div>
           <Link className="go" to="/practice/va">{vaTry ? "Review" : "Start"}</Link>
         </li>

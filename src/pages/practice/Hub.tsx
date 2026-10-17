@@ -3,32 +3,31 @@ import { Link, useNavigate } from "react-router-dom";
 import { addDays, shortDate, todayIso, uid } from "../../lib/date";
 import { usePref } from "../../lib/prefs";
 import { useStore } from "../../lib/store";
-import { DAILY_EPOCH, dayNumber, rcOfDay, vaOfDay } from "../../practice/daily";
-import { RC_SETS } from "../../practice/rc";
+import { RC_CATALOG } from "../../practice/catalog.gen";
+import { DAILY_EPOCH, dayNumber, rcOfDay } from "../../practice/daily";
 import { dueRedo } from "../../practice/redo";
-import { scoreRc } from "../../practice/record";
-import { GENRES, setWords, type Genre, type RcSet } from "../../practice/types";
-import { VA_KIND, type VaKind } from "../../practice/va/build";
+import { GENRES, type Genre, type RcMeta } from "../../practice/types";
+import { DAILY_MIX, VA_KIND, type VaKind } from "../../practice/va/build";
 import { StreakBadge } from "./common";
 
 function useBest() {
   const { state } = useStore();
-  return (set: RcSet) => {
+  return (set: RcMeta) => {
     const tries = state.rcAttempts.filter((a) => a.set === set.id);
     if (!tries.length) return null;
     const last = tries[tries.length - 1];
-    return { tries: tries.length, best: Math.max(...tries.map((a) => scoreRc(set, a.ans).marks)), last };
+    return { tries: tries.length, best: Math.max(...tries.map((a) => 3 * a.c - a.w)), last };
   };
 }
 
-function RcRow({ set, label }: { set: RcSet; label?: string }) {
+function RcRow({ set, label }: { set: RcMeta; label?: string }) {
   const best = useBest()(set);
   return (
     <li>
       <div style={{ minWidth: 0 }}>
         {label && <span className="eyebrow">{label}</span>}
         <div><Link className="res-name" to={`/practice/rc/${set.id}`}>{set.title}</Link></div>
-        <span className="meta">{GENRES[set.genre]} · {set.difficulty} · {setWords(set)} words{best ? ` · best ${best.best > 0 ? "+" : ""}${best.best}/12` : ""}</span>
+        <span className="meta">{GENRES[set.genre]} · {set.difficulty} · {set.words} words{best ? ` · best ${best.best > 0 ? "+" : ""}${best.best}/${3 * set.questions}` : ""}</span>
       </div>
       <div className="row">
         {best && <Link className="link" to={`/practice/rc/${set.id}?review=${best.last.id}`}>Review</Link>}
@@ -45,7 +44,6 @@ export default function PracticeHub() {
   const daily = rcOfDay(today);
   const dailyTry = state.rcAttempts.filter((a) => a.set === daily.id && a.d === today).pop();
   const vaToday = state.vaAttempts.filter((a) => a.mode === "daily" && a.d === today).pop();
-  const vaItems = vaOfDay(today);
   const best = state.speedRuns.filter((r) => r.recall === 2).reduce((m, r) => Math.max(m, r.wpm), 0);
   const redoDue = dueRedo(state.redo, today).length;
   const redoOpen = state.redo.filter((r) => !r.cleared).length;
@@ -57,7 +55,7 @@ export default function PracticeHub() {
   const [count, setCount] = useState(6);
 
   const tried = new Set(state.rcAttempts.map((a) => a.set));
-  const lib = RC_SETS.filter((s) => (genre === "all" || s.genre === genre) && (diff === "all" || s.difficulty === diff) && !(hideDone && tried.has(s.id)));
+  const lib = RC_CATALOG.filter((s) => (genre === "all" || s.genre === genre) && (diff === "all" || s.difficulty === diff) && !(hideDone && tried.has(s.id)));
   const archiveDays = Array.from({ length: 14 }, (_, i) => addDays(today, -i - 1)).filter((d) => d >= DAILY_EPOCH);
 
   return (
@@ -72,9 +70,9 @@ export default function PracticeHub() {
         <div className="card stack accent">
           <span className="eyebrow">RC of the day · day {dayNumber(today)}</span>
           <h3>{daily.title}</h3>
-          <p className="muted small">{GENRES[daily.genre]} · {daily.difficulty} · {setWords(daily)} words · 4 questions · about 7 minutes</p>
+          <p className="muted small">{GENRES[daily.genre]} · {daily.difficulty} · {daily.words} words · {daily.questions} questions · about 7 minutes</p>
           {dailyTry
-            ? <p className="ok">Done today: {scoreRc(daily, dailyTry.ans).c} of 4 correct.</p>
+            ? <p className="ok">Done today: {dailyTry.c} of {daily.questions} correct.</p>
             : <p className="muted small">The same passage for everyone today. A new one tomorrow.</p>}
           <div className="row">
             {dailyTry
@@ -84,7 +82,7 @@ export default function PracticeHub() {
         </div>
         <div className="card stack">
           <span className="eyebrow">Daily VA drill</span>
-          <h3>{vaItems.length} questions, about 12 minutes</h3>
+          <h3>{DAILY_MIX.length} questions, about 12 minutes</h3>
           <p className="muted small">2 each of para summary, sentence insertion, odd sentence out and para jumbles, the mix CAT used in 2023 and 2025, marked the way CAT marks them.</p>
           {vaToday && <p className="ok">Done today: {vaToday.items.filter((i) => i.ok).length} of {vaToday.items.length} correct.</p>}
           <div className="row"><Link className="btn" to="/practice/va">{vaToday ? "Review" : "Start"}</Link></div>
@@ -129,7 +127,7 @@ export default function PracticeHub() {
       </div>
 
       <section className="stack">
-        <div className="row" style={{ justifyContent: "space-between" }}><h2>RC library</h2><span className="muted small">{tried.size} of {RC_SETS.length} tried</span></div>
+        <div className="row" style={{ justifyContent: "space-between" }}><h2>RC library</h2><span className="muted small">{tried.size} of {RC_CATALOG.length} tried</span></div>
         <div className="controls">
           <select aria-label="Genre" value={genre} onChange={(e) => setGenre(e.target.value as Genre | "all")} style={{ width: "auto" }}>
             <option value="all">All genres</option>

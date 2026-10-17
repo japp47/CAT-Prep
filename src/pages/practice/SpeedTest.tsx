@@ -2,8 +2,9 @@ import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { shortDate, todayIso, uid } from "../../lib/date";
 import { useStore } from "../../lib/store";
+import { ContentGate } from "../../components/Content";
+import type { Content } from "../../practice/content";
 import { speedSetOfDay } from "../../practice/daily";
-import { RC_SETS, rcById } from "../../practice/rc";
 import { fmtSecs, LETTERS } from "../../practice/record";
 import { setWords, type RcSet } from "../../practice/types";
 
@@ -23,9 +24,14 @@ function verdict(wpm: number, recall: number) {
 type Phase = "intro" | "read" | "recall" | "done";
 
 export default function SpeedTest() {
+  return <ContentGate>{(c) => <SpeedPage c={c} />}</ContentGate>;
+}
+
+function SpeedPage({ c }: { c: Content }) {
+  const { rcSets, rcById } = c;
   const { state, update } = useStore();
   const today = todayIso();
-  const [set, setSet] = useState<RcSet>(() => speedSetOfDay(today));
+  const [set, setSet] = useState<RcSet>(() => rcById(speedSetOfDay(today).id) ?? rcSets[0]);
   const [phase, setPhase] = useState<Phase>("intro");
   const [picks, setPicks] = useState<(number | null)[]>([null, null]);
   const [tooQuick, setTooQuick] = useState(false);
@@ -39,8 +45,8 @@ export default function SpeedTest() {
 
   const random = () => {
     const recent = new Set(runs.slice(0, 10).map((r) => r.set));
-    const pool = RC_SETS.filter((s) => !recent.has(s.id) && s.id !== set.id);
-    const list = pool.length ? pool : RC_SETS.filter((s) => s.id !== set.id);
+    const pool = rcSets.filter((s) => !recent.has(s.id) && s.id !== set.id);
+    const list = pool.length ? pool : rcSets.filter((s) => s.id !== set.id);
     setSet(list[Math.floor(Math.random() * list.length)]);
   };
   const begin = () => { startAt.current = Date.now(); setPhase("read"); window.scrollTo(0, 0); };
