@@ -1,10 +1,10 @@
-import { Link } from "react-router-dom";
+import { LinkButton, Page, PageHeader } from "../components/kit";
 
 export default function NotFound() {
   return (
-    <div className="page">
-      <div className="view-head"><h1>Page not found</h1><p>That page does not exist. It may have moved.</p></div>
-      <div className="row"><Link className="btn" to="/">Go home</Link><Link className="btn ghost" to="/today">Open today's timetable</Link></div>
-    </div>
+    <Page width="read">
+      <PageHeader title="Page not found">That page does not exist. It may have moved.</PageHeader>
+      <div className="flex flex-wrap gap-3"><LinkButton to="/">Go home</LinkButton><LinkButton to="/today" variant="secondary">Open Today</LinkButton></div>
+    </Page>
   );
 }

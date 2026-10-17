@@ -1,29 +1,34 @@
-import { useEffect } from "react";
+import { lazy, useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import Layout from "./components/Layout";
-import Errors from "./pages/Errors";
-import Exams from "./pages/Exams";
-import { GuideList, GuidePage } from "./pages/Guides";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
-import Plan from "./pages/Plan";
-import PracticeHub from "./pages/practice/Hub";
-import RcPlayer from "./pages/practice/RcPlayer";
-import Redo from "./pages/practice/Redo";
-import Sectional, { SectionalReview } from "./pages/practice/Sectional";
-import SpeedTest from "./pages/practice/SpeedTest";
-import VaPlayer from "./pages/practice/VaPlayer";
-import Progress from "./pages/Progress";
-import Roadmap from "./pages/Roadmap";
-import Section from "./pages/Section";
-import Settings from "./pages/Settings";
-import Stories from "./pages/Stories";
-import Today from "./pages/Today";
-import Updates from "./pages/Updates";
-import Words from "./pages/Words";
+
+// Each page loads when it is first opened, so the first visit downloads only the shell and the home page.
+const Errors = lazy(() => import("./pages/Errors"));
+const Exams = lazy(() => import("./pages/Exams"));
+const GuideList = lazy(() => import("./pages/Guides").then((m) => ({ default: m.GuideList })));
+const GuidePage = lazy(() => import("./pages/Guides").then((m) => ({ default: m.GuidePage })));
+const Plan = lazy(() => import("./pages/Plan"));
+const PracticeHub = lazy(() => import("./pages/practice/Hub"));
+const Library = lazy(() => import("./pages/practice/Library"));
+const RcPlayer = lazy(() => import("./pages/practice/RcPlayer"));
+const Redo = lazy(() => import("./pages/practice/Redo"));
+const Sectional = lazy(() => import("./pages/practice/Sectional"));
+const SectionalReview = lazy(() => import("./pages/practice/Sectional").then((m) => ({ default: m.SectionalReview })));
+const SpeedTest = lazy(() => import("./pages/practice/SpeedTest"));
+const VaPlayer = lazy(() => import("./pages/practice/VaPlayer"));
+const Progress = lazy(() => import("./pages/Progress"));
+const Roadmap = lazy(() => import("./pages/Roadmap"));
+const Section = lazy(() => import("./pages/Section"));
+const Settings = lazy(() => import("./pages/Settings"));
+const Stories = lazy(() => import("./pages/Stories"));
+const Today = lazy(() => import("./pages/Today"));
+const Updates = lazy(() => import("./pages/Updates"));
+const Words = lazy(() => import("./pages/Words"));
 
 const TITLES: Record<string, string> = {
-  "/": "CAT Prep Hub", "/today": "Today", "/plan": "Plan and time", "/practice": "Practice", "/practice/va": "VA drill", "/practice/speed": "Reading speed test", "/practice/redo": "Redo queue", "/varc": "VARC", "/dilr": "DILR", "/quant": "Quant",
+  "/": "CAT Prep Hub", "/today": "Today", "/plan": "Plan and time", "/practice": "Practice", "/practice/library": "RC library", "/practice/sectional": "VARC sectional", "/practice/va": "VA drill", "/practice/speed": "Reading speed test", "/practice/redo": "Redo queue", "/varc": "VARC", "/dilr": "DILR", "/quant": "Quant",
   "/progress": "Progress", "/errors": "Error log", "/words": "Words", "/updates": "Important updates", "/exams": "CAT and other exams",
   "/guides": "Guides", "/stories": "Topper stories", "/roadmap": "What's coming", "/settings": "Settings",
 };
@@ -47,6 +52,7 @@ export default function App() {
           <Route path="today" element={<Today />} />
           <Route path="plan" element={<Plan />} />
           <Route path="practice" element={<PracticeHub />} />
+          <Route path="practice/library" element={<Library />} />
           <Route path="practice/rc/:id" element={<RcPlayer />} />
           <Route path="practice/va" element={<VaPlayer />} />
           <Route path="practice/speed" element={<SpeedTest />} />

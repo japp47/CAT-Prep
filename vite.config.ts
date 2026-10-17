@@ -3,6 +3,8 @@ import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join, relative, sep } from "node:path";
 import { defineConfig, type Plugin } from "vitest/config";
 import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import { fileURLToPath } from "node:url";
 
 /**
  * Writes dist/sw.js, a small service worker that precaches every built file so the site
@@ -37,6 +39,7 @@ function offline(): Plugin {
 // or under a sub-path such as /CAT-Prep/ on GitHub Pages.
 export default defineConfig({
   base: process.env.VITE_BASE || "/",
-  plugins: [react(), offline()],
+  plugins: [react(), tailwindcss(), offline()],
+  resolve: { alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) } },
   test: { environment: "node" },
 });

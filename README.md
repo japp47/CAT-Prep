@@ -1,6 +1,6 @@
 # CAT Prep Hub
 
-A free, open CAT preparation website built with React, TypeScript and Vite. It works on desktop and mobile.
+A free, open CAT preparation website built with React, TypeScript, Vite, Tailwind CSS and shadcn/ui. It works on desktop and mobile, in light and dark.
 
 - **Today's timetable.** A daily plan built from your phase and the time you have. Defaults are 1 hour on weekdays and 2 hours on Saturday and Sunday. Change any single day (Rest, 30 min to 3 hours, or a custom number), set a different time per day of the week, or lower a whole date range for an exam week. Missed core tasks come back as a catch-up.
 - **Plan.** Five phases to CAT 2027 (Foundation, Build, Apply, Mock phase, Taper), with time presets and a preview of a typical weekday and Saturday in each phase.
@@ -36,7 +36,9 @@ src/
   practice/       RC sets (rc/), VA paragraphs (va/), daily picks, streaks, redo queue, attempt recording, plus tests
   lib/            dates, saved state, store, preferences, focus timer, install and calendar helpers
   pages/          one file per route
-  components/     layout, links, chart, resource list, focus bar
+  components/     layout, page building blocks (kit.tsx), chart, resource list, focus bar
+    ui/           shadcn/ui components (button, tabs, sheet, dialog and so on)
+  index.css       Tailwind setup and design tokens: colours, fonts, type scale
 pwa/sw.js         service worker template, filled in at build time
 docs/plan.md      product and backend plan
 ```

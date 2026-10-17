@@ -1,40 +1,26 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { addDays, shortDate, todayIso, uid } from "../../lib/date";
-import { usePref } from "../../lib/prefs";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { todayIso, uid } from "../../lib/date";
 import { useStore } from "../../lib/store";
+import { Field, LinkButton, Meta, NativeSelect, Page, PageHeader, Section, TextLink } from "../../components/kit";
 import { RC_CATALOG } from "../../practice/catalog.gen";
-import { DAILY_EPOCH, dayNumber, rcOfDay } from "../../practice/daily";
+import { dayNumber, rcOfDay } from "../../practice/daily";
 import { dueRedo } from "../../practice/redo";
 import { loadDraft } from "../../practice/sectional";
-import { GENRES, type Genre, type RcMeta } from "../../practice/types";
+import { GENRES } from "../../practice/types";
 import { DAILY_MIX, VA_KIND, type VaKind } from "../../practice/va/build";
 import { StreakBadge } from "./common";
 
-function useBest() {
-  const { state } = useStore();
-  return (set: RcMeta) => {
-    const tries = state.rcAttempts.filter((a) => a.set === set.id);
-    if (!tries.length) return null;
-    const last = tries[tries.length - 1];
-    return { tries: tries.length, best: Math.max(...tries.map((a) => 3 * a.c - a.w)), last };
-  };
-}
-
-function RcRow({ set, label }: { set: RcMeta; label?: string }) {
-  const best = useBest()(set);
+/** A panel on the practice page: a heading, a line on what it is, and its action pinned to the bottom. */
+function Panel({ title, children, action, className }: { title: React.ReactNode; children: React.ReactNode; action: React.ReactNode; className?: string }) {
   return (
-    <li>
-      <div style={{ minWidth: 0 }}>
-        {label && <span className="eyebrow">{label}</span>}
-        <div><Link className="res-name" to={`/practice/rc/${set.id}`}>{set.title}</Link></div>
-        <span className="meta">{GENRES[set.genre]} · {set.difficulty} · {set.words} words{best ? ` · best ${best.best > 0 ? "+" : ""}${best.best}/${3 * set.questions}` : ""}</span>
-      </div>
-      <div className="row">
-        {best && <Link className="link" to={`/practice/rc/${set.id}?review=${best.last.id}`}>Review</Link>}
-        <Link className="go" to={`/practice/rc/${set.id}`}>{best ? "Retake" : "Start"}</Link>
-      </div>
-    </li>
+    <div className={cn("flex flex-col gap-3 rounded-lg bg-card p-5 sm:p-6", className)}>
+      <h2 className="text-heading font-semibold">{title}</h2>
+      <div className="flex flex-col gap-2 text-base">{children}</div>
+      <div className="mt-auto flex flex-wrap gap-3 pt-2">{action}</div>
+    </div>
   );
 }
 
@@ -50,121 +36,81 @@ export default function PracticeHub() {
   const redoOpen = state.redo.filter((r) => !r.cleared).length;
   const lastSec = state.sectionals[state.sectionals.length - 1];
   const hasDraft = !!loadDraft();
-
-  const [genre, setGenre] = usePref<Genre | "all">("libGenre", "all");
-  const [diff, setDiff] = usePref<"all" | "easy" | "medium" | "hard">("libDiff", "all");
-  const [hideDone, setHideDone] = usePref("libHideDone", false);
   const [kind, setKind] = useState<VaKind | "mix">("mix");
   const [count, setCount] = useState(6);
-
   const tried = new Set(state.rcAttempts.map((a) => a.set));
-  const lib = RC_CATALOG.filter((s) => (genre === "all" || s.genre === genre) && (diff === "all" || s.difficulty === diff) && !(hideDone && tried.has(s.id)));
-  const archiveDays = Array.from({ length: 14 }, (_, i) => addDays(today, -i - 1)).filter((d) => d >= DAILY_EPOCH);
+  const next = RC_CATALOG.filter((s) => !tried.has(s.id) && s.id !== daily.id).slice(0, 3);
 
   return (
-    <div className="page">
-      <div className="view-head">
-        <div className="row" style={{ justifyContent: "space-between" }}><span className="eyebrow">VARC practice</span><StreakBadge /></div>
-        <h1>Practice</h1>
-        <p>Exam-style RC sets with an explanation for every option, a daily VA drill, a timed VARC sectional, a redo queue for your mistakes and a reading speed test. Everything you do here goes into Progress, and one tap sends a mistake to your Error log.</p>
+    <Page>
+      <PageHeader title="Practice" aside={<StreakBadge />}>
+        Exam-style questions written for this site. Every answer is explained, scores go to Progress, and the questions you miss come back in your redo queue.
+      </PageHeader>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <Panel className="md:col-span-2" title={<><span className="block pb-1 text-base font-medium text-muted-foreground">RC of the day, day {dayNumber(today)}</span><Link to={`/practice/rc/${daily.id}`} className="text-[1.75rem] leading-tight font-bold tracking-tight hover:text-primary"><span className="hl">{daily.title}</span></Link></>}
+          action={dailyTry
+            ? <><LinkButton to={`/practice/rc/${daily.id}?review=${dailyTry.id}`} size="lg">Review your answers</LinkButton><LinkButton to={`/practice/rc/${daily.id}`} size="lg" variant="secondary">Retake</LinkButton></>
+            : <LinkButton to={`/practice/rc/${daily.id}`} size="lg">Start the passage</LinkButton>}>
+          <p>{GENRES[daily.genre]}, {daily.difficulty}, {daily.words} words, {daily.questions} questions. About 7 minutes.</p>
+          {dailyTry ? <p className="text-success">Done today: {dailyTry.c} of {daily.questions} correct.</p> : <p className="text-muted-foreground">The same passage for everyone today. A new one tomorrow.</p>}
+        </Panel>
+        <Panel title="Daily VA drill" action={<LinkButton to="/practice/va" variant={vaToday ? "secondary" : "default"}>{vaToday ? "Review" : "Start the drill"}</LinkButton>}>
+          <p>{DAILY_MIX.length} questions in about 12 minutes: 2 each of para summary, sentence insertion, odd sentence out and para jumbles.</p>
+          {vaToday && <p className="text-success">Done today: {vaToday.items.filter((i) => i.ok).length} of {vaToday.items.length} correct.</p>}
+        </Panel>
+        <Panel title="Timed VARC sectional" action={<>
+          <LinkButton to="/practice/sectional" variant="secondary">{hasDraft ? "Resume" : state.sectionals.length ? "Start another" : "Start a sectional"}</LinkButton>
+          {lastSec && <LinkButton to={`/practice/sectional/${lastSec.id}`} variant="ghost">Last: {3 * lastSec.c - lastSec.w > 0 ? "+" : ""}{3 * lastSec.c - lastSec.w} of 72</LinkButton>}
+        </>}>
+          <p>{hasDraft ? "A sectional is in progress, and its clock is running." : "40 minutes, 24 questions, marked the way CAT marks them, on a CAT-style screen."}</p>
+        </Panel>
       </div>
 
-      <div className="grid2">
-        <div className="card stack accent">
-          <span className="eyebrow">RC of the day · day {dayNumber(today)}</span>
-          <h3>{daily.title}</h3>
-          <p className="muted small">{GENRES[daily.genre]} · {daily.difficulty} · {daily.words} words · {daily.questions} questions · about 7 minutes</p>
-          {dailyTry
-            ? <p className="ok">Done today: {dailyTry.c} of {daily.questions} correct.</p>
-            : <p className="muted small">The same passage for everyone today. A new one tomorrow.</p>}
-          <div className="row">
-            {dailyTry
-              ? <><Link className="btn" to={`/practice/rc/${daily.id}?review=${dailyTry.id}`}>Review</Link><Link className="btn ghost" to={`/practice/rc/${daily.id}`}>Retake</Link></>
-              : <Link className="btn" to={`/practice/rc/${daily.id}`}>Start</Link>}
-          </div>
+      <Section title="More ways to practice">
+        <div className="grid gap-4 md:grid-cols-3">
+          <Panel title={redoDue ? `${redoDue} to redo today` : "Redo queue"} className={redoDue ? "bg-highlight-soft" : undefined}
+            action={(redoDue > 0 || redoOpen > 0) ? <LinkButton to="/practice/redo" variant={redoDue ? "default" : "secondary"}>{redoDue ? "Start" : "See the queue"}</LinkButton> : <Meta>Nothing to redo yet.</Meta>}>
+            <p className="text-muted-foreground">Missed questions come back after 1, 3 and 7 days, until you get them right three times in a row.</p>
+          </Panel>
+          <Panel title="Drill one type" action={<Button onClick={() => navigate(`/practice/va?type=${kind}&n=${count}&seed=${uid()}`)}>Start drill</Button>}>
+            <div className="grid grid-cols-[minmax(0,1fr)_6rem] gap-3">
+              <Field label="Type">
+                <NativeSelect value={kind} onChange={(e) => setKind(e.target.value as VaKind | "mix")}>
+                  <option value="mix">Mixed</option>
+                  {(Object.keys(VA_KIND) as VaKind[]).map((k) => <option key={k} value={k}>{VA_KIND[k].label}</option>)}
+                </NativeSelect>
+              </Field>
+              <Field label="Questions">
+                <NativeSelect value={count} onChange={(e) => setCount(+e.target.value)}>{[4, 6, 8, 10].map((n) => <option key={n}>{n}</option>)}</NativeSelect>
+              </Field>
+            </div>
+          </Panel>
+          <Panel title="Reading speed test" action={<LinkButton to="/practice/speed" variant="secondary">Take the test</LinkButton>}>
+            <p className="text-muted-foreground">One timed passage, then two recall questions. CAT needs about 200 words a minute.</p>
+            <p>Your best: <b className="font-semibold">{best ? best + " wpm" : "not tested yet"}</b></p>
+          </Panel>
         </div>
-        <div className="card stack">
-          <span className="eyebrow">Daily VA drill</span>
-          <h3>{DAILY_MIX.length} questions, about 12 minutes</h3>
-          <p className="muted small">2 each of para summary, sentence insertion, odd sentence out and para jumbles, the mix CAT used in 2023 and 2025, marked the way CAT marks them.</p>
-          {vaToday && <p className="ok">Done today: {vaToday.items.filter((i) => i.ok).length} of {vaToday.items.length} correct.</p>}
-          <div className="row"><Link className="btn" to="/practice/va">{vaToday ? "Review" : "Start"}</Link></div>
-        </div>
-      </div>
+      </Section>
 
-      <div className="card stack sec-card">
-        <div className="row" style={{ justifyContent: "space-between" }}>
-          <span className="eyebrow">Timed VARC sectional</span>
-          {lastSec && <span className="muted small">Last: {3 * lastSec.c - lastSec.w > 0 ? "+" : ""}{3 * lastSec.c - lastSec.w} / 72</span>}
-        </div>
-        <h3>{hasDraft ? "A sectional is in progress" : "40 minutes, 24 questions, CAT marking"}</h3>
-        <p className="muted small">4 RC passages and 8 VA questions on a CAT-style screen with a question palette and mark for review. Scores go into Progress next to your mocks.</p>
-        <div className="row">
-          <Link className="btn" to="/practice/sectional">{hasDraft ? "Resume" : state.sectionals.length ? "Start another" : "Start a sectional"}</Link>
-          {lastSec && <Link className="btn ghost" to={`/practice/sectional/${lastSec.id}`}>Review the last one</Link>}
-        </div>
-      </div>
+      <Section title="RC library" action={<TextLink to="/practice/library">All {RC_CATALOG.length} sets</TextLink>} description={`${tried.size} of ${RC_CATALOG.length} tried. Filter by genre and level in the library, and find past RCs of the day there too.`}>
+        {next.length > 0 && (
+          <ul className="grid gap-3 md:grid-cols-3">
+            {next.map((s) => (
+              <li key={s.id}>
+                <Link to={`/practice/rc/${s.id}`} className="flex h-full flex-col gap-1 rounded-lg bg-card p-5 hover:bg-card/70">
+                  <span className="text-sm text-muted-foreground">Not tried yet</span>
+                  <span className="text-base font-semibold">{s.title}</span>
+                  <Meta>{GENRES[s.genre]}, {s.difficulty}, {s.words} words</Meta>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+        <div><LinkButton to="/practice/library" variant="secondary">Open the library</LinkButton></div>
+      </Section>
 
-      <div className={"card stack" + (redoDue ? " accent" : "")}>
-        <div className="row" style={{ justifyContent: "space-between" }}>
-          <span className="eyebrow">Redo queue</span>
-          {redoOpen > 0 && <span className="muted small">{redoOpen} open</span>}
-        </div>
-        <h3>{redoDue ? `${redoDue} question${redoDue > 1 ? "s" : ""} to redo today` : redoOpen ? "Nothing to redo today" : "No mistakes to redo yet"}</h3>
-        <p className="muted small">Questions you miss come back after 1, 3 and 7 days, until you get them right three times in a row.</p>
-        {(redoDue > 0 || redoOpen > 0) && <div className="row"><Link className={redoDue ? "btn" : "btn ghost"} to="/practice/redo">{redoDue ? "Start" : "See the queue"}</Link></div>}
-      </div>
-
-      <div className="grid2">
-        <div className="card stack">
-          <span className="eyebrow">Free tool</span>
-          <h3>Reading speed test</h3>
-          <p className="muted small">One timed passage, then two recall questions. CAT needs about 200 words a minute.</p>
-          <p className="summary"><span>Your best <b>{best ? best + " wpm" : "not tested yet"}</b></span></p>
-          <div className="row"><Link className="btn ghost" to="/practice/speed">Take the test</Link></div>
-        </div>
-        <div className="card stack">
-          <span className="eyebrow">Custom VA drill</span>
-          <h3>Drill one type</h3>
-          <div className="form">
-            <label className="f">Type
-              <select value={kind} onChange={(e) => setKind(e.target.value as VaKind | "mix")}>
-                <option value="mix">Mixed</option>
-                {(Object.keys(VA_KIND) as VaKind[]).map((k) => <option key={k} value={k}>{VA_KIND[k].label}</option>)}
-              </select>
-            </label>
-            <label className="f">Questions
-              <select value={count} onChange={(e) => setCount(+e.target.value)}>{[4, 6, 8, 10].map((n) => <option key={n}>{n}</option>)}</select>
-            </label>
-            <button type="button" className="btn" onClick={() => navigate(`/practice/va?type=${kind}&n=${count}&seed=${uid()}`)}>Start drill</button>
-          </div>
-          <p className="muted small">Items you have not seen yet come first.</p>
-        </div>
-      </div>
-
-      <section className="stack">
-        <div className="row" style={{ justifyContent: "space-between" }}><h2>RC library</h2><span className="muted small">{tried.size} of {RC_CATALOG.length} tried</span></div>
-        <div className="controls">
-          <select aria-label="Genre" value={genre} onChange={(e) => setGenre(e.target.value as Genre | "all")} style={{ width: "auto" }}>
-            <option value="all">All genres</option>
-            {(Object.keys(GENRES) as Genre[]).map((g) => <option key={g} value={g}>{GENRES[g]}</option>)}
-          </select>
-          <div className="seg" role="group" aria-label="Difficulty">
-            {(["all", "easy", "medium", "hard"] as const).map((d) => <button key={d} type="button" aria-pressed={diff === d} onClick={() => setDiff(d)}>{d === "all" ? "Any level" : d[0].toUpperCase() + d.slice(1)}</button>)}
-          </div>
-          <label className="tog"><input type="checkbox" checked={hideDone} onChange={(e) => setHideDone(e.target.checked)} /> Hide tried</label>
-        </div>
-        {lib.length ? <ul className="lib">{lib.map((s) => <RcRow key={s.id} set={s} />)}</ul> : <div className="empty">Nothing matches. Change the filters.</div>}
-      </section>
-
-      {archiveDays.length > 0 && (
-        <section className="stack">
-          <h2>Past RCs of the day</h2>
-          <ul className="lib">{archiveDays.map((d) => <RcRow key={d} set={rcOfDay(d)} label={`${shortDate(d)} · day ${dayNumber(d)}`} />)}</ul>
-        </section>
-      )}
-
-      <p className="foot">All passages, questions and VA paragraphs here are original practice material written for this site, not real CAT questions. For real past papers, see the Practice tab on the <Link to="/varc">VARC page</Link>.</p>
-    </div>
+      <p className="measure text-sm text-muted-foreground">All passages, questions and VA paragraphs here are original practice material written for this site, not real CAT questions. For real past papers, see the Practice tab on the <TextLink to="/varc">VARC page</TextLink>.</p>
+    </Page>
   );
 }

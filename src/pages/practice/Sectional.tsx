@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { cn } from "@/lib/utils";
 import { ContentGate } from "../../components/Content";
+import { LinkButton, Meta, Page, PageHeader, Section, TextLink } from "../../components/kit";
 import { mediumDate, todayIso, uid } from "../../lib/date";
 import { useStore } from "../../lib/store";
 import type { Content } from "../../practice/content";
@@ -12,12 +17,14 @@ import {
 } from "../../practice/sectional";
 import { VA_KIND } from "../../practice/va/build";
 import NotFound from "../NotFound";
-import { Passage, ReviewQuestion } from "./RcPlayer";
+import { Choice, Confirm, PaletteCell, PlayerBar, ScoreCard, Timer } from "./common";
+import { Passage, PaneSwitch, ReviewQuestion, Split } from "./RcPlayer";
 import { ItemInput, ItemReview } from "./VaPlayer";
+
+const TR = "border-t align-top"; // taste-skill-ignore: rows of a real table
 
 const MAX = 72;
 const STATUS_LABEL: Record<QStatus, string> = { unseen: "not visited", open: "not answered", done: "answered", marked: "marked for review", doneMarked: "answered and marked" };
-const STATUS_CLASS: Record<QStatus, string> = { unseen: "", open: " open", done: " ans", marked: " mk", doneMarked: " ans mark" };
 
 export default function Sectional() {
   return <ContentGate>{(c) => <SectionalRoute c={c} />}</ContentGate>;
@@ -36,39 +43,41 @@ function Start({ onStart }: { onStart: (d: Draft) => void }) {
     onStart(d);
   };
   const past = [...state.sectionals].reverse();
+  const rules: [string, string][] = [
+    [`${SECTIONAL_RC} reading passages`, "16 questions. MCQ: +3 right, −1 wrong."],
+    ["8 verbal ability questions", "2 each of para summary and sentence insertion (MCQ, −1 wrong), and of odd sentence out and para jumbles (TITA, no negative marks)."],
+    [`Out of ${MAX}`, "The 99 percentile in CAT 2025 was about 43 scaled marks: roughly 15 to 17 right with at most 3 wrong."],
+  ];
   return (
-    <div className="page">
-      <div className="view-head">
-        <span className="eyebrow">Timed VARC sectional</span>
-        <h1>40 minutes, 24 questions</h1>
-        <p>The VARC section as CAT sets it, with passages and paragraphs written for this site. Questions you have not seen yet come first.</p>
-      </div>
-      <div className="card stack">
-        <ul className="sec-rules">
-          <li><b>{SECTIONAL_RC} reading passages</b><span>16 questions. MCQ: +3 right, −1 wrong.</span></li>
-          <li><b>8 verbal ability questions</b><span>2 each of para summary and sentence insertion (MCQ, −1 wrong), and odd sentence out and para jumbles (TITA, no negative marks).</span></li>
-          <li><b>Out of {MAX}</b><span>The 99 percentile in CAT 2025 was about 43 scaled marks, roughly 15 to 17 right with at most 3 wrong.</span></li>
-        </ul>
-        <p className="muted small">The clock starts when you press Start and keeps running if you leave the page, as in the real exam. Your answers are saved as you go, and the section submits itself at 0:00.</p>
-        <div className="row"><button type="button" className="btn" onClick={begin}>Start the sectional</button><Link className="btn ghost" to="/practice">Back to Practice</Link></div>
+    <Page>
+      <PageHeader title="Timed VARC sectional" back={{ to: "/practice", label: "Practice" }}>
+        The VARC section as CAT sets it: 40 minutes, 24 questions, with passages and paragraphs written for this site. Questions you have not seen yet come first.
+      </PageHeader>
+      <div className="flex flex-col gap-6 rounded-lg bg-card p-5 sm:p-7">
+        <dl className="grid gap-x-8 gap-y-5 sm:grid-cols-[14rem_minmax(0,1fr)]">
+          {rules.map(([k, v]) => <div key={k} className="contents"><dt className="text-base font-semibold">{k}</dt><dd className="text-base text-foreground/85">{v}</dd></div>)}
+        </dl>
+        <p className="measure text-base text-muted-foreground">The clock starts when you press Start and keeps running if you leave the page, as in the real exam. Your answers are saved as you go, and the section submits itself at 0:00.</p>
+        <div><Button size="lg" onClick={begin}>Start the sectional</Button></div>
       </div>
       {past.length > 0 && (
-        <section className="stack">
-          <h2>Your sectionals</h2>
-          <ul className="lib">
+        <Section title="Your sectionals">
+          <ul className="flex flex-col gap-1">
             {past.map((s) => (
               <li key={s.id}>
-                <div style={{ minWidth: 0 }}>
-                  <b>{3 * s.c - s.w > 0 ? "+" : ""}{3 * s.c - s.w} / {MAX}</b>
-                  <div className="meta">{mediumDate(s.d)} · {s.c} correct · {fmtSecs(s.secs)} used</div>
-                </div>
-                <Link className="go" to={`/practice/sectional/${s.id}`}>Review</Link>
+                <Link to={`/practice/sectional/${s.id}`} className="flex items-center justify-between gap-4 rounded-md bg-card px-4 py-3 hover:bg-card/70">
+                  <span className="flex flex-col">
+                    <b className="text-base font-semibold tabular-nums">{3 * s.c - s.w > 0 ? "+" : ""}{3 * s.c - s.w} of {MAX}</b>
+                    <Meta>{mediumDate(s.d)}, {s.c} correct, {fmtSecs(s.secs)} used</Meta>
+                  </span>
+                  <span className="text-base font-medium text-primary">Review</span>
+                </Link>
               </li>
             ))}
           </ul>
-        </section>
+        </Section>
       )}
-    </div>
+    </Page>
   );
 }
 
@@ -80,7 +89,7 @@ function Exam({ start, c, onQuit }: { start: Draft; c: Content; onQuit: () => vo
   const [pane, setPane] = useState<"p" | "q">("p");
   const [confirm, setConfirm] = useState<"submit" | "quit" | null>(null);
   // The palette starts folded on phones, so the question stays near the top of the screen.
-  const [wide] = useState(() => typeof matchMedia === "function" && matchMedia("(min-width: 960px)").matches);
+  const [palette, setPalette] = useState(() => typeof matchMedia === "function" && matchMedia("(min-width: 960px)").matches);
   const enteredAt = useRef(Date.now());
   const done = useRef(false);
   const left = secsLeft(d, now);
@@ -91,7 +100,9 @@ function Exam({ start, c, onQuit }: { start: Draft; c: Content; onQuit: () => vo
   const go = (i: number) => {
     const dt = spent();
     setD((p) => ({ ...withTime(p, dt), cur: i, seen: p.seen.map((s, k) => s || k === i) }));
-    setPane("p");
+    // On a phone, stay on the question when the next one is about the same passage.
+    const passage = (k: string) => (k.startsWith("rc:") ? k.split(":")[1] : null);
+    setPane(passage(d.qs[i]) && passage(d.qs[i]) === passage(d.qs[d.cur]) ? "q" : "p");
     window.scrollTo(0, 0);
   };
   const setAnswer = (v: string) => setD((p) => ({ ...p, a: p.a.map((x, k) => (k === p.cur ? v : x)) }));
@@ -121,109 +132,99 @@ function Exam({ start, c, onQuit }: { start: Draft; c: Content; onQuit: () => vo
   const blank = d.a.filter((x) => x === "").length;
   const rcCount = d.qs.filter((k) => k.startsWith("rc:")).length;
   const passageNo = ref?.kind === "rc" ? d.qs.slice(0, d.cur + 1).map((k) => k.split(":")[1]).filter((s, i, a) => a.indexOf(s) === i).length : 0;
+  const last = d.cur === n - 1;
+
+  const actions = (
+    <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+      <div className="flex flex-wrap gap-2">
+        <Button variant="ghost" size="sm" onClick={() => setAnswer("")} disabled={d.a[d.cur] === ""}>Clear response</Button>
+        <Button variant="ghost" size="sm" aria-pressed={d.marked[d.cur]} onClick={() => { toggleMark(); if (!d.marked[d.cur] && !last) go(d.cur + 1); }}>
+          {d.marked[d.cur] ? "Unmark" : last ? "Mark for review" : "Mark for review and next"}
+        </Button>
+      </div>
+      <div className="flex gap-2">
+        <Button variant="secondary" size="sm" disabled={d.cur === 0} onClick={() => go(d.cur - 1)}>Previous</Button>
+        <Button size="sm" disabled={last} onClick={() => go(d.cur + 1)}>Save and next</Button>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="page">
-      <div className="pbar">
-        <div className="stack" style={{ gap: 2, minWidth: 0 }}>
-          <span className="eyebrow">VARC sectional · question {d.cur + 1} of {n}</span>
-          <h1>{ref?.kind === "rc" ? `Passage ${passageNo} of ${SECTIONAL_RC}` : ref ? VA_KIND[ref.item.kind].label : "Question"}</h1>
-        </div>
-        <div className="row">
-          <span className={"timer" + (left <= 300 ? " over" : "")} role="timer" aria-label={`${fmtSecs(left)} left`}>{fmtSecs(left)} left</span>
-          <button type="button" className="btn sm" onClick={() => setConfirm("submit")}>Submit section</button>
-        </div>
-      </div>
+    <Page className="gap-6 lg:gap-8">
+      <PlayerBar kicker={`VARC sectional, question ${d.cur + 1} of ${n}`} title={ref?.kind === "rc" ? `Passage ${passageNo} of ${SECTIONAL_RC}` : ref ? VA_KIND[ref.item.kind].label : "Question"}>
+        <Timer over={left <= 300}>{fmtSecs(left)} left</Timer>
+        <Button size="sm" onClick={() => setConfirm("submit")}>Submit section</Button>
+      </PlayerBar>
 
-      <details className="card sec-pal" open={wide}>
-        <summary>Question palette <span className="muted small">· {counts.done ?? 0} answered, {(counts.marked ?? 0) + (counts.doneMarked ?? 0)} marked</span></summary>
-        <div className="sec-groups">
-          {[["Reading comprehension", 0, rcCount], ["Verbal ability", rcCount, n]].map(([label, from, to]) => (
-            <div key={label as string} className="stack" style={{ gap: 6 }}>
-              <span className="eyebrow">{label}</span>
-              <div className="palette" role="group" aria-label={label as string}>
-                {d.qs.slice(from as number, to as number).map((_, j) => {
-                  const i = (from as number) + j, s = qStatus(d, i);
-                  return <button key={i} type="button" className={"pal" + STATUS_CLASS[s] + (i === d.cur ? " cur" : "")} onClick={() => go(i)} aria-current={i === d.cur} aria-label={`Question ${i + 1}, ${STATUS_LABEL[s]}`}>{i + 1}</button>;
-                })}
+      <Collapsible open={palette} onOpenChange={setPalette} className="rounded-lg bg-card">
+        <CollapsibleTrigger className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left">
+          <span className="text-base font-semibold">Question palette <span className="font-normal text-muted-foreground">, {counts.done ?? 0} answered, {(counts.marked ?? 0) + (counts.doneMarked ?? 0)} marked</span></span>
+          <ChevronDown className={cn("size-5 shrink-0 transition-transform", palette && "rotate-180")} aria-hidden />
+        </CollapsibleTrigger>
+        <CollapsibleContent className="flex flex-col gap-5 px-5 pb-5">
+          <div className="flex flex-wrap gap-x-10 gap-y-4">
+            {([["Reading comprehension", 0, rcCount], ["Verbal ability", rcCount, n]] as const).map(([label, from, to]) => (
+              <div key={label} className="flex flex-col gap-2">
+                <span className="text-sm font-medium text-muted-foreground">{label}</span>
+                <div className="flex flex-wrap gap-2" role="group" aria-label={label}>
+                  {d.qs.slice(from, to).map((_, j) => {
+                    const i = from + j, s = qStatus(d, i);
+                    return <PaletteCell key={i} n={i + 1} state={s} current={i === d.cur} onClick={() => go(i)} label={`Question ${i + 1}, ${STATUS_LABEL[s]}`} />;
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-        <ul className="pal-legend" aria-label="Palette key">
-          <li><i className="pal ans" />Answered <b>{counts.done ?? 0}</b></li>
-          <li><i className="pal open" />Not answered <b>{counts.open ?? 0}</b></li>
-          <li><i className="pal mk" />Marked <b>{counts.marked ?? 0}</b></li>
-          <li><i className="pal ans mark" />Answered and marked <b>{counts.doneMarked ?? 0}</b></li>
-          <li><i className="pal" />Not visited <b>{counts.unseen ?? 0}</b></li>
-        </ul>
-      </details>
+            ))}
+          </div>
+          <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground" aria-label="Palette key">
+            {([["done", "Answered"], ["open", "Not answered"], ["marked", "Marked"], ["doneMarked", "Answered and marked"], ["unseen", "Not visited"]] as const).map(([k, l]) => (
+              <li key={k} className="inline-flex items-center gap-2">
+                <span className={cn("size-4 rounded ring-1 ring-inset ring-border bg-card", k === "open" && "ring-danger/60", (k === "done" || k === "doneMarked") && "bg-success-soft ring-success/50", k === "marked" && "bg-mark/10 ring-mark/60")} />
+                {l} <b className="font-semibold text-foreground tabular-nums">{counts[k] ?? 0}</b>
+              </li>
+            ))}
+          </ul>
+        </CollapsibleContent>
+      </Collapsible>
 
       {ref?.kind === "rc" && (
         <>
-          <div className="seg panes" role="group" aria-label="Show" style={{ alignSelf: "flex-start" }}>
-            <button type="button" aria-pressed={pane === "p"} onClick={() => setPane("p")}>Passage</button>
-            <button type="button" aria-pressed={pane === "q"} onClick={() => setPane("q")}>Question {d.cur + 1}</button>
-          </div>
-          <div className="split" data-pane={pane}>
+          <PaneSwitch pane={pane} setPane={setPane} q={`Question ${d.cur + 1}`} />
+          <Split pane={pane}>
             <Passage set={ref.set} highlight={[]} wordMode={false} />
-            <div className="qpane">
-              <div className="card stack">
-                <span className="eyebrow">Question {d.cur + 1} · MCQ, −1 if wrong</span>
-                <p className="stem">{ref.set.questions[ref.qi].stem}</p>
-                <ul className="opts" role="radiogroup" aria-label={"Options for question " + (d.cur + 1)}>
-                  {ref.set.questions[ref.qi].options.map((o, i) => (
-                    <li key={i}><button type="button" role="radio" aria-checked={d.a[d.cur] === String(i)} className="opt" onClick={() => setAnswer(String(i))}><span className="l">{LETTERS[i]}</span><span>{o.t}</span></button></li>
-                  ))}
-                </ul>
+            <div className="flex flex-col gap-4">
+              <p className="text-sm text-muted-foreground">Question {d.cur + 1}, MCQ, −1 if wrong</p>
+              <p className="text-lg leading-snug font-semibold">{ref.set.questions[ref.qi].stem}</p>
+              <div className="flex flex-col gap-2.5" role="radiogroup" aria-label={"Options for question " + (d.cur + 1)}>
+                {ref.set.questions[ref.qi].options.map((o, i) => <Choice key={i} mark={LETTERS[i]} checked={d.a[d.cur] === String(i)} onClick={() => setAnswer(String(i))}>{o.t}</Choice>)}
               </div>
-              <Actions d={d} n={n} go={go} clear={() => setAnswer("")} mark={toggleMark} />
+              {actions}
             </div>
-          </div>
+          </Split>
         </>
       )}
       {ref?.kind === "va" && (
-        <div className="card stack">
-          <span className="eyebrow">Question {d.cur + 1} · {VA_KIND[ref.item.kind].tita ? "TITA, no negative marks" : "MCQ, −1 if wrong"}</span>
+        <div className="mx-auto flex w-full max-w-[760px] flex-col gap-5">
+          <p className="text-sm text-muted-foreground">Question {d.cur + 1}, {VA_KIND[ref.item.kind].tita ? "TITA, no negative marks" : "MCQ, −1 if wrong"}</p>
           <ItemInput key={d.cur} item={ref.item} answer={d.a[d.cur]} setAnswer={setAnswer} />
-          <Actions d={d} n={n} go={go} clear={() => setAnswer("")} mark={toggleMark} />
+          {actions}
         </div>
       )}
-      {!ref && <div className="empty">This question is no longer in the library. Move on to the next one.<div className="row" style={{ justifyContent: "center", marginTop: 10 }}><button type="button" className="btn sm" disabled={d.cur === n - 1} onClick={() => go(d.cur + 1)}>Next</button></div></div>}
+      {!ref && (
+        <div className="flex flex-col items-start gap-3 rounded-lg bg-muted p-6 text-base">
+          This question is no longer in the library. Move on to the next one.
+          <Button size="sm" disabled={last} onClick={() => go(d.cur + 1)}>Next</Button>
+        </div>
+      )}
 
-      {confirm === "submit" && (
-        <div className="card stack accent" role="alertdialog" aria-label="Submit the section?">
-          <p><b>Submit the section?</b> {blank ? `${blank} question${blank > 1 ? "s are" : " is"} unanswered.` : "Every question has an answer."} {fmtSecs(left)} is left. You cannot change answers after this.</p>
-          <div className="row"><button type="button" className="btn" onClick={submit}>Submit</button><button type="button" className="btn ghost" onClick={() => setConfirm(null)}>Keep going</button></div>
-        </div>
-      )}
-      {confirm === "quit" && (
-        <div className="card stack accent" role="alertdialog" aria-label="Discard this sectional?">
-          <p><b>Discard this sectional?</b> Nothing is saved to Progress. You can start a new one any time.</p>
-          <div className="row"><button type="button" className="btn danger" onClick={onQuit}>Discard</button><button type="button" className="btn ghost" onClick={() => setConfirm(null)}>Keep going</button></div>
-        </div>
-      )}
-      {!confirm && <button type="button" className="link small" style={{ alignSelf: "flex-start" }} onClick={() => setConfirm("quit")}>Discard this sectional</button>}
-    </div>
-  );
-}
+      <Button variant="link" size="sm" className="self-start text-muted-foreground" onClick={() => setConfirm("quit")}>Discard this sectional</Button>
 
-/** The CAT-style buttons under each question. */
-function Actions({ d, n, go, clear, mark }: { d: Draft; n: number; go: (i: number) => void; clear: () => void; mark: () => void }) {
-  const last = d.cur === n - 1;
-  return (
-    <div className="qnav">
-      <div className="row">
-        <button type="button" className="btn ghost sm" onClick={clear} disabled={d.a[d.cur] === ""}>Clear response</button>
-        <button type="button" className="btn ghost sm" aria-pressed={d.marked[d.cur]} onClick={() => { mark(); if (!d.marked[d.cur] && !last) go(d.cur + 1); }}>
-          {d.marked[d.cur] ? "Unmark" : last ? "Mark for review" : "Mark for review and next"}
-        </button>
-      </div>
-      <div className="row">
-        <button type="button" className="btn ghost sm" disabled={d.cur === 0} onClick={() => go(d.cur - 1)}>Previous</button>
-        <button type="button" className="btn sm" disabled={last} onClick={() => go(d.cur + 1)}>Save and next</button>
-      </div>
-    </div>
+      <Confirm open={confirm === "submit"} onOpenChange={(o) => setConfirm(o ? "submit" : null)} title="Submit the section?" action="Submit" onAction={submit}>
+        {blank ? `${blank} question${blank > 1 ? "s are" : " is"} unanswered.` : "Every question has an answer."} {fmtSecs(left)} is left. You cannot change answers after this.
+      </Confirm>
+      <Confirm open={confirm === "quit"} onOpenChange={(o) => setConfirm(o ? "quit" : null)} title="Discard this sectional?" action="Discard" onAction={onQuit} danger>
+        Nothing is saved to Progress. You can start a new one any time.
+      </Confirm>
+    </Page>
   );
 }
 
@@ -249,61 +250,51 @@ function Review({ c }: { c: Content }) {
   const slow = [...rows].sort((a, b) => (s.t[b.i] ?? 0) - (s.t[a.i] ?? 0)).slice(0, 3).filter((r) => (s.t[r.i] ?? 0) >= 120);
 
   return (
-    <div className="page">
-      <div className="pbar">
-        <div className="stack" style={{ gap: 2, minWidth: 0 }}>
-          <span className="eyebrow">Sectional review · {mediumDate(s.d)}</span>
-          <h1>Score {marks > 0 ? "+" : ""}{marks} of {MAX}</h1>
+    <Page className="gap-6 lg:gap-8">
+      <PlayerBar kicker={`Sectional review, ${mediumDate(s.d)}`} title={`Score ${marks > 0 ? "+" : ""}${marks} of ${MAX}`}>
+        <LinkButton to="/practice/sectional" variant="secondary" size="sm">All sectionals</LinkButton>
+      </PlayerBar>
+
+      <ScoreCard score={(marks > 0 ? "+" : "") + marks} of={MAX} parts={[["Correct", correct], ["Wrong", attempted - correct], ["Blank", rows.length - attempted], ["Accuracy", `${attempted ? Math.round((correct / attempted) * 100) : 0}%`], ["Time", fmtSecs(s.secs)]]}>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[34rem] text-left text-base">
+            <thead className="text-sm text-muted-foreground">
+              <tr><th className="py-2 pr-4 font-medium">Type</th><th className="py-2 pr-4 text-right font-medium">Attempted</th><th className="py-2 pr-4 text-right font-medium">Correct</th><th className="py-2 pr-4 text-right font-medium">Marks</th><th className="py-2 pr-4 text-right font-medium">Time</th><th className="py-2 text-right font-medium">Each</th></tr>
+            </thead>
+            <tbody className="tabular-nums">
+              {types.map((x) => (
+                <tr key={x.type} className={TR}>
+                  <td className="py-2.5 pr-4">{x.type}</td><td className="py-2.5 pr-4 text-right">{x.attempted} of {x.n}</td><td className="py-2.5 pr-4 text-right">{x.correct}</td>
+                  <td className="py-2.5 pr-4 text-right font-semibold">{x.marks > 0 ? "+" : ""}{x.marks}</td><td className="py-2.5 pr-4 text-right">{fmtSecs(x.secs)}</td><td className="py-2.5 text-right">{fmtSecs(x.secs / x.n)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-        <div className="row"><Link className="btn ghost sm" to="/practice/sectional">All sectionals</Link></div>
+        {slow.length > 0 && <p className="text-base">Longest on {slow.map((r) => `Q${r.i + 1} (${fmtSecs(s.t[r.i])}${r.ok ? ", right" : r.blank ? ", blank" : ", wrong"})`).join(", ")}. Over 2 minutes on one question is usually time better spent elsewhere.</p>}
+        <p className="text-base text-muted-foreground">Saved in Progress as a sectional and by question type. Wrong and blank questions join your <TextLink to="/practice/redo">redo queue</TextLink>.</p>
+        <div><LinkButton to="/practice/sectional">Take another sectional</LinkButton></div>
+      </ScoreCard>
+
+      <div className="flex flex-wrap gap-2" role="group" aria-label="Questions">
+        {rows.map((r, k) => <PaletteCell key={r.i} n={r.i + 1} state={r.blank ? "blank" : r.ok ? "right" : "wrong"} current={k === cur} onClick={() => setCur(k)} label={`Question ${r.i + 1}, ${r.blank ? "blank" : r.ok ? "correct" : "wrong"}`} />)}
       </div>
 
-      <div className="card stack">
-        <div className="scorebox">
-          <div><span className="eyebrow">Score</span><div className="big">{marks > 0 ? "+" : ""}{marks}<span className="muted" style={{ fontSize: 18 }}> / {MAX}</span></div></div>
-          <p className="summary">
-            <span>Correct <b>{correct}</b></span>
-            <span>Wrong <b>{attempted - correct}</b></span>
-            <span>Blank <b>{rows.length - attempted}</b></span>
-            <span>Accuracy <b>{attempted ? Math.round((correct / attempted) * 100) : 0}%</b></span>
-            <span>Time <b>{fmtSecs(s.secs)}</b></span>
-          </p>
-        </div>
-        <div className="tbl-wrap"><table>
-          <thead><tr><th>Type</th><th className="num">Attempted</th><th className="num">Correct</th><th className="num">Marks</th><th className="num">Time</th><th className="num">Per question</th></tr></thead>
-          <tbody>{types.map((x) => (
-            <tr key={x.type}><td>{x.type}</td><td className="num">{x.attempted} of {x.n}</td><td className="num">{x.correct}</td><td className="num">{x.marks > 0 ? "+" : ""}{x.marks}</td><td className="num">{fmtSecs(x.secs)}</td><td className="num">{fmtSecs(x.secs / x.n)}</td></tr>
-          ))}</tbody>
-        </table></div>
-        {slow.length > 0 && <p className="muted small">Longest on: {slow.map((r) => `Q${r.i + 1} (${fmtSecs(s.t[r.i])}${r.ok ? ", right" : r.blank ? ", blank" : ", wrong"})`).join(", ")}. Over 2 minutes on one question is usually time better spent elsewhere.</p>}
-        <p className="muted small">Saved in Progress as a sectional and by question type. Wrong and blank questions join your <Link to="/practice/redo">redo queue</Link>.</p>
-        <div className="row"><Link className="btn" to="/practice/sectional">Take another sectional</Link></div>
-      </div>
-
-      <div className="palette" role="group" aria-label="Questions">
-        {rows.map((r, k) => (
-          <button key={r.i} type="button" className={"pal" + (r.blank ? " blank" : r.ok ? " ok" : " bad") + (k === cur ? " cur" : "")} onClick={() => setCur(k)} aria-current={k === cur} aria-label={`Question ${r.i + 1}, ${r.blank ? "blank" : r.ok ? "correct" : "wrong"}`}>{r.i + 1}</button>
-        ))}
-      </div>
-
-      {row && <p className="muted small">Question {row.i + 1} · {row.type} · {fmtSecs(s.t[row.i] ?? 0)} spent on it</p>}
+      {row && <p className="text-sm text-muted-foreground">Question {row.i + 1}, {row.type}, {fmtSecs(s.t[row.i] ?? 0)} spent on it</p>}
       {row?.ref.kind === "rc" && (
         <>
-          <div className="seg panes" role="group" aria-label="Show" style={{ alignSelf: "flex-start" }}>
-            <button type="button" aria-pressed={pane === "p"} onClick={() => setPane("p")}>Passage</button>
-            <button type="button" aria-pressed={pane === "q"} onClick={() => setPane("q")}>Question {row.i + 1}</button>
-          </div>
-          <div className="split" data-pane={pane}>
+          <PaneSwitch pane={pane} setPane={setPane} q={`Question ${row.i + 1}`} />
+          <Split pane={pane}>
             <Passage set={row.ref.set} highlight={row.ref.set.questions[row.ref.qi].proof} wordMode />
-            <div className="qpane"><ReviewQuestion set={row.ref.set} qi={row.ref.qi} chosen={s.a[row.i] === "" ? null : Number(s.a[row.i])} /></div>
-          </div>
+            <ReviewQuestion set={row.ref.set} qi={row.ref.qi} chosen={s.a[row.i] === "" ? null : Number(s.a[row.i])} />
+          </Split>
         </>
       )}
-      {row?.ref.kind === "va" && <div className="card stack"><span className="eyebrow">{VA_KIND[row.ref.item.kind].label}</span><ItemReview item={row.ref.item} answer={s.a[row.i]} /></div>}
-      <div className="qnav">
-        <button type="button" className="btn ghost sm" disabled={cur === 0} onClick={() => setCur(cur - 1)}>Previous question</button>
-        <button type="button" className="btn ghost sm" disabled={cur >= rows.length - 1} onClick={() => setCur(cur + 1)}>Next question</button>
+      {row?.ref.kind === "va" && <div className="mx-auto flex w-full max-w-[760px] flex-col gap-5"><ItemReview item={row.ref.item} answer={s.a[row.i]} /></div>}
+      <div className="flex justify-between gap-2">
+        <Button variant="secondary" size="sm" disabled={cur === 0} onClick={() => setCur(cur - 1)}>Previous question</Button>
+        <Button variant="secondary" size="sm" disabled={cur >= rows.length - 1} onClick={() => setCur(cur + 1)}>Next question</Button>
       </div>
-    </div>
+    </Page>
   );
 }

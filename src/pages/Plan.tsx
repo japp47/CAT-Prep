@@ -1,4 +1,10 @@
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { cn } from "@/lib/utils";
+import { ErrorText, Field, Meta, NativeSelect, Page, PageHeader, Section } from "../components/kit";
 import { PHASES, phaseOf } from "../data/exam";
 import { addDays, diffDays, DOW, mediumDate, todayIso } from "../lib/date";
 import { useStore } from "../lib/store";
@@ -21,6 +27,7 @@ function TimeCard({ sec }: { sec: SectionDef }) {
   const [err, setErr] = useState("");
   const [showDow, setShowDow] = useState(s.dow.some((x) => x !== null));
   const week = [0, 1, 2, 3, 4, 5, 6].reduce((t, g) => t + (s.dow[g] ?? (g === 0 || g === 6 ? s.we : s.wd)), 0);
+  const preset = PRESETS.find((p) => s.wd === p.wd && s.we === p.we && !s.dow.some((x) => x !== null))?.label ?? "";
 
   const set = (k: "wd" | "we", v: string) => {
     const n = parseMin(v);
@@ -35,33 +42,33 @@ function TimeCard({ sec }: { sec: SectionDef }) {
   };
 
   return (
-    <div className="card stack">
-      <h3>Your usual {sec.short} time</h3>
-      <div className="presets" role="group" aria-label="Presets">
-        {PRESETS.map((p) => (
-          <button key={p.label} type="button" className="chip" aria-pressed={s.wd === p.wd && s.we === p.we && !s.dow.some((x) => x !== null)} title={p.note}
-            onClick={() => update((st) => { st.settings[sec.id] = { wd: p.wd, we: p.we, dow: [null, null, null, null, null, null, null] }; })}>
-            {p.label}<span>{p.wd}/{p.we}</span>
-          </button>
-        ))}
-      </div>
-      <div className="form">
-        <label className="f">Monday to Friday, minutes<input key={"wd" + s.wd} type="number" inputMode="numeric" min={0} max={600} step={5} defaultValue={s.wd} onBlur={(e) => set("wd", e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") set("wd", e.currentTarget.value); }} /></label>
-        <label className="f">Saturday and Sunday, minutes<input key={"we" + s.we} type="number" inputMode="numeric" min={0} max={600} step={5} defaultValue={s.we} onBlur={(e) => set("we", e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") set("we", e.currentTarget.value); }} /></label>
-      </div>
-      <button type="button" className="link" style={{ alignSelf: "flex-start" }} onClick={() => setShowDow(!showDow)}>{showDow ? "Hide" : "Set a different time for"} individual days of the week</button>
-      {showDow && (
-        <div className="dowgrid">
-          {[1, 2, 3, 4, 5, 6, 0].map((g) => (
-            <label className="f" key={g}>{DOW[g].slice(0, 3)}
-              <input key={g + ":" + s.dow[g]} type="number" inputMode="numeric" min={0} max={600} step={5} placeholder={String(g === 0 || g === 6 ? s.we : s.wd)} defaultValue={s.dow[g] ?? ""} onBlur={(e) => setDow(g, e.target.value)} />
-            </label>
+    <Section title={`Your usual ${sec.short} time`} description={`That is ${week} minutes, about ${hours(week)}, of ${sec.short} a week. A day you change on Today keeps its own time.`}>
+      <div className="flex flex-col gap-6 rounded-lg bg-card p-5 sm:p-6">
+        <ToggleGroup type="single" value={preset} onValueChange={(v) => { const p = PRESETS.find((x) => x.label === v); if (p) update((st) => { st.settings[sec.id] = { wd: p.wd, we: p.we, dow: [null, null, null, null, null, null, null] }; }); }}
+          className="grid w-full grid-cols-2 gap-2 sm:grid-cols-4" aria-label="Presets">
+          {PRESETS.map((p) => (
+            <ToggleGroupItem key={p.label} value={p.label} className="h-auto min-w-0 flex-col items-start gap-0.5 rounded-lg bg-secondary px-4 py-3 text-left whitespace-normal data-[state=on]:bg-foreground data-[state=on]:text-background">
+              <span className="text-base font-semibold">{p.label}</span><span className="text-sm opacity-75">{p.note}</span>
+            </ToggleGroupItem>
           ))}
+        </ToggleGroup>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Monday to Friday, minutes"><Input key={"wd" + s.wd} type="number" inputMode="numeric" min={0} max={600} step={5} defaultValue={s.wd} onBlur={(e) => set("wd", e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") set("wd", e.currentTarget.value); }} /></Field>
+          <Field label="Saturday and Sunday, minutes"><Input key={"we" + s.we} type="number" inputMode="numeric" min={0} max={600} step={5} defaultValue={s.we} onBlur={(e) => set("we", e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") set("we", e.currentTarget.value); }} /></Field>
         </div>
-      )}
-      <p className="err" role="alert">{err}</p>
-      <p className="muted small">That is {week} minutes, about {hours(week)}, of {sec.short} a week. A day you change on Today keeps its own time.</p>
-    </div>
+        <Button variant="link" size="sm" className="self-start" onClick={() => setShowDow(!showDow)}>{showDow ? "Hide the days of the week" : "Set a different time for single days of the week"}</Button>
+        {showDow && (
+          <div className="grid grid-cols-4 gap-3 sm:grid-cols-7">
+            {[1, 2, 3, 4, 5, 6, 0].map((g) => (
+              <Field key={g} label={DOW[g].slice(0, 3)}>
+                <Input key={g + ":" + s.dow[g]} type="number" inputMode="numeric" min={0} max={600} step={5} placeholder={String(g === 0 || g === 6 ? s.we : s.wd)} defaultValue={s.dow[g] ?? ""} onBlur={(e) => setDow(g, e.target.value)} />
+              </Field>
+            ))}
+          </div>
+        )}
+        <ErrorText>{err}</ErrorText>
+      </div>
+    </Section>
   );
 }
 
@@ -89,23 +96,21 @@ function RangeCard() {
     setMsg({ ok: true, text: reset ? "Usual times restored for " + days + " days." : "Set " + n + " min for " + days + " days, " + mediumDate(from) + " to " + mediumDate(to) + "." });
   };
   return (
-    <div className="card stack">
-      <h3>Set time for a date range</h3>
-      <p className="muted small">For an exam week, a trip or a work deadline, lower or raise every day at once. Use 0 for rest days.</p>
-      <div className="form">
-        <label className="f">From<input type="date" value={from} onChange={(e) => setFrom(e.target.value)} /></label>
-        <label className="f">To<input type="date" value={to} onChange={(e) => setTo(e.target.value)} /></label>
-        {LIVE_SECTIONS.length > 1 && (
-          <label className="f">Section<select value={sec} onChange={(e) => setSec(e.target.value as typeof sec)}>{LIVE_SECTIONS.map((s) => <option key={s.id} value={s.id}>{s.short}</option>)}</select></label>
-        )}
-        <label className="f">Minutes a day<input type="number" inputMode="numeric" min={0} max={600} step={5} value={min} onChange={(e) => setMin(e.target.value)} /></label>
+    <Section title="Set time for a date range" description="For an exam week, a trip or a work deadline, lower or raise every day at once. Use 0 for rest days.">
+      <div className="flex flex-col gap-5 rounded-lg bg-card p-5 sm:p-6">
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Field label="From"><Input type="date" value={from} onChange={(e) => setFrom(e.target.value)} /></Field>
+          <Field label="To"><Input type="date" value={to} onChange={(e) => setTo(e.target.value)} /></Field>
+          {LIVE_SECTIONS.length > 1 && <Field label="Section"><NativeSelect value={sec} onChange={(e) => setSec(e.target.value as typeof sec)}>{LIVE_SECTIONS.map((s) => <option key={s.id} value={s.id}>{s.short}</option>)}</NativeSelect></Field>}
+          <Field label="Minutes a day"><Input type="number" inputMode="numeric" min={0} max={600} step={5} value={min} onChange={(e) => setMin(e.target.value)} /></Field>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          <Button onClick={() => apply(false)}>Apply to these days</Button>
+          <Button variant="secondary" onClick={() => apply(true)}>Restore usual times</Button>
+        </div>
+        {msg && <p className={cn("text-base", msg.ok ? "text-success" : "text-danger")} role="status">{msg.text}</p>}
       </div>
-      <div className="row">
-        <button type="button" className="btn" onClick={() => apply(false)}>Apply to range</button>
-        <button type="button" className="btn ghost" onClick={() => apply(true)}>Restore usual times</button>
-      </div>
-      {msg && <p className={msg.ok ? "ok" : "err"} role="status">{msg.text}</p>}
-    </div>
+    </Section>
   );
 }
 
@@ -120,21 +125,21 @@ function PhaseCard({ id, sec }: { id: number; sec: SectionDef }) {
   const we = buildDay(sec, state, sampleDate(id, true, t), s.we, { today: t, noCarry: true });
   const text = sec.phaseText?.[id];
   const list = (bl: typeof wd) => bl.length
-    ? bl.map((b) => <li key={b.key}><span>{b.name.replace(/: CAT \d{4} Slot \d$/, "")}</span><span>{b.mins} min</span></li>)
-    : <li><span>Rest</span><span /></li>;
+    ? bl.map((b) => <li key={b.key} className="flex justify-between gap-4 py-1.5"><span>{b.name.replace(/: CAT \d{4} Slot \d$/, "")}</span><span className="text-muted-foreground tabular-nums whitespace-nowrap">{b.mins} min</span></li>)
+    : <li className="py-1.5 text-muted-foreground">Rest</li>;
   return (
-    <div className={"card phase" + (isNow ? " accent" : "")}>
-      <div className="phase-h">
-        <h3>{p.id}. {p.name} {isNow && <span className="tag t-must">Now</span>}</h3>
-        <span className="eyebrow">{mediumDate(p.start)} to {mediumDate(p.end)}</span>
+    <article className={cn("relative flex flex-col gap-5 overflow-hidden rounded-lg bg-card p-5 sm:p-6", isNow && "before:absolute before:inset-y-0 before:left-0 before:w-1.5 before:bg-highlight")}>
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <h3 className="flex items-center gap-2.5 text-heading font-semibold">{p.id}. {p.name}{isNow && <Badge variant="highlight">Now</Badge>}</h3>
+        <Meta>{mediumDate(p.start)} to {mediumDate(p.end)}</Meta>
       </div>
-      {text && <p>{text.goal}</p>}
-      <div className="tmpl">
-        <div><span className="eyebrow">A typical weekday, {s.wd} min</span><ul>{list(wd)}</ul></div>
-        <div><span className="eyebrow">A typical {id >= 2 && id <= 4 ? "Saturday" : "weekend day"}, {s.we} min</span><ul>{list(we)}</ul></div>
+      {text && <p className="measure text-base">{text.goal}</p>}
+      <div className="grid gap-6 md:grid-cols-2">
+        <div><p className="pb-1 text-sm font-medium text-muted-foreground">A typical weekday, {s.wd} min</p><ul className="text-base">{list(wd)}</ul></div>
+        <div><p className="pb-1 text-sm font-medium text-muted-foreground">A typical {id >= 2 && id <= 4 ? "Saturday" : "weekend day"}, {s.we} min</p><ul className="text-base">{list(we)}</ul></div>
       </div>
-      {text && <p className="check"><b>Suggested checkpoint.</b> {text.check}</p>}
-    </div>
+      {text && <p className="measure rounded-md bg-muted px-4 py-3 text-base"><b className="font-semibold">Suggested checkpoint.</b> {text.check}</p>}
+    </article>
   );
 }
 
@@ -142,27 +147,23 @@ export default function Plan() {
   const t = todayIso();
   const lateStart = phaseOf(t).kind === "phase" && t > PHASES[0].end;
   return (
-    <div className="page">
-      <div className="view-head">
-        <h1>Plan and time</h1>
-        <p>Five phases to CAT 2027. Each day's timetable is built from the phase you are in and the time you have that day. Change your usual time here, or change a single day on Today.</p>
-      </div>
-      {lateStart && (
-        <div className="notice">Starting after January? You join the plan at the current phase. Spend your first two weeks on the Foundation reading routine alongside it, and use the Learn tab to cover the question types you missed.</div>
-      )}
+    <Page>
+      <PageHeader title="Plan and time">Five phases to CAT 2027. Each day's timetable is built from the phase you are in and the time you have that day. Change your usual time here, or change a single day on Today.</PageHeader>
+      {lateStart && <p className="measure rounded-lg bg-warning-soft px-5 py-4 text-base">Starting after January? You join the plan at the current phase. Spend your first two weeks on the Foundation reading routine alongside it, and use the Learn tab to cover the question types you missed.</p>}
       {LIVE_SECTIONS.map((s) => <TimeCard key={s.id} sec={s} />)}
       <RangeCard />
-      <div className="card read">
-        <p><b>How the timetable adapts.</b> Every block has a usual length and a minimum. With less time, low-priority blocks drop out first and the core task stays. With more time, blocks grow to their usual length, then extra blocks are added.</p>
-        <p><b>Mock and paper analysis rule.</b> Spend 1.5 to 2 times the test time on analysis. For each wrong or skipped question, add an error log entry with the question type, why the trap worked and the correct reasoning.</p>
-        <p><b>Missed days.</b> If you skip a day's core task, it moves to your next session as a catch-up block. Nothing else carries over.</p>
-      </div>
-      {LIVE_SECTIONS.map((sec) => (
-        <div className="stack" key={sec.id}>
-          <h2>{sec.short} phases</h2>
-          {PHASES.map((p) => <PhaseCard key={p.id} id={p.id} sec={sec} />)}
+      <Section title="How the timetable adapts">
+        <div className="measure flex flex-col gap-3 text-base">
+          <p><b className="font-semibold">Less or more time.</b> Every block has a usual length and a minimum. With less time, low-priority blocks drop out first and the core task stays. With more time, blocks grow to their usual length, then extra blocks are added.</p>
+          <p><b className="font-semibold">Mock and paper analysis.</b> Spend 1.5 to 2 times the test time on analysis. For each wrong or skipped question, add an Error log entry with the question type, why the trap worked and the right reasoning.</p>
+          <p><b className="font-semibold">Missed days.</b> If you skip a day's core task, it moves to your next session as a catch-up block. Nothing else carries over.</p>
         </div>
+      </Section>
+      {LIVE_SECTIONS.map((sec) => (
+        <Section key={sec.id} title={`${sec.short} phases`}>
+          <div className="flex flex-col gap-3">{PHASES.map((p) => <PhaseCard key={p.id} id={p.id} sec={sec} />)}</div>
+        </Section>
       ))}
-    </div>
+    </Page>
   );
 }

@@ -1,5 +1,10 @@
 import { useState, type FormEvent } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import { MockChart } from "../components/Chart";
+import { ErrorText, Field, LogList, LogRow, Meta, NativeSelect, Page, PageHeader, Section, Segmented, Stat } from "../components/kit";
 import { shortDate, todayIso, uid } from "../lib/date";
 import { useStore } from "../lib/store";
 import { SECTIONS, sectionByLabel } from "../sections";
@@ -12,7 +17,6 @@ export default function Progress() {
   const [sec, setSec] = useState("VARC");
   const def = sectionByLabel(sec);
 
-  // practice form
   const [pErr, setPErr] = useState("");
   const addPractice = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -23,12 +27,9 @@ export default function Progress() {
     if (c > a) { setPErr("Correct cannot be more than attempted."); return; }
     setPErr("");
     update((st) => { st.practice.push({ id: uid(), d, sec, t: String(fd.get("t")), a, c, src: String(fd.get("src") ?? "").trim() }); });
-    (f.elements.namedItem("a") as HTMLInputElement).value = "";
-    (f.elements.namedItem("c") as HTMLInputElement).value = "";
-    (f.elements.namedItem("src") as HTMLInputElement).value = "";
+    ["a", "c", "src"].forEach((k) => ((f.elements.namedItem(k) as HTMLInputElement).value = ""));
   };
 
-  // mock form
   const [mErr, setMErr] = useState("");
   const addMock = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -39,12 +40,9 @@ export default function Progress() {
     if (c + w > def.maxQ) { setMErr(sec + " has " + def.maxQ + " questions, so correct plus wrong cannot be more than " + def.maxQ + "."); return; }
     setMErr("");
     update((st) => { st.mocks.push({ id: uid(), d, sec, n: String(fd.get("n") ?? "").trim(), k: String(fd.get("k")), c, w }); });
-    (f.elements.namedItem("n") as HTMLInputElement).value = "";
-    (f.elements.namedItem("c") as HTMLInputElement).value = "";
-    (f.elements.namedItem("w") as HTMLInputElement).value = "";
+    ["n", "c", "w"].forEach((k) => ((f.elements.namedItem(k) as HTMLInputElement).value = ""));
   };
 
-  // accuracy by type
   const by: Record<string, { a: number; c: number }> = {};
   state.practice.filter((p) => p.sec === sec).forEach((p) => { (by[p.t] ??= { a: 0, c: 0 }); by[p.t].a += p.a; by[p.t].c += p.c; });
   const types = [...def.practiceTypes, ...Object.keys(by).filter((k) => !def.practiceTypes.includes(k))];
@@ -60,97 +58,98 @@ export default function Progress() {
   const hit = mocksAsc.filter((x) => x.c >= band[0] && x.w <= 3).length;
 
   return (
-    <div className="page">
-      <div className="view-head">
-        <h1>Progress</h1>
-        <p>Practice sets show your accuracy by question type. Timed papers and mocks show whether you are on track.</p>
-      </div>
-      <div className="seg" role="group" aria-label="Section" style={{ alignSelf: "flex-start" }}>
-        {SECTIONS.map((s) => <button key={s.id} type="button" aria-pressed={sec === s.short} onClick={() => setSec(s.short)}>{s.short}</button>)}
+    <Page>
+      <PageHeader title="Progress">Practice sets show your accuracy by question type. Timed papers and mocks show whether you are on track.</PageHeader>
+
+      <div className="-mt-4 flex flex-col gap-6">
+        <Segmented label="Section" value={sec} onChange={setSec} options={SECTIONS.map((s) => s.short)} />
+        <div className="flex flex-wrap gap-x-12 gap-y-4 rounded-lg bg-card p-5 sm:p-6">
+          <Stat value={totA} label="Questions done" />
+          <Stat value={totA ? Math.round((totC / totA) * 100) + "%" : "None yet"} label="Accuracy" />
+          <Stat value={n} label="Papers and mocks" />
+          <Stat value={state.errors.filter((e) => e.sec === sec).length} label="Errors logged" />
+        </div>
       </div>
 
-      <p className="stats">Questions Practiced <b>{totA}</b> · Accuracy <b>{totA ? Math.round((totC / totA) * 100) + "%" : "none yet"}</b> · Papers and mocks <b>{n}</b> · Errors logged <b>{state.errors.filter((e) => e.sec === sec).length}</b></p>
-
-      <div className="card">
-        <h3>Accuracy by question type</h3>
-        <ul className="bars">
+      <Section title="Accuracy by question type" description="Bars under 60% are red. Spend more drill time on those.">
+        <ul className="flex flex-col gap-3.5 rounded-lg bg-card p-5 sm:p-6">
           {types.map((t) => {
             const x = by[t] ?? { a: 0, c: 0 }, pct = x.a ? Math.round((x.c / x.a) * 100) : 0;
-            return <li key={t}><span>{t}</span><span className="bar"><i className={x.a && pct < 60 ? "lo" : ""} style={{ width: pct + "%" }} /></span><span className="n">{x.a ? pct + "%" : "–"}<small>{x.a} Qs</small></span></li>;
+            return (
+              <li key={t} className="grid grid-cols-[minmax(0,10rem)_minmax(0,1fr)_4.5rem] items-center gap-3 text-base sm:grid-cols-[minmax(0,13rem)_minmax(0,1fr)_5.5rem]">
+                <span className="truncate" title={t}>{t}</span>
+                <span className="h-2.5 overflow-hidden rounded-full bg-secondary"><span className={cn("block h-full rounded-full", x.a && pct < 60 ? "bg-danger" : "bg-primary")} style={{ width: pct + "%" }} /></span>
+                <span className="text-right leading-tight tabular-nums">{x.a ? <><b className="font-semibold">{pct}%</b><span className="block text-sm text-muted-foreground">{x.a} Qs</span></> : <span className="text-sm text-muted-foreground">No sets</span>}</span>
+              </li>
+            );
           })}
         </ul>
-        <p className="muted small" style={{ marginTop: 10 }}>Bars under 60% are red. Spend more drill time on those.</p>
-      </div>
+      </Section>
 
-      <form className="card" onSubmit={addPractice} autoComplete="off">
-        <h3>Log a {sec} practice set</h3>
-        <div className="form">
-          <label className="f">Date<input name="d" type="date" defaultValue={todayIso()} required /></label>
-          <label className="f">Question type<select name="t" key={sec}>{def.practiceTypes.map((t) => <option key={t}>{t}</option>)}</select></label>
-          <label className="f">Attempted<input name="a" type="number" inputMode="numeric" min={1} max={200} required placeholder="8" /></label>
-          <label className="f">Correct<input name="c" type="number" inputMode="numeric" min={0} max={200} required placeholder="6" /></label>
-          <label className="f wide">Source<input name="src" type="text" placeholder="Cracku RC bank, CAT 2019 Slot 2" /></label>
-          <button className="btn" type="submit">Add set</button>
+      <Section title={`${sec} correct answers over time`}>
+        <div className="flex flex-col gap-4 rounded-lg bg-card p-5 sm:p-6">
+          <ul className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-muted-foreground">
+            <li className="inline-flex items-center gap-2"><i className="h-2 w-4 rounded-sm bg-primary" />Correct</li>
+            <li className="inline-flex items-center gap-2"><i className="h-2 w-4 rounded-sm bg-danger/50" />Wrong MCQ</li>
+            <li className="inline-flex items-center gap-2"><i className="h-2 w-4 rounded-sm bg-success/30" />Target, {band[0]} to {band[1]} correct</li>
+          </ul>
+          <MockChart data={mocksAsc.slice(-20)} max={def.maxQ} band={band} />
+          {n ? (
+            <div className="flex flex-wrap gap-x-12 gap-y-3">
+              <Stat value={n} label="Results" /><Stat value={best} label="Best, correct" /><Stat value={avg.toFixed(1)} label="Last 3, average" /><Stat value={`${hit} of ${n}`} label="On target" />
+            </div>
+          ) : <Meta>No {sec} results yet.</Meta>}
+          {sec !== "VARC" && <Meta>The {sec} target band is a rough placeholder until the {sec} plan launches.</Meta>}
         </div>
-        <p className="err" role="alert">{pErr}</p>
-      </form>
+      </Section>
 
-      <div className="card">
-        <h3>Recent practice</h3>
-        <ul className="log">
-          {practice.length ? practice.map((p) => (
-            <li key={p.id}>
-              <div>
-                <div className="l1"><span className="d">{shortDate(p.d)}</span><b>{p.t}</b>{p.src && <span className="muted small">{p.src}</span>}</div>
-                <div className="nums">Correct <b>{p.c}</b> of <b>{p.a}</b> · {Math.round((p.c / Math.max(p.a, 1)) * 100)}%</div>
-              </div>
-              <button type="button" className="x" aria-label="Delete this set" onClick={() => update((st) => { st.practice = st.practice.filter((x) => x.id !== p.id); })}>Delete</button>
-            </li>
-          )) : <li style={{ display: "block" }}><div className="empty">Practice sets you log from the timetable or the form above show here.</div></li>}
-        </ul>
+      <div className="grid gap-10 lg:grid-cols-2 lg:gap-8">
+        <Section title={`Log a ${sec} practice set`}>
+          <form className="grid grid-cols-2 items-end gap-4 rounded-lg bg-card p-5 sm:p-6" onSubmit={addPractice} autoComplete="off">
+            <Field label="Date"><Input name="d" type="date" defaultValue={todayIso()} required /></Field>
+            <Field label="Question type"><NativeSelect name="t" key={sec}>{def.practiceTypes.map((t) => <option key={t}>{t}</option>)}</NativeSelect></Field>
+            <Field label="Attempted"><Input name="a" type="number" inputMode="numeric" min={1} max={200} required placeholder="8" /></Field>
+            <Field label="Correct"><Input name="c" type="number" inputMode="numeric" min={0} max={200} required placeholder="6" /></Field>
+            <Field label="Source" className="col-span-2"><Input name="src" placeholder="Cracku RC bank, CAT 2019 Slot 2" /></Field>
+            <div className="col-span-2 flex flex-col gap-2"><Button type="submit" className="self-start">Add set</Button><ErrorText>{pErr}</ErrorText></div>
+          </form>
+        </Section>
+        <Section title={`Log a timed ${sec} paper or mock`}>
+          <form className="grid grid-cols-2 items-end gap-4 rounded-lg bg-card p-5 sm:p-6" onSubmit={addMock} autoComplete="off">
+            <Field label="Date"><Input name="d" type="date" defaultValue={todayIso()} required /></Field>
+            <Field label="Type"><NativeSelect name="k">{KINDS.map((k) => <option key={k}>{k}</option>)}</NativeSelect></Field>
+            <Field label="Name" className="col-span-2"><Input name="n" placeholder="CAT 2017 Slot 1" /></Field>
+            <Field label="Correct"><Input name="c" type="number" inputMode="numeric" min={0} max={def.maxQ} required placeholder="14" /></Field>
+            <Field label="Wrong MCQ"><Input name="w" type="number" inputMode="numeric" min={0} max={def.maxQ} required placeholder="3" /></Field>
+            <div className="col-span-2 flex flex-col gap-2"><Button type="submit" className="self-start">Add result</Button><ErrorText>{mErr}</ErrorText></div>
+          </form>
+        </Section>
       </div>
 
-      <form className="card" onSubmit={addMock} autoComplete="off">
-        <h3>Log a timed {sec} paper or mock section</h3>
-        <div className="form">
-          <label className="f">Date<input name="d" type="date" defaultValue={todayIso()} required /></label>
-          <label className="f">Type<select name="k">{KINDS.map((k) => <option key={k}>{k}</option>)}</select></label>
-          <label className="f">Name<input name="n" type="text" placeholder="CAT 2017 Slot 1" /></label>
-          <label className="f">Correct<input name="c" type="number" inputMode="numeric" min={0} max={def.maxQ} required placeholder="14" /></label>
-          <label className="f">Wrong MCQ<input name="w" type="number" inputMode="numeric" min={0} max={def.maxQ} required placeholder="3" /></label>
-          <button className="btn" type="submit">Add result</button>
-        </div>
-        <p className="err" role="alert">{mErr}</p>
-      </form>
-
-      <div className="card">
-        <h3>{sec} correct answers over time</h3>
-        <div className="legend">
-          <span><i style={{ background: "var(--accent)" }} />Correct</span>
-          <span><i style={{ background: "var(--bad)", opacity: 0.55 }} />Wrong MCQ</span>
-          <span><i style={{ background: "var(--good)", opacity: 0.3 }} />Target, {band[0]} to {band[1]} correct</span>
-        </div>
-        <MockChart data={mocksAsc.slice(-20)} max={def.maxQ} band={band} />
-        <p className="summary">{n ? (<>
-          <span>Results <b>{n}</b></span><span>Best <b>{best}</b> correct</span><span>Last 3 average <b>{avg.toFixed(1)}</b></span><span>On target <b>{hit} of {n}</b></span>
-        </>) : <span>No {sec} results yet.</span>}</p>
-        {sec !== "VARC" && <p className="muted small">The {sec} target band is a rough placeholder until the {sec} plan launches.</p>}
+      <div className="grid gap-10 lg:grid-cols-2 lg:gap-8">
+        <Section title="Recent practice">
+          <LogList empty="Practice sets you log from the timetable or the form above show here.">
+            {practice.map((p) => (
+              <LogRow key={p.id} label="Delete this set" onDelete={() => update((st) => { st.practice = st.practice.filter((x) => x.id !== p.id); })}>
+                <span className="text-base font-semibold">{p.t} <span className="font-normal text-muted-foreground">· {shortDate(p.d)}</span></span>
+                <span className="text-base tabular-nums">{p.c} of {p.a} correct, {Math.round((p.c / Math.max(p.a, 1)) * 100)}%</span>
+                {p.src && <Meta>{p.src}</Meta>}
+              </LogRow>
+            ))}
+          </LogList>
+        </Section>
+        <Section title="Papers and mocks">
+          <LogList empty="Timed papers you log from the timetable or the form above show here.">
+            {[...mocksAsc].reverse().map((x) => (
+              <LogRow key={x.id} label={"Delete result from " + shortDate(x.d)} onDelete={() => update((st) => { st.mocks = st.mocks.filter((m) => m.id !== x.id); })}>
+                <span className="flex flex-wrap items-center gap-2 text-base font-semibold">{x.n || x.k}<Badge variant="secondary">{x.k}</Badge></span>
+                <span className="text-base tabular-nums">{x.c} correct, {x.w} wrong, raw score {3 * x.c - x.w}</span>
+                <Meta>{shortDate(x.d)}</Meta>
+              </LogRow>
+            ))}
+          </LogList>
+        </Section>
       </div>
-
-      <div className="card">
-        <h3>Papers and mocks</h3>
-        <ul className="log">
-          {n ? [...mocksAsc].reverse().map((x) => (
-            <li key={x.id}>
-              <div>
-                <div className="l1"><span className="d">{shortDate(x.d)}</span><b>{x.n || x.k}</b><span className="tag t-opt">{x.k}</span></div>
-                <div className="nums">Correct <b>{x.c}</b> · Wrong <b>{x.w}</b> · Raw <b>{3 * x.c - x.w}</b></div>
-              </div>
-              <button type="button" className="x" aria-label={"Delete result from " + shortDate(x.d)} onClick={() => update((st) => { st.mocks = st.mocks.filter((m) => m.id !== x.id); })}>Delete</button>
-            </li>
-          )) : <li style={{ display: "block" }}><div className="empty">Timed papers you log from the timetable or the form above show here.</div></li>}
-        </ul>
-      </div>
-    </div>
+    </Page>
   );
 }

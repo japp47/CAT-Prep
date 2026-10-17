@@ -1,12 +1,15 @@
 import { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { shortDate, todayIso, uid } from "../../lib/date";
 import { useStore } from "../../lib/store";
 import { ContentGate } from "../../components/Content";
+import { LinkButton, Meta, Page, PageHeader, Section, Stat } from "../../components/kit";
 import type { Content } from "../../practice/content";
 import { speedSetOfDay } from "../../practice/daily";
 import { fmtSecs, LETTERS } from "../../practice/record";
 import { setWords, type RcSet } from "../../practice/types";
+import { Choice, ScoreCard } from "./common";
 
 /** CAT has about 2,000 words of RC; reading them in 10 minutes leaves time for the questions. */
 const EXAM_PACE = 200;
@@ -64,80 +67,77 @@ function SpeedPage({ c }: { c: Content }) {
   const again = () => { setPicks([null, null]); setResult(null); random(); setPhase("intro"); };
 
   return (
-    <div className="page">
-      <div className="view-head">
-        <span className="eyebrow">Free tool · VARC</span>
-        <h1>Reading speed test</h1>
-        <p>Read one passage at your natural pace, then answer two recall questions. Speed only counts when you remember what you read.</p>
-      </div>
+    <Page width="read">
+      <PageHeader title="Reading speed test" back={{ to: "/practice", label: "Practice" }}>
+        Read one passage at your natural pace, then answer two recall questions. Speed only counts when you remember what you read.
+      </PageHeader>
 
       {phase === "intro" && (
-        <div className="card stack">
-          <span className="eyebrow">Passage</span>
-          {tooQuick && <p className="err" role="alert">That was under {MIN_SECS} seconds, too quick to measure, so it was not saved. Read the whole passage, then tap Done.</p>}
-          <h3>{set.title}</h3>
-          <p className="muted small">{words} words · picked for today. The clock starts when the passage appears and stops when you tap Done.</p>
-          <div className="row">
-            <button type="button" className="btn" onClick={begin}>Start reading</button>
-            <button type="button" className="btn ghost" onClick={random}>Pick another passage</button>
+        <div className="flex flex-col gap-5 rounded-lg bg-card p-5 sm:p-7">
+          {tooQuick && <p className="rounded-md bg-danger-soft px-4 py-3 text-base text-danger" role="alert">That was under {MIN_SECS} seconds, too quick to measure, so it was not saved. Read the whole passage, then tap Done reading.</p>}
+          <div className="flex flex-col gap-1">
+            <h2 className="text-heading font-semibold">{set.title}</h2>
+            <Meta>{words} words, picked for today. The clock starts when the passage appears and stops when you tap Done reading.</Meta>
           </div>
-          <p className="summary"><span>Best with full recall <b>{best ? best + " wpm" : "none yet"}</b></span><span>CAT pace <b>about {EXAM_PACE} wpm</b></span></p>
+          <div className="flex flex-wrap gap-3">
+            <Button size="lg" onClick={begin}>Start reading</Button>
+            <Button size="lg" variant="secondary" onClick={random}>Pick another passage</Button>
+          </div>
+          <div className="flex flex-wrap gap-x-12 gap-y-3 pt-2">
+            <Stat value={best ? best + " wpm" : "None yet"} label="Your best with full recall" />
+            <Stat value={`about ${EXAM_PACE} wpm`} label="CAT pace" />
+          </div>
         </div>
       )}
 
       {phase === "read" && (
         <>
-          <article className="card speedtext">{set.paras.map((p, i) => <p key={i}>{p}</p>)}</article>
-          <button type="button" className="btn" style={{ alignSelf: "flex-start" }} onClick={doneReading}>Done reading</button>
+          <article className="flex flex-col gap-4 rounded-lg bg-card px-5 py-6 sm:px-8">{set.paras.map((p, i) => <p key={i} className="text-reading">{p}</p>)}</article>
+          <div><Button size="lg" onClick={doneReading}>Done reading</Button></div>
         </>
       )}
 
       {phase === "recall" && (
-        <div className="card stack">
-          <p className="muted">The passage is hidden. Answer from memory.</p>
+        <div className="flex flex-col gap-6">
+          <p className="text-base text-muted-foreground">The passage is hidden. Answer from memory.</p>
           {set.recall.map((r, qi) => (
-            <div key={qi} className="stack">
-              <p className="stem">{qi + 1}. {r.q}</p>
-              <ul className="opts" role="radiogroup">
-                {r.options.map((o, i) => (
-                  <li key={i}><button type="button" role="radio" aria-checked={picks[qi] === i} className="opt" onClick={() => setPicks((p) => p.map((x, k) => (k === qi ? i : x)))}><span className="l">{LETTERS[i]}</span><span>{o}</span></button></li>
-                ))}
-              </ul>
+            <div key={qi} className="flex flex-col gap-3">
+              <p className="text-lg leading-snug font-semibold">{qi + 1}. {r.q}</p>
+              <div className="flex flex-col gap-2.5" role="radiogroup">
+                {r.options.map((o, i) => <Choice key={i} mark={LETTERS[i]} checked={picks[qi] === i} onClick={() => setPicks((p) => p.map((x, k) => (k === qi ? i : x)))}>{o}</Choice>)}
+              </div>
             </div>
           ))}
-          <button type="button" className="btn" style={{ alignSelf: "flex-start" }} disabled={picks.some((p) => p === null)} onClick={finish}>See my result</button>
+          <div><Button size="lg" disabled={picks.some((p) => p === null)} onClick={finish}>See my result</Button></div>
         </div>
       )}
 
       {phase === "done" && result && (
-        <div className="card stack">
-          <div className="scorebox">
-            <div><span className="eyebrow">Your pace</span><div className="big">{result.wpm}<span className="muted" style={{ fontSize: 18 }}> wpm</span></div></div>
-            <p className="summary"><span>Recall <b>{result.recall} of 2</b></span><span>Time <b>{fmtSecs(result.secs)}</b></span><span>Words <b>{words}</b></span></p>
+        <ScoreCard score={result.wpm} unit="wpm" parts={[["Recall", `${result.recall} of 2`], ["Time", fmtSecs(result.secs)], ["Words", words]]}>
+          <p className="text-lg">{verdict(result.wpm, result.recall)}</p>
+          {set.recall.map((r, i) => picks[i] !== r.answer && <p key={i} className="text-base text-muted-foreground">Question {i + 1}: the answer was “{r.options[r.answer]}”.</p>)}
+          <div className="flex flex-wrap gap-3">
+            <Button onClick={again}>Test again</Button>
+            {rcById(set.id) && <LinkButton to={`/practice/rc/${set.id}`} variant="secondary">Answer the RC questions on this passage</LinkButton>}
           </div>
-          <p>{verdict(result.wpm, result.recall)}</p>
-          {set.recall.map((r, i) => picks[i] !== r.answer && <p key={i} className="muted small">Q{i + 1}: the answer was “{r.options[r.answer]}”.</p>)}
-          <div className="row">
-            <button type="button" className="btn" onClick={again}>Test again</button>
-            {rcById(set.id) && <Link className="btn ghost" to={`/practice/rc/${set.id}`}>Answer the RC questions on this passage</Link>}
-          </div>
-        </div>
+        </ScoreCard>
       )}
 
       {runs.length > 0 && phase !== "read" && (
-        <div className="card">
-          <h3>Your recent runs</h3>
-          <ul className="log">
+        <Section title="Your recent runs">
+          <ul className="flex flex-col gap-1">
             {runs.slice(0, 8).map((r) => (
-              <li key={r.id}>
-                <div><div className="l1"><span className="d">{shortDate(r.d)}</span><b>{r.wpm} wpm</b><span className={"tag " + (r.recall === 2 ? "t-official" : "t-opt")}>Recall {r.recall}/2</span></div>
-                  <div className="nums">{rcById(r.set)?.title ?? r.set} · {fmtSecs(r.secs)}</div></div>
-                <span />
+              <li key={r.id} className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-md bg-card px-4 py-3">
+                <span className="flex flex-col">
+                  <b className="text-base font-semibold tabular-nums">{r.wpm} wpm</b>
+                  <Meta>{shortDate(r.d)}, {rcById(r.set)?.title ?? r.set}, {fmtSecs(r.secs)}</Meta>
+                </span>
+                <Badge variant={r.recall === 2 ? "success" : "secondary"}>Recall {r.recall} of 2</Badge>
               </li>
             ))}
           </ul>
-        </div>
+        </Section>
       )}
-    </div>
+    </Page>
   );
 }

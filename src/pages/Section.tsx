@@ -1,6 +1,14 @@
-import { Link, useParams } from "react-router-dom";
+import { useState, type ReactNode } from "react";
+import { useParams } from "react-router-dom";
+import { ChevronDown, Search } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { cn } from "@/lib/utils";
 import { CategoryBlock } from "../components/Resources";
-import { Ext } from "../components/Links";
+import { Empty, Ext, LinkButton, Page, PageHeader, Section as Block, TextLink } from "../components/kit";
 import { TypeGuide, TypeIndex } from "../components/TypeGuide";
 import { BENCHMARKS, PASSAGE_SOURCES, TOPPERS } from "../data/stories";
 import { dow, todayIso } from "../lib/date";
@@ -14,42 +22,70 @@ import { FORMAT, TAB_NOTES, TOPICS, VA_MIX, VTABS } from "../sections/varc/learn
 import { ROTATION } from "../sections/varc/resources";
 import NotFound from "./NotFound";
 
+const TR = "border-t align-top"; // taste-skill-ignore: rows of a real table
+
 function Soon({ sec }: { sec: SectionDef }) {
   return (
-    <div className="page">
-      <div className="view-head"><span className="soon" style={{ alignSelf: "flex-start" }}>Coming soon</span><h1>{sec.short}</h1><p>{sec.name}. {sec.tagline}</p></div>
-      <div className="card stack">
-        <p>This section will get the same treatment as VARC: concepts, question banks, past papers, videos and its own phase plan with time settings.</p>
-        <p className="muted">You can already log {sec.short} mock scores in <Link to="/progress">Progress</Link> and {sec.short} mistakes in the <Link to="/errors">Error log</Link>.</p>
-        <div className="row"><Link className="btn" to="/varc">Go to VARC</Link><Link className="btn ghost" to="/roadmap">See what's coming</Link></div>
+    <Page width="read">
+      <PageHeader title={sec.short} aside={<span className="rounded-md bg-secondary px-2 py-1 text-sm font-medium text-muted-foreground">Coming soon</span>}>{sec.name}. {sec.tagline}</PageHeader>
+      <div className="flex flex-col gap-4 rounded-lg bg-card p-6">
+        <p className="text-base">This section will get the same treatment as VARC: concepts, question banks, past papers, videos and its own phase plan with time settings.</p>
+        <p className="text-base text-muted-foreground">You can already log {sec.short} mock scores in <TextLink to="/progress">Progress</TextLink> and {sec.short} mistakes in the <TextLink to="/errors">Error log</TextLink>.</p>
+        <div className="flex flex-wrap gap-3"><LinkButton to="/varc">Go to VARC</LinkButton><LinkButton to="/roadmap" variant="secondary">See what's coming</LinkButton></div>
       </div>
+    </Page>
+  );
+}
+
+/** A plain data table: the one place lines are allowed. */
+function Table({ head, rows, num = [] }: { head: string[]; rows: ReactNode[][]; num?: number[] }) {
+  return (
+    <div className="overflow-x-auto rounded-lg bg-card">
+      <table className="w-full text-left text-base">
+        <thead><tr>{head.map((h, i) => <th key={h} className={cn("px-4 pt-4 pb-2 text-sm font-medium whitespace-nowrap text-muted-foreground", num.includes(i) && "text-right")}>{h}</th>)}</tr></thead>
+        <tbody>{rows.map((r, k) => <tr key={k} className={TR}>{r.map((c, i) => <td key={i} className={cn("px-4 py-3", num.includes(i) && "text-right tabular-nums")}>{c}</td>)}</tr>)}</tbody>
+      </table>
     </div>
   );
 }
 
 function Topic({ t }: { t: (typeof TOPICS)[number] }) {
+  const [open, setOpen] = useState(!!t.open);
   return (
-    <details className="qa" open={t.open}>
-      <summary>{t.h}</summary>
-      <div className="read">
+    <Collapsible open={open} onOpenChange={setOpen} className="rounded-lg bg-card">
+      <CollapsibleTrigger className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left hover:text-primary sm:px-6">
+        <span className="text-heading font-semibold">{t.h}</span>
+        <ChevronDown className={cn("size-5 shrink-0 transition-transform", open && "rotate-180")} aria-hidden />
+      </CollapsibleTrigger>
+      <CollapsibleContent className="measure flex flex-col gap-3 px-5 pb-6 text-reading sm:px-6">
         {t.p?.map((p, i) => <p key={i}>{p}</p>)}
-        {t.ol && <ol>{t.ol.map((x, i) => <li key={i}>{x}</li>)}</ol>}
-        {t.ul && <ul>{t.ul.map((x, i) => <li key={i}>{x}</li>)}</ul>}
-      </div>
-    </details>
+        {t.ol && <ol className="flex list-decimal flex-col gap-2 pl-6">{t.ol.map((x, i) => <li key={i}>{x}</li>)}</ol>}
+        {t.ul && <ul className="flex list-disc flex-col gap-2 pl-6">{t.ul.map((x, i) => <li key={i}>{x}</li>)}</ul>}
+      </CollapsibleContent>
+    </Collapsible>
   );
 }
 
-function VaMix() {
-  const cell = (n: number) => (n ? n : <span className="muted">–</span>);
+function Learn() {
+  const [open, setOpen] = useState<Record<string, boolean>>({});
   return (
-    <div className="stack">
-      <h3>VA questions per slot, by year</h3>
-      <div className="tbl-wrap"><table>
-        <thead><tr><th>Year</th><th className="num">Para summary</th><th className="num">Sentence insertion</th><th className="num">Odd sentence out</th><th className="num">Para jumble</th><th>Note</th></tr></thead>
-        <tbody>{VA_MIX.map((r) => <tr key={r.year}><td>{r.year}</td><td className="num">{cell(r.ps)}</td><td className="num">{cell(r.si)}</td><td className="num">{cell(r.oso)}</td><td className="num">{cell(r.pj)}</td><td className="nw">{r.note ?? ""}</td></tr>)}</tbody>
-      </table></div>
-      <p className="muted small">From IMS, Cracku and Careers360 slot analyses. A few slot reports differ by one question. Para summary and sentence insertion are MCQs with negative marking; para jumbles and odd sentence out are TITA.</p>
+    <div className="flex flex-col gap-12">
+      <Block title="The section">
+        <dl className="grid gap-x-8 gap-y-5 rounded-lg bg-card p-5 sm:grid-cols-[9rem_minmax(0,1fr)] sm:p-6">
+          {FORMAT.map(([k, v]) => <div key={k} className="contents"><dt className="text-base font-semibold">{k}</dt><dd className="measure text-base text-foreground/85">{v}</dd></div>)}
+        </dl>
+      </Block>
+      <Block title="VA questions per slot, by year" description="From IMS, Cracku and Careers360 slot analyses. A few slot reports differ by one question.">
+        <Table head={["Year", "Para summary", "Sentence insertion", "Odd sentence out", "Para jumble", "Note"]} num={[1, 2, 3, 4]}
+          rows={VA_MIX.map((r) => [r.year, r.ps || "–", r.si || "–", r.oso || "–", r.pj || "–", <span key="n" className="whitespace-nowrap text-muted-foreground">{r.note ?? ""}</span>])} />
+      </Block>
+      <div className="flex flex-col gap-3">{TOPICS.map((t) => <Topic key={t.h} t={t} />)}</div>
+      <Block title="A guide for each question type" description="Method, common traps, a worked example to try, and three links: a written guide, a video and a free question bank.">
+        <TypeIndex guides={TYPE_GUIDES} onOpen={(id) => setOpen((o) => ({ ...o, [id]: true }))} />
+        <div className="flex flex-col gap-3">
+          {TYPE_GUIDES.map((g) => <TypeGuide key={g.id} g={g} open={!!open[g.id]} onOpenChange={(v) => setOpen((o) => ({ ...o, [g.id]: v }))} />)}
+        </div>
+      </Block>
     </div>
   );
 }
@@ -58,57 +94,41 @@ function Rotation() {
   const today = dow(todayIso());
   const order = [1, 2, 3, 4, 5, 6, 0];
   return (
-    <div className="stack">
-      <h3>Weekly reading rotation</h3>
-      <div className="tbl-wrap">
-        <table>
-          <thead><tr><th>Day</th><th>Sources</th><th>Genre</th><th>Write down</th></tr></thead>
+    <Block title="Weekly reading rotation" description="Today's row also appears in your timetable. Bharath's Reading List works on any day.">
+      <div className="overflow-x-auto rounded-lg bg-card">
+        <table className="w-full text-left text-base">
+          <thead><tr>{["Day", "Sources", "Genre", "Write down"].map((h) => <th key={h} className="px-4 pt-4 pb-2 text-sm font-medium text-muted-foreground">{h}</th>)}</tr></thead>
           <tbody>
             {order.map((g) => {
               const x = ROTATION[g];
               return (
-                <tr key={g} className={g === today ? "now" : ""}>
-                  <td>{x.d}</td>
-                  <td>{x.src.map(([n, u], i) => <span key={u}>{i > 0 && ", "}<Ext href={u}>{n}</Ext></span>)}</td>
-                  <td>{x.genre}</td><td>{x.out}</td>
+                <tr key={g} className={cn(TR, g === today && "bg-highlight-soft")}>
+                  <td className="px-4 py-3 font-semibold">{x.d}{g === today && <span className="block text-sm font-normal">Today</span>}</td>
+                  <td className="px-4 py-3">{x.src.map(([n, u], i) => <span key={u}>{i > 0 && ", "}<Ext href={u} className="text-primary underline decoration-primary/30 underline-offset-4 hover:decoration-primary">{n}</Ext></span>)}</td>
+                  <td className="px-4 py-3">{x.genre}</td><td className="px-4 py-3">{x.out}</td>
                 </tr>
               );
             })}
           </tbody>
         </table>
       </div>
-      <p className="muted small">Today's row also appears in your timetable. Bharath's Reading List works on any day.</p>
-    </div>
+    </Block>
   );
 }
 
 function Toppers() {
   return (
-    <>
-      <div className="stack">
-        <h3>How 99+ scorers prepared</h3>
-        <div className="tbl-wrap"><table>
-          <thead><tr><th>Name</th><th>Result</th><th>What they did</th></tr></thead>
-          <tbody>{TOPPERS.map((t) => <tr key={t.name}><td>{t.link ? <Ext href={t.link}>{t.name}</Ext> : t.name}</td><td>{t.result}</td><td>{t.what}</td></tr>)}</tbody>
-        </table></div>
-      </div>
-      <div className="stack">
-        <h3>Score benchmarks</h3>
-        <div className="tbl-wrap"><table>
-          <thead><tr><th>Year</th><th className="num">99 percentile</th><th className="num">99.9 percentile</th><th>Source</th></tr></thead>
-          <tbody>{BENCHMARKS.map((b) => <tr key={b.year}><td>{b.year}</td><td className="num">{b.p99}</td><td className="num">{b.p999}</td><td>{b.src}</td></tr>)}</tbody>
-        </table></div>
-        <p className="muted small">Scaled VARC scores from coaching institutes. They differ by 1 to 2 marks and shift each year.</p>
-      </div>
-      <div className="stack">
-        <h3>Where CAT passages come from</h3>
-        <div className="tbl-wrap"><table>
-          <thead><tr><th>Year</th><th>Topics and sources</th></tr></thead>
-          <tbody>{PASSAGE_SOURCES.map((p) => <tr key={p.year}><td>{p.year}</td><td>{p.text}</td></tr>)}</tbody>
-        </table></div>
-        <p className="muted small">In 2025, Slot 1 was rated moderate to difficult and Slots 2 and 3 easy to moderate. Every slot had 2 each of para jumbles, para summary, sentence insertion and odd sentence out.</p>
-      </div>
-    </>
+    <div className="flex flex-col gap-12">
+      <Block title="How 99+ scorers prepared">
+        <Table head={["Name", "Result", "What they did"]} rows={TOPPERS.map((t) => [t.link ? <Ext key="l" href={t.link} className="font-semibold text-primary underline decoration-primary/30 underline-offset-4">{t.name}</Ext> : <b key="b">{t.name}</b>, t.result, t.what])} />
+      </Block>
+      <Block title="Score benchmarks" description="Scaled VARC scores from coaching institutes. They differ by 1 to 2 marks and shift each year.">
+        <Table head={["Year", "99 percentile", "99.9 percentile", "Source"]} num={[1, 2]} rows={BENCHMARKS.map((b) => [b.year, b.p99, b.p999, b.src])} />
+      </Block>
+      <Block title="Where CAT passages come from" description="In 2025, Slot 1 was rated moderate to difficult and Slots 2 and 3 easy to moderate. Every slot had 2 each of para jumbles, para summary, sentence insertion and odd sentence out.">
+        <Table head={["Year", "Topics and sources"]} rows={PASSAGE_SOURCES.map((p) => [p.year, p.text])} />
+      </Block>
+    </div>
   );
 }
 
@@ -127,67 +147,65 @@ function Live({ sec }: { sec: SectionDef }) {
   const filter = (catId: string, withQuery: boolean) => all.filter((x) =>
     x.c === catId && (pri !== "must" || x.p === "must") && !(hideDone && state.ticks[x.id]) &&
     (!withQuery || (x.n + " " + x.w + " " + x.t).toLowerCase().includes(query)));
-  const cats4 = (tab: string | null) => cats.filter((c) => tab === null || c.tab === tab)
-    .map((c) => ({ c, items: filter(c.id, tab === null) })).filter((x) => x.items.length);
   const list = (tab: string | null, emptyMsg: string) => {
-    const blocks = cats4(tab);
-    return blocks.length ? blocks.map(({ c, items }) => <CategoryBlock key={c.id} cat={c} items={items} all={all} />) : <div className="empty">{emptyMsg}</div>;
+    const blocks = cats.filter((c) => tab === null || c.tab === tab).map((c) => ({ c, items: filter(c.id, tab === null) })).filter((x) => x.items.length);
+    return blocks.length ? blocks.map(({ c, items }) => <CategoryBlock key={c.id} cat={c} items={items} all={all} />) : <Empty>{emptyMsg}</Empty>;
   };
   const tabValid = VTABS.some((t) => t.id === vtab) ? vtab : "learn";
 
-  return (
-    <div className="page">
-      <div className="view-head">
-        <span className="live" style={{ alignSelf: "flex-start" }}>Live</span>
-        <h1>{sec.short}</h1>
-        <p>{sec.name}. {doneAll} of {all.length} resources done. Must-do: {mustDone} of {mustAll.length}.</p>
-      </div>
-      <div className="controls">
-        <input className="search" type="search" placeholder={"Search all " + sec.short + " resources"} aria-label={"Search all " + sec.short + " resources"} autoComplete="off" value={q} onChange={(e) => setQ(e.target.value)} />
-        <div className="seg" role="group" aria-label="Priority filter">
-          <button type="button" aria-pressed={pri === "all"} onClick={() => setPri("all")}>All</button>
-          <button type="button" aria-pressed={pri === "must"} onClick={() => setPri("must")}>Must-do only</button>
+  const extra = (id: string) => (
+    <>
+      {id === "practice" && (
+        <div className="flex flex-col gap-3 rounded-lg bg-card p-5 sm:p-6">
+          <h3 className="text-heading font-semibold">Practice on this site</h3>
+          <p className="measure text-base text-foreground/85">{RC_CATALOG.length} original RC sets with an explanation for every option, a daily VA drill, custom drills by type, a timed sectional, a redo queue for mistakes and a reading speed test. Your scores go straight into Progress.</p>
+          <div className="flex flex-wrap gap-3"><LinkButton to="/practice">Open Practice</LinkButton><LinkButton to="/practice/va" variant="secondary">Today's VA drill</LinkButton></div>
         </div>
-        <label className="tog"><input type="checkbox" checked={hideDone} onChange={(e) => setHideDone(e.target.checked)} /> Hide done</label>
-      </div>
-      <div className="subnav" role="tablist">
-        {VTABS.map((t) => (
-          <button key={t.id} type="button" aria-current={!query && tabValid === t.id ? "page" : undefined} onClick={() => { setQ(""); setVtab(t.id); }}>{t.label}</button>
-        ))}
+      )}
+      {id === "read" && <Rotation />}
+      {id === "toppers" && <Toppers />}
+      {TAB_NOTES[id] && (
+        <div className="measure flex flex-col gap-3 text-base text-foreground/85">
+          {TAB_NOTES[id].map((p, i) => <p key={i}>{p}</p>)}
+          {id === "vocab" && <p><TextLink to="/words">Open your flashcards</TextLink></p>}
+        </div>
+      )}
+    </>
+  );
+
+  return (
+    <Page>
+      <PageHeader title={sec.short}>{sec.name}. You have done {doneAll} of {all.length} resources, and {mustDone} of {mustAll.length} must-dos.</PageHeader>
+
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+        <div className="relative min-w-60 flex-1">
+          <Search className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-muted-foreground" aria-hidden />
+          <Input type="search" placeholder={"Search all " + sec.short + " resources"} aria-label={"Search all " + sec.short + " resources"} autoComplete="off" value={q} onChange={(e) => setQ(e.target.value)} className="bg-card pl-10" />
+        </div>
+        <ToggleGroup type="single" value={pri} onValueChange={(v) => v && setPri(v as "all" | "must")} className="rounded-lg bg-secondary p-1" aria-label="Priority filter">
+          <ToggleGroupItem value="all" className="h-9 rounded-md px-3.5 text-base data-[state=on]:bg-card data-[state=on]:font-semibold">All</ToggleGroupItem>
+          <ToggleGroupItem value="must" className="h-9 rounded-md px-3.5 text-base data-[state=on]:bg-card data-[state=on]:font-semibold">Must-do only</ToggleGroupItem>
+        </ToggleGroup>
+        <label className="inline-flex items-center gap-2.5 text-base"><Checkbox checked={hideDone} onCheckedChange={(v) => setHideDone(v === true)} />Hide done</label>
       </div>
 
       {query ? (
-        <div className="vsec">{list(null, "Nothing matches \"" + q + "\". Try a site name or a question type.")}</div>
+        <div className="flex flex-col gap-10">{list(null, `Nothing matches "${q}". Try a site name or a question type.`)}</div>
       ) : (
-        <div className="vsec">
-          {tabValid === "learn" && (
-            <>
-              <div className="card"><h3>The section</h3><dl className="kv">{FORMAT.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl></div>
-              <VaMix />
-              {TOPICS.map((t) => <Topic key={t.h} t={t} />)}
-              <section className="stack" aria-labelledby="type-guides">
-                <h3 id="type-guides">A guide for each question type</h3>
-                <p className="muted">Method, common traps, a worked example to try, and three links: a written guide, a video and a free question bank.</p>
-                <TypeIndex guides={TYPE_GUIDES} />
-                {TYPE_GUIDES.map((g) => <TypeGuide key={g.id} g={g} />)}
-              </section>
-            </>
-          )}
-          {tabValid === "practice" && (
-            <div className="card stack">
-              <h3>Practice on this site</h3>
-              <p className="muted">{RC_CATALOG.length} original RC sets with an explanation for every option, a daily VA drill, custom drills by type, a redo queue for mistakes and a reading speed test. Your scores go straight into Progress.</p>
-              <div className="row"><Link className="btn" to="/practice">Open Practice</Link><Link className="btn ghost" to="/practice/va">Today's VA drill</Link></div>
-            </div>
-          )}
-          {tabValid === "read" && <Rotation />}
-          {tabValid === "toppers" && <Toppers />}
-          {TAB_NOTES[tabValid] && <div className="card read">{TAB_NOTES[tabValid].map((p, i) => <p key={i}>{p}</p>)}
-            {tabValid === "vocab" && <p><Link className="go" to="/words">Open your flashcards</Link></p>}</div>}
-          {list(tabValid, "Everything here is ticked or filtered out. Switch off Hide done or Must-do only.")}
-        </div>
+        <Tabs value={tabValid} onValueChange={setVtab} className="gap-8">
+          <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+            <TabsList className="bg-secondary">{VTABS.map((t) => <TabsTrigger key={t.id} value={t.id} className="px-3.5">{t.label}</TabsTrigger>)}</TabsList>
+          </div>
+          {VTABS.map((t) => (
+            <TabsContent key={t.id} value={t.id} className="flex flex-col gap-12">
+              {t.id === "learn" && <Learn />}
+              {extra(t.id)}
+              <div className="flex flex-col gap-10">{list(t.id, "Everything here is ticked or filtered out. Switch off Hide done or Must-do only.")}</div>
+            </TabsContent>
+          ))}
+        </Tabs>
       )}
-    </div>
+    </Page>
   );
 }
 

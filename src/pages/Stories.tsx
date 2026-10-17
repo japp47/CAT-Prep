@@ -1,47 +1,43 @@
-import { Link } from "react-router-dom";
-import { Ext } from "../components/Links";
+import { Ext, LinkButton, Meta, Page, PageHeader, Section, TextLink } from "../components/kit";
 import { LESSONS, TOPPERS } from "../data/stories";
 import { RESOURCES } from "../sections/varc/resources";
 
 export default function Stories() {
   const interviews = RESOURCES.filter((r) => r.c === "toppers");
   return (
-    <div className="page">
-      <div className="view-head">
-        <h1>Topper stories</h1>
-        <p>How 99+ percentile scorers prepared, in their own words where an interview is available.</p>
-      </div>
-      <div className="grid2">
-        {LESSONS.map((l) => <div key={l.h} className="card"><h3>{l.h}</h3><p className="muted">{l.p}</p></div>)}
-      </div>
-      <section className="stack">
-        <h2>What they did</h2>
-        <div className="grid3">
-          {TOPPERS.map((t) => (
-            <article key={t.name} className="card stack">
-              <span className="eyebrow">{t.result}</span>
-              <h3>{t.name}</h3>
-              <p className="muted">{t.what}</p>
-              {t.link && <Ext className="go" href={t.link}>Read the interview ↗</Ext>}
-            </article>
-          ))}
+    <Page>
+      <PageHeader title="Topper stories">How 99+ percentile scorers prepared, in their own words where an interview is available.</PageHeader>
+      <Section title="What they have in common">
+        <div className="grid gap-x-10 gap-y-6 md:grid-cols-2">
+          {LESSONS.map((l) => <div key={l.h} className="flex flex-col gap-1.5"><h3 className="text-base font-semibold">{l.h}</h3><p className="measure text-base text-foreground/80">{l.p}</p></div>)}
         </div>
-      </section>
-      <section className="stack">
-        <h2>Interviews and exam analysis</h2>
-        <div className="card"><ul className="plain next">
-          {interviews.map((r) => (
-            <li key={r.id}>
-              <div style={{ minWidth: 0 }}><span className="ct">{r.t}</span><Ext className="res-name" href={r.u}>{r.n}</Ext><p className="muted small">{r.w}</p></div>
-              <Ext className="go" href={r.u}>Open ↗</Ext>
+      </Section>
+      <Section title="What they did">
+        <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {TOPPERS.map((t) => (
+            <li key={t.name} className="flex flex-col gap-2 rounded-lg bg-card p-5">
+              <h3 className="text-heading font-semibold">{t.name}</h3>
+              <Meta>{t.result}</Meta>
+              <p className="text-base text-foreground/85">{t.what}</p>
+              {t.link && <div className="mt-auto pt-1"><LinkButton to={t.link} variant="secondary" size="sm">Read the interview</LinkButton></div>}
             </li>
           ))}
-        </ul></div>
-      </section>
-      <div className="card stack">
-        <h3>Share your story</h3>
-        <p className="muted">Scored well in CAT? Your preparation story can help next year's students. Story submissions are on the <Link to="/roadmap">roadmap</Link>.</p>
-      </div>
-    </div>
+        </ul>
+      </Section>
+      <Section title="Interviews and exam analysis">
+        <ul className="flex flex-col gap-1 rounded-lg bg-card p-2">
+          {interviews.map((r) => (
+            <li key={r.id}>
+              <Ext href={r.u} className="flex flex-col gap-0.5 rounded-md px-3.5 py-3 hover:bg-muted">
+                <span className="text-base font-semibold">{r.n}</span>
+                <span className="text-base text-foreground/80">{r.w}</span>
+                <Meta>{r.t}</Meta>
+              </Ext>
+            </li>
+          ))}
+        </ul>
+      </Section>
+      <p className="measure text-base text-muted-foreground">Scored well in CAT? Your preparation story can help next year's students. Story submissions are on the <TextLink to="/roadmap">roadmap</TextLink>.</p>
+    </Page>
   );
 }
