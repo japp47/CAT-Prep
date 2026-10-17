@@ -65,30 +65,35 @@ export function Stat({ value, label, className }: { value: ReactNode; label: Rea
   );
 }
 
+const NEW_TAB = <span className="sr-only"> (opens in a new tab)</span>;
+
 export function Ext({ href, children, className }: { href: string; children: ReactNode; className?: string }) {
-  return <a className={className} href={href} target="_blank" rel="noopener noreferrer">{children}</a>;
+  return <a className={className} href={href} target="_blank" rel="noopener noreferrer">{children}{NEW_TAB}</a>;
 }
 
 /** An inline text link, inside the app or out of it. */
 export function TextLink({ to, children, className }: { to: string; children: ReactNode; className?: string }) {
   const cls = cn("font-medium text-primary underline underline-offset-4 decoration-primary/40 hover:decoration-primary", className);
-  return to.startsWith("/") ? <RouterLink to={to} className={cls}>{children}</RouterLink> : <Ext href={to} className={cls}>{children}<ArrowUpRight className="ml-0.5 inline size-3.5 align-[-1px]" aria-hidden /></Ext>;
+  return to.startsWith("/") ? <RouterLink to={to} className={cls}>{children}</RouterLink> : <Ext href={to} className={cls}>{children}</Ext>;
 }
 
-/** A button that navigates. Outside links open in a new tab and carry an arrow. */
-export function LinkButton({ to, children, variant = "default", size = "default", className }: { to: string; children: ReactNode } & Pick<ComponentProps<typeof Button>, "variant" | "size" | "className">) {
+/**
+ * A button that navigates. Outside links open in a new tab. `arrow` marks a link to another site,
+ * for lists of study resources where telling sites apart from pages here matters.
+ */
+export function LinkButton({ to, children, variant = "default", size = "default", className, arrow }: { to: string; children: ReactNode; arrow?: boolean } & Pick<ComponentProps<typeof Button>, "variant" | "size" | "className">) {
   const inside = to.startsWith("/");
   return (
     <Button asChild variant={variant} size={size} className={className}>
-      {inside ? <RouterLink to={to}>{children}</RouterLink> : <a href={to} target="_blank" rel="noopener noreferrer">{children}<ArrowUpRight aria-hidden /></a>}
+      {inside ? <RouterLink to={to}>{children}</RouterLink> : <a href={to} target="_blank" rel="noopener noreferrer">{children}{arrow && <ArrowUpRight aria-hidden />}{NEW_TAB}</a>}
     </Button>
   );
 }
 
-/** A row of quiet buttons for [label, href] pairs. */
+/** A row of quiet buttons for the study resources of a timetable block, as [label, href] pairs. */
 export function LinkButtons({ links }: { links: [string, string][] }) {
   if (!links.length) return null;
-  return <div className="flex flex-wrap gap-2">{links.map(([label, href]) => <LinkButton key={label} to={href} variant="secondary" size="sm">{label}</LinkButton>)}</div>;
+  return <div className="flex flex-wrap gap-2">{links.map(([label, href]) => <LinkButton key={label} to={href} variant="secondary" size="sm" arrow>{label}</LinkButton>)}</div>;
 }
 
 /** A labelled form field. The label sits above the control in sentence case. */

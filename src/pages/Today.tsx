@@ -204,7 +204,7 @@ function SectionDay({ sec, d, today }: { sec: SectionDef; d: string; today: stri
 
   return (
     <Section
-      title={<>{sec.short}{blocks.length > 0 && ph.kind === "phase" && <span className="font-normal text-muted-foreground"> · {ph.phase.name} phase</span>}</>}
+      title={<>{sec.short}{blocks.length > 0 && ph.kind === "phase" && <span className="font-normal text-muted-foreground">, {ph.phase.name} phase</span>}</>}
       action={<div className="flex items-center gap-3"><TimeControl sec={sec} d={d} /><TextLink to={"/" + sec.id} className="text-base">Resources</TextLink></div>}>
       {blocks.length > 0 && <Meta className="-mt-2">{blocks.length} block{blocks.length === 1 ? "" : "s"}, {total} min, {doneCount} done{timedTotal > 0 ? `, ${timedTotal} min timed` : ""}</Meta>}
       {carry && (

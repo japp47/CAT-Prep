@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -124,7 +123,7 @@ function ReminderCard() {
           <Field label="Length"><NativeSelect value={mins} onChange={(e) => setMins(+e.target.value)}>{[30, 45, 60, 90, 120].map((m) => <option key={m} value={m}>{m} min</option>)}</NativeSelect></Field>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Button asChild><a href={googleCalendarUrl(r)} target="_blank" rel="noopener noreferrer">Add to Google Calendar<ArrowUpRight aria-hidden /></a></Button>
+          <Button asChild><a href={googleCalendarUrl(r)} target="_blank" rel="noopener noreferrer">Add to Google Calendar<span className="sr-only"> (opens in a new tab)</span></a></Button>
           <Button variant="secondary" onClick={download}>Download for Apple or Outlook</Button>
         </div>
         <Meta>The download is an .ics calendar file.</Meta>
