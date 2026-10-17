@@ -32,9 +32,15 @@ export interface Mock { id: string; d: string; sec: string; n: string; k: string
 export interface ErrorEntry { id: string; d: string; sec: string; t: string; trap: string; src: string; why: string; fix: string }
 export interface Word { id: string; w: string; m: string; s: string; b: number; due: string }
 export interface PracticeSet { id: string; d: string; sec: string; t: string; a: number; c: number; src: string }
+/** One attempt at an in-app RC set. ans[i] is the chosen option index, or null when skipped. */
+export interface RcAttempt { id: string; d: string; set: string; mode: "daily" | "library"; ans: (number | null)[]; c: number; w: number; secs: number; first: number }
+/** One VA drill run. a is what the student entered for each item, pts the marks it earned. */
+export interface VaAttempt { id: string; d: string; mode: "daily" | "custom"; items: { k: string; a: string; ok: boolean; pts: number }[]; secs: number }
+/** One reading speed test. recall is the number of recall questions answered correctly, out of 2. */
+export interface SpeedRun { id: string; d: string; set: string; words: number; secs: number; wpm: number; recall: number }
 
 export interface AppState {
-  version: 3;
+  version: 4;
   ticks: Record<string, 1>;
   settings: Record<SectionId, TimeSettings>;
   days: Record<string, DayRec>;
@@ -43,6 +49,9 @@ export interface AppState {
   errors: ErrorEntry[];
   vocab: Word[];
   practice: PracticeSet[];
+  rcAttempts: RcAttempt[];
+  vaAttempts: VaAttempt[];
+  speedRuns: SpeedRun[];
 }
 
 const emptyDow = () => [null, null, null, null, null, null, null] as (number | null)[];
@@ -50,7 +59,7 @@ const emptyDow = () => [null, null, null, null, null, null, null] as (number | n
 export function blankState(): AppState {
   const settings = {} as Record<SectionId, TimeSettings>;
   SECTION_IDS.forEach((id) => (settings[id] = { ...DEFAULT_TIME[id], dow: emptyDow() }));
-  return { version: 3, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [] };
+  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], speedRuns: [] };
 }
 
 type Obj = Record<string, unknown>;
@@ -63,6 +72,8 @@ const flags = (o: unknown) => {
   if (isObj(o)) SECTION_IDS.forEach((id) => { if (o[id]) out[id] = 1; });
   return out;
 };
+/** CAT's "para completion" questions are sentence insertion; older saves used the old name. */
+const renamed = (t: string) => (t === "Para completion" ? "Sentence insertion" : t);
 const list = <T,>(arr: unknown, f: (x: Obj) => T): T[] => (Array.isArray(arr) ? arr.filter(isObj).map(f) : []);
 
 /** Turns anything read from storage or an imported backup into a valid state. Unknown fields are dropped. */
@@ -98,7 +109,18 @@ export function normalize(raw: unknown): AppState {
   b.mocks = list(raw.mocks, (x) => ({ id: str(x.id), d: str(x.d), sec: str(x.sec) || "VARC", n: str(x.n), k: str(x.k), c: num(x.c), w: num(x.w) }));
   b.errors = list(raw.errors, (x) => ({ id: str(x.id), d: str(x.d), sec: str(x.sec) || "VARC", t: str(x.t), trap: str(x.trap), src: str(x.src), why: str(x.why), fix: str(x.fix) }));
   b.vocab = list(raw.vocab, (x) => ({ id: str(x.id), w: str(x.w), m: str(x.m), s: str(x.s), b: clamp(num(x.b), 0, 5), due: str(x.due) }));
-  b.practice = list(raw.practice, (x) => ({ id: str(x.id), d: str(x.d), sec: str(x.sec) || "VARC", t: str(x.t), a: num(x.a), c: num(x.c), src: str(x.src) }));
+  b.practice = list(raw.practice, (x) => ({ id: str(x.id), d: str(x.d), sec: str(x.sec) || "VARC", t: renamed(str(x.t)), a: num(x.a), c: num(x.c), src: str(x.src) }));
+  b.errors.forEach((e) => (e.t = renamed(e.t)));
+  b.rcAttempts = list(raw.rcAttempts, (x) => ({
+    id: str(x.id), d: str(x.d), set: str(x.set), mode: x.mode === "daily" ? "daily" : "library",
+    ans: Array.isArray(x.ans) ? x.ans.map((a: unknown) => (typeof a === "number" ? a : null)) : [],
+    c: num(x.c), w: num(x.w), secs: num(x.secs), first: num(x.first),
+  }));
+  b.vaAttempts = list(raw.vaAttempts, (x) => ({
+    id: str(x.id), d: str(x.d), mode: x.mode === "daily" ? "daily" : "custom", secs: num(x.secs),
+    items: list(x.items, (i) => ({ k: str(i.k), a: str(i.a), ok: !!i.ok, pts: num(i.pts) })),
+  }));
+  b.speedRuns = list(raw.speedRuns, (x) => ({ id: str(x.id), d: str(x.d), set: str(x.set), words: num(x.words), secs: num(x.secs), wpm: num(x.wpm), recall: clamp(num(x.recall), 0, 2) }));
   return b;
 }
 

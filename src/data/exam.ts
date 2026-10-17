@@ -46,7 +46,7 @@ export interface ExamSection {
 
 /** Pattern used in CAT 2024 and CAT 2025. Confirm against the CAT 2027 notification. */
 export const CAT_PATTERN: ExamSection[] = [
-  { id: "varc", name: "Verbal Ability and Reading Comprehension", questions: 24, minutes: 40, notes: "16 RC questions over 4 passages, 8 VA: para summary, para completion, odd sentence out, para jumbles." },
+  { id: "varc", name: "Verbal Ability and Reading Comprehension", questions: 24, minutes: 40, notes: "16 RC questions over 4 passages, 8 VA. The VA mix changes each year across para summary, sentence insertion, odd sentence out and para jumbles." },
   { id: "dilr", name: "Data Interpretation and Logical Reasoning", questions: 22, minutes: 40, notes: "Usually 4 or 5 sets of 4 to 6 questions. Set selection matters more than speed." },
   { id: "quant", name: "Quantitative Ability", questions: 22, minutes: 40, notes: "Arithmetic and algebra carry the most weight, then geometry, numbers and modern maths." },
 ];

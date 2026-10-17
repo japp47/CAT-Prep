@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { SECTIONS } from "../sections";
 import { usePref } from "../lib/prefs";
-import { IconBook, IconChart, IconHome, IconMenu, IconToday } from "./Icons";
+import { IconChart, IconHome, IconMenu, IconPen, IconToday } from "./Icons";
 
 interface Item { to: string; label: string; badge?: "soon" | "live"; end?: boolean }
 const GROUPS: { title: string; items: Item[] }[] = [
-  { title: "Prepare", items: [{ to: "/", label: "Home", end: true }, { to: "/today", label: "Today's timetable" }, { to: "/plan", label: "Plan and time" }] },
+  { title: "Prepare", items: [{ to: "/", label: "Home", end: true }, { to: "/today", label: "Today's timetable" }, { to: "/practice", label: "Practice" }, { to: "/plan", label: "Plan and time" }] },
   { title: "Sections", items: SECTIONS.map((s) => ({ to: "/" + s.id, label: s.short, badge: s.status })) },
   { title: "Track", items: [{ to: "/progress", label: "Progress" }, { to: "/errors", label: "Error log" }, { to: "/words", label: "Words" }] },
   { title: "Explore", items: [{ to: "/updates", label: "Important updates" }, { to: "/exams", label: "CAT and other exams" }, { to: "/guides", label: "Guides" }, { to: "/stories", label: "Topper stories" }] },
@@ -85,7 +85,7 @@ export default function Layout() {
       <nav className="bottomnav" aria-label="Quick">
         {tab("/", "Home", IconHome, true)}
         {tab("/today", "Today", IconToday)}
-        {tab("/varc", "VARC", IconBook)}
+        {tab("/practice", "Practice", IconPen)}
         {tab("/progress", "Progress", IconChart)}
         <button type="button" onClick={() => setOpen(true)} aria-label="Open menu"><IconMenu />Menu</button>
       </nav>

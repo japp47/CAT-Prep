@@ -7,6 +7,10 @@ import { GuideList, GuidePage } from "./pages/Guides";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Plan from "./pages/Plan";
+import PracticeHub from "./pages/practice/Hub";
+import RcPlayer from "./pages/practice/RcPlayer";
+import SpeedTest from "./pages/practice/SpeedTest";
+import VaPlayer from "./pages/practice/VaPlayer";
 import Progress from "./pages/Progress";
 import Roadmap from "./pages/Roadmap";
 import Section from "./pages/Section";
@@ -17,7 +21,7 @@ import Updates from "./pages/Updates";
 import Words from "./pages/Words";
 
 const TITLES: Record<string, string> = {
-  "/": "CAT Prep Hub", "/today": "Today", "/plan": "Plan and time", "/varc": "VARC", "/dilr": "DILR", "/quant": "Quant",
+  "/": "CAT Prep Hub", "/today": "Today", "/plan": "Plan and time", "/practice": "Practice", "/practice/va": "VA drill", "/practice/speed": "Reading speed test", "/varc": "VARC", "/dilr": "DILR", "/quant": "Quant",
   "/progress": "Progress", "/errors": "Error log", "/words": "Words", "/updates": "Important updates", "/exams": "CAT and other exams",
   "/guides": "Guides", "/stories": "Topper stories", "/roadmap": "What's coming", "/settings": "Settings",
 };
@@ -25,7 +29,7 @@ const TITLES: Record<string, string> = {
 function Title() {
   const { pathname } = useLocation();
   useEffect(() => {
-    const t = TITLES[pathname] ?? (pathname.startsWith("/guides/") ? "Guide" : "");
+    const t = TITLES[pathname] ?? (pathname.startsWith("/guides/") ? "Guide" : pathname.startsWith("/practice/rc/") ? "RC practice" : "");
     document.title = t && pathname !== "/" ? t + " · CAT Prep Hub" : "CAT Prep Hub";
   }, [pathname]);
   return null;
@@ -40,6 +44,10 @@ export default function App() {
           <Route index element={<Home />} />
           <Route path="today" element={<Today />} />
           <Route path="plan" element={<Plan />} />
+          <Route path="practice" element={<PracticeHub />} />
+          <Route path="practice/rc/:id" element={<RcPlayer />} />
+          <Route path="practice/va" element={<VaPlayer />} />
+          <Route path="practice/speed" element={<SpeedTest />} />
           <Route path="progress" element={<Progress />} />
           <Route path="errors" element={<Errors />} />
           <Route path="words" element={<Words />} />

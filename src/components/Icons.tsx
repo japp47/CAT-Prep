@@ -4,3 +4,4 @@ export const IconToday = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true
 export const IconBook = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z" /><path d="M4 21V5" /></svg>;
 export const IconChart = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" /></svg>;
 export const IconMenu = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>;
+export const IconPen = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z" /><path d="M14 6l4 4" /></svg>;

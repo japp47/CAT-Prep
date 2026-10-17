@@ -13,7 +13,8 @@ export const ROADMAP: RoadGroup[] = [
     { title: "Calendar export", text: "Send your timetable to Google Calendar or Apple Calendar." },
     { title: "Percentile estimator", text: "Turn a mock score into an estimated percentile using past years' score tables." },
     { title: "B-school shortlist calculator", text: "Estimate your composite score for each IIM using its published formula: academics, work experience and CAT score." },
-    { title: "Practice inside the site", text: "An RC of the day, para jumble drills, and a timed sectional that looks like the CAT interface." },
+    { title: "Timed VARC sectional", text: "A full 40-minute VARC section on a CAT-style screen: four RCs and eight VA questions, built from the practice library." },
+    { title: "Report card", text: "Accuracy by RC question type, genre and difficulty, reading pace over time, and the traps that cost you most." },
   ] },
   { title: "Later", status: "Ideas", items: [
     { title: "WAT and PI preparation", text: "Essay prompts, a current affairs digest, and an interview question bank by background." },
