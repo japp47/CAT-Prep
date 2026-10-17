@@ -1,0 +1,74 @@
+import { shuffle } from "../random";
+import type { VaPara } from "../types";
+
+export type VaKind = "pj" | "oso" | "si";
+export const VA_KIND: Record<VaKind, { label: string; practice: string; tita: boolean; how: string }> = {
+  pj: { label: "Para jumble", practice: "Para jumble", tita: true, how: "The four sentences below come from one paragraph, in a jumbled order. Type the right sequence of their numbers, for example 3142." },
+  oso: { label: "Odd sentence out", practice: "Odd sentence out", tita: true, how: "Four of the five sentences below form a coherent paragraph. Type the number of the sentence that does not belong." },
+  si: { label: "Sentence insertion", practice: "Sentence insertion", tita: false, how: "The sentence in the box is missing from the paragraph. Choose the gap where it fits best." },
+};
+
+export interface VaItem {
+  key: string;
+  kind: VaKind;
+  para: VaPara;
+  /** pj and oso: sentences in the order shown. Index into para.s, or -1 for the odd sentence. */
+  order: number[];
+  /** si: the four gap positions offered, in reading order (0 = before the first sentence) */
+  gaps: number[];
+  /** "3142" for pj, "4" for oso, "2" for si */
+  answer: string;
+}
+
+const isIdentity = (p: number[]) => p.every((v, i) => v === i);
+
+export function buildItem(kind: VaKind, para: VaPara): VaItem {
+  const key = kind + ":" + para.id;
+  if (kind === "pj") {
+    let order = shuffle([0, 1, 2, 3], key);
+    if (isIdentity(order)) order = [order[1], order[2], order[3], order[0]];
+    const answer = [0, 1, 2, 3].map((ci) => order.indexOf(ci) + 1).join("");
+    return { key, kind, para, order, gaps: [], answer };
+  }
+  if (kind === "oso") {
+    const order = shuffle([0, 1, 2, 3, -1], key);
+    return { key, kind, para, order, gaps: [], answer: String(order.indexOf(-1) + 1) };
+  }
+  const wrong = [0, 1, 2, 3, 4].filter((g) => g !== para.insAt);
+  const drop = shuffle(wrong, key)[0];
+  const gaps = [0, 1, 2, 3, 4].filter((g) => g !== drop);
+  return { key, kind, para, order: [0, 1, 2, 3], gaps, answer: String(gaps.indexOf(para.insAt) + 1) };
+}
+
+export const sentenceAt = (item: VaItem, i: number) => (item.order[i] < 0 ? item.para.odd : item.para.s[item.order[i]]);
+
+/** Keeps only digits, as the CAT answer box does. */
+export const cleanAnswer = (raw: string) => raw.replace(/\D/g, "");
+
+export function scoreItem(item: VaItem, raw: string): { ok: boolean; pts: number; blank: boolean } {
+  const a = cleanAnswer(raw);
+  if (!a) return { ok: false, pts: 0, blank: true };
+  const ok = a === item.answer;
+  return { ok, pts: ok ? 3 : VA_KIND[item.kind].tita ? 0 : -1, blank: false };
+}
+
+export function parseKey(key: string, paras: VaPara[]): VaItem | null {
+  const [kind, id] = key.split(":");
+  const para = paras.find((p) => p.id === id);
+  if (!para || !(kind in VA_KIND)) return null;
+  return buildItem(kind as VaKind, para);
+}
+
+/** Daily VA set mix: 3 para jumbles, 2 odd sentence out, 3 sentence insertion. */
+export const DAILY_MIX: VaKind[] = ["pj", "pj", "pj", "oso", "oso", "si", "si", "si"];
+
+/** A custom drill. Items the student has not seen yet come first. */
+export function customDrill(paras: VaPara[], kind: VaKind | "mix", n: number, seed: string, seen: Set<string>): VaItem[] {
+  const kinds: VaKind[] = ["pj", "oso", "si"];
+  const order = shuffle(paras, seed);
+  const out: VaItem[] = [];
+  const pool = order.map((p, i) => buildItem(kind === "mix" ? kinds[i % 3] : kind, p));
+  pool.sort((a, b) => Number(seen.has(a.key)) - Number(seen.has(b.key)));
+  for (const it of pool) { if (out.length >= n) break; out.push(it); }
+  return out;
+}

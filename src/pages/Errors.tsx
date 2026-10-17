@@ -1,10 +1,10 @@
 import { useState, type FormEvent } from "react";
 import { Bars } from "../components/Chart";
+import { TRAPS } from "../data/traps";
 import { shortDate, todayIso, uid } from "../lib/date";
 import { useStore } from "../lib/store";
 import { SECTION_LABELS, sectionByLabel } from "../sections";
 
-const TRAPS = ["Extreme wording", "Out of scope", "Half right, half wrong", "True but not the answer", "Misread the passage", "Calculation slip", "Ran out of time", "Guessed"];
 
 export default function Errors() {
   const { state, update } = useStore();

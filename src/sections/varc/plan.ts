@@ -51,8 +51,12 @@ function paperBlock(list: string[], label: string, m: number, pri: number, ord: 
 function analysisBlock(m: number, mm: number, pri: number, ord: number): Block {
   return B("analysis", "Analyse that paper", m, mm, pri, ord, "Go through every question, including the ones you got right. Add an error log entry for each wrong or skipped one.", [["Error log", "/errors"]]);
 }
+/** Blocks that drill from the Cracku banks also link to the same kind of practice on this site. */
 function practice(id: string, name: string, m: number, mm: number, pri: number, ord: number, ptype: string, desc: string, links: Link[]): Block {
-  return B(id, name, m, mm, pri, ord, desc, links, { kind: "practice", ptype });
+  const here: Link[] = [];
+  if (links.some(([, u]) => u === L.crRC)) here.push(["Practise RC here", "/practice"]);
+  if (links.some(([, u]) => u === L.crVA)) here.push(["VA drill here", "/practice/va"]);
+  return B(id, name, m, mm, pri, ord, desc, [...here, ...links], { kind: "practice", ptype });
 }
 const book = (ord: number): Block => B("x-book", "Book from the reading list", 30, 20, 0, ord, "Read for the habit. No notes needed.", [["Reading list", L.readList]]);
 
@@ -86,7 +90,7 @@ export function varcTemplate(d: string, ctx: PlanCtx): DayTemplate {
         2: practice("drill", "Para jumble drill", 30, 20, 1, 1, "Para jumble", "8 questions. Find the opener, lock the mandatory pairs, then build the chain.", [["Cracku VA bank", L.crVA], ["PJ PDF", L.crPJ]]),
         3: practice("drill", "RC drill: inference", 30, 20, 1, 1, "RC", "Two RCs. For each correct inference, point to the line that supports it.", [["Cracku RC bank", L.crRC]]),
         4: practice("drill", "Para summary and odd sentence out", 30, 20, 1, 1, "Para summary", "5 summaries and 5 odd-sentence questions. Paraphrase first, then read the options.", [["Cracku VA bank", L.crVA]]),
-        5: practice("drill", "Para completion and one RC", 30, 20, 1, 1, "Para completion", "5 completion questions, then one RC.", [["Cracku VA bank", L.crVA], ["Cracku RC bank", L.crRC]]),
+        5: practice("drill", "Sentence insertion and one RC", 30, 20, 1, 1, "Sentence insertion", "5 sentence insertion questions, then one RC.", [["Cracku VA bank", L.crVA], ["Cracku RC bank", L.crRC]]),
       };
       base = [drills[g], readBlock(d, 20, 10, 2, 2), vocabBlock(10, 5, 3, 3, 2)];
     } else if (g === 6 && weekIndex(d) % 2 === 0) {

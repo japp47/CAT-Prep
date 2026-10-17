@@ -10,8 +10,8 @@ export const VARC: SectionDef = {
   tagline: "Reading habit first, then method, then timed papers and mocks.",
   defaults: { wd: 60, we: 120 },
   maxQ: 24,
-  practiceTypes: ["RC", "Para jumble", "Para summary", "Odd sentence out", "Para completion", "Critical reasoning"],
-  errorTypes: ["RC: main idea", "RC: tone or purpose", "RC: inference", "RC: specific detail", "RC: EXCEPT", "RC: strengthen or weaken", "RC: application", "Para jumble", "Para summary", "Odd sentence out", "Para completion", "Critical reasoning"],
+  practiceTypes: ["RC", "Para jumble", "Para summary", "Odd sentence out", "Sentence insertion", "Critical reasoning"],
+  errorTypes: ["RC: main idea", "RC: tone or purpose", "RC: inference", "RC: specific detail", "RC: EXCEPT", "RC: strengthen or weaken", "RC: application", "RC: paragraph function", "Para jumble", "Para summary", "Odd sentence out", "Sentence insertion", "Critical reasoning"],
   phaseText: {
     1: { goal: "Read dense prose daily without strain, finish Gejo's course, learn word roots, and get used to RC question types untimed.",
       check: "By 31 Jan: 30 minutes of Aeon-level reading feels normal, all 17 Gejo modules done, untimed RC accuracy around 60%." },

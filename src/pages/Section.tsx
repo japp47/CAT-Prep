@@ -8,7 +8,7 @@ import { usePref } from "../lib/prefs";
 import { useStore } from "../lib/store";
 import { SECTION_BY_ID } from "../sections";
 import type { SectionDef, SectionId } from "../sections/types";
-import { FORMAT, TAB_NOTES, TOPICS, VTABS } from "../sections/varc/learn";
+import { FORMAT, TAB_NOTES, TOPICS, VA_MIX, VTABS } from "../sections/varc/learn";
 import { ROTATION } from "../sections/varc/resources";
 import NotFound from "./NotFound";
 
@@ -35,6 +35,20 @@ function Topic({ t }: { t: (typeof TOPICS)[number] }) {
         {t.ul && <ul>{t.ul.map((x, i) => <li key={i}>{x}</li>)}</ul>}
       </div>
     </details>
+  );
+}
+
+function VaMix() {
+  const cell = (n: number) => (n ? n : <span className="muted">–</span>);
+  return (
+    <div className="stack">
+      <h3>VA questions per slot, by year</h3>
+      <div className="tbl-wrap"><table>
+        <thead><tr><th>Year</th><th className="num">Para summary</th><th className="num">Sentence insertion</th><th className="num">Odd sentence out</th><th className="num">Para jumble</th><th>Note</th></tr></thead>
+        <tbody>{VA_MIX.map((r) => <tr key={r.year}><td>{r.year}</td><td className="num">{cell(r.ps)}</td><td className="num">{cell(r.si)}</td><td className="num">{cell(r.oso)}</td><td className="num">{cell(r.pj)}</td><td>{r.note ?? ""}</td></tr>)}</tbody>
+      </table></div>
+      <p className="muted small">From IMS, Cracku and Careers360 slot analyses. A few slot reports differ by one question. Para summary and sentence insertion are MCQs with negative marking; para jumbles and odd sentence out are TITA.</p>
+    </div>
   );
 }
 
@@ -90,7 +104,7 @@ function Toppers() {
           <thead><tr><th>Year</th><th>Topics and sources</th></tr></thead>
           <tbody>{PASSAGE_SOURCES.map((p) => <tr key={p.year}><td>{p.year}</td><td>{p.text}</td></tr>)}</tbody>
         </table></div>
-        <p className="muted small">In 2025, Slot 1 was rated moderate to difficult and Slots 2 and 3 easy to moderate. Every slot had 2 each of para jumbles, para summary, para completion and odd sentence out.</p>
+        <p className="muted small">In 2025, Slot 1 was rated moderate to difficult and Slots 2 and 3 easy to moderate. Every slot had 2 each of para jumbles, para summary, sentence insertion and odd sentence out.</p>
       </div>
     </>
   );
@@ -147,8 +161,16 @@ function Live({ sec }: { sec: SectionDef }) {
           {tabValid === "learn" && (
             <>
               <div className="card"><h3>The section</h3><dl className="kv">{FORMAT.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl></div>
+              <VaMix />
               {TOPICS.map((t) => <Topic key={t.h} t={t} />)}
             </>
+          )}
+          {tabValid === "practice" && (
+            <div className="card stack">
+              <h3>Practise on this site</h3>
+              <p className="muted">20 original RC sets with an explanation for every option, a daily VA drill, and a reading speed test. Your scores go straight into Progress.</p>
+              <div className="row"><Link className="btn" to="/practice">Open Practice</Link><Link className="btn ghost" to="/practice/va">Today's VA drill</Link></div>
+            </div>
           )}
           {tabValid === "read" && <Rotation />}
           {tabValid === "toppers" && <Toppers />}

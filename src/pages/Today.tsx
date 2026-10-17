@@ -9,6 +9,10 @@ import type { AppState } from "../lib/state";
 import { buildDay, budgetFor, carryInfo, defaultMin, doneKey, doneMinutes, coreOf, type PlacedBlock } from "../planner/engine";
 import { LIVE_SECTIONS, SECTIONS } from "../sections";
 import type { SectionDef } from "../sections/types";
+import { rcOfDay, vaOfDay } from "../practice/daily";
+import { scoreRc } from "../practice/record";
+import { GENRES } from "../practice/types";
+import { StreakBadge } from "./practice/common";
 
 const CHIP_MINS = [0, 30, 45, 60, 90, 120, 150, 180];
 
@@ -230,7 +234,10 @@ export default function Today() {
   return (
     <div className="page">
       <div className="view-head">
-        <span className="eyebrow">{Math.max(daysLeft(), 0)} days to CAT 2027 · {examLine(EXAM_CONFIRMED)}</span>
+        <div className="row" style={{ justifyContent: "space-between" }}>
+          <span className="eyebrow">{Math.max(daysLeft(), 0)} days to CAT 2027 · {examLine(EXAM_CONFIRMED)}</span>
+          <StreakBadge />
+        </div>
         <h1>Today's timetable</h1>
         <p>{phaseCaption(goal)}</p>
       </div>
@@ -249,6 +256,8 @@ export default function Today() {
 
       {LIVE_SECTIONS.map((s) => <SectionDay key={s.id} sec={s} d={d} today={today} />)}
 
+      {isToday && <PracticeToday today={today} />}
+
       {SECTIONS.filter((s) => s.status === "soon").length > 0 && (
         <p className="muted small">
           {SECTIONS.filter((s) => s.status === "soon").map((s) => s.short).join(" and ")} timetables are coming soon. You can already log their mock scores in Progress and mistakes in the Error log.
@@ -259,6 +268,32 @@ export default function Today() {
         <Week d={d} today={today} onPick={setD} />
         <MustDo />
       </div>
+    </div>
+  );
+}
+
+/** The two daily sets, so the timetable's RC and VA blocks have something to open on this site. */
+function PracticeToday({ today }: { today: string }) {
+  const { state } = useStore();
+  const rc = rcOfDay(today);
+  const rcTry = state.rcAttempts.filter((a) => a.set === rc.id && a.d === today).pop();
+  const vaTry = state.vaAttempts.filter((a) => a.mode === "daily" && a.d === today).pop();
+  return (
+    <div className="card stack">
+      <div className="row" style={{ justifyContent: "space-between" }}><h3>Practise here today</h3><Link className="link" to="/practice">All practice</Link></div>
+      <ul className="plain next">
+        <li>
+          <div style={{ minWidth: 0 }}><span className="ct">RC of the day · {GENRES[rc.genre]}</span><Link className="res-name" to={`/practice/rc/${rc.id}`}>{rc.title}</Link>
+            {rcTry && <span className="ok small"> · {scoreRc(rc, rcTry.ans).c} of 4 correct</span>}</div>
+          <Link className="go" to={rcTry ? `/practice/rc/${rc.id}?review=${rcTry.id}` : `/practice/rc/${rc.id}`}>{rcTry ? "Review" : "Start"}</Link>
+        </li>
+        <li>
+          <div style={{ minWidth: 0 }}><span className="ct">Daily VA drill</span><Link className="res-name" to="/practice/va">{vaOfDay(today).length} questions: para jumbles, odd sentence out, sentence insertion</Link>
+            {vaTry && <span className="ok small"> · {vaTry.items.filter((i) => i.ok).length} of {vaTry.items.length} correct</span>}</div>
+          <Link className="go" to="/practice/va">{vaTry ? "Review" : "Start"}</Link>
+        </li>
+      </ul>
+      <p className="muted small">Scores log themselves in Progress. Tick the matching timetable block when you are done.</p>
     </div>
   );
 }

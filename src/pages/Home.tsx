@@ -7,9 +7,12 @@ import { todayIso } from "../lib/date";
 import { useStore } from "../lib/store";
 import { budgetFor, buildDay } from "../planner/engine";
 import { LIVE_SECTIONS, SECTIONS } from "../sections";
+import { rcOfDay } from "../practice/daily";
+import { StreakBadge } from "./practice/common";
 
 const TILES = [
   { to: "/today", eyebrow: "Planner", title: "Today's timetable", text: "A plan for today that fits the time you have. 30 minutes or 3 hours." },
+  { to: "/practice", eyebrow: "Practice", title: "RC and VA practice", text: "20 exam-style RC sets with every option explained, a daily VA drill and a reading speed test. Free, no sign-up." },
   { to: "/varc", eyebrow: "VARC", title: "VARC resource library", text: "About 120 hand-picked links: books, question banks, past papers, mocks, reading lists and videos." },
   { to: "/updates", eyebrow: "News", title: "Important updates", text: "CAT, XAT, SNAP and NMAT dates and changes, marked official or expected." },
   { to: "/exams", eyebrow: "Exams", title: "CAT and other exams", text: "Pattern, marking, timeline, and the other MBA tests worth a seat." },
@@ -45,11 +48,12 @@ export default function Home() {
 
       <div className="grid2">
         <div className="card stack">
-          <h3>Today at a glance</h3>
+          <div className="row" style={{ justifyContent: "space-between" }}><h3>Today at a glance</h3><StreakBadge /></div>
           <p className="summary"><span>Planned <b>{planned}</b> min</span><span>Done <b>{Object.values(doneToday).reduce((a, b) => a + b, 0)}</b> min</span></p>
           {core.length ? core.map(({ sec, b }) => (
             <p key={sec.id}><span className="tag t-must">{sec.short} core</span> {b!.name} · {b!.mins} min {doneToday[b!.key] ? <span className="ok">Done</span> : null}</p>
           )) : <p className="muted">Nothing planned today. Enjoy the rest.</p>}
+          <p><span className="tag t-good">RC of the day</span> <Link to={`/practice/rc/${rcOfDay(t).id}`}>{rcOfDay(t).title}</Link></p>
           <Link className="link" to="/today" style={{ alignSelf: "flex-start" }}>See the full timetable</Link>
         </div>
         <div className="card">
