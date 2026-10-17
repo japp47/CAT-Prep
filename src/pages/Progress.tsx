@@ -132,7 +132,7 @@ export default function Progress() {
           <LogList empty="Practice sets you log from the timetable or the form above show here.">
             {practice.map((p) => (
               <LogRow key={p.id} label="Delete this set" onDelete={() => remove("practice", p.id, "Practice set")}>
-                <span className="text-base font-semibold">{p.t} <span className="font-normal text-muted-foreground">· {shortDate(p.d)}</span></span>
+                <span className="text-base font-semibold">{p.t} <span className="font-normal text-muted-foreground">, {shortDate(p.d)}</span></span>
                 <span className="text-base tabular-nums">{p.c} of {p.a} correct, {Math.round((p.c / Math.max(p.a, 1)) * 100)}%</span>
                 {p.src && <Meta>{p.src}</Meta>}
               </LogRow>

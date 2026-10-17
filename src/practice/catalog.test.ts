@@ -1,12 +1,22 @@
 import { describe, expect, it } from "vitest";
 import { CONTENT } from "./bank";
 import { RC_CATALOG, VA_CATALOG } from "./catalog.gen";
-import { rcMeta, vaMeta } from "./types";
+import { RC_LEADS } from "./leads.gen";
+import { rcLead, rcMeta, vaMeta } from "./types";
 
 describe("content catalog", () => {
   it("matches the content files (run `npm run catalog` if this fails)", () => {
     expect(RC_CATALOG).toEqual(CONTENT.rcSets.map(rcMeta));
     expect(VA_CATALOG).toEqual(CONTENT.vaParas.map(vaMeta));
+    expect(RC_LEADS).toEqual(Object.fromEntries(CONTENT.rcSets.map((s) => [s.id, rcLead(s)])));
+  });
+
+  it("splits every opening paragraph before a whole last sentence", () => {
+    for (const s of CONTENT.rcSets) {
+      const [body, turn] = rcLead(s);
+      expect(turn, s.id).toMatch(/^[A-Z].*[.!?]["”’)]?$/);
+      expect(body + " " + turn, s.id).toBe(s.paras[0]);
+    }
   });
 
   it("keeps the full content out of the main bundle", () => {

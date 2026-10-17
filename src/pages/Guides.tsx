@@ -49,8 +49,7 @@ export function GuidePage() {
             {g.parts.map((p, k) => <a key={p.h} href={"#part-" + k} className="rounded-md px-3 py-1.5 text-base text-foreground/80 hover:bg-card hover:text-foreground">{p.h}</a>)}
           </nav>
           <Link to={"/guides/" + next.id} className="group flex flex-col gap-1.5 rounded-lg bg-card p-5 hover:bg-card/70">
-            <Meta>Next guide</Meta>
-            <span className="text-heading font-semibold group-hover:text-primary">{next.title}</span>
+            <span className="text-heading font-semibold group-hover:text-primary">Next: {next.title}</span>
             <span className="text-base text-foreground/80">{next.summary}</span>
           </Link>
         </aside>

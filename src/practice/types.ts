@@ -94,6 +94,17 @@ export function rcMeta(s: RcSet): RcMeta {
   if (s.since) m.since = s.since;
   return m;
 }
+/**
+ * A passage's opening paragraph, split before its last sentence. That sentence is usually where
+ * the passage turns ("This defence contains a truth and hides a confusion."), so Home highlights it.
+ */
+export function rcLead(s: RcSet): [string, string] {
+  const p = s.paras[0];
+  const sents = p.match(/[^.!?]+[.!?]+["”’)]*\s*/g);
+  if (!sents || sents.length < 2) return [p, ""];
+  const at = p.lastIndexOf(sents[sents.length - 1].trim());
+  return [p.slice(0, at).trimEnd(), p.slice(at).trim()];
+}
 export function vaMeta(p: VaPara): VaMeta {
   const m: VaMeta = { id: p.id, topic: p.topic, difficulty: p.difficulty };
   if (p.since) m.since = p.since;
