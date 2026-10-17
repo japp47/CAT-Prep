@@ -389,3 +389,18 @@ mark{background:var(--hl);color:var(--hl-ink);border-radius:3px;padding:0 2px}
 .lib .meta{font:500 12px/1.4 var(--font-mono);color:var(--ink-2)}
 .speedtext p{font:17px/1.72 var(--font-read);margin:0}
 .speedtext p+p{margin-top:14px}
+
+/* ---------- focus timer ---------- */
+.focusbar{position:fixed;left:0;right:0;bottom:calc(var(--bottom) + env(safe-area-inset-bottom,0px));z-index:44;background:var(--surface);border-top:1px solid var(--line);
+  box-shadow:0 -6px 24px rgba(0,0,0,.10);padding:10px 16px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 14px}
+.focusbar .fb-main{display:flex;align-items:center;gap:10px;min-width:0;flex:1 1 260px}
+.focusbar .fb-name{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.focusbar .fb-name a{color:var(--ink);font-weight:600;font-size:14px;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.focusbar .fb-acts{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.focusbar .fb-dot{width:10px;height:10px;border-radius:50%;background:var(--line);flex:0 0 auto}
+.focusbar .fb-dot.on{background:var(--good);box-shadow:0 0 0 4px var(--good-soft)}
+.content.has-focus{padding-bottom:calc(var(--bottom) + 150px + env(safe-area-inset-bottom,0px))}
+@media (min-width:960px){
+  .focusbar{left:auto;right:20px;bottom:20px;width:min(560px,calc(100vw - var(--side) - 40px));border:1px solid var(--line);border-radius:12px}
+  .content.has-focus{padding-bottom:140px}
+}

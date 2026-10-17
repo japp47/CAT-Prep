@@ -131,4 +131,46 @@ export const SOCIETY: RcSet[] = [
       recall("What do some laws require of batteries?", ["That they last ten years", "That users can replace them", "That they be recycled by the shop", "That they be made locally"], 1),
     ],
   },
+  {
+    id: "soc-cash",
+    title: "Just give them money?",
+    genre: "society",
+    difficulty: "easy",
+    paras: [
+      "For much of the history of aid, the idea of simply handing money to poor people was treated with suspicion. Donors worried that cash would be spent on alcohol or tobacco, or that it would make people less willing to work. Behind these worries lay an assumption, rarely stated, that poverty reflects poor judgement as much as a lack of money. Aid therefore usually arrived in kind, as food, livestock, training or buildings chosen by outsiders who believed they knew what the poor needed.",
+      "Over the past two decades, a series of careful studies has tested these worries, helped by mobile-phone payments that made it cheap to send money even to remote villages. In programmes in Kenya, Mexico, Malawi and elsewhere, researchers compared households that received cash with similar households that did not, often choosing recipients by lottery so that the two groups differed only in the transfer. Spending on alcohol and tobacco did not rise, and in several studies it fell. Recipients bought livestock, repaired roofs, paid school fees and started small businesses, and there was little sign that they stopped working.",
+      "These results have made cash a benchmark. Some aid organisations now ask of every programme whether it does more good than simply giving its budget to the people it is meant to help. That is a demanding test, and few traditional programmes had ever been asked to pass it. A training scheme that costs as much per person as a year's income, for example, must show that it raises earnings by more than the money itself would have done.",
+      "Cash is not a cure-all. It cannot build a road, staff a clinic or stop an epidemic, and its benefits depend on there being things to buy; in a remote village with a single shop, a sudden flow of money may simply push up prices. Nor can it fix problems that are not about money at all, such as discrimination or insecurity. Some studies also found that early gains faded after a few years. But the evidence has shifted the burden of proof. Programmes that decide on behalf of the poor what they should have now need to explain why the poor could not have chosen better themselves.",
+    ],
+    questions: [
+      q("main", "Which of the following best states the main point of the passage?", [1, 2, 3], [
+        o("Aid in kind is always wasteful and should be abolished.", "The author lists things only non-cash aid can do.", "Extreme wording"),
+        o("Evidence that cash is well spent has made it a benchmark for aid, though it cannot replace every other kind of help.", "Covers the old worry, the evidence, the benchmark and the limits."),
+        o("Poor households in Kenya spend most of their money on livestock.", "Livestock is one of several purchases, across several countries.", "Too narrow or too broad"),
+        o("Cash transfers have ended poverty for good wherever they were tried.", "Some gains 'faded after a few years'.", "Distorts the passage"),
+      ]),
+      q("detail", "Recipients in the studies were often chosen by lottery in order to:", [1], [
+        o("make sure the two groups differed only in whether they received cash", "Paragraph 2 says this is why lotteries were used."),
+        o("give the money to the poorest households first", "A lottery does not pick the poorest.", "Distorts the passage"),
+        o("reduce the cost of the programmes", "Cost is not mentioned as a reason.", "Out of scope"),
+        o("stop recipients from spending on alcohol", "A lottery decides who receives cash, not how it is spent.", "Distorts the passage"),
+      ]),
+      q("application", "Which programme would pass the 'demanding test' described in the third paragraph?", [2], [
+        o("A scheme costing a year's income per person that raises earnings by less than that amount", "It does less good than handing over its budget, so it fails the test.", "Distorts the passage"),
+        o("A programme that buys livestock for every household, whether they want it or not", "The test compares results with cash; this describes deciding for people.", "Out of scope"),
+        o("A clinic in a remote village", "Cash cannot staff a clinic, but the passage does not apply the test to one.", "True but not the answer"),
+        o("A training course that raises earnings by more than its cost per person would have done if paid as cash", "This is exactly the comparison the test demands."),
+      ]),
+      q("inference", "The final sentence of the passage implies that:", [3], [
+        o("the poor always make better choices than aid agencies", "The sentence shifts the burden of proof; it does not say 'always'.", "Extreme wording"),
+        o("aid in kind has been proved harmful", "It has to justify itself, not that it is harmful.", "Distorts the passage"),
+        o("programmes that give goods or services must now justify themselves against letting people choose", "They 'now need to explain why the poor could not have chosen better themselves'."),
+        o("donors should stop funding research on aid", "The passage relies on such research.", "Out of scope"),
+      ]),
+    ],
+    recall: [
+      recall("What did donors worry cash would be spent on?", ["Alcohol and tobacco", "School fees", "Livestock", "Roof repairs"], 0),
+      recall("Which of these does the passage say cash cannot do?", ["Pay school fees", "Build a road", "Buy livestock", "Start a business"], 1),
+    ],
+  },
 ];

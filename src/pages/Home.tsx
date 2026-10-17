@@ -8,11 +8,12 @@ import { useStore } from "../lib/store";
 import { budgetFor, buildDay } from "../planner/engine";
 import { LIVE_SECTIONS, SECTIONS } from "../sections";
 import { rcOfDay } from "../practice/daily";
+import { RC_SETS } from "../practice/rc";
 import { StreakBadge } from "./practice/common";
 
 const TILES = [
   { to: "/today", eyebrow: "Planner", title: "Today's timetable", text: "A plan for today that fits the time you have. 30 minutes or 3 hours." },
-  { to: "/practice", eyebrow: "Practice", title: "RC and VA practice", text: "20 exam-style RC sets with every option explained, a daily VA drill and a reading speed test. Free, no sign-up." },
+  { to: "/practice", eyebrow: "Practice", title: "RC and VA practice", text: `${RC_SETS.length} exam-style RC sets with every option explained, a daily VA drill, a redo queue for mistakes and a reading speed test. Free, no sign-up.` },
   { to: "/varc", eyebrow: "VARC", title: "VARC resource library", text: "About 120 hand-picked links: books, question banks, past papers, mocks, reading lists and videos." },
   { to: "/updates", eyebrow: "News", title: "Important updates", text: "CAT, XAT, SNAP and NMAT dates and changes, marked official or expected." },
   { to: "/exams", eyebrow: "Exams", title: "CAT and other exams", text: "Pattern, marking, timeline, and the other MBA tests worth a seat." },

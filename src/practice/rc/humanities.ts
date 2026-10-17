@@ -218,4 +218,130 @@ export const HUMANITIES: RcSet[] = [
       recall("Which historian argued that print transformed knowledge by fixing texts in identical copies?", ["Elizabeth Eisenstein", "Benedict Anderson", "Lucien Febvre", "Fernand Braudel"], 0),
     ],
   },
+  {
+    id: "hist-cholera",
+    title: "The map that found a pump",
+    genre: "history",
+    difficulty: "medium",
+    paras: [
+      "In the late summer of 1854, cholera killed more than five hundred people in ten days in the Soho district of London. The disease was terrifying: it could kill a healthy adult within a day, through violent diarrhoea and dehydration. The dominant medical theory of the time held that the disease spread through miasma, a poisonous vapour rising from rotting matter, which is why the city's response focused on clearing filth and improving ventilation. The physician John Snow believed instead that cholera was carried in water contaminated by the waste of the sick.",
+      "Snow went door to door, recording where the dead had lived, and found that the deaths clustered around a public water pump on Broad Street. Marked on a street map, they gathered most thickly around the pump. The exceptions strengthened his case. Workers at a nearby brewery, who drank beer and water from the brewery's own well, were largely spared, while a woman who lived miles away, but had water from Broad Street brought to her because she liked its taste, died of the disease. Snow persuaded the local authorities to remove the pump's handle.",
+      "The story is often told as a tale of instant triumph, but the facts are more complicated. The outbreak was already declining when the handle came off, as many residents had fled, and Snow himself acknowledged this. Even the source of the contamination, a cesspool beside the well into which a sick baby's soiled nappies had been emptied, was traced only later, by a local clergyman. A government inquiry the following year considered his water theory and rejected it, preferring to explain the outbreak through conditions in the air. Only in the 1860s, after further outbreaks and the work of others, did the idea that cholera was waterborne gain general acceptance.",
+      "Snow's achievement lay less in stopping a single outbreak than in his method. By comparing who fell ill with who did not, and by looking hardest at the cases that did not fit, he turned a map of deaths into an argument about causes. That way of reasoning, rather than the image of a pump without a handle, is his real legacy to public health.",
+    ],
+    questions: [
+      q("main", "Which of the following best expresses the main idea of the passage?", [2, 3], [
+        o("Snow single-handedly ended the 1854 outbreak by removing a pump handle.", "Paragraph 3 says the outbreak was already declining.", "Distorts the passage"),
+        o("Snow's lasting contribution was a way of reasoning from comparisons, even though his theory was not accepted at once.", "Paragraph 4 names the method as his legacy; paragraph 3 records the slow acceptance."),
+        o("The miasma theory was correct about cholera after all.", "The passage treats the water theory as the one later accepted.", "Distorts the passage"),
+        o("Cholera in Victorian London was spread mainly by breweries.", "The brewery is an exception that supported Snow's theory.", "Out of scope"),
+      ]),
+      q("inference", "The brewery workers and the woman who lived far away matter to Snow's argument because:", [1], [
+        o("they prove that beer protects against cholera", "The workers were spared because they did not drink the pump's water.", "Distorts the passage"),
+        o("they were the only people in the area who did not drink from the pump", "Nothing says they were the only ones.", "Extreme wording"),
+        o("they were the first victims of the outbreak", "Only the woman died, and nothing says she was among the first.", "Out of scope"),
+        o("their cases fitted the water theory but were hard to explain by bad air in the neighbourhood", "Workers breathing Soho's air were spared; a woman far from it, drinking its water, died."),
+      ]),
+      q("inference", "It can be inferred that the government inquiry of 1855:", [2], [
+        o("was influenced by the belief, common at the time, that disease spread through the air", "It preferred 'conditions in the air', in line with the miasma theory described in paragraph 1."),
+        o("accepted Snow's theory but kept the finding quiet", "It 'rejected' his theory.", "Distorts the passage"),
+        o("found that the pump handle had never been removed", "Nothing like this is reported.", "Out of scope"),
+        o("blamed the brewery for the outbreak", "The brewery is never connected with the inquiry.", "Out of scope"),
+      ]),
+      q("tone", "The author's attitude to the popular story of the pump handle is one of:", [2, 3], [
+        o("unqualified admiration", "The author calls the story more complicated than it is told.", "Extreme wording"),
+        o("complete rejection: Snow contributed nothing to public health", "The author credits Snow with a lasting legacy.", "Distorts the passage"),
+        o("gentle correction: the story simplifies events and misses what mattered most", "Paragraph 3 corrects the 'instant triumph'; paragraph 4 moves the credit to his method."),
+        o("amusement at the foolishness of Victorian officials", "There is no mockery in the passage.", "Out of scope"),
+      ]),
+    ],
+    recall: [
+      recall("On which street was the pump at the centre of the outbreak?", ["Oxford Street", "Broad Street", "Baker Street", "Fleet Street"], 1),
+      recall("Which group was largely spared?", ["Brewery workers", "Doctors", "Children", "Shopkeepers"], 0),
+    ],
+  },
+  {
+    id: "hist-silk",
+    title: "The road that was not a road",
+    genre: "history",
+    difficulty: "hard",
+    paras: [
+      "The phrase 'Silk Road' was coined only in 1877, by the German geographer Ferdinand von Richthofen, whose work in China included surveying routes for a proposed railway. It has since become one of the most evocative names in history, conjuring caravans carrying bolts of silk across deserts from Chang'an to Rome. The name caught on slowly, and became popular only in the twentieth century, through travel writing, exhibitions and, later, television. The image is not wrong so much as misleading, and the ways in which it misleads are instructive.",
+      "There was no single road, and almost no one travelled its full length. Goods moved in relays, changing hands many times between local merchants who knew only their own stretch of a network of routes running through oases, mountain passes and, increasingly, sea lanes. A Roman lady wearing Chinese silk had no idea where it came from, and the Chinese who made it had only hazy notions of Rome. Much of the traffic, moreover, was local and regional: horses, grain, paper and metalwork rather than luxuries bound for distant empires.",
+      "Silk itself was only one commodity among many, and in some periods not the most important. Its production, in any case, did not stay a Chinese secret: silkworms reached the Byzantine empire in the sixth century. What travelled furthest and lasted longest were often things that weighed nothing: religions such as Buddhism, which moved from India into Central Asia and China; techniques such as papermaking, which reached the Islamic world and later Europe; and, less happily, diseases, which used the same routes as merchants and pilgrims.",
+      "Why, then, does the romantic image persist? Partly because it suits modern purposes. Governments promoting new infrastructure and trade links across Asia invoke the Silk Road as a precedent, presenting their projects as the revival of an ancient, harmonious exchange. Historians are wary of such borrowings, which tend to leave out the soldiers, slaves and tax collectors who also travelled the routes. The networks they study were real and transformative, but they were also patchy, contested and often violent, and a name invented by a railway surveyor tells us at least as much about the nineteenth century's ambitions as about the past it claims to describe.",
+    ],
+    questions: [
+      q("main", "The central claim of the passage is that:", [0, 1, 2, 3], [
+        o("the Silk Road was a single route that linked Chang'an directly to Rome", "Paragraph 2 says there was no single road.", "Distorts the passage"),
+        o("silk was the only commodity that mattered in trade between Asia and Europe", "Paragraph 3 says silk was one commodity among many.", "Extreme wording"),
+        o("modern infrastructure projects in Asia are bound to fail", "The passage questions their use of history, not their prospects.", "Out of scope"),
+        o("the popular image misrepresents a patchy network whose most lasting exchanges were often of ideas and techniques", "Each paragraph corrects part of the romantic image."),
+      ]),
+      q("except", "The passage mentions all of the following as having travelled along these routes EXCEPT:", [2], [
+        o("Buddhism", "Named in paragraph 3.", "True but not the answer"),
+        o("papermaking", "Named in paragraph 3.", "True but not the answer"),
+        o("railway technology", "The railway appears only as the reason Richthofen was surveying routes."),
+        o("diseases", "Named in paragraph 3.", "True but not the answer"),
+      ]),
+      q("inference", "The example of the Roman lady wearing Chinese silk is used to show that:", [1], [
+        o("Romans valued silk more highly than the Chinese did", "Nothing compares how the two valued silk.", "Out of scope"),
+        o("trade passed through so many hands that the two ends knew little of each other", "It illustrates goods moving 'in relays' between merchants who knew only their own stretch."),
+        o("Roman women controlled the silk trade", "She is a buyer who knew nothing of the trade.", "Distorts the passage"),
+        o("silk reached Rome by sea rather than over land", "The example says nothing about the route.", "Out of scope"),
+      ]),
+      q("inference", "The last sentence suggests that the name 'Silk Road':", [3], [
+        o("reflects nineteenth-century ambitions as much as the past it describes", "A railway surveyor's name 'tells us at least as much about the nineteenth century's ambitions'."),
+        o("was invented by historians to describe violent conflicts", "It was coined by a geographer, and historians are wary of it.", "Distorts the passage"),
+        o("should be replaced in textbooks by a more accurate term", "No new term is proposed.", "Out of scope"),
+        o("accurately describes a harmonious exchange in the past", "The author calls the networks 'contested and often violent'.", "Distorts the passage"),
+      ]),
+    ],
+    recall: [
+      recall("Who coined the phrase 'Silk Road'?", ["Marco Polo", "Ferdinand von Richthofen", "A Roman historian", "A Chinese emperor"], 1),
+      recall("Which religion does the passage say travelled from India into Central Asia and China?", ["Islam", "Christianity", "Buddhism", "Zoroastrianism"], 2),
+    ],
+  },
+  {
+    id: "lit-oral",
+    title: "Singers who never sang the same song twice",
+    genre: "literature",
+    difficulty: "medium",
+    paras: [
+      "For centuries readers wondered how a single poet could have composed the Iliad and the Odyssey, poems of more than twenty-seven thousand lines between them, without writing. Some scholars doubted that one person had composed them at all, and argued that they were stitched together from shorter songs by later editors. The question was transformed in the 1930s by Milman Parry, a young American scholar, and his assistant Albert Lord, who travelled to Yugoslavia to record singers of heroic songs in coffee houses and villages.",
+      "Parry had noticed that Homer's verse is built from repeated phrases, such as 'rosy-fingered dawn' or 'swift-footed Achilles', each of which fits a particular slot in the rhythm of the line. In the Balkan singers he found the same technique alive. A skilled singer did not memorise a fixed text. He knew a large stock of formulas and familiar scenes, such as the arming of a hero or the gathering of an assembly, and used them to compose the song afresh as he performed it, at a pace no reciter of memorised lines could match.",
+      "One consequence surprised the scholars. Singers insisted that they performed a song 'the same' each time, word for word, yet recordings of the same singer on different occasions showed long passages that differed considerably. One singer, asked to perform a song he had heard only once, produced a version far longer than the original, and still described it as the same song. For the singers, sameness meant the same story, the same heroes and the same events, not the identical sequence of words that a culture of print has taught us to expect.",
+      "Parry died in an accident in 1935, and Lord carried the work on. His book on these findings, The Singer of Tales, changed the study of early literature. It suggested that the Homeric poems were the product of a long tradition of oral composition, perhaps written down at a particular performance, rather than the invention of a solitary author working from a draft. Many questions remain open, including how and when the poems were fixed in writing. But the idea of a single correct text, which modern editors take for granted, may be a poor guide to how such poetry was made and heard.",
+    ],
+    questions: [
+      q("main", "Which of the following best captures the main point of the passage?", [1, 3], [
+        o("Homer never existed, and the Iliad was really composed by Balkan singers.", "The Balkan singers offered a living parallel, not the source of the Iliad.", "Distorts the passage"),
+        o("Milman Parry was the greatest classical scholar of the twentieth century.", "The passage does not rank scholars.", "Out of scope"),
+        o("Studies of Balkan singers suggested that Homer's poems came from a tradition of composing in performance, not from fixed memorised texts.", "Covers the method, the evidence and the conclusion in paragraph 4."),
+        o("Oral poets memorise their songs word for word.", "Paragraph 2 says a skilled singer 'did not memorise a fixed text'.", "Distorts the passage"),
+      ]),
+      q("detail", "According to the passage, a phrase such as 'swift-footed Achilles' is useful to an oral poet because:", [1], [
+        o("it fits a particular place in the rhythm of the line", "Paragraph 2: each formula 'fits a particular slot in the rhythm of the line'."),
+        o("it shows off the poet's originality", "Formulas are shared stock, not original phrasing.", "Distorts the passage"),
+        o("it is easy to write down", "The point is composing without writing.", "Out of scope"),
+        o("audiences demanded new phrases at each performance", "Formulas are repeated phrases.", "Distorts the passage"),
+      ]),
+      q("inference", "The singers' claim that they performed a song 'the same' each time shows that:", [2], [
+        o("they were deliberately misleading the scholars", "Nothing suggests deceit; their idea of sameness differed.", "Distorts the passage"),
+        o("for them, sameness meant the same story rather than the same words", "Paragraph 3 says exactly this."),
+        o("the recordings of their performances were faulty", "The recordings are trusted evidence in the passage.", "Out of scope"),
+        o("they had forgotten their songs", "They composed afresh by design, not through forgetting.", "Distorts the passage"),
+      ]),
+      q("application", "The author would most likely regard a modern editor's search for the one original wording of the Iliad as:", [3], [
+        o("the only proper aim of classical scholarship", "The author questions the idea of a single correct text.", "Extreme wording"),
+        o("certain to succeed if enough manuscripts are found", "The author doubts such a text existed in the way editors assume.", "Extreme wording"),
+        o("pointless, since the Iliad was never written down", "The poems were written down at some point; how and when is still open.", "Distorts the passage"),
+        o("possibly mistaken in what it assumes about how the poem was made", "The last sentence: a single correct text 'may be a poor guide' to how such poetry was made."),
+      ]),
+    ],
+    recall: [
+      recall("Where did Parry and Lord record singers?", ["Greece", "Yugoslavia", "Turkey", "Italy"], 1),
+      recall("What is the title of Lord's book?", ["The Iliad Explained", "The Singer of Tales", "Songs of the Balkans", "Homer's Memory"], 1),
+    ],
+  },
 ];

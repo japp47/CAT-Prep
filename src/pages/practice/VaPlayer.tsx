@@ -3,8 +3,10 @@ import { Link, useLocation, useNavigate, useSearchParams } from "react-router-do
 import { todayIso, uid } from "../../lib/date";
 import { useStore } from "../../lib/store";
 import { vaOfDay } from "../../practice/daily";
-import { fmtSecs, recordVa, vaError, vaErrorSrc } from "../../practice/record";
-import { cleanAnswer, customDrill, parseKey, scoreItem, sentenceAt, VA_KIND, type VaItem, type VaKind } from "../../practice/va/build";
+import { fmtSecs, LETTERS, recordVa, vaError, vaErrorSrc } from "../../practice/record";
+import { answerLabel, cleanAnswer, customDrill, parseKey, scoreItem, sentenceAt, sumAt, VA_KIND, type VaItem, type VaKind } from "../../practice/va/build";
+import { paraText } from "../../practice/types";
+import { ReportLink } from "./common";
 import { VA_PARAS } from "../../practice/va/paragraphs";
 import { useElapsed } from "./common";
 
@@ -93,7 +95,7 @@ function Drill({ items, mode, initialAttempt }: { items: VaItem[]; mode: "daily"
               <span>Time <b>{fmtSecs(attempt.secs)}</b></span>
             </p>
           </div>
-          <p className="muted small">Para jumbles and odd sentence out are TITA: +3 or 0. Sentence insertion is an MCQ: +3, −1 for a wrong answer, 0 if blank. Logged in Progress by question type.</p>
+          <p className="muted small">Para jumbles and odd sentence out are TITA: +3 or 0. Para summary and sentence insertion are MCQs: +3, −1 for a wrong answer, 0 if blank. Logged in Progress by question type. Wrong and blank items join your <Link to="/practice/redo">redo queue</Link>.</p>
           <div className="row">
             <button type="button" className="btn" onClick={() => navigate(`/practice/va?type=mix&n=8&seed=${uid()}`)}>New custom drill</button>
             <button type="button" className="btn ghost" onClick={() => { setAttemptId(null); setAnswers(items.map(() => "")); startAt.current = Date.now(); }}>Retake these items</button>
@@ -134,8 +136,22 @@ function Drill({ items, mode, initialAttempt }: { items: VaItem[]; mode: "daily"
   );
 }
 
-function ItemInput({ item, answer, setAnswer }: { item: VaItem; answer: string; setAnswer: (v: string) => void }) {
+export function ItemInput({ item, answer, setAnswer }: { item: VaItem; answer: string; setAnswer: (v: string) => void }) {
   const a = cleanAnswer(answer);
+  if (item.kind === "ps") {
+    return (
+      <>
+        <p className="muted">{VA_KIND.ps.how}</p>
+        <p className="para">{paraText(item.para)}</p>
+        <ul className="opts" role="radiogroup" aria-label="Summaries">
+          {item.order.map((_, i) => (
+            <li key={i}><button type="button" role="radio" aria-checked={a === String(i + 1)} className="opt" onClick={() => setAnswer(String(i + 1))}><span className="l">{LETTERS[i]}</span><span>{sumAt(item, i).t}</span></button></li>
+          ))}
+        </ul>
+        {a && <button type="button" className="link" style={{ alignSelf: "flex-start" }} onClick={() => setAnswer("")}>Clear</button>}
+      </>
+    );
+  }
   if (item.kind === "si") {
     return (
       <>
@@ -205,7 +221,7 @@ function Marked({ text, mark }: { text: string; mark: string }) {
   return <>{text.slice(0, i)}<mark>{mark}</mark>{text.slice(i + mark.length)}</>;
 }
 
-function ItemReview({ item, answer }: { item: VaItem; answer: string }) {
+export function ItemReview({ item, answer }: { item: VaItem; answer: string }) {
   const { state, update } = useStore();
   const a = cleanAnswer(answer);
   const s = scoreItem(item, a);
@@ -214,9 +230,31 @@ function ItemReview({ item, answer }: { item: VaItem; answer: string }) {
   return (
     <>
       <div className="row">
-        <span className={"tag " + (s.ok ? "t-official" : s.blank ? "t-opt" : "t-must")}>{s.ok ? "Correct +3" : s.blank ? "Blank 0" : item.kind === "si" ? "Wrong −1" : "Wrong 0"}</span>
-        <span className="muted small">Key <b>{item.answer}</b> · you {s.blank ? "left it blank" : <>entered <b>{a}</b></>}</span>
+        <span className={"tag " + (s.ok ? "t-official" : s.blank ? "t-opt" : "t-must")}>{s.ok ? "Correct +3" : s.blank ? "Blank 0" : VA_KIND[item.kind].tita ? "Wrong 0" : "Wrong −1"}</span>
+        <span className="muted small">Key <b>{answerLabel(item, item.answer)}</b> · you {s.blank ? "left it blank" : <>entered <b>{answerLabel(item, a)}</b></>}</span>
       </div>
+      {item.kind === "ps" && (
+        <>
+          <p className="para">{paraText(p)}</p>
+          <ul className="opts">
+            {item.order.map((_, i) => {
+              const opt = sumAt(item, i), n = String(i + 1);
+              return (
+                <li key={i} className={"opt" + (n === item.answer ? " right" : n === a ? " wrong" : "")}>
+                  <span className="l">{LETTERS[i]}</span>
+                  <span>
+                    {opt.t}
+                    <span className="why">{opt.why}</span>
+                    {n === item.answer && <span className="tag t-official who">Answer</span>}
+                    {n === a && n !== item.answer && <span className="tag t-must who">Your pick</span>}
+                    {opt.trap && <span className="tag t-opt who">{opt.trap}</span>}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      )}
       {item.kind === "pj" && (
         <>
           <p className="muted small">The paragraph in order, with the cue that fixes each sentence's place:</p>
@@ -253,6 +291,7 @@ function ItemReview({ item, answer }: { item: VaItem; answer: string }) {
       {!s.ok && (inLog
         ? <p className="ok">In your Error log.</p>
         : <button type="button" className="btn ghost sm" style={{ alignSelf: "flex-start" }} onClick={() => update((st) => { st.errors.push(vaError(item, a, todayIso())); })}>Add to Error log</button>)}
+      <ReportLink what={`${VA_KIND[item.kind].label}: ${p.topic} (${item.key})`} />
     </>
   );
 }

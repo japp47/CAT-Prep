@@ -1,6 +1,9 @@
 import { useRef, useState } from "react";
 import { useTheme, type Theme } from "../components/Layout";
 import { todayIso } from "../lib/date";
+import { googleCalendarUrl, reminderIcs } from "../lib/ics";
+import { usePref } from "../lib/prefs";
+import { useInstall } from "../lib/pwa";
 import { useStore } from "../lib/store";
 import { blankState, normalize } from "../lib/state";
 
@@ -36,6 +39,7 @@ export default function Settings() {
     ["Error log entries", state.errors.length],
     ["Words", state.vocab.length],
     ["Resources ticked", Object.keys(state.ticks).length],
+    ["Questions to redo", state.redo.filter((r) => !r.cleared).length],
   ] as const;
 
   return (
@@ -51,6 +55,8 @@ export default function Settings() {
           {(["auto", "light", "dark"] as Theme[]).map((t) => <button key={t} type="button" aria-pressed={theme === t} onClick={() => setTheme(t)}>{t === "auto" ? "Match device" : t[0].toUpperCase() + t.slice(1)}</button>)}
         </div>
       </div>
+      <InstallCard />
+      <ReminderCard />
       <div className="card stack">
         <h3>Your data</h3>
         <p className="summary">{counts.map(([k, v]) => <span key={k}>{k} <b>{v}</b></span>)}</p>
@@ -68,6 +74,50 @@ export default function Settings() {
         <button type="button" className="btn danger" style={{ alignSelf: "flex-start" }} onClick={() => {
           if (confirm("Delete all your data from this browser? This cannot be undone.")) { replace(blankState()); setMsg({ ok: true, text: "All data cleared." }); }
         }}>Delete all my data</button>
+      </div>
+    </div>
+  );
+}
+
+function InstallCard() {
+  const { installed, canPrompt, ios, prompt } = useInstall();
+  return (
+    <div className="card stack">
+      <h3>Install as an app</h3>
+      <p className="muted small">The installed app opens from your home screen like any other app. After your first visit the site also works without internet, because your plan and logs are stored on this device.</p>
+      {installed ? <p className="ok">You are using the installed app.</p>
+        : canPrompt ? <button type="button" className="btn" style={{ alignSelf: "flex-start" }} onClick={prompt}>Install CAT Prep Hub</button>
+        : ios ? <p className="small">On iPhone or iPad: open this site in Safari, tap the Share button, then <b>Add to Home Screen</b>.</p>
+        : <p className="small">In Chrome or Edge, use the install icon at the right of the address bar, or the browser menu and then <b>Install</b>. On Android, open the menu and tap <b>Add to Home screen</b>.</p>}
+    </div>
+  );
+}
+
+function ReminderCard() {
+  const [time, setTime] = usePref("reminderTime", "19:00");
+  const [mins, setMins] = usePref("reminderMins", 60);
+  const r = { date: todayIso(), time, minutes: mins, url: window.location.origin + import.meta.env.BASE_URL + "today" };
+  const download = () => {
+    const blob = new Blob([reminderIcs(r)], { type: "text/calendar" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "cat-prep-reminder.ics";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  };
+  return (
+    <div className="card stack">
+      <h3>Daily study reminder</h3>
+      <p className="muted small">Adds a repeating event to your calendar, so your phone reminds you every day. It links back to Today's timetable. Nothing is sent to us.</p>
+      <div className="form">
+        <label className="f">Time<input type="time" value={time} onChange={(e) => e.target.value && setTime(e.target.value)} /></label>
+        <label className="f">Length
+          <select value={mins} onChange={(e) => setMins(+e.target.value)}>{[30, 45, 60, 90, 120].map((m) => <option key={m} value={m}>{m} min</option>)}</select>
+        </label>
+      </div>
+      <div className="row">
+        <a className="btn" href={googleCalendarUrl(r)} target="_blank" rel="noopener noreferrer">Add to Google Calendar ↗</a>
+        <button type="button" className="btn ghost" onClick={download}>Download for Apple or Outlook (.ics)</button>
       </div>
     </div>
   );

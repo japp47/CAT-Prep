@@ -1,0 +1,16 @@
+{
+  "name": "CAT Prep Hub",
+  "short_name": "CAT Prep",
+  "description": "Free CAT preparation: a daily timetable that fits your time, RC and VA practice, and progress tracking.",
+  "start_url": "./today",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F3F5F8",
+  "theme_color": "#2F49D1",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

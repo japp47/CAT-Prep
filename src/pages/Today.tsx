@@ -6,10 +6,12 @@ import { EXAM_CONFIRMED, PHASES, phaseOf } from "../data/exam";
 import { addDays, clamp, DOW, dow, isWeekend, longDate, shortDate, todayIso, uid, weekStart, mediumDate } from "../lib/date";
 import { useStore } from "../lib/store";
 import type { AppState } from "../lib/state";
-import { buildDay, budgetFor, carryInfo, defaultMin, doneKey, doneMinutes, coreOf, type PlacedBlock } from "../planner/engine";
+import { buildDay, budgetFor, carryInfo, defaultMin, doneKey, doneMinutes, coreOf, markBlockDone, type PlacedBlock } from "../planner/engine";
+import { useFocus } from "../lib/focus";
 import { LIVE_SECTIONS, SECTIONS } from "../sections";
 import type { SectionDef } from "../sections/types";
 import { rcOfDay, vaOfDay } from "../practice/daily";
+import { dueRedo } from "../practice/redo";
 import { scoreRc } from "../practice/record";
 import { GENRES } from "../practice/types";
 import { StreakBadge } from "./practice/common";
@@ -27,9 +29,7 @@ function useToday() {
 }
 
 function markDone(st: AppState, d: string, b: PlacedBlock, sec: SectionDef) {
-  const rec = (st.days[d] ??= {});
-  (rec.done ??= {})[b.key] = b.mins;
-  if (b.carryFrom) ((st.days[b.carryFrom] ??= {}).carried ??= {})[sec.id] = 1;
+  markBlockDone(st, d, sec.id, b.key, b.mins, b.carryFrom);
 }
 
 function LogForm({ sec, b, d }: { sec: SectionDef; b: PlacedBlock; d: string }) {
@@ -72,6 +72,7 @@ function LogForm({ sec, b, d }: { sec: SectionDef; b: PlacedBlock; d: string }) 
 
 function SectionDay({ sec, d, today }: { sec: SectionDef; d: string; today: string }) {
   const { state, update } = useStore();
+  const focus = useFocus();
   const [custom, setCustom] = useState("");
   const [note, setNote] = useState("");
   const isToday = d === today;
@@ -108,6 +109,8 @@ function SectionDay({ sec, d, today }: { sec: SectionDef; d: string; today: stri
   } else {
     body = blocks.map((b) => {
       const done = !!dm[b.key];
+      const timed = rec?.spent?.[b.key] ?? 0;
+      const running = focus.run?.key === b.key && focus.run.d === d;
       return (
         <li key={b.key} className={"blk" + (done ? " done" : "")}>
           {canTick ? <input type="checkbox" checked={done} onChange={(e) => toggle(b, e.target.checked)} aria-label={"Done: " + b.name} /> : <span />}
@@ -120,6 +123,16 @@ function SectionDay({ sec, d, today }: { sec: SectionDef; d: string; today: stri
             </div>
             <p className="blk-desc">{b.desc}</p>
             <LinkButtons links={b.links} />
+            {isToday && !done && (
+              <div className="row small">
+                {running ? <span className="ok">Focus timer running</span>
+                  : <button type="button" className="link" disabled={!!focus.run} title={focus.run ? "Another block's timer is running" : undefined}
+                      onClick={() => focus.start({ key: b.key, name: sec.short + ": " + b.name, sec: sec.id, d, target: b.mins, log: !!b.kind, carryFrom: b.carryFrom })}>
+                      Start focus timer</button>}
+                {timed > 0 && <span className="muted">Timed {timed} of {b.mins} min</span>}
+              </div>
+            )}
+            {done && timed > 0 && <p className="muted small">Timed {timed} of {b.mins} min.</p>}
             {canTick && !done && b.kind && <LogForm sec={sec} b={b} d={d} />}
             {done && b.kind && <p className="logged">Logged and done.</p>}
           </div>
@@ -129,6 +142,7 @@ function SectionDay({ sec, d, today }: { sec: SectionDef; d: string; today: stri
   }
   const total = blocks.reduce((s, b) => s + b.mins, 0);
   const doneCount = blocks.filter((b) => dm[b.key]).length;
+  const timedTotal = blocks.reduce((s, b) => s + (rec?.spent?.[b.key] ?? 0), 0);
 
   return (
     <div className="card">
@@ -167,7 +181,7 @@ function SectionDay({ sec, d, today }: { sec: SectionDef; d: string; today: stri
       )}
       <div className="tt-head">
         <h3>{ph.kind === "phase" ? (blocks.length ? "Timetable, " + ph.phase.name + " phase" : "Rest day") : ph.kind === "exam" ? "Exam day" : "Timetable"}</h3>
-        {blocks.length > 0 && <span className="muted small">{blocks.length} block{blocks.length === 1 ? "" : "s"} · {total} min · {doneCount} done</span>}
+        {blocks.length > 0 && <span className="muted small">{blocks.length} block{blocks.length === 1 ? "" : "s"} · {total} min · {doneCount} done{timedTotal > 0 ? ` · ${timedTotal} min timed` : ""}</span>}
       </div>
       <ul className="blks">{body}</ul>
     </div>
@@ -278,6 +292,7 @@ function PracticeToday({ today }: { today: string }) {
   const rc = rcOfDay(today);
   const rcTry = state.rcAttempts.filter((a) => a.set === rc.id && a.d === today).pop();
   const vaTry = state.vaAttempts.filter((a) => a.mode === "daily" && a.d === today).pop();
+  const redo = dueRedo(state.redo, today).length;
   return (
     <div className="card stack">
       <div className="row" style={{ justifyContent: "space-between" }}><h3>Practise here today</h3><Link className="link" to="/practice">All practice</Link></div>
@@ -288,10 +303,16 @@ function PracticeToday({ today }: { today: string }) {
           <Link className="go" to={rcTry ? `/practice/rc/${rc.id}?review=${rcTry.id}` : `/practice/rc/${rc.id}`}>{rcTry ? "Review" : "Start"}</Link>
         </li>
         <li>
-          <div style={{ minWidth: 0 }}><span className="ct">Daily VA drill</span><Link className="res-name" to="/practice/va">{vaOfDay(today).length} questions: para jumbles, odd sentence out, sentence insertion</Link>
+          <div style={{ minWidth: 0 }}><span className="ct">Daily VA drill</span><Link className="res-name" to="/practice/va">{vaOfDay(today).length} questions: para summary, sentence insertion, odd sentence out, para jumbles</Link>
             {vaTry && <span className="ok small"> · {vaTry.items.filter((i) => i.ok).length} of {vaTry.items.length} correct</span>}</div>
           <Link className="go" to="/practice/va">{vaTry ? "Review" : "Start"}</Link>
         </li>
+        {redo > 0 && (
+          <li>
+            <div style={{ minWidth: 0 }}><span className="ct">Redo queue</span><Link className="res-name" to="/practice/redo">{redo} question{redo > 1 ? "s" : ""} you missed earlier</Link></div>
+            <Link className="go" to="/practice/redo">Start</Link>
+          </li>
+        )}
       </ul>
       <p className="muted small">Scores log themselves in Progress. Tick the matching timetable block when you are done.</p>
     </div>

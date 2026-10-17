@@ -53,9 +53,10 @@ export interface RcSet {
 }
 
 /**
- * One authored paragraph. Each one yields three VA items:
+ * One authored paragraph. Each one yields four VA items:
  * a para jumble (the four core sentences), an odd sentence out (core plus odd),
- * and a sentence insertion (core with ins taken out at insAt).
+ * a sentence insertion (core with ins taken out at insAt),
+ * and a para summary (the full paragraph, core with ins put back).
  */
 export interface VaPara {
   id: string;
@@ -73,6 +74,15 @@ export interface VaPara {
   ins: string;
   insAt: 0 | 1 | 2 | 3 | 4;
   insWhy: string;
+  /** Four para summary options for the full paragraph. As in RC, the one option without a trap is the answer. */
+  sum: [RcOption, RcOption, RcOption, RcOption];
+}
+
+/** The whole paragraph as a para summary question shows it: the core sentences with ins in its gap. */
+export function paraText(p: VaPara): string {
+  const s: string[] = [...p.s];
+  s.splice(p.insAt, 0, p.ins);
+  return s.join(" ");
 }
 
 export const words = (text: string) => text.split(/\s+/).filter(Boolean).length;

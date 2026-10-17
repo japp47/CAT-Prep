@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { SECTIONS } from "../sections";
+import { useFocus } from "../lib/focus";
 import { usePref } from "../lib/prefs";
+import FocusBar from "./FocusBar";
 import { IconChart, IconHome, IconMenu, IconPen, IconToday } from "./Icons";
 
 interface Item { to: string; label: string; badge?: "soon" | "live"; end?: boolean }
@@ -54,6 +56,7 @@ export function useTheme(): [Theme, (t: Theme) => void] {
 export default function Layout() {
   const [open, setOpen] = useState(false);
   const loc = useLocation();
+  const { run } = useFocus();
   useTheme();
   useEffect(() => { window.scrollTo(0, 0); setOpen(false); }, [loc.pathname]);
   useEffect(() => {
@@ -79,9 +82,10 @@ export default function Layout() {
         <Brand />
         <button type="button" className="iconbtn" aria-label="Open menu" aria-expanded={open} onClick={() => setOpen(true)}><IconMenu /></button>
       </header>
-      <main id="main" className="content">
+      <main id="main" className={"content" + (run ? " has-focus" : "")}>
         <Outlet />
       </main>
+      <FocusBar />
       <nav className="bottomnav" aria-label="Quick">
         {tab("/", "Home", IconHome, true)}
         {tab("/today", "Today", IconToday)}

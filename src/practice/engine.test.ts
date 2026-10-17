@@ -3,12 +3,12 @@ import { addDays } from "../lib/date";
 import { dailyPick, rcOfDay, vaOfDay } from "./daily";
 import { RC_SETS } from "./rc";
 import { computeStreak } from "./streak";
-import { buildItem, customDrill, scoreItem, sentenceAt } from "./va/build";
+import { buildItem, customDrill, DAILY_MIX, scoreItem, sentenceAt, sumAt, VA_KINDS } from "./va/build";
 import { VA_PARAS } from "./va/paragraphs";
 
 describe("VA items", () => {
   for (const p of VA_PARAS) {
-    it(`${p.id} builds three valid items`, () => {
+    it(`${p.id} builds four valid items`, () => {
       const pj = buildItem("pj", p);
       expect(pj.order).not.toEqual([0, 1, 2, 3]);
       expect(pj.answer).toHaveLength(4);
@@ -22,6 +22,10 @@ describe("VA items", () => {
       const si = buildItem("si", p);
       expect(si.gaps).toHaveLength(4);
       expect(si.gaps[+si.answer - 1]).toBe(p.insAt);
+
+      const ps = buildItem("ps", p);
+      expect([...ps.order].sort()).toEqual([0, 1, 2, 3]);
+      expect(sumAt(ps, +ps.answer - 1).trap).toBeUndefined();
     });
   }
   it("scores TITA without negative marks and insertion with them", () => {
@@ -34,6 +38,18 @@ describe("VA items", () => {
     const wrong = String((+si.answer % 4) + 1);
     expect(scoreItem(si, wrong).pts).toBe(-1);
     expect(scoreItem(si, "").pts).toBe(0);
+    const ps = buildItem("ps", VA_PARAS[0]);
+    expect(scoreItem(ps, ps.answer).pts).toBe(3);
+    expect(scoreItem(ps, String((+ps.answer % 4) + 1)).pts).toBe(-1);
+  });
+  it("spreads para summary answers across A to D", () => {
+    const counts = [0, 0, 0, 0];
+    VA_PARAS.forEach((p) => counts[+buildItem("ps", p).answer - 1]++);
+    counts.forEach((c) => expect(c / VA_PARAS.length).toBeGreaterThan(0.1));
+  });
+  it("mixes all four types in a mixed drill", () => {
+    const kinds = new Set(customDrill(VA_PARAS, "mix", 8, "m1", new Set()).map((i) => i.kind));
+    expect(kinds.size).toBe(VA_KINDS.length);
   });
   it("puts unseen items first in custom drills", () => {
     const first = customDrill(VA_PARAS, "pj", 5, "s1", new Set());
@@ -55,10 +71,12 @@ describe("daily picks", () => {
     expect(rcOfDay("2027-03-04").id).toBe(rcOfDay("2027-03-04").id);
     expect(vaOfDay("2027-03-04").map((i) => i.key)).toEqual(vaOfDay("2027-03-04").map((i) => i.key));
   });
-  it("gives a daily VA set of 8 items from 8 different paragraphs", () => {
+  it("gives a daily VA set of 8 items from 8 different paragraphs, 2 of each type", () => {
     const items = vaOfDay("2026-11-02");
     expect(items).toHaveLength(8);
     expect(new Set(items.map((i) => i.para.id)).size).toBe(8);
+    expect(items.map((i) => i.kind)).toEqual(DAILY_MIX);
+    VA_KINDS.forEach((k) => expect(items.filter((i) => i.kind === k)).toHaveLength(2));
   });
   it("works before the epoch", () => {
     expect(dailyPick(RC_SETS, "2026-01-01", "rc")).toHaveLength(1);
