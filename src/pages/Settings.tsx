@@ -36,6 +36,7 @@ export default function Settings() {
     ["Days with activity", Object.keys(state.days).length],
     ["Practice sets", state.practice.length],
     ["Papers and mocks", state.mocks.length],
+    ["VARC sectionals", state.sectionals.length],
     ["Error log entries", state.errors.length],
     ["Words", state.vocab.length],
     ["Resources ticked", Object.keys(state.ticks).length],

@@ -108,7 +108,7 @@ function Drill({ items, mode, initialAttempt }: { items: VaItem[]; mode: "daily"
         {items.map((it, i) => {
           const s = scoreItem(it, answers[i]);
           let cls = "pal";
-          if (reviewing) cls += s.blank ? " skip" : s.ok ? " ok" : " bad";
+          if (reviewing) cls += s.blank ? " blank" : s.ok ? " ok" : " bad";
           else if (!s.blank) cls += " ans";
           if (i === cur) cls += " cur";
           return <button key={it.key} type="button" className={cls} onClick={() => setCur(i)} aria-current={i === cur} aria-label={`Item ${i + 1}, ${VA_KIND[it.kind].label}`}>{i + 1}</button>;

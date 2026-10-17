@@ -6,6 +6,7 @@ import { useStore } from "../../lib/store";
 import { RC_CATALOG } from "../../practice/catalog.gen";
 import { DAILY_EPOCH, dayNumber, rcOfDay } from "../../practice/daily";
 import { dueRedo } from "../../practice/redo";
+import { loadDraft } from "../../practice/sectional";
 import { GENRES, type Genre, type RcMeta } from "../../practice/types";
 import { DAILY_MIX, VA_KIND, type VaKind } from "../../practice/va/build";
 import { StreakBadge } from "./common";
@@ -47,6 +48,8 @@ export default function PracticeHub() {
   const best = state.speedRuns.filter((r) => r.recall === 2).reduce((m, r) => Math.max(m, r.wpm), 0);
   const redoDue = dueRedo(state.redo, today).length;
   const redoOpen = state.redo.filter((r) => !r.cleared).length;
+  const lastSec = state.sectionals[state.sectionals.length - 1];
+  const hasDraft = !!loadDraft();
 
   const [genre, setGenre] = usePref<Genre | "all">("libGenre", "all");
   const [diff, setDiff] = usePref<"all" | "easy" | "medium" | "hard">("libDiff", "all");
@@ -63,7 +66,7 @@ export default function PracticeHub() {
       <div className="view-head">
         <div className="row" style={{ justifyContent: "space-between" }}><span className="eyebrow">VARC practice</span><StreakBadge /></div>
         <h1>Practice</h1>
-        <p>Exam-style RC sets with an explanation for every option, a daily VA drill, a redo queue for your mistakes and a reading speed test. Everything you do here goes into Progress, and one tap sends a mistake to your Error log.</p>
+        <p>Exam-style RC sets with an explanation for every option, a daily VA drill, a timed VARC sectional, a redo queue for your mistakes and a reading speed test. Everything you do here goes into Progress, and one tap sends a mistake to your Error log.</p>
       </div>
 
       <div className="grid2">
@@ -86,6 +89,19 @@ export default function PracticeHub() {
           <p className="muted small">2 each of para summary, sentence insertion, odd sentence out and para jumbles, the mix CAT used in 2023 and 2025, marked the way CAT marks them.</p>
           {vaToday && <p className="ok">Done today: {vaToday.items.filter((i) => i.ok).length} of {vaToday.items.length} correct.</p>}
           <div className="row"><Link className="btn" to="/practice/va">{vaToday ? "Review" : "Start"}</Link></div>
+        </div>
+      </div>
+
+      <div className="card stack sec-card">
+        <div className="row" style={{ justifyContent: "space-between" }}>
+          <span className="eyebrow">Timed VARC sectional</span>
+          {lastSec && <span className="muted small">Last: {3 * lastSec.c - lastSec.w > 0 ? "+" : ""}{3 * lastSec.c - lastSec.w} / 72</span>}
+        </div>
+        <h3>{hasDraft ? "A sectional is in progress" : "40 minutes, 24 questions, CAT marking"}</h3>
+        <p className="muted small">4 RC passages and 8 VA questions on a CAT-style screen with a question palette and mark for review. Scores go into Progress next to your mocks.</p>
+        <div className="row">
+          <Link className="btn" to="/practice/sectional">{hasDraft ? "Resume" : state.sectionals.length ? "Start another" : "Start a sectional"}</Link>
+          {lastSec && <Link className="btn ghost" to={`/practice/sectional/${lastSec.id}`}>Review the last one</Link>}
         </div>
       </div>
 

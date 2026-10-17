@@ -149,7 +149,7 @@ function Palette({ n, cur, setCur, ans, marked, set }: { n: number; cur: number;
     <div className="palette" role="group" aria-label="Questions">
       {Array.from({ length: n }, (_, i) => {
         let cls = "pal";
-        if (set) cls += ans[i] === null ? " skip" : ans[i] === set.questions[i].answer ? " ok" : " bad";
+        if (set) cls += ans[i] === null ? " blank" : ans[i] === set.questions[i].answer ? " ok" : " bad";
         else { if (ans[i] !== null) cls += " ans"; if (marked[i]) cls += " mark"; }
         if (i === cur) cls += " cur";
         const status = set ? (ans[i] === null ? "skipped" : ans[i] === set.questions[i].answer ? "correct" : "wrong") : ans[i] === null ? "not answered" : "answered";

@@ -45,6 +45,14 @@ describe("VA paragraphs", () => {
     expect(new Set(VA_PARAS.map((p) => p.id)).size).toBe(VA_PARAS.length);
   });
   for (const p of VA_PARAS) {
+    it(`${p.id} has the right shape`, () => {
+      [p.s, p.cues, p.marks].forEach((xs) => { expect(xs).toHaveLength(4); xs.forEach((x) => expect(typeof x).toBe("string")); });
+      expect([0, 1, 2, 3, 4]).toContain(p.insAt);
+      expect(["easy", "medium", "hard"]).toContain(p.difficulty);
+      expect(p.topic.length).toBeGreaterThan(3);
+      [p.oddWhy, p.insWhy].forEach((x) => expect(x.length).toBeGreaterThan(10));
+      if (p.since) expect(p.since).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    });
     it(`${p.id} marks appear in their sentences`, () => {
       p.marks.forEach((m, i) => expect(p.s[i]).toContain(m));
       expect(p.cues.every((c) => c.length > 10)).toBe(true);
@@ -55,6 +63,10 @@ describe("VA paragraphs", () => {
       p.sum.forEach((o) => { expect(o.why.length).toBeGreaterThan(10); if (o.trap) expect(OPTION_TRAPS).toContain(o.trap); });
     });
   }
+  it("spreads insertion gaps so the last gap is not a safe guess", () => {
+    const last = VA_PARAS.filter((p) => p.insAt === 4).length;
+    expect(last / VA_PARAS.length).toBeLessThan(0.4);
+  });
   it("does not make the right summary the longest one most of the time", () => {
     // A right answer that is usually the longest option teaches students to guess by length.
     const longest = VA_PARAS.filter((p) => {
