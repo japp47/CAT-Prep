@@ -12,8 +12,8 @@ export function useStreak() {
 export function StreakBadge() {
   const s = useStreak();
   const title = s.days
-    ? `${s.days}-day streak${s.activeToday ? "" : ". Practise today to keep it going"}. ${s.shieldsLeft} of 2 shields left this month; a shield covers one missed day.`
-    : "Practise or tick a timetable block to start a streak.";
+    ? `${s.days}-day streak${s.activeToday ? "" : ". Practice today to keep it going"}. ${s.shieldsLeft} of 2 shields left this month; a shield covers one missed day.`
+    : "Practice or tick a timetable block to start a streak.";
   return (
     <span className="streak" title={title}>
       <b aria-hidden="true">●</b>{s.days ? `${s.days}-day streak` : "No streak yet"}

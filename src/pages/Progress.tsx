@@ -69,7 +69,7 @@ export default function Progress() {
         {SECTIONS.map((s) => <button key={s.id} type="button" aria-pressed={sec === s.short} onClick={() => setSec(s.short)}>{s.short}</button>)}
       </div>
 
-      <p className="stats">Questions practised <b>{totA}</b> · Accuracy <b>{totA ? Math.round((totC / totA) * 100) + "%" : "none yet"}</b> · Papers and mocks <b>{n}</b> · Errors logged <b>{state.errors.filter((e) => e.sec === sec).length}</b></p>
+      <p className="stats">Questions Practiced <b>{totA}</b> · Accuracy <b>{totA ? Math.round((totC / totA) * 100) + "%" : "none yet"}</b> · Papers and mocks <b>{n}</b> · Errors logged <b>{state.errors.filter((e) => e.sec === sec).length}</b></p>
 
       <div className="card">
         <h3>Accuracy by question type</h3>

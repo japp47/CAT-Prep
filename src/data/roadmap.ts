@@ -6,7 +6,7 @@ export const ROADMAP: RoadGroup[] = [
   { title: "Just shipped", status: "Live", items: [
     { title: "RC and VA practice", text: "Exam-style RC sets with every option explained, an RC of the day, and a daily VA drill with all four CAT types: para summary, sentence insertion, odd sentence out and para jumbles." },
     { title: "Redo queue", text: "Questions you miss come back after 1, 3 and 7 days, until you get them right three times in a row." },
-    { title: "Focus timer", text: "Start a timer on any timetable block. It keeps running while you practise, suggests a break every 25 minutes, and logs the real minutes against the plan." },
+    { title: "Focus timer", text: "Start a timer on any timetable block. It keeps running while you Practice, suggests a break every 25 minutes, and logs the real minutes against the plan." },
     { title: "Install as an app and work offline", text: "Add the site to your home screen and open it without internet. A daily study reminder goes straight into Google, Apple or Outlook calendar." },
   ] },
   { title: "Next up", status: "In progress", items: [

@@ -8,7 +8,10 @@ export const L = {
   crRC: "https://cracku.in/cat-reading-comprehension-questions",
   crVA: "https://cracku.in/cat-verbal-ability-questions",
   crCR: "https://cracku.in/cat-critical-reasoning-questions",
-  crPJ: "https://cracku.in/blog/cat-para-jumbles-questions-pdf/",
+  crPJ: "https://cracku.in/cat-para-jumbles-questions",
+  crPS: "https://cracku.in/cat-para-summary-questions",
+  crOSO: "https://cracku.in/cat-odd-one-out-questions",
+  crSI: "https://cracku.in/cat-para-completion-questions",
   crPYQ: "https://cracku.in/cat-previous-papers/",
   clPYQ: "https://www.careerlauncher.com/cat-mba/cat-question-paper/",
   crMock: "https://cracku.in/cat-mock-test",
@@ -30,7 +33,13 @@ export const L = {
 export const CATEGORIES: Category[] = [
   { id: "course", tab: "learn", n: "Start here", note: "" },
   { id: "books", tab: "learn", n: "Prep books", note: "One prep book is enough. Arun Sharma's covers every CAT question type in graded levels." },
-  { id: "banks", tab: "practice", n: "Question banks", note: "Solutions show on every question, but Cracku asks you to sign in, so some may need a free account." },
+  { id: "b-rc", tab: "practice", n: "Reading comprehension", note: "Cracku shows a solution on every question, but may ask you to sign in for some features. Full past papers are further down this tab." },
+  { id: "b-pj", tab: "practice", n: "Para jumbles", note: "CAT gives no options for jumbles. When a bank shows options, cover them and type your order first." },
+  { id: "b-ps", tab: "practice", n: "Para summary", note: "" },
+  { id: "b-oso", tab: "practice", n: "Odd sentence out", note: "" },
+  { id: "b-si", tab: "practice", n: "Sentence insertion", note: "Recent CAT papers ask which gap a given sentence came from. Older banks ask you to complete the paragraph instead, so use questions from 2022 on." },
+  { id: "b-cr", tab: "practice", n: "Critical reasoning", note: "CAT no longer asks it, but XAT does. LSAT logical reasoning is the hardest standard practice." },
+  { id: "banks", tab: "practice", n: "Mixed question banks", note: "All VA types in one place, for mixed drills once each type feels familiar." },
   { id: "pyq", tab: "practice", n: "CAT past papers", note: "CAT 2026 papers appear on these sites after the exam on 29 Nov 2026. Add them to your real-paper set." },
   { id: "hard", tab: "practice", n: "Harder practice", note: "For the Apply phase from June 2027, once CAT-level RCs feel manageable. XAT verbal is denser than CAT, and LSAT RC is the hardest standard RC there is." },
   { id: "mocks", tab: "practice", n: "Mock tests", note: "You need these from August 2027. Before that, timed past papers do the same job. Pick one series with a large test pool." },
@@ -61,10 +70,28 @@ r("b-arun-pyq", "books", "Chapter-Wise Solved Previous Years' Papers for CAT", a
 r("b-ajay", "books", "Verbal Ability and Reading Comprehension", amz("Verbal Ability and Reading Comprehension for CAT Ajay Singh"), "Book. Ajay Singh", "Extra VA practice at intermediate level.", "opt", { find: 1 });
 r("b-wren", "books", "High School English Grammar and Composition", amz("High School English Grammar and Composition Wren Martin"), "Book. Wren and Martin", "A grammar reference if long sentences trip you up. CAT does not test grammar directly.", "opt", { find: 1 });
 
-r("cr-rc", "banks", "Cracku RC questions", L.crRC, "858+ questions, video solutions", "CAT RC passages from past papers, filterable by year back to 1990.", "must");
+r("cr-rc", "b-rc", "Cracku RC questions", L.crRC, "858+ questions, video solutions", "CAT RC passages from past papers, filterable by year back to 1990.", "must");
+
+r("cr-pj160", "b-pj", "Cracku para jumbles", L.crPJ, "160+ questions, video solutions, free PDF", "Past-paper jumbles in the TITA format.", "must");
+r("2iim-pj", "b-pj", "2IIM sentence rearrangement", "https://iim-cat-questions-answers.2iim.com/verbal/sentence-rearrangement/", "49 questions, written explanations", "Free with no login. Older MCQ format, so cover the options.", "good");
+r("prep-pj", "b-pj", "Preparoo solved para jumbles", "https://mba.preparoo.app/cat/how-to-solve-parajumbles", "24 past questions, worked explanations", "CAT 2017 onwards, each solved step by step. The same page as the Learn guide.", "good");
+r("bodhee-pj", "b-pj", "Bodhee Prep para jumbles", "https://bodheeprep.com/cat-parajumbles-questions-solutions-practice", "About 30 questions, answers on the page", "TITA format with solutions.", "good");
+r("vh-pj", "b-pj", "Verbalhub para jumbles", "https://www.verbalhub.com/cat-parajumbles-practice-questions.php", "40 questions in 5 sets", "An answer and a short explanation for each.", "opt");
+
+r("cr-ps", "b-ps", "Cracku para summary questions", L.crPS, "96+ questions, written and video solutions", "Past papers from 1991 to 2025.", "must");
+r("prep-ps", "b-ps", "Preparoo solved para summaries", "https://mba.preparoo.app/cat/how-to-solve-para-summary", "23 past questions, worked explanations", "Explains the right option and why each other option is wrong.", "good");
+
+r("cr-oso", "b-oso", "Cracku odd one out questions", L.crOSO, "48+ questions, solutions", "Past papers from 2017 to 2025.", "must");
+r("prep-oso", "b-oso", "Preparoo solved odd one out", "https://mba.preparoo.app/cat/how-to-solve-odd-one-out", "20 past questions, worked explanations", "Each gives the odd sentence, the order of the other four and the reasoning.", "good");
+
+r("cr-si", "b-si", "Cracku sentence placement questions", L.crSI, "27 questions, written explanations", "CAT 2022 to 2025, all in the current gap format.", "must");
+
+r("cr-cr", "b-cr", "Cracku critical reasoning questions", L.crCR, "38+ questions, video solutions", "Assumption, strengthen and weaken practice that sharpens RC judgement.", "good");
+r("cr-xatcr", "b-cr", "Cracku XAT critical reasoning PDF", "https://cracku.in/xat-2026-critical-reasoning-questions-pdf/", "PDF", "Assumption, inference, strengthen and weaken, and conclusion questions in the XAT style.", "good");
+r("lsat-lr", "b-cr", "LSAT logical reasoning samples", "https://www.lawhub.org/prepare-for-the-lsat/whats-in-the-lsat/logical-reasoning-sample-questions", "10 official questions with explanations", "From LSAC. Free drill sets need a free LawHub account.", "good");
+r("mr-lsat", "b-cr", "Manhattan Review LSAT questions", "https://www.manhattanreview.com/lsat-practice-questions/", "92 free questions, tagged by type", "Explanations for each. Use the logical reasoning ones.", "opt");
+
 r("cr-va", "banks", "Cracku verbal ability questions", L.crVA, "300+ questions, video solutions", "Para jumbles, odd one out, summaries and sentence insertion.", "must");
-r("cr-cr", "banks", "Cracku critical reasoning questions", L.crCR, "38 questions, written solutions", "Assumption, strengthen and weaken practice that sharpens RC judgement.", "good");
-r("cr-pj", "banks", "Cracku para jumbles PDF", L.crPJ, "PDF with answers", "A concentrated para jumble set for drill days.", "good");
 r("gh-practice", "banks", "cat-varc-practice", "https://sujithsuresh-803.github.io/cat-varc-practice/", "Open-source practice site", "1,075 questions across RC, PJ, PS and odd sentence out, plus 13 real CAT papers from 2018 to 2022 with answer keys. No sign-up.", "good", { alt: { l: "GitHub", u: "https://github.com/sujithsuresh-803/cat-varc-practice" } });
 r("cr-all", "banks", "Cracku 5000+ free CAT questions", "https://cracku.in/cat-questions", "Question bank", "All sections. Useful later for DILR and Quant too.", "opt");
 
@@ -168,7 +195,7 @@ r("vocabcom", "vocab", "Vocabulary.com", "https://www.vocabulary.com", "Website"
 r("tp-sarthak", "toppers", "Sarthak Gupta, CAT 2021", "https://s4.collegedunia.com/news/e-242-cat-2021-topper-interview-of-sarthak-gupta", "Interview", "100 percentile in VARC with an Excel log of every question.", "good");
 r("tp-vallabha", "toppers", "Sri Vallabha, CAT 2025", "https://bschool.careers360.com/articles/cat-2025-topper-interview-tirupatis-iitian-sri-vallabhas-journey-to-99-94-percentile", "Interview", "Fixed VARC in one cycle, from about 80 to 96.96.", "good");
 r("tp-sujay", "toppers", "Sujay Srivastava, CAT 2024", "https://bschool.careers360.com/articles/from-startup-hustle-to-cat-2024-topper-sujay-srivastavas-99-94-percentile-journey", "Interview", "From 83 in CAT 2022 to 99.74 in VARC, while working.", "good");
-r("tp-vitrag", "toppers", "Vitrag Kothari, CAT 2024", "https://bschool.careers360.com/articles/vitrag-kothari-cat-2024-varc-topper-cat-2025-tips", "Interview", "Practised at his slot time and focused on elimination.", "good");
+r("tp-vitrag", "toppers", "Vitrag Kothari, CAT 2024", "https://bschool.careers360.com/articles/vitrag-kothari-cat-2024-varc-topper-cat-2025-tips", "Interview", "Practiced at his slot time and focused on elimination.", "good");
 r("tp-insideiim", "toppers", "How to crack VARC, tips by a CAT topper", "https://insideiim.com/how-to-crack-varc-cat-tips-by-cat-topper", "Article", "VARC tips from a topper.", "good");
 r("tp-mbau", "toppers", "MBAUniverse CAT toppers", "https://www.mbauniverse.com/cat/topper", "Interviews", "50 topper strategies with a VARC table.", "good");
 r("tp-iquanta25", "toppers", "iQuanta CAT 2025 analysis", "https://www.iquanta.in/blog/?p=81036", "Slot analysis", "RC topics and VA mix for all three 2025 slots.", "good");

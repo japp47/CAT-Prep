@@ -5,25 +5,31 @@ export function daysLeft(today = todayIso()) {
   return diffDays(today, EXAM_ISO);
 }
 
-export function Timeline() {
+/** The year as five phases, with a marker on today. */
+export function PhaseBar() {
   const t = todayIso();
-  const total = diffDays(PHASES[0].start, PHASES[PHASES.length - 1].end) + 1;
+  const first = PHASES[0].start, last = PHASES[PHASES.length - 1].end;
+  const total = diffDays(first, last) + 1;
+  const at = clamp((diffDays(first, t) + 0.5) / total, 0, 1) * 100;
+  const ph = phaseOf(t);
+  const cur = ph.kind === "phase" ? ph.phase.id : ph.kind === "pre" ? 0 : PHASES.length + 1;
   return (
-    <>
-      <div className="tl" aria-hidden="true">
+    <div className="pbar-y" aria-hidden="true">
+      <div className="pbar-track">
         {PHASES.map((p) => {
           const len = diffDays(p.start, p.end) + 1;
           const f = clamp((diffDays(p.start, t) + 1) / len, 0, 1) * 100;
-          return <div key={p.id} className="s" style={{ flex: len }}><i style={{ width: f.toFixed(1) + "%" }} /></div>;
+          return <div key={p.id} className={"pbar-seg" + (p.id === cur ? " cur" : "")} style={{ flex: len }}><i style={{ width: f.toFixed(1) + "%" }} /></div>;
         })}
+        {cur > 0 && cur <= PHASES.length && <span className="pbar-dot" style={{ left: at.toFixed(2) + "%" }} />}
       </div>
-      <div className="tl-lab" aria-hidden="true">
+      <div className="pbar-lab">
         {PHASES.map((p) => {
           const len = diffDays(p.start, p.end) + 1;
-          return <span key={p.id} style={{ flex: len }}>{len / total > 0.08 ? p.name : ""}</span>;
+          return <span key={p.id} className={p.id === cur ? "cur" : ""} style={{ flex: len }}>{len / total > 0.08 ? p.name : ""}</span>;
         })}
       </div>
-    </>
+    </div>
   );
 }
 
@@ -33,16 +39,6 @@ export function phaseCaption(goal?: string) {
   if (ph.kind === "exam") return "Exam day. All the best.";
   if (ph.kind === "after") return EXAM_NAME + " is over. Check results on iimcat.ac.in.";
   return "Phase " + ph.phase.id + " of " + PHASES.length + ", " + ph.phase.name + ". Runs to " + mediumDate(ph.phase.end) + "." + (goal ? " " + goal : "");
-}
-
-export function CountdownNumber() {
-  const left = daysLeft();
-  return (
-    <div className="count">
-      <span className="bignum">{Math.max(left, 0)}</span>
-      <span className="unit">{left > 1 ? "days to " + EXAM_NAME : left === 1 ? "day to " + EXAM_NAME : left === 0 ? EXAM_NAME + " is today" : EXAM_NAME + " is done"}</span>
-    </div>
-  );
 }
 
 export const examLine = (confirmed: boolean) => (confirmed ? "" : "Expected ") + longDate(EXAM_ISO) + (confirmed ? "" : " · Not announced yet");

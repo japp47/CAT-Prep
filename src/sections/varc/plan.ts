@@ -54,7 +54,7 @@ function analysisBlock(m: number, mm: number, pri: number, ord: number): Block {
 /** Blocks that drill from the Cracku banks also link to the same kind of practice on this site. */
 function practice(id: string, name: string, m: number, mm: number, pri: number, ord: number, ptype: string, desc: string, links: Link[]): Block {
   const here: Link[] = [];
-  if (links.some(([, u]) => u === L.crRC)) here.push(["Practise RC here", "/practice"]);
+  if (links.some(([, u]) => u === L.crRC)) here.push(["Practice RC here", "/practice"]);
   if (links.some(([, u]) => u === L.crVA)) here.push(["VA drill here", "/practice/va"]);
   return B(id, name, m, mm, pri, ord, desc, [...here, ...links], { kind: "practice", ptype });
 }
@@ -87,7 +87,7 @@ export function varcTemplate(d: string, ctx: PlanCtx): DayTemplate {
     if (!we) {
       const drills: Record<number, Block> = {
         1: practice("drill", "RC drill: main idea and tone", 30, 20, 1, 1, "RC", "Two RCs, about 8 minutes each. Before the options, write the main idea in one line.", [["Cracku RC bank", L.crRC]]),
-        2: practice("drill", "Para jumble drill", 30, 20, 1, 1, "Para jumble", "8 questions. Find the opener, lock the mandatory pairs, then build the chain.", [["Cracku VA bank", L.crVA], ["PJ PDF", L.crPJ]]),
+        2: practice("drill", "Para jumble drill", 30, 20, 1, 1, "Para jumble", "8 questions. Find the opener, lock the mandatory pairs, then build the chain.", [["Cracku VA bank", L.crVA], ["Cracku PJ bank", L.crPJ]]),
         3: practice("drill", "RC drill: inference", 30, 20, 1, 1, "RC", "Two RCs. For each correct inference, point to the line that supports it.", [["Cracku RC bank", L.crRC]]),
         4: practice("drill", "Para summary and odd sentence out", 30, 20, 1, 1, "Para summary", "5 summaries and 5 odd-sentence questions. Paraphrase first, then read the options.", [["Cracku VA bank", L.crVA]]),
         5: practice("drill", "Sentence insertion and one RC", 30, 20, 1, 1, "Sentence insertion", "5 sentence insertion questions, then one RC.", [["Cracku VA bank", L.crVA], ["Cracku RC bank", L.crRC]]),
@@ -105,7 +105,7 @@ export function varcTemplate(d: string, ctx: PlanCtx): DayTemplate {
         readBlock(d, 50, 20, 3, 3, true), errBlock(30, 10, 4, 4)];
     }
     extra = [practice("x-rc", "Extra RC set", 25, 15, 0, 5, "RC", "Two RCs, timed.", [["Cracku RC bank", L.crRC]]),
-      practice("x-pj", "Para jumble drill, 5 questions", 15, 10, 0, 6, "Para jumble", "TITA, so practise until it is automatic.", [["Cracku VA bank", L.crVA]]),
+      practice("x-pj", "Para jumble drill, 5 questions", 15, 10, 0, 6, "Para jumble", "TITA, so Practice until it is automatic.", [["Cracku VA bank", L.crVA]]),
       errBlock(15, 10, 0, 7), book(8)];
   } else if (ph === 3) {
     const aug = parseIso(d).getMonth() === 7;

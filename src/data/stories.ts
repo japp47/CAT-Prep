@@ -6,7 +6,7 @@ export const TOPPERS: Topper[] = [
   { name: "Harshit Pansari", result: "CAT 2024, 99.18", what: "About 75% of prep time on VARC. Read JSTOR Daily.", section: "VARC" },
   { name: "Srishti Yadav", result: "CAT 2022, 99.69", what: "Dropped PJ and PS when they kept costing marks and did only RCs. Her score went up.", section: "VARC" },
   { name: "Pranshav Shah", result: "CAT 2025, 99.80", what: "Newspaper habit. Eliminated three options before marking any RC answer.", section: "VARC" },
-  { name: "Vitrag Kothari", result: "CAT 2024, 99.35", what: "Practised VARC daily at his slot time. Focused on elimination.", section: "VARC", link: "https://bschool.careers360.com/articles/vitrag-kothari-cat-2024-varc-topper-cat-2025-tips" },
+  { name: "Vitrag Kothari", result: "CAT 2024, 99.35", what: "Practiced VARC daily at his slot time. Focused on elimination.", section: "VARC", link: "https://bschool.careers360.com/articles/vitrag-kothari-cat-2024-varc-topper-cat-2025-tips" },
   { name: "Harsh Khudania", result: "CAT 2025, 99.93", what: "20 mocks in the final month. Last two months for mocks and revision only.", section: "Overall" },
   { name: "Sri Vallabha", result: "CAT 2025, 99.94", what: "VARC from about 80 percentile in 2024 to 96.96 in 2025.", section: "VARC", link: "https://bschool.careers360.com/articles/cat-2025-topper-interview-tirupatis-iitian-sri-vallabhas-journey-to-99-94-percentile" },
   { name: "Sujay Srivastava", result: "CAT 2024, 99.94", what: "From 83 in CAT 2022 to 99.74 in VARC, while working at a startup.", section: "VARC", link: "https://bschool.careers360.com/articles/from-startup-hustle-to-cat-2024-topper-sujay-srivastavas-99-94-percentile-journey" },

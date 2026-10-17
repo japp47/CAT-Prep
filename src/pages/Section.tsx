@@ -1,13 +1,15 @@
 import { Link, useParams } from "react-router-dom";
 import { CategoryBlock } from "../components/Resources";
 import { Ext } from "../components/Links";
+import { TypeGuide, TypeIndex } from "../components/TypeGuide";
 import { BENCHMARKS, PASSAGE_SOURCES, TOPPERS } from "../data/stories";
-import { dow } from "../lib/date";
-import { todayIso } from "../lib/date";
+import { dow, todayIso } from "../lib/date";
 import { usePref } from "../lib/prefs";
+import { RC_CATALOG } from "../practice/catalog.gen";
 import { useStore } from "../lib/store";
 import { SECTION_BY_ID } from "../sections";
 import type { SectionDef, SectionId } from "../sections/types";
+import { TYPE_GUIDES } from "../sections/varc/guides";
 import { FORMAT, TAB_NOTES, TOPICS, VA_MIX, VTABS } from "../sections/varc/learn";
 import { ROTATION } from "../sections/varc/resources";
 import NotFound from "./NotFound";
@@ -45,7 +47,7 @@ function VaMix() {
       <h3>VA questions per slot, by year</h3>
       <div className="tbl-wrap"><table>
         <thead><tr><th>Year</th><th className="num">Para summary</th><th className="num">Sentence insertion</th><th className="num">Odd sentence out</th><th className="num">Para jumble</th><th>Note</th></tr></thead>
-        <tbody>{VA_MIX.map((r) => <tr key={r.year}><td>{r.year}</td><td className="num">{cell(r.ps)}</td><td className="num">{cell(r.si)}</td><td className="num">{cell(r.oso)}</td><td className="num">{cell(r.pj)}</td><td>{r.note ?? ""}</td></tr>)}</tbody>
+        <tbody>{VA_MIX.map((r) => <tr key={r.year}><td>{r.year}</td><td className="num">{cell(r.ps)}</td><td className="num">{cell(r.si)}</td><td className="num">{cell(r.oso)}</td><td className="num">{cell(r.pj)}</td><td className="nw">{r.note ?? ""}</td></tr>)}</tbody>
       </table></div>
       <p className="muted small">From IMS, Cracku and Careers360 slot analyses. A few slot reports differ by one question. Para summary and sentence insertion are MCQs with negative marking; para jumbles and odd sentence out are TITA.</p>
     </div>
@@ -163,12 +165,18 @@ function Live({ sec }: { sec: SectionDef }) {
               <div className="card"><h3>The section</h3><dl className="kv">{FORMAT.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl></div>
               <VaMix />
               {TOPICS.map((t) => <Topic key={t.h} t={t} />)}
+              <section className="stack" aria-labelledby="type-guides">
+                <h3 id="type-guides">A guide for each question type</h3>
+                <p className="muted">Method, common traps, a worked example to try, and three links: a written guide, a video and a free question bank.</p>
+                <TypeIndex guides={TYPE_GUIDES} />
+                {TYPE_GUIDES.map((g) => <TypeGuide key={g.id} g={g} />)}
+              </section>
             </>
           )}
           {tabValid === "practice" && (
             <div className="card stack">
-              <h3>Practise on this site</h3>
-              <p className="muted">20 original RC sets with an explanation for every option, a daily VA drill, and a reading speed test. Your scores go straight into Progress.</p>
+              <h3>Practice on this site</h3>
+              <p className="muted">{RC_CATALOG.length} original RC sets with an explanation for every option, a daily VA drill, custom drills by type, a redo queue for mistakes and a reading speed test. Your scores go straight into Progress.</p>
               <div className="row"><Link className="btn" to="/practice">Open Practice</Link><Link className="btn ghost" to="/practice/va">Today's VA drill</Link></div>
             </div>
           )}
