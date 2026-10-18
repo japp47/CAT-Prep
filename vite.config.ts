@@ -13,7 +13,8 @@ import { fileURLToPath } from "node:url";
  */
 function offline(): Plugin {
   let outDir = "dist", base = "/";
-  const skip = (f: string) => f === "sw.js" || f === "_redirects" || f.endsWith(".map");
+  // _redirects and _headers are read by Cloudflare Pages and never served, so they must not be precached.
+  const skip = (f: string) => f === "sw.js" || f === "_redirects" || f === "_headers" || f.endsWith(".map");
   const walk = (dir: string): string[] => readdirSync(dir).flatMap((n) => {
     const p = join(dir, n);
     return statSync(p).isDirectory() ? walk(p) : [p];
@@ -35,8 +36,8 @@ function offline(): Plugin {
   };
 }
 
-// VITE_BASE lets the same build run at the domain root (Vercel, Netlify, Cloudflare Pages)
-// or under a sub-path such as /CAT-Prep/ on GitHub Pages.
+// The site is served from the domain root on Cloudflare Pages. VITE_BASE is there in case
+// it ever has to run under a sub-path, such as /CAT-Prep/ on GitHub Pages.
 export default defineConfig({
   base: process.env.VITE_BASE || "/",
   plugins: [react(), tailwindcss(), offline()],

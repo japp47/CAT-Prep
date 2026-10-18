@@ -56,8 +56,9 @@ The Today page, Plan page, navigation, Progress and Error log pick it up automat
 
 ### Adding practice content
 
-- **RC set:** add an object to one of the files in `src/practice/rc/`. Build options with `o(text, why, trap)`: leave the trap off the one right answer. `npm test` checks every set (4 questions, one answer each, a trap on every wrong option, valid proof paragraphs).
-- **VA paragraph:** add to `content/va/paragraphs-2.json` (new paragraphs go in JSON; the first 50 are in `src/practice/va/paragraphs.ts`): four core sentences in order, a cue for each, an odd sentence, an insertion sentence with its gap, and four para summary options, each with `t` (text), `why` and a `trap` on every wrong one. Each paragraph becomes a para summary, a para jumble, an odd sentence out and a sentence insertion. The tests also check that the right summary is not usually the longest option, so students cannot guess by length.
+- **RC set:** add an object to the right topic file in `content/rc/`. Each option has `t` (text), `why` and a `trap` on every wrong one; `answer` is the index of the one option without a trap. `npm test` checks every set (4 questions, one answer each, a trap on every wrong option, valid proof paragraphs).
+- **Critical reasoning question:** add to `content/cr/items.json`, in the same option format, with `type`, the `stimulus`, its `conclusion` quoted exactly (null for inference and paradox) and a one-line `takeaway`.
+- **VA paragraph:** add to `content/va/paragraphs-2.json` (new paragraphs go in JSON; the first 50 are in `src/practice/va/paragraphs.ts`): four or five core sentences in order (five-sentence ones also give the jumble and odd-sentence views in `pj` and `ooo`), a cue for each, an odd sentence, an insertion sentence with its gap, and four para summary options, each with `t` (text), `why` and a `trap` on every wrong one. Each paragraph becomes a para summary, a para jumble, an odd sentence out and a sentence insertion. The tests also check that the right summary is not usually the longest option, so students cannot guess by length.
 - **Before publishing new content,** have a second person check the answer keys. Students can report problems from any question's review.
 
 After adding or changing content, run `npm run catalog`. It writes `src/practice/catalog.gen.ts` (titles, genres, word counts and dates), which the main bundle uses; the full passages load as a separate file only when a practice page opens. `npm run build` regenerates it too, and `npm test` fails if it is out of date.
@@ -68,15 +69,16 @@ Give every new RC set or VA paragraph `since: "YYYY-MM-DD"`, set to the day afte
 
 When CAT 2027 is announced, update `EXAM_ISO`, `EXAM_CONFIRMED` and, if needed, the phase dates in `src/data/exam.ts`.
 
-## Hosting for free
+## Checks and deploy
 
-All of these are free for a site like this. Each one rebuilds automatically when you push to GitHub.
+**CI.** `.github/workflows/ci.yml` runs on every pull request and every push to `main`: typecheck, tests, a production build, a check that the generated catalog is committed, and `npm run size`, which fails if the first download grows past its budget (main script 150 KB and stylesheet 20 KB gzipped, practice content 200 KB). In repo Settings → Branches, add a rule for `main` that requires the **CI / check** status, so only green code is merged.
 
-| Option | Steps | URL you get |
-| --- | --- | --- |
-| **Cloudflare Pages** (recommended) | dash.cloudflare.com → Workers & Pages → Create → Pages → Connect to Git → pick this repo. Framework preset: Vite. Build command `npm run build`, output `dist`. | `cat-prep.pages.dev` |
-| **Vercel** | vercel.com → Add New Project → import the repo. It detects Vite. `vercel.json` already handles page routes. | `cat-prep.vercel.app` |
-| **Netlify** | app.netlify.com → Add new site → Import from Git. Build `npm run build`, publish `dist`. `public/_redirects` already handles page routes. | `cat-prep.netlify.app` |
-| **GitHub Pages** | Repo Settings → Pages → Source: GitHub Actions. The workflow in `.github/workflows/deploy-pages.yml` builds and deploys on every push to `main`. | `japp47.github.io/CAT-Prep` |
+**Deploy: Cloudflare Pages.** Cloudflare builds and publishes the site itself on every push to `main`, and gives every pull request its own preview link. One-time setup:
 
-A custom domain such as `catprephub.in` costs about ₹500 to ₹900 a year from any registrar. All four hosts above connect it and provide HTTPS for free.
+1. dash.cloudflare.com → Workers & Pages → Create → Pages → Connect to Git → pick this repo.
+2. Production branch `main`. Framework preset: None. Build command `npm run build`. Output directory `dist`. Node comes from `.nvmrc` (22).
+3. Save and deploy. The site goes live at `<project>.pages.dev`.
+
+`public/_redirects` sends every page route to the app, and `public/_headers` sets the security headers (including a Content Security Policy) and caching: hashed files in `/assets/` are cached for a year, and the service worker is checked on every visit so a new version always reaches installed apps.
+
+Students' saved progress lives in their browser and belongs to the site's address. Moving to another address later means everyone has to download a backup and restore it, so pick the final address before sharing the link widely. A custom domain such as `catprephub.in` costs about ₹500 to ₹900 a year; add it in the Pages project under Custom domains, and HTTPS is free.

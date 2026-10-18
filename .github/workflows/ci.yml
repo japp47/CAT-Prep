@@ -1,0 +1,35 @@
+# Checks every pull request and every push to main: types, tests, a production build,
+# that the generated catalog is committed, and the size of the first download.
+# Cloudflare Pages builds and deploys the site on its own (README, "Deploy"); protect main
+# with this check so only green code reaches it.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Generated catalog is committed
+        run: git diff --exit-code -- src/practice/catalog.gen.ts src/practice/leads.gen.ts || (echo "::error::Run npm run catalog and commit the result." && exit 1)
+      - run: npm run size
