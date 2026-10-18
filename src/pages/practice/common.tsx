@@ -27,8 +27,8 @@ export function StreakBadge() {
   const face = (
     <>
       <Flame className={cn("size-4", s.days ? "text-warning" : "text-muted-foreground")} aria-hidden />
-      {s.days ? `${s.days}-day streak` : "No streak yet"}
-      {s.days > 0 && <span className="text-muted-foreground">, {s.shieldsLeft} shield{s.shieldsLeft === 1 ? "" : "s"}</span>}
+      {/* One span, so the badge's flex gap does not open a space before the comma. */}
+      <span>{s.days ? `${s.days}-day streak` : "No streak yet"}{s.days > 0 && <span className="text-muted-foreground">, {s.shieldsLeft} shield{s.shieldsLeft === 1 ? "" : "s"}</span>}</span>
     </>
   );
   // A tap opens the note, so it reaches phones too, not only a mouse hover.

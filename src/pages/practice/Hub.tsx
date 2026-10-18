@@ -19,10 +19,11 @@ function Rows({ children }: { children: ReactNode }) {
   return <ul className="flex flex-col gap-px overflow-hidden rounded-xl bg-background">{children}</ul>;
 }
 
-/** One way to practice: what it is on the left, its action on the right. `next` marks the one thing to do now. */
-function Row({ title, children, action, next }: { title: ReactNode; children?: ReactNode; action: ReactNode; next?: boolean }) {
+/** One way to practice: what it is on the left, its action on the right. `next` marks the one thing to do now.
+ *  On a phone the action drops below the text, except in `side` rows, whose text is short and whose action is one small button. */
+function Row({ title, children, action, next, side }: { title: ReactNode; children?: ReactNode; action: ReactNode; next?: boolean; side?: boolean }) {
   return (
-    <li className={cn("relative grid gap-x-8 gap-y-3 bg-card px-5 py-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:px-6", next && "before:absolute before:inset-y-0 before:left-0 before:w-1.5 before:bg-highlight")}>
+    <li className={cn("relative grid gap-y-3 bg-card px-5 py-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-x-8 sm:px-6", side && "grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4", next && "before:absolute before:inset-y-0 before:left-0 before:w-1.5 before:bg-highlight")}>
       <div className="flex min-w-0 flex-col gap-1">
         <h3 className="text-heading font-semibold">{title}</h3>
         {children && <div className="measure flex flex-col gap-1 text-base text-muted-foreground">{children}</div>}
@@ -134,7 +135,7 @@ export default function PracticeHub() {
         {untried.length > 0 && (
           <Rows>
             {untried.map((s) => (
-              <Row key={s.id} title={<Link to={`/practice/rc/${s.id}`} className="hover:text-primary">{s.title}</Link>} action={<LinkButton to={`/practice/rc/${s.id}`} variant="secondary">Start</LinkButton>}>
+              <Row key={s.id} side title={<Link to={`/practice/rc/${s.id}`} className="hover:text-primary">{s.title}</Link>} action={<LinkButton to={`/practice/rc/${s.id}`} variant="secondary">Start</LinkButton>}>
                 <p>{GENRES[s.genre]}, {s.difficulty}, {s.words} words</p>
               </Row>
             ))}

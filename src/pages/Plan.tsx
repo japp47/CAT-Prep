@@ -70,7 +70,7 @@ function TimeCard({ sec }: { sec: SectionDef }) {
         <ToggleGroup type="single" value={preset} onValueChange={(v) => { const p = PRESETS.find((x) => x.label === v); if (p) update((st) => { st.settings[sec.id] = { wd: p.wd, we: p.we, dow: [null, null, null, null, null, null, null] }; }); }}
           className="grid w-full grid-cols-2 gap-2 sm:grid-cols-4" aria-label="Presets">
           {PRESETS.map((p) => (
-            <ToggleGroupItem key={p.label} value={p.label} className="h-auto min-w-0 flex-col items-start gap-0.5 rounded-lg bg-secondary px-4 py-3 text-left whitespace-normal data-[state=on]:bg-foreground data-[state=on]:text-background">
+            <ToggleGroupItem key={p.label} value={p.label} className="h-auto min-w-0 flex-col items-start gap-0.5 rounded-lg bg-secondary px-4 py-3 text-left whitespace-normal data-[state=on]:bg-card data-[state=on]:text-primary data-[state=on]:ring-1 data-[state=on]:ring-inset data-[state=on]:ring-primary/40">
               <span className="text-base font-semibold">{p.label}</span><span className="text-sm opacity-75">{p.note}</span>
             </ToggleGroupItem>
           ))}

@@ -23,10 +23,11 @@ export function PhaseBar() {
         })}
         {cur > 0 && cur <= PHASES.length && <span className="absolute top-1/2 -mt-[7px] -ml-[7px] size-3.5 rounded-full border-[3px] border-primary bg-card ring-4 ring-accent" style={{ left: at.toFixed(2) + "%" }} />}
       </div>
-      <div className="flex gap-1 text-sm text-muted-foreground">
+      {/* Names wrap rather than truncate: on a phone "Mock phase" gets two lines instead of "Mock ph…". */}
+      <div className="flex gap-1 text-sm leading-tight text-muted-foreground">
         {PHASES.map((p) => {
           const len = diffDays(p.start, p.end) + 1;
-          return <span key={p.id} className={"truncate" + (p.id === cur ? " font-semibold text-primary" : "")} style={{ flex: len }}>{len / total > 0.08 ? p.name : ""}</span>;
+          return <span key={p.id} className={"min-w-0 break-words" + (p.id === cur ? " font-semibold text-primary" : "")} style={{ flex: len }}>{len / total > 0.08 ? p.name : ""}</span>;
         })}
       </div>
     </div>

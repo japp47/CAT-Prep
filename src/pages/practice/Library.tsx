@@ -15,6 +15,10 @@ import { GENRES, type Genre, type RcMeta } from "../../practice/types";
 
 interface Best { best: number; last: RcAttempt }
 
+const counts = RC_CATALOG.map((s) => s.questions);
+const lo = Math.min(...counts), hi = Math.max(...counts);
+const qRange = lo === hi ? String(lo) : lo + " or " + hi;
+
 /** Each tried set's best score and latest attempt, worked out once for the whole list. */
 function useBest(): Map<string, Best> {
   const { state } = useStore();
@@ -30,15 +34,17 @@ function useBest(): Map<string, Best> {
 
 function Row({ set, label, best }: { set: RcMeta; label?: string; best?: Best }) {
   return (
-    <li className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-md px-4 py-3 hover:bg-muted/60">
+    // A grid, not flex-wrap: a two-line title must not push the button under it. On a phone a tried set stacks its two buttons on the right.
+    <li className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 rounded-md px-4 py-3 hover:bg-muted/60">
       <div className="flex min-w-0 flex-col gap-0.5">
         {label && <span className="text-sm text-muted-foreground">{label}</span>}
-        <Link to={`/practice/rc/${set.id}`} className="text-base font-semibold hover:text-primary">{set.title}</Link>
+        <Link to={`/practice/rc/${set.id}`} className="text-base font-semibold text-pretty hover:text-primary">{set.title}</Link>
         <Meta>{GENRES[set.genre]}, {set.difficulty}, {set.words} words{best ? `. Best ${best.best > 0 ? "+" : ""}${best.best} of ${3 * set.questions}` : ""}</Meta>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-col-reverse items-stretch gap-1 sm:flex-row sm:items-center sm:gap-2">
         {best && <LinkButton to={`/practice/rc/${set.id}?review=${best.last.id}`} variant="ghost" size="sm">Review</LinkButton>}
-        <LinkButton to={`/practice/rc/${set.id}`} variant={best ? "secondary" : "default"} size="sm">{best ? "Retake" : "Start"}</LinkButton>
+        {/* Quiet buttons: a list of 40 filled buttons would break the one-filled-button rule. */}
+        <LinkButton to={`/practice/rc/${set.id}`} variant="secondary" size="sm">{best ? "Retake" : "Start"}</LinkButton>
       </div>
     </li>
   );
@@ -59,7 +65,7 @@ export default function Library() {
   return (
     <Page>
       <PageHeader title="RC library" back={{ to: "/practice", label: "Practice" }}>
-        {RC_CATALOG.length} original passages, four questions each, with every option explained. You have tried {tried.size}.
+        {RC_CATALOG.length} original passages, {qRange} questions each, with every option explained. You have tried {tried.size}.
       </PageHeader>
       <Tabs value={tab} onValueChange={(v) => setTab(v as "all" | "daily")} className="gap-6">
         <TabsList className="bg-secondary">

@@ -325,11 +325,14 @@ function PracticeToday({ today }: { today: string }) {
     <Section title="Practice on this site today" action={<TextLink to="/practice" className="text-base">All practice</TextLink>} description="Scores log themselves in Progress. Tick the matching timetable block when you are done.">
       <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
         {rows.map((r) => (
-          <li key={r.label} className="flex flex-col gap-2 rounded-lg bg-card p-5">
-            <Meta>{r.label}</Meta>
-            <Link to={r.to} className="text-base font-semibold hover:text-primary">{r.title}</Link>
-            {r.done && <p className="text-base text-success">Done: {r.done}</p>}
-            <div className="mt-auto pt-1"><LinkButton to={r.to} size="sm" variant={r.done ? "secondary" : "default"}>{r.go}</LinkButton></div>
+          <li key={r.label} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 rounded-lg bg-card p-5">
+            <div className="flex min-w-0 flex-col gap-1">
+              <Meta>{r.label}</Meta>
+              <Link to={r.to} className="text-base font-semibold text-pretty hover:text-primary">{r.title}</Link>
+              {r.done && <p className="text-base text-success">Done: {r.done}</p>}
+            </div>
+            {/* Quiet: the timetable above already has this screen's one filled button. */}
+            <LinkButton to={r.to} size="sm" variant="secondary">{r.go}</LinkButton>
           </li>
         ))}
       </ul>

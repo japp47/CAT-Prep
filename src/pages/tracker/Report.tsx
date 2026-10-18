@@ -25,7 +25,7 @@ function AccuracyList({ title, rows, empty }: { title: string; rows: Row[]; empt
                 <span className="leading-snug">{r.label}</span>
                 <span className="h-2.5 overflow-hidden rounded-full bg-secondary"><span className={cn("block h-full rounded-full", pct !== null && pct < 60 ? "bg-danger" : "bg-primary")} style={{ width: (pct ?? 0) + "%" }} /></span>
                 <span className="text-right leading-tight">
-                  {pct === null ? <span className="text-sm text-muted-foreground">None yet</span> : <><b className="font-semibold">{pct}%</b><span className="block text-sm text-muted-foreground">{r.attempted} Qs</span></>}
+                  {pct === null ? <span className="text-sm text-muted-foreground">None yet</span> : <><b className="font-semibold">{pct}%</b><span className="block text-sm text-muted-foreground">{r.attempted} Q{r.attempted === 1 ? "" : "s"}</span></>}
                 </span>
               </li>
             );
