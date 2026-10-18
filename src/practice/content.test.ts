@@ -12,7 +12,8 @@ describe("RC library", () => {
   });
   for (const s of RC_SETS) {
     it(`${s.id} is a well-formed CAT set`, () => {
-      expect(s.questions).toHaveLength(4);
+      // CAT asks 4 per passage; a set may add a fifth for practice (the sectional uses only the first 4)
+      expect([4, 5]).toContain(s.questions.length);
       expect(s.recall).toHaveLength(2);
       const w = setWords(s);
       expect(w).toBeGreaterThanOrEqual(320);
