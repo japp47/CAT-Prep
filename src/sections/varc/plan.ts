@@ -1,6 +1,7 @@
 import { EXAM_ISO, PHASES, phaseOf } from "../../data/exam";
 import { diffDays, dow, parseIso } from "../../lib/date";
 import type { Block, DayTemplate, Link, PlanCtx } from "../types";
+import { paperPdf } from "../../data/papers";
 import { EARLY_SRC, L, ROTATION } from "./resources";
 
 export const PRACTICE_PAPERS = ["CAT 2017 Slot 1", "CAT 2017 Slot 2", "CAT 2018 Slot 1", "CAT 2018 Slot 2", "CAT 2019 Slot 1", "CAT 2019 Slot 2",
@@ -45,8 +46,9 @@ function paperBlock(list: string[], label: string, m: number, pri: number, ord: 
   const p = nextPaper(list, ctx);
   if (!p) return B("paper", "Mock VARC section, timed", m, m, pri, ord, "You have done every paper in this set. Take a VARC sectional from your mock series instead.",
     [["Cracku mocks", L.crMock], ["CL mocks", L.clMock]], { kind: "paper", paper: "", pkind: "Sectional" });
-  return B("paper", label + ": " + p, m, m, pri, ord, "40 minutes, timed, in one sitting. Log your score when you finish.",
-    [["Cracku papers", L.crPYQ], ["CL papers", L.clPYQ]], { kind: "paper", paper: p, pkind: "Past paper" });
+  const pdf = paperPdf(p);
+  return B("paper", label + ": " + p, m, m, pri, ord, (pdf ? "Do only the VARC section of the PDF: 40 minutes" : "40 minutes") + ", timed, in one sitting. Log your score when you finish.",
+    [...(pdf ? [["Download the paper", pdf] as Link] : []), ["Cracku papers", L.crPYQ], ["CL papers", L.clPYQ]], { kind: "paper", paper: p, pkind: "Past paper" });
 }
 function analysisBlock(m: number, mm: number, pri: number, ord: number): Block {
   return B("analysis", "Analyse that paper", m, mm, pri, ord, "Go through every question, including the ones you got right. Add an error log entry for each wrong or skipped one.", [["Error log", "/errors"]]);

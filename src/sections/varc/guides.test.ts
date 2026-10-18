@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { TYPE_GUIDES } from "./guides";
+import { PAPER_PDFS, paperPdf } from "../../data/papers";
+import { PRACTICE_PAPERS } from "./plan";
 import { CATEGORIES, RESOURCES } from "./resources";
 
 describe("question type guides", () => {
@@ -21,6 +23,20 @@ describe("question type guides", () => {
     }
     if (x.items && g.id === "pj") expect([...x.answer].sort().join("")).toBe(x.items.map((_, i) => i + 1).join(""));
     if (x.items && g.id === "oso") expect(Number(x.answer)).toBeLessThanOrEqual(x.items.length);
+  });
+});
+
+describe("past paper PDFs", () => {
+  it("are unique https PDF links, named like the timetable's papers", () => {
+    expect(new Set(PAPER_PDFS.map(([n]) => n)).size).toBe(PAPER_PDFS.length);
+    PAPER_PDFS.forEach(([n, u]) => {
+      expect(n).toMatch(/^CAT (19|20)\d\d( Slot [1-3]| Paper [LR])?$/);
+      expect(u, n).toMatch(/^https:\/\/bodheeprep\.com\/wp-content\/uploads\/\d{4}\/\d\d\/[\w-]+\.pdf$/);
+    });
+  });
+  it("cover every practice paper, so the timed paper block always has a download", () => {
+    PRACTICE_PAPERS.forEach((p) => expect(paperPdf(p), p).toBeDefined());
+    expect(paperPdf("CAT 2025 Slot 1")).toBeUndefined();
   });
 });
 
