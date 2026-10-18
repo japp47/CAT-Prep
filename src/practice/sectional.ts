@@ -9,6 +9,8 @@ import { DAILY_MIX, scoreItem, VA_KIND, VA_KINDS } from "./va/build";
 /** CAT's VARC section: 4 passages of 4 questions, then 8 VA questions, in 40 minutes. */
 export const SECTIONAL_SECS = 40 * 60;
 export const SECTIONAL_RC = 4;
+/** Library sets may carry a fifth question for extra practice; the sectional keeps CAT's 4 by taking the first four. */
+export const SECTIONAL_RC_QS = 4;
 export const SECTIONAL_SRC = "VARC sectional";
 /** Where a sectional in progress is kept, so a reload or a closed tab does not lose it. */
 export const DRAFT_KEY = "cat-prep-sectional";
@@ -46,7 +48,7 @@ export function buildPaper(st: AppState, seed: string): string[] {
   const paras = fresh(shuffle(VA_CATALOG, seed + ":va"), (p) => seen.va.has(p.id)).slice(0, DAILY_MIX.length);
   const va = DAILY_MIX.map((kind, i) => kind + ":" + paras[i].id);
 
-  return [...rc.flatMap((s) => Array.from({ length: s.questions }, (_, qi) => rcRedoKey(s.id, qi))), ...va];
+  return [...rc.flatMap((s) => Array.from({ length: Math.min(s.questions, SECTIONAL_RC_QS) }, (_, qi) => rcRedoKey(s.id, qi))), ...va];
 }
 
 /** One scored question. i is its position in the paper, so it still lines up with the times if a question was removed. */
