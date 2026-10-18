@@ -8,7 +8,7 @@ import { RC_CATALOG } from "../../practice/catalog.gen";
 import { dayNumber, rcOfDay } from "../../practice/daily";
 import { dueRedo } from "../../practice/redo";
 import { loadDraft } from "../../practice/sectional";
-import { GENRES } from "../../practice/types";
+import { CR_TYPE, CR_TYPES, GENRES, type CrType } from "../../practice/types";
 import { DAILY_MIX, VA_KIND, type VaKind } from "../../practice/va/build";
 import { StreakBadge } from "./common";
 
@@ -43,6 +43,7 @@ export default function PracticeHub() {
   const [hasDraft] = useState(() => !!loadDraft());
   const [kind, setKind] = useState<VaKind | "mix">("mix");
   const [count, setCount] = useState(6);
+  const [crKind, setCrKind] = useState<CrType | "mix">("mix");
   const [seed] = useState(uid);
   const tried = new Set(state.rcAttempts.map((a) => a.set));
   const untried = RC_CATALOG.filter((s) => !tried.has(s.id) && s.id !== daily.id).slice(0, 3);
@@ -99,6 +100,16 @@ export default function PracticeHub() {
               <LinkButton to={`/practice/va?type=${kind}&n=${count}&seed=${seed}`} variant="secondary">Start drill</LinkButton>
             </>}>
             <p>Practice the VA type that costs you most marks.</p>
+          </Row>
+          <Row title="Critical reasoning drill"
+            action={<>
+              <NativeSelect aria-label="Critical reasoning question type" value={crKind} onChange={(e) => setCrKind(e.target.value as CrType | "mix")} className="w-auto">
+                <option value="mix">Mixed types</option>
+                {CR_TYPES.map((t) => <option key={t} value={t}>{CR_TYPE[t].label}</option>)}
+              </NativeSelect>
+              <LinkButton to={`/practice/cr?type=${crKind}&n=6&seed=${seed}`} variant="secondary">Start drill</LinkButton>
+            </>}>
+            <p>Six short arguments, one question each: assumption, strengthen, weaken, inference, flaw and paradox. CAT does not ask them, but XAT does, and they sharpen how you judge RC options.</p>
           </Row>
           <Row title="Reading speed test" action={<LinkButton to="/practice/speed" variant="secondary">Take the test</LinkButton>}>
             <p>One timed passage, then two recall questions. CAT needs about 200 words a minute. Your best: <b className="font-semibold text-foreground">{best ? best + " wpm" : "not tested yet"}</b>.</p>

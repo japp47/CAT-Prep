@@ -2,8 +2,9 @@ import { describe, expect, it } from "vitest";
 import { blankState, normalize, type AppState } from "../lib/state";
 import { CONTENT } from "./bank";
 import { RC_SETS } from "./rc";
-import { recordRc, recordRedoAnswer, recordVa, REDO_SRC } from "./record";
-import { answerRedo, dueRedo, queueMiss, rcRedoKey, redoKeyExists, resolveRedo, seedRedo, upcomingRedo } from "./redo";
+import { CR_ITEMS } from "./cr";
+import { crError, recordCr, recordRc, recordRedoAnswer, recordVa, REDO_SRC } from "./record";
+import { answerRedo, dueRedo, queueMiss, rcRedoKey, redoKeyExists, redoPracticeType, resolveExam, resolveRedo, seedRedo, upcomingRedo } from "./redo";
 import { buildItem } from "./va/build";
 import { VA_PARAS } from "./va/paragraphs";
 
@@ -104,5 +105,48 @@ describe("saves from before the queue", () => {
     expect(saved.redoSeeded).toBe(true);
     expect(saved.redo.map((r) => r.k)).toEqual([rcRedoKey(set.id, 0)]);
     expect(blankState().redoSeeded).toBe(true);
+  });
+});
+
+describe("critical reasoning in the redo queue", () => {
+  const items = CR_ITEMS.slice(0, 3);
+  const key = (i: number) => "cr:" + items[i].id;
+  const answers = [items[0].answer, (items[1].answer + 1) % 4, null];
+
+  it("saves the attempt, logs one practice row and queues wrong and blank questions", () => {
+    const st = fresh();
+    recordCr(st, "a1", items, answers, 100, "2026-10-17");
+    expect(st.crAttempts[0].items.map((i) => i.ok)).toEqual([true, false, false]);
+    expect(st.practice).toEqual([expect.objectContaining({ t: "Critical reasoning", a: 2, c: 1, sec: "VARC" })]);
+    expect(st.redo.map((r) => r.k)).toEqual([key(1), key(2)]);
+  });
+  it("logs nothing as practice when every question is blank", () => {
+    const st = fresh();
+    recordCr(st, "a2", items, [null, null, null], 5, "2026-10-17");
+    expect(st.practice).toHaveLength(0);
+    expect(st.redo).toHaveLength(3);
+  });
+  it("finds its keys in the catalog and in the content", () => {
+    expect(redoKeyExists(key(0))).toBe(true);
+    expect(redoKeyExists("cr:nope")).toBe(false);
+    const ref = resolveRedo(key(0), CONTENT);
+    expect(ref).toMatchObject({ kind: "cr", key: key(0) });
+    expect(redoPracticeType(ref!)).toBe("Critical reasoning");
+    expect(resolveRedo("cr:nope", CONTENT)).toBeNull();
+    expect(resolveExam(key(0), CONTENT)).toBeNull();
+  });
+  it("builds the queue from old attempts and takes out a question answered right later", () => {
+    const st = fresh();
+    st.crAttempts.push({ id: "x", d: "2026-10-10", secs: 1, items: [{ k: key(0), a: 0, ok: false }, { k: key(1), a: 0, ok: false }] });
+    st.crAttempts.push({ id: "y", d: "2026-10-12", secs: 1, items: [{ k: key(1), a: items[1].answer, ok: true }] });
+    seedRedo(st, CONTENT);
+    expect(st.redo.map((r) => r.k)).toEqual([key(0)]);
+  });
+  it("pre-fills an Error log entry with the pick, its trap and the rule", () => {
+    const wrong = (items[1].answer + 1) % 4;
+    const e = crError(items[1], wrong, "2026-10-17");
+    expect(e).toMatchObject({ t: "Critical reasoning", trap: items[1].options[wrong].trap, sec: "VARC" });
+    expect(e.fix).toContain(items[1].takeaway);
+    expect(crError(items[1], null, "2026-10-17")).toMatchObject({ trap: "", why: "Left it blank." });
   });
 });

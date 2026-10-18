@@ -1,7 +1,7 @@
 import type { AppState } from "../lib/state";
 import { RC_CATALOG, VA_CATALOG } from "./catalog.gen";
 import type { Content } from "./content";
-import { queueMiss, rcRedoKey, resolveRedo, type RedoRef } from "./redo";
+import { queueMiss, rcRedoKey, resolveExam, type ExamRef } from "./redo";
 import { shuffle } from "./random";
 import type { RcMeta } from "./types";
 import { DAILY_MIX, scoreItem, VA_KIND, VA_KINDS } from "./va/build";
@@ -50,10 +50,10 @@ export function buildPaper(st: AppState, seed: string): string[] {
 }
 
 /** One scored question. i is its position in the paper, so it still lines up with the times if a question was removed. */
-export interface Scored { i: number; ref: RedoRef; ok: boolean; blank: boolean; pts: number; type: string }
+export interface Scored { i: number; ref: ExamRef; ok: boolean; blank: boolean; pts: number; type: string }
 
 /** Scores one answer. RC answers are stored as the option index ("0" to "3"). */
-export function scoreOne(ref: RedoRef, a: string, i = 0): Scored {
+export function scoreOne(ref: ExamRef, a: string, i = 0): Scored {
   if (ref.kind === "rc") {
     const blank = a === "";
     const ok = !blank && Number(a) === ref.set.questions[ref.qi].answer;
@@ -65,7 +65,7 @@ export function scoreOne(ref: RedoRef, a: string, i = 0): Scored {
 
 /** Scores every question that still exists in the library. */
 export function scorePaper(qs: string[], a: string[], c: Content): Scored[] {
-  return qs.flatMap((k, i) => { const ref = resolveRedo(k, c); return ref ? [scoreOne(ref, a[i] ?? "", i)] : []; });
+  return qs.flatMap((k, i) => { const ref = resolveExam(k, c); return ref ? [scoreOne(ref, a[i] ?? "", i)] : []; });
 }
 
 export const marksOf = (rows: Scored[]) => rows.reduce((s, r) => s + r.pts, 0);

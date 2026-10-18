@@ -1,0 +1,935 @@
+[
+  {
+    "id": "soc-algorithms",
+    "title": "The myth of the neutral algorithm",
+    "genre": "society",
+    "difficulty": "medium",
+    "paras": [
+      "When a bank uses software to decide who gets a loan, or a city uses it to decide where to send police, the decision is often defended as objective. A machine, the argument goes, has no prejudices. It applies the same rules to everyone, unlike a human officer who may be tired, hurried or biased. This defence contains a truth and hides a confusion.",
+      "The truth is that consistency is valuable. Human judges, interviewers and loan officers are notoriously inconsistent; the same application can receive different decisions depending on the time of day or the order in which it was read. A rule applied the same way every time removes that noise. The confusion lies in treating consistency as if it were fairness. A rule can be applied with perfect consistency and still be unfair, if the rule itself was badly made.",
+      "Many modern systems are not given rules at all but learn them from past data. A model trained on a decade of a firm's hiring decisions will learn to predict whom the firm hired, which is not the same as learning whom the firm should have hired. If past decisions favoured candidates from certain universities or neighbourhoods, the model will reproduce the pattern, and may do so even if it is never told a candidate's background, because other details stand in for it. A postcode can carry information about income and ethnicity; a gap in employment can carry information about childcare.",
+      "Making such systems fairer is not simply a matter of removing bias, because fairness itself has competing definitions. One might require that a lending model approve the same proportion of applicants from each group, or that it be equally accurate for each group, or that applicants with the same score have the same chance of repaying. Researchers have shown that, except in unusual circumstances, these conditions cannot all be met at once. Choosing among them is a question of values, not of mathematics.",
+      "The useful lesson is not that algorithms should be abandoned; human judgment has the same problems, only less visibly. It is that every automated decision embodies choices made by people, about what data to use, what to predict and what counts as success. Calling the result neutral does not remove those choices. It only hides them from the people they affect."
+    ],
+    "questions": [
+      {
+        "type": "main",
+        "stem": "Which of the following best summarises the passage?",
+        "proof": [
+          1,
+          4
+        ],
+        "options": [
+          {
+            "t": "Algorithms should replace human decision-makers because they are free of prejudice.",
+            "why": "The passage calls this defence a confusion.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Algorithms are more biased than human judges and should be abandoned.",
+            "why": "Paragraph 5: 'not that algorithms should be abandoned'.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Automated decisions can be more consistent than human ones, but they are not neutral, because they embody human choices about data and fairness.",
+            "why": "This keeps both halves: the truth about consistency (paragraph 2) and the hidden choices (paragraphs 3 to 5)."
+          },
+          {
+            "t": "Hiring models trained on past data always make accurate predictions.",
+            "why": "Accuracy is not the issue raised, and 'always' is unsupported.",
+            "trap": "Extreme wording"
+          }
+        ],
+        "answer": 2
+      },
+      {
+        "type": "inference",
+        "stem": "According to the passage, a model may reproduce bias even when it is not told a candidate's background because:",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "other information in the data, such as a postcode, can act as a substitute for background",
+            "why": "Paragraph 3: 'other details stand in for it'."
+          },
+          {
+            "t": "its programmers instruct it to favour certain universities",
+            "why": "The bias comes from past decisions, not instructions.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "human reviewers change its decisions afterwards",
+            "why": "No human review stage is described.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "it cannot learn anything from past data",
+            "why": "It learns past patterns all too well.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 0
+      },
+      {
+        "type": "detail",
+        "stem": "The fourth paragraph suggests that choosing a definition of fairness:",
+        "proof": [
+          3
+        ],
+        "options": [
+          {
+            "t": "is a technical problem that researchers have now solved",
+            "why": "Researchers showed the definitions conflict; nothing was solved.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "is unnecessary if a model is accurate",
+            "why": "Equal accuracy is only one of the competing definitions.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "means approving the same proportion of applicants from each group",
+            "why": "That is one definition among three.",
+            "trap": "Too narrow or too broad"
+          },
+          {
+            "t": "involves trade-offs that mathematics alone cannot settle",
+            "why": "The definitions cannot all be met, so choosing among them 'is a question of values, not of mathematics'."
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "type": "application",
+        "stem": "Which of the following would the author most likely regard as consistency mistaken for fairness?",
+        "proof": [
+          1
+        ],
+        "options": [
+          {
+            "t": "A loan officer approves similar applications differently depending on her mood.",
+            "why": "This is inconsistency, the problem the author grants that rules solve.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "A college admits students strictly by a test score known to favour those who could afford private coaching, and calls this fair because every applicant is treated alike.",
+            "why": "The rule is applied consistently, but the rule itself is unfair: the confusion described in paragraph 2."
+          },
+          {
+            "t": "A company stops using a hiring model after finding that it penalised women.",
+            "why": "This corrects a problem rather than illustrating the confusion.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "A city decides that every neighbourhood will receive the same number of police patrols.",
+            "why": "Nothing here suggests the rule was badly made.",
+            "trap": "Out of scope"
+          }
+        ],
+        "answer": 1
+      }
+    ],
+    "recall": [
+      {
+        "q": "What does consistency remove from decisions, according to the author?",
+        "options": [
+          "Bias",
+          "Noise",
+          "Fairness",
+          "Choice"
+        ],
+        "answer": 1
+      },
+      {
+        "q": "What can a gap in employment carry information about?",
+        "options": [
+          "Income",
+          "Ethnicity",
+          "Education",
+          "Childcare"
+        ],
+        "answer": 3
+      }
+    ]
+  },
+  {
+    "id": "soc-remote",
+    "title": "Work from anywhere",
+    "genre": "society",
+    "difficulty": "easy",
+    "paras": [
+      "For most of history, where you lived largely decided the work you could do. The pandemic briefly loosened that link. Millions of office workers discovered that much of their job could be done from a spare room, and some never went back. The shift has prompted predictions that remote work will spread opportunity away from expensive cities, letting a programmer in a small town earn a big-city salary while paying a small-town rent.",
+      "There is something to the prediction. Surveys in several countries show that people who can work remotely value the option highly, some saying they would accept a pay cut to keep it. Firms that allow it can recruit from a much larger pool, and workers with disabilities or caring responsibilities, for whom a daily commute was a barrier, have gained access to jobs that were previously closed to them.",
+      "But the opportunity is unevenly distributed. Remote work is possible mainly in jobs done at a desk, which tend to be better paid and to require degrees. Nurses, bus drivers, cooks and factory workers cannot do their work from home. In many countries fewer than half of all jobs can be done remotely even in principle, so a revolution in where people work affects a minority of workers, and a relatively privileged one.",
+      "There are also signs that distance has costs that do not show up at once. Junior employees learn much of their job by watching and overhearing colleagues, and some studies suggest that those working remotely receive less feedback and are promoted more slowly. Firms that have called staff back to the office often cite collaboration and training, though critics suspect that a desire for control plays a part as well.",
+      "The likely outcome is neither the death of the office nor a return to the old routine but a mixture, with many workers spending part of the week at home. Whether that mixture spreads opportunity or concentrates it will depend less on technology than on choices about who gets to work flexibly, how new staff are trained and whether small towns have the broadband and services that remote workers need."
+    ],
+    "questions": [
+      {
+        "type": "main",
+        "stem": "Which of the following best states the main idea of the passage?",
+        "proof": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "options": [
+          {
+            "t": "Remote work will end the need for offices.",
+            "why": "Paragraph 5 rejects 'the death of the office'.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "Remote work mainly benefits nurses and factory workers.",
+            "why": "These are named as workers who cannot work from home.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Firms call staff back to offices only because they want control.",
+            "why": "Firms cite collaboration and training; control is only what critics suspect.",
+            "trap": "Half right, half wrong"
+          },
+          {
+            "t": "Remote work brings real benefits, but they are unevenly shared and carry hidden costs, so its effect on opportunity is uncertain.",
+            "why": "Paragraph 2 gives the benefits, paragraphs 3 and 4 the limits and costs, and paragraph 5 the open outcome."
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "type": "detail",
+        "stem": "According to the passage, which group has gained access to jobs through remote work?",
+        "proof": [
+          1
+        ],
+        "options": [
+          {
+            "t": "Workers for whom a daily commute was a barrier, such as some people with disabilities",
+            "why": "Stated in paragraph 2."
+          },
+          {
+            "t": "Bus drivers and cooks",
+            "why": "They cannot work from home.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Workers without degrees in rural areas",
+            "why": "Remote jobs tend to require degrees.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Junior employees hoping for faster promotion",
+            "why": "Remote junior staff may be promoted more slowly.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 0
+      },
+      {
+        "type": "inference",
+        "stem": "The author regards the prediction in the first paragraph as:",
+        "proof": [
+          1,
+          2
+        ],
+        "options": [
+          {
+            "t": "entirely mistaken",
+            "why": "Paragraph 2 begins 'There is something to the prediction'.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "proven by surveys",
+            "why": "Surveys show workers value remote work, not that opportunity has spread.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "partly justified but overstated",
+            "why": "The author grants real gains (paragraph 2) and then limits them (paragraphs 3 and 4)."
+          },
+          {
+            "t": "irrelevant to small towns",
+            "why": "Small towns are central to both the prediction and the conclusion.",
+            "trap": "Out of scope"
+          }
+        ],
+        "answer": 2
+      },
+      {
+        "type": "structure",
+        "stem": "The fourth paragraph serves to:",
+        "proof": [
+          3
+        ],
+        "options": [
+          {
+            "t": "explain why most jobs cannot be done remotely",
+            "why": "That is paragraph 3.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "argue that firms should ban remote work",
+            "why": "No such recommendation is made.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "show that remote workers are paid less",
+            "why": "Pay levels are not discussed there.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "point out drawbacks of remote work that are less obvious",
+            "why": "It describes 'costs that do not show up at once': less feedback and slower promotion."
+          }
+        ],
+        "answer": 3
+      }
+    ],
+    "recall": [
+      {
+        "q": "In many countries, what share of jobs can be done remotely even in principle?",
+        "options": [
+          "Nearly all",
+          "About three quarters",
+          "Fewer than half",
+          "Fewer than a tenth"
+        ],
+        "answer": 2
+      },
+      {
+        "q": "What do some studies suggest about junior employees working remotely?",
+        "options": [
+          "They are paid more",
+          "They receive less feedback and are promoted more slowly",
+          "They change jobs more often",
+          "They work longer hours"
+        ],
+        "answer": 1
+      }
+    ]
+  },
+  {
+    "id": "soc-repair",
+    "title": "Why we stopped repairing things",
+    "genre": "society",
+    "difficulty": "medium",
+    "paras": [
+      "A generation ago a broken radio went to a repair shop. Today a broken phone, kettle or printer is more often thrown away. The change is familiar to anyone over forty, and it is often lamented. It is tempting to explain this by a decline in values, a culture that prefers novelty to care. The economics of repair offers a less moralising account.",
+      "Manufactured goods have become cheap because factories are efficient, while repair has stayed expensive because it is labour. A technician's hour cannot be automated the way a production line can, so as wages rise relative to the price of goods, mending an object costs more relative to replacing it. Economists see the same pattern in many services, from haircuts to live music, where productivity grows slowly and costs therefore rise. A repair bill that was once a fraction of the price of a new appliance can now exceed it.",
+      "Design has added to the problem. Components that were once screwed together are now glued; batteries are sealed in; parts are made specially for each model and sold only to authorised technicians, if at all. Even a simple job such as replacing a cracked screen may need special tools that the public cannot buy. Some manufacturers argue that these choices make devices thinner, more waterproof and safer. Critics reply that they also make independent repair impossible and steer customers back to the manufacturer or the shop.",
+      "The 'right to repair' movement aims to change this. In several places laws now require manufacturers to make spare parts and repair manuals available for a number of years, and some require that batteries be replaceable by users. Supporters point to the environmental cost of waste, especially electronic waste, which contains both valuable metals and toxic substances, and to the local jobs that a repair trade supports.",
+      "Laws alone are unlikely to bring back the corner repair shop if a new kettle remains cheaper than an hour of a technician's time. Their more realistic aim is to stop design from making repair harder than the economics already does, and to give people a choice. A culture of repair, if it returns, will be built on that choice rather than on nostalgia."
+    ],
+    "questions": [
+      {
+        "type": "main",
+        "stem": "Which of the following best states the main idea of the passage?",
+        "proof": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "options": [
+          {
+            "t": "People throw things away because they now value novelty more than care.",
+            "why": "The author sets this explanation aside in favour of economics.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Right-to-repair laws will bring back the corner repair shop.",
+            "why": "Paragraph 5 says laws alone are unlikely to do this.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "Electronic waste contains valuable metals and toxic substances.",
+            "why": "A detail from paragraph 4, not the main idea.",
+            "trap": "Too narrow or too broad"
+          },
+          {
+            "t": "The decline of repair is better explained by economics and product design than by changing values, and laws can widen people's ability to repair.",
+            "why": "Paragraph 1 rejects the values account, paragraphs 2 and 3 give economics and design, and paragraphs 4 and 5 the role of law."
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "type": "inference",
+        "stem": "The comparison with haircuts and live music suggests that:",
+        "proof": [
+          1
+        ],
+        "options": [
+          {
+            "t": "haircuts and live music are becoming less popular",
+            "why": "Their popularity is not discussed.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "services that depend on human labour tend to grow more expensive relative to manufactured goods",
+            "why": "Like repair, they are labour whose productivity grows slowly, so their relative cost rises."
+          },
+          {
+            "t": "repair technicians are paid more than barbers",
+            "why": "No pay comparison is made.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "the price of manufactured goods rises along with wages",
+            "why": "Manufactured goods have become cheaper.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 1
+      },
+      {
+        "type": "except",
+        "stem": "Which of the following is NOT given in the passage as a design choice that makes repair harder?",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "Gluing components together",
+            "why": "Named in paragraph 3.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "Sealing batteries inside devices",
+            "why": "Named in paragraph 3.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "Selling parts only to authorised technicians",
+            "why": "Named in paragraph 3.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "Using fewer, standard parts across many models",
+            "why": "The passage describes the opposite: parts made specially for each model."
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "type": "tone",
+        "stem": "The author's view of the right-to-repair movement is best described as:",
+        "proof": [
+          4
+        ],
+        "options": [
+          {
+            "t": "supportive, but realistic about what laws can achieve",
+            "why": "Paragraph 5 sees a 'more realistic aim' for the laws: stopping design from making repair harder and giving people a choice."
+          },
+          {
+            "t": "dismissive, since economics makes repair pointless",
+            "why": "The author sees value in giving people a choice.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "nostalgic for the repair shops of the past",
+            "why": "The author says a repair culture must be built 'on that choice rather than on nostalgia'.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "unreservedly enthusiastic about its prospects",
+            "why": "The author doubts laws can revive the corner shop.",
+            "trap": "Extreme wording"
+          }
+        ],
+        "answer": 0
+      }
+    ],
+    "recall": [
+      {
+        "q": "Why has repair stayed expensive, according to the passage?",
+        "options": [
+          "It is labour that cannot be automated",
+          "Spare parts are scarce",
+          "Repair shops are taxed heavily",
+          "Customers demand guarantees"
+        ],
+        "answer": 0
+      },
+      {
+        "q": "What do some laws require of batteries?",
+        "options": [
+          "That they last ten years",
+          "That users can replace them",
+          "That they be recycled by the shop",
+          "That they be made locally"
+        ],
+        "answer": 1
+      }
+    ]
+  },
+  {
+    "id": "soc-cash",
+    "title": "Just give them money?",
+    "genre": "society",
+    "difficulty": "easy",
+    "paras": [
+      "For much of the history of aid, the idea of simply handing money to poor people was treated with suspicion. Donors worried that cash would be spent on alcohol or tobacco, or that it would make people less willing to work. Behind these worries lay an assumption, rarely stated, that poverty reflects poor judgement as much as a lack of money. Aid therefore usually arrived in kind, as food, livestock, training or buildings chosen by outsiders who believed they knew what the poor needed.",
+      "Over the past two decades, a series of careful studies has tested these worries, helped by mobile-phone payments that made it cheap to send money even to remote villages. In programmes in Kenya, Mexico, Malawi and elsewhere, researchers compared households that received cash with similar households that did not, often choosing recipients by lottery so that the two groups differed only in the transfer. Spending on alcohol and tobacco did not rise, and in several studies it fell. Recipients bought livestock, repaired roofs, paid school fees and started small businesses, and there was little sign that they stopped working.",
+      "These results have made cash a benchmark. Some aid organisations now ask of every programme whether it does more good than simply giving its budget to the people it is meant to help. That is a demanding test, and few traditional programmes had ever been asked to pass it. A training scheme that costs as much per person as a year's income, for example, must show that it raises earnings by more than the money itself would have done.",
+      "Cash is not a cure-all. It cannot build a road, staff a clinic or stop an epidemic, and its benefits depend on there being things to buy; in a remote village with a single shop, a sudden flow of money may simply push up prices. Nor can it fix problems that are not about money at all, such as discrimination or insecurity. Some studies also found that early gains faded after a few years. But the evidence has shifted the burden of proof. Programmes that decide on behalf of the poor what they should have now need to explain why the poor could not have chosen better themselves."
+    ],
+    "questions": [
+      {
+        "type": "main",
+        "stem": "Which of the following best states the main point of the passage?",
+        "proof": [
+          1,
+          2,
+          3
+        ],
+        "options": [
+          {
+            "t": "Aid in kind is always wasteful and should be abolished.",
+            "why": "The author lists things only non-cash aid can do.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "Evidence that cash is well spent has made it a benchmark for aid, though it cannot replace every other kind of help.",
+            "why": "Covers the old worry, the evidence, the benchmark and the limits."
+          },
+          {
+            "t": "Poor households in Kenya spend most of their money on livestock.",
+            "why": "Livestock is one of several purchases, across several countries.",
+            "trap": "Too narrow or too broad"
+          },
+          {
+            "t": "Cash transfers have ended poverty for good wherever they were tried.",
+            "why": "Some gains 'faded after a few years'.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 1
+      },
+      {
+        "type": "detail",
+        "stem": "Recipients in the studies were often chosen by lottery in order to:",
+        "proof": [
+          1
+        ],
+        "options": [
+          {
+            "t": "make sure the two groups differed only in whether they received cash",
+            "why": "Paragraph 2 says this is why lotteries were used."
+          },
+          {
+            "t": "give the money to the poorest households first",
+            "why": "A lottery does not pick the poorest.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "reduce the cost of the programmes",
+            "why": "Cost is not mentioned as a reason.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "stop recipients from spending on alcohol",
+            "why": "A lottery decides who receives cash, not how it is spent.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 0
+      },
+      {
+        "type": "application",
+        "stem": "Which programme would pass the 'demanding test' described in the third paragraph?",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "A scheme costing a year's income per person that raises earnings by less than that amount",
+            "why": "It does less good than handing over its budget, so it fails the test.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "A programme that buys livestock for every household, whether they want it or not",
+            "why": "The test compares results with cash; this describes deciding for people.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "A clinic in a remote village",
+            "why": "Cash cannot staff a clinic, but the passage does not apply the test to one.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "A training course that raises earnings by more than its cost per person would have done if paid as cash",
+            "why": "This is exactly the comparison the test demands."
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "type": "inference",
+        "stem": "The final sentence of the passage implies that:",
+        "proof": [
+          3
+        ],
+        "options": [
+          {
+            "t": "the poor always make better choices than aid agencies",
+            "why": "The sentence shifts the burden of proof; it does not say 'always'.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "aid in kind has been proved harmful",
+            "why": "It has to justify itself, not that it is harmful.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "programmes that give goods or services must now justify themselves against letting people choose",
+            "why": "They 'now need to explain why the poor could not have chosen better themselves'."
+          },
+          {
+            "t": "donors should stop funding research on aid",
+            "why": "The passage relies on such research.",
+            "trap": "Out of scope"
+          }
+        ],
+        "answer": 2
+      }
+    ],
+    "recall": [
+      {
+        "q": "What did donors worry cash would be spent on?",
+        "options": [
+          "Alcohol and tobacco",
+          "School fees",
+          "Livestock",
+          "Roof repairs"
+        ],
+        "answer": 0
+      },
+      {
+        "q": "Which of these does the passage say cash cannot do?",
+        "options": [
+          "Pay school fees",
+          "Build a road",
+          "Buy livestock",
+          "Start a business"
+        ],
+        "answer": 1
+      }
+    ]
+  },
+  {
+    "id": "soc-streets",
+    "title": "Eyes on the street",
+    "genre": "society",
+    "difficulty": "medium",
+    "since": "2026-10-18",
+    "paras": [
+      "In 1961 the writer and activist Jane Jacobs published a book that attacked the planners then rebuilding American cities. Their ideal was order: homes in one zone, offices in another, shops in a third, with wide roads and open lawns between towers. Many of the neighbourhoods Jacobs defended were labelled slums and marked for clearance. Jacobs, who lived on a busy street in Greenwich Village, argued that the planners' tidy vision destroyed the very things that made cities work.",
+      "Her central observation was about safety. A street feels safe, she wrote, not because of police patrols or walls but because people are using it at all hours and watching it, often without meaning to. Shopkeepers, residents at their windows, people heading to work or out for the evening: these 'eyes on the street' notice trouble and, by being there, discourage it. A street with a mix of homes, shops, workplaces and bars has people on it from morning to night; a street of offices alone is busy at noon and empty, and so more threatening, after dark.",
+      "Many of her ideas have since become orthodox. Planners now speak of mixed use and short blocks, and cities from Copenhagen to Bogotá have narrowed roads to give space back to walking. Some research supports her intuition about watchfulness, finding that busy, mixed streets have fewer street robberies. Yet the evidence is not simple: a crowd can shelter pickpockets as well as deter muggers, and the same busy bar that keeps a street lively at night may also be the source of its fights.",
+      "A sharper criticism concerns who benefits. The lively neighbourhoods Jacobs admired have become some of the most expensive places to live, and the residents who once supplied the 'eyes' have often been priced out. Jacobs saw a diversity of people and uses as a city's strength, but she offered few tools for protecting it once a neighbourhood became fashionable. Her defenders reply that a book written to stop bulldozers cannot be blamed for a housing market it did not foresee. Both sides agree on one thing: a street is not just a channel for traffic but a place where people keep an eye on each other."
+    ],
+    "questions": [
+      {
+        "type": "main",
+        "stem": "Which of the following best captures the main point of the passage?",
+        "proof": [
+          1,
+          2,
+          3
+        ],
+        "options": [
+          {
+            "t": "Cities should separate homes, offices and shops into their own zones.",
+            "why": "That is the planners' ideal Jacobs attacked.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Police patrols are the main reason streets feel safe.",
+            "why": "Jacobs says safety comes from people using and watching the street, not patrols.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Jane Jacobs single-handedly stopped the rebuilding of American cities.",
+            "why": "Nothing claims she stopped it alone.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "Jacobs's idea that busy, mixed streets keep people safe has been influential, though the evidence is mixed and such neighbourhoods face new problems.",
+            "why": "Covers the idea, its influence, the mixed evidence and the criticism about cost."
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "type": "inference",
+        "stem": "By Jacobs's reasoning, a street lined only with offices would be:",
+        "proof": [
+          1
+        ],
+        "options": [
+          {
+            "t": "safer at night, since fewer people are about to cause trouble",
+            "why": "She argues the opposite: emptiness makes a street threatening.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "busy at all hours",
+            "why": "It is 'busy at noon and empty' after dark.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "less safe after dark, because no one is there to watch it",
+            "why": "Paragraph 2 says such a street is 'more threatening, after dark'."
+          },
+          {
+            "t": "the ideal design for a modern city",
+            "why": "This is the planners' view, not hers.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 2
+      },
+      {
+        "type": "except",
+        "stem": "The passage mentions all of the following as complications for Jacobs's ideas EXCEPT:",
+        "proof": [
+          2,
+          3
+        ],
+        "options": [
+          {
+            "t": "crowds can shelter pickpockets",
+            "why": "Named in paragraph 3.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "short blocks make streets harder to police",
+            "why": "Short blocks are mentioned only as an idea planners adopted, not as a problem."
+          },
+          {
+            "t": "a busy bar may also be the source of fights",
+            "why": "Named in paragraph 3.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "lively neighbourhoods become expensive and push residents out",
+            "why": "Named in paragraph 4.",
+            "trap": "True but not the answer"
+          }
+        ],
+        "answer": 1
+      },
+      {
+        "type": "tone",
+        "stem": "The author's attitude towards Jacobs is best described as:",
+        "proof": [
+          2,
+          3
+        ],
+        "options": [
+          {
+            "t": "appreciative, but aware of the limits of her ideas",
+            "why": "The author credits her influence while reporting mixed evidence and fair criticism."
+          },
+          {
+            "t": "dismissive of her as an amateur",
+            "why": "Her ideas are said to have become orthodox.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "uncritical admiration",
+            "why": "The author gives space to criticisms.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "indifferent, since her ideas are now outdated",
+            "why": "The closing sentence affirms her central point.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 0
+      }
+    ],
+    "recall": [
+      {
+        "q": "In which year did Jacobs publish her book?",
+        "options": [
+          "1951",
+          "1961",
+          "1971",
+          "1981"
+        ],
+        "answer": 1
+      },
+      {
+        "q": "What phrase does the passage use for people who watch a street?",
+        "options": [
+          "Eyes on the street",
+          "Neighbourhood watch",
+          "Street guardians",
+          "Public eyes"
+        ],
+        "answer": 0
+      }
+    ]
+  },
+  {
+    "id": "soc-corrections",
+    "title": "Do corrections backfire?",
+    "genre": "society",
+    "difficulty": "hard",
+    "since": "2026-10-18",
+    "paras": [
+      "In 2010 two political scientists reported a troubling result. When people who held a false belief were shown a correction, some of them held the belief more firmly than before. The finding, soon called the backfire effect, seemed to explain a great deal about politics and the internet: facts, it appeared, could not only fail to persuade but actively entrench error. Journalists and fact-checkers began to wonder whether their work was doing more harm than good.",
+      "Later research was more reassuring. Large studies across many topics, including some by the original authors, found that the backfire effect was rare and hard to reproduce. One widely cited study, testing dozens of claims on thousands of participants, found almost no instances of it. In most cases, people shown a correction moved, at least somewhat, towards the accurate view, even when the correction cut against their political loyalties. The earlier result may have reflected particular questions, small samples, or the noise that appears when many effects are tested and only the striking ones are reported.",
+      "That corrections work does not mean they work well. Their effects are often modest and fade within weeks, while the original falsehood, repeated often enough, can feel familiar and therefore true. People may also accept a correction of a specific claim while keeping the broader attitude it supported, much as one might concede that a particular statistic was wrong without changing one's mind about the policy it was used to defend.",
+      "Some researchers have therefore turned from correcting to 'prebunking'. Rather than chasing each false claim, they teach people in advance to recognise the techniques common to many of them, such as false dilemmas, emotional language or fake experts. Short games and videos built on this idea, sometimes compared to a vaccine that exposes people to a weakened dose of manipulation, have produced measurable improvements in people's ability to spot misleading posts. Whether such training lasts, or reaches the people most exposed to falsehoods, is still an open question. But the shift reflects a sober conclusion from the backfire debate: the problem was never that facts are useless, only that a single correction is a weak tool against a story told a thousand times."
+    ],
+    "questions": [
+      {
+        "type": "main",
+        "stem": "Which of the following best summarises the passage?",
+        "proof": [
+          1,
+          2,
+          3
+        ],
+        "options": [
+          {
+            "t": "Correcting a false belief usually makes people hold it more firmly.",
+            "why": "Later research found backfire rare.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Fact-checking is useless and should be abandoned.",
+            "why": "The author says facts are not useless.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "Corrections rarely backfire, but their modest, fading effects have led researchers to teach people to spot manipulation in advance.",
+            "why": "Covers the reassuring research, its limits and the turn to prebunking."
+          },
+          {
+            "t": "The political scientists invented the backfire effect.",
+            "why": "Their result is said to be hard to reproduce, not invented.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 2
+      },
+      {
+        "type": "strengthen",
+        "stem": "Which finding would most support the explanation offered at the end of the second paragraph for the 2010 result?",
+        "proof": [
+          1
+        ],
+        "options": [
+          {
+            "t": "In the large studies, corrections moved people towards accuracy.",
+            "why": "This shows backfire is rare but does not explain why the first study found it.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "Repeating the 2010 study with much larger samples and the same questions produced no backfire.",
+            "why": "It points to small samples, which is one of the explanations offered."
+          },
+          {
+            "t": "People forget corrections within a few weeks.",
+            "why": "This is about the limits of corrections, not the 2010 result.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "Prebunking games improve people's ability to spot misleading posts.",
+            "why": "It concerns a different approach altogether.",
+            "trap": "Out of scope"
+          }
+        ],
+        "answer": 1
+      },
+      {
+        "type": "inference",
+        "stem": "The example of conceding a statistic while keeping a view on policy illustrates that:",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "people never change their minds",
+            "why": "They do change their minds on the specific claim.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "statistics in political debates are usually wrong",
+            "why": "The passage makes no such claim.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "corrections always fade within weeks",
+            "why": "Fading is a separate point, and 'always' is too strong.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "a correction can succeed on its narrow point without changing the wider attitude",
+            "why": "This is exactly what the comparison describes."
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "type": "application",
+        "stem": "Which of the following is an example of prebunking as the passage describes it?",
+        "proof": [
+          3
+        ],
+        "options": [
+          {
+            "t": "A short online game that shows players how fake experts are used to make claims look credible",
+            "why": "It teaches a common technique in advance, before any particular false claim."
+          },
+          {
+            "t": "A newspaper article correcting a false statistic that a politician repeated",
+            "why": "This corrects one claim after the fact.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "A vaccination campaign run by a health ministry",
+            "why": "The vaccine is only a comparison.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "Repeating a false claim often so that people remember it",
+            "why": "That is how falsehoods spread, not how prebunking works.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 0
+      }
+    ],
+    "recall": [
+      {
+        "q": "In which year was the backfire effect first reported?",
+        "options": [
+          "2000",
+          "2010",
+          "2016",
+          "2020"
+        ],
+        "answer": 1
+      },
+      {
+        "q": "What is prebunking compared to?",
+        "options": [
+          "A vaccine",
+          "A firewall",
+          "A filter",
+          "A lie detector"
+        ],
+        "answer": 0
+      }
+    ]
+  }
+]

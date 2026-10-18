@@ -4,9 +4,9 @@ import { Bars, PaceChart } from "../../components/Chart";
 import { Empty, LinkButton, Meta, Section, Stat, TextLink } from "../../components/kit";
 import { useStore } from "../../lib/store";
 import { sectionByLabel } from "../../sections";
-import { RC_CATALOG } from "../../practice/catalog.gen";
+import { CR_CATALOG, RC_CATALOG } from "../../practice/catalog.gen";
 import { useContent } from "../../practice/content";
-import { accuracy, byPracticeType, focusLines, MIN_TOTAL, paceTrend, rcByDifficulty, rcByGenre, rcByQuestionType, topTraps, type Row } from "../../practice/report";
+import { accuracy, byPracticeType, crByKind, focusLines, MIN_TOTAL, paceTrend, rcByDifficulty, rcByGenre, rcByQuestionType, topTraps, type Row } from "../../practice/report";
 
 /** CAT has about 2,000 words of RC; reading them in 10 minutes leaves time for the questions. */
 const EXAM_PACE = 200;
@@ -60,6 +60,7 @@ export function Report({ sec }: { sec: string }) {
   const traps = topTraps(state.errors, sec);
   const genres = varc ? rcByGenre(state.rcAttempts, RC_CATALOG) : [];
   const levels = varc ? rcByDifficulty(state.rcAttempts, RC_CATALOG) : [];
+  const crKinds = varc ? crByKind(state.crAttempts, CR_CATALOG) : [];
   const pace = paceTrend(state.speedRuns);
   const lines = varc ? focusLines({ types, genres, traps, pace, examPace: EXAM_PACE }) : [];
 
@@ -92,6 +93,7 @@ export function Report({ sec }: { sec: string }) {
           {varc && <RcKinds />}
           {varc && <AccuracyList title="RC, by genre" rows={genres} empty="Answer an RC set in Practice and its genre appears here." />}
           {varc && <AccuracyList title="RC, by difficulty" rows={levels} empty="Answer an RC set in Practice and its difficulty appears here." />}
+          {varc && <AccuracyList title="Critical reasoning, by kind" rows={crKinds} empty="Answer a critical reasoning drill in Practice and its kinds of question appear here." />}
         </div>
       </Section>
 

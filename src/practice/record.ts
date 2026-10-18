@@ -1,7 +1,7 @@
 import { uid } from "../lib/date";
 import type { AppState, ErrorEntry, RcAttempt, VaAttempt } from "../lib/state";
-import { queueMiss, rcRedoKey } from "./redo";
-import { RC_QTYPE, type RcSet } from "./types";
+import { crRedoKey, queueMiss, rcRedoKey } from "./redo";
+import { CR_TYPE, RC_QTYPE, type CrItem, type RcSet } from "./types";
 import { answerLabel, scoreItem, sumAt, VA_KIND, VA_KINDS, type VaItem } from "./va/build";
 
 export const LETTERS = ["A", "B", "C", "D", "E"];
@@ -33,6 +33,18 @@ export function recordVa(st: AppState, id: string, items: VaItem[], answers: str
     const done = rows.filter((r) => r.kind === kind && !r.blank);
     if (done.length) st.practice.push({ id: id + kind, d, sec: "VARC", t: VA_KIND[kind].practice, a: done.length, c: done.filter((r) => r.ok).length, src: mode === "daily" ? "Daily VA drill" : "Custom VA drill" });
   });
+}
+
+/** The marks a critical reasoning drill is worth, one right answer to one mark. Each is an MCQ with no negative marking here, because XAT's penalty is small. */
+export const scoreCr = (item: CrItem, a: number | null) => ({ blank: a === null, ok: a === item.answer });
+
+/** Saves a critical reasoning drill and logs it as one practice set. Wrong and blank questions go into the redo queue. */
+export function recordCr(st: AppState, id: string, items: CrItem[], answers: (number | null)[], secs: number, d: string): void {
+  const rows = items.map((it, i) => { const a = answers[i] ?? null; return { k: crRedoKey(it.id), a, ok: scoreCr(it, a).ok }; });
+  st.crAttempts.push({ id, d, secs: Math.round(secs), items: rows });
+  rows.forEach((r) => { if (!r.ok) queueMiss(st, r.k, d); });
+  const done = rows.filter((r) => r.a !== null);
+  if (done.length) st.practice.push({ id: id + "cr", d, sec: "VARC", t: "Critical reasoning", a: done.length, c: done.filter((r) => r.ok).length, src: "Critical reasoning drill" });
 }
 
 /** Logs one redo-queue answer, adding it to that day's redo row for the question type. */
@@ -71,6 +83,18 @@ export function vaError(item: VaItem, typed: string, d: string): ErrorEntry {
   }
   const fix = item.kind === "pj" ? `Order ${item.answer}. ` + p.cues.join(" ") : item.kind === "oso" ? `Odd sentence: ${item.answer}. ${p.oddWhy}` : `Gap ${item.answer}. ${p.insWhy}`;
   return { id: uid(), d, sec: "VARC", t: VA_KIND[item.kind].label, trap: "", src: vaErrorSrc(item), why: typed ? `Typed ${typed}.` : "Left it blank.", fix };
+}
+
+export const crErrorSrc = (item: CrItem) => `Critical reasoning ${item.id}: ${item.topic}, ${CR_TYPE[item.type].label.toLowerCase()} (Practice)`;
+
+/** A pre-filled Error log entry for a wrong or blank critical reasoning question. */
+export function crError(item: CrItem, chosen: number | null, d: string): ErrorEntry {
+  const right = item.options[item.answer], picked = chosen == null ? null : item.options[chosen];
+  return {
+    id: uid(), d, sec: "VARC", t: "Critical reasoning", trap: picked?.trap ?? "", src: crErrorSrc(item),
+    why: picked ? `Chose ${LETTERS[chosen!]}: ${picked.t} ${picked.why}` : "Left it blank.",
+    fix: `Answer ${LETTERS[item.answer]}: ${right.t} ${right.why} ${item.takeaway}`,
+  };
 }
 
 export function fmtSecs(s: number) {

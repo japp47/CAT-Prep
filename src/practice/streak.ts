@@ -7,7 +7,7 @@ export const SHIELDS_PER_MONTH = 2;
 export function activityDays(st: AppState): Set<string> {
   const s = new Set<string>();
   Object.entries(st.days).forEach(([d, r]) => { if (r.done && Object.values(r.done).some((m) => m > 0)) s.add(d); });
-  [st.practice, st.mocks, st.errors, st.rcAttempts, st.vaAttempts, st.speedRuns, st.sectionals].forEach((list) => list.forEach((x) => x.d && s.add(x.d)));
+  [st.practice, st.mocks, st.errors, st.rcAttempts, st.vaAttempts, st.crAttempts, st.speedRuns, st.sectionals].forEach((list) => list.forEach((x) => x.d && s.add(x.d)));
   st.redo.forEach((r) => r.last && s.add(r.last));
   return s;
 }

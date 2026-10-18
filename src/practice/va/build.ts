@@ -4,7 +4,7 @@ import type { VaPara } from "../types";
 export type VaKind = "ps" | "pj" | "oso" | "si";
 export const VA_KIND: Record<VaKind, { label: string; practice: string; tita: boolean; how: string }> = {
   ps: { label: "Para summary", practice: "Para summary", tita: false, how: "Read the paragraph, then choose the option that best captures its essence." },
-  pj: { label: "Para jumble", practice: "Para jumble", tita: true, how: "The four sentences below come from one paragraph, in a jumbled order. Type the right sequence of their numbers, for example 3142." },
+  pj: { label: "Para jumble", practice: "Para jumble", tita: true, how: "The sentences below come from one paragraph, in a jumbled order. Type the right sequence of their numbers, for example 3142 for four sentences." },
   oso: { label: "Odd sentence out", practice: "Odd sentence out", tita: true, how: "Four of the five sentences below form a coherent paragraph. Type the number of the sentence that does not belong." },
   si: { label: "Sentence insertion", practice: "Sentence insertion", tita: false, how: "The sentence in the box is missing from the paragraph. Choose the gap where it fits best." },
 };
@@ -26,9 +26,11 @@ const isIdentity = (p: number[]) => p.every((v, i) => v === i);
 export function buildItem(kind: VaKind, para: VaPara): VaItem {
   const key = kind + ":" + para.id;
   if (kind === "pj") {
-    let order = shuffle([0, 1, 2, 3], key);
-    if (isIdentity(order)) order = [order[1], order[2], order[3], order[0]];
-    const answer = [0, 1, 2, 3].map((ci) => order.indexOf(ci) + 1).join("");
+    if (para.pj) return { key, kind, para, order: para.pj.show.map((n) => n - 1), gaps: [], answer: para.pj.answer };
+    const idx = para.s.map((_, i) => i);
+    let order = shuffle(idx, key);
+    if (isIdentity(order)) order = [...order.slice(1), order[0]];
+    const answer = idx.map((ci) => order.indexOf(ci) + 1).join("");
     return { key, kind, para, order, gaps: [], answer };
   }
   if (kind === "ps") {
@@ -36,13 +38,15 @@ export function buildItem(kind: VaKind, para: VaPara): VaItem {
     return { key, kind, para, order, gaps: [], answer: String(order.indexOf(para.sum.findIndex((o) => !o.trap)) + 1) };
   }
   if (kind === "oso") {
+    if (para.ooo) return { key, kind, para, order: para.ooo.show.map((n) => n - 1), gaps: [], answer: String(para.ooo.answer) };
     const order = shuffle([0, 1, 2, 3, -1], key);
     return { key, kind, para, order, gaps: [], answer: String(order.indexOf(-1) + 1) };
   }
-  const wrong = [0, 1, 2, 3, 4].filter((g) => g !== para.insAt);
-  const drop = shuffle(wrong, key)[0];
-  const gaps = [0, 1, 2, 3, 4].filter((g) => g !== drop);
-  return { key, kind, para, order: [0, 1, 2, 3], gaps, answer: String(gaps.indexOf(para.insAt) + 1) };
+  // Four gaps are offered: the right one and three others, out of the s.length + 1 places the sentence could go.
+  const places = para.s.map((_, i) => i).concat(para.s.length);
+  const wrong = shuffle(places.filter((g) => g !== para.insAt), key);
+  const gaps = places.filter((g) => g === para.insAt || !wrong.slice(0, places.length - 4).includes(g));
+  return { key, kind, para, order: para.s.map((_, i) => i), gaps, answer: String(gaps.indexOf(para.insAt) + 1) };
 }
 
 export const sentenceAt = (item: VaItem, i: number) => (item.order[i] < 0 ? item.para.odd : item.para.s[item.order[i]]);

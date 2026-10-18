@@ -115,7 +115,7 @@ export function varcTemplate(d: string, ctx: PlanCtx): DayTemplate {
         2: practice("hard", "VA set, timed", 30, 20, 1, 1, "Para jumble", "8 VA questions in 12 minutes, then review.", [["Cracku VA bank", L.crVA]]),
         3: practice("hard", "Hard RC: LSAT passage", 30, 20, 1, 1, "RC", "One LSAT RC passage. Compare your reasoning with the explanations.", [["LawHub", L.lawhub], ["LSAT samples", LSAT_SAMPLES]]),
         4: practice("hard", "VA set, timed", 30, 20, 1, 1, "Odd sentence out", "8 VA questions in 12 minutes, then review.", [["Cracku VA bank", L.crVA]]),
-        5: practice("hard", "Critical reasoning and GMAT verbal", 30, 20, 1, 1, "Critical reasoning", "10 critical reasoning questions or one GMAT RC.", [["Cracku CR", L.crCR], ["GMAT starter kit", L.gmat]]),
+        5: practice("hard", "Critical reasoning and GMAT verbal", 30, 20, 1, 1, "Critical reasoning", "10 critical reasoning questions or one GMAT RC.", [["Drill on this site", "/practice/cr?type=mix&n=10"], ["Cracku CR", L.crCR], ["GMAT starter kit", L.gmat]]),
       };
       base = [hard[g], readBlock(d, 20, 10, 2, 2), errBlock(10, 5, 3, 3)];
     } else if (g === 6) {

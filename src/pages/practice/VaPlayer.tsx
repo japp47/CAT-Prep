@@ -221,10 +221,10 @@ export function ItemInput({ item, answer, setAnswer }: { item: VaItem; answer: s
       </>
     );
   }
-  const max = item.kind === "pj" ? 4 : 1;
+  const max = item.kind === "pj" ? item.order.length : 1;
   const tap = (n: number) => {
     if (item.kind === "oso") setAnswer(String(n));
-    else if (!a.includes(String(n)) && a.length < 4) setAnswer(a + n);
+    else if (!a.includes(String(n)) && a.length < max) setAnswer(a + n);
   };
   return (
     <>
@@ -237,7 +237,7 @@ export function ItemInput({ item, answer, setAnswer }: { item: VaItem; answer: s
       </div>
       <div className="flex flex-wrap items-center gap-3">
         <label htmlFor="tita" className="text-base font-medium">Your answer</label>
-        <Input id="tita" inputMode="numeric" autoComplete="off" maxLength={max} value={a} onChange={(e) => setAnswer(cleanAnswer(e.target.value).slice(0, max))} placeholder={item.kind === "pj" ? "____" : "_"}
+        <Input id="tita" inputMode="numeric" autoComplete="off" maxLength={max} value={a} onChange={(e) => setAnswer(cleanAnswer(e.target.value).slice(0, max))} placeholder={"_".repeat(max)}
           className="h-12 w-40 text-center text-xl font-semibold tracking-[0.3em] tabular-nums" />
         {a && <Button variant="ghost" size="sm" onClick={() => setAnswer("")}>Clear</Button>}
       </div>
@@ -249,7 +249,7 @@ export function ItemInput({ item, answer, setAnswer }: { item: VaItem; answer: s
 function Gapped({ item, pick, onPick, placed }: { item: VaItem; pick: string; onPick?: (n: number) => void; placed?: boolean }) {
   const parts: ReactNode[] = [];
   const gapCls = (on: boolean) => cn("mx-0.5 inline-grid h-7 min-w-9 place-items-center rounded-md px-1.5 align-middle font-sans text-sm font-semibold", on ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground");
-  for (let pos = 0; pos <= 4; pos++) {
+  for (let pos = 0; pos <= item.para.s.length; pos++) {
     const gi = item.gaps.indexOf(pos);
     if (gi >= 0) {
       const n = gi + 1;
@@ -259,7 +259,7 @@ function Gapped({ item, pick, onPick, placed }: { item: VaItem; pick: string; on
       parts.push(" ");
     }
     if (placed && pos === item.para.insAt) parts.push(<span key={"i" + pos} className="rounded-sm bg-success-soft px-0.5">{item.para.ins}</span>, " ");
-    if (pos < 4) parts.push(<span key={"s" + pos}>{item.para.s[pos]} </span>);
+    if (pos < item.para.s.length) parts.push(<span key={"s" + pos}>{item.para.s[pos]} </span>);
   }
   return <p className="rounded-lg bg-card px-5 py-4 text-reading leading-[1.9]">{parts}</p>;
 }
@@ -321,7 +321,7 @@ export function ItemReview({ item, answer }: { item: VaItem; answer: string }) {
               </Sentence>
             ))}
           </div>
-          <p className="text-base text-muted-foreground">The other four read in the order {p.s.map((_, ci) => item.order.indexOf(ci) + 1).join("")}.</p>
+          <p className="text-base text-muted-foreground">The other four read in the order {p.s.map((_, ci) => item.order.indexOf(ci) + 1).filter(Boolean).join("")}.</p>
         </>
       )}
       {item.kind === "si" && (

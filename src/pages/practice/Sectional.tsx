@@ -11,7 +11,7 @@ import { mediumDate, todayIso, uid } from "../../lib/date";
 import { useStore } from "../../lib/store";
 import type { Content } from "../../practice/content";
 import { fmtSecs, LETTERS } from "../../practice/record";
-import { resolveRedo } from "../../practice/redo";
+import { resolveExam } from "../../practice/redo";
 import {
   buildPaper, byType, loadDraft, marksOf, newDraft, qStatus, recordSectional, saveDraft, scorePaper, secsLeft,
   SECTIONAL_RC, SECTIONAL_SECS, type Draft, type QStatus,
@@ -136,7 +136,7 @@ function Exam({ start, c, onQuit }: { start: Draft; c: Content; onQuit: () => vo
     return () => clearInterval(flush);
   }, []);
 
-  const ref = useMemo(() => resolveRedo(d.qs[d.cur], c), [d.qs, d.cur, c]);
+  const ref = useMemo(() => resolveExam(d.qs[d.cur], c), [d.qs, d.cur, c]);
   const n = d.qs.length;
   const counts = d.qs.map((_, i) => qStatus(d, i)).reduce((m, s) => ({ ...m, [s]: (m[s] ?? 0) + 1 }), {} as Partial<Record<QStatus, number>>);
   const blank = d.a.filter((x) => x === "").length;

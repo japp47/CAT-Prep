@@ -39,6 +39,8 @@ export interface PracticeSet { id: string; d: string; sec: string; t: string; a:
 export interface RcAttempt { id: string; d: string; set: string; mode: "daily" | "library"; ans: (number | null)[]; c: number; w: number; secs: number; first: number }
 /** One VA drill run. a is what the student entered for each item, pts the marks it earned. */
 export interface VaAttempt { id: string; d: string; mode: "daily" | "custom"; items: { k: string; a: string; ok: boolean; pts: number }[]; secs: number }
+/** One critical reasoning drill. a is the option index chosen for each item, or null when it was left blank. */
+export interface CrAttempt { id: string; d: string; items: { k: string; a: number | null; ok: boolean }[]; secs: number }
 /** One reading speed test. recall is the number of recall questions answered correctly, out of 2. */
 export interface SpeedRun { id: string; d: string; set: string; words: number; secs: number; wpm: number; recall: number }
 /**
@@ -48,7 +50,7 @@ export interface SpeedRun { id: string; d: string; set: string; words: number; s
  */
 export interface SectionalAttempt { id: string; d: string; qs: string[]; a: string[]; t: number[]; secs: number; c: number; w: number; updatedAt: number }
 /**
- * A question in the redo queue. k is "rc:<set>:<question>" or a VA item key such as "pj:bees".
+ * A question in the redo queue. k is "rc:<set>:<question>", a VA item key such as "pj:bees", or a critical reasoning key such as "cr:CR-01".
  * box counts right answers in a row; cleared is the date it left the queue.
  */
 export interface RedoItem { k: string; added: string; due: string; box: number; tries: number; last?: string; cleared?: string }
@@ -65,6 +67,7 @@ export interface AppState {
   practice: PracticeSet[];
   rcAttempts: RcAttempt[];
   vaAttempts: VaAttempt[];
+  crAttempts: CrAttempt[];
   speedRuns: SpeedRun[];
   redo: RedoItem[];
   sectionals: SectionalAttempt[];
@@ -79,7 +82,7 @@ const emptyDow = () => [null, null, null, null, null, null, null] as (number | n
 export function blankState(): AppState {
   const settings = {} as Record<SectionId, TimeSettings>;
   SECTION_IDS.forEach((id) => (settings[id] = { ...DEFAULT_TIME[id], dow: emptyDow() }));
-  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], speedRuns: [], redo: [], sectionals: [], redoSeeded: true, targets: { varc: DEFAULT_TARGET } };
+  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], crAttempts: [], speedRuns: [], redo: [], sectionals: [], redoSeeded: true, targets: { varc: DEFAULT_TARGET } };
 }
 
 type Obj = Record<string, unknown>;
@@ -140,6 +143,10 @@ export function normalize(raw: unknown): AppState {
   b.vaAttempts = list(raw.vaAttempts, (x) => ({
     id: str(x.id), d: str(x.d), mode: x.mode === "daily" ? "daily" : "custom", secs: num(x.secs),
     items: list(x.items, (i) => ({ k: str(i.k), a: str(i.a), ok: !!i.ok, pts: num(i.pts) })),
+  }));
+  b.crAttempts = list(raw.crAttempts, (x) => ({
+    id: str(x.id), d: str(x.d), secs: num(x.secs),
+    items: list(x.items, (i) => ({ k: str(i.k), a: typeof i.a === "number" ? i.a : null, ok: !!i.ok })),
   }));
   b.speedRuns = list(raw.speedRuns, (x) => ({ id: str(x.id), d: str(x.d), set: str(x.set), words: num(x.words), secs: num(x.secs), wpm: num(x.wpm), recall: clamp(num(x.recall), 0, 2) }));
   b.sectionals = list(raw.sectionals, (x) => ({

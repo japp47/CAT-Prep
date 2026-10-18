@@ -9,9 +9,10 @@ import { useStore } from "../../lib/store";
 import type { Content } from "../../practice/content";
 import { LETTERS, recordRedoAnswer } from "../../practice/record";
 import { answerRedo, dueRedo, REDO_GAPS, REDO_PER_SESSION, redoPracticeType, resolveRedo, upcomingRedo, type RedoRef } from "../../practice/redo";
-import { RC_QTYPE } from "../../practice/types";
+import { CR_TYPE, RC_QTYPE } from "../../practice/types";
 import { cleanAnswer, scoreItem, VA_KIND } from "../../practice/va/build";
 import { Choice, ChoiceGroup } from "./common";
+import { CrQuestion, CrReview } from "./CrPlayer";
 import { PaneSwitch, Passage, ReviewQuestion, Split } from "./RcPlayer";
 import { ItemInput, ItemReview } from "./VaPlayer";
 
@@ -38,7 +39,7 @@ export default function Redo() {
       {session.length === 0 ? (
         <Empty action={<LinkButton to="/practice">Go to Practice</LinkButton>}>
           <b className="block text-heading font-semibold text-foreground">{open.length ? "Nothing due today" : "Your queue is empty"}</b>
-          {open.length ? "Come back on the next date below." : "Questions you miss in RC sets and VA drills will appear here the next day."}
+          {open.length ? "Come back on the next date below." : "Questions you miss in RC sets, VA drills and critical reasoning drills will appear here the next day."}
         </Empty>
       ) : pos >= session.length ? (
         <div className="flex flex-col gap-4 rounded-lg bg-card p-6">
@@ -85,7 +86,7 @@ function RedoQuestion({ c, k, n, of, onAnswered, onNext }: { c: Content; k: stri
   if (!ref || !item) return null;
 
   const check = (giveUp = false) => {
-    const ok = !giveUp && (ref.kind === "rc" ? pick === ref.set.questions[ref.qi].answer : scoreItem(ref.item, typed).ok);
+    const ok = !giveUp && (ref.kind === "rc" ? pick === ref.set.questions[ref.qi].answer : ref.kind === "cr" ? pick === ref.item.answer : scoreItem(ref.item, typed).ok);
     const d = todayIso();
     const box = ok ? item.box + 1 : 0;
     const cleared = ok && box >= REDO_GAPS.length;
@@ -93,7 +94,7 @@ function RedoQuestion({ c, k, n, of, onAnswered, onNext }: { c: Content; k: stri
     setResult({ ok, cleared, box, gaveUp: giveUp });
     onAnswered(ok, cleared);
   };
-  const answered = ref.kind === "rc" ? pick !== null : !!cleanAnswer(typed);
+  const answered = ref.kind === "va" ? !!cleanAnswer(typed) : pick !== null;
   // Sits under the question, so on a wide screen it stays next to the options, not below the passage.
   const actions = result ? (
     <div className={cn("flex flex-col gap-3 rounded-lg p-5", result.ok ? "bg-success-soft" : "bg-card")} role="status">
@@ -137,6 +138,11 @@ function RedoQuestion({ c, k, n, of, onAnswered, onNext }: { c: Content; k: stri
           </>
         </Split>
         </>
+      ) : ref.kind === "cr" ? (
+        <div className="mx-auto flex w-full max-w-[760px] flex-col gap-5">
+          {result ? <CrReview item={ref.item} chosen={result.gaveUp ? null : pick} /> : <CrQuestion item={ref.item} pick={pick} setPick={setPick} />}
+          {actions}
+        </div>
       ) : (
         <div className="mx-auto flex w-full max-w-[760px] flex-col gap-5">
           {result ? <ItemReview item={ref.item} answer={result.gaveUp ? "" : typed} /> : <ItemInput item={ref.item} answer={typed} setAnswer={setTyped} />}
@@ -147,4 +153,4 @@ function RedoQuestion({ c, k, n, of, onAnswered, onNext }: { c: Content; k: stri
   );
 }
 
-const label = (ref: RedoRef) => (ref.kind === "rc" ? "RC, " + RC_QTYPE[ref.set.questions[ref.qi].type].label.toLowerCase() : VA_KIND[ref.item.kind].label.toLowerCase());
+const label = (ref: RedoRef) => (ref.kind === "rc" ? "RC, " + RC_QTYPE[ref.set.questions[ref.qi].type].label.toLowerCase() : ref.kind === "cr" ? "critical reasoning, " + CR_TYPE[ref.item.type].label.toLowerCase() : VA_KIND[ref.item.kind].label.toLowerCase());

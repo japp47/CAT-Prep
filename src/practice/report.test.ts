@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import type { ErrorEntry, PracticeSet, RcAttempt, SpeedRun } from "../lib/state";
-import { RC_CATALOG } from "./catalog.gen";
+import { CR_CATALOG, RC_CATALOG } from "./catalog.gen";
 import { CONTENT } from "./bank";
-import { accuracy, byPracticeType, focusLines, paceTrend, rcByDifficulty, rcByGenre, rcByQuestionType, topTraps, weakest, type Row } from "./report";
+import { accuracy, byPracticeType, crByKind, focusLines, paceTrend, rcByDifficulty, rcByGenre, rcByQuestionType, topTraps, weakest, type Row } from "./report";
 
 const row = (key: string, attempted: number, correct: number): Row => ({ key, label: key, attempted, correct });
 const set = CONTENT.rcSets[0];
@@ -102,5 +102,23 @@ describe("focusLines", () => {
     expect(focusLines({ ...base, types, pace: slow })[0].text).toContain("150 words a minute. CAT needs about 200.");
     expect(focusLines({ ...base, types, traps: [["Extreme words", 1]] })).toEqual([]);
     expect(focusLines({ ...base, types, traps: [["Extreme words", 3]] })[0].text).toBe("The trap that caught you most is “Extreme words”, 3 times.");
+  });
+});
+
+describe("critical reasoning by kind", () => {
+  const byType = (t: string) => CR_CATALOG.filter((m) => m.type === t);
+  const item = (m: { id: string }, ok: boolean, a: number | null = ok ? 0 : 1) => ({ k: "cr:" + m.id, a, ok });
+  it("counts right and attempted per kind, in the order of the guide, and skips blanks", () => {
+    const [w1, w2] = byType("weaken"), [a1] = byType("assumption");
+    const rows = crByKind([{ id: "1", d: "2026-10-17", secs: 60, items: [item(w1, true), item(w2, false), item(a1, false, null)] }], CR_CATALOG);
+    expect(rows).toEqual([{ key: "weaken", label: "Weaken", attempted: 2, correct: 1 }]);
+  });
+  it("puts kinds in a fixed order across attempts and ignores questions that left the library", () => {
+    const [f] = byType("flaw"), [a] = byType("assumption");
+    const rows = crByKind([
+      { id: "1", d: "2026-10-17", secs: 1, items: [item(f, true)] },
+      { id: "2", d: "2026-10-18", secs: 1, items: [item(a, true), { k: "cr:gone", a: 0, ok: true }] },
+    ], CR_CATALOG);
+    expect(rows.map((r) => r.key)).toEqual(["assumption", "flaw"]);
   });
 });

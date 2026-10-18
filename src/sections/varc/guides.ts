@@ -38,7 +38,7 @@ export interface TypeGuide {
   example: WorkedExample;
   links: GuideLink[];
   /** In-app drill for this type */
-  drill?: VaKind | "rc";
+  drill?: VaKind | "rc" | "cr";
 }
 
 export const TYPE_GUIDES: TypeGuide[] = [
@@ -270,7 +270,7 @@ export const TYPE_GUIDES: TypeGuide[] = [
     ],
   },
   {
-    id: "cr", h: "Critical reasoning", tag: "XAT, not CAT",
+    id: "cr", h: "Critical reasoning", tag: "XAT, not CAT", drill: "cr",
     what: "A short argument followed by one question. CAT no longer asks it as a separate type, but XAT does, and it trains the judgement that RC options need.",
     kinds: [
       ["Assumption", "what the argument takes for granted."],
