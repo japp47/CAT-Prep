@@ -56,10 +56,19 @@ export function Empty({ children, action }: { children: ReactNode; action?: Reac
 }
 
 /** A number with its label underneath, for scores and counts. */
+/**
+ * Digits at equal widths, so a ticking clock or a column of numbers does not jiggle.
+ * Use this instead of the tabular-nums class on text with punctuation: Schibsted Grotesk's
+ * tabular figures also make , . and : as wide as a digit, which reads as "13 .0" or "0 :02".
+ */
+export function Tnum({ children }: { children: string }) {
+  return <>{children.split(/(\d+)/).map((part, i) => (i % 2 ? <span key={i} className="tabular-nums">{part}</span> : part))}</>;
+}
+
 export function Stat({ value, label, className }: { value: ReactNode; label: ReactNode; className?: string }) {
   return (
     <div className={cn("flex flex-col", className)}>
-      <span className="text-heading font-semibold tabular-nums">{value}</span>
+      <span className="text-heading font-semibold">{value}</span>
       <span className="text-sm text-muted-foreground">{label}</span>
     </div>
   );
@@ -124,7 +133,7 @@ export function Segmented<T extends string>({ value, onChange, options, label, c
         const [v, l] = Array.isArray(o) ? o : [o, o];
         return (
           <button key={v} type="button" aria-pressed={value === v} onClick={() => onChange(v)}
-            className={cn("h-9 rounded-md px-3.5 text-base text-muted-foreground transition-colors hover:text-foreground", value === v && "bg-card font-semibold text-foreground")}>
+            className={cn("h-9 rounded-md px-3.5 text-base text-muted-foreground transition-colors hover:text-foreground", value === v && "bg-card font-semibold text-primary ring-1 ring-inset ring-primary/40")}>
             {l}
           </button>
         );

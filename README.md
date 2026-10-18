@@ -1,6 +1,6 @@
-# CAT Prep Hub
+<img src="public/logo.svg" alt="99ile" height="56">
 
-A free, open CAT preparation website built with React, TypeScript, Vite, Tailwind CSS and shadcn/ui. It works on desktop and mobile, in light and dark.
+**99ile** is a free, open CAT preparation website built with React, TypeScript, Vite, Tailwind CSS and shadcn/ui. It works on desktop and mobile, in light and dark.
 
 - **Today's timetable.** A daily plan built from your phase and the time you have. Defaults are 1 hour on weekdays and 2 hours on Saturday and Sunday. Change any single day (Rest, 30 min to 3 hours, or a custom number), set a different time per day of the week, or lower a whole date range for an exam week. Missed core tasks come back as a catch-up.
 - **Plan.** Five phases to CAT 2027 (Foundation, Build, Apply, Mock phase, Taper), with time presets and a preview of a typical weekday and Saturday in each phase.
@@ -77,7 +77,7 @@ When CAT 2027 is announced, update `EXAM_ISO`, `EXAM_CONFIRMED` and, if needed, 
 
 1. dash.cloudflare.com → Workers & Pages → Create → Pages → Connect to Git → pick this repo.
 2. Production branch `main`. Framework preset: None. Build command `npm run build`. Output directory `dist`. Node comes from `.nvmrc` (22).
-3. Save and deploy. The site goes live at `<project>.pages.dev`.
+3. Save and deploy. The site goes live at `99ile.pages.dev`.
 
 `public/_redirects` sends every page route to the app, and `public/_headers` sets the security headers (including a Content Security Policy) and caching: hashed files in `/assets/` are cached for a year, and the service worker is checked on every visit so a new version always reaches installed apps.
 

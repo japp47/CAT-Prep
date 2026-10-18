@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { reportUrl } from "../../data/site";
 import { todayIso } from "../../lib/date";
 import { fmtSecs } from "../../practice/record";
+import { Tnum } from "../../components/kit";
 import { useStore } from "../../lib/store";
 import { activityDays, computeStreak } from "../../practice/streak";
 
@@ -48,7 +49,7 @@ export function useElapsed(running: boolean, startAt: number) {
 /** The practice clock. It ticks on its own, so the passage and the questions do not redraw every second. */
 export function ElapsedTimer({ startAt, target, onClick, title }: { startAt: number; target: number; onClick?: () => void; title?: string }) {
   const secs = useElapsed(true, startAt);
-  return <Timer over={secs > target} onClick={onClick} title={title}>{fmtSecs(secs)} / {fmtSecs(target)}</Timer>;
+  return <Timer over={secs > target} onClick={onClick} title={title}><Tnum>{`${fmtSecs(secs)} / ${fmtSecs(target)}`}</Tnum></Timer>;
 }
 
 /** "Report a problem" for one question. Opens a prefilled GitHub issue in a new tab. */
@@ -75,7 +76,7 @@ export function PlayerBar({ kicker, title, children }: { kicker: ReactNode; titl
 
 /** The clock in a practice bar. Turns red when the target time is passed. */
 export function Timer({ children, over, onClick, title }: { children: ReactNode; over?: boolean; onClick?: () => void; title?: string }) {
-  const cls = cn("inline-flex h-9 items-center rounded-md bg-card px-3 text-base font-semibold tabular-nums", over && "bg-danger-soft text-danger");
+  const cls = cn("inline-flex h-9 items-center rounded-md bg-card px-3 text-base font-semibold", over && "bg-danger-soft text-danger");
   return onClick ? <button type="button" className={cls} onClick={onClick} title={title}>{children}</button> : <span className={cls} role="timer">{children}</span>;
 }
 
@@ -163,7 +164,7 @@ export function ScoreCard({ score, of, unit, parts, children }: { score: ReactNo
           {unit && <span className="text-heading text-muted-foreground">{unit}</span>}
         </p>
         <dl className="flex flex-wrap gap-x-8 gap-y-2">
-          {parts.map(([k, v]) => <div key={k} className="flex flex-col"><dt className="text-sm text-muted-foreground">{k}</dt><dd className="text-heading font-semibold tabular-nums">{v}</dd></div>)}
+          {parts.map(([k, v]) => <div key={k} className="flex flex-col"><dt className="text-sm text-muted-foreground">{k}</dt><dd className="text-heading font-semibold">{typeof v === "string" || typeof v === "number" ? <Tnum>{String(v)}</Tnum> : v}</dd></div>)}
         </dl>
       </div>
       {children}

@@ -21,9 +21,10 @@ const GROUPS: { title: string; items: Item[] }[] = [
 
 function Brand() {
   return (
-    <Link to="/" className="flex items-center gap-2.5 rounded-md text-foreground" aria-label="CAT Prep Hub home">
-      <span className="grid size-8 place-items-center rounded-md bg-primary text-[11px] font-bold tracking-tight text-primary-foreground">CAT</span>
-      <span className="text-base font-bold tracking-tight">CAT Prep Hub</span>
+    <Link to="/" className="flex items-center gap-2.5 rounded-md text-foreground" aria-label="99ile home">
+      {/* The 99 tile: the score students aim for, with the site's highlighter under it. Same file as the favicon. */}
+      <img src={import.meta.env.BASE_URL + "favicon.svg"} alt="" className="size-9" width={36} height={36} />
+      <span className="text-[1.375rem] leading-none font-bold tracking-tight">99ile</span>
     </Link>
   );
 }

@@ -24,7 +24,7 @@ function AccuracyList({ title, rows, empty }: { title: string; rows: Row[]; empt
               <li key={r.key} className="grid grid-cols-[minmax(0,8.5rem)_minmax(0,1fr)_4.25rem] items-center gap-3 text-base sm:grid-cols-[minmax(0,10.5rem)_minmax(0,1fr)_4.5rem]">
                 <span className="leading-snug">{r.label}</span>
                 <span className="h-2.5 overflow-hidden rounded-full bg-secondary"><span className={cn("block h-full rounded-full", pct !== null && pct < 60 ? "bg-danger" : "bg-primary")} style={{ width: (pct ?? 0) + "%" }} /></span>
-                <span className="text-right leading-tight tabular-nums">
+                <span className="text-right leading-tight">
                   {pct === null ? <span className="text-sm text-muted-foreground">None yet</span> : <><b className="font-semibold">{pct}%</b><span className="block text-sm text-muted-foreground">{r.attempted} Qs</span></>}
                 </span>
               </li>
@@ -80,7 +80,7 @@ export function Report({ sec }: { sec: string }) {
           ) : attempted >= MIN_TOTAL ? (
             <Empty>Nothing stands out. Every type, genre and trap is within a few points of the rest, so keep the mix going.</Empty>
           ) : (
-            <Empty action={<LinkButton to="/practice" variant="secondary">Go to Practice</LinkButton>}>
+            <Empty action={<LinkButton to="/practice">Go to Practice</LinkButton>}>
               The report card needs about {MIN_TOTAL} questions before it can say what to work on. You have done {attempted}. The daily RC and VA drill make about 12.
             </Empty>
           )}

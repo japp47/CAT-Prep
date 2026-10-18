@@ -1,6 +1,6 @@
 {
-  "name": "CAT Prep Hub",
-  "short_name": "CAT Prep",
+  "name": "99ile: free CAT prep",
+  "short_name": "99ile",
   "description": "Free CAT preparation: a daily timetable that fits your time, RC and VA practice, and progress tracking.",
   "start_url": "./today",
   "scope": "./",

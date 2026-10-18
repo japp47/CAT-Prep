@@ -271,7 +271,7 @@ function Review({ c }: { c: Content }) {
             <thead className="text-sm text-muted-foreground">
               <tr><th className="py-2 pr-4 font-medium">Type</th><th className="py-2 pr-4 text-right font-medium">Attempted</th><th className="py-2 pr-4 text-right font-medium">Correct</th><th className="py-2 pr-4 text-right font-medium">Marks</th><th className="py-2 pr-4 text-right font-medium">Time</th><th className="py-2 text-right font-medium">Each</th></tr>
             </thead>
-            <tbody className="tabular-nums">
+            <tbody>
               {types.map((x) => (
                 <tr key={x.type} className={TR}>
                   <td className="py-2.5 pr-4">{x.type}</td><td className="py-2.5 pr-4 text-right">{x.attempted} of {x.n}</td><td className="py-2.5 pr-4 text-right">{x.correct}</td>

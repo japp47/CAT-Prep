@@ -3,14 +3,14 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 import { Slot } from "radix-ui"
 
-/** One filled action per screen (default). The rest are secondary, ghost or link. */
+/** One filled action per screen (default). The rest are secondary (a tint of the brand blue), ghost or link. */
 const buttonVariants = cva(
   "inline-flex shrink-0 items-center justify-center gap-2 rounded-md font-semibold whitespace-nowrap transition-[background-color,color,transform] duration-150 outline-none select-none active:translate-y-px focus-visible:ring-[3px] focus-visible:ring-ring/40 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/70",
+        secondary: "bg-accent text-accent-foreground hover:bg-primary/15",
         outline: "bg-card text-foreground ring-1 ring-inset ring-input hover:bg-muted",
         ghost: "text-foreground hover:bg-secondary",
         destructive: "bg-danger-soft text-danger hover:bg-danger-soft/70",

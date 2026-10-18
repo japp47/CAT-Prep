@@ -25,10 +25,10 @@ export function reminderIcs({ date, time, minutes, url }: Reminder): string {
   return [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//CAT Prep Hub//Study reminder//EN",
+    "PRODID:-//99ile//Study reminder//EN",
     "CALSCALE:GREGORIAN",
     "BEGIN:VEVENT",
-    `UID:study-reminder-${stamp(date, time)}@cat-prep-hub`,
+    `UID:study-reminder-${stamp(date, time)}@99ile`,
     `DTSTAMP:${utcNow()}`,
     `DTSTART:${stamp(date, time)}`,
     `DTEND:${stamp(date, endTime)}`,

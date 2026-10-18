@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { BREAK_EVERY, focusMs, useFocus } from "../lib/focus";
 import { fmtSecs } from "../practice/record";
+import { Tnum } from "./kit";
 
 const BAR = "fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-40 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 bg-foreground px-gutter py-3 text-background lg:px-4 shadow-xl lg:inset-x-auto lg:right-6 lg:bottom-6 lg:w-[min(560px,calc(100vw-248px-48px))] lg:rounded-lg"; // taste-skill-ignore: the timer bar floats over the page
 
@@ -32,7 +33,7 @@ export default function FocusBar() {
           <span className="text-sm text-background/70">{run.since ? "Focus" : "Paused"}</span>
           <Link to="/today" className="truncate text-base font-semibold text-background">{run.name}</Link>
         </div>
-        <span className={cn("text-base font-semibold tabular-nums", over && "text-highlight")} aria-live="off">{fmtSecs(secs)} / {run.target}:00</span>
+        <span className={cn("text-base font-semibold", over && "text-highlight")} aria-live="off"><Tnum>{`${fmtSecs(secs)} / ${run.target}:00`}</Tnum></span>
       </div>
       {breakDue ? (
         <div className="flex flex-wrap items-center gap-2">
