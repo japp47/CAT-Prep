@@ -4,13 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
-import { ErrorText, Field, Meta, NativeSelect, Page, PageHeader, Section } from "../components/kit";
+import { ErrorText, Field, Meta, NativeSelect, Page, PageHeader, Section, TextLink } from "../components/kit";
 import { PHASES, phaseOf } from "../data/exam";
 import { addDays, diffDays, DOW, mediumDate, todayIso } from "../lib/date";
 import { useStore } from "../lib/store";
 import { buildDay, sampleDate } from "../planner/engine";
+import { describe, estimate, marks } from "../practice/percentile";
 import { LIVE_SECTIONS } from "../sections";
 import type { SectionDef } from "../sections/types";
+import { TargetNeeds, TargetPicker } from "./tracker/Target";
 
 const PRESETS = [
   { label: "Light", wd: 30, we: 90, note: "30 min weekdays, 1.5 h weekends" },
@@ -20,6 +22,26 @@ const PRESETS = [
 ];
 const parseMin = (v: string) => { const n = parseInt(v, 10); return isNaN(n) || n < 0 || n > 600 ? null : n; };
 const hours = (m: number) => (m / 60).toFixed(1).replace(/\.0$/, "") + " h";
+
+/** The percentile the student aims for in VARC, what it takes, and where their latest results put them. */
+function TargetCard() {
+  const { state } = useStore();
+  const recent = state.mocks.map((x, i) => ({ x, i })).filter((o) => o.x.sec === "VARC")
+    .sort((a, b) => (a.x.d < b.x.d ? -1 : a.x.d > b.x.d ? 1 : a.i - b.i)).slice(-3).map((o) => o.x);
+  const avg = recent.length ? recent.reduce((s, m) => s + marks(m.c, m.w), 0) / recent.length : 0;
+  return (
+    <Section title="Your VARC target" description="The percentile you are aiming for. Progress draws what it takes on your mock chart.">
+      <div className="flex flex-col gap-4 rounded-lg bg-card p-5 sm:p-6">
+        <TargetPicker />
+        <TargetNeeds pct={state.targets.varc} />
+        {recent.length > 0
+          ? <p className="measure text-base">Your last {recent.length === 1 ? "result is" : `${recent.length} results average`} <b className="font-semibold">{Math.round(avg)} marks</b>, {describe(estimate(avg))}.</p>
+          : <p className="measure text-base text-muted-foreground">Log a paper, a mock or a timed sectional and your estimated percentile shows here.</p>}
+        <div><TextLink to="/progress">Open the percentile estimator in Progress</TextLink></div>
+      </div>
+    </Section>
+  );
+}
 
 function TimeCard({ sec }: { sec: SectionDef }) {
   const { state, update } = useStore();
@@ -150,6 +172,7 @@ export default function Plan() {
     <Page>
       <PageHeader title="Plan and time">Five phases to CAT 2027. Each day's timetable is built from the phase you are in and the time you have that day. Change your usual time here, or change a single day on Today.</PageHeader>
       {lateStart && <p className="measure rounded-lg bg-warning-soft px-5 py-4 text-base">Starting after January? You join the plan at the current phase. Spend your first two weeks on the Foundation reading routine alongside it, and use the Learn tab to cover the question types you missed.</p>}
+      <TargetCard />
       {LIVE_SECTIONS.map((s) => <TimeCard key={s.id} sec={s} />)}
       <RangeCard />
       <Section title="How the timetable adapts">

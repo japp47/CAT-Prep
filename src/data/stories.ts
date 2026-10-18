@@ -1,3 +1,5 @@
+import { joinAnd, marksText, scoreAt, VARC_TABLES } from "./percentiles";
+
 export interface Topper { name: string; result: string; what: string; section: "VARC" | "Overall"; link?: string }
 
 export const TOPPERS: Topper[] = [
@@ -20,10 +22,13 @@ export const LESSONS = [
   { h: "They took mocks seriously late", p: "Most 99+ scorers took 20 or more mocks, the bulk of them in the last two to three months." },
 ];
 
-export const BENCHMARKS = [
-  { year: "2025", p99: "42.77", p999: "53.01", src: "Cracku all-slot table. MBAKaro gives 43 and 54." },
-  { year: "2024", p99: "40.3", p999: "55", src: "Cracku" },
-];
+/** The marks for the 99 and 99.9 percentile each year: the average of the tables in data/percentiles.ts, newest first. */
+export const BENCHMARKS = [...VARC_TABLES].reverse().map((t) => ({
+  year: t.year,
+  p99: marksText(scoreAt(t, 99) ?? NaN),
+  p999: marksText(scoreAt(t, 99.9) ?? NaN),
+  src: "Average of " + joinAnd(t.sources.map((s) => s.name)),
+}));
 
 export const PASSAGE_SOURCES = [
   { year: "2025", text: "Slot 1: complex systems (Aeon), electronic music (JSTOR), income inequality, insanity and criminal responsibility. Slot 2: literary geography, cavefish evolution (Knowable), Big Tech and AI language (The Guardian), scientific instruments. Slot 3: tribal art and time (NCERT), AI and formalised ethics (Aeon), Indian Forest Acts, dams and sacrifice zones (Boston Review)." },

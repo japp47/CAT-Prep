@@ -124,7 +124,7 @@ function Toppers() {
       <Block title="How 99+ scorers prepared">
         <Table head={["Name", "Result", "What they did"]} rows={TOPPERS.map((t) => [t.link ? <Ext key="l" href={t.link} className="font-semibold text-primary underline decoration-primary/30 underline-offset-4">{t.name}</Ext> : <b key="b">{t.name}</b>, t.result, t.what])} />
       </Block>
-      <Block title="Score benchmarks" description="Scaled VARC scores from coaching institutes. They differ by 1 to 2 marks and shift each year.">
+      <Block title="Score benchmarks" description="Scaled VARC scores. Each figure is the average of the tables that Cracku, IMS and iQuanta built from the results. The three differ by up to 2 marks at a given percentile, and the figure shifts each year.">
         <Table head={["Year", "99 percentile", "99.9 percentile", "Source"]} num={[1, 2]} rows={BENCHMARKS.map((b) => [b.year, b.p99, b.p999, b.src])} />
       </Block>
       <Block title="Where CAT passages come from" description="In 2025, Slot 1 was rated moderate to difficult and Slots 2 and 3 easy to moderate. Every slot had 2 each of para jumbles, para summary, sentence insertion and odd sentence out.">

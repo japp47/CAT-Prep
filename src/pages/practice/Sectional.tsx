@@ -6,6 +6,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { cn } from "@/lib/utils";
 import { ContentGate } from "../../components/Content";
 import { LinkButton, Meta, Page, PageHeader, Section, TextLink } from "../../components/kit";
+import { benchmark } from "../../data/percentiles";
 import { mediumDate, todayIso, uid } from "../../lib/date";
 import { useStore } from "../../lib/store";
 import type { Content } from "../../practice/content";
@@ -24,6 +25,7 @@ import { ItemInput, ItemReview } from "./VaPlayer";
 const TR = "border-t align-top"; // taste-skill-ignore: rows of a real table
 
 const MAX = 72;
+const B99 = benchmark(99);
 const STATUS_LABEL: Record<QStatus, string> = { unseen: "not visited", open: "not answered", done: "answered", marked: "marked for review", doneMarked: "answered and marked" };
 
 export default function Sectional() {
@@ -46,7 +48,7 @@ function Start({ onStart }: { onStart: (d: Draft) => void }) {
   const rules: [string, string][] = [
     [`${SECTIONAL_RC} reading passages`, "16 questions. MCQ: +3 right, −1 wrong."],
     ["8 verbal ability questions", "2 each of para summary and sentence insertion (MCQ, −1 wrong), and of odd sentence out and para jumbles (TITA, no negative marks)."],
-    [`Out of ${MAX}`, "The 99 percentile in CAT 2025 was about 43 scaled marks: roughly 15 to 17 right with at most 3 wrong."],
+    [`Out of ${MAX}`, `The 99 percentile was a scaled ${B99.values} in CAT ${B99.years}: roughly 15 to 17 right with at most 3 wrong.`],
   ];
   return (
     <Page>
