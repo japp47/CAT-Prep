@@ -1,0 +1,992 @@
+[
+  {
+    "id": "CR-01",
+    "type": "assumption",
+    "difficulty": "easy",
+    "topic": "workplace",
+    "wordCount": 46,
+    "stimulus": "A software firm found that employees who attend its optional, hour-long Friday workshops receive better performance ratings in their annual reviews than those who skip them. On this basis the firm has decided to make attendance compulsory, expecting the ratings of all its staff to rise.",
+    "conclusion": "make attendance compulsory, expecting the ratings of all its staff to rise",
+    "question": "Which of the following is an assumption on which the argument depends?",
+    "options": [
+      {
+        "t": "Most employees who attend the workshops say that they enjoy them.",
+        "why": "Enjoyment is not the same as better ratings, and the plan could succeed or fail whether or not attendees enjoy the sessions.",
+        "trap": "Out of scope"
+      },
+      {
+        "t": "Attending the workshops would itself raise the ratings of employees who now choose to skip them.",
+        "why": "The plan works only if the workshops produce the better ratings; if attendance merely marks employees who already perform well, forcing the rest to attend changes nothing."
+      },
+      {
+        "t": "No other training scheme at the firm has any effect on performance ratings.",
+        "why": "The plan does not need every other scheme to be useless; ratings could rise through the workshops even if other schemes also help.",
+        "trap": "Extreme wording"
+      },
+      {
+        "t": "Employees who choose to attend the optional workshops are, on average, more motivated and more ambitious than those who skip them.",
+        "why": "This offers a rival explanation for the better ratings, so it damages the argument instead of being something the argument depends on.",
+        "trap": "Wrong direction"
+      }
+    ],
+    "answer": 1,
+    "takeaway": "When a correlation is turned into a policy, the hidden assumption is that the link is causal and will carry over to the people the policy newly reaches."
+  },
+  {
+    "id": "CR-02",
+    "type": "assumption",
+    "difficulty": "easy",
+    "topic": "education",
+    "wordCount": 46,
+    "stimulus": "A university's placement office emailed a satisfaction questionnaire to all of last year's graduates. Of the graduates who returned it, 90 percent said they were satisfied with their courses. The office has announced that about 90 percent of last year's graduates are satisfied with their courses.",
+    "conclusion": "about 90 percent of last year's graduates are satisfied with their courses",
+    "question": "Which of the following is an assumption on which the argument depends?",
+    "options": [
+      {
+        "t": "Satisfaction was higher among last year's graduates than it is among those who graduated years ago.",
+        "why": "The questionnaire covered only last year's graduates, so comparison with earlier cohorts plays no part in the argument.",
+        "trap": "Out of scope"
+      },
+      {
+        "t": "Every graduate who received the questionnaire returned it.",
+        "why": "Full response would settle the matter, but the argument does not depend on it; typical respondents are enough, so this demands more than the argument needs.",
+        "trap": "Extreme wording"
+      },
+      {
+        "t": "Universities generally want to know how satisfied their graduates are with their courses.",
+        "why": "This may well be true, but it gives no link between the views of those who replied and the views of those who stayed silent.",
+        "trap": "True but not the answer"
+      },
+      {
+        "t": "The graduates who returned the questionnaire are broadly typical of the graduating class as a whole in how satisfied they are.",
+        "why": "The office applies the replies of a self-selected group to every graduate, which works only if those who replied are typical in their satisfaction."
+      }
+    ],
+    "answer": 3,
+    "takeaway": "When a conclusion about a whole group rests on a self-selected sample, the assumption is that the sample is typical of the group."
+  },
+  {
+    "id": "CR-03",
+    "type": "assumption",
+    "difficulty": "medium",
+    "topic": "public policy",
+    "wordCount": 50,
+    "stimulus": "A city council wants to reduce road congestion and has decided to make all bus travel free. A council survey found that most car commuters consider bus fares too high, and the council reasons that removing fares will bring enough of them out of their cars to ease congestion noticeably.",
+    "conclusion": "removing fares will bring enough of them out of their cars to ease congestion noticeably",
+    "question": "Which of the following is an assumption on which the argument depends?",
+    "options": [
+      {
+        "t": "For a substantial number of car commuters, the cost of the fare is a real obstacle to taking the bus.",
+        "why": "Finding fares high shows only a complaint; the plan works only if fares, rather than other drawbacks of buses, are what keep some commuters in their cars."
+      },
+      {
+        "t": "The cost of free bus travel would be met by raising parking charges in the city centre.",
+        "why": "How the scheme is funded does not bear on whether it would move commuters out of their cars.",
+        "trap": "Out of scope"
+      },
+      {
+        "t": "Every car commuter in the city would switch to the bus once fares were removed.",
+        "why": "The argument needs enough switchers to ease congestion, not every commuter, so this asks for far more than the conclusion requires.",
+        "trap": "Extreme wording"
+      },
+      {
+        "t": "Bus fares in the city are too high for most commuters, and removing them would on its own bring an end to road congestion.",
+        "why": "The first half matches the survey, but the argument claims only that congestion would ease noticeably, not that it would end.",
+        "trap": "Half right, half wrong"
+      }
+    ],
+    "answer": 0,
+    "takeaway": "A survey of complaints is not a forecast of behaviour; the assumption is that the stated obstacle really is what stops the behaviour."
+  },
+  {
+    "id": "CR-04",
+    "type": "assumption",
+    "difficulty": "medium",
+    "topic": "technology",
+    "wordCount": 50,
+    "stimulus": "In laboratory trials, with the phone's screen switched off, a phone maker's new battery lasted twice as long as its old battery. The company's engineers conclude that owners of the new phone will be able to go about twice as long between charges as owners of the old phone can.",
+    "conclusion": "owners of the new phone will be able to go about twice as long between charges as owners of the old phone can",
+    "question": "Which of the following is an assumption on which the argument depends?",
+    "options": [
+      {
+        "t": "The new battery takes about as long to recharge as the old battery does.",
+        "why": "Recharge time has no bearing on how long a phone runs between charges, so the argument does not depend on it.",
+        "trap": "Out of scope"
+      },
+      {
+        "t": "Using the screen does not drain the new battery at all.",
+        "why": "The conclusion needs the lead to stay roughly intact, not for screen use to be free of any drain, so this is stronger than necessary.",
+        "trap": "Extreme wording"
+      },
+      {
+        "t": "In everyday use, with the screen on, the new battery keeps nearly all of the advantage over the old one that it showed in the trials.",
+        "why": "The trials ran with the screen off, so the claim about real use holds only if screen-on use does not cut the new battery's lead by much, since the claim is for about twice as long."
+      },
+      {
+        "t": "The laboratory trials were carried out under carefully controlled conditions, using the same procedure for the old battery and for the new one.",
+        "why": "Controlled conditions are what make the trials reliable; the weakness is that they differ from everyday use, which this does nothing to address.",
+        "trap": "True but not the answer"
+      }
+    ],
+    "answer": 2,
+    "takeaway": "Look for a change of conditions between the evidence and the conclusion (lab to real life); the assumption says the change does not matter."
+  },
+  {
+    "id": "CR-05",
+    "type": "assumption",
+    "difficulty": "medium",
+    "topic": "environment",
+    "wordCount": 41,
+    "stimulus": "A water authority ran a campaign urging households to save water. In the following year, average household consumption in the region fell by a tenth, and the authority has declared the campaign a success, saying it persuaded households to use less.",
+    "conclusion": "declared the campaign a success, saying it persuaded households to use less",
+    "question": "Which of the following is an assumption on which the argument depends?",
+    "options": [
+      {
+        "t": "Household consumption would not have fallen by a similar amount that year had the campaign not been run.",
+        "why": "Credit for the fall goes to the campaign only if the fall would not have happened anyway, for instance through heavy rain or rising prices."
+      },
+      {
+        "t": "Earlier campaigns run by the authority had cost more than this one did.",
+        "why": "The cost of past campaigns has nothing to do with whether this campaign caused the fall.",
+        "trap": "Out of scope"
+      },
+      {
+        "t": "Every household that heard about the campaign cut its water use.",
+        "why": "A campaign can succeed if many households cut back; the argument needs no universal effect, so this asks for too much.",
+        "trap": "Extreme wording"
+      },
+      {
+        "t": "Household water consumption in the region had been rising steadily for several years before the campaign was launched.",
+        "why": "This would make the campaign look more effective, but the argument can stand without it, so it is support rather than a necessary link.",
+        "trap": "True but not the answer"
+      }
+    ],
+    "answer": 0,
+    "takeaway": "For 'Y happened after X, so X worked', the assumption is that Y would not have happened without X."
+  },
+  {
+    "id": "CR-06",
+    "type": "assumption",
+    "difficulty": "hard",
+    "topic": "business",
+    "wordCount": 45,
+    "stimulus": "A survey of successful start-up founders in the technology sector found that most of them had previously worked for large corporations. From this, a career adviser concludes that a spell at a large corporation is a good way to prepare for founding a successful start-up.",
+    "conclusion": "a spell at a large corporation is a good way to prepare for founding a successful start-up",
+    "question": "Which of the following is an assumption on which the argument depends?",
+    "options": [
+      {
+        "t": "Large corporations give their employees more formal training than small firms do.",
+        "why": "This might explain a benefit, but the conclusion would stand even if corporations trained less, so long as their alumni do not fare worse.",
+        "trap": "True but not the answer"
+      },
+      {
+        "t": "Most people who work for large corporations eventually found a start-up.",
+        "why": "The advice can be sound even if very few corporate employees ever found start-ups, so this is far stronger than the argument needs.",
+        "trap": "Extreme wording"
+      },
+      {
+        "t": "Former corporate employees are more likely to go on to found a technology start-up of any kind in the first place than people from other backgrounds are.",
+        "why": "This is about who becomes a founder, not who succeeds among founders, so it shifts the question the argument is about.",
+        "trap": "Distorts the passage"
+      },
+      {
+        "t": "A person who has worked at a large corporation is no less likely to found a successful start-up than a person from another background.",
+        "why": "The survey counted only successful founders; if corporate alumni are less likely than others to end up as successful founders (perhaps because they are so numerous), the advice fails."
+      }
+    ],
+    "answer": 3,
+    "takeaway": "When the evidence covers only the successes, the hidden assumption is that failures are not more concentrated in the same group."
+  },
+  {
+    "id": "CR-07",
+    "type": "strengthen",
+    "difficulty": "easy",
+    "topic": "health",
+    "wordCount": 43,
+    "stimulus": "In a study of 400 adults, those who took a daily vitamin D supplement through the winter reported fewer colds than those who did not. The researchers conclude that taking the supplement helps to prevent colds, and they recommend it to the public.",
+    "conclusion": "taking the supplement helps to prevent colds",
+    "question": "Which of the following, if true, most strengthens the argument?",
+    "options": [
+      {
+        "t": "Colds are among the most common illnesses and cause many lost working days.",
+        "why": "This shows why colds matter, not whether the supplement prevents them.",
+        "trap": "Out of scope"
+      },
+      {
+        "t": "Those who took the supplement also tended to eat more fruit, take more exercise and sleep longer than the volunteers who chose not to take it.",
+        "why": "These habits give a rival explanation for the difference, so this weakens the argument.",
+        "trap": "Wrong direction"
+      },
+      {
+        "t": "Participants were assigned at random to take either the supplement or an identical-looking capsule, and none knew which they were taking.",
+        "why": "Random assignment with a look-alike capsule removes the rival explanation that healthier or more careful people chose the supplement, so the difference is more likely due to it."
+      },
+      {
+        "t": "Vitamin D is known to be important for healthy bones.",
+        "why": "A true fact about vitamin D in general, but it says nothing about whether supplements cut the number of colds.",
+        "trap": "True but not the answer"
+      }
+    ],
+    "answer": 2,
+    "takeaway": "To strengthen a causal claim, pick the option that rules out a rival cause; random assignment is the classic one."
+  },
+  {
+    "id": "CR-08",
+    "type": "strengthen",
+    "difficulty": "medium",
+    "topic": "business",
+    "wordCount": 47,
+    "stimulus": "A shop owner repainted the front of her shop in a bright colour last November. Takings over the following three months were a fifth higher than in the same three months a year earlier, and she concludes that the new look is the reason for the rise.",
+    "conclusion": "the new look is the reason for the rise",
+    "question": "Which of the following, if true, most strengthens the argument?",
+    "options": [
+      {
+        "t": "Over those three months, takings at comparable nearby shops that had not been repainted stayed at the level of a year earlier.",
+        "why": "This rules out a general upturn as the cause of the rise, making it more likely that the shop's own change was responsible."
+      },
+      {
+        "t": "Takings also rose, by a similar proportion, at other shops on the same street that were not repainted.",
+        "why": "This points to a street-wide or seasonal upturn as the cause, so it weakens the argument.",
+        "trap": "Wrong direction"
+      },
+      {
+        "t": "The colour the owner chose is among the most popular colours for shopfronts.",
+        "why": "Popularity of a colour does not show that the repainting, rather than something else, raised takings.",
+        "trap": "Out of scope"
+      },
+      {
+        "t": "A few customers told the owner that they liked the new look.",
+        "why": "A handful of comments is too thin to show that the repainting drew extra customers or explains a rise of a fifth.",
+        "trap": "Too narrow or too broad"
+      }
+    ],
+    "answer": 0,
+    "takeaway": "For 'A is the reason for B', the best strengthener removes the usual alternative cause, often through a comparison group that lacked A."
+  },
+  {
+    "id": "CR-09",
+    "type": "strengthen",
+    "difficulty": "medium",
+    "topic": "environment",
+    "wordCount": 51,
+    "stimulus": "Five years ago, planners restored an area of marshland in the eastern valley, and the number of wading birds there has since doubled. The same agency now intends to carry out an identical restoration in the western valley and expects wading bird numbers there to rise in much the same way.",
+    "conclusion": "expects wading bird numbers there to rise in much the same way",
+    "question": "Which of the following, if true, most strengthens the argument?",
+    "options": [
+      {
+        "t": "The number of herons in the eastern valley more than tripled.",
+        "why": "Herons are only one kind of wading bird, and this says nothing about whether the western valley will respond in the same way.",
+        "trap": "Too narrow or too broad"
+      },
+      {
+        "t": "The eastern valley lies on a major migration route used by large flocks of wading birds each year, while the western valley lies far from any such route.",
+        "why": "A difference in position suggests the result may not be repeated, so this weakens the argument.",
+        "trap": "Wrong direction"
+      },
+      {
+        "t": "The restoration in the eastern valley was completed ahead of schedule.",
+        "why": "How quickly the work was finished says nothing about how birds in the western valley will respond.",
+        "trap": "Out of scope"
+      },
+      {
+        "t": "Before restoration, the two valleys had similar soils, water levels and plant life, and both were visited by the same migrating birds.",
+        "why": "The expected repeat depends on the western valley resembling the eastern one in the ways that matter, and this supports that comparison."
+      }
+    ],
+    "answer": 3,
+    "takeaway": "For an argument by analogy, the strongest support shows that the two cases are alike in the factors that drive the result."
+  },
+  {
+    "id": "CR-10",
+    "type": "strengthen",
+    "difficulty": "medium",
+    "topic": "technology",
+    "wordCount": 40,
+    "stimulus": "A bank tested new fraud-detection software for a month. Of the 1,000 transactions that the software flagged, 800 turned out to be fraudulent. The bank's security chief concludes that the software is very good at catching the fraud that occurs.",
+    "conclusion": "the software is very good at catching the fraud that occurs",
+    "question": "Which of the following, if true, most strengthens the argument?",
+    "options": [
+      {
+        "t": "Of the 1,000 transactions flagged, 800 were fraudulent.",
+        "why": "This repeats the evidence already given and does not show how much fraud went undetected.",
+        "trap": "True but not the answer"
+      },
+      {
+        "t": "During the month, the software flagged almost all of the fraudulent transactions that passed through the bank's systems.",
+        "why": "The 800-of-1,000 figure shows only that flagged items were usually fraud; a claim about catching fraud also needs nearly all fraud to have been flagged."
+      },
+      {
+        "t": "Most of the transactions that the software flagged involved large sums of money.",
+        "why": "The size of flagged transactions says nothing about how much fraud the software missed.",
+        "trap": "Too narrow or too broad"
+      },
+      {
+        "t": "The software was able to review each transaction within a fraction of a second.",
+        "why": "Speed of review is unrelated to how much of the fraud the software catches.",
+        "trap": "Out of scope"
+      }
+    ],
+    "answer": 1,
+    "takeaway": "A hit rate among flagged cases tells you about false alarms; to judge detection, ask how many true cases were missed."
+  },
+  {
+    "id": "CR-11",
+    "type": "strengthen",
+    "difficulty": "medium",
+    "topic": "education",
+    "wordCount": 47,
+    "stimulus": "Over three years, secondary schools that moved their starting time from 8:00 to 9:00 saw their students' examination results rise on average, while results at schools that kept the earlier time did not. An education official concludes that the later start improves results because students sleep longer.",
+    "conclusion": "the later start improves results because students sleep longer",
+    "question": "Which of the following, if true, most strengthens the argument?",
+    "options": [
+      {
+        "t": "Schools that moved to a later start tended also to take on extra teaching staff and to offer more after-school tuition to their students in the same year.",
+        "why": "Extra staff give a rival explanation for the rise in results, so this weakens the argument.",
+        "trap": "Wrong direction"
+      },
+      {
+        "t": "Many parents prefer a later start because it eases the morning journey to work.",
+        "why": "Parental convenience has no bearing on whether sleep raised the results.",
+        "trap": "Out of scope"
+      },
+      {
+        "t": "Students at the later-start schools reported sleeping longer on school nights, and results rose most at the schools where reported sleep increased most.",
+        "why": "It supports the stated mechanism by tying extra sleep to the results, and the larger gains where sleep rose most point to cause."
+      },
+      {
+        "t": "Students at one of the later-start schools said they felt less tired in morning lessons.",
+        "why": "A report from a single school is too thin; it does not link sleep to results across the schools compared.",
+        "trap": "Too narrow or too broad"
+      }
+    ],
+    "answer": 2,
+    "takeaway": "To back a claimed mechanism, choose the option that shows the intermediate step and a dose-response pattern."
+  },
+  {
+    "id": "CR-12",
+    "type": "strengthen",
+    "difficulty": "hard",
+    "topic": "public policy",
+    "wordCount": 46,
+    "stimulus": "In the two years after a city built a network of protected cycle lanes, the number of cyclists injured in road accidents there fell by a fifth. Officials argue that the lanes have made cycling in the city safer, and they cite the fall as evidence.",
+    "conclusion": "the lanes have made cycling in the city safer",
+    "question": "Which of the following, if true, most strengthens the argument?",
+    "options": [
+      {
+        "t": "Over the same two years, the number of cycling trips made in the city rose substantially.",
+        "why": "The evidence is a fall in the count of injuries; if cycling grew while injuries fell, injuries per trip fell by even more, which is what 'safer' means."
+      },
+      {
+        "t": "Over the same period the city ran a heavily publicised campaign urging cyclists to wear helmets and bright clothing.",
+        "why": "The campaign is a rival explanation for fewer injuries, so this weakens the argument.",
+        "trap": "Wrong direction"
+      },
+      {
+        "t": "The protected lanes cost more to build than the city had budgeted.",
+        "why": "Construction cost has no bearing on whether the lanes made cycling safer.",
+        "trap": "Out of scope"
+      },
+      {
+        "t": "The city promotes cycling as a healthy and environmentally friendly way to travel.",
+        "why": "A true general point, but it says nothing about whether injuries per trip fell.",
+        "trap": "True but not the answer"
+      }
+    ],
+    "answer": 0,
+    "takeaway": "When the evidence is a raw count, the best strengthener often shows that the base (the amount of exposure) grew, so the rate fell even more."
+  },
+  {
+    "id": "CR-13",
+    "type": "weaken",
+    "difficulty": "easy",
+    "topic": "everyday life",
+    "wordCount": 43,
+    "stimulus": "Ravi's mathematics marks rose sharply from one term to the next, after he began using a paid study app for an hour every evening. His father, who pays for the subscription, concludes that the app is responsible for the improvement in Ravi's marks.",
+    "conclusion": "the app is responsible for the improvement in Ravi's marks",
+    "question": "Which of the following, if true, most weakens the argument?",
+    "options": [
+      {
+        "t": "Ravi's marks in the other subjects, for which he did not use the app at all, stayed the same over the same two terms.",
+        "why": "Marks rising only where the app was used points to the app, so this strengthens the argument.",
+        "trap": "Wrong direction"
+      },
+      {
+        "t": "The monthly subscription to the app costs less than private tuition would.",
+        "why": "The price of the app has nothing to do with whether it caused the improvement.",
+        "trap": "Out of scope"
+      },
+      {
+        "t": "Many students of Ravi's age use study apps in the evenings.",
+        "why": "A fact about other students; it neither offers a rival cause nor shows that the app failed to help Ravi.",
+        "trap": "True but not the answer"
+      },
+      {
+        "t": "At about the same time, Ravi began attending a weekly mathematics class that he had not attended before.",
+        "why": "It offers another cause that began when the app did, so the improvement may be due to the class rather than the app."
+      }
+    ],
+    "answer": 3,
+    "takeaway": "To weaken 'B followed A, so A caused B', offer another event that coincided with A."
+  },
+  {
+    "id": "CR-14",
+    "type": "weaken",
+    "difficulty": "medium",
+    "topic": "health",
+    "wordCount": 45,
+    "stimulus": "A hospital compared two groups of patients with the same knee condition. Patients who had the new keyhole operation left hospital, on average, three days earlier than those who had the traditional operation. The hospital's director concludes that the keyhole operation speeds up patients' recovery.",
+    "conclusion": "the keyhole operation speeds up patients' recovery",
+    "question": "Which of the following, if true, most weakens the argument?",
+    "options": [
+      {
+        "t": "Patients who had the keyhole operation reported less pain in the first week after surgery and needed fewer painkillers than those who had the traditional operation.",
+        "why": "Less pain fits faster recovery, so this strengthens the argument.",
+        "trap": "Wrong direction"
+      },
+      {
+        "t": "Surgeons offered the keyhole operation mainly to patients whose knee damage was mild, and kept the traditional operation for more serious damage.",
+        "why": "If the groups differed in severity from the start, the shorter stays could reflect milder conditions instead of any benefit from the operation."
+      },
+      {
+        "t": "The keyhole operation requires more expensive equipment than the traditional operation does.",
+        "why": "Equipment cost has no bearing on how quickly patients recover.",
+        "trap": "Out of scope"
+      },
+      {
+        "t": "The hospital's records of discharge dates are sometimes completed a day late.",
+        "why": "Small clerical delays would affect both groups alike and cannot explain a three-day gap, so the evidence stands.",
+        "trap": "Attacks the evidence"
+      }
+    ],
+    "answer": 1,
+    "takeaway": "When two groups are compared, check whether they were alike at the start; unequal selection is the commonest weakener."
+  },
+  {
+    "id": "CR-15",
+    "type": "weaken",
+    "difficulty": "medium",
+    "topic": "business",
+    "wordCount": 43,
+    "stimulus": "Last quarter a furniture company cut the price of its dining tables by a tenth, and the number of tables it sold rose by a fifth. The company's marketing director concludes that the price cut has increased the company's profit from dining tables.",
+    "conclusion": "the price cut has increased the company's profit from dining tables",
+    "question": "Which of the following, if true, most weakens the argument?",
+    "options": [
+      {
+        "t": "Sales of the company's dining chairs also rose last quarter, as many customers who bought tables bought matching chairs.",
+        "why": "Extra chair sales add to profit linked to the price cut, so this strengthens the argument.",
+        "trap": "Wrong direction"
+      },
+      {
+        "t": "The company's dining tables are made from sustainably sourced timber.",
+        "why": "The source of the timber has no bearing on whether the price cut raised profit.",
+        "trap": "Out of scope"
+      },
+      {
+        "t": "The extra costs of making and delivering the additional tables were larger than the extra revenue that the price cut brought in.",
+        "why": "The argument moves from higher sales to higher profit; if added costs exceed added revenue, profit falls even though sales rose."
+      },
+      {
+        "t": "Even after the cut, the company's dining tables cost more than those of most rival firms.",
+        "why": "A fact about relative price level; it says nothing about the company's costs or whether its profit rose.",
+        "trap": "True but not the answer"
+      }
+    ],
+    "answer": 2,
+    "takeaway": "When the evidence is about sales or revenue but the conclusion is about profit, look for a weakener that works through costs."
+  },
+  {
+    "id": "CR-16",
+    "type": "weaken",
+    "difficulty": "medium",
+    "topic": "technology",
+    "wordCount": 43,
+    "stimulus": "A study of forty cities found that those with more free public Wi-Fi hotspots per square kilometre also had more technology start-ups per head of population. A city planner concludes that providing free public Wi-Fi encourages technology start-ups to form in a city.",
+    "conclusion": "providing free public Wi-Fi encourages technology start-ups to form in a city",
+    "question": "Which of the following, if true, most weakens the argument?",
+    "options": [
+      {
+        "t": "Cities usually install free hotspots in districts where technology start-ups have already gathered.",
+        "why": "This reverses the direction of cause: the start-ups may have drawn the hotspots, so the link does not show that Wi-Fi encourages start-ups."
+      },
+      {
+        "t": "In several of the cities, the number of start-ups began to rise soon after the first hotspots were installed.",
+        "why": "Start-ups rising after hotspots appear fits the planner's direction of cause, so this strengthens the argument.",
+        "trap": "Wrong direction"
+      },
+      {
+        "t": "Free public Wi-Fi is used more by tourists than by local residents.",
+        "why": "Who uses the hotspots is unrelated to whether they encourage start-ups to form.",
+        "trap": "Out of scope"
+      },
+      {
+        "t": "One of the forty cities has many hotspots but very few start-ups.",
+        "why": "A single exception does not overturn a pattern across forty cities, so it does little damage to the argument.",
+        "trap": "Too narrow or too broad"
+      }
+    ],
+    "answer": 0,
+    "takeaway": "To weaken a correlation-to-cause claim, reverse it: show that the supposed effect could have produced the supposed cause."
+  },
+  {
+    "id": "CR-17",
+    "type": "weaken",
+    "difficulty": "hard",
+    "topic": "public policy",
+    "wordCount": 44,
+    "stimulus": "A town doubled its parking fees in the town centre. Over the following year, the number of cars counted on the centre's streets fell by a sixth. The council concludes that the higher fees have reduced the amount of traffic on the town's roads.",
+    "conclusion": "the higher fees have reduced the amount of traffic on the town's roads",
+    "question": "Which of the following, if true, most weakens the argument?",
+    "options": [
+      {
+        "t": "Traffic in the centre fell furthest in the months when the new fees were most strictly enforced.",
+        "why": "A fall that tracks enforcement fits the council's claim about fees, so this strengthens the argument.",
+        "trap": "Wrong direction"
+      },
+      {
+        "t": "Many drivers who used to park in the centre now park on free streets just outside it and walk in, and traffic on those streets has risen.",
+        "why": "The fall is counted only in the centre; if drivers merely moved their journeys to its edge, the town's overall traffic has not fallen."
+      },
+      {
+        "t": "The device that counts cars in the centre occasionally fails to register a vehicle during heavy rain, or when several cars pass it very close together.",
+        "why": "Occasional misses cannot produce a sustained fall of a sixth, so the evidence stands; this is a weak attack on the count.",
+        "trap": "Attacks the evidence"
+      },
+      {
+        "t": "The council spent the extra income from parking fees on repairing roads.",
+        "why": "How the money was spent has no bearing on whether traffic across the town fell.",
+        "trap": "Out of scope"
+      }
+    ],
+    "answer": 1,
+    "takeaway": "When the evidence is local but the conclusion is general, weaken by showing that the effect was moved, not removed."
+  },
+  {
+    "id": "CR-18",
+    "type": "weaken",
+    "difficulty": "hard",
+    "topic": "health",
+    "wordCount": 58,
+    "stimulus": "In a trial of a new sleeping medicine, 300 volunteers took the medicine and 300 took a placebo for eight weeks. Among those who completed the eight weeks, 70 percent of the medicine group reported sleeping better, against 45 percent of the placebo group. The researchers conclude that the medicine improves sleep for most people who take it.",
+    "conclusion": "the medicine improves sleep for most people who take it",
+    "question": "Which of the following, if true, most weakens the argument?",
+    "options": [
+      {
+        "t": "The volunteers in the two groups were closely similar in age, in sex and in how badly they had slept before the trial began.",
+        "why": "Well-matched groups make the comparison fairer, so this strengthens the argument.",
+        "trap": "Wrong direction"
+      },
+      {
+        "t": "A few volunteers in the placebo group also left the trial early because of mild headaches.",
+        "why": "A handful of dropouts from the placebo group says little; the issue is the dropout from the medicine group and why it happened.",
+        "trap": "Too narrow or too broad"
+      },
+      {
+        "t": "Those who slept better on the medicine said they would be willing to pay for it.",
+        "why": "Willingness to pay is unrelated to whether the medicine improves sleep for most people who take it.",
+        "trap": "Out of scope"
+      },
+      {
+        "t": "Many volunteers in the medicine group left the trial early, most of them because the medicine disturbed their sleep.",
+        "why": "Counting only those who completed the trial leaves out people it harmed; if many dropped out because it worsened their sleep, 'most people who take it' is not supported."
+      }
+    ],
+    "answer": 3,
+    "takeaway": "If a result is reported only for those who stayed, look for a weakener showing who left and why."
+  },
+  {
+    "id": "CR-19",
+    "type": "inference",
+    "difficulty": "easy",
+    "topic": "everyday life",
+    "wordCount": 43,
+    "stimulus": "At a town library, every member who borrowed more than ten books last year also attended at least one reading event. Even so, attending a reading event does not guarantee heavy borrowing: some members who attended events borrowed no more than ten books.",
+    "conclusion": null,
+    "question": "Which of the following can be properly inferred from the statements above?",
+    "options": [
+      {
+        "t": "A member who attended no reading event last year borrowed no more than ten books.",
+        "why": "The first statement says that borrowing more than ten books requires attending an event, so a member who attended none cannot have borrowed more than ten."
+      },
+      {
+        "t": "Attending a reading event leads members to borrow more books.",
+        "why": "The statements describe an association only; nothing says that events cause extra borrowing.",
+        "trap": "Distorts the passage"
+      },
+      {
+        "t": "Most members who attended a reading event borrowed more than ten books, but some did not.",
+        "why": "The 'some did not' part is stated, but nothing supports 'most' borrowing more than ten books.",
+        "trap": "Half right, half wrong"
+      },
+      {
+        "t": "The library should hold more reading events in order to raise borrowing.",
+        "why": "This is a recommendation, and the statements give no basis for any policy advice.",
+        "trap": "Out of scope"
+      }
+    ],
+    "answer": 0,
+    "takeaway": "From 'every A is B' you can infer 'no non-B is A'; never the reverse."
+  },
+  {
+    "id": "CR-20",
+    "type": "inference",
+    "difficulty": "easy",
+    "topic": "environment",
+    "wordCount": 52,
+    "stimulus": "In a national park, dry-season fires break out only where the undergrowth is thick. This year, after two wet seasons, the undergrowth is thick in the northern valley, while none of the southern valley's undergrowth is thick, because much of it was cleared. Rainfall in both valleys this year has been normal.",
+    "conclusion": null,
+    "question": "Which of the following can be properly inferred from the statements above?",
+    "options": [
+      {
+        "t": "A dry-season fire will break out in the northern valley this year.",
+        "why": "Thick undergrowth is a necessary condition for a fire, not a sufficient one, so its presence guarantees no fire.",
+        "trap": "Distorts the passage"
+      },
+      {
+        "t": "The clearing carried out in the southern valley should be extended to the northern valley.",
+        "why": "This is a recommendation, and the statements say nothing about what should be done.",
+        "trap": "Out of scope"
+      },
+      {
+        "t": "No dry-season fire will break out in the southern valley this year.",
+        "why": "Fires occur only where undergrowth is thick, and none of the southern valley's is thick, so the condition for a fire there is missing."
+      },
+      {
+        "t": "The undergrowth in the northern valley is thicker than it has ever been.",
+        "why": "The statements say nothing about how thick the undergrowth was in earlier years.",
+        "trap": "Extreme wording"
+      }
+    ],
+    "answer": 2,
+    "takeaway": "'Only where' states a necessary condition: its absence rules the outcome out, but its presence guarantees nothing."
+  },
+  {
+    "id": "CR-21",
+    "type": "inference",
+    "difficulty": "medium",
+    "topic": "everyday life",
+    "wordCount": 54,
+    "stimulus": "A survey of every household in a certain town found that 60 percent of all households own a car. Among the households that include children, 80 percent own a car. The survey counted a household as a car owner if it owned at least one car, whether the household owned or rented its home.",
+    "conclusion": null,
+    "question": "Which of the following can be properly inferred from the statements above?",
+    "options": [
+      {
+        "t": "Most of the households in the town that own a car include children.",
+        "why": "This depends on how many households include children, which the statements do not give, so it may be true or false.",
+        "trap": "Distorts the passage"
+      },
+      {
+        "t": "Fewer than half of the households without children own a car.",
+        "why": "Childless households could own cars at a rate anywhere below 60 percent, such as 55 percent, so the statements do not push it below half.",
+        "trap": "Extreme wording"
+      },
+      {
+        "t": "Households that include children make up most of the households in the town.",
+        "why": "The statements give no share for households with children, which could be small and still leave the town at 60 percent.",
+        "trap": "Distorts the passage"
+      },
+      {
+        "t": "Households without children are less likely to own a car than households with children are.",
+        "why": "Households with children are at 80 percent while all households are at 60 percent, so the remaining households must be below 60 percent and so below 80."
+      }
+    ],
+    "answer": 3,
+    "takeaway": "When a subgroup's rate is above the overall rate, the rest of the population must be below it."
+  },
+  {
+    "id": "CR-22",
+    "type": "inference",
+    "difficulty": "hard",
+    "topic": "business",
+    "wordCount": 45,
+    "stimulus": "Last year a retailer's online sales grew by 25 percent, while its in-store sales grew by 5 percent. At the end of the year, in-store sales were still more than ten times as large as online sales. The retailer's total sales rose over the year.",
+    "conclusion": null,
+    "question": "Which of the following can be properly inferred from the statements above?",
+    "options": [
+      {
+        "t": "Online sales grew by more money than in-store sales did last year, because they grew so much faster in percentage terms.",
+        "why": "Percentages depend on the base; in-store sales were over ten times larger, so 5 percent of them is more money than 25 percent of online sales.",
+        "trap": "Distorts the passage"
+      },
+      {
+        "t": "Online sales made up a larger share of the retailer's total sales at the end of the year than at the start.",
+        "why": "A part that grows faster than the rest, whatever its size, takes a growing share of the total."
+      },
+      {
+        "t": "In-store sales fell as customers moved online, though total sales rose.",
+        "why": "Total sales did rise, but in-store sales grew by 5 percent, so they did not fall.",
+        "trap": "Half right, half wrong"
+      },
+      {
+        "t": "Online sales will be larger than in-store sales within a few years.",
+        "why": "The statements describe only last year; they support no forecast about when, or whether, online sales will overtake.",
+        "trap": "Out of scope"
+      }
+    ],
+    "answer": 1,
+    "takeaway": "Percentages measure change relative to a base; faster growth guarantees a rising share, not a bigger absolute gain."
+  },
+  {
+    "id": "CR-23",
+    "type": "inference",
+    "difficulty": "hard",
+    "topic": "education",
+    "wordCount": 47,
+    "stimulus": "A selective programme admits an applicant only if the applicant has passed both a written test and an interview. This year, 200 applicants passed the written test, and 110 of those 200 also passed the interview. The programme has not yet announced how many applicants it admitted.",
+    "conclusion": null,
+    "question": "Which of the following can be properly inferred from the statements above?",
+    "options": [
+      {
+        "t": "The programme admitted no more than 110 applicants this year.",
+        "why": "Admission requires passing both stages, and only 110 applicants did so, so at most 110 can have been admitted."
+      },
+      {
+        "t": "The programme admitted exactly 110 applicants this year.",
+        "why": "Passing both stages is required but may not be enough, so some of the 110 may have been turned down.",
+        "trap": "Distorts the passage"
+      },
+      {
+        "t": "Fewer than half of the 200 applicants who passed the written test were admitted.",
+        "why": "Up to 110 could have been admitted, which is more than half of 200, so this does not follow.",
+        "trap": "True but not the answer"
+      },
+      {
+        "t": "The written test is a better predictor of success on the programme than the interview is.",
+        "why": "The statements say nothing about how well either stage predicts success.",
+        "trap": "Out of scope"
+      }
+    ],
+    "answer": 0,
+    "takeaway": "An 'only if' condition sets a ceiling: the number meeting every required condition is the most that can qualify, not the number that does."
+  },
+  {
+    "id": "CR-24",
+    "type": "flaw",
+    "difficulty": "easy",
+    "topic": "everyday life",
+    "wordCount": 43,
+    "stimulus": "A herbal tonic has been sold for decades in a certain region. No scientific study has ever reported that the tonic harms those who take it. The seller therefore claims that the tonic is safe for everyone, including pregnant women and young children.",
+    "conclusion": "the tonic is safe for everyone, including pregnant women and young children",
+    "question": "The reasoning in the argument is flawed because it…",
+    "options": [
+      {
+        "t": "relies on a single study that involved too few people to be reliable.",
+        "why": "The argument cites no study showing safety; it relies on the absence of studies reporting harm.",
+        "trap": "Distorts the passage"
+      },
+      {
+        "t": "ignores the fact that herbal remedies are regulated less strictly than medicines.",
+        "why": "Regulation is a separate matter; the flaw lies in how the seller moves from 'no reports of harm' to 'safe'.",
+        "trap": "Out of scope"
+      },
+      {
+        "t": "takes the absence of any reported harm as proof that the tonic is harmless, although no study may have looked for harm.",
+        "why": "Not finding harm in studies is not the same as showing safety; the seller infers 'safe for everyone' from silence, which proves nothing if nobody looked."
+      },
+      {
+        "t": "accepts the seller's word that no study has reported harm, and also treats a long sales record as showing that the tonic works.",
+        "why": "The first part is accurate, but the argument never claims that long sales show the tonic works, so the option is half wrong.",
+        "trap": "Half right, half wrong"
+      }
+    ],
+    "answer": 2,
+    "takeaway": "Beware 'no one has shown X is false, so X is true'; an absence of evidence is not evidence of absence unless someone looked."
+  },
+  {
+    "id": "CR-25",
+    "type": "flaw",
+    "difficulty": "medium",
+    "topic": "workplace",
+    "wordCount": 46,
+    "stimulus": "Under a company's rules, an employee can be shortlisted for promotion to senior manager only if the employee has at least ten years of service. Dev has worked at the company for twelve years. So Dev is certain to be shortlisted for promotion to senior manager.",
+    "conclusion": "Dev is certain to be shortlisted for promotion to senior manager",
+    "question": "The reasoning in the argument is flawed because it…",
+    "options": [
+      {
+        "t": "assumes that employees with fewer than ten years of service can never be shortlisted.",
+        "why": "That is what the company's rule itself says, so it is given as a premise and is not a flaw in the reasoning.",
+        "trap": "Distorts the passage"
+      },
+      {
+        "t": "treats a condition that is required for being shortlisted as though it were enough to guarantee it.",
+        "why": "'Only if' makes ten years necessary for shortlisting; it does not say that everyone who meets it is shortlisted, so Dev's twelve years do not settle the matter."
+      },
+      {
+        "t": "overlooks that years of service are a poor measure of how well a person would perform as a manager.",
+        "why": "The argument is about who is shortlisted under the rule, not about how well service predicts performance.",
+        "trap": "Out of scope"
+      },
+      {
+        "t": "assumes that shortlisting guarantees promotion, and that ten years of service is required for it.",
+        "why": "The second part matches the rule, but the argument concerns being shortlisted and never claims that shortlisting guarantees promotion.",
+        "trap": "Half right, half wrong"
+      }
+    ],
+    "answer": 1,
+    "takeaway": "'Only if' gives a necessary condition; meeting it never guarantees the outcome."
+  },
+  {
+    "id": "CR-26",
+    "type": "flaw",
+    "difficulty": "medium",
+    "topic": "education",
+    "wordCount": 43,
+    "stimulus": "Of the 40 students who failed a university's first-year statistics exam, 30 had not attended the optional revision sessions. The head of department concludes that students who skip the revision sessions are much more likely to fail the exam than those who attend.",
+    "conclusion": "students who skip the revision sessions are much more likely to fail the exam than those who attend",
+    "question": "The reasoning in the argument is flawed because it…",
+    "options": [
+      {
+        "t": "assumes that the 40 students who failed were a random sample of all first-year students.",
+        "why": "The argument does not rely on any sampling assumption; its weakness is the missing comparison with students who passed.",
+        "trap": "Distorts the passage"
+      },
+      {
+        "t": "overlooks that the exam may have been unusually difficult this year.",
+        "why": "A hard exam would affect students who skipped and attended alike, so it does not touch the comparison the argument makes.",
+        "trap": "Out of scope"
+      },
+      {
+        "t": "assumes that attending the revision sessions guarantees that a student passes.",
+        "why": "The argument says only that skippers are 'more likely' to fail; it makes no claim of a guarantee.",
+        "trap": "Extreme wording"
+      },
+      {
+        "t": "fails to consider how many of the students who passed also skipped the sessions, which would show whether skipping raises the chance of failing.",
+        "why": "Three-quarters of the failures skipping means little if most students skip anyway; the comparison needs the skipping rate among those who passed."
+      }
+    ],
+    "answer": 3,
+    "takeaway": "A figure about one group (those who failed) needs the matching figure for the comparison group (those who passed) before any 'more likely' claim."
+  },
+  {
+    "id": "CR-27",
+    "type": "flaw",
+    "difficulty": "hard",
+    "topic": "public policy",
+    "wordCount": 45,
+    "stimulus": "A survey asked residents of a river district whether a new bridge across the river was necessary for the district's future. Seventy percent answered yes. The district council has announced that a large majority of residents therefore support spending public money on building the bridge.",
+    "conclusion": "a large majority of residents therefore support spending public money on building the bridge",
+    "question": "The reasoning in the argument is flawed because it…",
+    "options": [
+      {
+        "t": "relies on a survey in which respondents may have misunderstood the question.",
+        "why": "Nothing in the passage suggests the question was unclear, and even a clear survey would not show support for public funding.",
+        "trap": "Attacks the evidence"
+      },
+      {
+        "t": "bases a claim about the whole district on the views of residents alone, ignoring people who work there.",
+        "why": "The council's claim is about residents, so leaving out commuters is not the flaw; the flaw is the step from 'necessary' to 'public money'.",
+        "trap": "Out of scope"
+      },
+      {
+        "t": "moves from residents judging the bridge to be necessary to residents agreeing that public money should pay for it, which does not follow.",
+        "why": "Believing a bridge is needed is different from backing public funding for it; residents might prefer tolls or private finance, so the survey does not show support for the council's plan."
+      },
+      {
+        "t": "assumes that the 30 percent who did not answer yes are all opposed to any new bridge.",
+        "why": "The argument makes no claim about the remaining 30 percent; it concerns what the 70 percent have shown they support.",
+        "trap": "Distorts the passage"
+      }
+    ],
+    "answer": 2,
+    "takeaway": "Watch for a shift in what is measured between evidence and conclusion: judging something needed is not agreeing to pay for it."
+  },
+  {
+    "id": "CR-28",
+    "type": "paradox",
+    "difficulty": "easy",
+    "topic": "agriculture",
+    "wordCount": 46,
+    "stimulus": "This year a farm harvested a fifth more wheat than it did last year, using the same fields and incurring the same costs. The farm sold all of its wheat, as it does every year. Even so, its income from wheat was lower than last year's.",
+    "conclusion": null,
+    "question": "Which of the following, if true, best explains the apparent discrepancy?",
+    "options": [
+      {
+        "t": "The farm also grows several other crops, and these brought in more income than wheat did.",
+        "why": "Income from other crops says nothing about why income from wheat fell despite a bigger harvest.",
+        "trap": "Out of scope"
+      },
+      {
+        "t": "Farmers generally prefer a larger harvest to a smaller one.",
+        "why": "A true general point, but it does nothing to explain why a larger harvest brought lower income.",
+        "trap": "True but not the answer"
+      },
+      {
+        "t": "Good weather produced large wheat harvests across the whole region, and the market price of wheat fell by more than a fifth as a result.",
+        "why": "A price fall larger than the rise in quantity makes income fall even though the farm sold more wheat, which removes the discrepancy."
+      },
+      {
+        "t": "The farm sold its wheat this year at a price slightly higher than last year's.",
+        "why": "A higher price with a bigger harvest would raise income, so this deepens the puzzle instead of explaining it.",
+        "trap": "Wrong direction"
+      }
+    ],
+    "answer": 2,
+    "takeaway": "For a puzzle where more output brings less income, look for a price or cost effect large enough to outweigh the extra volume."
+  },
+  {
+    "id": "CR-29",
+    "type": "paradox",
+    "difficulty": "medium",
+    "topic": "technology",
+    "wordCount": 51,
+    "stimulus": "A hospital introduced a computer system designed to reduce prescription errors. In the following year, the number of prescription errors recorded at the hospital rose by a third. Yet the hospital's number of patients, number of prescriptions written and number of doctors were much the same as in the year before.",
+    "conclusion": null,
+    "question": "Which of the following, if true, best explains the apparent discrepancy?",
+    "options": [
+      {
+        "t": "The system automatically flags and logs errors, including many that doctors had previously corrected informally without recording them.",
+        "why": "The rise in recorded errors can reflect better detection and logging rather than more errors, so the system may be working as designed."
+      },
+      {
+        "t": "Doctors received a short training course on the new system before it was introduced.",
+        "why": "Training says nothing about why recorded errors rose after the system arrived.",
+        "trap": "Out of scope"
+      },
+      {
+        "t": "In the years before the system was introduced, the number of recorded errors at the hospital had been falling steadily year after year, as doctors grew more careful.",
+        "why": "A steady earlier fall makes the later rise more surprising, so this deepens the puzzle.",
+        "trap": "Wrong direction"
+      },
+      {
+        "t": "Most of the errors that the system recorded were minor and caused no harm to patients.",
+        "why": "Knowing that errors were minor does not explain why more of them were recorded than before.",
+        "trap": "True but not the answer"
+      }
+    ],
+    "answer": 0,
+    "takeaway": "When a fix seems to worsen a measure, ask whether the fix changed the way the measure is recorded."
+  },
+  {
+    "id": "CR-30",
+    "type": "paradox",
+    "difficulty": "hard",
+    "topic": "health",
+    "wordCount": 48,
+    "stimulus": "Two hospitals treat the same illness. Among mild cases, Hospital A has a higher recovery rate than Hospital B. Among severe cases, Hospital A also has a higher recovery rate than Hospital B. Yet when all patients are counted together, Hospital B has the higher overall recovery rate.",
+    "conclusion": null,
+    "question": "Which of the following, if true, best explains the apparent discrepancy?",
+    "options": [
+      {
+        "t": "Mild cases make up a larger share of Hospital A's patients than of Hospital B's.",
+        "why": "More mild cases would raise A's overall rate and widen the gap in A's favour, so this deepens the puzzle.",
+        "trap": "Wrong direction"
+      },
+      {
+        "t": "Severe cases make up a much larger share of Hospital A's patients than of Hospital B's, and recovery is far less likely in severe cases at both hospitals.",
+        "why": "Overall rates are averages weighted by case mix, so A's heavier load of hard cases can pull its overall rate below B's even though A does better within each category."
+      },
+      {
+        "t": "Hospital B employs more doctors per patient than Hospital A does.",
+        "why": "This might explain B's results, but it cannot explain how A can win in each category and still lose overall.",
+        "trap": "Out of scope"
+      },
+      {
+        "t": "Severe cases have lower recovery rates than mild cases at both hospitals.",
+        "why": "A needed part of the explanation but incomplete: without knowing how the cases are split between the hospitals it cannot reverse the totals.",
+        "trap": "True but not the answer"
+      }
+    ],
+    "answer": 1,
+    "takeaway": "When group-level results and the overall result point opposite ways, look for a difference in group mix between the two things compared."
+  }
+]

@@ -1,13 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { CONTENT } from "./bank";
-import { RC_CATALOG, VA_CATALOG } from "./catalog.gen";
+import { CR_CATALOG, RC_CATALOG, VA_CATALOG } from "./catalog.gen";
 import { RC_LEADS } from "./leads.gen";
-import { rcLead, rcMeta, vaMeta } from "./types";
+import { crMeta, rcLead, rcMeta, vaMeta } from "./types";
 
 describe("content catalog", () => {
   it("matches the content files (run `npm run catalog` if this fails)", () => {
     expect(RC_CATALOG).toEqual(CONTENT.rcSets.map(rcMeta));
     expect(VA_CATALOG).toEqual(CONTENT.vaParas.map(vaMeta));
+    expect(CR_CATALOG).toEqual(CONTENT.crItems.map(crMeta));
     expect(RC_LEADS).toEqual(Object.fromEntries(CONTENT.rcSets.map((s) => [s.id, rcLead(s)])));
   });
 
@@ -21,8 +22,8 @@ describe("content catalog", () => {
 
   it("keeps the full content out of the main bundle", () => {
     // Only the content loader may import the content files; everything else uses the catalog.
-    const files = import.meta.glob<string>(["/src/**/*.{ts,tsx}", "!/src/**/*.test.ts", "!/src/practice/rc/**", "!/src/practice/bank.ts"], { query: "?raw", import: "default", eager: true });
-    const offenders = Object.keys(files).filter((f) => /from "[./]*(?:practice\/)?(?:rc|va\/paragraphs|bank)"/.test(files[f]));
+    const files = import.meta.glob<string>(["/src/**/*.{ts,tsx}", "!/src/**/*.test.ts", "!/src/practice/rc/**", "!/src/practice/cr/**", "!/src/practice/bank.ts"], { query: "?raw", import: "default", eager: true });
+    const offenders = Object.keys(files).filter((f) => /from "[./]*(?:practice\/)?(?:rc|cr|va\/paragraphs|bank)"|from "[./]*content\/(?:rc|cr)\//.test(files[f]));
     expect(Object.keys(files).length).toBeGreaterThan(30);
     expect(offenders).toEqual([]);
   });

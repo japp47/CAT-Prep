@@ -24,6 +24,7 @@ const Sectional = lazy(() => import("./pages/practice/Sectional"));
 const SectionalReview = lazy(() => import("./pages/practice/Sectional").then((m) => ({ default: m.SectionalReview })));
 const SpeedTest = lazy(() => import("./pages/practice/SpeedTest"));
 const VaPlayer = lazy(() => import("./pages/practice/VaPlayer"));
+const CrPlayer = lazy(() => import("./pages/practice/CrPlayer"));
 const Progress = lazy(load.progress);
 const Roadmap = lazy(() => import("./pages/Roadmap"));
 const Section = lazy(() => import("./pages/Section"));
@@ -34,7 +35,7 @@ const Updates = lazy(() => import("./pages/Updates"));
 const Words = lazy(() => import("./pages/Words"));
 
 const TITLES: Record<string, string> = {
-  "/": "CAT Prep Hub", "/today": "Today", "/plan": "Plan and time", "/practice": "Practice", "/practice/library": "RC library", "/practice/sectional": "VARC sectional", "/practice/va": "VA drill", "/practice/speed": "Reading speed test", "/practice/redo": "Redo queue", "/varc": "VARC", "/dilr": "DILR", "/quant": "Quant",
+  "/": "CAT Prep Hub", "/today": "Today", "/plan": "Plan and time", "/practice": "Practice", "/practice/library": "RC library", "/practice/sectional": "VARC sectional", "/practice/va": "VA drill", "/practice/cr": "Critical reasoning drill", "/practice/speed": "Reading speed test", "/practice/redo": "Redo queue", "/varc": "VARC", "/dilr": "DILR", "/quant": "Quant",
   "/progress": "Progress", "/errors": "Error log", "/words": "Words", "/updates": "Important updates", "/exams": "CAT and other exams",
   "/guides": "Guides", "/stories": "Topper stories", "/roadmap": "What's coming", "/settings": "Settings",
 };
@@ -72,6 +73,7 @@ export default function App() {
           <Route path="practice/library" element={<Library />} />
           <Route path="practice/rc/:id" element={<RcPlayer />} />
           <Route path="practice/va" element={<VaPlayer />} />
+          <Route path="practice/cr" element={<CrPlayer />} />
           <Route path="practice/speed" element={<SpeedTest />} />
           <Route path="practice/redo" element={<Redo />} />
           <Route path="practice/sectional" element={<Sectional />} />

@@ -51,6 +51,7 @@ function Drill({ g }: { g: Guide }) {
   const [seed] = useState(uid);
   if (!g.drill) return null;
   if (g.drill === "rc") return <Button asChild variant="secondary"><Link to="/practice">Practice RC on this site</Link></Button>;
+  if (g.drill === "cr") return <Button asChild variant="secondary"><Link to={`/practice/cr?type=mix&n=6&seed=${seed}`}>Drill 6 critical reasoning questions here</Link></Button>;
   const kind = g.drill;
   return <Button asChild variant="secondary"><Link to={`/practice/va?type=${kind}&n=6&seed=${seed}`}>Drill 6 {VA_KIND[kind].label.toLowerCase()} questions here</Link></Button>;
 }

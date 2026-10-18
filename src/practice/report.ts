@@ -1,5 +1,5 @@
-import type { ErrorEntry, PracticeSet, RcAttempt, SpeedRun } from "../lib/state";
-import { GENRES, RC_QTYPE, type Difficulty, type RcMeta, type RcSet } from "./types";
+import type { CrAttempt, ErrorEntry, PracticeSet, RcAttempt, SpeedRun } from "../lib/state";
+import { CR_TYPE, CR_TYPES, GENRES, RC_QTYPE, type CrMeta, type Difficulty, type RcMeta, type RcSet } from "./types";
 
 /** Questions attempted and right for one group, such as one question type or one genre. Skipped questions are not counted. */
 export interface Row { key: string; label: string; attempted: number; correct: number }
@@ -64,6 +64,17 @@ export function rcByQuestionType(attempts: RcAttempt[], rcById: (id: string) => 
     });
   });
   return inOrder(m, Object.keys(RC_QTYPE));
+}
+
+/** Accuracy of critical reasoning drills by kind of question (assumption, weaken, flaw…). Blank questions are not counted. */
+export function crByKind(attempts: CrAttempt[], catalog: CrMeta[]): Row[] {
+  const meta = new Map(catalog.map((m) => [m.id, m]));
+  const m = new Map<string, Row>();
+  attempts.forEach((a) => a.items.forEach((i) => {
+    const x = meta.get(i.k.slice(3));
+    if (x && i.a !== null) add(m, x.type, CR_TYPE[x.type].label, i.ok);
+  }));
+  return inOrder(m, CR_TYPES);
 }
 
 /** The group with the lowest accuracy among those with at least `min` questions. Ties go to the one with more questions. */

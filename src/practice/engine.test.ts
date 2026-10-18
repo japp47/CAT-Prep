@@ -6,13 +6,16 @@ import { RC_SETS } from "./rc";
 import { computeStreak } from "./streak";
 import { buildItem, customDrill, DAILY_MIX, parseKey, scoreItem, sentenceAt, sumAt, VA_KINDS, type VaItem } from "./va/build";
 import { VA_PARAS } from "./va/paragraphs";
+import { customCr } from "./crdrill";
+import { CR_ITEMS } from "./cr";
+import { CR_TYPES } from "./types";
 
 describe("VA items", () => {
   for (const p of VA_PARAS) {
     it(`${p.id} builds four valid items`, () => {
       const pj = buildItem("pj", p);
-      expect(pj.order).not.toEqual([0, 1, 2, 3]);
-      expect(pj.answer).toHaveLength(4);
+      expect(pj.order).not.toEqual(p.s.map((_, i) => i));
+      expect(pj.answer).toHaveLength(p.s.length);
       // typing the key back gives the sentences in their true order
       expect(pj.answer.split("").map((n) => sentenceAt(pj, +n - 1))).toEqual(p.s);
 
@@ -22,6 +25,8 @@ describe("VA items", () => {
 
       const si = buildItem("si", p);
       expect(si.gaps).toHaveLength(4);
+      expect(new Set(si.gaps).size).toBe(4);
+      expect(si.gaps.every((g) => g >= 0 && g <= p.s.length)).toBe(true);
       expect(si.gaps[+si.answer - 1]).toBe(p.insAt);
 
       const ps = buildItem("ps", p);
@@ -129,5 +134,27 @@ describe("streak", () => {
   });
   it("is zero with no activity", () => {
     expect(computeStreak(days(), "2026-10-17").days).toBe(0);
+  });
+});
+
+describe("critical reasoning drills", () => {
+  it("covers all six types in a mixed drill of six", () => {
+    const got = customCr(CR_ITEMS, "mix", 6, "s1", new Set());
+    expect(got).toHaveLength(6);
+    expect(new Set(got.map((c) => c.type))).toEqual(new Set(CR_TYPES));
+  });
+  it("never repeats a question and stops when the bank runs out", () => {
+    const got = customCr(CR_ITEMS, "mix", 12, "s2", new Set());
+    expect(new Set(got.map((c) => c.id)).size).toBe(12);
+    expect(customCr(CR_ITEMS, "flaw", 12, "s2", new Set())).toHaveLength(CR_ITEMS.filter((c) => c.type === "flaw").length);
+  });
+  it("gives one type only when asked for it", () => {
+    customCr(CR_ITEMS, "weaken", 4, "s3", new Set()).forEach((c) => expect(c.type).toBe("weaken"));
+  });
+  it("is the same for the same seed and puts unseen questions first", () => {
+    expect(customCr(CR_ITEMS, "mix", 6, "same", new Set()).map((c) => c.id)).toEqual(customCr(CR_ITEMS, "mix", 6, "same", new Set()).map((c) => c.id));
+    const first = customCr(CR_ITEMS, "assumption", 3, "u1", new Set());
+    const next = customCr(CR_ITEMS, "assumption", 3, "u1", new Set(first.map((c) => c.id)));
+    expect(next.some((c) => first.includes(c))).toBe(false);
   });
 });

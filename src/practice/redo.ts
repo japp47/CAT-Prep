@@ -1,8 +1,8 @@
 import { addDays } from "../lib/date";
 import type { AppState, RedoItem } from "../lib/state";
-import { RC_CATALOG, VA_CATALOG } from "./catalog.gen";
+import { CR_CATALOG, RC_CATALOG, VA_CATALOG } from "./catalog.gen";
 import type { Content } from "./content";
-import type { RcSet } from "./types";
+import type { CrItem, RcSet } from "./types";
 import { parseKey, scoreItem, VA_KIND, type VaItem } from "./va/build";
 
 /**
@@ -17,15 +17,21 @@ export const rcRedoKey = (set: string, qi: number) => `rc:${set}:${qi}`;
 
 const rcQuestions = new Map(RC_CATALOG.map((m) => [m.id, m.questions]));
 const vaIds = new Set(VA_CATALOG.map((m) => m.id));
+const crIds = new Set(CR_CATALOG.map((m) => m.id));
+
+export const crRedoKey = (id: string) => `cr:${id}`;
 
 /** Whether a key still points at a question in the library. Uses the catalog, so it works before the content loads. */
 export function redoKeyExists(key: string): boolean {
   const [kind, id, n] = key.split(":");
   if (kind === "rc") return Number(n) < (rcQuestions.get(id) ?? 0);
+  if (kind === "cr") return crIds.has(id);
   return kind in VA_KIND && vaIds.has(id);
 }
 
-export type RedoRef = { kind: "rc"; key: string; set: RcSet; qi: number } | { kind: "va"; key: string; item: VaItem };
+/** A question the timed sectional can ask: an RC question or a VA item. */
+export type ExamRef = { kind: "rc"; key: string; set: RcSet; qi: number } | { kind: "va"; key: string; item: VaItem };
+export type RedoRef = ExamRef | { kind: "cr"; key: string; item: CrItem };
 
 /** Finds the question behind a key. Null when it was removed from the library. */
 export function resolveRedo(key: string, c: Content): RedoRef | null {
@@ -34,8 +40,18 @@ export function resolveRedo(key: string, c: Content): RedoRef | null {
     const set = c.rcById(id), qi = Number(n);
     return set && set.questions[qi] ? { kind: "rc", key, set, qi } : null;
   }
+  if (key.startsWith("cr:")) {
+    const item = c.crById(key.slice(3));
+    return item ? { kind: "cr", key, item } : null;
+  }
   const item = parseKey(key, c.vaParas);
   return item ? { kind: "va", key, item } : null;
+}
+
+/** Like resolveRedo, for the sectional, which asks no critical reasoning. */
+export function resolveExam(key: string, c: Content): ExamRef | null {
+  const ref = resolveRedo(key, c);
+  return ref && ref.kind !== "cr" ? ref : null;
 }
 
 /** Puts a missed question in the queue, or back to box 0 if it is already there. */
@@ -74,7 +90,7 @@ export function upcomingRedo(items: RedoItem[], d: string): [string, number][] {
 }
 
 /** The Progress row a redo answer counts toward: "RC" or the VA type. */
-export const redoPracticeType = (ref: RedoRef) => (ref.kind === "rc" ? "RC" : VA_KIND[ref.item.kind].practice);
+export const redoPracticeType = (ref: RedoRef) => (ref.kind === "rc" ? "RC" : ref.kind === "cr" ? "Critical reasoning" : VA_KIND[ref.item.kind].practice);
 
 /**
  * Builds the queue from past attempts, for saves made before the queue existed.
@@ -90,6 +106,7 @@ export function seedRedo(st: AppState, c: Content): void {
     const item = parseKey(i.k, c.vaParas);
     if (item) events.push({ d: a.d, k: i.k, ok: scoreItem(item, i.a).ok });
   }));
+  st.crAttempts.forEach((a) => a.items.forEach((i) => events.push({ d: a.d, k: i.k, ok: i.ok })));
   events.sort((a, b) => (a.d < b.d ? -1 : a.d > b.d ? 1 : 0));
   // A later right answer on a full retake takes the question back out.
   const open = new Map<string, string>();

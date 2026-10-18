@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
-import type { RcSet, VaPara } from "./types";
+import type { CrItem, RcSet, VaPara } from "./types";
 
 /** The full practice content. Lists and rotations use catalog.gen.ts instead, which is small. */
 export interface Content {
   rcSets: RcSet[];
   rcById: (id: string) => RcSet | undefined;
   vaParas: VaPara[];
+  crItems: CrItem[];
+  crById: (id: string) => CrItem | undefined;
 }
 
 let loaded: Content | null = null;

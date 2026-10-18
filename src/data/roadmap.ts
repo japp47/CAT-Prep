@@ -8,6 +8,7 @@ export const ROADMAP: RoadGroup[] = [
     { title: "Redo queue", text: "Questions you miss come back after 1, 3 and 7 days, until you get them right three times in a row." },
     { title: "Focus timer", text: "Start a timer on any timetable block. It keeps running while you Practice, suggests a break every 25 minutes, and logs the real minutes against the plan." },
     { title: "Timed VARC sectional", text: "A full 40-minute VARC section on a CAT-style screen: four RCs and eight VA questions, built from the practice library." },
+    { title: "Critical reasoning drill", text: "30 original questions in the six types XAT asks: assumption, strengthen, weaken, inference, flaw and paradox. Every option shows the trap it sets, wrong answers join your redo queue and Error log, and Progress shows your accuracy by type." },
     { title: "Report card and percentile estimator", text: "Progress now shows what to work on: accuracy by question type, RC question kind, genre and difficulty, reading pace over time and the traps that cost you most. Set a target percentile in Plan, and turn any score into an estimated percentile, from two years of published tables, with a grid of what attempts and accuracy are worth." },
     { title: "Install as an app and work offline", text: "Add the site to your home screen and open it without internet. A daily study reminder goes straight into Google, Apple or Outlook calendar." },
   ] },

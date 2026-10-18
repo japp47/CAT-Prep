@@ -4,48 +4,73 @@
     "topic": "Rewards that backfire",
     "difficulty": "medium",
     "since": "2026-10-20",
+    "wordCount": 107,
     "s": [
-      "Rewards meant to solve a problem can sometimes make it worse.",
-      "A well-known story from colonial Delhi tells of a bounty paid for every dead cobra, which led some residents to start breeding cobras for the reward.",
-      "When officials discovered the trick and cancelled the scheme, the breeders released their now worthless snakes, leaving more cobras than before.",
-      "Historians doubt that the story happened as told, but economists still use the name 'cobra effect' for any incentive that rewards the wrong behaviour."
+      "Any scheme that pays for a measurable result invites people to produce that result by whatever route is cheapest.",
+      "The standard illustration is a bounty said to have been offered in colonial Delhi for every dead cobra, in the hope of ridding the city of snakes.",
+      "Enterprising residents, the story goes, began breeding cobras for the payment.",
+      "When officials noticed the trick and scrapped the bounty, the breeders freed their now worthless stock, leaving the city with more cobras than before.",
+      "Historians have found no good evidence that any of this happened, but economists still use the label 'cobra effect' for incentives that reward the wrong behaviour."
     ],
+    "pj": {
+      "show": [
+        3,
+        1,
+        5,
+        2,
+        4
+      ],
+      "answer": "24153"
+    },
     "marks": [
-      "Rewards meant to solve a problem",
-      "A well-known story",
-      "discovered the trick",
-      "Historians doubt that the story"
+      "pays for a measurable result",
+      "The standard illustration",
+      "began breeding cobras",
+      "noticed the trick",
+      "any of this happened"
     ],
     "cues": [
-      "States the general claim without pointing back to anything.",
-      "Gives the story that illustrates the claim.",
-      "'The trick' is the breeding just described, and the scheme must exist before it can be cancelled.",
-      "Comments on the whole story and names the effect, so it closes the paragraph."
+      "A general claim with no backward reference, so it opens.",
+      "'The standard illustration' presupposes a claim to illustrate, and it introduces the bounty.",
+      "'The payment' needs the bounty of the second sentence; the breeding is the cheap route the first sentence warns about.",
+      "'The trick' and 'the breeders' both need the breeding just described, and the bounty is scrapped only after it has run.",
+      "'Any of this' covers the whole story, so the doubt can come only after it; the name then closes the paragraph."
     ],
-    "odd": "Cobras are among the most venomous snakes in South Asia, and their bites remain a serious danger in rural areas.",
-    "oddWhy": "It is about cobras as a danger, not about rewards that backfire.",
-    "ins": "For a while the scheme seemed to work, as officials kept paying out for dead snakes.",
-    "insAt": 2,
-    "insWhy": "'The scheme' needs the bounty from the second sentence, and 'for a while' must come before officials discover the trick.",
+    "odd": "Snakebite still kills tens of thousands of people in India each year, most of them in rural areas.",
+    "oddWhy": "It concerns snakebite as a public-health problem, not the way incentives can backfire.",
+    "ooo": {
+      "show": [
+        4,
+        2,
+        0,
+        1,
+        3
+      ],
+      "answer": 3,
+      "drop": 5
+    },
+    "ins": "Their snake farms soon yielded far more carcasses than the wild population could ever have supplied.",
+    "insAt": 3,
+    "insWhy": "'Their snake farms' needs the breeders of the third sentence, and the glut of carcasses is what lets officials 'notice the trick' in the fourth. After the fourth sentence the breeders have already freed their stock.",
     "sum": [
       {
-        "t": "Incentives can backfire by rewarding the very behaviour they target, as a doubtful but telling story about cobra bounties shows.",
-        "why": "Covers the general claim, the example and the doubt about the story."
+        "t": "Paying for a measurable result can reward whatever route to it is cheapest, as a probably embellished tale of cobra bounties illustrates.",
+        "why": "Covers the general claim, the story and the doubt about it."
       },
       {
-        "t": "Residents of colonial Delhi bred cobras to collect a bounty.",
-        "why": "Only the example, without the point it illustrates.",
+        "t": "A bounty on dead cobras in colonial Delhi led residents to breed snakes and then release them when the scheme was scrapped.",
+        "why": "Retells the story only, leaving out the general claim and the doubt.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "Every reward offered by a government ends up making the original problem worse, which is why economists oppose bounties of any kind.",
-        "why": "The paragraph says rewards 'can sometimes' backfire, and no one is said to oppose all bounties.",
-        "trap": "Extreme wording"
+        "t": "Historians have confirmed from official records that Delhi's cobra bounty backfired by encouraging snake breeding, which is why economists now speak of a 'cobra effect'.",
+        "why": "The passage says historians found no good evidence; the name survives regardless.",
+        "trap": "Distorts the passage"
       },
       {
-        "t": "Historians have proved that the cobra story is false, so the cobra effect is not a real idea.",
-        "why": "Historians doubt the story, but economists still use the idea.",
-        "trap": "Distorts the passage"
+        "t": "Incentive schemes reliably defeat their own purpose whenever they are tried, as the cobra bounty of colonial Delhi shows.",
+        "why": "The passage says such schemes 'invite' cheap routes, not that they always fail, and it doubts the story.",
+        "trap": "Extreme wording"
       }
     ]
   },
@@ -54,98 +79,148 @@
     "topic": "Placebos without deception",
     "difficulty": "hard",
     "since": "2026-10-20",
+    "wordCount": 105,
     "s": [
-      "A placebo is a treatment with no active ingredient, such as a sugar pill.",
-      "Doctors long assumed that it could help only if patients believed it was real medicine.",
-      "That assumption has been challenged by trials of so-called open-label placebos, in which patients are told plainly that their pills contain nothing active.",
-      "In several such studies, people with conditions like irritable bowel syndrome still reported feeling better, though researchers disagree about why."
+      "A placebo, a pill or procedure with no active ingredient, has long been regarded as working only on patients who are fooled into thinking it real.",
+      "The belief seemed to settle the matter for honest practice, since a doctor who explained the pill could not expect it to work.",
+      "In so-called open-label trials, however, patients were told plainly that their pills contained no medicine.",
+      "Several such trials, mostly on irritable bowel syndrome, found that these patients improved more than those who were given no pill at all.",
+      "Why that should happen remains disputed, with explanations ranging from expectation to the sheer ritual of being treated."
     ],
+    "pj": {
+      "show": [
+        4,
+        2,
+        1,
+        5,
+        3
+      ],
+      "answer": "32514"
+    },
     "marks": [
-      "A placebo is a treatment",
-      "it could help only if",
-      "That assumption",
-      "In several such studies"
+      "a pill or procedure with no active ingredient",
+      "The belief seemed to settle",
+      "open-label trials",
+      "Several such trials",
+      "remains disputed"
     ],
     "cues": [
-      "Defines the term the rest of the paragraph uses.",
-      "'It' refers to the placebo just defined.",
-      "'That assumption' points back to the belief in the second sentence.",
-      "'Such studies' are the open-label trials just introduced."
+      "Defines the placebo and states the old belief, so it opens.",
+      "'The belief' is the view just stated, and 'honest practice' follows from it.",
+      "'However' turns against that belief, and the open-label trials are introduced here.",
+      "'Several such trials' are the open-label trials just introduced, and 'these patients' are the ones told plainly.",
+      "'That' is the improvement reported in the fourth sentence, so the dispute about its cause comes last."
     ],
-    "odd": "Some modern medicines began as plant remedies, such as quinine, which comes from the bark of the cinchona tree.",
-    "oddWhy": "It is about where real drugs come from, not about placebos working without deception.",
-    "ins": "In one trial, the pills even came in a bottle labelled 'placebo pills'.",
+    "odd": "Many active drugs, aspirin among them, began as folk plant remedies long before anyone knew how they worked.",
+    "oddWhy": "It concerns where active drugs come from, not whether placebos can work without deception.",
+    "ooo": {
+      "show": [
+        3,
+        0,
+        5,
+        1,
+        4
+      ],
+      "answer": 2,
+      "drop": 2
+    },
+    "ins": "Some went further: the bottle itself was labelled 'placebo pills', leaving nothing to inference.",
     "insAt": 3,
-    "insWhy": "It adds a detail of how the open-label trials were run, so it follows their description and comes before the results.",
+    "insWhy": "'Some' needs the trials introduced in the third sentence, and the labelled bottle extends 'told plainly' before the results arrive. Earlier there are no trials to refer to; after the fourth sentence it would interrupt the finding and the dispute about it.",
     "sum": [
       {
-        "t": "Placebos may help even when patients know they are inert, which challenges an old assumption, though the reason is unclear.",
-        "why": "Covers the old view, the challenge and the open question."
+        "t": "Placebos, long thought to need deception, seem to help some patients even when openly labelled inert, though why remains unexplained.",
+        "why": "Covers the old belief, the challenge to it and the open question."
       },
       {
-        "t": "Patients with irritable bowel syndrome felt better after taking pills with nothing active in them.",
-        "why": "One finding, without the old assumption it challenges.",
+        "t": "Patients with irritable bowel syndrome improved more than untreated patients after taking pills that they had been told were inert.",
+        "why": "One finding only, without the old belief it challenges or the dispute about its cause.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "Open-label trials have proved that belief plays no part in how any treatment works, so doctors can now replace most real medicines with honest placebos.",
-        "why": "The studies are few, the reason is disputed, and nothing suggests replacing real medicine.",
-        "trap": "Extreme wording"
+        "t": "Open-label trials have finally explained why placebos work, ending the long dispute over whether patients must be deceived for a pill to help them.",
+        "why": "The cause of the improvement is still disputed.",
+        "trap": "Distorts the passage"
       },
       {
-        "t": "Doctors were right that placebos work only when patients are deceived.",
-        "why": "The trials challenge exactly that belief.",
-        "trap": "Distorts the passage"
+        "t": "Honest placebos have been shown to treat illness in general, which makes belief and expectation irrelevant to how any treatment works.",
+        "why": "The trials involved a few conditions, and nothing is claimed about every treatment.",
+        "trap": "Extreme wording"
       }
     ]
   },
   {
     "id": "printing",
     "topic": "The printing press spreads",
-    "difficulty": "easy",
+    "difficulty": "medium",
     "since": "2026-10-20",
+    "wordCount": 107,
     "s": [
-      "Around 1450, Johannes Gutenberg began printing with movable metal type in the German city of Mainz.",
-      "Within fifty years, presses were running in more than two hundred European towns, and millions of books had been produced.",
-      "This flood of cheap print did more than spread existing texts.",
-      "It also encouraged writing in everyday languages rather than Latin, since printers wanted to sell to as many readers as possible."
+      "Around 1450 Johannes Gutenberg began printing with movable metal type in Mainz, and the new craft spread with remarkable speed.",
+      "By 1500 presses had been set up in some two hundred and eighty European towns, and the books they had produced numbered in the millions.",
+      "Most of those early books, however, were in Latin, the language of the Church and the universities, whose members were the established readers.",
+      "Only in the following century, as printers looked beyond that narrow audience for buyers, did print begin to encourage writing in everyday languages.",
+      "Vernacular Bibles and Reformation pamphlets then showed how large the market for such books could be."
     ],
+    "pj": {
+      "show": [
+        2,
+        5,
+        3,
+        1,
+        4
+      ],
+      "answer": "41352"
+    },
     "marks": [
-      "Around 1450",
-      "Within fifty years",
-      "This flood of cheap print",
-      "It also encouraged"
+      "began printing with movable metal type",
+      "By 1500",
+      "were in Latin",
+      "Only in the following century",
+      "Vernacular Bibles"
     ],
     "cues": [
       "Introduces Gutenberg and the date, so it opens.",
-      "'Within fifty years' counts from the date in the first sentence.",
-      "'This flood' sums up the millions of books just mentioned.",
-      "'It also' completes 'did more than', naming the further effect."
+      "'By 1500' counts from the date in the first sentence, and the spread it reports bears out 'remarkable speed'.",
+      "'Those early books' are the millions just mentioned, and 'however' qualifies the success with a limit.",
+      "'That narrow audience' is the Latin readership just described, and 'only in the following century' looks back to the early books.",
+      "'Such books' are the everyday-language books of the fourth sentence, and 'then' places the Reformation after them."
     ],
-    "odd": "Paper had reached Europe from China through the Islamic world several centuries earlier.",
-    "oddWhy": "It is about how paper arrived centuries before, not about the spread and effects of printing.",
-    "ins": "His press could produce many copies of a page in the time a scribe needed to copy one by hand.",
-    "insAt": 1,
-    "insWhy": "'His press' needs Gutenberg named just before it, and the speed it describes explains the rapid spread that follows.",
+    "odd": "The paper on which most early books were printed had reached Europe from China, by way of the Islamic world, several centuries earlier.",
+    "oddWhy": "It concerns how paper arrived in Europe, not how far printing spread or in which languages.",
+    "ooo": {
+      "show": [
+        0,
+        4,
+        2,
+        1,
+        3
+      ],
+      "answer": 1,
+      "drop": 5
+    },
+    "ins": "A Latin book could be sold across national borders, which suited printers who needed wide markets to cover their costs.",
+    "insAt": 3,
+    "insWhy": "It explains why early printers favoured Latin, so it must follow the third sentence that says they did, and it prepares the fourth, where printers look beyond 'that narrow audience'. Before the third sentence 'a Latin book' has no context; after the fourth it would contradict the move to everyday languages.",
     "sum": [
       {
-        "t": "Gutenberg's press spread quickly across Europe and, by making print cheap, also pushed writing towards everyday languages.",
-        "why": "Covers the invention, its spread and its further effect."
+        "t": "Printing spread rapidly across Europe, but early books were mostly in Latin; writing in everyday languages grew later as printers sought wider markets.",
+        "why": "Covers the spread, the Latin limit and the later shift."
       },
       {
-        "t": "Gutenberg began printing with movable type in Mainz around 1450.",
-        "why": "Only the opening fact.",
+        "t": "By 1500 presses were at work in some two hundred and eighty European towns and had produced millions of books, which shows how quickly the new craft spread across the continent.",
+        "why": "Only the opening claim about speed.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "Printing ended the use of Latin across Europe and left every scribe without work within a few years of Gutenberg's first books.",
-        "why": "The paragraph says print encouraged everyday languages, not that Latin vanished; scribes are not discussed.",
-        "trap": "Extreme wording"
+        "t": "Printing spread so quickly because early printers chose to publish in everyday languages for ordinary readers rather than in Latin.",
+        "why": "Early books were mostly in Latin; the shift came a century later.",
+        "trap": "Distorts the passage"
       },
       {
-        "t": "Printers preferred Latin because it let them sell books across the whole of Europe.",
-        "why": "The paragraph says the opposite: printers chose everyday languages to reach more readers.",
-        "trap": "Distorts the passage"
+        "t": "Printing quickly ended the use of Latin and, within a few decades of Gutenberg, made everyday languages the main medium of European books.",
+        "why": "The shift came later and gradually, and nothing says Latin ended.",
+        "trap": "Extreme wording"
       }
     ]
   },
@@ -154,48 +229,73 @@
     "topic": "Managing what is shared",
     "difficulty": "medium",
     "since": "2026-10-20",
+    "wordCount": 140,
     "s": [
-      "In 1968 the ecologist Garrett Hardin argued that resources shared by everyone are bound to be ruined.",
-      "If a pasture is open to all, he reasoned, each herder gains by adding another animal, while the cost of overgrazing is spread across the whole village.",
-      "The political scientist Elinor Ostrom later showed that this outcome is far from inevitable.",
-      "Studying fisheries, forests and irrigation systems around the world, she found many communities that had managed shared resources well for generations through rules they made and enforced themselves."
+      "In 1968 the ecologist Garrett Hardin argued that a resource held in common is doomed, since each user gains fully from taking more while the cost of overuse is shared by all.",
+      "His illustration is a pasture open to every herder: each gains by adding another animal, and the land is eventually overgrazed.",
+      "The parable proved so persuasive that it is often cited to justify privatisation or state control as the only ways to save a shared resource.",
+      "Elinor Ostrom, studying fisheries, forests and irrigation systems around the world, found the choice a false one, since many communities had managed shared resources well for generations by making and enforcing their own rules.",
+      "What separated her successes from the failures was not the absence of shared ownership but the presence of clear boundaries, local monitoring and penalties that users themselves accepted."
     ],
+    "pj": {
+      "show": [
+        5,
+        3,
+        1,
+        4,
+        2
+      ],
+      "answer": "35241"
+    },
     "marks": [
-      "argued that resources shared",
-      "he reasoned",
-      "this outcome is far from inevitable",
-      "she found many communities"
+      "a resource held in common is doomed",
+      "His illustration is a pasture",
+      "The parable",
+      "found the choice a false one",
+      "clear boundaries, local monitoring"
     ],
     "cues": [
-      "Names Hardin and states his claim, so it opens.",
-      "'He reasoned' refers to Hardin and spells out his argument.",
-      "'Later' and 'this outcome' answer Hardin's prediction.",
-      "'She' is Ostrom, and the sentence gives her evidence."
+      "States Hardin's claim and names him, so it opens.",
+      "'His illustration' presupposes the claim it illustrates.",
+      "'The parable' is the pasture story just told, and 'the only ways' sets up the choice that Ostrom rejects.",
+      "'The choice' means the two remedies of the third sentence, and 'a false one' answers them.",
+      "'Her successes' and 'the failures' build on the communities just described, so the explanation comes last."
     ],
-    "odd": "Hardin also wrote widely about population growth, which he saw as a threat to the planet.",
-    "oddWhy": "It is about Hardin's other views, not about whether shared resources must be ruined.",
-    "ins": "Hardin called this logic, in which each sensible choice adds up to collective ruin, the tragedy of the commons.",
+    "odd": "Hardin spent most of his academic career at the University of California, Santa Barbara, where he taught human ecology.",
+    "oddWhy": "It is biographical detail about Hardin, not part of the argument about shared resources.",
+    "ooo": {
+      "show": [
+        2,
+        1,
+        3,
+        0,
+        4
+      ],
+      "answer": 4,
+      "drop": 5
+    },
+    "ins": "Hardin called this ending, in which every herder's sensible choice adds up to ruin for all, the 'tragedy of the commons'.",
     "insAt": 2,
-    "insWhy": "'This logic' of individual choices adding up to ruin is the herder reasoning, so it follows that sentence and comes before Ostrom's reply.",
+    "insWhy": "'This ending' and 'every herder's' need the pasture of the second sentence, and the name is attached to the story before the third sentence turns to its influence. After the third sentence the naming would trail behind the paragraph's move to remedies.",
     "sum": [
       {
-        "t": "Hardin held that self-interest dooms shared resources, but Ostrom found communities that manage them well with their own rules.",
-        "why": "Covers both views and the evidence against Hardin."
+        "t": "Hardin held that shared resources are doomed by individual self-interest, whereas Ostrom found communities that sustain them through rules of their own making.",
+        "why": "Covers both positions and the evidence against Hardin."
       },
       {
-        "t": "Herders gain by adding animals to a pasture that everyone shares.",
-        "why": "Only one step of Hardin's argument.",
+        "t": "Hardin's pasture parable shows each herder gaining fully from adding another animal while the cost of the resulting overgrazing is shared by all.",
+        "why": "One step of Hardin's argument only, without Ostrom's challenge.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "Ostrom proved that shared resources are always managed well when local people are left alone.",
-        "why": "She found many well-managed cases, not that it always works.",
-        "trap": "Extreme wording"
+        "t": "Ostrom's studies of fisheries and forests showed that Hardin's pasture could be saved only by privatisation or state control, as his admirers had argued.",
+        "why": "Ostrom found the choice between those two remedies a false one.",
+        "trap": "Distorts the passage"
       },
       {
-        "t": "Governments should hand every forest and fishery over to local communities.",
-        "why": "No policy is recommended.",
-        "trap": "Out of scope"
+        "t": "Ostrom demonstrated that shared resources are always well managed whenever communities are left alone to make and enforce their own rules, whatever the resource.",
+        "why": "She found many successes but tied them to specific conditions, and she also found failures.",
+        "trap": "Extreme wording"
       }
     ]
   },
@@ -204,47 +304,72 @@
     "topic": "Money already spent",
     "difficulty": "easy",
     "since": "2026-10-20",
+    "wordCount": 106,
     "s": [
-      "Economists advise that decisions should depend on future costs and benefits, not on money already spent.",
-      "Money that cannot be recovered, which they call a sunk cost, should not affect what you do next.",
-      "People find this advice surprisingly hard to follow.",
-      "Someone who has paid for a concert ticket will often go out in a storm to attend, even when they would rather stay home, simply because the ticket was expensive."
+      "Economists advise that a decision should rest on future costs and benefits alone, not on money that has already been spent.",
+      "Money that cannot be recovered, which they call a sunk cost, has no bearing on what it is best to do next.",
+      "People nonetheless find the advice remarkably hard to follow.",
+      "Someone who has paid for a concert ticket will often brave a storm to attend, even when staying at home would be more pleasant, because the ticket was expensive.",
+      "Organisations do the same on a larger scale, pouring more money into failing projects because stopping would seem to waste what has already been spent."
     ],
+    "pj": {
+      "show": [
+        4,
+        1,
+        3,
+        5,
+        2
+      ],
+      "answer": "25314"
+    },
     "marks": [
-      "decisions should depend on future costs",
+      "future costs and benefits alone",
       "which they call a sunk cost",
-      "this advice",
-      "Someone who has paid for a concert ticket"
+      "the advice remarkably hard to follow",
+      "brave a storm",
+      "Organisations do the same"
     ],
     "cues": [
       "States the economists' advice, so it opens.",
-      "'They' are the economists, and the sentence names the idea.",
-      "'This advice' points back to the advice in the first two sentences.",
-      "Gives an example of people failing to follow the advice."
+      "'They' are the economists, and the sentence names the idea behind the advice.",
+      "'The advice' points back to the first two sentences, and 'nonetheless' sets the difficulty against it.",
+      "The ticket holder is a concrete case of failing to follow the advice.",
+      "'The same' repeats the behaviour of the fourth sentence 'on a larger scale'."
     ],
-    "odd": "Ticket prices for big concerts have risen in many countries, partly because artists now earn less from selling recordings.",
-    "oddWhy": "It is about why tickets cost more, not about letting past spending shape decisions.",
-    "ins": "The same reasoning keeps failing projects alive, because abandoning them feels like wasting what has already been spent.",
+    "odd": "Ticket prices for major concerts have risen in many countries, partly because artists now earn less from recorded music.",
+    "oddWhy": "It is about why tickets cost more, not about letting past spending shape a decision.",
+    "ooo": {
+      "show": [
+        3,
+        1,
+        0,
+        4,
+        2
+      ],
+      "answer": 3,
+      "drop": 5
+    },
+    "ins": "In such a case the ticket-holder is not really after the concert, only after the feeling of not having wasted the ticket.",
     "insAt": 4,
-    "insWhy": "'The same reasoning' needs the concert example before it, so it comes last.",
+    "insWhy": "'Such a case' and 'the ticket-holder' need the concert example of the fourth sentence, and the fifth sentence ('the same on a larger scale') then builds on that explanation.",
     "sum": [
       {
-        "t": "Past spending should not guide future choices, yet people find it hard to ignore money already spent.",
+        "t": "Past spending should not guide future choices, yet people and organisations find it hard to ignore money already spent.",
         "why": "Covers the advice and the difficulty of following it."
       },
       {
-        "t": "People go to concerts in bad weather because their tickets were expensive.",
+        "t": "People will brave a storm to attend a concert, even when staying at home would be more pleasant, because their tickets were expensive.",
         "why": "Only the example.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "Economists say people should not think about costs at all when they decide how to spend their money, whether the money is already spent or not.",
-        "why": "Only money already spent should be ignored; future costs still count.",
+        "t": "Economists argue that costs of every kind, whether past or future, should play no part in any rational decision.",
+        "why": "Only unrecoverable past costs are to be ignored; future costs still count.",
         "trap": "Distorts the passage"
       },
       {
-        "t": "Everyone who buys an expensive ticket will attend the event, whatever the weather or their mood.",
-        "why": "The paragraph says 'often', not everyone.",
+        "t": "People cannot ignore sunk costs, so organisations inevitably keep pouring money into projects that are failing.",
+        "why": "The paragraph says people find it 'hard' and 'often' act this way, not that they cannot or that organisations inevitably do.",
         "trap": "Extreme wording"
       }
     ]
@@ -254,48 +379,73 @@
     "topic": "How many friends",
     "difficulty": "medium",
     "since": "2026-10-20",
+    "wordCount": 119,
     "s": [
-      "In the 1990s the anthropologist Robin Dunbar noticed that primates with a larger neocortex tend to live in larger groups.",
-      "Extending the pattern to humans, he estimated that people can keep up stable relationships with about 150 others.",
-      "The figure, now known as Dunbar's number, has been used to plan army units, villages and even company departments.",
-      "Critics, however, argue that the estimate rests on shaky statistics and that the number of relationships people manage varies widely."
+      "In the early 1990s the anthropologist Robin Dunbar noticed that, among primates, species with a larger neocortex tend to live in larger social groups.",
+      "Extrapolating that relationship to humans, he calculated that people can sustain stable relationships with about 150 others.",
+      "The figure has since been cited to explain the size of military units, and some firms have used it to cap the size of their plants.",
+      "Researchers who reran the analysis in 2021, however, found the margin of error around the human estimate so wide that no single figure can be defended.",
+      "Even so, the number lives on, partly because it is easy to remember and partly because everyday experience suggests that our attention for friendships is limited."
     ],
+    "pj": {
+      "show": [
+        3,
+        5,
+        2,
+        1,
+        4
+      ],
+      "answer": "43152"
+    },
     "marks": [
-      "Robin Dunbar noticed",
-      "Extending the pattern to humans",
-      "The figure, now known as Dunbar's number",
-      "Critics, however,"
+      "species with a larger neocortex",
+      "Extrapolating that relationship",
+      "The figure has since been cited",
+      "reran the analysis in 2021",
+      "the number lives on"
     ],
     "cues": [
       "Introduces Dunbar and his observation, so it opens.",
-      "'The pattern' is the link between brain and group size just described.",
-      "'The figure' is the 150 just estimated.",
-      "'However' turns from the number's uses to doubts about it."
+      "'That relationship' is the brain-size link just described, applied to humans.",
+      "'The figure' is the 150 just calculated, and 'since' looks forward from it.",
+      "'However' turns from the uses of the figure to doubts about it, and 'the human estimate' is the 150 of the second sentence.",
+      "'Even so' concedes the criticism and explains why the number survives."
     ],
-    "odd": "Chimpanzees spend a large part of each day grooming one another, which helps keep their alliances strong.",
-    "oddWhy": "It is about how chimpanzees bond, not about the number of human relationships or doubts about it.",
-    "ins": "That is roughly the size of a hunter-gatherer clan or a traditional village, he pointed out.",
+    "odd": "Dunbar spent much of his career at the University of Oxford, where he held a chair in evolutionary psychology.",
+    "oddWhy": "It is biographical detail about Dunbar, not part of the argument about the number and its critics.",
+    "ooo": {
+      "show": [
+        3,
+        1,
+        4,
+        2,
+        0
+      ],
+      "answer": 5,
+      "drop": 5
+    },
+    "ins": "He noted that this is close to the size of a typical Stone Age community or traditional village.",
     "insAt": 2,
-    "insWhy": "'That' is the figure of 150 just given, and the comparison supports it before the uses and doubts that follow.",
+    "insWhy": "'He' and 'this' need the figure of 150 just calculated in the second sentence. The comparison supports the figure, so it comes before the sentence that moves on to the figure's later uses.",
     "sum": [
       {
-        "t": "Dunbar's estimate that people can sustain about 150 relationships has been widely applied, though critics question its basis.",
-        "why": "Covers the estimate, its use and the criticism."
+        "t": "Dunbar's primate-based estimate that people can keep about 150 relationships has been widely used, though researchers say the evidence cannot defend a single figure.",
+        "why": "Covers the estimate, its uses and the criticism."
       },
       {
-        "t": "Primates with a larger neocortex tend to live in larger groups.",
-        "why": "Only the starting observation.",
+        "t": "Dunbar observed in the early 1990s that primates with larger neocortices live in larger social groups and applied the same pattern to humans.",
+        "why": "Only the starting point, without the uses or the criticism.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "Because the human brain cannot handle more than 150 relationships, every organisation should be split into groups of exactly that size.",
-        "why": "The paragraph neither states a hard limit nor gives advice.",
-        "trap": "Extreme wording"
+        "t": "Researchers who reran the analysis showed that humans manage far more than 150 relationships, so the number has now been abandoned by scholars and firms alike.",
+        "why": "The paragraph says the number lives on, and the criticism concerns uncertainty, not a different figure.",
+        "trap": "Distorts the passage"
       },
       {
-        "t": "Critics have shown that people keep far more than 150 relationships, so Dunbar's research has been abandoned.",
-        "why": "Critics question the statistics and note variation; nothing says the idea was abandoned.",
-        "trap": "Distorts the passage"
+        "t": "Because brain size limits how many people we can know, every organisation should keep its teams, units and plants to about 150 people.",
+        "why": "The paragraph gives no such advice, and it treats the figure as disputed.",
+        "trap": "Out of scope"
       }
     ]
   },
@@ -304,148 +454,223 @@
     "topic": "Tulip mania retold",
     "difficulty": "medium",
     "since": "2026-10-20",
+    "wordCount": 117,
     "s": [
-      "Tulip mania in the Dutch Republic of the 1630s is often told as the first great financial bubble.",
-      "In the familiar version, prices for rare bulbs rose to the cost of a house before collapsing in early 1637, ruining thousands of investors.",
-      "The historian Anne Goldgar, working through Dutch archives, found little evidence of such widespread ruin.",
-      "The trade, she argued, involved a fairly small circle of merchants and craftsmen, and the crash caused embarrassment and disputes rather than economic disaster."
+      "Tulip mania in the 1630s is the stock example of a speculative bubble, repeated in textbooks and in warnings about investors' folly.",
+      "In the familiar telling, prices for rare bulbs climbed until a single one cost as much as a fine house, then collapsed in early 1637 and ruined thousands.",
+      "The historian Anne Goldgar, who worked through Dutch archives, found little evidence of any such ruin.",
+      "She concluded that the trade involved few people beyond a handful of merchants and craftsmen, and that the crash brought disputes and embarrassment rather than economic disaster.",
+      "If she is right, the episode tells us less about how markets behave than about how readily a vivid story can outlive the facts."
     ],
+    "pj": {
+      "show": [
+        2,
+        4,
+        1,
+        5,
+        3
+      ],
+      "answer": "31524"
+    },
     "marks": [
-      "is often told as the first great financial bubble",
-      "In the familiar version",
-      "found little evidence of such widespread ruin",
-      "she argued"
+      "the stock example of a speculative bubble",
+      "In the familiar telling",
+      "little evidence of any such ruin",
+      "disputes and embarrassment",
+      "If she is right"
     ],
     "cues": [
-      "Introduces the episode and its usual reputation, so it opens.",
-      "'The familiar version' spells out how the story is usually told.",
-      "'Such widespread ruin' points back to the ruined investors.",
-      "'She' is Goldgar, and the sentence gives her alternative account."
+      "Introduces the episode and its reputation, so it opens.",
+      "'The familiar telling' spells out the story behind that reputation, including the ruin.",
+      "'Any such ruin' points back to the ruined thousands, and Goldgar enters here.",
+      "'She' is Goldgar, and the sentence gives her conclusion from the archives.",
+      "'If she is right' needs her conclusion, and the sentence draws the larger lesson."
     ],
-    "odd": "Tulips had arrived in Europe from the Ottoman Empire in the sixteenth century.",
-    "oddWhy": "It is about where tulips came from, not about whether the mania was as ruinous as told.",
-    "ins": "If she is right, the most famous bubble in history says more about the power of a good story than about markets.",
+    "odd": "Tulips came to western Europe from the Ottoman Empire in the sixteenth century, and the Netherlands still grows them on a vast scale.",
+    "oddWhy": "It concerns the flower's history and present-day trade, not the bubble or the doubts about it.",
+    "ooo": {
+      "show": [
+        1,
+        3,
+        0,
+        4,
+        2
+      ],
+      "answer": 3,
+      "drop": 5
+    },
+    "ins": "In other words, what failed in 1637 was a few reputations and contracts, not a national economy.",
     "insAt": 4,
-    "insWhy": "'If she is right' needs Goldgar's whole argument, which ends in the last sentence, and it draws the conclusion.",
+    "insWhy": "'In other words' restates the fourth sentence ('few people', 'disputes and embarrassment rather than economic disaster'). After the third sentence it would pre-empt the conclusion, and after the fifth it would trail behind the lesson, which does not restate it.",
     "sum": [
       {
-        "t": "Tulip mania is remembered as a ruinous bubble, but archival research suggests its scale and damage were exaggerated.",
-        "why": "Covers the usual story and the challenge to it."
+        "t": "Tulip mania is remembered as a ruinous bubble, but archival work suggests the damage was small, making it more a durable story than a guide to markets.",
+        "why": "Covers the usual story, the challenge to it and the lesson."
       },
       {
-        "t": "Prices for rare tulip bulbs collapsed in early 1637.",
-        "why": "Only one detail of the usual story.",
+        "t": "In the familiar story, the price of rare tulip bulbs rose until one cost as much as a fine house, then collapsed in early 1637 and ruined thousands.",
+        "why": "One detail of the usual story, without the challenge.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "Tulip mania never happened; the story was invented by historians who wanted a warning against greed.",
-        "why": "Goldgar questions the scale of the ruin, not that the trade and crash happened.",
+        "t": "Goldgar showed from Dutch archives that tulip mania never happened at all and that the story was invented by moralists to warn people against speculation.",
+        "why": "She questions the scale of the ruin, not whether the trade and the crash occurred.",
         "trap": "Distorts the passage"
       },
       {
-        "t": "Financial bubbles do far less harm than economists believe, as the history of markets from the Dutch tulip trade of the 1630s to the present shows.",
-        "why": "The paragraph is about one episode and makes no claim about bubbles in general.",
-        "trap": "Too narrow or too broad"
+        "t": "The tulip crash was entirely harmless, and no investor, merchant or craftsman lost any money in the Dutch Republic of the 1630s.",
+        "why": "She found 'little evidence' of widespread ruin and notes disputes and embarrassment; she does not claim no one lost anything.",
+        "trap": "Extreme wording"
       }
     ]
   },
   {
     "id": "forgetting",
     "topic": "The forgetting curve",
-    "difficulty": "easy",
+    "difficulty": "medium",
     "since": "2026-10-20",
+    "wordCount": 114,
     "s": [
-      "In the 1880s the German psychologist Hermann Ebbinghaus spent years memorising lists of nonsense syllables and testing himself on them.",
-      "He found that a large part of what he learned was lost within the first day, after which forgetting slowed down.",
-      "He also found that each review made the memory last longer than the one before.",
-      "This is why spacing out reviews over days and weeks works better than cramming the same hours into one night."
+      "Most of us assume that forgetting is a steady leak: the longer ago something was learned, the less remains, at an even pace.",
+      "In the late nineteenth century the German psychologist Hermann Ebbinghaus tested that assumption on himself, memorising lists of nonsense syllables and measuring how much effort it took to relearn them later.",
+      "He found that a large part of what he had learned was lost within the first day or so, after which forgetting slowed markedly.",
+      "Each round of review, moreover, made the memory more durable, so that relearning took less effort every time.",
+      "Spreading reviews over days and weeks therefore works better than cramming the same hours into a single night."
     ],
+    "pj": {
+      "show": [
+        5,
+        2,
+        4,
+        1,
+        3
+      ],
+      "answer": "42531"
+    },
     "marks": [
-      "Hermann Ebbinghaus spent years",
-      "He found that a large part",
-      "He also found",
-      "This is why spacing out reviews"
+      "forgetting is a steady leak",
+      "tested that assumption on himself",
+      "lost within the first day",
+      "Each round of review, moreover",
+      "Spreading reviews over days and weeks"
     ],
     "cues": [
-      "Introduces Ebbinghaus and his experiment, so it opens.",
-      "'He found' gives the first result of the experiment.",
-      "'Also' marks the second finding, so it follows the first.",
-      "'This is why' draws the practical lesson from the second finding."
+      "States a common assumption without referring back, so it opens.",
+      "'That assumption' is the steady-leak view just stated, and 'himself' introduces Ebbinghaus's experiment.",
+      "'He found' reports the result of the experiment just described.",
+      "'Moreover' adds a second finding to the first, and 'relearning' echoes the method of the second sentence.",
+      "'Therefore' draws a practical lesson from the findings, so it closes."
     ],
-    "odd": "Nonsense syllables such as 'DAX' or 'BOK' are still used in some memory experiments today.",
-    "oddWhy": "It is about the test material, not about how memories fade and how reviews help.",
-    "ins": "He chose nonsense syllables so that meaning and earlier knowledge could not help him remember.",
-    "insAt": 1,
-    "insWhy": "It explains the method in the first sentence, so it follows it and comes before the results.",
+    "odd": "Ebbinghaus's 1885 book Über das Gedächtnis was translated into English in 1913 as Memory: A Contribution to Experimental Psychology.",
+    "oddWhy": "It concerns the publication history of his book, not the findings about forgetting.",
+    "ooo": {
+      "show": [
+        4,
+        0,
+        2,
+        3,
+        1
+      ],
+      "answer": 2,
+      "drop": 5
+    },
+    "ins": "The choice of nonsense was deliberate: it kept meaning and prior knowledge from helping him.",
+    "insAt": 2,
+    "insWhy": "'The choice of nonsense' presupposes the method just described in the second sentence and explains it before the results are reported. After the third sentence it would interrupt the findings.",
     "sum": [
       {
-        "t": "Ebbinghaus showed that memories fade fast at first but last longer with each review, which is why spaced study beats cramming.",
+        "t": "Ebbinghaus showed that forgetting is steep at first and that each review makes a memory last longer, which is why spaced study beats cramming.",
         "why": "Covers both findings and the lesson drawn from them."
       },
       {
-        "t": "Ebbinghaus memorised nonsense syllables in the 1880s.",
+        "t": "Ebbinghaus memorised lists of nonsense syllables and measured how much effort it took to relearn them after different delays.",
         "why": "Only the method.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "Anything learned once is forgotten within a day unless it is reviewed every single night, which is why Ebbinghaus tested himself daily for years.",
-        "why": "The paragraph says a large part is lost, not everything, and recommends spacing reviews out, not reviewing nightly.",
-        "trap": "Extreme wording"
+        "t": "Ebbinghaus showed that forgetting proceeds at a steady rate from the moment of learning, so reviews should be spaced evenly over the following weeks.",
+        "why": "He found rapid early loss and a slowing rate, the opposite of a steady leak.",
+        "trap": "Distorts the passage"
       },
       {
-        "t": "Schools should replace exams with weekly quizzes spread across the year.",
-        "why": "No advice to schools is given.",
-        "trap": "Out of scope"
+        "t": "Anything learned is lost within a day unless it is reviewed constantly, so cramming never works and only daily review helps at all.",
+        "why": "He found that a large part, not everything, is lost, and that spacing works better, not constant review.",
+        "trap": "Extreme wording"
       }
     ]
   },
   {
     "id": "cuneiform",
     "topic": "Why writing began",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "since": "2026-10-20",
+    "wordCount": 107,
     "s": [
-      "Writing is often imagined as an invention for recording stories, laws or prayers.",
-      "In Mesopotamia, where some of the earliest writing appears, the oldest clay tablets tell a humbler tale.",
-      "Most of them, dating from around 3200 BCE in the city of Uruk, are records of grain, livestock, beer and labour kept by temple administrators.",
-      "Only centuries later did scribes begin to use the same marks to write down literature, letters and royal boasts."
+      "We tend to picture the invention of writing as a response to the human wish to preserve stories, laws or prayers.",
+      "The evidence from Mesopotamia, where some of the earliest writing appears, points the other way.",
+      "Most of the oldest clay tablets, from the city of Uruk around 3200 BCE, are accounts of grain, livestock, beer and labour kept by the administrators of a great central institution.",
+      "Writing began, then, as a tool for keeping track of goods and workers rather than as a way of recording anything memorable.",
+      "Only several centuries later did scribes begin to use the same signs for literature, letters and royal boasts."
     ],
+    "pj": {
+      "show": [
+        4,
+        1,
+        5,
+        3,
+        2
+      ],
+      "answer": "25413"
+    },
     "marks": [
-      "Writing is often imagined",
-      "the oldest clay tablets tell a humbler tale",
-      "Most of them",
-      "Only centuries later"
+      "picture the invention of writing",
+      "points the other way",
+      "accounts of grain, livestock, beer and labour",
+      "Writing began, then",
+      "Only several centuries later"
     ],
     "cues": [
       "States the common view that the rest corrects, so it opens.",
-      "'A humbler tale' contrasts with the grand uses just listed.",
-      "'Most of them' refers to the oldest tablets.",
-      "'Only centuries later' looks back from the earliest records."
+      "'The other way' contrasts with the view just stated, and 'the evidence' promises the tablets.",
+      "Supplies the evidence promised: what the oldest tablets record.",
+      "'Then' draws the conclusion from the accounts.",
+      "'Only several centuries later' looks back to the beginnings just described, and 'the same signs' continue the writing of the earlier sentences."
     ],
-    "odd": "Clay was plentiful in Mesopotamia, while stone and timber had to be brought from far away.",
-    "oddWhy": "It is about building materials, not about what the earliest writing recorded.",
-    "ins": "Many of their signs began as simple pictures of the things being counted, such as a sheaf of grain or a jar of oil.",
-    "insAt": 3,
-    "insWhy": "'Their signs' are the administrators' records just described, and pictures of counted goods come before the later move to literature.",
+    "odd": "Cuneiform was deciphered in the nineteenth century, largely with the help of the trilingual rock inscription at Behistun.",
+    "oddWhy": "It concerns how cuneiform was deciphered much later, not what writing was first used for.",
+    "ooo": {
+      "show": [
+        2,
+        4,
+        1,
+        0,
+        3
+      ],
+      "answer": 4,
+      "drop": 5
+    },
+    "ins": "Literature, in short, arrived late to a technology that had been built for counting.",
+    "insAt": 5,
+    "insWhy": "'In short' sums up the whole paragraph, and 'arrived late' is justified only by the fifth sentence's 'several centuries later'. Earlier, the sentence would pre-empt the evidence it depends on.",
     "sum": [
       {
-        "t": "The earliest Mesopotamian writing mostly kept administrative accounts; its use for literature and letters came much later.",
-        "why": "Covers the correction to the common view and the later development."
+        "t": "The earliest Mesopotamian writing was mainly administrative bookkeeping; its use for literature and royal display came only centuries later.",
+        "why": "Covers the correction of the common view and the later development."
       },
       {
-        "t": "Temple administrators in Uruk recorded grain, beer and labour on clay tablets.",
+        "t": "Administrators at Uruk recorded grain, livestock, beer and labour on clay tablets around 3200 BCE, for a great central institution that employed them.",
         "why": "Only the evidence, without the point it makes.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "Writing has always been used mainly for accounting, and literature has never mattered much to any civilisation that used it.",
-        "why": "The paragraph is about how writing began, not about all of history.",
-        "trap": "Extreme wording"
+        "t": "Writing was invented to preserve stories and laws, though the oldest surviving tablets happen to be mere accounts of goods.",
+        "why": "That is the common view the paragraph corrects.",
+        "trap": "Distorts the passage"
       },
       {
-        "t": "Mesopotamian scribes invented writing in order to preserve their religious stories and laws.",
-        "why": "This is the common view that the paragraph corrects.",
-        "trap": "Distorts the passage"
+        "t": "Writing was always meant only for accounting, and literature has been an unimportant use of it throughout the whole of history.",
+        "why": "The paragraph is about how writing began, not about its whole history.",
+        "trap": "Extreme wording"
       }
     ]
   },
@@ -454,48 +679,73 @@
     "topic": "When a new road slows traffic",
     "difficulty": "hard",
     "since": "2026-10-20",
+    "wordCount": 136,
     "s": [
       "In 1968 the mathematician Dietrich Braess showed that adding a road to a network can make every driver's journey slower.",
-      "The reason is that each driver picks the route that is fastest for themselves, without regard to the delay they cause others.",
-      "So a new shortcut can lure so many cars that it clogs the roads feeding it, leaving everyone worse off than before it was built.",
-      "The reverse has also been observed: when Seoul removed a busy elevated road, traffic in the area did not get worse as many had feared."
+      "The explanation lies in how people choose: each driver takes the route that is quickest for themselves, ignoring the delay they impose on others.",
+      "A new shortcut can therefore draw in so many cars that it clogs the roads feeding it, leaving everyone worse off than before it was built.",
+      "Something like the reverse has been reported: when Seoul tore down a busy elevated highway in the early 2000s, traffic in the area did not worsen as many had feared.",
+      "Some analysts put this down to trips that vanish when road space shrinks, and others to a simultaneous overhaul of the city's buses, so the case is suggestive rather than a clean proof of Braess's mechanism."
     ],
+    "pj": {
+      "show": [
+        2,
+        5,
+        1,
+        4,
+        3
+      ],
+      "answer": "31542"
+    },
     "marks": [
-      "Dietrich Braess showed",
-      "The reason is that each driver",
-      "So a new shortcut can lure",
-      "The reverse has also been observed"
+      "adding a road to a network",
+      "The explanation lies in how people choose",
+      "draw in so many cars",
+      "Something like the reverse",
+      "suggestive rather than a clean proof"
     ],
     "cues": [
-      "States Braess's finding, so it opens.",
-      "'The reason' explains the surprising finding just stated.",
-      "'So' draws the consequence of each driver's selfish choice.",
-      "'The reverse' needs the case of adding a road before it."
+      "States the finding and its author, so it opens.",
+      "'The explanation' answers the surprising finding just stated.",
+      "'Therefore' draws the consequence of each driver's selfish choice.",
+      "'The reverse' needs the case of adding a road, and the Seoul case supplies the opposite.",
+      "'This' is the Seoul outcome, and the sentence qualifies how much it proves."
     ],
     "odd": "Traffic engineers now use computer models to time traffic lights across whole districts.",
-    "oddWhy": "It is about timing lights, not about how adding or removing roads changes traffic.",
-    "ins": "The result is now known as Braess's paradox.",
-    "insAt": 1,
-    "insWhy": "'The result' is the finding in the first sentence, which it names before the explanation begins.",
+    "oddWhy": "It concerns signal timing, not how adding or removing roads changes traffic.",
+    "ooo": {
+      "show": [
+        1,
+        3,
+        0,
+        2,
+        4
+      ],
+      "answer": 3,
+      "drop": 5
+    },
+    "ins": "Even so, the Seoul case is a reminder that a network's capacity does not by itself decide how much traffic it carries.",
+    "insAt": 5,
+    "insWhy": "'Even so' concedes the limitation stated in the fifth sentence ('suggestive rather than a clean proof'), and 'the Seoul case' must already have been introduced. Earlier there is nothing to concede.",
     "sum": [
       {
-        "t": "Because drivers choose routes selfishly, adding a road can slow traffic for everyone, and removing one need not make it worse.",
-        "why": "Covers the finding, its cause and the reverse case."
+        "t": "Because drivers choose routes selfishly, adding a road can slow everyone down, and removing one need not make traffic worse, though the evidence from Seoul is only suggestive.",
+        "why": "Covers the finding, its cause and the reverse case with its qualification."
       },
       {
-        "t": "Seoul removed a busy road without making traffic worse.",
+        "t": "Seoul tore down a busy elevated highway in the early 2000s, and, to the surprise of many officials, traffic in the area did not worsen as many had feared.",
         "why": "Only the last example.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "Building new roads always increases congestion, so every city should remove its busiest roads, as Seoul did, to cure its traffic jams for good.",
-        "why": "The paragraph says a new road 'can' slow traffic, and gives no advice.",
-        "trap": "Extreme wording"
+        "t": "Braess showed that traffic jams arise because drivers deliberately choose slow routes, which delays everyone else on the road network.",
+        "why": "Drivers choose the quickest route for themselves; the harm is the delay they impose on others.",
+        "trap": "Distorts the passage"
       },
       {
-        "t": "Braess showed that traffic jams are caused by drivers who choose slow routes on purpose.",
-        "why": "Drivers choose the fastest route for themselves; the problem is the effect on others.",
-        "trap": "Distorts the passage"
+        "t": "Building new roads always increases congestion for every driver on the network, so cities should remove their busiest roads at once.",
+        "why": "A new road 'can' slow traffic, and the paragraph recommends nothing.",
+        "trap": "Extreme wording"
       }
     ]
   },
@@ -504,48 +754,73 @@
     "topic": "Why corals bleach",
     "difficulty": "medium",
     "since": "2026-10-20",
+    "wordCount": 99,
     "s": [
-      "Reef-building corals depend on tiny algae that live inside their tissues and supply them with food made by photosynthesis.",
-      "When the water stays too warm for too long, this partnership breaks down and the corals expel the algae.",
-      "Without them the corals turn white, which is why the process is called bleaching.",
-      "Bleached corals are not yet dead, and they can recover if temperatures fall quickly, but repeated heatwaves give them little time to do so."
+      "Reef-building corals are partnerships: each polyp houses microscopic algae that supply it with much of its food through photosynthesis.",
+      "The arrangement is fragile: when the water stays unusually warm for too long, the corals expel their algae.",
+      "Deprived of the pigmented algae, the coral's translucent tissue lets its white skeleton show through, which is why the process is called bleaching.",
+      "A bleached coral is not yet dead, and it can recover if cooler water returns quickly enough for the algae to settle back in.",
+      "Repeated marine heatwaves, however, now leave many reefs too little time between episodes to recover."
     ],
+    "pj": {
+      "show": [
+        4,
+        2,
+        5,
+        1,
+        3
+      ],
+      "answer": "42513"
+    },
     "marks": [
-      "depend on tiny algae",
-      "this partnership breaks down",
-      "Without them the corals turn white",
-      "Bleached corals are not yet dead"
+      "Reef-building corals are partnerships",
+      "The arrangement is fragile",
+      "Deprived of the pigmented algae",
+      "A bleached coral is not yet dead",
+      "too little time between episodes"
     ],
     "cues": [
-      "Introduces the corals and their algae, so it opens.",
-      "'This partnership' is the coral and algae relationship just described.",
-      "'Them' are the expelled algae.",
-      "'Bleached' needs the process named just before."
+      "Introduces corals and their algae, so it opens.",
+      "'The arrangement' is the partnership just described, and the sentence says what breaks it.",
+      "'The pigmented algae' are the ones expelled, and the result names the process 'bleaching'.",
+      "'A bleached coral' needs the process named in the third sentence, and recovery follows from it.",
+      "'However' and 'repeated' turn from the chance of recovery to the threat to it."
     ],
-    "odd": "Coral reefs cover a tiny fraction of the ocean floor but are home to a large share of marine species.",
-    "oddWhy": "It is about how rich reefs are, not about how and why corals bleach.",
-    "ins": "The expelled algae take most of the coral's colour with them.",
-    "insAt": 2,
-    "insWhy": "It needs the algae to have been expelled, and it explains why the corals then turn white.",
+    "odd": "Reef tourism supports many livelihoods in the tropics, from dive operators to hotel staff.",
+    "oddWhy": "It concerns the economic value of reefs, not how and why corals bleach.",
+    "ooo": {
+      "show": [
+        0,
+        3,
+        2,
+        4,
+        1
+      ],
+      "answer": 1,
+      "drop": 5
+    },
+    "ins": "Even so, a bleached coral is in trouble: starved of food, it easily falls prey to disease.",
+    "insAt": 4,
+    "insWhy": "'Even so' concedes the fourth sentence's good news (not yet dead, can recover). Before it there is nothing to concede, and after the fifth sentence the paragraph has already turned to heatwaves.",
     "sum": [
       {
-        "t": "Prolonged heat makes corals expel the algae they rely on, and while bleached corals can recover, frequent heatwaves leave little time.",
+        "t": "Prolonged heat makes corals expel the algae they depend on; bleached corals can recover, but frequent heatwaves are leaving reefs little time to do so.",
         "why": "Covers the cause, the process and the chance of recovery."
       },
       {
-        "t": "Corals turn white when they lose their algae.",
+        "t": "Corals turn white when they lose the pigmented algae that live in their translucent tissue and supply them with much of their food.",
         "why": "Only one step of the process.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "Any rise in sea temperature kills coral reefs at once.",
-        "why": "Bleaching follows prolonged heat, and bleached corals are not yet dead.",
-        "trap": "Extreme wording"
+        "t": "Bleaching occurs when unusually warm water lets the algae inside a coral multiply, overrun the polyps and consume their food supply, exposing the skeleton.",
+        "why": "The algae feed the coral; heat makes the coral expel them.",
+        "trap": "Distorts the passage"
       },
       {
-        "t": "Bleaching happens when algae feed on the coral's tissues during warm weather.",
-        "why": "The algae supply food to the coral; heat makes the coral expel them.",
-        "trap": "Distorts the passage"
+        "t": "Bleached corals are effectively dead already, and repeated heatwaves in warming oceans will soon destroy every reef on the planet beyond any recovery.",
+        "why": "The passage says bleached corals can recover, and it predicts nothing about every reef.",
+        "trap": "Extreme wording"
       }
     ]
   },
@@ -554,148 +829,223 @@
     "topic": "Bad money and good",
     "difficulty": "hard",
     "since": "2026-10-20",
+    "wordCount": 122,
     "s": [
-      "When coins were made of precious metal, their value depended partly on how much metal they contained.",
-      "If worn or clipped coins circulated at the same official value as full-weight ones, people had a reason to spend the light coins and keep the heavy ones.",
-      "Before long, only the light coins were seen in everyday trade, while the good ones were hoarded, melted down or sent abroad.",
-      "This tendency came to be called Gresham's law, after a sixteenth-century English financier, and is summed up in the phrase 'bad money drives out good'."
+      "When coins were struck from precious metal, a coin's worth depended partly on the metal it contained, yet the state declared coins of the same denomination equal in value.",
+      "Wear, clipping and debasement meant that some of these equally valued coins soon held less metal than others.",
+      "Faced with a choice, people spent the light coins and kept the heavy ones, which were worth more as metal than as money.",
+      "Before long the good coins had been hoarded, melted down or sent abroad, and only the poor ones passed from hand to hand.",
+      "This pattern is known as Gresham's law, after a sixteenth-century English financier, though it was noticed long before him and is summed up as 'bad money drives out good'."
     ],
+    "pj": {
+      "show": [
+        3,
+        5,
+        1,
+        4,
+        2
+      ],
+      "answer": "35142"
+    },
     "marks": [
-      "their value depended partly",
-      "If worn or clipped coins",
-      "Before long, only the light coins",
-      "This tendency came to be called"
+      "declared coins of the same denomination equal",
+      "Wear, clipping and debasement",
+      "spent the light coins and kept the heavy ones",
+      "Before long the good coins",
+      "This pattern is known as Gresham's law"
     ],
     "cues": [
-      "Sets out how coin value worked, so it opens.",
-      "Applies that idea to light and full-weight coins.",
-      "'Before long' gives the result of people spending light coins.",
-      "'This tendency' names the pattern just described."
+      "Sets out how coins were valued and the legal equality, so it opens.",
+      "'These equally valued coins' are the coins of the first sentence, and 'some' of them now hold less metal.",
+      "'The light coins' and 'the heavy ones' are the unequal coins just described, and people's choice follows.",
+      "'Before long' gives the result of that choice.",
+      "'This pattern' names what the previous sentences describe."
     ],
-    "odd": "Gold coins were also prized for their beauty, and many were kept as jewellery or given as gifts.",
-    "oddWhy": "It is about coins as ornaments, not about light coins replacing good ones.",
+    "odd": "Many early coins carried a ruler's portrait, meant to advertise that ruler's authority as much as to guarantee the metal.",
+    "oddWhy": "It concerns coin imagery and political display, not how light coins replace good ones.",
+    "ooo": {
+      "show": [
+        4,
+        2,
+        3,
+        0,
+        1
+      ],
+      "answer": 4,
+      "drop": 5
+    },
     "ins": "The law holds only when both kinds of money must be accepted at the same value; where people can price coins freely, good money tends to win instead.",
-    "insAt": 4,
-    "insWhy": "'The law' needs Gresham's law named first, and the sentence adds a limit to it, so it comes last.",
+    "insAt": 5,
+    "insWhy": "'The law' needs Gresham's law to have been named in the fifth sentence, and the sentence then qualifies it, so it can only come last.",
     "sum": [
       {
-        "t": "If light and full-weight coins must pass at one value, people spend the light ones and hoard the rest: Gresham's law.",
-        "why": "Covers the mechanism and the name."
+        "t": "When rules treat light and full-weight coins as equal, people spend the lighter ones and hoard the heavier, so bad money drives out good.",
+        "why": "Covers the condition, the mechanism and the name."
       },
       {
-        "t": "Gresham was a sixteenth-century English financier.",
-        "why": "Only a detail about the name.",
+        "t": "People kept the heavy coins, which were worth more as metal than as money, and before long hoarded them, melted them down or sent them abroad.",
+        "why": "Only one result of the mechanism.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "Bad money always replaces good money in every economy and every period of history, whatever the rules that fix its value.",
-        "why": "The law depends on coins having to pass at the same value.",
-        "trap": "Extreme wording"
+        "t": "Gresham's law shows that coins lose their value whenever they are worn or clipped, whatever the state declares about their denomination.",
+        "why": "The effect arises because worn and full-weight coins must pass at the same value.",
+        "trap": "Distorts the passage"
       },
       {
-        "t": "Governments should stop making coins from precious metals to prevent hoarding.",
-        "why": "No advice is given.",
-        "trap": "Out of scope"
+        "t": "Bad money always drives out good money in every economy and every age, whatever rules govern how coins are valued or how freely people may price them.",
+        "why": "The pattern depends on the legal equality set out in the first sentence.",
+        "trap": "Extreme wording"
       }
     ]
   },
   {
     "id": "hawthorne",
     "topic": "Being watched at work",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "since": "2026-10-20",
+    "wordCount": 109,
     "s": [
-      "In the 1920s and 1930s, researchers at the Hawthorne Works, a factory near Chicago, studied how working conditions affected output.",
-      "In some of their experiments, productivity seemed to rise whatever they changed, whether the lights were made brighter or dimmer.",
-      "This led to the idea of the Hawthorne effect: people work differently simply because they know they are being watched.",
-      "Later reanalyses of the original data, however, found the evidence for this effect much weaker and messier than the textbook story suggests."
+      "Between the mid-1920s and the early 1930s, researchers at the Hawthorne Works, a Western Electric plant near Chicago, tested how working conditions affected output.",
+      "In some experiments output seemed to rise whatever they changed, whether the lights were made brighter or dimmer.",
+      "The puzzle was resolved, it was said, by the workers' awareness of being studied: attention itself, not lighting, raised their performance.",
+      "This explanation, later labelled the Hawthorne effect, became a staple of management textbooks and of warnings about research on people.",
+      "When economists later recovered the original illumination data, however, they found the evidence for any such effect far weaker and messier than the textbook story suggests."
     ],
+    "pj": {
+      "show": [
+        2,
+        4,
+        5,
+        1,
+        3
+      ],
+      "answer": "41523"
+    },
     "marks": [
       "researchers at the Hawthorne Works",
-      "productivity seemed to rise",
-      "This led to the idea",
-      "Later reanalyses"
+      "output seemed to rise whatever they changed",
+      "awareness of being studied",
+      "later labelled the Hawthorne effect",
+      "far weaker and messier"
     ],
     "cues": [
-      "Introduces the studies, so it opens.",
-      "'Their experiments' are the studies just introduced.",
-      "'This' is the puzzling rise in productivity.",
-      "'Later' and 'however' challenge the idea just named."
+      "Introduces the researchers and their studies, so it opens.",
+      "'In some experiments' and 'they' refer to the studies just introduced.",
+      "'The puzzle' is the rise in output whatever was changed.",
+      "'This explanation' is the one in the third sentence, and the label follows from it.",
+      "'Later' and 'however' challenge the effect just named, and 'any such effect' points back to it."
     ],
-    "odd": "Western Electric, which owned the factory, made telephone equipment for the Bell system.",
-    "oddWhy": "It is about the company, not about the studies or the effect named after them.",
-    "ins": "Even so, the term remains a useful warning that observing people can change what they do.",
-    "insAt": 4,
-    "insWhy": "'Even so' concedes the weak evidence in the last sentence, so it must come after it.",
+    "odd": "Elton Mayo, the Harvard academic most often associated with the studies, was born in Australia.",
+    "oddWhy": "It is biographical detail about one researcher, not about the findings or their reassessment.",
+    "ooo": {
+      "show": [
+        3,
+        1,
+        4,
+        0,
+        2
+      ],
+      "answer": 4,
+      "drop": 5
+    },
+    "ins": "Lighting was the first factor they varied, on the natural assumption that more light would mean more output.",
+    "insAt": 1,
+    "insWhy": "'The first factor they varied' follows the introduction of the studies, and 'the natural assumption' sets up the surprise in the second sentence. After the second sentence it would trail behind the result it prepares.",
     "sum": [
       {
-        "t": "Factory studies gave rise to the idea that being watched changes how people work, though later analyses found the evidence weak.",
+        "t": "The idea that being observed changes behaviour grew out of factory experiments, but later reanalysis suggests the evidence for it is weak.",
         "why": "Covers the studies, the idea and the doubt."
       },
       {
-        "t": "Output at the Hawthorne factory rose when the lights were made brighter.",
-        "why": "One result, and only half of it.",
+        "t": "In some experiments at the Hawthorne plant, output seemed to rise whether the lighting was made brighter or dimmer, whatever the researchers changed.",
+        "why": "One result only.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "The Hawthorne effect has been disproved, so researchers no longer need to worry that observing people affects them.",
-        "why": "The evidence is weaker, not disproved.",
+        "t": "Economists who recovered the original illumination data later confirmed the Hawthorne effect by reanalysing it carefully.",
+        "why": "The reanalysis weakened the case for the effect.",
         "trap": "Distorts the passage"
       },
       {
-        "t": "Workers always become more productive when managers watch them closely, as every study of factory work since the 1920s has confirmed beyond doubt.",
-        "why": "Later reanalyses found the evidence weak.",
+        "t": "Observation has no effect at all on how people behave, so researchers need not worry about their subjects knowing that they are being watched.",
+        "why": "The evidence is called weaker and messier, not shown to be zero.",
         "trap": "Extreme wording"
       }
     ]
   },
   {
     "id": "containers",
-    "topic": "The steel box",
+    "topic": "The shipping box",
     "difficulty": "easy",
     "since": "2026-10-20",
+    "wordCount": 129,
     "s": [
-      "Until the 1950s, loading a cargo ship meant carrying sacks, barrels and crates aboard one by one.",
-      "In 1956 the American trucking businessman Malcom McLean sent a ship from New Jersey to Texas carrying goods packed in large steel boxes.",
-      "The boxes could be lifted straight from trucks or trains onto ships and off again, without ever being unpacked.",
-      "As this method spread, the cost and time of moving goods by sea fell sharply, helping to make global supply chains possible."
+      "Until the 1950s, loading a cargo ship meant lifting sacks, barrels and crates aboard in small lots, a slow and costly business that kept vessels in port for days.",
+      "Standard boxes were not new, but the American trucking entrepreneur Malcom McLean saw that their value lay in a whole system built around them.",
+      "In 1956 he sent a converted tanker from New Jersey to Texas carrying trailer bodies, which could be lifted straight from truck to ship and off again without being unpacked.",
+      "As the method spread, the cost and time of moving goods by sea fell sharply, and a ship's stay in port shrank dramatically.",
+      "Cheap, predictable shipping then made it practical for firms to spread production across countries, and global supply chains grew up around the box."
     ],
+    "pj": {
+      "show": [
+        5,
+        3,
+        2,
+        1,
+        4
+      ],
+      "answer": "43251"
+    },
     "marks": [
-      "Until the 1950s",
+      "lifting sacks, barrels and crates",
+      "Standard boxes were not new",
       "In 1956",
-      "The boxes could be lifted",
-      "As this method spread"
+      "As the method spread",
+      "global supply chains"
     ],
     "cues": [
       "Describes the old way, so it opens.",
-      "The date and the new idea follow the description of the old way.",
-      "'The boxes' are the steel boxes just introduced.",
-      "'This method' is the box system just described."
+      "'Standard boxes' and 'a whole system' respond to the problem the first sentence describes.",
+      "'He' is McLean, and the voyage puts the system into practice.",
+      "'The method' is the box system just demonstrated, and its spread produces the falling costs.",
+      "'Then' follows the fall in costs, and 'the box' is the standard box."
     ],
-    "odd": "Air freight, though faster, still carries only a small share of world trade by weight.",
-    "oddWhy": "It is about air freight, not about how containers changed shipping.",
-    "ins": "The work was slow and costly, and a ship could spend days in port being loaded.",
-    "insAt": 1,
-    "insWhy": "'The work' is the loading by hand in the first sentence, so it follows it, before the new idea.",
+    "odd": "Air freight, though much faster, still carries only a small share of world trade by weight.",
+    "oddWhy": "It concerns air freight, not how containers changed shipping.",
+    "ooo": {
+      "show": [
+        2,
+        0,
+        4,
+        1,
+        3
+      ],
+      "answer": 2,
+      "drop": 5
+    },
+    "ins": "At first, though, container sizes varied from firm to firm, and it took international standards in the late 1960s before boxes could pass freely between ships, trains and trucks.",
+    "insAt": 3,
+    "insWhy": "'At first, though' qualifies the first voyage of the third sentence and comes before the later spread of the fourth ('As the method spread'). Before the voyage there are no boxes to qualify, and after the fourth sentence it would sit awkwardly behind the sharp fall in costs.",
     "sum": [
       {
-        "t": "Shipping goods in standard steel boxes that move between trucks, trains and ships cut costs sharply and helped globalise trade.",
+        "t": "Standard boxes that move unopened between trucks, trains and ships cut the cost and time of sea freight and helped make global supply chains possible.",
         "why": "Covers the old way, the innovation and its effect."
       },
       {
-        "t": "Malcom McLean sent a ship of steel boxes from New Jersey to Texas in 1956.",
+        "t": "In 1956 McLean sent a converted tanker carrying trailer bodies from New Jersey to Texas, where they were lifted straight off the ship without being unpacked, a first for sea freight.",
         "why": "Only the first voyage.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "Containers made sea transport almost free and soon replaced every other way of moving goods, from railways and lorries to aircraft, around the world.",
-        "why": "Costs fell sharply; nothing says they vanished or that other transport ended.",
-        "trap": "Extreme wording"
+        "t": "Containers were already common on ships before McLean, whose main contribution was to make the boxes smaller and lighter than before.",
+        "why": "The paragraph says standard boxes were not new; his insight was the system built around them.",
+        "trap": "Distorts the passage"
       },
       {
-        "t": "Containers made loading slower at first, because each box had to be unpacked at every port.",
-        "why": "The boxes were moved without being unpacked.",
-        "trap": "Distorts the passage"
+        "t": "Containers made sea freight almost free and soon replaced every other way of moving goods, including trucks, trains and aircraft.",
+        "why": "Costs fell sharply, but nothing says they vanished or that other transport ended.",
+        "trap": "Extreme wording"
       }
     ]
   },
@@ -704,97 +1054,147 @@
     "topic": "Where is everybody?",
     "difficulty": "medium",
     "since": "2026-10-20",
+    "wordCount": 105,
     "s": [
-      "Our galaxy contains hundreds of billions of stars, many of them far older than the Sun.",
-      "If even a small fraction had planets where intelligent life arose, some civilisations should have had time to spread across the galaxy.",
-      "Yet we see no clear sign of anyone else.",
-      "This puzzle, often credited to the physicist Enrico Fermi, has many proposed answers, from the rarity of life to the possibility that civilisations destroy themselves."
+      "Our galaxy holds hundreds of billions of stars, many of them far older than the Sun.",
+      "If intelligent life is not extremely rare, some civilisations should have arisen early enough to spread across the galaxy by now.",
+      "Yet we see no clear sign of anyone else, whether in radio signals, in engineering on a cosmic scale or in visitors.",
+      "The clash between that expectation and that silence is often credited to the physicist Enrico Fermi, who is said to have asked over lunch in 1950, 'Where is everybody?'",
+      "Proposed answers range from the rarity of life to the possibility that civilisations tend to destroy themselves."
     ],
+    "pj": {
+      "show": [
+        4,
+        1,
+        3,
+        5,
+        2
+      ],
+      "answer": "25314"
+    },
     "marks": [
       "hundreds of billions of stars",
-      "If even a small fraction",
+      "If intelligent life is not extremely rare",
       "Yet we see no clear sign",
-      "This puzzle"
+      "that expectation and that silence",
+      "Proposed answers range"
     ],
     "cues": [
       "Sets out the size and age of the galaxy, so it opens.",
-      "'A small fraction' is of the stars just mentioned.",
+      "The condition builds on 'far older than the Sun' by giving civilisations time to spread.",
       "'Yet' sets the silence against the expectation just raised.",
-      "'This puzzle' is the clash between expectation and silence."
+      "'That expectation and that silence' are those of the second and third sentences.",
+      "'Proposed answers' respond to the puzzle that has just been named."
     ],
-    "odd": "Astronomers measure the distances to nearby stars by watching how their positions shift as the Earth orbits the Sun.",
-    "oddWhy": "It is about measuring distances, not about the missing civilisations.",
-    "ins": "Even at a small fraction of the speed of light, a civilisation could cross the galaxy in a few tens of millions of years, a blink in its long history.",
-    "insAt": 2,
-    "insWhy": "It backs up 'had time to spread' in the second sentence, before 'Yet' turns to the silence.",
+    "odd": "Astronomers measure the distances to nearby stars by watching how their positions appear to shift as the Earth orbits the Sun.",
+    "oddWhy": "It concerns how stellar distances are measured, not the absence of civilisations.",
+    "ooo": {
+      "show": [
+        3,
+        0,
+        1,
+        4,
+        2
+      ],
+      "answer": 2,
+      "drop": 5
+    },
+    "ins": "His question has since given the puzzle its name, the Fermi paradox.",
+    "insAt": 4,
+    "insWhy": "'His question' needs Fermi's question from the fourth sentence, and the name it gives the puzzle prepares the 'proposed answers' of the fifth.",
     "sum": [
       {
-        "t": "Given the galaxy's size and age, other civilisations should be visible, and why none is seen remains an open puzzle.",
+        "t": "The galaxy's size and age suggest other civilisations should be detectable unless intelligent life is very rare, yet none is seen, and the puzzle remains unresolved.",
         "why": "Covers the expectation, the silence and the open question."
       },
       {
-        "t": "Many stars in our galaxy are older than the Sun.",
+        "t": "Many of the hundreds of billions of stars in our galaxy are far older than the Sun, which gives life ample time to arise elsewhere.",
         "why": "Only the starting fact.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "The absence of signals proves that humans are the only intelligent life in the universe, so the search for other civilisations should end.",
-        "why": "The paragraph lists many possible answers; it proves nothing.",
-        "trap": "Extreme wording"
+        "t": "Fermi showed over lunch in 1950 that the lack of signals proves intelligent life is rare, and so settled the puzzle for good.",
+        "why": "The silence is a puzzle with many proposed answers, not a proof.",
+        "trap": "Distorts the passage"
       },
       {
-        "t": "Governments should spend more on searching for signals from other civilisations.",
-        "why": "No advice is given.",
-        "trap": "Out of scope"
+        "t": "The silence proves that humans are alone in the universe, and so the search for other civilisations in radio signals or visitors is pointless.",
+        "why": "Nothing is proved; the paragraph lists possible explanations.",
+        "trap": "Extreme wording"
       }
     ]
   },
   {
     "id": "theseus",
     "topic": "The ship of Theseus",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "since": "2026-10-20",
+    "wordCount": 101,
     "s": [
-      "An ancient puzzle asks about the ship of the Greek hero Theseus, preserved by the Athenians for centuries.",
-      "As its planks rotted, they were replaced one at a time, until none of the original wood remained.",
-      "Was it still the same ship?",
-      "The philosopher Thomas Hobbes sharpened the question by asking what we should say if someone had kept the old planks and built a second ship from them."
+      "An ancient puzzle concerns the ship of Theseus, the Greek hero, which the Athenians were said to have preserved for centuries as a relic.",
+      "As its timbers decayed they were replaced one by one, until not a plank of the original remained.",
+      "Was the vessel in the harbour, after all those replacements, still the ship of Theseus?",
+      "One camp holds that the ship persists because its form and history continue unbroken; the other, that identity goes with the original material.",
+      "Thomas Hobbes sharpened the puzzle by imagining that someone had collected the discarded planks and rebuilt them into a second ship."
     ],
+    "pj": {
+      "show": [
+        3,
+        5,
+        2,
+        4,
+        1
+      ],
+      "answer": "53142"
+    },
     "marks": [
-      "An ancient puzzle asks",
-      "As its planks rotted",
-      "Was it still the same ship?",
-      "Thomas Hobbes sharpened the question"
+      "the ship of Theseus, the Greek hero",
+      "replaced one by one",
+      "still the ship of Theseus",
+      "One camp holds",
+      "rebuilt them into a second ship"
     ],
     "cues": [
-      "Introduces the puzzle, so it opens.",
-      "'Its planks' are the ship's.",
-      "The question follows the full replacement just described.",
-      "'The question' is the one just asked, which Hobbes made harder."
+      "Introduces the puzzle and the ship, so it opens.",
+      "'Its timbers' are the ship's, and the replacement sets up the question.",
+      "'Those replacements' are the ones just described, and the question follows them.",
+      "The two camps answer the question just asked.",
+      "Hobbes 'sharpened the puzzle' after the camps have stated their answers."
     ],
-    "odd": "Theseus was said to have killed the Minotaur in the labyrinth of Crete.",
-    "oddWhy": "It is about Theseus's legend, not about the identity of his ship.",
-    "ins": "Now there would be two ships with a claim to the name, and each claim seems strong.",
-    "insAt": 4,
-    "insWhy": "'Two ships' needs the rebuilt second ship from the last sentence.",
+    "odd": "Theseus was said to have killed the Minotaur, the bull-headed monster of the labyrinth at Knossos in Crete.",
+    "oddWhy": "It belongs to the legend of Theseus, not to the puzzle about his ship's identity.",
+    "ooo": {
+      "show": [
+        1,
+        2,
+        0,
+        5,
+        3
+      ],
+      "answer": 3,
+      "drop": 4
+    },
+    "ins": "Now two vessels could each claim to be the original, and each claim seems strong.",
+    "insAt": 5,
+    "insWhy": "'Now two vessels' needs the second ship that Hobbes imagines in the fifth sentence, so it can only follow it.",
     "sum": [
       {
-        "t": "The ship of Theseus asks whether an object survives the replacement of all its parts, a puzzle Hobbes deepened with a rebuilt rival.",
+        "t": "The ship of Theseus asks whether an object remains the same when all its parts are replaced, a question Hobbes complicated with a rebuilt rival.",
         "why": "Covers the puzzle and Hobbes's twist."
       },
       {
-        "t": "The Athenians kept Theseus's ship for centuries.",
-        "why": "Only a detail of the story.",
+        "t": "The Athenians preserved Theseus's ship as a relic for centuries by replacing its decayed timbers one by one until not a plank of the original remained.",
+        "why": "Only the set-up.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "Hobbes solved the puzzle by showing that the rebuilt ship was the real one.",
-        "why": "Hobbes sharpened the question; he did not settle it here.",
+        "t": "Hobbes settled the puzzle by showing that the rebuilt ship, made of the original planks, was the true ship of Theseus.",
+        "why": "He sharpened the puzzle rather than settling it.",
         "trap": "Distorts the passage"
       },
       {
-        "t": "Philosophers agree that nothing keeps its identity over time, since all objects change their parts.",
-        "why": "No such agreement is mentioned.",
+        "t": "Philosophers agree that nothing keeps its identity over time, since every object eventually changes all its parts.",
+        "why": "The paragraph reports two camps and no agreement.",
         "trap": "Extreme wording"
       }
     ]
@@ -804,47 +1204,72 @@
     "topic": "A name from an insult",
     "difficulty": "medium",
     "since": "2026-10-20",
+    "wordCount": 107,
     "s": [
-      "In nineteenth-century France, the official Salon in Paris largely decided which painters could build a career.",
-      "Its juries favoured polished historical and mythological scenes, and they often rejected work that looked sketchy or unfinished.",
-      "In 1874 a group of painters frustrated by the Salon, including Monet, Renoir and Degas, put on an exhibition of their own.",
-      "A critic mocked one of Monet's paintings, Impression, Sunrise, and the name 'Impressionists' stuck."
+      "In nineteenth-century France, a painter's success depended largely on the official Salon in Paris, whose juries decided which works the public would see.",
+      "Their taste ran to polished historical and mythological scenes, and they often turned away canvases that looked sketchy or unfinished.",
+      "In 1874 a group of frustrated painters, among them Monet, Renoir and Degas, therefore staged an exhibition of their own.",
+      "A satirical critic, Louis Leroy, mocked the show by taking his cue from the title of one of Monet's paintings, Impression, Sunrise.",
+      "The mockery stuck, and the label 'Impressionists' was in time embraced by many of the very painters it was meant to ridicule."
     ],
+    "pj": {
+      "show": [
+        2,
+        4,
+        1,
+        5,
+        3
+      ],
+      "answer": "31524"
+    },
     "marks": [
       "the official Salon in Paris",
-      "Its juries favoured",
-      "In 1874 a group of painters",
-      "A critic mocked one of Monet's paintings"
+      "Their taste ran to polished",
+      "staged an exhibition of their own",
+      "Louis Leroy",
+      "embraced by many of the very painters"
     ],
     "cues": [
-      "Introduces the Salon, so it opens.",
-      "'Its juries' are the Salon's.",
-      "The painters' own show responds to the Salon's tastes.",
-      "The critic reacts to the exhibition, and Monet is already named."
+      "Introduces the Salon and its juries, so it opens.",
+      "'Their taste' belongs to the juries just named.",
+      "'Therefore' follows from the rejections, and the painters' own show answers the Salon.",
+      "'The show' is the 1874 exhibition, and Monet is already named.",
+      "'The mockery' is the critic's, and the label comes from it."
     ],
-    "odd": "Paris was rebuilt with wide boulevards in the 1850s and 1860s under Baron Haussmann.",
-    "oddWhy": "It is about rebuilding Paris, not about the Salon and the painters it rejected.",
-    "ins": "Their verdict mattered, because painters who were refused often struggled to find buyers.",
+    "odd": "Paris was rebuilt with broad boulevards in the 1850s and 1860s under Baron Haussmann.",
+    "oddWhy": "It concerns the rebuilding of Paris, not the Salon or the painters it turned away.",
+    "ooo": {
+      "show": [
+        3,
+        0,
+        2,
+        1,
+        4
+      ],
+      "answer": 2,
+      "drop": 5
+    },
+    "ins": "Such rejection could be ruinous, since painters refused by the Salon often struggled to find buyers.",
     "insAt": 2,
-    "insWhy": "'Their verdict' is the juries' judgement just described, and it explains why rejection pushed the painters to act.",
+    "insWhy": "'Such rejection' needs the turned-away canvases of the second sentence, and the ruin it describes is what makes the 'therefore' of the third sentence persuasive.",
     "sum": [
       {
-        "t": "Shut out by the Salon's taste, a group of painters exhibited on their own in 1874 and took their name from a critic's jibe.",
+        "t": "Shut out by the Salon's conservative taste, a group of painters exhibited independently in 1874 and acquired their name from a critic's mockery.",
         "why": "Covers the Salon, the independent show and the name."
       },
       {
-        "t": "A critic mocked Monet's Impression, Sunrise.",
+        "t": "A satirical critic, Louis Leroy, mocked the 1874 exhibition of a group of painters by taking his cue from the title of Monet's painting Impression, Sunrise.",
         "why": "Only the last event.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "The Salon praised the Impressionists' sketchy style and invited them to exhibit in 1874.",
-        "why": "The Salon disliked sketchy work, and the painters exhibited on their own.",
+        "t": "The Salon's juries admired the sketchy style of Monet, Renoir and Degas and invited them to exhibit their work in 1874 alongside polished history paintings.",
+        "why": "The juries rejected such work, and the painters staged their own show.",
         "trap": "Distorts the passage"
       },
       {
-        "t": "The Salon rejected every painter of the age, which is why all the great artists of the nineteenth century ended up joining the Impressionists.",
-        "why": "The Salon 'often' rejected certain work; nothing says all artists became Impressionists.",
+        "t": "The Salon rejected every important painter of the nineteenth century, which is why all of them eventually became Impressionists.",
+        "why": "The juries 'often' rejected certain work; nothing says all artists became Impressionists.",
         "trap": "Extreme wording"
       }
     ]
@@ -854,46 +1279,71 @@
     "topic": "From mould to medicine",
     "difficulty": "easy",
     "since": "2026-10-20",
+    "wordCount": 115,
     "s": [
-      "In 1928 Alexander Fleming noticed that mould growing on one of his culture plates had killed the bacteria around it.",
-      "He named the substance it produced penicillin, but he struggled to purify it and soon turned to other work.",
-      "A decade later, Howard Florey and Ernst Chain at Oxford took up the problem and showed that purified penicillin could cure infections in mice and then in people.",
-      "By the end of the Second World War it was being mass-produced, and Fleming, Florey and Chain shared the Nobel Prize in 1945."
+      "Credit for a medical breakthrough usually goes to whoever first noticed the phenomenon, but noticing is rarely the hardest part.",
+      "In 1928 Alexander Fleming saw that a mould growing on one of his culture plates had killed the bacteria around it, and he named the substance penicillin.",
+      "He struggled, however, to purify it in useful quantities and soon turned to other work.",
+      "A decade later Howard Florey, Ernst Chain and their colleagues at Oxford took up the problem, showing that purified penicillin could cure infections, first in mice and then in people.",
+      "By the end of the Second World War it was being mass-produced, and in 1945 Fleming, Florey and Chain shared the Nobel Prize."
     ],
+    "pj": {
+      "show": [
+        4,
+        1,
+        5,
+        3,
+        2
+      ],
+      "answer": "25413"
+    },
     "marks": [
-      "In 1928 Alexander Fleming noticed",
-      "He named the substance",
+      "noticing is rarely the hardest part",
+      "In 1928 Alexander Fleming",
+      "He struggled, however",
       "A decade later",
-      "By the end of the Second World War"
+      "mass-produced"
     ],
     "cues": [
-      "Gives the discovery and its date, so it opens.",
-      "'He' is Fleming, and 'it' is the mould.",
-      "'A decade later' counts from Fleming's work, and 'the problem' is purifying it.",
-      "Follows the medical tests with mass production and the prize."
+      "A general claim about credit, so it opens.",
+      "Introduces Fleming's noticing, the case behind the claim.",
+      "'He' is Fleming, and 'however' limits what he achieved.",
+      "'A decade later' counts from 1928, and 'the problem' is the purification Fleming abandoned.",
+      "'It' is penicillin, and the three prizewinners are the men already named."
     ],
-    "odd": "Bacteria are single-celled organisms, and most of them are harmless to people.",
-    "oddWhy": "It is about bacteria in general, not about how penicillin became a medicine.",
-    "ins": "Their first human patient, a policeman, improved at first but died when the supply ran out.",
-    "insAt": 3,
-    "insWhy": "'Their' refers to Florey and Chain, and the patient belongs to their tests on people, before mass production.",
+    "odd": "Most bacteria are harmless to people, and many, such as those in the gut, are actively useful.",
+    "oddWhy": "It concerns bacteria in general, not how penicillin became a medicine.",
+    "ooo": {
+      "show": [
+        4,
+        1,
+        3,
+        2,
+        0
+      ],
+      "answer": 5,
+      "drop": 5
+    },
+    "ins": "Their first seriously ill patient, a policeman, improved dramatically but died when the supply of the drug ran out.",
+    "insAt": 4,
+    "insWhy": "'Their' means Florey and Chain's team of the fourth sentence, and the shortage of supply leads to the mass production of the fifth. Before the fourth sentence 'their' has no antecedent, and after the fifth the chronology is reversed.",
     "sum": [
       {
-        "t": "Fleming discovered penicillin by chance, but Florey and Chain's later work turned it into a usable medicine.",
-        "why": "Covers the discovery and the work that made it a drug."
+        "t": "Fleming noticed penicillin's effect by chance, but it was the later work of Florey and Chain that turned it into a usable medicine.",
+        "why": "Covers the discovery and the work that made it a medicine."
       },
       {
-        "t": "Fleming, Florey and Chain shared the Nobel Prize in 1945.",
-        "why": "Only the last fact.",
+        "t": "Fleming, Florey and Chain shared the Nobel Prize in 1945, by which time penicillin was being mass-produced for use in the Second World War.",
+        "why": "Only the last part of the story, without how the drug was found or turned into a medicine.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "Fleming purified penicillin himself and tested it successfully on his own patients within months of his chance discovery in 1928.",
-        "why": "Fleming struggled to purify it; Florey and Chain did that a decade later.",
+        "t": "Fleming purified penicillin himself and cured patients with it within months of his discovery in 1928, without any help from Oxford.",
+        "why": "He struggled to purify it; Florey and Chain did that a decade later.",
         "trap": "Distorts the passage"
       },
       {
-        "t": "Penicillin was useless until the war, and Fleming deserved no credit at all for discovering it.",
+        "t": "Fleming deserved no credit for penicillin at all, since the real work of making it a medicine was done by the team at Oxford a decade later.",
         "why": "He shared the Nobel Prize; the paragraph does not deny him credit.",
         "trap": "Extreme wording"
       }
@@ -904,48 +1354,73 @@
     "topic": "Do crowds help?",
     "difficulty": "hard",
     "since": "2026-10-20",
+    "wordCount": 116,
     "s": [
       "Textbooks often warn that people in a crowd are less likely to help a stranger in trouble.",
-      "The idea, known as the bystander effect, comes from laboratory studies in which participants were slower to respond to an emergency when others were present.",
-      "A 2019 study took a different approach, analysing CCTV footage of real public conflicts in three countries.",
-      "In nine out of ten cases, at least one bystander stepped in, and the more people were present, the more likely someone was to help."
+      "The warning, known as the bystander effect, rests on laboratory experiments in which participants responded more slowly to an emergency when others were present.",
+      "A study published in 2019 took a different approach, analysing CCTV footage of real public conflicts in Amsterdam, Cape Town and Lancaster.",
+      "In nine out of ten conflicts at least one bystander intervened, and intervention became more likely as the number of onlookers grew.",
+      "The laboratory finding and the street footage need not conflict: each onlooker may be less likely to act while the group as a whole is more likely to produce a helper."
     ],
+    "pj": {
+      "show": [
+        5,
+        2,
+        4,
+        1,
+        3
+      ],
+      "answer": "42531"
+    },
     "marks": [
-      "Textbooks often warn",
+      "less likely to help a stranger in trouble",
       "known as the bystander effect",
-      "A 2019 study took a different approach",
-      "In nine out of ten cases"
+      "took a different approach",
+      "nine out of ten conflicts",
+      "need not conflict"
     ],
     "cues": [
       "States the common warning, so it opens.",
-      "'The idea' is the warning just stated, and the sentence gives its source.",
+      "'The warning' is the one just stated, and the sentence gives its source in the laboratory.",
       "'A different approach' contrasts with the laboratory studies.",
-      "Gives the results of the 2019 study."
+      "Gives the results of the 2019 study.",
+      "'The laboratory finding and the street footage' are those of the second to fourth sentences, and the sentence reconciles them."
     ],
-    "odd": "Many cities have expanded their CCTV networks in recent decades, raising concerns about privacy.",
-    "oddWhy": "It is about surveillance, not about whether bystanders help.",
-    "ins": "This does not mean each person in a crowd is more likely to act, only that someone usually does.",
+    "odd": "Many cities have expanded their CCTV networks in recent decades, prompting debate about privacy.",
+    "oddWhy": "It concerns the privacy debate over surveillance, not whether bystanders help.",
+    "ooo": {
+      "show": [
+        2,
+        0,
+        4,
+        1,
+        3
+      ],
+      "answer": 2,
+      "drop": 5
+    },
+    "ins": "Those figures come from fights, threats and similar confrontations, not from every kind of emergency.",
     "insAt": 4,
-    "insWhy": "'This' is the finding about larger crowds in the last sentence, which it qualifies.",
+    "insWhy": "'Those figures' need the percentages in the fourth sentence, and the caution comes before the fifth sentence's attempt to reconcile the findings. Before the fourth sentence there are no figures to refer to.",
     "sum": [
       {
-        "t": "Lab studies suggest crowds make people slow to help, but real footage shows that someone usually steps in, more often in larger groups.",
+        "t": "Lab studies suggest crowds make individuals slower to help, but footage of real conflicts shows that someone usually intervenes, more often in larger groups.",
         "why": "Covers the old view and the new evidence."
       },
       {
-        "t": "A 2019 study analysed CCTV footage from three countries.",
+        "t": "A study published in 2019 analysed CCTV footage of real public conflicts in Amsterdam, Cape Town and Lancaster to see who intervened.",
         "why": "Only the method.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "The bystander effect has been proved false, and every person in a crowd will help a stranger in trouble.",
-        "why": "At least one person usually helps; that is not everyone.",
-        "trap": "Extreme wording"
+        "t": "Real footage of public conflicts confirmed the laboratory finding that people in large crowds rarely step in to help strangers.",
+        "why": "The footage showed that someone usually intervenes.",
+        "trap": "Distorts the passage"
       },
       {
-        "t": "Real footage confirmed that people in large crowds rarely step in to help.",
-        "why": "The footage showed the opposite.",
-        "trap": "Distorts the passage"
+        "t": "The bystander effect has been refuted, since every member of a crowd is more willing to help than a lone individual is, in every kind of emergency.",
+        "why": "The paragraph says each onlooker may still be less likely to act.",
+        "trap": "Extreme wording"
       }
     ]
   },
@@ -954,46 +1429,71 @@
     "topic": "London burns",
     "difficulty": "easy",
     "since": "2026-10-20",
+    "wordCount": 118,
     "s": [
-      "In September 1666 a fire that began in a baker's shop on Pudding Lane burned for four days across the City of London.",
-      "It destroyed more than thirteen thousand houses, along with old St Paul's Cathedral and dozens of parish churches.",
-      "The disaster spread so easily because most buildings were made of timber and stood close together on narrow streets.",
-      "The rebuilding laws that followed therefore required new houses to be built of brick or stone, and some streets were widened."
+      "In September 1666 a fire that began in a baker's shop on Pudding Lane burned for days through the City of London.",
+      "It destroyed some thirteen thousand houses, along with old St Paul's Cathedral and scores of parish churches.",
+      "Such destruction was possible because the City was packed with timber houses on narrow streets, and a dry summer and a strong wind did the rest.",
+      "The rebuilding laws that followed therefore required new houses to be made of brick or stone, and some streets were widened.",
+      "Grander schemes, including Christopher Wren's plan for a new street layout, were never carried out, because owners were reluctant to give up their old plots and the City needed trade restarted quickly."
     ],
+    "pj": {
+      "show": [
+        3,
+        1,
+        5,
+        2,
+        4
+      ],
+      "answer": "24153"
+    },
     "marks": [
       "In September 1666",
-      "It destroyed more than thirteen thousand houses",
-      "The disaster spread so easily",
-      "The rebuilding laws that followed therefore"
+      "thirteen thousand houses",
+      "Such destruction was possible",
+      "rebuilding laws that followed",
+      "Grander schemes"
     ],
     "cues": [
       "Gives the event and the date, so it opens.",
-      "'It' is the fire.",
-      "'The disaster' sums up the destruction, and the sentence explains it.",
-      "'Therefore' draws on the timber buildings just blamed."
+      "'It' is the fire, and the sentence reports the scale of destruction.",
+      "'Such destruction' sums up the second sentence, and the sentence explains it.",
+      "'Therefore' draws on the timber houses and narrow streets just blamed.",
+      "'Grander schemes' contrast with the laws just described, so the failed plans come last."
     ],
-    "odd": "London's population grew rapidly in the eighteenth century, making it one of Europe's largest cities.",
-    "oddWhy": "It is about later growth, not about the fire and the rules that followed it.",
-    "ins": "Grand plans for a new street layout, including one by Christopher Wren, were never carried out.",
-    "insAt": 4,
-    "insWhy": "It adds what did not happen in the rebuilding, so it follows the new laws; putting it earlier would cut 'therefore' off from its reason.",
+    "odd": "London's population grew rapidly in the eighteenth century, making it one of the largest cities in Europe.",
+    "oddWhy": "It concerns later population growth, not the fire and the rules that followed it.",
+    "ooo": {
+      "show": [
+        0,
+        2,
+        4,
+        1,
+        3
+      ],
+      "answer": 1,
+      "drop": 5
+    },
+    "ins": "Yet only a handful of deaths were officially recorded, despite damage on that scale, though the true toll is unknown.",
+    "insAt": 2,
+    "insWhy": "'Damage on that scale' and 'Yet' need the destruction reported in the second sentence, so the sentence cannot come before it. After the third sentence the contrast loses its point, because that sentence has moved on to causes.",
     "sum": [
       {
-        "t": "The Great Fire of 1666 spread through London's crowded timber buildings, so the city was rebuilt under rules requiring brick or stone.",
+        "t": "The Great Fire of 1666 spread through London's crowded timber buildings, prompting rebuilding rules that required brick or stone, though grander plans for the city were abandoned.",
         "why": "Covers the fire, its cause and the response."
       },
       {
-        "t": "The fire of 1666 began in a baker's shop on Pudding Lane.",
-        "why": "Only the start of the fire.",
+        "t": "The fire began in a baker's shop on Pudding Lane in September 1666 and burned for days, destroying some thirteen thousand houses and old St Paul's.",
+        "why": "Only the start and scale of the fire.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "After 1666, London was rebuilt to an entirely new plan by Christopher Wren, with wide streets everywhere and no timber buildings left anywhere in the city.",
-        "why": "Only some streets were widened, and the new street plans, including Wren's, were not carried out.",
-        "trap": "Extreme wording"
+        "t": "After the fire, London was rebuilt to Christopher Wren's plan for a new street layout, with wide streets, brick or stone houses and no timber buildings left standing in the City.",
+        "why": "Wren's plan was never carried out, and only some streets were widened.",
+        "trap": "Distorts the passage"
       },
       {
-        "t": "Fires were the main cause of death in seventeenth-century London.",
+        "t": "Fire, rather than plague or disease, was the main cause of death among the people of seventeenth-century London.",
         "why": "Causes of death are not discussed.",
         "trap": "Out of scope"
       }
@@ -1004,47 +1504,72 @@
     "topic": "The price of plenty",
     "difficulty": "hard",
     "since": "2026-10-20",
+    "wordCount": 105,
     "s": [
       "In the 1960s India faced repeated food shortages and depended heavily on imported grain.",
       "New high-yielding varieties of wheat and rice, grown with irrigation and chemical fertiliser, changed this within a decade, above all in Punjab and Haryana.",
-      "This Green Revolution made the country largely self-sufficient in food grains, but it came at a price.",
-      "Farmers in those states now pump groundwater far faster than rain can replace it, and the water table in many districts falls year after year."
+      "The Green Revolution made the country largely self-sufficient in grain, but the gain was not free.",
+      "Farmers in those two states now draw groundwater far faster than rain can replace it, and in many districts the water table falls year after year.",
+      "Procurement policy, which guarantees a market for wheat and rice, rewards farmers for staying with these crops, so the success has become hard to unwind."
     ],
+    "pj": {
+      "show": [
+        2,
+        5,
+        3,
+        1,
+        4
+      ],
+      "answer": "41352"
+    },
     "marks": [
-      "India faced repeated food shortages",
+      "repeated food shortages",
       "New high-yielding varieties",
-      "This Green Revolution",
-      "Farmers in those states"
+      "The Green Revolution",
+      "those two states",
+      "Procurement policy"
     ],
     "cues": [
       "Sets out the problem, so it opens.",
-      "'Changed this' refers to the shortages.",
-      "'This Green Revolution' names the change just described.",
-      "'Those states' are Punjab and Haryana, and the sentence gives the price."
+      "'Changed this' refers to the shortages and imports.",
+      "'The Green Revolution' names the change just described, and 'the gain' sets up its cost.",
+      "'Those two states' are Punjab and Haryana, and the sentence gives the cost.",
+      "'The success' and 'these crops' build on the earlier sentences, and the sentence explains why the cost persists."
     ],
-    "odd": "Rice is the staple food of most people in eastern and southern India.",
-    "oddWhy": "It is about diets in other regions, not about the costs of the Green Revolution.",
-    "ins": "Rice, which needs far more water than the crops it often replaced, has made the problem worse.",
+    "odd": "Rice is the staple food of most people in eastern and southern India, while wheat dominates diets in the north.",
+    "oddWhy": "It concerns regional diets, not the costs of the Green Revolution.",
+    "ooo": {
+      "show": [
+        2,
+        4,
+        1,
+        0,
+        3
+      ],
+      "answer": 4,
+      "drop": 5
+    },
+    "ins": "Paddy, which needs far more water than many of the crops it replaced, has made the falling water table worse.",
     "insAt": 4,
-    "insWhy": "'The problem' is the falling water table, which is described only in the last sentence.",
+    "insWhy": "'The falling water table' is described in the fourth sentence, so the sentence deepening it follows straight after; the fifth sentence then moves on to why the system persists. Before the fourth sentence the water table has not been mentioned.",
     "sum": [
       {
-        "t": "High-yielding crops ended India's dependence on grain imports, but they have drained groundwater where they are grown most.",
-        "why": "Covers the gain and its cost."
+        "t": "High-yielding crops freed India from dependence on imported grain, but water-intensive farming is draining groundwater where it is practised most, and policy makes change hard.",
+        "why": "Covers the gain, the cost and why the cost persists."
       },
       {
-        "t": "Farmers in Punjab pump groundwater faster than rain replaces it.",
+        "t": "Farmers in Punjab and Haryana now pump groundwater faster than rain can replace it, and in many districts the water table falls every year.",
         "why": "Only the cost, without the gain.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "The Green Revolution failed, because India still depends on imported grain.",
-        "why": "It made India largely self-sufficient.",
+        "t": "The Green Revolution failed to end India's food shortages, because the country still depends heavily on grain imported from abroad, as it did in the 1960s.",
+        "why": "It made India largely self-sufficient in grain.",
         "trap": "Distorts the passage"
       },
       {
-        "t": "Chemical fertiliser and irrigation should be banned in Punjab and Haryana to save their water, even if India must import grain again.",
-        "why": "No policy is recommended.",
+        "t": "India should end irrigation and fertiliser use in Punjab and Haryana at once, even if grain must be imported again, so that the water table can recover.",
+        "why": "No policy of this kind is recommended.",
         "trap": "Out of scope"
       }
     ]
@@ -1054,147 +1579,222 @@
     "topic": "When prizes spoil play",
     "difficulty": "medium",
     "since": "2026-10-20",
+    "wordCount": 102,
     "s": [
-      "In a well-known 1973 experiment, psychologists observed nursery-school children who already liked drawing with felt-tip pens.",
-      "Some of the children were promised a certificate for drawing, while others were not.",
-      "A week or two later, the children who had been rewarded spent less of their free time drawing than those who had not.",
+      "Rewards are usually assumed to make people do more of whatever they are rewarded for.",
+      "In a well-known experiment of 1973, psychologists watched nursery-school children who already enjoyed drawing with felt-tip pens.",
+      "Some children were told beforehand that they would receive a certificate for drawing, others were given the same certificate as a surprise, and the rest received none.",
+      "A week or two later, only the children who had been promised the certificate spent noticeably less of their free time drawing.",
       "The researchers concluded that an expected reward can turn an activity people enjoy into something they do mainly for the prize."
     ],
+    "pj": {
+      "show": [
+        4,
+        3,
+        1,
+        5,
+        2
+      ],
+      "answer": "35214"
+    },
     "marks": [
-      "psychologists observed nursery-school children",
-      "Some of the children were promised",
-      "A week or two later",
-      "The researchers concluded"
+      "usually assumed to make people do more",
+      "In a well-known experiment of 1973",
+      "others were given the same certificate as a surprise",
+      "only the children who had been promised",
+      "an expected reward can turn an activity"
     ],
     "cues": [
-      "Introduces the experiment, so it opens.",
-      "'The children' are the ones just introduced.",
-      "'Later' follows the reward, and the sentence gives the result.",
-      "The conclusion follows the result it explains."
+      "States the common assumption, so it opens.",
+      "Introduces the experiment that tests the assumption.",
+      "'Some children' and 'others' are the children just introduced, split into three conditions.",
+      "'The children who had been promised' are the first group of the third sentence, and 'a week or two later' follows the drawing session.",
+      "'The researchers concluded' draws the lesson from the result."
     ],
     "odd": "Drawing is widely thought to help young children develop fine control of their hands.",
-    "oddWhy": "It is about drawing and development, not about rewards reducing interest.",
-    "ins": "The certificate was shown to them before they began, so they knew exactly what they were drawing for.",
-    "insAt": 2,
-    "insWhy": "'The certificate' needs the promise in the second sentence, and the children see it before the later result.",
+    "oddWhy": "It concerns drawing and motor development, not the effect of rewards on interest.",
+    "ooo": {
+      "show": [
+        3,
+        1,
+        0,
+        4,
+        2
+      ],
+      "answer": 3,
+      "drop": 5
+    },
+    "ins": "In other words, drawing had changed, for them, from play into work.",
+    "insAt": 5,
+    "insWhy": "'In other words' restates the conclusion of the fifth sentence ('something they do mainly for the prize'), and 'for them' refers to the promised group. After the fourth sentence it would restate the result as if it were a conclusion, which it is not.",
     "sum": [
       {
-        "t": "Children promised a reward for drawing later drew less in their free time, suggesting expected rewards can undermine enjoyment.",
+        "t": "Children promised a reward for drawing later drew less in their free time, suggesting that expected rewards can undermine enjoyment.",
         "why": "Covers the result and the conclusion."
       },
       {
-        "t": "Some nursery-school children were promised a certificate for drawing.",
+        "t": "Some nursery-school children who already enjoyed drawing with felt-tip pens were told beforehand that they would receive a certificate for it.",
         "why": "Only the set-up.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "Rewards always destroy interest in any activity, so parents and schools should never offer prizes.",
-        "why": "The paragraph says expected rewards 'can' do this, and gives no advice.",
-        "trap": "Extreme wording"
+        "t": "Children given a surprise certificate also lost interest in drawing, showing that any reward undermines enjoyment.",
+        "why": "Only the group that expected the reward drew less.",
+        "trap": "Distorts the passage"
       },
       {
-        "t": "The rewarded children enjoyed drawing more and spent more of their free time on it.",
-        "why": "They spent less time drawing.",
-        "trap": "Distorts the passage"
+        "t": "Rewards invariably destroy interest in an activity, so parents and schools should avoid offering them to children.",
+        "why": "The paragraph says an expected reward 'can' do this, and it gives no advice.",
+        "trap": "Extreme wording"
       }
     ]
   },
   {
     "id": "bats",
     "topic": "Seeing with sound",
-    "difficulty": "easy",
+    "difficulty": "medium",
     "since": "2026-10-20",
+    "wordCount": 110,
     "s": [
-      "Many bats find their way and catch insects in complete darkness by using sound.",
-      "They send out rapid, high-pitched calls, most of them too high for human ears, and listen for the echoes that bounce back.",
-      "From the timing and pattern of these echoes, a bat can judge the distance, size and even texture of objects around it.",
-      "This skill, called echolocation, was first demonstrated by the American scientist Donald Griffin in the late 1930s and 1940s."
+      "Many bats find their way and catch insects in total darkness by using sound rather than sight.",
+      "They emit rapid, high-pitched calls, most of them too high for human ears, and listen for the echoes that return.",
+      "From the delay and pattern of those echoes a bat can judge the distance, size and even texture of the objects around it.",
+      "The ability, later named echolocation, was demonstrated in the late 1930s and early 1940s by the American scientists Donald Griffin and Robert Galambos, building on experiments by Lazzaro Spallanzani in the 1790s.",
+      "Spallanzani's conclusion had been widely doubted, since few could believe that an animal could navigate by sound alone."
     ],
+    "pj": {
+      "show": [
+        5,
+        3,
+        1,
+        4,
+        2
+      ],
+      "answer": "35241"
+    },
     "marks": [
       "Many bats find their way",
-      "They send out rapid",
-      "From the timing and pattern of these echoes",
-      "This skill, called echolocation"
+      "rapid, high-pitched calls",
+      "delay and pattern of those echoes",
+      "Donald Griffin and Robert Galambos",
+      "Spallanzani's conclusion"
     ],
     "cues": [
       "States the general fact, so it opens.",
       "'They' are the bats, and the sentence explains how sound is used.",
-      "'These echoes' are the ones just mentioned.",
-      "'This skill' sums up the process and names it."
+      "'Those echoes' are the ones just mentioned.",
+      "'The ability' sums up what bats do and names it, with its history.",
+      "'Spallanzani's conclusion' needs his experiments from the fourth sentence."
     ],
-    "odd": "Bats are the only mammals capable of true flight.",
-    "oddWhy": "It is about flight, not about finding the way by sound.",
-    "ins": "Before then, many scientists had refused to believe that animals could find their way by sound alone.",
-    "insAt": 4,
-    "insWhy": "'Before then' needs the date of Griffin's work in the last sentence.",
+    "odd": "Bats are the only mammals capable of true, sustained flight.",
+    "oddWhy": "It concerns flight, not how bats find their way by sound.",
+    "ooo": {
+      "show": [
+        1,
+        3,
+        0,
+        2,
+        4
+      ],
+      "answer": 3,
+      "drop": 5
+    },
+    "ins": "Such precision lets a bat intercept an insect in mid-air within a fraction of a second.",
+    "insAt": 3,
+    "insWhy": "'Such precision' needs the judging of distance, size and texture in the third sentence; the later sentences are about the history of the discovery.",
     "sum": [
       {
-        "t": "Bats navigate and hunt in darkness by reading the echoes of their calls, an ability first shown in the twentieth century.",
+        "t": "Bats navigate and hunt in darkness by interpreting the echoes of their own calls, an ability demonstrated by twentieth-century scientists after earlier doubts.",
         "why": "Covers what bats do, how, and when it was shown."
       },
       {
-        "t": "Bat calls are mostly too high for humans to hear.",
-        "why": "Only one detail.",
+        "t": "Bats emit rapid, high-pitched calls, most of them too high for human ears, and listen for the echoes that return from insects and from the objects around them.",
+        "why": "Only how bats listen, without the history of the discovery.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "All bats are blind and depend entirely on sound to survive.",
-        "why": "The paragraph says 'many bats' use sound, and nothing says they are blind.",
-        "trap": "Extreme wording"
+        "t": "Bats judge distance and size by listening to the calls of other bats nearby, not to the echoes of their own, which lets them hunt in darkness.",
+        "why": "They listen for the echoes of their own calls.",
+        "trap": "Distorts the passage"
       },
       {
-        "t": "Bats judge the distance and size of objects by listening to the calls of other bats flying nearby, rather than to the echoes of their own.",
-        "why": "They listen to the echoes of their own calls.",
-        "trap": "Distorts the passage"
+        "t": "All bats are completely blind and depend entirely on sound to find their way, catch insects and survive, which is why they hunt only in darkness.",
+        "why": "The paragraph says 'many bats' use sound, and nothing says they are blind.",
+        "trap": "Extreme wording"
       }
     ]
   },
   {
     "id": "alexandria",
     "topic": "The library that faded",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "since": "2026-10-20",
+    "wordCount": 97,
     "s": [
-      "The Library of Alexandria is often remembered as having vanished in a single great fire.",
-      "Popular accounts blame Julius Caesar, a Christian mob or an Arab conqueror, depending on who tells the story.",
-      "Most historians think the truth was less dramatic.",
-      "The library seems to have declined over several centuries, as royal funding dried up, scholars left and the city suffered repeated wars."
+      "The Library of Alexandria is popularly remembered as having vanished in a single great fire.",
+      "Different tellings blame Julius Caesar, a Christian mob or an Arab conqueror, depending on who is doing the telling and what they wish to condemn.",
+      "Most historians, however, think the truth was far less dramatic.",
+      "The library seems to have declined over several centuries, as royal funding dried up, scholars left the city for safer or better-paid posts, and Alexandria suffered repeated wars.",
+      "The single-catastrophe story survives, then, because it makes a better tale than a slow loss of money and staff."
     ],
+    "pj": {
+      "show": [
+        2,
+        4,
+        1,
+        5,
+        3
+      ],
+      "answer": "31524"
+    },
     "marks": [
-      "often remembered as having vanished",
-      "Popular accounts blame",
-      "the truth was less dramatic",
-      "seems to have declined over several centuries"
+      "popularly remembered as having vanished",
+      "Different tellings blame",
+      "less dramatic",
+      "declined over several centuries",
+      "makes a better tale"
     ],
     "cues": [
       "States the popular memory, so it opens.",
-      "Lists the culprits of the single-fire story.",
+      "'Different tellings' of the single-fire story name the culprits.",
       "'Less dramatic' contrasts with the stories just told.",
-      "Spells out the less dramatic truth."
+      "Spells out the less dramatic truth.",
+      "'Then' draws the conclusion: why the dramatic story survives."
     ],
-    "odd": "Alexandria was founded by Alexander the Great in the fourth century BCE.",
-    "oddWhy": "It is about the city's founding, not about how the library was lost.",
-    "ins": "The story of one catastrophe survives because it makes a better tale than a slow loss of money and staff.",
+    "odd": "Alexandria was founded by Alexander the Great in the fourth century BCE and later became the capital of the Ptolemies.",
+    "oddWhy": "It concerns the city's founding and rulers, not how the library was lost.",
+    "ooo": {
+      "show": [
+        4,
+        2,
+        1,
+        0,
+        3
+      ],
+      "answer": 4,
+      "drop": 5
+    },
+    "ins": "These pressures were already at work in the second century BCE, when a king expelled many of the city's scholars.",
     "insAt": 4,
-    "insWhy": "'A slow loss of money and staff' needs the decline described in the last sentence.",
+    "insWhy": "'These pressures' are the lost funding, departing scholars and wars listed in the fourth sentence; the conclusion of the fifth sentence then follows from the slow loss.",
     "sum": [
       {
-        "t": "The Library of Alexandria probably faded slowly through neglect and war, not in the single fire of popular legend.",
+        "t": "The Library of Alexandria most likely declined gradually through neglect, lost patronage and war, rather than perishing in the single fire of popular legend.",
         "why": "Covers the legend and the historians' view."
       },
       {
-        "t": "Some accounts blame Julius Caesar for burning the library.",
-        "why": "Only one version of the legend.",
+        "t": "Popular tradition blames Julius Caesar, a Christian mob or an Arab conqueror, depending on the teller, for destroying the library in a single great fire.",
+        "why": "Only the legend.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "Historians agree that an Arab conqueror burned the library in a single night, ending centuries of scholarship at a stroke.",
-        "why": "Historians reject the single-fire story.",
+        "t": "Most historians agree that the library perished in one night of fire, though they still dispute whether Caesar, a mob or a conqueror was responsible.",
+        "why": "Most historians reject the single-fire story.",
         "trap": "Distorts the passage"
       },
       {
-        "t": "The library never existed, and every story about it is a legend.",
-        "why": "The paragraph is about how it declined, not whether it existed.",
+        "t": "The library never existed at all, and every story told about it, including its slow decline, is a legend invented to condemn someone.",
+        "why": "The paragraph is about how the library declined, not whether it existed.",
         "trap": "Extreme wording"
       }
     ]
@@ -1204,47 +1804,72 @@
     "topic": "Comparative advantage",
     "difficulty": "medium",
     "since": "2026-10-20",
+    "wordCount": 109,
     "s": [
-      "In 1817 the economist David Ricardo set out an argument that still surprises students.",
-      "He imagined England and Portugal producing cloth and wine, with Portugal better at making both.",
-      "Even so, he showed, both countries gain if each specialises in what it makes relatively best and trades for the rest.",
-      "What matters for trade, in other words, is not absolute advantage but comparative advantage: what a country gives up by making one good rather than another."
+      "In 1817 the economist David Ricardo set out an argument that still surprises many students of trade.",
+      "He imagined two countries, England and Portugal, each producing cloth and wine, with Portugal more efficient at making both.",
+      "It might seem that Portugal then has nothing to gain from trade, since it can make everything more cheaply at home.",
+      "Ricardo showed otherwise: if each country concentrates on the good it makes relatively best and trades for the other, both can end up better off.",
+      "What matters for trade, in other words, is not absolute advantage but comparative advantage, the amount a country gives up by making one good rather than another."
     ],
+    "pj": {
+      "show": [
+        3,
+        5,
+        1,
+        2,
+        4
+      ],
+      "answer": "34152"
+    },
     "marks": [
       "David Ricardo set out an argument",
-      "He imagined England and Portugal",
-      "Even so, he showed",
+      "He imagined two countries",
+      "might seem that Portugal",
+      "Ricardo showed otherwise",
       "in other words"
     ],
     "cues": [
-      "Introduces Ricardo, so it opens.",
+      "Introduces Ricardo and the argument, so it opens.",
       "'He' is Ricardo, and the sentence sets up his example.",
-      "'Even so' answers Portugal being better at both.",
+      "'Then' follows from Portugal's superiority in both goods.",
+      "'Otherwise' answers the worry raised in the third sentence.",
       "'In other words' restates the result as a general principle."
     ],
-    "odd": "Portugal has been famous for its port wine since the eighteenth century.",
-    "oddWhy": "It is about Portuguese wine, not about Ricardo's argument.",
-    "ins": "It might seem that Portugal would have no reason to buy anything from England.",
-    "insAt": 2,
-    "insWhy": "It draws the obvious conclusion from Portugal being better at both, which 'Even so' then overturns.",
+    "odd": "Ricardo made a fortune as a stockbroker before entering Parliament in 1819.",
+    "oddWhy": "It is biographical detail about Ricardo, not about the argument.",
+    "ooo": {
+      "show": [
+        2,
+        0,
+        3,
+        1,
+        4
+      ],
+      "answer": 2,
+      "drop": 5
+    },
+    "ins": "In his example Portugal gives up less cloth than England does for each unit of wine it makes.",
+    "insAt": 4,
+    "insWhy": "It illustrates 'relatively best' from the fourth sentence and prepares the definition of comparative advantage as what a country 'gives up' in the fifth. After the third sentence it would answer the worry before Ricardo has shown otherwise.",
     "sum": [
       {
-        "t": "Ricardo showed that countries gain by specialising where their relative costs are lowest, even when one is better at everything.",
+        "t": "Ricardo showed that countries gain by specialising where their relative costs are lowest, even when one of them is more efficient at producing everything.",
         "why": "Covers the example's point and the principle."
       },
       {
-        "t": "Ricardo used England and Portugal as an example in 1817.",
+        "t": "In 1817 Ricardo imagined two countries, England and Portugal, each producing cloth and wine, with Portugal the more efficient producer of both goods.",
         "why": "Only the set-up.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "Ricardo argued that a country should trade only if it is better than others at making something.",
-        "why": "That is absolute advantage, which he showed does not matter.",
+        "t": "Ricardo argued that a country gains from trade only when it is more efficient than its partner at making something, which is why Portugal alone would benefit from selling wine.",
+        "why": "That is absolute advantage, which he showed does not decide the gains.",
         "trap": "Distorts the passage"
       },
       {
-        "t": "Free trade makes every country and every worker better off, which is why all economists, following Ricardo, have supported it since 1817.",
-        "why": "The paragraph makes no claim about every worker or all economists.",
+        "t": "Free trade benefits every worker in every country, which is why all economists since Ricardo have endorsed it.",
+        "why": "The paragraph makes no claim about every worker or about all economists.",
         "trap": "Extreme wording"
       }
     ]
@@ -1254,48 +1879,73 @@
     "topic": "Tough only when dry",
     "difficulty": "easy",
     "since": "2026-10-20",
+    "wordCount": 107,
     "s": [
       "Tardigrades are animals less than a millimetre long that live in moss, soil and water almost everywhere on Earth.",
-      "They are famous for surviving conditions that would kill nearly any other animal, from near-total drying to the vacuum of space.",
-      "They manage this by entering a state called a tun, in which they lose almost all their water and their metabolism nearly stops.",
-      "In their normal active state, however, tardigrades are far more fragile, and many die from heat or drought that strikes too quickly for them to prepare."
+      "They are famous for surviving conditions that would kill nearly any other animal, from near-total drying to exposure to open space.",
+      "They manage this by entering a state called a tun, in which they lose almost all their body water and their metabolism slows to a crawl.",
+      "Their toughness, however, belongs to this dormant state, not to the animal as it normally lives.",
+      "In its active state a tardigrade is far more fragile, and many die from heat or drought that arrives too quickly for them to prepare."
     ],
+    "pj": {
+      "show": [
+        4,
+        2,
+        5,
+        1,
+        3
+      ],
+      "answer": "42513"
+    },
     "marks": [
       "Tardigrades are animals",
-      "They are famous for surviving",
-      "They manage this",
-      "In their normal active state, however"
+      "famous for surviving",
+      "entering a state called a tun",
+      "Their toughness, however",
+      "far more fragile"
     ],
     "cues": [
       "Introduces tardigrades, so it opens.",
       "'They' are tardigrades, and the sentence gives their fame.",
-      "'This' is surviving the extremes just listed.",
-      "'However' turns from the tough tun state to the fragile active one."
+      "'This' is the surviving of extremes just listed, and the tun explains how.",
+      "'However' limits the toughness, and 'this dormant state' is the tun.",
+      "Gives the fragility of the active state."
     ],
-    "odd": "Some species of moss can also survive for years without water.",
-    "oddWhy": "It is about moss, not about tardigrades.",
-    "ins": "That claim rests on a 2007 experiment in which tardigrades were carried into orbit and exposed to open space, and some survived.",
+    "odd": "Tardigrades were first described in 1773 by the German pastor Johann Goeze, who called them 'little water bears'.",
+    "oddWhy": "It concerns who first described them, not their survival or its limits.",
+    "ooo": {
+      "show": [
+        4,
+        2,
+        3,
+        1,
+        0
+      ],
+      "answer": 5,
+      "drop": 5
+    },
+    "ins": "That claim rests mainly on a 2007 experiment in which dried tardigrades were carried into orbit and exposed to open space, and some survived.",
     "insAt": 2,
-    "insWhy": "'That claim' is the claim about surviving space, so it follows it, before the explanation of how they survive.",
+    "insWhy": "'That claim' is the claim of survival in space made in the second sentence; the third sentence's 'They manage this' then explains how.",
     "sum": [
       {
-        "t": "Tardigrades survive extremes by drying into a dormant state, but when active they are much more fragile.",
+        "t": "Tardigrades survive extremes by drying into a dormant state, but in their active state they are far more fragile.",
         "why": "Covers their toughness, how it works and its limit."
       },
       {
-        "t": "Tardigrades live in moss, soil and water.",
-        "why": "Only where they live.",
+        "t": "Tardigrades are animals less than a millimetre long that live in moss, soil and water almost everywhere on Earth and are famous for surviving extremes.",
+        "why": "Only where they live and their fame, without how they survive or the limit.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "Tardigrades cannot be killed by any conditions on Earth or in space, which is why they live almost everywhere on the planet.",
-        "why": "Active tardigrades die easily.",
-        "trap": "Extreme wording"
-      },
-      {
-        "t": "Tardigrades are strongest when active and become fragile only after they dry out.",
+        "t": "Tardigrades are at their toughest when they are active, and become fragile only after they lose almost all of their body water.",
         "why": "It is the other way round.",
         "trap": "Distorts the passage"
+      },
+      {
+        "t": "Tardigrades cannot be killed by any conditions on Earth or in space, whether they are active or dormant, wet or dry.",
+        "why": "Active tardigrades die from heat or drought that comes too quickly.",
+        "trap": "Extreme wording"
       }
     ]
   },
@@ -1304,46 +1954,71 @@
     "topic": "The all-seeing prison",
     "difficulty": "hard",
     "since": "2026-10-20",
+    "wordCount": 99,
     "s": [
       "In the 1780s the philosopher Jeremy Bentham designed a prison he called the Panopticon.",
-      "Its cells were arranged in a ring around a central tower, from which a guard could look into any cell without being seen.",
-      "Because prisoners could never tell whether they were being watched, Bentham expected them to behave as if they always were.",
-      "Two centuries later, the philosopher Michel Foucault used the design as an image of modern society, in which people discipline themselves under the possibility of constant observation."
+      "Its cells formed a ring around a central tower from which a guard could look into any cell without being seen.",
+      "Since no prisoner could tell whether he was being watched at any moment, Bentham expected each to behave as though he always were.",
+      "The arrangement would thus make supervision cheap, since a few officials could oversee many prisoners.",
+      "Nearly two centuries later Michel Foucault took the design as an image of modern society, in which people discipline themselves under the mere possibility of observation."
     ],
+    "pj": {
+      "show": [
+        5,
+        1,
+        3,
+        2,
+        4
+      ],
+      "answer": "24351"
+    },
     "marks": [
-      "Jeremy Bentham designed a prison",
-      "Its cells were arranged",
-      "Because prisoners could never tell",
-      "Two centuries later"
+      "designed a prison he called the Panopticon",
+      "formed a ring around a central tower",
+      "Since no prisoner could tell",
+      "make supervision cheap",
+      "Nearly two centuries later"
     ],
     "cues": [
-      "Introduces the design, so it opens.",
+      "Introduces Bentham and the design, so it opens.",
       "'Its cells' are the prison's.",
-      "Draws the effect of the unseen guard just described.",
-      "'Two centuries later' counts from Bentham's design."
+      "'Since' draws the effect of the unseen guard just described.",
+      "'Thus' draws a consequence of the self-policing described in the third sentence.",
+      "'Nearly two centuries later' counts from the 1780s, and Foucault applies the design."
     ],
-    "odd": "Bentham also argued that the right action is the one that produces the greatest happiness for the greatest number.",
-    "oddWhy": "It is about Bentham's ethics, not about the prison design and its meaning.",
-    "ins": "The guard, in other words, need hardly watch at all; the prisoners would do the work themselves.",
-    "insAt": 3,
-    "insWhy": "'In other words' restates Bentham's expectation just given, before the paragraph moves on to Foucault.",
+    "odd": "Bentham's preserved body, dressed in his own clothes, is still displayed in a cabinet at University College London.",
+    "oddWhy": "It is an anecdote about Bentham's remains, not about the prison design or its meaning.",
+    "ooo": {
+      "show": [
+        3,
+        0,
+        1,
+        4,
+        2
+      ],
+      "answer": 2,
+      "drop": 5
+    },
+    "ins": "His brother Samuel had earlier devised a similar layout for supervising workers in Russia.",
+    "insAt": 2,
+    "insWhy": "'His brother' needs Bentham from the first sentence, and 'a similar layout' needs the ring-and-tower layout described in the second. After the third sentence the paragraph is about prisoners' behaviour.",
     "sum": [
       {
-        "t": "Bentham's prison relied on inmates never knowing if they were watched, an idea Foucault later applied to society as a whole.",
+        "t": "Bentham's prison relied on inmates never knowing whether they were being watched, an idea Foucault later used to describe modern society.",
         "why": "Covers the design, its logic and Foucault's use of it."
       },
       {
-        "t": "The Panopticon's cells were arranged in a ring around a tower.",
-        "why": "Only the layout.",
+        "t": "The Panopticon's cells were arranged in a ring around a central tower from which one guard could look into any cell without being seen, letting a few officials oversee many prisoners.",
+        "why": "Only the layout and its saving for supervisors, without the prisoners' behaviour or Foucault.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "Foucault praised the Panopticon as a humane model for running modern prisons.",
+        "t": "Foucault praised the Panopticon as a humane and efficient model for running modern prisons, as Bentham himself had hoped.",
         "why": "Foucault used it as an image of society, not as a model prison.",
         "trap": "Distorts the passage"
       },
       {
-        "t": "Modern society is a prison in which every person is watched by the government at all times, exactly as Bentham planned in the 1780s.",
+        "t": "Modern societies are prisons in which governments watch every person at all times, as Bentham intended.",
         "why": "The paragraph speaks of the possibility of observation, not constant government watching.",
         "trap": "Extreme wording"
       }
@@ -1354,47 +2029,72 @@
     "topic": "Moving the clocks",
     "difficulty": "medium",
     "since": "2026-10-20",
+    "wordCount": 122,
     "s": [
-      "The idea of moving clocks forward in summer to make better use of daylight was proposed long before any country adopted it.",
-      "Germany and Austria-Hungary were the first to do so nationally, in 1916, hoping to save coal for the war effort.",
-      "Britain and many other countries soon followed, and the practice has been kept, dropped and revived many times since.",
-      "Today its value is disputed: studies find the energy savings small or uncertain, while the twice-yearly change in sleep has been linked to a brief rise in accidents."
+      "The notion of making better use of summer daylight is old, and Benjamin Franklin joked in 1784 that Parisians could save candles simply by rising earlier.",
+      "Serious proposals to change the clocks themselves came later, from the New Zealand entomologist George Hudson in 1895 and the English builder William Willett in the early 1900s.",
+      "Germany and Austria-Hungary were the first to adopt the change nationally, in 1916, hoping to save coal during the war.",
+      "Britain and many other countries soon followed, and the practice has since been kept, dropped and revived in many places.",
+      "Its value is now disputed: studies find the energy savings small or uncertain, while the twice-yearly disruption to sleep has been linked to a brief rise in accidents."
     ],
+    "pj": {
+      "show": [
+        4,
+        2,
+        5,
+        3,
+        1
+      ],
+      "answer": "52413"
+    },
     "marks": [
-      "The idea of moving clocks forward",
-      "the first to do so nationally",
-      "Britain and many other countries soon followed",
-      "Today its value is disputed"
+      "Benjamin Franklin joked in 1784",
+      "Serious proposals to change the clocks",
+      "the first to adopt the change nationally",
+      "soon followed",
+      "Its value is now disputed"
     ],
     "cues": [
-      "Introduces the idea, so it opens.",
-      "'To do so' is adopting the idea just introduced.",
-      "'Soon followed' needs the first countries named.",
-      "'Today' brings the history up to the present debate."
+      "Starts with the old idea and Franklin's joke, so it opens.",
+      "'Serious proposals' contrast with the joke, and 'later' places them after 1784.",
+      "'The first to adopt' follows the proposals; 1916 follows 1895 and the early 1900s.",
+      "'Followed' needs the first adopters named.",
+      "'Its' is the practice's, and 'now' brings the history to the present."
     ],
     "odd": "Railway companies in the nineteenth century pushed for standard time zones so that timetables would make sense.",
-    "oddWhy": "It is about time zones, not about summer clock changes.",
-    "ins": "Benjamin Franklin joked in 1784 that Parisians could save candles simply by getting up earlier.",
-    "insAt": 1,
-    "insWhy": "It shows how early the idea appeared, so it follows the first sentence and comes before the first adoption in 1916.",
+    "oddWhy": "It concerns standard time zones, not summer clock changes.",
+    "ooo": {
+      "show": [
+        1,
+        0,
+        4,
+        2,
+        3
+      ],
+      "answer": 2,
+      "drop": 5
+    },
+    "ins": "Willett's campaign met strong resistance in Parliament and had not succeeded when he died in 1915.",
+    "insAt": 2,
+    "insWhy": "'Willett's campaign' needs Willett from the second sentence, and his death in 1915 must come before the 1916 adoptions of the third sentence.",
     "sum": [
       {
-        "t": "First adopted nationally in wartime to save fuel, daylight saving time spread widely, but its benefits are now in doubt.",
-        "why": "Covers its origin, spread and the present dispute."
+        "t": "From early jokes and campaigns to wartime adoption in 1916, daylight saving time spread widely, but its present benefits are in doubt.",
+        "why": "Covers the history and the present dispute."
       },
       {
-        "t": "Germany adopted daylight saving time in 1916 to save coal.",
-        "why": "Only the first adoption.",
+        "t": "Germany and Austria-Hungary became the first countries to adopt daylight saving time nationally, in 1916, hoping to save coal during the war.",
+        "why": "Only the first national adoption.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "Studies have shown that daylight saving time wastes energy and causes most road accidents in the weeks after the clocks change.",
+        "t": "Studies have shown that daylight saving time wastes energy rather than saving it, and causes most road accidents in the days after each change of the clocks.",
         "why": "Studies find small or uncertain savings and a brief rise in accidents.",
-        "trap": "Extreme wording"
+        "trap": "Distorts the passage"
       },
       {
-        "t": "Every country should abolish daylight saving time immediately.",
-        "why": "No advice is given.",
+        "t": "Every country that still moves its clocks twice a year should abolish daylight saving time at once.",
+        "why": "The paragraph gives no such advice.",
         "trap": "Out of scope"
       }
     ]
@@ -1402,50 +2102,75 @@
   {
     "id": "indus",
     "topic": "An unread script",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "since": "2026-10-20",
+    "wordCount": 103,
     "s": [
-      "The cities of the Indus Valley, such as Harappa and Mohenjo-daro, flourished more than four thousand years ago with planned streets, drains and standard weights.",
-      "Their people left thousands of short inscriptions on seals, pottery and tablets.",
-      "Yet the script remains undeciphered, despite a century of attempts.",
-      "The inscriptions are very brief, no bilingual text like the Rosetta Stone has been found, and the language they record is unknown."
+      "The cities of the Indus Valley, such as Harappa and Mohenjo-daro, flourished more than four thousand years ago, with planned streets, drains and standardised weights and measures.",
+      "Their people left behind thousands of inscriptions on seals, pottery and tablets, usually of only a handful of signs each.",
+      "Yet the script remains undeciphered, despite more than a century of attempts by scholars and enthusiasts alike.",
+      "The texts are extremely short, no bilingual inscription like the Rosetta Stone has been found, and the language they record is unknown.",
+      "Some scholars even doubt that the signs represent a full writing system, or any language at all."
     ],
+    "pj": {
+      "show": [
+        2,
+        5,
+        3,
+        1,
+        4
+      ],
+      "answer": "41352"
+    },
     "marks": [
       "The cities of the Indus Valley",
-      "Their people left thousands",
+      "Their people left behind",
       "Yet the script remains undeciphered",
-      "The inscriptions are very brief"
+      "no bilingual inscription",
+      "Some scholars even doubt"
     ],
     "cues": [
       "Introduces the cities, so it opens.",
       "'Their people' are the cities' inhabitants.",
       "'Yet' sets the failure against the many inscriptions.",
-      "Gives the reasons the script is still unread."
+      "Gives the reasons the script is still unread.",
+      "'Even' escalates from difficulty to doubt that the signs are writing."
     ],
-    "odd": "Mohenjo-daro's Great Bath is one of the earliest known public water tanks.",
-    "oddWhy": "It is about a building, not about the script.",
-    "ins": "Without such a key, every proposed decipherment has been impossible to test.",
+    "odd": "The Great Bath at Mohenjo-daro is among the earliest known public water tanks.",
+    "oddWhy": "It concerns a building, not the script.",
+    "ooo": {
+      "show": [
+        4,
+        0,
+        2,
+        3,
+        1
+      ],
+      "answer": 2,
+      "drop": 5
+    },
+    "ins": "That is why every proposed decipherment so far has been impossible to test.",
     "insAt": 4,
-    "insWhy": "'Such a key' is the bilingual text mentioned in the last sentence.",
+    "insWhy": "'That is why' draws a consequence from the difficulties listed in the fourth sentence; the fifth sentence then adds a further doubt. Before the fourth sentence there are no difficulties to draw on.",
     "sum": [
       {
-        "t": "The Indus script stays unread: its texts are short, no bilingual exists, and its language is unknown.",
-        "why": "Covers the failure and its reasons."
+        "t": "The Indus script remains unread because its texts are short, no bilingual key exists and its language is unknown, and some doubt it is writing at all.",
+        "why": "Covers the failure, its reasons and the further doubt."
       },
       {
-        "t": "Harappa and Mohenjo-daro had planned streets and drains.",
+        "t": "The cities of the Indus Valley, such as Harappa and Mohenjo-daro, flourished with planned streets, drains and standard weights four thousand years ago.",
         "why": "Only the background.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "The Indus script can never be deciphered by anyone, whatever new evidence is found.",
-        "why": "The paragraph explains why it is hard, not that it is impossible.",
-        "trap": "Extreme wording"
-      },
-      {
-        "t": "Scholars can read the Indus inscriptions on seals and pottery but still cannot agree on which language lies behind them.",
+        "t": "Scholars can now read the Indus inscriptions on seals and pottery but still cannot agree on which language the inscriptions record, because no bilingual key exists.",
         "why": "The script is undeciphered.",
         "trap": "Distorts the passage"
+      },
+      {
+        "t": "The Indus script can never be deciphered, whatever new evidence is found, because the texts are too short and the language is unknown.",
+        "why": "The paragraph explains why decipherment is hard, not that it is impossible.",
+        "trap": "Extreme wording"
       }
     ]
   },
@@ -1454,48 +2179,73 @@
     "topic": "The mirror test",
     "difficulty": "medium",
     "since": "2026-10-20",
+    "wordCount": 122,
     "s": [
-      "In 1970 the psychologist Gordon Gallup devised a simple test of whether animals recognise themselves.",
-      "He placed a mark on a chimpanzee's face where it could be seen only in a mirror, and watched whether the animal touched the mark on its own body.",
-      "Chimpanzees did, and so, in later studies, did a few other species, including orangutans, some dolphins and magpies.",
-      "Critics point out, however, that the test favours animals that rely on sight, and that failing it may not mean an animal lacks a sense of self."
+      "In 1970 the psychologist Gordon Gallup devised a simple test of whether animals recognise themselves in a mirror.",
+      "He marked a chimpanzee's face where the mark could be seen only in a mirror, and watched whether the animal touched the mark on its own body.",
+      "Chimpanzees did, and so did orangutans; success has also been reported in dolphins, elephants and magpies, though several of these results are disputed.",
+      "Critics also point out that the test favours animals that rely on sight, and that failing it may not mean an animal lacks a sense of self.",
+      "The test thus measures one particular skill, linking a reflection to one's own body, and it is unclear how far that skill reveals a sense of self."
     ],
+    "pj": {
+      "show": [
+        5,
+        2,
+        1,
+        4,
+        3
+      ],
+      "answer": "32541"
+    },
     "marks": [
       "Gordon Gallup devised a simple test",
-      "He placed a mark",
-      "Chimpanzees did",
-      "Critics point out, however"
+      "marked a chimpanzee's face",
+      "success has also been reported",
+      "favours animals that rely on sight",
+      "measures one particular skill"
     ],
     "cues": [
-      "Introduces the test, so it opens.",
+      "Introduces the test and its inventor, so it opens.",
       "'He' is Gallup, and the sentence describes the test.",
       "'Did' answers whether the animal touched the mark.",
-      "'However' turns from the results to their limits."
+      "'Also' adds criticism to the disputes just mentioned.",
+      "'Thus' draws the conclusion from the criticisms."
     ],
-    "odd": "Mirrors made of polished metal were used in ancient Egypt and China.",
-    "oddWhy": "It is about the history of mirrors, not about animals recognising themselves.",
-    "ins": "Monkeys, by contrast, generally treated the reflection as another animal.",
+    "odd": "Mirrors of polished metal were used in ancient Egypt and China long before glass mirrors were made.",
+    "oddWhy": "It concerns the history of mirrors, not animals recognising themselves.",
+    "ooo": {
+      "show": [
+        2,
+        4,
+        0,
+        3,
+        1
+      ],
+      "answer": 3,
+      "drop": 5
+    },
+    "ins": "Most other animals tested, monkeys among them, have simply treated the reflection as another animal.",
     "insAt": 3,
-    "insWhy": "'By contrast' needs the species that passed, so it follows them, before the criticism.",
+    "insWhy": "It sets the failures against the successes listed in the third sentence, before the critics of the fourth sentence ask what failure means.",
     "sum": [
       {
-        "t": "The mirror test suggests a few species recognise themselves, though critics say it favours sight and failure proves little.",
+        "t": "The mirror test suggests that a few species recognise themselves, though some results are disputed, and critics say it favours sight and that failing it proves little.",
         "why": "Covers the test, its results and the criticism."
       },
       {
-        "t": "Gallup put a mark on a chimpanzee's face in 1970.",
+        "t": "In 1970 Gallup marked a chimpanzee's face where the mark could be seen only in a mirror, and watched whether the animal touched it on its own body.",
         "why": "Only the method.",
         "trap": "Too narrow or too broad"
       },
       {
-        "t": "Only chimpanzees have a sense of self, as the mirror test proves.",
-        "why": "Other species passed, and critics doubt what failing shows.",
-        "trap": "Extreme wording"
+        "t": "Critics argue that the test is too easy, so animals that pass it, such as chimpanzees and orangutans, may not really recognise themselves at all.",
+        "why": "Critics say failing it may not show a lack of self-awareness, which is a different point.",
+        "trap": "Distorts the passage"
       },
       {
-        "t": "Critics argue that the mirror test is too easy, so animals that pass it may not really recognise themselves.",
-        "why": "Critics say failing it may not show a lack of self.",
-        "trap": "Distorts the passage"
+        "t": "Only chimpanzees and a few other apes have a sense of self, as the mirror test proves beyond any doubt in every species tested.",
+        "why": "Other species are reported to pass, and critics doubt what the test shows.",
+        "trap": "Extreme wording"
       }
     ]
   }

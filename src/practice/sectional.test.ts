@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { blankState, normalize } from "../lib/state";
 import { CONTENT } from "./bank";
-import { resolveRedo } from "./redo";
+import { resolveExam, resolveRedo } from "./redo";
 import { buildPaper, byType, newDraft, qStatus, recordSectional, scorePaper, secsLeft, SECTIONAL_SECS, SECTIONAL_SRC } from "./sectional";
 import { DAILY_MIX } from "./va/build";
 
 /** The right answer for every question, as the player stores it. */
 const rightAnswers = (qs: string[]) => qs.map((k) => {
-  const ref = resolveRedo(k, CONTENT)!;
+  const ref = resolveExam(k, CONTENT)!;
   return ref.kind === "rc" ? String(ref.set.questions[ref.qi].answer) : ref.item.answer;
 });
 
