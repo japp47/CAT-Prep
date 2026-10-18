@@ -1,7 +1,8 @@
-import type { ComponentProps, ReactNode } from "react";
+import { Children, isValidElement, type ComponentProps, type ReactNode } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { useStore } from "../lib/store";
 
@@ -116,9 +117,46 @@ export function Field({ label, children, className, hint }: { label: ReactNode; 
   );
 }
 
-/** A native select styled like the inputs. Native keeps phones on their own picker. */
-export function NativeSelect({ className, ...props }: ComponentProps<"select">) {
-  return <select className={cn("h-11 w-full min-w-0 rounded-md border border-input bg-card px-3 text-base outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/40", className)} {...props} />;
+type NativeSelectProps = Omit<ComponentProps<typeof SelectTrigger>, "children" | "onChange" | "value" | "defaultValue"> & {
+  children?: ReactNode;
+  value?: string | number;
+  defaultValue?: string | number;
+  name?: string;
+  required?: boolean;
+  onChange?: (event: { target: { value: string } }) => void;
+};
+
+/** Shared accessible dropdown. Keeps native option children and form submission semantics at call sites. */
+export function NativeSelect({ className, children, value, defaultValue, name, required, disabled, onChange, ...triggerProps }: NativeSelectProps) {
+  const options = Children.toArray(children).flatMap((child, index) => {
+    if (!isValidElement<{ value?: string | number; disabled?: boolean; children?: ReactNode }>(child) || child.type !== "option") return [];
+    const optionValue = child.props.value ?? (typeof child.props.children === "string" ? child.props.children : String(index));
+    return [{ key: child.key ?? optionValue, value: String(optionValue), disabled: child.props.disabled, label: child.props.children }];
+  });
+  const selectValue = value === undefined ? undefined : String(value);
+  const initialValue = defaultValue === undefined ? options[0]?.value : String(defaultValue);
+
+  return (
+    <Select
+      value={selectValue}
+      defaultValue={initialValue}
+      name={name}
+      required={required}
+      disabled={disabled}
+      onValueChange={(next) => onChange?.({ target: { value: next } })}
+    >
+      <SelectTrigger className={cn("w-full", className)} {...triggerProps}>
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        {options.map((option) => (
+          <SelectItem key={option.key} value={option.value} disabled={option.disabled}>
+            {option.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
 }
 
 export function ErrorText({ children }: { children: ReactNode }) {
