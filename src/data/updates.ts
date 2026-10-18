@@ -3,6 +3,10 @@
  * status: "official" once the exam body has published it, "expected" for estimates from past years' pattern.
  * Always link the official page.
  */
+import { benchmark } from "./percentiles";
+
+const B99 = benchmark(99);
+
 export interface Update {
   id: string;
   date: string;
@@ -56,8 +60,8 @@ export const UPDATES: Update[] = [
     link: ["mba.com/nmat", "https://www.mba.com/exams/nmat"],
   },
   {
-    id: "varc-bench", date: "2026-10-17", exam: "CAT", status: "tip",
-    title: "VARC benchmark: about 43 scaled for 99 percentile in CAT 2025",
-    body: "Cracku's table puts 99 percentile at 42.77 and MBAKaro at 43. That is roughly 15 to 17 correct with no more than 3 wrong. The planner and progress charts use 15 to 17 as the target band.",
+    id: "varc-bench", date: "2026-10-18", exam: "CAT", status: "tip",
+    title: `VARC benchmark: about ${B99.safe} scaled for 99 percentile in CAT 2025`,
+    body: `The 99 percentile took a scaled ${B99.values} in CAT ${B99.years}, averaging the tables ${B99.sources} built from the results. That is roughly 15 to 17 correct with no more than 3 wrong. Progress shows the target for your own percentile, and the estimator turns a score into a percentile.`,
   },
 ];

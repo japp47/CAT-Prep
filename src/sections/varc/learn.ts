@@ -1,7 +1,9 @@
+import { benchmark } from "../../data/percentiles";
+const B99 = benchmark(99);
 export const FORMAT: [string, string][] = [
   ["Format", "24 questions in 40 minutes. 16 are RC (four passages of four questions) and 8 are VA. The VA mix changes from year to year: CAT 2023 and 2025 had 2 each of para summary, sentence insertion, odd sentence out and para jumbles, while CAT 2024 had no para jumbles at all. Prepare all four types."],
   ["Marking", "3 marks for a correct answer, minus 1 for a wrong MCQ. RC, para summary and sentence insertion are MCQs. Para jumbles and odd sentence out are TITA (you type the answer) with no negative marking, so always attempt them."],
-  ["99 target", "15 to 17 correct, at most 3 wrong. In CAT 2025, 99 percentile was a scaled 42.77 on Cracku's table (MBAKaro says 43). Plan on 44 or more."],
+  ["99 target", `15 to 17 correct, at most 3 wrong. The 99 percentile was a scaled ${B99.values} in CAT ${B99.years} (averages of ${B99.sources}). Plan on ${B99.safe} or more.`],
   ["Time split", "About 28 minutes on RC and 10 to 12 on VA. Decide RC-first or VA-first in mocks, not on exam day."],
 ];
 

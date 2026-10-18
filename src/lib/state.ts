@@ -1,3 +1,4 @@
+import { DEFAULT_TARGET, TARGET_CHOICES } from "../data/percentiles";
 import { clamp, isIsoDate, todayIso } from "./date";
 import type { SectionId } from "../sections/types";
 
@@ -69,6 +70,8 @@ export interface AppState {
   sectionals: SectionalAttempt[];
   /** False for saves from before the redo queue; RedoSeeder then builds the queue from past attempts. */
   redoSeeded: boolean;
+  /** The percentile the student is aiming for in each section. Only VARC has percentile tables so far. */
+  targets: { varc: number };
 }
 
 const emptyDow = () => [null, null, null, null, null, null, null] as (number | null)[];
@@ -76,7 +79,7 @@ const emptyDow = () => [null, null, null, null, null, null, null] as (number | n
 export function blankState(): AppState {
   const settings = {} as Record<SectionId, TimeSettings>;
   SECTION_IDS.forEach((id) => (settings[id] = { ...DEFAULT_TIME[id], dow: emptyDow() }));
-  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], speedRuns: [], redo: [], sectionals: [], redoSeeded: true };
+  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], speedRuns: [], redo: [], sectionals: [], redoSeeded: true, targets: { varc: DEFAULT_TARGET } };
 }
 
 type Obj = Record<string, unknown>;
@@ -151,6 +154,7 @@ export function normalize(raw: unknown): AppState {
       return r;
     }).filter((r) => r.k && isIsoDate(r.due));
   }
+  if (isObj(raw.targets) && (TARGET_CHOICES as readonly number[]).includes(Number(raw.targets.varc))) b.targets.varc = Number(raw.targets.varc);
   // Saves from before the redo queue have none; it is built from their attempts once the content loads.
   b.redoSeeded = Array.isArray(raw.redo) && raw.redoSeeded !== false;
   return b;
