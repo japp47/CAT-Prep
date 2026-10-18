@@ -63,7 +63,7 @@ export function Estimator({ last }: { last?: { c: number; w: number } }) {
         <div className="grid grid-cols-2 items-end gap-4 sm:grid-cols-[8rem_8rem_auto]">
           <Field label="Right"><Input value={c} onChange={(e) => setC(e.target.value)} inputMode="numeric" placeholder="14" /></Field>
           <Field label="Wrong MCQ"><Input value={w} onChange={(e) => setW(e.target.value)} inputMode="numeric" placeholder="3" /></Field>
-          <Button type="submit" variant="secondary" className="col-span-2 sm:col-span-1 sm:justify-self-start">Find my percentile</Button>
+          <Button type="submit" className="col-span-2 sm:col-span-1 sm:justify-self-start">Find my percentile</Button>
         </div>
         <ErrorText>{err}</ErrorText>
         {est && score !== null && shown && (
@@ -95,7 +95,7 @@ export function Estimator({ last }: { last?: { c: number; w: number } }) {
                   <th scope="row" className="px-2 py-2.5 text-left font-semibold whitespace-nowrap sm:px-3">{row[0].attempted}<span className="max-sm:sr-only"> of {VARC_QS}</span></th>
                   {row.map((cell) => (
                     <td key={cell.accuracy} className="p-px sm:p-1">
-                      <div className={cn("flex flex-col rounded-md px-0 py-1.5 tabular-nums sm:px-1", cell.score >= goal && "bg-success-soft text-success")}>
+                      <div className={cn("flex flex-col rounded-md px-0 py-1.5 sm:px-1", cell.score >= goal && "bg-success-soft text-success")}>
                         <span className="font-semibold">{cell.est.below ? "under " + pctText(cell.est.high) : pctText(cell.est.low)}</span>
                         <span className={cn("text-sm", cell.score >= goal ? "text-success" : "text-muted-foreground")}>{cell.score}<span className="max-sm:sr-only"> marks</span></span>
                       </div>

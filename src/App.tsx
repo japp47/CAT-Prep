@@ -35,7 +35,7 @@ const Updates = lazy(() => import("./pages/Updates"));
 const Words = lazy(() => import("./pages/Words"));
 
 const TITLES: Record<string, string> = {
-  "/": "CAT Prep Hub", "/today": "Today", "/plan": "Plan and time", "/practice": "Practice", "/practice/library": "RC library", "/practice/sectional": "VARC sectional", "/practice/va": "VA drill", "/practice/cr": "Critical reasoning drill", "/practice/speed": "Reading speed test", "/practice/redo": "Redo queue", "/varc": "VARC", "/dilr": "DILR", "/quant": "Quant",
+  "/": "99ile: free CAT prep", "/today": "Today", "/plan": "Plan and time", "/practice": "Practice", "/practice/library": "RC library", "/practice/sectional": "VARC sectional", "/practice/va": "VA drill", "/practice/cr": "Critical reasoning drill", "/practice/speed": "Reading speed test", "/practice/redo": "Redo queue", "/varc": "VARC", "/dilr": "DILR", "/quant": "Quant",
   "/progress": "Progress", "/errors": "Error log", "/words": "Words", "/updates": "Important updates", "/exams": "CAT and other exams",
   "/guides": "Guides", "/stories": "Topper stories", "/roadmap": "What's coming", "/settings": "Settings",
 };
@@ -44,7 +44,7 @@ function Title() {
   const { pathname } = useLocation();
   useEffect(() => {
     const t = TITLES[pathname] ?? (pathname.startsWith("/guides/") ? "Guide" : pathname.startsWith("/practice/rc/") ? "RC practice" : "");
-    document.title = t && pathname !== "/" ? t + " · CAT Prep Hub" : "CAT Prep Hub";
+    document.title = t && pathname !== "/" ? t + " · 99ile" : TITLES["/"];
   }, [pathname]);
   return null;
 }

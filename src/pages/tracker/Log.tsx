@@ -55,7 +55,7 @@ export function Log({ sec }: { sec: string }) {
             <Field label="Attempted"><Input name="a" type="number" inputMode="numeric" min={1} max={200} required placeholder="8" /></Field>
             <Field label="Correct"><Input name="c" type="number" inputMode="numeric" min={0} max={200} required placeholder="6" /></Field>
             <Field label="Source" className="col-span-2"><Input name="src" placeholder="Cracku RC bank, CAT 2019 Slot 2" /></Field>
-            <div className="col-span-2 flex flex-col gap-2"><Button type="submit" className="self-start">Add set</Button><ErrorText>{pErr}</ErrorText></div>
+            <div className="col-span-2 flex flex-col gap-2"><Button type="submit" variant="secondary" className="self-start">Add set</Button><ErrorText>{pErr}</ErrorText></div>
           </form>
         </Section>
         <Section title={`Log a timed ${sec} paper or mock`}>
@@ -65,7 +65,7 @@ export function Log({ sec }: { sec: string }) {
             <Field label="Name" className="col-span-2"><Input name="n" placeholder="CAT 2017 Slot 1" /></Field>
             <Field label="Correct"><Input name="c" type="number" inputMode="numeric" min={0} max={def.maxQ} required placeholder="14" /></Field>
             <Field label="Wrong MCQ"><Input name="w" type="number" inputMode="numeric" min={0} max={def.maxQ} required placeholder="3" /></Field>
-            <div className="col-span-2 flex flex-col gap-2"><Button type="submit" className="self-start">Add result</Button><ErrorText>{mErr}</ErrorText></div>
+            <div className="col-span-2 flex flex-col gap-2"><Button type="submit" variant="secondary" className="self-start">Add result</Button><ErrorText>{mErr}</ErrorText></div>
           </form>
         </Section>
       </div>
@@ -75,8 +75,8 @@ export function Log({ sec }: { sec: string }) {
           <LogList empty="Practice sets you log from the timetable or the form above show here.">
             {practice.map((p) => (
               <LogRow key={p.id} label="Delete this set" onDelete={() => remove("practice", p.id, "Practice set")}>
-                <span className="text-base font-semibold">{p.t} <span className="font-normal text-muted-foreground">, {shortDate(p.d)}</span></span>
-                <span className="text-base tabular-nums">{p.c} of {p.a} correct, {Math.round((p.c / Math.max(p.a, 1)) * 100)}%</span>
+                <span className="text-base font-semibold">{p.t}<span className="font-normal text-muted-foreground">, {shortDate(p.d)}</span></span>
+                <span className="text-base">{p.c} of {p.a} correct, {Math.round((p.c / Math.max(p.a, 1)) * 100)}%</span>
                 {p.src && <Meta>{p.src}</Meta>}
               </LogRow>
             ))}
@@ -87,7 +87,7 @@ export function Log({ sec }: { sec: string }) {
             {[...mocksAsc].reverse().map((x) => (
               <LogRow key={x.id} label={"Delete result from " + shortDate(x.d)} onDelete={() => remove("mocks", x.id, "Result")}>
                 <span className="flex flex-wrap items-center gap-2 text-base font-semibold">{x.n || x.k}<Badge variant="secondary">{x.k}</Badge></span>
-                <span className="text-base tabular-nums">{x.c} correct, {x.w} wrong, raw score {3 * x.c - x.w}</span>
+                <span className="text-base">{x.c} correct, {x.w} wrong, raw score {3 * x.c - x.w}</span>
                 <Meta>{shortDate(x.d)}</Meta>
               </LogRow>
             ))}

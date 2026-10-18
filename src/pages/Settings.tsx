@@ -26,7 +26,7 @@ export default function Settings() {
     const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "cat-prep-backup-" + todayIso() + ".json";
+    a.download = "99ile-backup-" + todayIso() + ".json";
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   };
@@ -37,7 +37,7 @@ export default function Settings() {
       pending.current = raw;
       setAsk("restore");
     } catch {
-      setMsg({ ok: false, text: "That file is not a CAT Prep Hub backup." });
+      setMsg({ ok: false, text: "That file is not a 99ile backup." });
     }
   };
   const counts = [
@@ -96,7 +96,7 @@ function InstallCard() {
   return (
     <Section title="Install as an app" description="The installed app opens from your home screen like any other app. After your first visit the site also works without internet, because your plan and logs are stored on this device.">
       {installed ? <p className="text-base text-success">You are using the installed app.</p>
-        : canPrompt ? <div><Button onClick={prompt}>Install CAT Prep Hub</Button></div>
+        : canPrompt ? <div><Button onClick={prompt}>Install 99ile</Button></div>
         : ios ? <p className="measure text-base">On iPhone or iPad: open this site in Safari, tap the Share button, then <b className="font-semibold">Add to Home Screen</b>.</p>
         : <p className="measure text-base">In Chrome or Edge, use the install icon at the right of the address bar, or the browser menu and then <b className="font-semibold">Install</b>. On Android, open the menu and tap <b className="font-semibold">Add to Home screen</b>.</p>}
     </Section>
@@ -111,7 +111,7 @@ function ReminderCard() {
     const blob = new Blob([reminderIcs(r)], { type: "text/calendar" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "cat-prep-reminder.ics";
+    a.download = "99ile-reminder.ics";
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   };

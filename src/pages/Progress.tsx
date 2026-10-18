@@ -9,6 +9,7 @@ import { Mocks } from "./tracker/Mocks";
 import { Report } from "./tracker/Report";
 
 type Tab = "report" | "mocks" | "log";
+const TAB = "h-auto min-h-10 flex-auto whitespace-normal px-2.5 leading-tight sm:px-3.5";
 
 export default function Progress() {
   const { state } = useStore();
@@ -26,7 +27,7 @@ export default function Progress() {
 
       <div className="-mt-4 flex flex-col gap-6">
         <Segmented label="Section" value={sec} onChange={setSec} options={SECTIONS.map((s) => s.short)} />
-        <div className="flex flex-wrap gap-x-12 gap-y-4 rounded-lg bg-card p-5 sm:p-6">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-4 rounded-lg bg-card p-5 sm:grid-cols-4 sm:gap-x-8 sm:gap-y-0 sm:p-6">
           <Stat value={totA} label="Questions done" />
           <Stat value={totA ? Math.round((totC / totA) * 100) + "%" : "None yet"} label="Accuracy" />
           <Stat value={papers} label="Papers and mocks" />
@@ -35,13 +36,12 @@ export default function Progress() {
       </div>
 
       <Tabs value={tab} onValueChange={(v) => setTab(v as Tab)} className="gap-8">
-        <div className="bleed-gutter overflow-x-auto px-gutter sm:mx-0 sm:px-0">
-          <TabsList className="bg-secondary">
-            <TabsTrigger value="report" className="px-3.5">Report card</TabsTrigger>
-            <TabsTrigger value="mocks" className="px-3.5">Mocks and target</TabsTrigger>
-            <TabsTrigger value="log" className="px-3.5">Log</TabsTrigger>
-          </TabsList>
-        </div>
+        {/* Full width on a phone, each tab as wide as its label; a label wraps only on the narrowest screens. */}
+        <TabsList className="flex w-full bg-secondary sm:w-fit">
+          <TabsTrigger value="report" className={TAB}>Report card</TabsTrigger>
+          <TabsTrigger value="mocks" className={TAB}>Mocks and target</TabsTrigger>
+          <TabsTrigger value="log" className={TAB}>Log</TabsTrigger>
+        </TabsList>
         <TabsContent value="report"><Report sec={def.short} /></TabsContent>
         <TabsContent value="mocks"><Mocks sec={def.short} /></TabsContent>
         <TabsContent value="log"><Log sec={def.short} /></TabsContent>

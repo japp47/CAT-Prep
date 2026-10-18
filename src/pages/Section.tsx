@@ -43,7 +43,7 @@ function Table({ head, rows, num = [] }: { head: string[]; rows: ReactNode[][]; 
     <div className="overflow-x-auto rounded-lg bg-card">
       <table className="w-full text-left text-base">
         <thead><tr>{head.map((h, i) => <th key={h} className={cn("px-4 pt-4 pb-2 text-sm font-medium whitespace-nowrap text-muted-foreground", num.includes(i) && "text-right")}>{h}</th>)}</tr></thead>
-        <tbody>{rows.map((r, k) => <tr key={k} className={TR}>{r.map((c, i) => <td key={i} className={cn("px-4 py-3", num.includes(i) && "text-right tabular-nums")}>{c}</td>)}</tr>)}</tbody>
+        <tbody>{rows.map((r, k) => <tr key={k} className={TR}>{r.map((c, i) => <td key={i} className={cn("px-4 py-3", num.includes(i) && "text-right")}>{c}</td>)}</tr>)}</tbody>
       </table>
     </div>
   );
