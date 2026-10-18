@@ -1,8 +1,7 @@
-import { Children, isValidElement, type ComponentProps, type ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { useStore } from "../lib/store";
 
@@ -114,48 +113,6 @@ export function Field({ label, children, className, hint }: { label: ReactNode; 
       {children}
       {hint && <span className="font-normal text-muted-foreground">{hint}</span>}
     </label>
-  );
-}
-
-type NativeSelectProps = Omit<ComponentProps<typeof SelectTrigger>, "children" | "onChange" | "value" | "defaultValue"> & {
-  children?: ReactNode;
-  value?: string | number;
-  defaultValue?: string | number;
-  name?: string;
-  required?: boolean;
-  onChange?: (event: { target: { value: string } }) => void;
-};
-
-/** Shared accessible dropdown. Keeps native option children and form submission semantics at call sites. */
-export function NativeSelect({ className, children, value, defaultValue, name, required, disabled, onChange, ...triggerProps }: NativeSelectProps) {
-  const options = Children.toArray(children).flatMap((child, index) => {
-    if (!isValidElement<{ value?: string | number; disabled?: boolean; children?: ReactNode }>(child) || child.type !== "option") return [];
-    const optionValue = child.props.value ?? (typeof child.props.children === "string" ? child.props.children : String(index));
-    return [{ key: child.key ?? optionValue, value: String(optionValue), disabled: child.props.disabled, label: child.props.children }];
-  });
-  const selectValue = value === undefined ? undefined : String(value);
-  const initialValue = defaultValue === undefined ? options[0]?.value : String(defaultValue);
-
-  return (
-    <Select
-      value={selectValue}
-      defaultValue={initialValue}
-      name={name}
-      required={required}
-      disabled={disabled}
-      onValueChange={(next) => onChange?.({ target: { value: next } })}
-    >
-      <SelectTrigger className={cn("w-full", className)} {...triggerProps}>
-        <SelectValue />
-      </SelectTrigger>
-      <SelectContent>
-        {options.map((option) => (
-          <SelectItem key={option.key} value={option.value} disabled={option.disabled}>
-            {option.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
   );
 }
 
