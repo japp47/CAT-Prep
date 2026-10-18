@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { PAPER_PDFS, PAPERS_PAGE } from "../../data/papers";
 import { todayIso, uid } from "../../lib/date";
 import { useStore } from "../../lib/store";
 import { LinkButton, NativeSelect, Page, PageHeader, Section, TextLink } from "../../components/kit";
@@ -45,6 +46,7 @@ export default function PracticeHub() {
   const [count, setCount] = useState(6);
   const [crKind, setCrKind] = useState<CrType | "mix">("mix");
   const [seed] = useState(uid);
+  const [paper, setPaper] = useState(PAPER_PDFS[0][1]);
   const tried = new Set(state.rcAttempts.map((a) => a.set));
   const untried = RC_CATALOG.filter((s) => !tried.has(s.id) && s.id !== daily.id).slice(0, 3);
   // The first daily task not yet done gets the highlighter and the one filled button.
@@ -111,6 +113,15 @@ export default function PracticeHub() {
             </>}>
             <p>Six short arguments, one question each: assumption, strengthen, weaken, inference, flaw and paradox. CAT does not ask them, but XAT does, and they sharpen how you judge RC options.</p>
           </Row>
+          <Row title="Real CAT papers"
+            action={<>
+              <NativeSelect aria-label="Past paper" value={paper} onChange={(e) => setPaper(e.target.value)} className="w-auto">
+                {PAPER_PDFS.map(([n, u]) => <option key={u} value={u}>{n}</option>)}
+              </NativeSelect>
+              <LinkButton to={paper} variant="secondary" arrow>Download PDF</LinkButton>
+            </>}>
+            <p>Full past papers with all three sections: {PAPER_PDFS.length} PDFs, 2017 to 2024 by slot and 1991 to 2008. Sit one whole as a mock, or one section in 40 minutes. Papers up to 2020 come with solutions, later ones with answer keys. From <TextLink to={PAPERS_PAGE}>Bodhee Prep</TextLink>.</p>
+          </Row>
           <Row title="Reading speed test" action={<LinkButton to="/practice/speed" variant="secondary">Take the test</LinkButton>}>
             <p>One timed passage, then two recall questions. CAT needs about 200 words a minute. Your best: <b className="font-semibold text-foreground">{best ? best + " wpm" : "not tested yet"}</b>.</p>
           </Row>
@@ -130,7 +141,7 @@ export default function PracticeHub() {
         )}
       </Section>
 
-      <p className="measure text-sm text-muted-foreground">All passages, questions and VA paragraphs here are original practice material written for this site, not real CAT questions. For real past papers, see the Practice tab on the <TextLink to="/varc">VARC page</TextLink>.</p>
+      <p className="measure text-sm text-muted-foreground">All passages, questions and VA paragraphs here are original practice material written for this site, not real CAT questions. Real past papers are under "Real CAT papers" above, with more sources on the Practice tab of the <TextLink to="/varc">VARC page</TextLink>.</p>
     </Page>
   );
 }
