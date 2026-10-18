@@ -5,127 +5,126 @@
     "genre": "economics",
     "difficulty": "medium",
     "paras": [
-      "Economists have long been puzzled by the stubborn growth of large cities. Rents are higher, commutes are longer and congestion eats into every working day, yet people and firms keep arriving. If the costs of urban life are so visible, something less visible must be paying for them. The usual name for that something is agglomeration: the gains that arise simply because many productive people are close to one another.",
-      "The gains take three broad forms. Firms that share a dense labour market can find specialised workers quickly, and workers can switch employers without moving house, which makes both sides more willing to invest in narrow skills. Suppliers cluster near their customers, so inputs become cheaper and more varied. And ideas travel faster when the people who hold them run into each other, whether in offices, cafés or the queue for a train. The last of these is the hardest to measure and, many economists suspect, the most important.",
-      "Evidence for it comes from odd places. Studies of patents find that inventors cite work produced nearby far more often than distance alone would predict, even after allowing for the clustering of industries. Workers who move from small towns to large cities do not earn much more on arrival; instead their wages climb faster over time, as if the city were teaching them something. When they leave, much of the premium travels with them, which suggests that what they gained was skill rather than a local subsidy.",
-      "None of this means that bigger is always better. Agglomeration gains appear to rise with city size at a diminishing rate, while the costs of housing and transport rise faster once land runs short. Where cities are allowed to build upward and outward, the balance can stay favourable for a long time. Where planning rules freeze the housing stock, the gains are captured by those who already own property, and newcomers are priced out of the very places that would have made them more productive.",
-      "The policy lesson is therefore not to choose between cities and the countryside but to notice who is excluded from urban gains and why. A country that restricts building in its most productive cities is, in effect, taxing the learning of its young workers and handing the proceeds to landlords. That cost appears in no budget, which is precisely why it is so easy to ignore."
+      "The standard account of urban growth treats the city as a bargain struck with open eyes. Workers accept dearer housing, longer commutes and dirtier air because wages in dense places run well above those elsewhere; firms accept the same bargain because proximity lowers the cost of finding workers, suppliers and customers. Economists call the benefit agglomeration and, having named it, tend to stop. The label describes a correlation rather than a mechanism, and it conceals a question that matters for policy: whether the premium that cities pay is a reward for being there or a reward for being a certain kind of person who happens to be there.",
+      "The distinction is not pedantic. Cities attract the ambitious and the able, so a simple comparison of urban and rural earnings will overstate what the city itself contributes; an exceptional engineer would earn a great deal wherever she lived. Researchers have therefore followed individuals over time rather than comparing places, and their findings are curious. Newcomers from small towns earn little extra in their first years, yet their wages then rise more steeply than those of similar workers who stayed behind, and some of the gain persists, in diminished form, among those who later leave. A subsidy tied to location would vanish with departure; what survives departure looks more like accumulated skill. On this reading, the city works less as a market than as a school whose fees are collected in rent.",
+      "Yet the schooling metaphor invites scepticism of its own. Skills acquired through casual contact are notoriously hard to observe, and the studies that infer them do so by elimination: whatever remains of the premium after other explanations have been subtracted is credited to learning. If that residue is partly the product of unmeasured traits, such as persistence or useful acquaintances, the conclusion weakens accordingly. Nor does the evidence say how large the benefits become as cities swell. The little that is known suggests that they rise with population at a falling rate, whereas the price of land, which is what rent ultimately reflects, rises with scarcity and need not slow at all. A city may therefore be too small to exploit its advantages and, beyond some point, too large to enjoy them; where that point lies the data do not reveal.",
+      "What follows for policy is less obvious than either side of the debate supposes. Those who would cap the size of great cities treat congestion as a bill to be reduced; those who would lift every restriction on building treat the premium as proof that more room is always better. Neither position follows from the evidence. If the gains come from learning, however, they accrue chiefly to the young and the mobile, who are precisely the people that rising rents exclude first. Restricting construction in productive places would then act as a tax on acquiring skill, one whose burden falls on those with least to spare and whose proceeds are collected by owners of existing property. Because no ledger records skills never acquired, the tax is easy to deny and hard to abolish."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best captures the central argument of the passage?",
+        "stem": "Which one of the following best expresses the central concern of the passage?",
         "proof": [
           0,
-          3,
-          4
+          1,
+          3
         ],
         "options": [
           {
-            "t": "Cities grow because firms prefer to locate near their suppliers, which lowers the cost of inputs.",
-            "why": "Supplier clustering is only one of three gains listed in paragraph 2. The passage's argument is wider.",
-            "trap": "Too narrow or too broad"
-          },
-          {
-            "t": "Large cities persist despite their costs because closeness creates gains, especially in learning, which housing restrictions can deny to newcomers.",
-            "why": "This covers the puzzle (paragraph 1), the gains and the evidence for learning (paragraphs 2 and 3), and who loses out when building is restricted (paragraphs 4 and 5)."
-          },
-          {
-            "t": "Congestion and high rents show that most large cities have grown beyond their efficient size.",
-            "why": "The passage says the gains pay for these visible costs and that the balance can stay favourable. It never says cities are too big.",
+            "t": "The urban wage premium is largely a statistical illusion created by the migration of talented people, so housing policy has little bearing on productivity.",
+            "why": "The author grants that selection inflates simple comparisons, but cites evidence that something beyond selection remains (paragraph 2), and then draws a policy implication from it.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Governments should move investment from rural areas to cities to raise national productivity.",
-            "why": "The final paragraph explicitly says the lesson is not to choose between cities and the countryside.",
-            "trap": "Out of scope"
+            "t": "The urban wage premium may partly reflect skills gained in cities, making building restrictions a hidden cost, though ideal city size remains unknown.",
+            "why": "This joins the learning interpretation of the premium (paragraphs 1 and 2) with the policy cost of restricting building (paragraph 4), and keeps the author's hedge that the right size of a city is not revealed by the data (paragraph 3)."
+          },
+          {
+            "t": "Agglomeration is a well-established mechanism, so great cities should be allowed to expand until the cost of congestion exactly matches the benefit of density.",
+            "why": "Paragraph 1 calls the label a description of a correlation, not a mechanism, and paragraph 4 says neither side's policy position follows from the evidence.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Learning in cities is inferred by elimination, so the urban wage premium says more about who moves to cities than about what cities do for them.",
+            "why": "The first half is the author's caution (paragraph 3), but the author still treats the learning reading as plausible and builds the policy argument of paragraph 4 on it; this turns a caution into a verdict.",
+            "trap": "Half right, half wrong"
           }
         ],
         "answer": 1
       },
       {
         "type": "structure",
-        "stem": "The author mentions that much of the wage premium 'travels with' workers who leave a city in order to:",
+        "stem": "The author describes the city as 'a school whose fees are collected in rent' in order to:",
         "proof": [
-          2
+          1
         ],
         "options": [
           {
-            "t": "show that city wages are inflated by a temporary local subsidy",
-            "why": "The author draws the opposite conclusion: the gain was skill rather than a local subsidy.",
+            "t": "suggest that urban rents are best understood as payment for an education that universities have failed to provide.",
+            "why": "No comparison with universities is made; the metaphor concerns skills picked up through contact with other workers.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "suggest that newcomers gain mainly through experience at work, which smaller towns would supply as well if their firms were larger.",
+            "why": "The passage compares movers with similar workers who stayed behind, so it credits the city, not experience at work in general; firm size in small towns is never discussed.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "argue that workers should return to small towns once they have gained experience",
-            "why": "The passage gives no advice about where workers should go after gaining experience.",
-            "trap": "Out of scope"
+            "t": "suggest that high rents push workers to learn faster, since they must earn more in order to afford to stay.",
+            "why": "In the metaphor rent is the price paid for the learning, not its cause; the passage never says that rents make workers learn.",
+            "trap": "Distorts the passage"
           },
           {
-            "t": "explain why firms in large cities struggle to keep specialised workers",
-            "why": "Retention by firms is never discussed.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "suggest that workers in large cities acquire skills that remain valuable elsewhere",
-            "why": "If the premium stays with workers after they leave, what they gained was portable skill. This is exactly the inference the author draws."
+            "t": "express a reading on which what workers gain in cities is portable skill, with housing costs as the price.",
+            "why": "If part of the premium survives departure, the gain is skill rather than subsidy, and rent is what the worker pays to acquire it (paragraph 2)."
           }
         ],
         "answer": 3
       },
       {
         "type": "except",
-        "stem": "According to the passage, each of the following is a source of agglomeration gains EXCEPT:",
+        "stem": "The passage mentions all of the following as reasons for caution about the claim that cities raise wages by teaching workers EXCEPT:",
         "proof": [
           1,
-          3
-        ],
-        "options": [
-          {
-            "t": "a deep pool of specialised workers that firms can draw on",
-            "why": "Listed in paragraph 2 as the first form of gain.",
-            "trap": "True but not the answer"
-          },
-          {
-            "t": "suppliers locating close to their customers",
-            "why": "Listed in paragraph 2 as the second form of gain.",
-            "trap": "True but not the answer"
-          },
-          {
-            "t": "lower housing costs that let workers save more",
-            "why": "Housing in large cities is a cost, not a gain. Paragraphs 1 and 4 describe rents as higher and rising."
-          },
-          {
-            "t": "the faster spread of ideas among people who meet often",
-            "why": "Listed in paragraph 2 as the third, and perhaps most important, gain.",
-            "trap": "True but not the answer"
-          }
-        ],
-        "answer": 2
-      },
-      {
-        "type": "strengthen",
-        "stem": "Which of the following, if true, would most weaken the claim that cities raise wages by teaching workers skills?",
-        "proof": [
           2
         ],
         "options": [
           {
-            "t": "Firms in large cities spend more on formal training than firms in small towns.",
-            "why": "This would support the idea that workers learn in cities, not weaken it.",
-            "trap": "Distorts the passage"
+            "t": "better communications have narrowed the earnings gap between city and countryside over recent decades.",
+            "why": "Nothing in the passage discusses communications technology or any narrowing of the gap between city and countryside."
           },
           {
-            "t": "Rents in large cities have risen faster than wages over the last decade.",
-            "why": "Rents affect living costs, not whether workers acquire skills.",
+            "t": "the premium that remains once other explanations are removed is attributed to learning by default.",
+            "why": "Paragraph 3: learning is inferred by elimination, which is a source of doubt.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "talented and ambitious people are drawn to cities, which inflates simple comparisons of earnings.",
+            "why": "Paragraph 2: selection means a simple comparison overstates what the city itself contributes.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "unmeasured traits such as persistence and contacts may account for part of what is credited to learning.",
+            "why": "Paragraph 3: the residue may be partly the product of unmeasured traits.",
+            "trap": "True but not the answer"
+          }
+        ],
+        "answer": 0
+      },
+      {
+        "type": "strengthen",
+        "stem": "Which of the following, if true, would most weaken the author's suggestion that restrictions on building act as a tax on acquiring skill?",
+        "proof": [
+          3
+        ],
+        "options": [
+          {
+            "t": "Workers who leave the largest cities after several years keep only a diminished part of the premium they earned while living there.",
+            "why": "The author already reports this finding (paragraph 2), and it fits the learning claim rather than weakening it.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "Owners of property in cities with strict building rules report higher incomes than owners of property in cities that build freely.",
+            "why": "This bears on who collects the proceeds, not on whether exclusion costs workers skill; if anything it is consistent with the author's picture.",
             "trap": "Out of scope"
           },
           {
-            "t": "Workers who move to large cities and later leave earn no more in their new jobs than similar workers who never moved.",
-            "why": "The learning claim rests on the premium travelling with workers who leave. If it does not, the evidence for learning collapses."
+            "t": "Young workers priced out of the largest cities mostly move to slightly smaller ones, where wages rise at nearly the same pace.",
+            "why": "If excluded workers learn almost as fast elsewhere, rising rents do little to reduce skill acquisition, and the supposed tax shrinks."
           },
           {
-            "t": "Inventors in large cities file more patents than inventors in small towns.",
-            "why": "Patent numbers say nothing about how individual workers' wages grow.",
+            "t": "Congestion costs in the largest cities have, as populations have grown, risen faster than the benefits that density brings to firms.",
+            "why": "This concerns the balance of costs and benefits (paragraph 3), which the author already treats as uncertain; it says nothing about who is excluded.",
             "trap": "Out of scope"
           }
         ],
@@ -134,24 +133,24 @@
     ],
     "recall": [
       {
-        "q": "What do studies of patents show, according to the passage?",
+        "q": "Why have researchers followed individual workers over time instead of comparing places?",
         "options": [
-          "Most patents come from the largest firms",
-          "Inventors cite nearby work more often than distance alone would predict",
-          "Patents are filed faster in small towns",
-          "Inventors rarely cite work from other industries"
+          "Regional wage statistics for small towns are unreliable because very few firms report what they pay.",
+          "Comparing places cannot separate what a city adds from the qualities of the people it attracts.",
+          "Workers in small towns are reluctant to disclose their earnings to the researchers conducting surveys.",
+          "A comparison of places would have required data on local rents, which researchers could not obtain."
         ],
         "answer": 1
       },
       {
-        "q": "What happens where planning rules freeze the housing stock?",
+        "q": "According to the passage, how do the wages of newcomers from small towns behave?",
         "options": [
-          "Cities grow upward instead of outward",
-          "Wages in the city fall",
-          "Existing property owners capture the gains and newcomers are priced out",
-          "Firms move to the countryside"
+          "They jump on arrival and then level off to match those of established city workers.",
+          "They rise only for workers who stay in the city throughout their careers.",
+          "They fall at first because of high rents and later recover to their earlier level.",
+          "They begin near comparable workers' wages, then climb faster, and the gain partly survives departure."
         ],
-        "answer": 2
+        "answer": 3
       }
     ]
   },
@@ -161,16 +160,15 @@
     "genre": "economics",
     "difficulty": "medium",
     "paras": [
-      "Saving is a virtue in a household and, under certain conditions, a hazard in an economy. The reasoning behind this claim, usually called the paradox of thrift, begins with a simple accounting fact: one person's spending is another person's income. If a single family decides to spend less and save more, its savings rise and nobody else notices. If millions of families make the same decision at once, the shops they no longer visit sell less, lay off staff, and the incomes from which everyone was hoping to save begin to shrink.",
-      "The paradox lies in the outcome. Each household acts sensibly, yet together they may end up saving no more than before, because the total that can be saved depends on the total that is earned. In the worst case the attempt to save more lowers income so much that total saving actually falls. What is prudent for each is self-defeating for all, an example of what logicians call the fallacy of composition: assuming that what holds for the parts must hold for the whole.",
-      "Critics point out that the paradox depends on its setting. In an economy running at full capacity, extra saving frees resources for investment; banks lend the money to firms that build factories, and future output rises. The paradox bites only when that channel is blocked, when firms see weak demand and refuse to invest however cheap credit becomes. That is why the idea is associated with recessions, and why it was revived after the financial crisis of 2008, when households, firms and governments in many countries tried to cut their debts at the same time.",
-      "The policy implication is uncomfortable for anyone raised on household common sense. If private spending collapses, a government that tightens its own belt in sympathy may deepen the slump it hopes to escape. Hence the argument that public spending should rise when private spending falls, and should be cut back when the economy recovers, so that the state leans against the cycle rather than with it.",
-      "Whether governments actually behave this way is another matter. Spending that is easy to start in a downturn is often hard to stop in a boom, and borrowing that looks temporary has a habit of becoming permanent. The paradox of thrift explains why austerity can fail in a slump; it says much less about how to make sure that stimulus ends when the slump does."
+      "Moralists have always found thrift easy to praise, and economists have found it hardly harder, so long as the thrifty are considered one at a time. A household that spends less than it earns acquires a cushion against misfortune; a country whose households all do so appears to acquire a fund from which factories can be built. It was against this comfortable symmetry that Keynes directed what later came to be called the paradox of thrift. Suppose that, alarmed by the prospect of unemployment, everyone tries to save more at once. One household's thrift is another household's lost custom. Shops sell less, payrolls shrink, and the incomes out of which the extra saving was to come contract with them. The attempt to add to the nation's savings may leave them no larger than before; what was prudent in each case proves futile in the aggregate.",
+      "The paradox is easily mistaken for a claim that saving is harmful, which it is not. Its target is narrower: the assumption that an economy's willingness to save will automatically be matched by its willingness to invest. In the classical picture the assumption is secured by the interest rate. If households save more, the price of borrowing falls until firms are tempted to borrow the surplus, and what was withheld from consumption returns as investment. Nothing in this picture is incoherent; it is a statement about how quickly prices adjust. Keynes's point was that in a slump they may not adjust quickly enough, or far enough, since a firm with idle machinery has little reason to borrow at any rate, and the rate itself cannot fall below zero.",
+      "Defenders of the older view were not silenced by this reply. They observed that the paradox, taken seriously, proves too much: if the shortfall in demand were self-perpetuating, no economy could recover without outside help, yet recoveries have usually come. The likelier explanation, they argued, is that wages and prices do eventually adjust, so that the paradox describes a transition and not a trap. This is a fair objection, and it explains why much of the dispute has concerned duration rather than direction. Keynesians do not deny that adjustment occurs; they deny that it is quick or painless enough to be left alone, and they note that the years after 2008, when households, firms and governments in many countries tried to reduce their debts together, were years in which growth was slow to return.",
+      "The policy conclusion commonly drawn from all this, that governments should spend while others save and retrench once private demand revives, deserves the same measured treatment. It rests on a symmetry that rarely survives contact with politics. An expansion is simple to begin, since it distributes benefits to identifiable groups, whereas a contraction takes those benefits away and must be enforced against organised resistance. The paradox can therefore explain why austerity in a slump may defeat its own purpose, without guaranteeing that the remedy it recommends will be withdrawn when its work is done. What appears in the textbook as a temporary counter-cyclical device may in practice become a standing commitment, and an argument for stimulus in bad years becomes, unannounced, an argument for deficits in every year."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "The passage is primarily concerned with:",
+        "stem": "Which one of the following best summarises the author's position?",
         "proof": [
           0,
           1,
@@ -178,134 +176,133 @@
         ],
         "options": [
           {
-            "t": "arguing that households should save less during recessions",
-            "why": "The passage explains a collective outcome. It never advises individual households to change what they do.",
+            "t": "The paradox of thrift shows that saving by households is harmful and should be discouraged by public policy whenever incomes across the economy are falling.",
+            "why": "Paragraph 2 says the paradox is easily mistaken for exactly such a claim, and that it is not one.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "describing the causes of the financial crisis of 2008",
-            "why": "2008 appears only as an example of when the idea was revived.",
+            "t": "Because prices eventually adjust, the paradox describes a transition rather than a trap, and the author's main worry is that austerity in a slump prolongs it.",
+            "why": "The first half restates the critics' objection, which the author grants, but the summary leaves out the author's doubt that stimulus, once begun, will be withdrawn (paragraph 4), the point the passage ends on.",
             "trap": "Too narrow or too broad"
           },
           {
-            "t": "explaining how choices that are sensible for individuals can harm the economy as a whole, and what that means for policy",
-            "why": "Paragraphs 1 and 2 explain the paradox, paragraph 3 its limits, and paragraphs 4 and 5 the policy implications and their difficulties."
+            "t": "The paradox identifies a conditional failure to match saving with investment; it supports counter-cyclical spending in principle but not that stimulus will end.",
+            "why": "This combines the narrow target of the paradox (paragraph 2), its conditional character (paragraph 3) and the doubt about whether stimulus is ever withdrawn (paragraph 4)."
           },
           {
-            "t": "showing that government borrowing always becomes permanent",
-            "why": "The author says temporary borrowing 'has a habit' of becoming permanent, not that it always does.",
-            "trap": "Extreme wording"
+            "t": "Saving by households and firms deepens a slump only when governments are cutting their debts too, as happened in many countries after 2008.",
+            "why": "Paragraph 3 cites the years after 2008 as an example of everyone cutting debts together, not as a condition without which saving is harmless; the paradox works through private saving alone.",
+            "trap": "Distorts the passage"
           }
         ],
         "answer": 2
       },
       {
         "type": "inference",
-        "stem": "It can be inferred from the passage that the paradox of thrift is least likely to apply when:",
+        "stem": "The author regards the objection that the paradox 'proves too much' as:",
         "proof": [
           2
         ],
         "options": [
           {
-            "t": "firms are eager to invest and banks readily lend out new savings",
-            "why": "Paragraph 3: with investment flowing, extra saving funds factories and raises future output, so the paradox does not bite."
+            "t": "a fair point that moves the dispute from whether the paradox operates to its duration.",
+            "why": "Paragraph 3 calls it a fair objection and says the dispute has concerned duration rather than direction."
           },
           {
-            "t": "households and governments try to cut their debts at the same time",
-            "why": "This is the 2008 situation, described as exactly when the paradox applies.",
+            "t": "a serious objection that the Keynesian reply leaves unanswered, since that reply concedes that recoveries usually come.",
+            "why": "The author says the reply answers it by moving the dispute to duration: conceding that recovery comes is compatible with denying that it comes quickly or painlessly.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "demand is weak and firms refuse to invest even though credit is cheap",
-            "why": "Paragraph 3 says this is precisely when the paradox bites.",
+            "t": "a misreading of Keynes, whose argument concerned how far interest rates can fall rather than whether recoveries occur.",
+            "why": "The author calls the objection fair, not a misreading, and the floor on interest rates is only one of Keynes's reasons why saving may not become investment.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "private spending collapses and the government also cuts its spending",
-            "why": "Paragraph 4 says this deepens the slump. The paradox applies with full force.",
-            "trap": "Distorts the passage"
+            "t": "an objection that damages the classical view of interest rates at least as much as the Keynesian view.",
+            "why": "Nothing in the passage suggests the objection counts against the classical view.",
+            "trap": "Out of scope"
           }
         ],
         "answer": 0
       },
       {
-        "type": "structure",
-        "stem": "The author refers to the 'fallacy of composition' in order to:",
+        "type": "except",
+        "stem": "According to the passage, each of the following is a reason why saving may fail to turn into investment in a slump EXCEPT:",
         "proof": [
           1
         ],
         "options": [
           {
-            "t": "suggest that households make irrational decisions about saving",
-            "why": "The passage stresses that each household acts sensibly.",
-            "trap": "Distorts the passage"
+            "t": "wages and prices may adjust too slowly or too little to restore demand.",
+            "why": "Paragraph 2: in a slump prices may not adjust quickly enough, or far enough.",
+            "trap": "True but not the answer"
           },
           {
-            "t": "name the logical error of assuming that what is true for each household is true for the economy as a whole",
-            "why": "That is the definition given: assuming what holds for the parts must hold for the whole."
+            "t": "there is a floor below which the rate of interest cannot be pushed.",
+            "why": "Paragraph 2: the rate itself cannot fall below zero.",
+            "trap": "True but not the answer"
           },
           {
-            "t": "show that logicians have disproved the paradox of thrift",
-            "why": "Logicians are mentioned only for the name of the error. Nothing is disproved.",
-            "trap": "Out of scope"
+            "t": "firms with idle machinery see little point in borrowing at any rate.",
+            "why": "Paragraph 2 says a firm with idle machinery has little reason to borrow at any rate.",
+            "trap": "True but not the answer"
           },
           {
-            "t": "argue that economics should rely on accounting facts rather than common sense",
-            "why": "The passage uses an accounting fact but makes no general claim about economic method.",
-            "trap": "Too narrow or too broad"
-          }
-        ],
-        "answer": 1
-      },
-      {
-        "type": "tone",
-        "stem": "The author's attitude towards using public spending to counter a slump is best described as:",
-        "proof": [
-          3,
-          4
-        ],
-        "options": [
-          {
-            "t": "enthusiastic, since it guarantees a quick recovery",
-            "why": "Nothing in the passage promises a guaranteed or quick recovery.",
-            "trap": "Extreme wording"
-          },
-          {
-            "t": "dismissive, because household common sense is a better guide",
-            "why": "The author presents household common sense as misleading in a slump.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "neutral, since the author takes no position on the question",
-            "why": "The final paragraph voices a clear doubt about whether governments will withdraw stimulus.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "accepting of the reasoning behind it, but doubtful that governments will withdraw it on time",
-            "why": "Paragraph 4 sets out the reasoning without objection, and paragraph 5 questions whether stimulus will end when the slump does."
+            "t": "banks tighten their lending standards when households increase their savings.",
+            "why": "Bank behaviour is never discussed; the passage locates the blockage in firms' demand for funds and in prices that adjust slowly."
           }
         ],
         "answer": 3
+      },
+      {
+        "type": "tone",
+        "stem": "The author's attitude towards the policy conclusion drawn from the paradox is best described as:",
+        "proof": [
+          3
+        ],
+        "options": [
+          {
+            "t": "approval of its logic, qualified only by a worry about the administrative burden of spending.",
+            "why": "The reservation is political, about reversing spending once begun, not about administration.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "acceptance of its logic in principle, with doubt about its working in practice.",
+            "why": "The author says the paradox explains why austerity can defeat itself, but doubts that the remedy will be withdrawn when its work is done (paragraph 4)."
+          },
+          {
+            "t": "scepticism about its premise, since the author sides with the critics who hold that slumps correct themselves.",
+            "why": "The author grants that adjustment occurs but accepts that slumps can persist; the doubt is about withdrawing stimulus later, not about the premise.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "detachment from its political consequences, which are placed beyond the scope of economics itself.",
+            "why": "The political consequences are the whole subject of the final paragraph.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 1
       }
     ],
     "recall": [
       {
-        "q": "What accounting fact does the paradox begin with?",
+        "q": "What does the paradox, as the author presents it, actually challenge?",
         "options": [
-          "Savings always equal investment",
-          "Governments spend more than households",
-          "One person's spending is another person's income",
-          "Prices rise when demand rises"
+          "The belief that households should keep a cushion against misfortune in hard times.",
+          "The practice of governments borrowing heavily during a recession to support demand.",
+          "The assumption that saving will automatically be matched by investment.",
+          "The claim that interest rates influence firms' decisions about whether to borrow."
         ],
         "answer": 2
       },
       {
-        "q": "Which event, according to the passage, revived interest in the paradox?",
+        "q": "What, according to the author, makes the textbook symmetry of stimulus and retrenchment hard to sustain?",
         "options": [
-          "The financial crisis of 2008",
-          "The oil shock of the 1970s",
-          "The Great Depression",
-          "The pandemic of 2020"
+          "Spending gives benefits to identifiable groups, so withdrawing it meets organised resistance.",
+          "Spending is administratively costlier to stop than retrenchment is to start.",
+          "Retrenchment always lowers interest rates and so revives private demand.",
+          "Governments are legally unable to reduce spending once a slump has ended."
         ],
         "answer": 0
       }
@@ -317,96 +314,68 @@
     "genre": "economics",
     "difficulty": "hard",
     "paras": [
-      "For most of the twentieth century, the question of how central banks should set interest rates was answered by judgment. Officials looked at the data, consulted their instincts and moved rates as circumstances seemed to require. The case for discretion was obvious: economies are complicated, shocks are unpredictable, and no rule written in advance can anticipate everything a central banker will face.",
-      "The case against discretion was subtler, and it took the inflation of the 1970s to make it persuasive. Suppose a central bank announces that it will keep inflation low. Workers and firms who believe the announcement set wages and prices accordingly. But once they have done so, the bank is tempted to break its word: a burst of unexpected inflation would, for a while, raise output and lower unemployment. People are not fools, and they anticipate the temptation. They build higher inflation into their contracts from the start, and the economy ends up with more inflation and no extra output. The problem is not that officials are ignorant or wicked but that their freedom to change course undermines the credibility of what they say.",
-      "One response is to tie the bank's hands with a rule, such as a fixed formula linking interest rates to inflation and output. Another, which most countries eventually preferred, is to give the bank independence from elected governments, a clear inflation target and a duty to explain itself in public. Independence removes the most obvious source of temptation, the politician facing an election; transparency makes it costly for the bank to depart from its stated aims without good reason.",
-      "Neither solution is perfect. A rigid rule may perform badly when the economy is hit by something its authors did not foresee, such as a pandemic that shuts down supply and demand at once. A framework of constrained discretion, meanwhile, depends on the reputation of the institution, and reputations take decades to build and months to lose. Some economists worry that the experiments of recent years, from very low interest rates to large purchases of government bonds, have blurred the line between monetary and fiscal policy and so revived the old temptations in a new form.",
-      "What the debate has established is that credibility is an asset with real economic value. A central bank that is believed can achieve with a few words what an untrusted one could not achieve with large changes in interest rates. The real question is not whether to follow rules or use discretion, but how to make discretion believable."
+      "The oldest argument for letting central bankers use their judgment is also the most persuasive: no formula composed in advance can anticipate the shocks an economy will deliver, and a rule that is sensible in ordinary times may prove perverse in extraordinary ones. Judgment adapts where rules cannot. Against this, economists who made their names in the 1970s raised an objection that has nothing to do with the intelligence of central bankers. A bank that can alter its course at will is, for that very reason, difficult to believe. If it announces that it will hold inflation down, wage-setters have reason to suspect that it will weaken once they and their employers have committed themselves to contracts, because a burst of surprise inflation yields a temporary gain in employment that a tempted official may find hard to resist.",
+      "The suspicion, once formed, is self-fulfilling. Wage-setters who expect the bank to yield will build higher inflation into their demands in advance, so that the bank, confronted with costs already raised, can avoid a recession only by validating them. Inflation settles at a higher level and employment gains nothing, since the surprise on which the gain depended has been anticipated. The analysis is striking because it requires neither folly nor bad faith on the part of the bank; it requires only that the bank be free to reconsider and that the public know it. The remedy therefore lies not in better decisions but in better commitments.",
+      "Two commitments were tried. The first, a binding rule that fixes the response of interest rates to inflation and output, removes the temptation by removing the choice, at the price of the flexibility that made discretion attractive in the first place. The second, which governments in most rich countries eventually adopted, delegates the decision to an official body shielded from electoral pressure, with a numerical target and an obligation to explain departures from it. This arrangement keeps judgment but disciplines it, and it works only to the extent that the public believes the discipline to be real. That belief is an asset of a peculiar kind, laboriously accumulated and quickly squandered: a central bank that has spent a generation establishing its resolve may forfeit it in a single misjudged episode, whereas a newer institution may have to pay for credibility it has not yet earned.",
+      "It would be a mistake, however, to conclude that credibility settles the matter. Independence resolves one problem by creating another: the power to set interest rates, which affect the livelihoods of millions, is handed to officials whom no electorate can dismiss, and their legitimacy rests on a presumption that technical and political questions can be cleanly separated. In periods of acute strain that presumption becomes difficult to sustain. When central banks buy government debt on a vast scale, or hold rates near zero for years, their choices have distributional effects that look very like fiscal policy, and critics ask, with some justice, why the unelected should be making them. A bank that is believed may nonetheless find that it is no longer trusted to decide."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best expresses the main point of the passage?",
+        "stem": "Which one of the following best captures the author's central argument?",
         "proof": [
           1,
-          4
+          2,
+          3
         ],
         "options": [
           {
-            "t": "Central banks should follow fixed formulas because officials cannot be trusted to use judgment.",
-            "why": "The passage says the problem is not that officials are ignorant or wicked, and it lists weaknesses of rigid rules.",
+            "t": "Central banks should be bound by fixed rules, since the case for discretion collapses once the public anticipates how officials will behave.",
+            "why": "Paragraph 3 says a binding rule gives up the flexibility that made discretion attractive; the author does not recommend it.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "The inflation of the 1970s was caused by central banks that lacked independence.",
-            "why": "The 1970s are mentioned as what made the argument persuasive. Their cause is not analysed.",
-            "trap": "Out of scope"
+            "t": "Inflation in the 1970s resulted from officials willing to sacrifice price stability for employment, a failing that independence has since removed.",
+            "why": "Paragraph 2 says the analysis needs neither folly nor bad faith, and paragraph 4 shows that independence brings problems of its own.",
+            "trap": "Distorts the passage"
           },
           {
-            "t": "Independent central banks have permanently solved the problem of inflation.",
-            "why": "Paragraph 4 says neither solution is perfect and reputations can be lost in months.",
-            "trap": "Extreme wording"
+            "t": "The credibility of a central bank depends chiefly on the length of its record, so newer institutions are bound to perform worse than established ones.",
+            "why": "Record length is mentioned in paragraph 3 as one part of how credibility is built; it is neither the chief factor nor a guarantee of worse performance.",
+            "trap": "Too narrow or too broad"
           },
           {
-            "t": "Because a central bank's freedom to change course can undermine belief in its promises, the central problem is making its judgment credible.",
-            "why": "This joins the argument of paragraph 2 to the conclusion in paragraph 5: how to make discretion believable."
+            "t": "Independent central banks answer the problem of credibility but bring a problem of legitimacy that credibility itself cannot resolve.",
+            "why": "Paragraphs 2 and 3 set out the credibility problem and its institutional answer; paragraph 4 argues that the answer creates a legitimacy problem of its own."
           }
         ],
         "answer": 3
       },
       {
         "type": "inference",
-        "stem": "According to the reasoning in the second paragraph, why does discretion lead to 'more inflation and no extra output'?",
+        "stem": "According to the second paragraph, the outcome of 'higher inflation with no gain in employment' arises because:",
         "proof": [
+          0,
           1
         ],
         "options": [
           {
-            "t": "People expect the bank to be tempted into surprise inflation, so they raise wages and prices in advance and no surprise is possible.",
-            "why": "Because the temptation is anticipated and built into contracts, inflation rises but the output gain, which needed a surprise, never comes."
-          },
-          {
-            "t": "Officials lack the information they need to set interest rates correctly.",
-            "why": "The passage explicitly rejects ignorance as the problem.",
+            "t": "officials misjudge how interest rates affect employment and so choose a course that damages both inflation and jobs.",
+            "why": "Paragraph 2 says the analysis requires neither folly nor bad faith on the part of the bank.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Workers ignore the bank's announcements and set wages at random.",
-            "why": "Workers are described as anticipating the bank's behaviour, not ignoring it.",
+            "t": "the public correctly anticipates the bank's incentive to yield, removing the surprise on which an employment gain depends.",
+            "why": "Because the temptation is anticipated and built into wage demands, inflation rises, but the employment gain, which needed a surprise, never arrives."
+          },
+          {
+            "t": "wage-setters are slow to learn what the bank intends and keep basing their demands on past inflation.",
+            "why": "Wage-setters in paragraph 2 correctly anticipate the bank's incentive; the trouble is that they understand it too well, not too slowly.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Unexpected inflation always lowers output in the long run.",
-            "why": "The passage says surprise inflation raises output for a while. 'Always lowers' is unsupported.",
-            "trap": "Extreme wording"
-          }
-        ],
-        "answer": 0
-      },
-      {
-        "type": "strengthen",
-        "stem": "Which of the following, if true, would most strengthen the claim that credibility has 'real economic value'?",
-        "proof": [
-          4
-        ],
-        "options": [
-          {
-            "t": "Central banks with fixed rules did worse during the pandemic than those with discretion.",
-            "why": "This concerns the weakness of rigid rules (paragraph 4), not the value of being believed.",
-            "trap": "True but not the answer"
-          },
-          {
-            "t": "When a trusted central bank merely announces a future policy, market interest rates move almost as much as after an actual rate change.",
-            "why": "This shows words alone achieving real effects, which is exactly what paragraph 5 claims credibility allows."
-          },
-          {
-            "t": "Some governments have recently reduced the independence of their central banks.",
-            "why": "A report of what governments did says nothing about whether credibility has value.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "Inflation was higher in the 1970s than in the 1990s in most countries.",
-            "why": "A difference in inflation across decades does not show that being believed is what produced it.",
+            "t": "the bank, having announced a target, is prevented by law from adjusting rates once wages begin to rise.",
+            "why": "The problem arises from the bank's freedom to reconsider, not from any legal restriction.",
             "trap": "Out of scope"
           }
         ],
@@ -414,52 +383,81 @@
       },
       {
         "type": "except",
-        "stem": "The passage mentions all of the following as weaknesses of the approaches it discusses EXCEPT:",
+        "stem": "The passage mentions all of the following as features of the arrangements it describes EXCEPT:",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "a binding rule gives up the flexibility that made discretion attractive.",
+            "why": "Paragraph 3: a rule removes the temptation by removing the choice, at that price.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "an independent bank must explain its departures from a numerical target.",
+            "why": "Paragraph 3: independence comes with a numerical target and an obligation to explain departures.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "rule-following banks are judged more harshly by markets than discretionary ones.",
+            "why": "The passage never compares how markets judge rule-following and discretionary banks."
+          },
+          {
+            "t": "a newer institution may have to pay for credibility it has not yet earned.",
+            "why": "Paragraph 3 states this in its final sentence.",
+            "trap": "True but not the answer"
+          }
+        ],
+        "answer": 2
+      },
+      {
+        "type": "strengthen",
+        "stem": "Which of the following developments would most strengthen the author's concern about the legitimacy of independent central banks?",
         "proof": [
           3
         ],
         "options": [
           {
-            "t": "a fixed rule may fail when an unforeseen shock arrives",
-            "why": "Stated in paragraph 4 with the example of a pandemic.",
+            "t": "Elected legislators widely denounce a central bank's years of near-zero interest rates as favouring asset owners over wage earners.",
+            "why": "This shows technical decisions acquiring distributional effects that elected officials contest, which is exactly the pattern paragraph 4 describes."
+          },
+          {
+            "t": "A central bank with a long record of meeting its target narrowly misses it in one year and publishes a detailed explanation.",
+            "why": "A transparent response to a small miss is the discipline paragraph 3 describes; it does not raise the legitimacy problem.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "A newly established central bank adopts a numerical target and finds that wage-setters are slow to believe it.",
+            "why": "This illustrates the credibility problem of paragraph 3, not the legitimacy problem of paragraph 4.",
             "trap": "True but not the answer"
           },
           {
-            "t": "constrained discretion depends on a reputation that is slow to build and quick to lose",
-            "why": "Stated in paragraph 4.",
-            "trap": "True but not the answer"
-          },
-          {
-            "t": "independent central banks tend to be captured by the banks they supervise",
-            "why": "Capture by supervised banks is never mentioned, so this is the exception."
-          },
-          {
-            "t": "recent policies may have blurred the boundary between monetary and fiscal policy",
-            "why": "Stated at the end of paragraph 4.",
-            "trap": "True but not the answer"
+            "t": "A government replaces the head of its central bank at the end of a fixed, non-renewable term.",
+            "why": "An orderly change of leadership says nothing about whether the unelected should make distributional choices.",
+            "trap": "Out of scope"
           }
         ],
-        "answer": 2
+        "answer": 0
       }
     ],
     "recall": [
       {
-        "q": "Which decade made the case against discretion persuasive?",
+        "q": "According to the passage, what do wage-setters do if they expect the bank to yield?",
         "options": [
-          "The 1930s",
-          "The 1990s",
-          "The 2010s",
-          "The 1970s"
+          "Delay wage agreements until the bank announces its target.",
+          "Accept lower wages in return for guaranteed employment.",
+          "Rely on the bank's announcement and keep their demands unchanged.",
+          "Build higher inflation into their demands in advance."
         ],
         "answer": 3
       },
       {
-        "q": "What arrangement did most countries eventually prefer?",
+        "q": "What is the price of a binding rule, as the author describes it?",
         "options": [
-          "A fixed formula for interest rates",
-          "Independence, an inflation target and a duty to explain decisions",
-          "Control of interest rates by elected governments",
-          "Abolishing inflation targets"
+          "It lowers inflation at the cost of higher unemployment.",
+          "It gives up the flexibility that made discretion attractive.",
+          "It places the central bank under the control of elected governments.",
+          "It makes the bank's target impossible to explain in public."
         ],
         "answer": 1
       }
@@ -469,18 +467,17 @@
     "id": "econ-lemons",
     "title": "When buyers cannot see quality",
     "genre": "economics",
-    "difficulty": "easy",
+    "difficulty": "medium",
     "paras": [
-      "Imagine a market for used cars in which sellers know whether their car is reliable but buyers cannot tell. A buyer looking at two shiny hatchbacks of the same model and age has no way of knowing that one has been carefully maintained and the other has a failing gearbox. Faced with this uncertainty, the sensible buyer offers a price somewhere in the middle, reflecting the average quality of cars on sale.",
-      "That middle price is the start of the trouble. Owners of good cars find it too low and keep their cars or sell them to friends. Owners of bad cars, known in American slang as lemons, find it generous and rush to sell. As good cars leave the market, the average quality of the cars still on offer falls, buyers lower their offers again, and more good cars withdraw. In the extreme, only lemons remain, and a market that could have benefited both sides shrinks or disappears.",
-      "The economist George Akerlof described this process in a 1970 paper that several journals at first rejected as trivial. Its point was anything but. It showed that markets can fail not because people are irrational or greedy but because information is unevenly shared. The same logic applies wherever one side knows more than the other: insurance, where the people keenest to buy cover are often those most likely to claim; lending, where the borrowers most willing to accept a high interest rate may be the riskiest; and hiring, where an employer cannot easily observe how hard a candidate will work.",
-      "Much of the machinery of modern commerce can be read as a response to the problem. Warranties let sellers of good products prove their confidence by promising repairs. Brands give firms a reputation to lose. Inspection services, credit scores and online ratings all try to move information from the side that has it to the side that needs it. Even a university degree may partly serve this purpose, signalling qualities to employers that they could not easily check.",
-      "None of these remedies is complete, and some create problems of their own; ratings can be faked and degrees can be pursued for the signal rather than the learning. But the lesson has outlasted its rejections. Trust is not a soft extra in economic life. It is part of the infrastructure that allows markets to exist at all."
+      "The market for used cars has become the standard illustration of what happens when one party to a transaction knows more than the other. The seller knows the history of the vehicle; the buyer can inspect only its paintwork. Wary, the buyer will pay no more than the price of an average car, and this offer insults the owners of better-than-average ones, who withdraw. The average quality of the cars still for sale then declines, the offer falls, and the process repeats. In the limit only the worst cars remain, and an exchange that would have profited sellers and buyers alike never takes place. When George Akerlof set out this argument in 1970, journals that thought it trivial turned it down. The verdict has not worn well.",
+      "Yet the argument, taken literally, predicts a good deal more failure than anyone observes. Second-hand cars are bought and sold in enormous numbers, as are houses, insurance policies and the services of lawyers, though in each of these one side knows more than the other. The interesting question is therefore not why markets with unevenly shared information can collapse, but why most of them do not. The answer is that commerce has developed devices that make private knowledge public, or at least costly to fake. A warranty is worth offering only to someone confident of the product; a brand is a hostage to future sales; a degree is useful to an employer because it is cheap to earn for those who are able and expensive for those who are not.",
+      "These devices are best regarded as substitutes for trust rather than as proofs of quality, and they carry costs of their own. A signal that anyone can send conveys nothing, so a signal must be expensive enough to deter the impostor, which means that the genuine article is obliged to pay for it too. Resources spent on proving worth, whether in credentials pursued for their value to employers rather than for what they teach, or in inspections that merely duplicate one another, are not available for anything else. Worse, the signals themselves invite imitation: where ratings carry weight, an industry in fake ratings appears, and the information that was supposed to reduce suspicion becomes one more thing to be suspicious of.",
+      "None of this diminishes the force of Akerlof's insight; it relocates it. The insight is less a prediction of vanished markets than a demonstration that markets function only when someone has paid to make information believable, and that the payment, borne in the end by buyers and sellers alike, is rarely recorded as a cost of doing business. A market that appears to run smoothly may therefore be running well only because a great deal of effort is being devoted, out of sight, to the problem it is said not to have."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "The passage is mainly about:",
+        "stem": "Which one of the following best expresses the central idea of the passage?",
         "proof": [
           1,
           2,
@@ -488,137 +485,136 @@
         ],
         "options": [
           {
-            "t": "why used cars lose their value faster than new cars",
-            "why": "Depreciation is never discussed. Used cars are only the opening example.",
-            "trap": "Out of scope"
+            "t": "Markets in which sellers know more than buyers survive through costly devices that make information believable, and those costs usually go unrecorded.",
+            "why": "This covers the unravelling (paragraph 1), the question of why most markets survive (paragraph 2), the costs of the remedies (paragraph 3) and the relocated insight (paragraph 4)."
           },
           {
-            "t": "how unequal information between buyers and sellers can make markets shrink, and the devices that have grown up to deal with it",
-            "why": "This covers the mechanism (paragraphs 1 and 2), its generality (paragraph 3) and the remedies (paragraphs 4 and 5)."
+            "t": "Akerlof's claim that markets with unevenly shared information collapse is refuted by the many such markets that continue to function.",
+            "why": "Paragraph 4 says his insight is relocated, not diminished; the survival of markets is explained rather than used against him.",
+            "trap": "Distorts the passage"
           },
           {
-            "t": "the career of the economist George Akerlof",
-            "why": "Akerlof is mentioned only as the author of the idea.",
+            "t": "The disappearance of good used cars shows that warranties, brands and ratings should be abandoned in favour of direct inspection by buyers.",
+            "why": "The author describes these devices as costly but never proposes abandoning them, and inspection is itself said to be wasteful when duplicated.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Unevenly shared information matters chiefly in markets for used goods, where sellers have both the incentive and the means to conceal defects.",
+            "why": "Paragraph 2 lists houses, insurance and legal services; used cars are only the opening illustration.",
             "trap": "Too narrow or too broad"
-          },
-          {
-            "t": "the argument that markets fail because people are greedy",
-            "why": "Paragraph 3 says markets fail 'not because people are irrational or greedy'.",
-            "trap": "Distorts the passage"
-          }
-        ],
-        "answer": 1
-      },
-      {
-        "type": "detail",
-        "stem": "According to the passage, why do owners of good cars withdraw from the market?",
-        "proof": [
-          0,
-          1
-        ],
-        "options": [
-          {
-            "t": "Buyers can easily pick out the good cars and avoid them.",
-            "why": "The whole problem is that buyers cannot tell good cars from bad.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "They prefer to keep cars that are still under warranty.",
-            "why": "Warranties appear later as a remedy, not as a reason for withdrawing.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "The government restricts the sale of reliable cars.",
-            "why": "No government restriction is mentioned.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "The price buyers will pay reflects average quality, which is too low for a good car.",
-            "why": "Paragraph 2: owners of good cars 'find it too low and keep their cars'."
-          }
-        ],
-        "answer": 3
-      },
-      {
-        "type": "application",
-        "stem": "Which of the following situations is most similar to the problem the passage describes?",
-        "proof": [
-          2
-        ],
-        "options": [
-          {
-            "t": "A health insurer finds that people who know they are unwell are the most likely to buy its expensive policies.",
-            "why": "The buyer of insurance knows more about their own risk than the insurer, exactly the insurance case in paragraph 3."
-          },
-          {
-            "t": "A bakery raises its prices after the cost of flour rises.",
-            "why": "This is about costs, not about one side knowing more than the other.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "A used-car dealer that offers a long warranty attracts buyers willing to pay more.",
-            "why": "This describes a remedy from paragraph 4, not the problem itself.",
-            "trap": "True but not the answer"
-          },
-          {
-            "t": "A shop sells more umbrellas in the rainy season.",
-            "why": "Seasonal demand has nothing to do with hidden quality.",
-            "trap": "Out of scope"
           }
         ],
         "answer": 0
       },
       {
         "type": "structure",
-        "stem": "The remark that the paper was 'at first rejected as trivial' mainly serves to:",
+        "stem": "The author refers to 'an industry in fake ratings' in order to:",
         "proof": [
-          2,
-          4
+          2
         ],
         "options": [
           {
-            "t": "suggest that academic journals are usually wrong about economics",
-            "why": "One episode does not support 'usually wrong'.",
-            "trap": "Extreme wording"
+            "t": "warn that online commerce is less trustworthy than traditional trade because anonymity eases deception.",
+            "why": "The passage does not compare online and traditional trade.",
+            "trap": "Out of scope"
           },
           {
-            "t": "cast doubt on whether Akerlof's argument is correct",
-            "why": "The author immediately says its point was 'anything but' trivial.",
-            "trap": "Distorts the passage"
+            "t": "suggest that ratings should give way to certificates, which are rather more difficult to counterfeit.",
+            "why": "No such recommendation is made; certificates are not offered as a replacement for ratings.",
+            "trap": "Out of scope"
           },
           {
-            "t": "highlight that an idea now seen as important was at first underrated",
-            "why": "The contrast between 'trivial' and 'anything but', echoed in 'outlasted its rejections', makes this point."
+            "t": "show that devices created to overcome suspicion can themselves become new objects of suspicion.",
+            "why": "The sentence ends by saying the information meant to reduce suspicion becomes one more thing to be suspicious of."
           },
           {
-            "t": "explain why the theory applies mainly to used cars",
-            "why": "Paragraph 3 says the logic applies to insurance, lending and hiring too.",
+            "t": "argue that ratings, unlike warranties and brands, cannot work as signals because they cost nothing to send.",
+            "why": "The author does not single ratings out as useless; the point is that any signal that carries weight invites imitation and so becomes a new source of suspicion.",
             "trap": "Distorts the passage"
           }
         ],
         "answer": 2
-      }
-    ],
-    "recall": [
+      },
       {
-        "q": "When did Akerlof publish the paper?",
+        "type": "except",
+        "stem": "Which of the following is NOT offered in the passage as a device that helps make private information believable?",
+        "proof": [
+          1,
+          2
+        ],
         "options": [
-          "1950",
-          "1970",
-          "1990",
-          "2008"
+          {
+            "t": "a warranty offered by a seller confident of the product.",
+            "why": "Paragraph 2 names the warranty.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "a discount offered to buyers who agree to pay in advance.",
+            "why": "Discounts for advance payment are never mentioned; the passage lists warranties, brands, degrees, inspections and ratings."
+          },
+          {
+            "t": "a brand whose value the firm would forfeit by disappointing buyers.",
+            "why": "Paragraph 2 calls a brand a hostage to future sales.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "a degree that costs the able little and others a great deal.",
+            "why": "Paragraph 2 names the degree on exactly this ground.",
+            "trap": "True but not the answer"
+          }
         ],
         "answer": 1
       },
       {
-        "q": "Which of these does the passage give as a remedy?",
+        "type": "application",
+        "stem": "Which of the following situations is the closest parallel to the process described in the first paragraph?",
+        "proof": [
+          0
+        ],
         "options": [
-          "Price controls",
-          "Import taxes",
-          "Rent limits",
-          "Warranties"
+          {
+            "t": "Bakers in a small town raise their prices after a poor harvest, and customers respond by buying noticeably less bread.",
+            "why": "Here prices respond to costs and nothing is hidden from buyers.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "A tailor attracts custom by displaying a framed certificate from a respected guild, and rivals begin to display their own.",
+            "why": "This parallels the devices of paragraph 2, which are a remedy for the problem, not the unravelling itself.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "An art dealer sells a forgery to a collector who cannot distinguish it from a genuine work, and is later prosecuted.",
+            "why": "This is fraud in a single sale; no cycle of withdrawal and falling quality follows.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "A health scheme charges one premium to everyone; the healthy leave as it rises, the pool worsens, and it rises again.",
+            "why": "Better risks withdraw because the common price undervalues them, the quality of those who remain falls, and the price rises: the same spiral as in the used-car market."
+          }
         ],
         "answer": 3
+      }
+    ],
+    "recall": [
+      {
+        "q": "According to the passage, why do owners of better-than-average cars withdraw from the market?",
+        "options": [
+          "The price offered reflects average quality and so undervalues their cars.",
+          "Dealers refuse to buy cars whose history cannot be inspected.",
+          "Warranties make it cheaper for them to keep their cars than to sell.",
+          "Insurers charge more to cover cars that are sold privately."
+        ],
+        "answer": 0
+      },
+      {
+        "q": "Why, in the author's account, must a signal be expensive to send?",
+        "options": [
+          "Expensive signals are the only ones that buyers have time to read.",
+          "Cheap signals are usually produced by firms unsure of their own products.",
+          "A signal anyone can send cannot separate the genuine seller from the impostor.",
+          "Governments require sellers to pay for any information given to buyers."
+        ],
+        "answer": 2
       }
     ]
   },
@@ -626,17 +622,17 @@
     "id": "econ-minwage",
     "title": "A natural experiment on the minimum wage",
     "genre": "economics",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "paras": [
-      "The textbook prediction about minimum wages is simple. If the price of labour is pushed above what the market would set, employers will buy less of it, so a higher minimum wage should cost some low-paid workers their jobs. Most introductory courses still teach it with a simple diagram of supply and demand, in which any wage floor above the market rate leaves some willing workers without jobs. For decades most economists accepted this reasoning, and the debate was mainly about how many jobs would be lost.",
-      "In 1992 New Jersey raised its minimum wage while neighbouring Pennsylvania did not. The economists David Card and Alan Krueger surveyed fast-food restaurants on both sides of the border before and after the change, treating Pennsylvania as a guide to what would have happened in New Jersey without the increase. Fast-food chains were a sensible choice: they employ many low-wage workers, pay close to the minimum and sell the same products on both sides of the state line, so a difference in employment was unlikely to come from other causes. They found no fall in employment in New Jersey relative to Pennsylvania; if anything, employment there rose slightly.",
-      "The study provoked fierce criticism. Some economists questioned the survey data and produced payroll records that told a different story; others argued that a single state over a single year could not overturn a well-established principle. But the method, which treated a policy change as a natural experiment and compared similar places that happened to be treated differently, spread rapidly, and many later studies of moderate increases have found small or no effects on employment. Card shared a Nobel prize in 2021 partly for this work.",
-      "One explanation is that many low-wage labour markets are not the competitive markets of the textbook. Workers in a small town may have few other employers to turn to, so a firm that pays a little less loses few of them. Where a few large employers dominate a town, they can pay less than the value of a worker's labour, and a minimum wage can raise pay without reducing jobs, up to a point. That qualification matters. The evidence concerns moderate increases; it does not show that any minimum wage, however high, is costless, and economists still disagree about where the limit lies."
+      "For most of the twentieth century the economics of the minimum wage was an application of a result so elementary that it was taught before most students had met a regression. A legal floor above the wage that employers would otherwise pay prices some workers out of jobs; the only open question was how many. The conclusion owed its authority less to evidence than to the coherence of the theory from which it came, and results that sat awkwardly with it were more often blamed on flaws in the data than on flaws in the theory. A prediction that cannot be embarrassed by observation has ceased to be a prediction and become a presumption, and presumptions are what natural experiments exist to test.",
+      "The test arrived in 1992, when New Jersey raised its minimum wage and neighbouring Pennsylvania left its own alone. David Card and Alan Krueger telephoned fast-food outlets in both states before and after the increase, reasoning that restaurants on either side of a border share the same customers, the same weather and the same economic fortunes, so that Pennsylvania's experience would indicate what New Jersey's would have been without the law. The comparison could scarcely have been cleaner, and the result was unwelcome to many: employment in New Jersey had not fallen relative to that in Pennsylvania and, if anything, had grown a little. Critics promptly challenged the survey, producing payroll records that suggested a small decline, and the argument over whose figures were more reliable has never been wholly settled.",
+      "What survives the dispute is less a number than a way of arguing. The study did not show that minimum wages are harmless; it showed that the question is an empirical one whose answer depends on the market in which it is asked. If employers compete for labour, a floor above the going wage will cost jobs, as the textbook says. If, on the other hand, a few firms dominate local hiring, so that workers who ask for more can be replaced only at some inconvenience and have few places to go, the firm pays less than a worker's labour is worth, and a modest increase can raise pay without any loss of employment, because it takes from profit what it gives to wages. Which description fits a given town is a matter of fact, and the evidence suggests that both occur.",
+      "It would be as rash to treat the New Jersey result as a vindication as to treat it as an aberration. Studies of moderate increases have, in the main, found little effect on jobs, which is what the second description predicts, but they are silent about increases far outside the range of experience, where the first description presumably reasserts itself. Defenders of minimum wages are tempted to overlook this silence, and their opponents to exaggerate it. The sensible inference is neither that the floor is costless nor that it is costly, but that economists who confidently claimed to know in advance were claiming more than the theory entitled them to."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best expresses the main idea of the passage?",
+        "stem": "Which one of the following best states the main point of the passage?",
         "proof": [
           1,
           2,
@@ -644,110 +640,110 @@
         ],
         "options": [
           {
-            "t": "Minimum wages never reduce employment.",
-            "why": "The last paragraph limits the finding to moderate increases.",
-            "trap": "Extreme wording"
-          },
-          {
-            "t": "Pennsylvania's economy grew faster than New Jersey's in the 1990s.",
-            "why": "Pennsylvania serves only as a comparison.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "Card and Krueger's data were shown to be false.",
-            "why": "Their data were questioned, and later studies largely agreed with them.",
+            "t": "The New Jersey study overturned the textbook view by showing that moderate increases in the minimum wage leave employment unchanged.",
+            "why": "The author says the textbook result still holds where employers compete for labour, and that treating the study as a vindication would be rash; it made the question empirical rather than overturning the theory.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "A natural experiment challenged the view that minimum wages cost jobs, showing that moderate rises can leave employment intact, within limits.",
-            "why": "Covers the textbook view, the study, its influence and the qualification."
-          }
-        ],
-        "answer": 3
-      },
-      {
-        "type": "detail",
-        "stem": "Why did Card and Krueger survey restaurants in Pennsylvania?",
-        "proof": [
-          1
-        ],
-        "options": [
+            "t": "A natural experiment showed that the employment effect of a minimum wage depends on the market concerned, undermining confident prediction from theory alone.",
+            "why": "This combines the study (paragraph 2), the argument that the answer depends on the kind of market (paragraph 3) and the caution against confident claims (paragraph 4)."
+          },
           {
-            "t": "Pennsylvania had raised its minimum wage first.",
-            "why": "Pennsylvania did not raise its minimum wage.",
+            "t": "Because the New Jersey figures remain disputed, the study's lasting value lies in its method, which later studies used to confirm the textbook prediction.",
+            "why": "The author does say its method outlived the dispute, but later studies of moderate increases mostly found little effect on jobs, which fits the second description, not the textbook one.",
+            "trap": "Half right, half wrong"
+          },
+          {
+            "t": "The results are best explained by a few firms dominating local hiring, which suggests that the textbook's competitive model rarely fits real labour markets.",
+            "why": "The author says the evidence suggests both kinds of market occur and does not judge how often the competitive one fits; the main point concerns confident prediction from theory.",
             "trap": "Distorts the passage"
-          },
-          {
-            "t": "To estimate what would have happened in New Jersey without the increase.",
-            "why": "Paragraph 2 says Pennsylvania was used as this guide."
-          },
-          {
-            "t": "Because restaurants in New Jersey refused to take part.",
-            "why": "Nothing suggests a refusal.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "To show that fast-food workers earn more in Pennsylvania.",
-            "why": "The comparison was of employment, not pay.",
-            "trap": "Out of scope"
           }
         ],
         "answer": 1
       },
       {
         "type": "inference",
-        "stem": "The author would most likely agree that:",
+        "stem": "The author would regard the claim that 'a minimum wage of any size can be imposed without loss of jobs' as:",
         "proof": [
           3
         ],
         "options": [
           {
-            "t": "a very large rise in the minimum wage could reduce employment",
-            "why": "The evidence 'does not show that any minimum wage, however high, is costless'."
-          },
-          {
-            "t": "the textbook model describes every labour market accurately",
-            "why": "Paragraph 4 says many low-wage markets are not like the textbook.",
+            "t": "justified by the New Jersey study, since its comparison of neighbouring states was about as clean as such comparisons can be.",
+            "why": "A clean comparison shows what followed one moderate increase, not what a much larger one would do; the author says the evidence is silent about increases far outside experience.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "the criticism of the New Jersey study had no merit at all",
-            "why": "The author reports the criticism without dismissing it.",
+            "t": "a plausible extension of the explanation based on local hiring power, in which a floor takes from profit what it gives to wages.",
+            "why": "Even where a few firms dominate hiring, the author says only a modest increase can raise pay without job losses; a floor of any size goes beyond both that explanation and the evidence.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "at odds with the author's view only if payroll records are preferred to survey data.",
+            "why": "The caution in paragraph 4 rests on the range of the evidence, not on which data set is preferred.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "unsupported, because the evidence concerns moderate increases and says little about much larger ones.",
+            "why": "Paragraph 4: studies of moderate increases are silent about increases far outside the range of experience."
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "type": "structure",
+        "stem": "The author's remark that a prediction 'that cannot be embarrassed by observation has ceased to be a prediction and become a presumption' is intended to:",
+        "proof": [
+          0
+        ],
+        "options": [
+          {
+            "t": "criticise treating the competitive model's conclusion as settled whatever the data showed.",
+            "why": "The sentence describes how the textbook conclusion was shielded from contrary evidence (paragraph 1)."
+          },
+          {
+            "t": "argue that a theory should be discarded as soon as a single study contradicts it.",
+            "why": "The author warns against treating the New Jersey result as vindication (paragraph 4), so no such rule is endorsed.",
             "trap": "Extreme wording"
           },
           {
-            "t": "natural experiments are less reliable than surveys",
-            "why": "The passage praises the natural-experiment method.",
+            "t": "suggest that early studies contradicting the textbook were dismissed because their data were in fact poorer.",
+            "why": "The author's complaint is that awkward results were blamed on the data by reflex, to protect the theory; the remark does not say that the data were actually worse.",
             "trap": "Distorts the passage"
+          },
+          {
+            "t": "argue that economic theories should not be taught until natural experiments have confirmed their predictions.",
+            "why": "The remark concerns one conclusion treated as settled whatever the evidence showed; it sets no condition for teaching theory in general.",
+            "trap": "Too narrow or too broad"
           }
         ],
         "answer": 0
       },
       {
-        "type": "structure",
-        "stem": "The fourth paragraph mainly serves to:",
+        "type": "strengthen",
+        "stem": "Which of the following, if true, would most weaken the author's explanation of why employment did not fall in New Jersey?",
         "proof": [
-          3
+          2
         ],
         "options": [
           {
-            "t": "restate the textbook prediction",
-            "why": "The textbook prediction is in paragraph 1.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "describe the criticism of the New Jersey study",
-            "why": "The criticism is in paragraph 3.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "offer an explanation for the findings and limit how far they apply",
-            "why": "It explains through dominant employers, then restricts the finding to moderate increases."
-          },
-          {
-            "t": "call for higher minimum wages in every country",
-            "why": "No policy is recommended.",
+            "t": "Fast-food restaurants in New Jersey tended to employ somewhat younger workers than comparable restaurants in Pennsylvania did.",
+            "why": "A difference in worker age bears on comparability, not on whether employers had power over wages.",
             "trap": "Out of scope"
+          },
+          {
+            "t": "Surveys conducted by telephone are generally less reliable than studies that rely on payroll records held by employers.",
+            "why": "This concerns the quality of the data, the subject of the dispute in paragraph 2, not the explanation offered in paragraph 3.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "Border-region workers could easily move between competing restaurants, so any employer paying less quickly lost staff.",
+            "why": "If employers could not pay less without losing workers, they lacked the power over wages on which the explanation depends."
+          },
+          {
+            "t": "Later studies of much larger increases in the minimum wage found substantial job losses in several low-wage industries.",
+            "why": "The author already says the evidence is limited to moderate increases; this is consistent with the explanation.",
+            "trap": "True but not the answer"
           }
         ],
         "answer": 2
@@ -755,24 +751,24 @@
     ],
     "recall": [
       {
-        "q": "Which state raised its minimum wage in 1992?",
+        "q": "Why did Card and Krueger survey outlets on both sides of the state border?",
         "options": [
-          "Pennsylvania",
-          "New York",
-          "New Jersey",
-          "Delaware"
+          "Pennsylvania had raised its minimum wage a year before New Jersey did so.",
+          "Restaurants in New Jersey refused to take part unless Pennsylvania's were included.",
+          "They wanted to compare pay in fast food with pay in other industries.",
+          "Pennsylvania's neighbouring outlets showed what New Jersey's would have experienced without the increase."
         ],
-        "answer": 2
+        "answer": 3
       },
       {
-        "q": "What kind of businesses did the economists survey?",
+        "q": "What, according to the author, do studies of moderate increases leave unanswered?",
         "options": [
-          "Fast-food restaurants",
-          "Farms",
-          "Factories",
-          "Banks"
+          "Whether employers have any power over the wages they pay.",
+          "Whether the New Jersey survey was conducted fairly and consistently.",
+          "What happens when increases are far outside the range of experience.",
+          "Whether competitive labour markets exist anywhere in low-wage industries."
         ],
-        "answer": 0
+        "answer": 2
       }
     ]
   },
@@ -783,15 +779,15 @@
     "difficulty": "hard",
     "since": "2026-10-18",
     "paras": [
-      "In 1968 the ecologist Garrett Hardin described what he called the tragedy of the commons. Imagine a pasture open to all. Each herder gains the full benefit of adding one more animal but bears only a share of the cost of overgrazing, so each keeps adding animals until the pasture is ruined. Hardin concluded that shared resources must be either divided into private property or controlled by the state. The argument seemed to explain everything from emptied fisheries to polluted rivers, and his essay became one of the most cited in the social sciences.",
-      "The political scientist Elinor Ostrom spent decades testing the claim against the record, and found it wanting. Swiss villages had managed alpine meadows in common for centuries; Japanese villages had shared forests; farmers in Spain and the Philippines had run irrigation systems that no single owner controlled. Some of these arrangements had outlasted the governments around them. Their users were neither private owners nor agents of a distant state, yet their resources had not collapsed. Hardin, she argued, had described a pasture with no rules, which is not what most real commons were.",
-      "From hundreds of cases, successful and failed, Ostrom drew a set of design principles. Successful commons had clear boundaries, so that everyone knew who had rights to use the resource. The people bound by the rules had a say in making them. Users or their agents monitored one another, penalties for breaking the rules started small and grew with repetition, and disputes could be settled cheaply and quickly. Graduated penalties mattered because a first offence was often a mistake, and a harsh response could destroy the trust the system relied on. Outside authorities, crucially, respected the community's right to organise itself.",
-      "Ostrom did not claim that communities always succeed; her principles were drawn partly from failures, and they fit small groups who know each other better than global problems such as the atmosphere or the high seas. Nor did she reject markets or governments, insisting that no single arrangement suits every resource. Her achievement, recognised in 2009 with the Nobel prize in economics, the first awarded to a woman, was to replace a choice between two solutions with a question about institutions: what rules, made by whom, allow people to share without ruin?"
+      "Garrett Hardin's 1968 essay on the commons has been read so often as a parable about herdsmen that its actual structure is easily forgotten. Hardin asked what happens when a resource is open to all and each user captures the whole of the gain from taking more while bearing only a fraction of the cost. His answer, that users will take until the resource is ruined, followed from the assumptions with the rigour of a theorem, and it would be wrong to think that Elinor Ostrom, whose work is usually offered as its refutation, ever disputed the logic. What she disputed was the generalisation that the theorem was made to bear: that shared resources must therefore be either privatised or placed under the control of the state. The leap from 'can' to 'must', she suspected, was where the argument went astray.",
+      "The evidence she assembled was unglamorous. Alpine pastures in Switzerland and forests in Japan had been held in common for centuries, in some instances outlasting the political regimes around them; irrigation systems in Spain and the Philippines distributed scarce water among farmers who answered to no single owner. If Hardin were right, these should have collapsed long ago. They had not, and the reason was not that their users were unusually virtuous but that they had devised rules. Hardin's herdsmen inhabit a pasture without boundaries, without monitors and without any means of punishing a trespasser, which is to say a pasture that is not a commons at all but an open-access resource, a distinction that his essay blurred and that she insisted upon.",
+      "From a comparison of many such cases, successful and unsuccessful, she drew a short list of regularities. Successful arrangements specified who could use the resource and who could not; gave those bound by the rules a hand in framing them; ensured that users watched one another; imposed sanctions that began lightly and grew with repetition; and provided inexpensive means of settling quarrels. The graduated sanction is the most instructive of these, because it reflects an understanding of how cooperation fails. A first breach is often an error, and punishing it harshly would convert a lapse into a grievance and the grievance into a dispute, whereas a light penalty announces that the rule is in force without rupturing the relationship that sustains it.",
+      "It would be wrong, however, to read Ostrom's findings as showing that communities can generally be trusted with their commons. The cases she studied were, almost by definition, ones in which cooperation had endured long enough to be studied, and the failures she included are a reminder that survivorship flatters. Her regularities describe small groups whose members know one another, can watch one another and expect to deal with one another again; they offer little purchase on the atmosphere or the oceans, where these conditions do not hold. Her achievement was more modest, and more lasting. She replaced a choice between two remedies with a question about institutions: under what rules, framed by whom, and enforced how, does a resource survive its users?"
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best summarises the passage?",
+        "stem": "Which one of the following best summarises the author's view of Ostrom's contribution?",
         "proof": [
           0,
           1,
@@ -799,135 +795,135 @@
         ],
         "options": [
           {
-            "t": "Hardin proved that shared resources are always destroyed.",
-            "why": "Ostrom found many commons that had not collapsed.",
-            "trap": "Extreme wording"
-          },
-          {
-            "t": "Private property is the only reliable way to protect a resource.",
-            "why": "Ostrom showed communities can manage resources, and rejected any single answer.",
+            "t": "She showed that Hardin's analysis of open-access resources was mistaken and that communities may therefore be trusted to manage resources without outside rules.",
+            "why": "Paragraph 1 says she did not dispute the logic, and paragraph 4 cautions against concluding that communities can generally be trusted.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Swiss villagers invented the idea of common land.",
-            "why": "Swiss meadows are one example among several.",
+            "t": "She showed that community management outperforms privatisation and state control wherever users can watch one another and settle disputes cheaply.",
+            "why": "The passage lists conditions shared by successful commons, but it never compares community management with private or state ownership in those settings.",
             "trap": "Out of scope"
           },
           {
-            "t": "Ostrom showed that communities can manage shared resources under the right rules, turning Hardin's either-or into a question about institutions.",
-            "why": "Covers Hardin's claim, Ostrom's evidence, her principles and her achievement."
+            "t": "She accepted Hardin's logic but showed that his conclusion depends on the absence of rules, shifting attention to institutions that make sharing last.",
+            "why": "Paragraph 1 says she did not dispute the logic; paragraph 2 locates the gap in the absence of rules; paragraph 4 describes her achievement as a question about institutions."
+          },
+          {
+            "t": "She established principles from small communities that can be applied without modification to global problems such as the depletion of the oceans.",
+            "why": "Paragraph 4 says her regularities offer little purchase on the atmosphere or the oceans.",
+            "trap": "Distorts the passage"
           }
         ],
-        "answer": 3
+        "answer": 2
       },
       {
         "type": "inference",
-        "stem": "Ostrom's remark that Hardin 'had described a pasture with no rules' implies that:",
+        "stem": "The author's distinction between a 'commons' and an 'open-access resource' implies that:",
         "proof": [
           1
         ],
         "options": [
           {
-            "t": "Hardin's pasture could not have existed anywhere",
-            "why": "She says it is not what most real commons were, not that it is impossible.",
-            "trap": "Extreme wording"
+            "t": "Hardin's conclusion may hold for resources open to all without rules but not for those managed by a defined group.",
+            "why": "A pasture with no boundaries, monitors or sanctions is open-access; Hardin's result concerns that case, not resources whose users have devised rules."
           },
           {
-            "t": "his conclusion followed from leaving out the rules that real communities make",
-            "why": "Real commons had rules; a pasture without them is a special case."
+            "t": "resources held in common, unlike open-access ones, are protected from overuse by the rules that their users devise.",
+            "why": "The distinction says rules make survival possible, not that they guarantee it; the author notes that Ostrom's cases included failures and that survivorship flatters.",
+            "trap": "Too narrow or too broad"
           },
           {
-            "t": "real pastures are always well managed",
-            "why": "She drew lessons from failures too.",
-            "trap": "Extreme wording"
+            "t": "Hardin misjudged the incentives that lead individual herders to keep adding animals to a pasture that all may use.",
+            "why": "The author says Ostrom did not dispute the logic of those incentives (paragraph 1).",
+            "trap": "Distorts the passage"
           },
           {
-            "t": "rules are unnecessary for managing a commons",
-            "why": "Her whole argument is about rules.",
+            "t": "Hardin's remedies of privatisation and state control suit open-access resources, while Ostrom's findings suit commons.",
+            "why": "The distinction limits where Hardin's logic holds; it does not endorse privatisation or state control as the remedy for open-access resources, which the passage never assesses.",
             "trap": "Distorts the passage"
           }
         ],
-        "answer": 1
+        "answer": 0
       },
       {
         "type": "except",
-        "stem": "Which of the following is NOT one of Ostrom's design principles as the passage describes them?",
+        "stem": "According to the passage, each of the following is a regularity Ostrom found in successful arrangements EXCEPT:",
         "proof": [
           2
         ],
         "options": [
           {
-            "t": "dividing the resource into private plots",
-            "why": "That is one of Hardin's two solutions, not an Ostrom principle."
-          },
-          {
-            "t": "clear boundaries on who may use the resource",
-            "why": "Named in paragraph 3.",
+            "t": "rules specifying which people may use the resource.",
+            "why": "Paragraph 3: successful arrangements specified who could use the resource and who could not.",
             "trap": "True but not the answer"
           },
           {
-            "t": "penalties that grow with repeated breaches",
-            "why": "Named in paragraph 3.",
+            "t": "a role for those bound by the rules in framing them.",
+            "why": "Paragraph 3: those bound by the rules had a hand in framing them.",
             "trap": "True but not the answer"
           },
           {
-            "t": "cheap and quick ways to settle disputes",
-            "why": "Named in paragraph 3.",
+            "t": "penalties that begin lightly and grow with repetition.",
+            "why": "Paragraph 3: sanctions began lightly and grew with repetition.",
             "trap": "True but not the answer"
+          },
+          {
+            "t": "inspection and punishment by an authority outside the group.",
+            "why": "Paragraph 3 says users watched one another; outside inspection and punishment is never listed."
           }
         ],
-        "answer": 0
+        "answer": 3
       },
       {
-        "type": "application",
-        "stem": "Which of the following situations would Ostrom's principles most likely help with?",
+        "type": "strengthen",
+        "stem": "Which of the following, if true, would most strengthen the author's reservation about applying Ostrom's regularities to global problems?",
         "proof": [
           3
         ],
         "options": [
           {
-            "t": "Cutting greenhouse gas emissions across the whole world",
-            "why": "Her principles fit small groups better than global problems such as the atmosphere.",
+            "t": "Several of the communities Ostrom studied had adopted written rules before the resource showed any sign of depletion.",
+            "why": "This concerns when rules were adopted, not whether they work at larger scale.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "Within the communities studied, cooperation weakened sharply once membership grew large or members ceased to expect further dealings.",
+            "why": "The regularities are said to depend on small, familiar groups with repeated dealings; evidence that cooperation weakens without those conditions supports the reservation."
+          },
+          {
+            "t": "Some of the commons Ostrom studied had been supervised for decades by officials of a distant central government.",
+            "why": "This would complicate her findings about self-organisation, but says nothing about how they apply at global scale.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Setting share prices on a stock exchange",
-            "why": "Not a shared natural resource.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "Several neighbouring villages sharing a lake for fishing",
-            "why": "A small group sharing a local resource is the kind of case her principles came from."
-          },
-          {
-            "t": "Deciding who inherits a family farm",
-            "why": "A question of private ownership, not a commons.",
+            "t": "Hardin's essay remains among the most frequently cited in the social sciences, including in recent studies of fisheries.",
+            "why": "Citation counts have no bearing on whether Ostrom's regularities scale up.",
             "trap": "Out of scope"
           }
         ],
-        "answer": 2
+        "answer": 1
       }
     ],
     "recall": [
       {
-        "q": "Who described the tragedy of the commons in 1968?",
+        "q": "What, according to the author, did Ostrom dispute in Hardin's argument?",
         "options": [
-          "Elinor Ostrom",
-          "Garrett Hardin",
-          "Adam Smith",
-          "John Maynard Keynes"
-        ],
-        "answer": 1
-      },
-      {
-        "q": "What did Ostrom win in 2009?",
-        "options": [
-          "The Nobel prize in economics",
-          "The Nobel peace prize",
-          "An Olympic medal",
-          "The Booker prize"
+          "The generalisation that shared resources must be privatised or state-controlled.",
+          "The assumption that each user captures the gain from taking more.",
+          "The claim that users bear only a fraction of the cost of overuse.",
+          "The logic by which unrestricted use leads to ruin of the resource."
         ],
         "answer": 0
+      },
+      {
+        "q": "Why does the author call the graduated sanction 'the most instructive' principle?",
+        "options": [
+          "It is the only principle that appears in every successful case that she examined.",
+          "First breaches are often errors, and harshness would erode the relationship that sustains cooperation.",
+          "It permits outside authorities to take over the management of a resource when it fails.",
+          "It makes monitoring by users unnecessary once the penalties have been announced."
+        ],
+        "answer": 1
       }
     ]
   }

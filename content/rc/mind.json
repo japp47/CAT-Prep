@@ -3,41 +3,41 @@
     "id": "phil-theseus",
     "title": "The ship that was replaced",
     "genre": "philosophy",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "paras": [
-      "The ancient puzzle of the ship of Theseus goes like this. The ship in which the hero returned to Athens was kept as a memorial, and as its planks rotted they were replaced one by one, until no original timber remained. Was it still the same ship? The puzzle sharpens if we imagine that someone collected the discarded planks and assembled them into a second ship. Now there are two candidates for the title, and each has a claim: one has continuity of form and history, the other has all the original material.",
-      "Philosophers have offered many answers, but the most interesting response is to ask why we feel there must be an answer at all. We use the word 'same' for several different relations. A river is the same river although its water is entirely new each day; a statue melted down and recast as a bell is the same bronze but not the same statue. When our ordinary criteria agree, as they almost always do, we never notice that there are several of them. The ship of Theseus is unsettling because it pulls them apart.",
-      "The puzzle matters because the same pressures apply to persons. The cells of a human body are replaced at different rates, memories fade and are reshaped, and character changes over decades. If I am the same person as the child in an old photograph, what makes it so? Some philosophers point to the continuity of the body, others to chains of memory and psychological connection. Thought experiments involving duplication, in which a person is copied and both copies wake up with the same memories, are designed to show that these criteria, too, can come apart.",
-      "The British philosopher Derek Parfit drew a striking conclusion from such cases. Perhaps, he suggested, identity is not what matters. What we care about when we care about our own survival is that there will be someone psychologically continuous with us, who remembers our life and carries on our projects. Whether that someone counts as the same person may be a question with no deep answer, like the question of whether a club that disbands and later re-forms is the same club. Parfit reported that he found this view liberating: the wall between himself and others seemed less solid, and his own death less important.",
-      "Not everyone shares his relief. Critics reply that if my future self is merely a close successor, it becomes hard to explain why I should feel special concern for that person, save for my old age, or accept punishment for what I did years ago. The ship of Theseus, it turns out, carries a good deal of cargo."
+      "The puzzle attributed to Plutarch concerns a ship preserved by the Athenians in commemoration of Theseus, whose timbers, as they decayed, were replaced one at a time until, it was said, not a plank of the original remained. Philosophers disagreed whether it was still the same vessel, and Hobbes, characteristically, sharpened the case by supposing that someone had gathered the discarded planks and reassembled them. There are now two rival claimants, one retaining the form and unbroken history of the original, the other retaining its matter. The temptation is to treat the dispute as a factual one awaiting a sufficiently ingenious argument, as though the ship's identity were a hidden property that careful scrutiny might eventually disclose.",
+      "That temptation deserves resistance. The word 'same' covers a family of relations which coincide so regularly in daily life that we seldom suspect their plurality. A river retains its identity although no drop of its water persists; a statue melted into a bell leaves the bronze unchanged yet destroys the statue. In the first case we track the form and course of a process, in the second the stuff of which a thing is made, and neither practice is mistaken. Ordinarily the criteria converge and no question arises. The ship is troubling not because it exposes a gap in our knowledge but because it drives the criteria apart and compels us to say which we meant, something our usage never obliged us to decide.",
+      "The puzzle acquires more than antiquarian interest when transferred to persons, whose constituent matter is renewed at differing rates, whose memories are reconstituted rather than preserved, and whose characters alter beyond easy recognition over decades. Candidates for what secures personal identity, whether bodily continuity or chains of overlapping memory and psychological connection, can be separated by thought experiments in which a person is duplicated, so that two beings wake with identical recollections. Each criterion yields a verdict in ordinary circumstances; in extraordinary ones they yield rival verdicts, and nothing in our practice tells us which to prefer.",
+      "From such cases Derek Parfit drew a radical conclusion: that personal identity is not what matters in survival. What we value, when we hope to survive, is the continued existence of someone psychologically continuous with ourselves, who remembers our life and prosecutes our projects; whether that successor is strictly identical with us may be an empty question, no more determinate than whether a society that disbands and later re-forms is one society or two. Parfit reported this realisation as a release: the boundaries between himself and others seemed thinner, and his own death less alarming.",
+      "Critics are not so consoled. If my future self is merely a sufficiently close successor, it becomes difficult to explain why I should feel for that person the peculiar concern I now feel for my own old age, or why I should be held answerable for what a predecessor did decades ago. Parfit's reply, that such concern can survive the loss of its metaphysical foundation, being rooted in connection rather than identity, is ingenious but not obviously sufficient, for it leaves unexplained why degrees of connection should carry the moral weight that identity was supposed to supply. The ship, it seems, carries a heavier cargo than its builders intended."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best states the main idea of the passage?",
+        "stem": "Which one of the following best expresses the central argument of the passage?",
         "proof": [
           1,
           2,
-          3
+          4
         ],
         "options": [
           {
-            "t": "A puzzle about objects reveals that 'sameness' combines several criteria, which raises hard questions about personal identity.",
-            "why": "Paragraph 2 draws the lesson about several criteria, and paragraphs 3 to 5 apply it to persons."
+            "t": "Puzzles of identity expose the plurality of our criteria for sameness, and applied to persons that plurality strains the concern and responsibility we attach to the self.",
+            "why": "Paragraph 2 establishes the plurality of criteria; paragraphs 3 to 5 apply it to persons and trace the strain on special concern and answerability."
           },
           {
-            "t": "The ship rebuilt from the original planks is the real ship of Theseus.",
-            "why": "The passage deliberately does not decide between the two ships.",
+            "t": "The ship of Theseus is best resolved by treating the reassembled vessel as the original, since it alone preserves all of the original matter, and matter is what identity consists in.",
+            "why": "The passage declines to resolve the puzzle, and treats the demand for a single answer as the mistake (paragraphs 1 and 2).",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Parfit proved that personal identity does not exist.",
-            "why": "Parfit 'suggested' identity may not be what matters. 'Proved' and 'does not exist' go far beyond that.",
+            "t": "Parfit proved that personal identity is an empty notion, and his critics have since shown that this proof cannot be reconciled with any moral practice that we now follow.",
+            "why": "Overstated: Parfit's view is that identity is not what matters, and the critics' point is that his reply is 'not obviously sufficient' (paragraph 5).",
             "trap": "Extreme wording"
           },
           {
-            "t": "Because human cells are replaced, the body cannot ground personal identity.",
-            "why": "Cell replacement is one detail in paragraph 3. The passage does not reach this conclusion.",
+            "t": "Parfit's view that survival does not require identity is liberating but unpersuasive, because it cannot explain either our special concern for the future self or our answerability for the past.",
+            "why": "Too narrow: this covers paragraphs 4 and 5 only and ignores the argument about criteria that carries the passage.",
             "trap": "Too narrow or too broad"
           }
         ],
@@ -45,112 +45,142 @@
       },
       {
         "type": "structure",
-        "stem": "The examples of the river and the bell in the second paragraph serve to:",
+        "stem": "The author introduces the examples of the river and the bell chiefly in order to:",
         "proof": [
           1
         ],
         "options": [
           {
-            "t": "prove that physical objects have no stable identity",
-            "why": "They show different senses of 'same', not that identity is unstable.",
-            "trap": "Extreme wording"
-          },
-          {
-            "t": "introduce the problem of personal identity",
-            "why": "Personal identity is introduced only in paragraph 3.",
+            "t": "demonstrate that continuity of matter is a poorer criterion of identity than continuity of form.",
+            "why": "The bronze example shows matter persisting where the statue does not; neither criterion is ranked above the other.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "show that 'same' can name different relations, which normally coincide",
-            "why": "The river keeps its identity despite new water; the bronze survives as the same material but not the same statue. Two criteria, usually in agreement."
+            "t": "show that different criteria of sameness govern different kinds of things, each legitimately within its own domain.",
+            "why": "Paragraph 2: in the river we track a process, in the bell the stuff, and 'neither practice is mistaken'."
           },
           {
-            "t": "suggest that sameness of material matters more than sameness of form",
-            "why": "The bell example shows the two criteria coming apart, not one outranking the other.",
+            "t": "suggest that the ship puzzle can be solved by attending more closely to the ordinary use of the word 'same'.",
+            "why": "The author says usage never obliged us to decide, so closer attention to usage cannot settle the matter.",
             "trap": "Distorts the passage"
+          },
+          {
+            "t": "illustrate why persons, unlike rivers and statues, cannot be said to persist through change.",
+            "why": "The persons passage (paragraph 3) says criteria can diverge, not that persons fail to persist.",
+            "trap": "Out of scope"
           }
         ],
-        "answer": 2
+        "answer": 1
       },
       {
         "type": "inference",
-        "stem": "It can be inferred that Parfit would most likely agree that:",
+        "stem": "It can be inferred that the author regards the view that the ship's identity is 'a hidden property' as:",
         "proof": [
-          3
+          0,
+          1
         ],
         "options": [
           {
-            "t": "a person who is duplicated dies, and both copies are new people",
-            "why": "Parfit treats such questions as possibly having no deep answer, not as settled in this way.",
+            "t": "defensible, though it still awaits an argument ingenious enough to bring the hidden property fully to light.",
+            "why": "The opening paragraph calls this a temptation and the second says it deserves resistance.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "concern for one's own future is irrational and should be abandoned",
-            "why": "He says his death seemed 'less important', not that concern for the future is irrational.",
-            "trap": "Extreme wording"
+            "t": "mistaken, since the puzzle shows an indeterminacy in our concept of sameness, not a gap in our knowledge.",
+            "why": "Paragraph 2: the ship 'exposes' no gap in knowledge; it drives the criteria apart and forces a choice usage never required."
           },
           {
-            "t": "memory matters less to survival than the continuity of the body",
-            "why": "Parfit stresses psychological continuity, which includes memory.",
+            "t": "refuted by thought experiments in which a person is duplicated and the two resulting beings wake with identical memories.",
+            "why": "Duplication cases are used against persons' criteria; the passage does not say they refute the hidden-property view.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "what matters in survival could be kept even if the question of strict identity has no clear answer",
-            "why": "Paragraph 4: what matters is psychological continuity; whether it counts as identity 'may be a question with no deep answer'."
+            "t": "harmless in practice, since our ordinary criteria for sameness almost always agree with one another.",
+            "why": "True of ordinary cases (paragraph 2) but it does not state the author's regard for the view.",
+            "trap": "True but not the answer"
           }
         ],
-        "answer": 3
+        "answer": 1
       },
       {
         "type": "except",
-        "stem": "The critics in the final paragraph say Parfit's view makes it hard to explain each of the following EXCEPT:",
+        "stem": "Each of the following is presented as a difficulty for Parfit's view EXCEPT that it:",
         "proof": [
           4
         ],
         "options": [
           {
-            "t": "why a person should save money for old age",
-            "why": "Named by the critics.",
+            "t": "leaves obscure why concern for one's own old age should be special.",
+            "why": "Paragraph 5: it is hard to explain the peculiar concern we feel for our own old age.",
             "trap": "True but not the answer"
           },
           {
-            "t": "why someone should accept punishment for past actions",
-            "why": "Named by the critics.",
+            "t": "weakens the grounds on which a person is held answerable for earlier conduct.",
+            "why": "Paragraph 5: critics doubt why I should answer for what a predecessor did decades ago.",
             "trap": "True but not the answer"
           },
           {
-            "t": "why a person should have special concern for their future self",
-            "why": "Named by the critics.",
+            "t": "does not explain why degrees of connection should bear moral weight.",
+            "why": "Paragraph 5: Parfit's reply leaves this unexplained.",
             "trap": "True but not the answer"
           },
           {
-            "t": "why a club that re-forms might or might not be the same club",
-            "why": "The club is Parfit's own analogy in paragraph 4, not one of the critics' objections."
+            "t": "cannot accommodate the renewal of the body's matter over time.",
+            "why": "Renewal of bodily matter is cited in paragraph 3 as a pressure on identity; it is not a criticism of Parfit."
           }
         ],
         "answer": 3
+      },
+      {
+        "type": "inference",
+        "stem": "The final sentence, 'The ship, it seems, carries a heavier cargo than its builders intended', most nearly suggests that:",
+        "proof": [
+          4
+        ],
+        "options": [
+          {
+            "t": "the ship was constructed for a purpose which its builders later abandoned in favour of a memorial.",
+            "why": "A literal reading; the sentence is figurative and concerns what the puzzle now carries.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "an apparently antiquarian puzzle about objects bears on moral questions that its originators did not foresee.",
+            "why": "The 'cargo' is the moral weight (concern, answerability) the persons case adds to a puzzle about timbers."
+          },
+          {
+            "t": "Parfit's conclusions, though liberating, were meant to carry moral consequences which his critics deny.",
+            "why": "The critics say the consequences follow and are troubling; the sentence does not concern Parfit's intentions.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "the puzzle has attracted so many rival interpretations that it can no longer be resolved by argument.",
+            "why": "The passage's difficulty is moral weight, not the number of interpretations.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 1
       }
     ],
     "recall": [
       {
-        "q": "What happened to the discarded planks in the sharper version of the puzzle?",
+        "q": "According to the passage, who sharpened the puzzle by supposing that the discarded planks had been reassembled?",
         "options": [
-          "They were burned",
-          "They were assembled into a second ship",
-          "They were kept in a museum",
-          "They were sold"
-        ],
-        "answer": 1
-      },
-      {
-        "q": "How did Parfit say he found his view?",
-        "options": [
-          "Frightening",
-          "Puzzling",
-          "Liberating",
-          "Irrelevant"
+          "Plutarch",
+          "Parfit",
+          "Hobbes",
+          "Aristotle"
         ],
         "answer": 2
+      },
+      {
+        "q": "In the example of the river, what persists although no drop of its water does?",
+        "options": [
+          "The form and course of a process.",
+          "The matter of which it is composed.",
+          "The memory of its earlier channels.",
+          "The name that the Athenians gave it."
+        ],
+        "answer": 0
       }
     ]
   },
@@ -160,126 +190,156 @@
     "genre": "philosophy",
     "difficulty": "hard",
     "paras": [
-      "Two drivers have a drink too many at the same party and drive home along similar roads. Both are equally careless; both drift across the line at the same bend. On one road a child steps out, and on the other the road is empty. The first driver kills the child and the second arrives home without incident. Most of us judge the first driver far more harshly, and so does the law. Yet the only difference between them is something neither controlled.",
-      "This is the problem that the philosophers Bernard Williams and Thomas Nagel named moral luck. It arises from a collision between two convictions. One is that we should be judged only for what is within our control; it seems unfair to blame someone for the arrival of a child on a dark road. The other is our settled practice of judging people by what they actually do and bring about, which is shaped at every turn by factors beyond their control. The two drivers are only the most vivid case.",
-      "Nagel distinguished several kinds of luck. There is luck in outcomes, as with the drivers. There is luck in circumstances: many people who lived quiet, decent lives would have behaved badly had they been born into a time and place that tested them, and many who are condemned would have been blameless in easier conditions. And there is luck in constitution, the temperament and dispositions we did not choose. Pressed far enough, the demand for control seems to leave very little that anyone is responsible for at all.",
-      "One response is to insist that the drivers are equally blameworthy and that our harsher reaction to the first is a mistake, perhaps an understandable one, driven by grief and the need to hold someone accountable for a death. On this view the law's distinction between causing death and mere dangerous driving is a concession to feeling rather than a principle. Another response accepts moral luck as a real feature of moral life: we are not pure wills hovering above the world, and what we answer for includes the way our actions turn out.",
-      "Williams favoured something like the second view, pointing to what he called agent-regret, the distinctive feeling of someone who has caused harm without fault. A lorry driver who kills a child who ran into the road may be told by everyone that it was not his fault, and yet we would think less of him if he felt nothing more than a bystander would. The existence of that feeling, Williams thought, shows that our relationship to our own actions cannot be captured by the language of control alone."
+      "Consider two drivers who, after the same convivial evening, make the same imprudent decision to drive home, and who are equally careless at the same bend. On one road a child steps out; on the other, nobody does. The first driver is a killer and the second merely a fortunate offender; the first will be censured, punished and perhaps haunted for life, while the second sleeps untroubled. Our reactions, and the law's, register the difference with confidence. Yet the sole difference between the two lies in something neither driver governed, and this is precisely what a venerable principle of morality forbids us to treat as relevant.",
+      "The principle, to which Kant gave its most austere form, holds that moral assessment applies only to what lies within an agent's control. Its intuitive appeal is deep: to blame a person for events that fortune alone determined seems no more defensible than to blame him for his height. But the principle collides with a settled practice of judging agents by what they do and bring about, and what they do and bring about is shaped at every point by contingencies beyond their command. Bernard Williams and Thomas Nagel, in companion essays of 1976, named the resulting tension moral luck.",
+      "Among the varieties Nagel distinguishes are luck in outcomes, as in the case of the drivers; luck in circumstances, since many of the blameless would have disgraced themselves had history tested them, and many of the condemned would have passed unnoticed in gentler times; and luck in constitution, the temperament and dispositions that no one elects. The unsettling feature of such a list is its tendency to expand. Pressed to its limit, the demand for control dissolves the agent into a series of antecedent causes, leaving little for which anyone could be held answerable, so that the principle which was meant to protect responsibility threatens to abolish it.",
+      "Two responses are available. The first, rationalist in spirit, holds that the drivers are equally culpable and that our harsher reaction to the first is an error: understandable as the product of grief and of the need to find someone answerable for a death, but indefensible as a judgement of character. The law's distinction between causing death and merely endangering life then appears a concession to sentiment and not a principle. The second response accepts moral luck as a genuine feature of our condition. We are not pure wills hovering above the world, and what we answer for includes the way our deeds turn out.",
+      "Williams inclined to the latter, and pointed to agent-regret, the distinctive sentiment of one who has caused harm without fault. The lorry driver who, through no negligence, runs over a child may be assured by everyone that he is blameless; we would nonetheless think less of him if he felt no more than a bystander would. That reaction is not a mistake about blame, since by hypothesis nobody blames him. It indicates, rather, that our relation to our actions cannot be exhausted by the vocabulary of control. Whether this vindicates moral luck, or merely shows that regret and blame are separable, is a question the example cannot settle."
     ],
     "questions": [
       {
         "type": "main",
         "stem": "The passage is primarily concerned with:",
         "proof": [
+          0,
           1,
           3
         ],
         "options": [
           {
-            "t": "arguing that drink-driving laws should be made more severe",
-            "why": "The law appears only as an illustration of how we judge outcomes.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "showing that Williams and Nagel disagreed about whether moral luck exists",
-            "why": "They are presented as jointly naming the problem; no disagreement between them is described.",
+            "t": "arguing that the law's distinction between causing death and merely endangering life should be abolished, as a concession to sentiment without any basis in principle.",
+            "why": "This is the first response's implication in paragraph 4, reported but not endorsed by the author.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "presenting a conflict between the idea that we are responsible only for what we control and the way we actually judge people, along with two responses to it",
-            "why": "Paragraph 2 states the conflict, paragraph 3 extends it, and paragraphs 4 and 5 give the two responses."
+            "t": "showing that the principle of control is false, because applied consistently it would abolish responsibility and with it every distinction between agents.",
+            "why": "Paragraph 3 says the principle 'threatens' to abolish responsibility; the author does not claim to have refuted it.",
+            "trap": "Extreme wording"
           },
           {
-            "t": "proving that no one is responsible for anything",
-            "why": "Paragraph 3 says the demand for control 'seems' to leave little responsibility, as a problem to be answered, not a conclusion.",
+            "t": "defending Williams's account of agent-regret against the charge, urged by rationalists, that it confuses regret with blame.",
+            "why": "Too narrow: this concerns paragraph 5 only, and the author leaves the question open.",
+            "trap": "Too narrow or too broad"
+          },
+          {
+            "t": "examining a conflict between the principle that responsibility requires control and the practice of judging agents by outcomes, and weighing the responses.",
+            "why": "Paragraphs 1 and 2 set up the conflict; 3 to 5 develop its scope and the two responses."
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "type": "inference",
+        "stem": "Which one of the following can be inferred about 'luck in circumstances'?",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "It affects only those who are later condemned, and never those who lead blameless lives.",
+            "why": "The paragraph applies it to both the blameless and the condemned.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "It is the form of luck most easily reconciled with the principle that responsibility requires control.",
+            "why": "Nothing is said about ease of reconciliation; circumstances lie outside control, as the principle's critics stress.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "A person's blameless record may owe more to untested conditions than to settled virtue.",
+            "why": "Paragraph 3: many of the blameless would have disgraced themselves had history tested them."
+          },
+          {
+            "t": "It is the least significant of the varieties of luck, since agents are largely responsible for their circumstances.",
+            "why": "Circumstances are presented as beyond the agent's election, not as chosen.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 2
+      },
+      {
+        "type": "structure",
+        "stem": "The example of the lorry driver is introduced in order to:",
+        "proof": [
+          4
+        ],
+        "options": [
+          {
+            "t": "prove that agents who cause harm without any negligence are nonetheless properly subject to legal punishment.",
+            "why": "By hypothesis nobody blames him; the example concerns feeling, not punishment.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "suggest that a sentiment surviving the withdrawal of blame shows a relation to our actions that control cannot explain.",
+            "why": "Paragraph 5: nobody blames him, yet we expect more than bystander feeling, so the relation exceeds the 'vocabulary of control'."
+          },
+          {
+            "t": "illustrate that the rationalist response misdescribes the way in which the law treats negligent drivers who kill.",
+            "why": "The law's treatment is not at issue in paragraph 5.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "show that regret and blame are the very same sentiment under two different names, as the rationalist would have us believe.",
+            "why": "The author suggests the opposite possibility: that regret and blame are separable.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 1
+      },
+      {
+        "type": "application",
+        "stem": "A defender of the first response described in the fourth paragraph would most probably maintain that:",
+        "proof": [
+          3
+        ],
+        "options": [
+          {
+            "t": "the strength of public anger at a killing is a reliable index of the offender's character.",
+            "why": "The first response treats that anger as an understandable error, not as an index of character.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "the law should punish careless driving only when the carelessness issues in actual harm.",
+            "why": "This is the practice the first response regards as a concession to sentiment.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "a driver who kills through a lapse that another commits harmlessly deserves no more condemnation.",
+            "why": "The first response holds that the drivers are equally culpable."
+          },
+          {
+            "t": "grief over a death is an improper response which ought to be suppressed in the courts.",
+            "why": "The first response calls grief understandable; it does not call for suppressing it.",
             "trap": "Extreme wording"
           }
         ],
         "answer": 2
       },
       {
-        "type": "inference",
-        "stem": "Which of the following can be inferred about 'luck in circumstances'?",
-        "proof": [
-          2
-        ],
-        "options": [
-          {
-            "t": "It applies only to people who commit crimes.",
-            "why": "It applies to the decent as well as the condemned.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "It implies that some people's good records may owe more to the times they lived in than to their characters.",
-            "why": "Paragraph 3: many decent people 'would have behaved badly' in a testing time and place."
-          },
-          {
-            "t": "It shows that temperament is chosen rather than inherited.",
-            "why": "Temperament belongs to luck in constitution, which the passage says we did not choose.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "It means that people living in difficult times cannot be blamed for anything.",
-            "why": "The passage raises the worry; it does not conclude that no one can be blamed.",
-            "trap": "Extreme wording"
-          }
-        ],
-        "answer": 1
-      },
-      {
-        "type": "structure",
-        "stem": "The example of the lorry driver in the final paragraph is used to:",
+        "type": "strengthen",
+        "stem": "Which of the following, if true, would most strengthen the final paragraph's suggestion that regret and blame may be separable?",
         "proof": [
           4
         ],
         "options": [
           {
-            "t": "show that the law treats accidents too leniently",
-            "why": "The law's treatment of accidents is not discussed here.",
+            "t": "Observers who agree that a driver is wholly blameless still regard his sorrow as fitting, not as a confusion.",
+            "why": "Fitting regret without any blame is exactly the separation the author raises."
+          },
+          {
+            "t": "Drivers who are blamed by others typically feel regret in proportion to the amount of blame that they receive from them.",
+            "why": "This ties regret to blame and so weakens the suggestion of separability.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Courts treat negligent and non-negligent drivers identically whenever a death results from an accident on the road.",
+            "why": "This concerns legal treatment and does not bear on the relation between regret and blame.",
             "trap": "Out of scope"
           },
           {
-            "t": "illustrate luck in constitution",
-            "why": "The driver illustrates agent-regret about an outcome, not temperament.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "argue that bystanders should feel the same as those who cause harm",
-            "why": "The point is the reverse: we expect the driver to feel more than a bystander.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "support the view that people can properly feel answerable for harm they caused without fault",
-            "why": "Williams uses the driver's fitting regret to show responsibility is not only about control."
-          }
-        ],
-        "answer": 3
-      },
-      {
-        "type": "application",
-        "stem": "A person who holds the first response in the fourth paragraph would most likely say that:",
-        "proof": [
-          3
-        ],
-        "options": [
-          {
-            "t": "the two drivers deserve the same blame, whatever the outcome",
-            "why": "The first response insists the drivers are 'equally blameworthy'."
-          },
-          {
-            "t": "the first driver deserves more blame because a child died",
-            "why": "That is the ordinary reaction the first response calls a mistake.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "neither driver deserves any blame, since luck decided everything",
-            "why": "The first response blames both equally; it does not excuse them.",
-            "trap": "Extreme wording"
-          },
-          {
-            "t": "the law's distinction between the drivers rests on sound principle",
-            "why": "The first response calls that distinction 'a concession to feeling rather than a principle'.",
-            "trap": "Distorts the passage"
+            "t": "Most people judge the two careless drivers of the opening example to be equally blameworthy, whatever the outcome.",
+            "why": "That bears on the first response in paragraph 4, not on the separability of regret and blame.",
+            "trap": "Out of scope"
           }
         ],
         "answer": 0
@@ -287,22 +347,22 @@
     ],
     "recall": [
       {
-        "q": "Which two philosophers named the problem of moral luck?",
+        "q": "Which two philosophers named the tension 'moral luck'?",
         "options": [
-          "Derek Parfit and Bernard Williams",
-          "Thomas Nagel and John Rawls",
-          "Bernard Williams and Thomas Nagel",
-          "Immanuel Kant and David Hume"
+          "Immanuel Kant and Bernard Williams",
+          "Thomas Nagel and Derek Parfit",
+          "Immanuel Kant and Thomas Nagel",
+          "Bernard Williams and Thomas Nagel"
         ],
-        "answer": 2
+        "answer": 3
       },
       {
-        "q": "What did Williams call the feeling of someone who caused harm without fault?",
+        "q": "Why does the author say the lorry driver's regret is not a mistake about blame?",
         "options": [
-          "Agent-regret",
-          "Moral grief",
-          "Bystander guilt",
-          "Outcome shame"
+          "Nobody blames him, yet we expect him to feel more than a bystander would.",
+          "He is blamed by everyone, yet he feels none of the sorrow expected.",
+          "The law blames him, though the public does not.",
+          "He is blameless, so any sorrow he feels is an error."
         ],
         "answer": 0
       }
@@ -314,16 +374,16 @@
     "genre": "philosophy",
     "difficulty": "medium",
     "paras": [
-      "Most of what any of us believes about the world we have not checked for ourselves. I believe that the earth orbits the sun, that smoking causes cancer and that a city I have never visited exists, but I could not produce the evidence for any of these if asked. I rely on testimony: on teachers, textbooks, doctors and the long chain of people who stand behind them. Philosophers once treated this dependence as a weakness, a shortcut that the truly rational person would avoid by thinking everything through alone.",
-      "That ideal of intellectual self-sufficiency cannot survive contact with modern knowledge. No single person can master the evidence for climate science, vaccine safety and the structure of the atom. The division of cognitive labour is as essential to science as the division of physical labour is to industry. To refuse to trust experts is not to become more rational; it is simply to swap the judgment of specialists for the judgment of whoever one happens to trust instead, usually without noticing the swap.",
-      "This does not make trust blind. The problem for a layperson is that the usual way of assessing a claim, examining the evidence, is unavailable. What remains are indirect signs. Does the expert's field have a record of successful prediction? Is there broad agreement among independent specialists, or only among people with a shared interest? Does the expert have a stake in a particular answer? Is the claim being made inside the expert's field, or is a physicist pronouncing on economics? These questions require no technical knowledge, yet they separate reasonable trust from credulity.",
-      "Expertise also fails in predictable ways. Specialists tend to be most reliable on questions that resemble cases they have seen many times and least reliable when the world changes in ways their training did not anticipate. A field can also be captured by its own fashions, rewarding agreement and punishing dissent. Healthy institutions build in ways of noticing this: peer review, replication, open publication of data and the protection of awkward critics.",
-      "The right attitude, then, is neither deference nor suspicion but something more demanding: calibrated trust, matched to the evidence of reliability that a non-specialist can actually observe. It is harder to Practice than either extreme, which may be why both remain so popular."
+      "A moment's reflection discloses how little of what we believe we have verified for ourselves. That the earth orbits the sun, that tobacco promotes cancer, that a city I have never visited exists: none of these could I defend by producing the evidence, and in each I rely on testimony, on teachers, textbooks, physicians and the long chain of persons behind them. Philosophers in the empiricist tradition were inclined to regard such reliance as an intellectual concession, tolerable in the child but unworthy of the mature mind, which ought to resolve to believe nothing it has not examined. The ideal is noble; it is also, in the conditions of modern knowledge, unattainable.",
+      "No individual could master the evidence for climate science, the safety of vaccines and the structure of the atom, any more than a single artisan could manufacture a computer. The division of cognitive labour is as indispensable to inquiry as the division of manual labour is to industry. Hence the person who disdains experts does not thereby become more rational; he merely exchanges the judgement of identifiable specialists for that of whoever he happens to find congenial, and he does so, as a rule, without registering the exchange. Self-reliance in belief is, for most questions, a fiction, and an expensive one.",
+      "Yet it does not follow that trust should be unconditional. The layperson's predicament is that the ordinary method of appraising a claim, scrutinising its evidence, is the very one denied to him, and he must therefore rely on indirect indicators. Has the field a record of predictive success? Is there agreement among specialists who are independent of one another, or merely among those who share an interest? Does the speaker stand to gain from a particular conclusion? Is the claim made within the speaker's competence, or is a physicist pronouncing on monetary policy? These questions demand no technical training, yet they distinguish reasonable trust from credulity.",
+      "Indicators of this kind are fallible, because expertise itself fails in patterned ways. Specialists are most dependable on questions resembling those they have often encountered, and least dependable when circumstances change in ways their training did not anticipate; and a discipline can be captured by its own orthodoxies, rewarding conformity and penalising dissent. Healthy institutions anticipate these defects with peer review, replication, the publication of data and the shielding of awkward critics, devices which, notably, work by making experts answerable to one another and not to the public at large.",
+      "The appropriate attitude is thus neither deference nor suspicion but something more exacting: calibrated trust, proportioned to such evidence of reliability as a non-specialist can actually observe. It is harder to practise than either extreme, which may explain why both remain popular. To follow neither, a layperson must do the unglamorous work of asking, of each claim, who is speaking, to whom the speaker answers, and what he would lose by being wrong."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best expresses the main idea of the passage?",
+        "stem": "Which one of the following best expresses the main point of the passage?",
         "proof": [
           1,
           2,
@@ -331,23 +391,23 @@
         ],
         "options": [
           {
-            "t": "Laypeople should accept whatever experts say, since they cannot check the evidence themselves.",
-            "why": "Paragraph 3 says trust is not blind, and paragraph 5 rejects simple deference.",
+            "t": "Because laypersons cannot examine the evidence directly, they are justified in deferring to specialists on every question within the specialists' fields.",
+            "why": "The author rejects unconditional trust and recommends neither deference nor suspicion (paragraphs 3 and 5).",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "Intellectual self-sufficiency remains the proper ideal of belief, although modern knowledge has made it hard to attain in practice.",
+            "why": "The author calls self-reliance in belief 'a fiction' for most questions, not an ideal merely hard to reach.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Expert opinion is unreliable because specialists are captured by fashion.",
-            "why": "Capture by fashion is one risk among several, and the passage argues that trust is still rational.",
-            "trap": "Half right, half wrong"
+            "t": "Experts fail in predictable ways, so laypersons ought to treat specialist consensus with habitual suspicion.",
+            "why": "Paragraph 5 rejects suspicion as it rejects deference.",
+            "trap": "Extreme wording"
           },
           {
-            "t": "Philosophers were right to treat reliance on testimony as a weakness.",
-            "why": "Paragraph 2 says that ideal 'cannot survive contact with modern knowledge'.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "Depending on experts is unavoidable and rational, provided trust is matched to signs of reliability that laypeople can observe.",
-            "why": "This joins paragraph 2 (dependence is unavoidable) with paragraphs 3 and 5 (calibrated trust)."
+            "t": "Reliance on experts is unavoidable and rational, provided it is calibrated to evidence of reliability a non-specialist can assess.",
+            "why": "Paragraphs 2 to 4 show reliance is unavoidable and fallible; paragraph 5 draws the conclusion of calibrated trust."
           }
         ],
         "answer": 3
@@ -360,106 +420,135 @@
         ],
         "options": [
           {
-            "t": "becomes more rational than someone who trusts them",
-            "why": "Paragraph 2 denies exactly this.",
+            "t": "acquires a more reliable method of forming beliefs, at the cost of holding fewer of them.",
+            "why": "The author says he does not thereby become more rational.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "usually ends up trusting someone else's judgment without realising it",
-            "why": "Paragraph 2: refusing to trust experts swaps their judgment for someone else's, 'usually without noticing the swap'."
-          },
-          {
-            "t": "is more likely to discover new scientific truths",
-            "why": "Discovery is never discussed.",
+            "t": "acts mainly from distrust of the evidence of predictive success that a field can offer.",
+            "why": "No motive of this kind is attributed to him.",
             "trap": "Out of scope"
           },
           {
-            "t": "is protected against being misled",
-            "why": "The passage implies the opposite: such a person is misled without noticing.",
-            "trap": "Distorts the passage"
-          }
-        ],
-        "answer": 1
-      },
-      {
-        "type": "application",
-        "stem": "By the tests in the third paragraph, which claim should a layperson treat with the most caution?",
-        "proof": [
-          2
-        ],
-        "options": [
-          {
-            "t": "A finding on which many independent research groups agree",
-            "why": "Broad independent agreement is a sign of reliability.",
-            "trap": "Distorts the passage"
+            "t": "typically ends by trusting other authorities, often without recognising that he has done so.",
+            "why": "Paragraph 2: he exchanges specialists' judgement for that of whoever he finds congenial, 'without registering the exchange'."
           },
           {
-            "t": "A weather service's forecast, given its long record of accurate predictions",
-            "why": "A record of successful prediction is a sign of reliability.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "A famous chemist's confident forecast about next year's stock market",
-            "why": "The claim falls outside the expert's field, which the passage singles out as a warning sign."
-          },
-          {
-            "t": "A doctor's advice on a common condition she treats every day",
-            "why": "Familiar cases inside the expert's field are where specialists are most reliable.",
+            "t": "can usually verify the specialists' claims by means of the evidence available to him.",
+            "why": "The passage says no individual could master that evidence.",
             "trap": "Distorts the passage"
           }
         ],
         "answer": 2
       },
       {
-        "type": "detail",
-        "stem": "Which of the following does the author present as a safeguard used by healthy institutions?",
+        "type": "application",
+        "stem": "By the tests described in the third paragraph, which of the following claims should a layperson treat with the most caution?",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "A distinguished chemist's confident forecast of next year's inflation rate.",
+            "why": "The claim lies outside the speaker's field, as with a physicist pronouncing on monetary policy."
+          },
+          {
+            "t": "An agreement on a drug's safety reached by laboratories working independently of one another in several countries.",
+            "why": "Independent agreement is one of the marks of reasonable trust.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "A weather service's seasonal forecast, issued by an agency with a long record of successful prediction.",
+            "why": "A record of predictive success is another mark of reasonable trust.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "A structural engineer's judgement that a bridge is sound, given after inspecting many comparable structures.",
+            "why": "The judgement is within the engineer's competence and rests on relevant experience.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 0
+      },
+      {
+        "type": "except",
+        "stem": "The passage gives each of the following as a reason for caution about an expert's claim EXCEPT:",
         "proof": [
           3
         ],
         "options": [
           {
-            "t": "Protecting critics who raise awkward objections",
-            "why": "Listed in paragraph 4 with peer review, replication and open data."
+            "t": "unreliability when circumstances change in ways that the specialist's training did not anticipate.",
+            "why": "Named in paragraph 4.",
+            "trap": "True but not the answer"
           },
           {
-            "t": "Requiring experts to agree before they publish",
-            "why": "Rewarding agreement is described as a failure, not a safeguard.",
-            "trap": "Distorts the passage"
+            "t": "reluctance among specialists to publish the data on which their conclusions rest.",
+            "why": "Publication of data is listed as a safeguard in paragraph 4; its absence is not named as a failure."
           },
           {
-            "t": "Letting laypeople review technical evidence",
-            "why": "The passage says this route is unavailable to laypeople.",
+            "t": "capture of a whole discipline by orthodoxies that reward conformity and penalise dissent.",
+            "why": "Named in paragraph 4.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "pronouncement by a specialist on matters that lie outside his own field of competence.",
+            "why": "Paragraph 3 gives the physicist pronouncing on monetary policy as an example.",
+            "trap": "True but not the answer"
+          }
+        ],
+        "answer": 1
+      },
+      {
+        "type": "inference",
+        "stem": "Which of the following can be inferred from the fourth paragraph?",
+        "proof": [
+          3
+        ],
+        "options": [
+          {
+            "t": "Laypersons should require that experts submit their conclusions to public vote before they are accepted.",
+            "why": "No such proposal is made.",
             "trap": "Out of scope"
           },
           {
-            "t": "Limiting experts to questions they have seen before",
-            "why": "Paragraph 4 notes experts are most reliable on familiar questions, but proposes no such limit.",
+            "t": "The safeguards named work chiefly within the expert community, not by direct scrutiny from laypersons.",
+            "why": "The paragraph notes they make experts 'answerable to one another and not to the public at large'."
+          },
+          {
+            "t": "Peer review and replication have eliminated the tendency of disciplines to penalise dissent.",
+            "why": "The passage says only that healthy institutions try to anticipate such defects.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "Specialists are most dependable on novel questions, because these draw on the whole of their training.",
+            "why": "Reversal: they are least dependable when circumstances change.",
             "trap": "Distorts the passage"
           }
         ],
-        "answer": 0
+        "answer": 1
       }
     ],
     "recall": [
       {
         "q": "To what does the author compare the division of cognitive labour?",
         "options": [
-          "A chain of command",
-          "A market",
-          "The division of physical labour in industry",
-          "A library"
+          "The division of the law into civil and criminal branches.",
+          "The division of manual labour in industry.",
+          "The specialisation of the artisan who makes a whole machine.",
+          "The separation of teachers from their students."
         ],
-        "answer": 2
+        "answer": 1
       },
       {
-        "q": "What attitude does the author recommend?",
+        "q": "Why, according to the author, must a layperson rely on indirect indicators of reliability?",
         "options": [
-          "Complete deference",
-          "Constant suspicion",
-          "Self-sufficiency",
-          "Calibrated trust"
+          "Experts conceal their evidence from the public.",
+          "Indirect indicators are more accurate than direct evidence.",
+          "The ordinary method of examining the evidence is closed to him.",
+          "Specialists disagree on nearly every question they study."
         ],
-        "answer": 3
+        "answer": 2
       }
     ]
   },
@@ -467,74 +556,75 @@
     "id": "psy-planning",
     "title": "Why projects run late",
     "genre": "psychology",
-    "difficulty": "easy",
+    "difficulty": "medium",
     "paras": [
-      "Ask people how long a task will take and they will usually give an answer that is too short. Students underestimate how long their essays will take, homeowners underestimate the cost of renovations, and governments underestimate the cost of bridges and railways, often by staggering margins. The psychologists Daniel Kahneman and Amos Tversky called this the planning fallacy: the tendency to predict that one's own plans will go better than similar plans have gone in the past.",
-      "The puzzle is that people know the past perfectly well. A student who has finished every essay late will still predict that the next one will be done early. Asked about other people's projects, the same student is far more realistic. The difference seems to lie in how predictions are made. When we think about our own task, we imagine the steps needed to complete it, a story in which each step goes roughly to plan. We rarely imagine the illness, the missing file or the unexpected request that derailed every previous attempt, because each of those was a different surprise.",
-      "Kahneman described this as taking the inside view. The alternative, the outside view, ignores the details of the case and asks a simpler question: how long have projects of this kind usually taken? A builder planning a kitchen does better by looking at how long the last twenty kitchens took than by listing the tasks for this one. The outside view feels less informative, because it throws away everything special about the case, but it is usually more accurate for exactly that reason.",
-      "Optimism is not the only force at work. In organisations, a realistic estimate can kill a project before it starts, so those who want the project to go ahead have reasons to present the rosy version. Once work has begun and money has been spent, it is hard to abandon even a project that is clearly failing. The planning fallacy therefore has an institutional cousin, in which errors of individual judgment are reinforced by the incentives of the people around them.",
-      "Remedies exist, though none is popular. Reference-class forecasting, which builds the outside view into formal budgets, has been adopted by some governments for large infrastructure. Imagining in advance that the project has failed and asking why, an exercise called a premortem, helps teams notice risks they would rather not discuss. The simplest advice is the hardest to follow: when your plan says three weeks, look at how long the last plan took."
+      "Invited to forecast the duration of a task, people characteristically err on the side of brevity. Students underestimate the time their dissertations will consume, householders the expense of renovation, and governments the cost of bridges and railways, sometimes by multiples. Daniel Kahneman and Amos Tversky christened the tendency the planning fallacy: the disposition to predict that one's own undertakings will fare better than comparable undertakings have fared in the past. In one study, students asked when they would finish their theses predicted an average about three weeks shorter than the one they eventually took, and even their 'worst case' forecasts proved too sanguine. What makes the phenomenon remarkable is not that people are ignorant of that past, but that they hold the relevant knowledge and fail to apply it.",
+      "The explanation lies in how predictions are generated. A student who has finished every essay late will nonetheless forecast that the next will be done early, yet will judge a classmate's prospects far more soberly. Contemplating our own task, we construct a narrative of the steps required, in which each step proceeds more or less as designed. We seldom incorporate the illness, the missing file or the unexpected demand that disrupted every prior attempt, because each of those disruptions was a different surprise, and the aggregate of unforeseeable surprises is never itself foreseen. Kahneman termed this the inside view, in which a case is considered in all its particularity.",
+      "The outside view disregards particulars and asks a plainer question: how long have projects of this kind, taken together, actually required? A builder estimating a kitchen refit does better to consult the durations of the last twenty than to itemise the tasks of this one. The outside view feels less informative because it discards what is distinctive about the case; it is generally more accurate for the same reason, since what is distinctive is precisely what we are most inclined to overweight.",
+      "Cognitive optimism is not the sole mechanism. Within organisations a realistic estimate may kill a project before it begins, so that those who favour it have reasons to present the sanguine version, and once money has been committed even a failing venture is hard to abandon. The planning fallacy has, accordingly, an institutional counterpart, in which errors of individual judgement are reinforced by the incentives of the people around them, and in which the person who forecasts honestly is penalised for doing so.",
+      "Remedies exist, though none is popular. Reference-class forecasting, which builds the outside view into formal budgets, has been adopted by some governments for large infrastructure; and the premortem, in which a team imagines that the project has already failed and reconstructs the reasons, surfaces risks that its members would rather not mention. The simplest counsel remains the hardest to follow: when your plan says three weeks, consult how long the last plan took."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best summarises the passage?",
+        "stem": "Which one of the following best summarises the passage?",
         "proof": [
           1,
           2,
+          3,
           4
         ],
         "options": [
           {
-            "t": "Governments are worse at estimating costs than individuals are.",
-            "why": "The passage never compares governments with individuals.",
-            "trap": "Out of scope"
+            "t": "People underestimate how long their projects will take because they are ignorant of how long similar projects have taken in the past, and so cannot adjust.",
+            "why": "Paragraph 1 says the knowledge is held and not applied.",
+            "trap": "Distorts the passage"
           },
           {
-            "t": "Optimism is the only reason projects run late.",
-            "why": "Paragraph 4 opens: 'Optimism is not the only force at work.'",
+            "t": "Governments and large organisations are immune to the planning fallacy because they are able to adopt formal methods of forecasting.",
+            "why": "Paragraph 4 describes organisations as reinforcing the error, and only some governments have adopted formal methods.",
             "trap": "Extreme wording"
           },
           {
-            "t": "Students should start their essays earlier.",
-            "why": "The student is an example, not the point.",
-            "trap": "Too narrow or too broad"
+            "t": "Self-forecasts err because we reason from the particulars of our case and from incentives to be sanguine, and comparison with similar cases corrects them.",
+            "why": "Paragraph 2 gives the inside view, paragraph 4 the incentives, and paragraphs 3 and 5 the corrective outside view."
           },
           {
-            "t": "People underestimate how long their own projects will take because they focus on the plan's details, and looking at similar past cases reduces the error.",
-            "why": "This covers the fallacy, its cause (the inside view) and the remedy (the outside view)."
+            "t": "The outside view is more accurate than the inside view because it incorporates more of the detail of the particular project.",
+            "why": "Reversal: the outside view discards particulars (paragraph 3).",
+            "trap": "Distorts the passage"
           }
         ],
-        "answer": 3
+        "answer": 2
       },
       {
-        "type": "detail",
-        "stem": "Why does a student predict that the next essay will be finished early, despite past experience?",
+        "type": "inference",
+        "stem": "The passage implies that a student judges a classmate's prospects 'far more soberly' than his own because he:",
         "proof": [
           1
         ],
         "options": [
           {
-            "t": "The student has forgotten that earlier essays were late.",
-            "why": "Paragraph 2 says people 'know the past perfectly well'.",
+            "t": "regards the classmate as less capable than himself, and so expects correspondingly poorer results from him.",
+            "why": "Relative ability is not mentioned.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "has a better knowledge of the classmate's record of lateness than he has of his own record of it.",
+            "why": "Paragraph 1 says people hold the relevant knowledge of their own past.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "The student imagines the steps of this task and overlooks the varied surprises that delayed earlier ones.",
-            "why": "Paragraph 2: we picture a story in which each step goes to plan and rarely imagine the different surprises."
+            "t": "feels no institutional pressure to present the classmate's estimate in a favourable light to those around him.",
+            "why": "Institutional pressure belongs to paragraph 4 and is not the explanation offered for individuals.",
+            "trap": "Distorts the passage"
           },
           {
-            "t": "The student believes other people are slower writers.",
-            "why": "Other people's projects are judged more realistically, but no comparison of speed is made.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "Each new essay is shorter than the last.",
-            "why": "Essay length is never mentioned.",
-            "trap": "Out of scope"
+            "t": "has no detailed story of the classmate's task to dwell on, and so consults how such tasks go.",
+            "why": "Paragraph 2 locates the optimism in the story constructed about one's own task."
           }
         ],
-        "answer": 1
+        "answer": 3
       },
       {
         "type": "application",
@@ -544,77 +634,106 @@
         ],
         "options": [
           {
-            "t": "A team lists every task needed to launch its app and adds up the time for each.",
-            "why": "Listing the steps of this case is the inside view.",
+            "t": "A contractor lists every task in a new project and allows a generous margin for each of them.",
+            "why": "Itemising tasks is the inside view, even with padding.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "A manager asks the most optimistic engineer for an estimate.",
-            "why": "This makes the error worse and has nothing to do with past cases.",
-            "trap": "Out of scope"
+            "t": "A publisher dates a new title by averaging the production times of its last thirty comparable books.",
+            "why": "It consults the duration of projects of the same kind and ignores the particulars of the case."
           },
           {
-            "t": "A publisher estimates a new book's schedule from the average delay of its last thirty books.",
-            "why": "It ignores the details of this book and asks how long books like it have taken."
+            "t": "A manager asks her team to imagine, before work begins, that the project has failed and to explain why.",
+            "why": "This is the premortem, a distinct remedy, not the outside view.",
+            "trap": "True but not the answer"
           },
           {
-            "t": "A homeowner adds a week to the builder's schedule because rain is forecast.",
-            "why": "Adjusting for one detail of this case is still the inside view.",
-            "trap": "Half right, half wrong"
+            "t": "A student adds a week to his estimate after reflecting on how conscientious he normally is.",
+            "why": "An adjustment from self-assessment is a form of the inside view.",
+            "trap": "Distorts the passage"
           }
         ],
-        "answer": 2
+        "answer": 1
       },
       {
         "type": "inference",
-        "stem": "The 'institutional cousin' of the planning fallacy differs from the individual error mainly in that it:",
+        "stem": "The 'institutional counterpart' of the planning fallacy differs from the individual error chiefly in that it:",
         "proof": [
           3
         ],
         "options": [
           {
-            "t": "arises only in government projects",
-            "why": "The passage speaks of organisations generally.",
+            "t": "is sustained by incentives that reward the presentation of sanguine estimates, whatever individuals privately believe.",
+            "why": "Paragraph 4: those who favour a project have reasons to present the rosy version, and honest forecasters are penalised."
+          },
+          {
+            "t": "arises only in governments and large corporations and never in small enterprises.",
+            "why": "Extreme; the passage does not restrict it in this way.",
             "trap": "Extreme wording"
           },
           {
-            "t": "is caused by a lack of information about past projects",
-            "why": "The passage stresses that people know the past.",
+            "t": "results from ignorance of the outside view among those responsible for preparing estimates.",
+            "why": "The counterpart is explained by incentives, not ignorance.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "can be corrected by a premortem alone",
-            "why": "The premortem is one remedy among several, and none is said to be enough alone.",
-            "trap": "Extreme wording"
-          },
-          {
-            "t": "is sustained by incentives to present rosy estimates and to continue projects already under way",
-            "why": "Paragraph 4: those who want a project have reasons to present the rosy version, and spent money makes failing projects hard to abandon."
+            "t": "corrects itself once money has been committed to the venture and the cost of failure is visible.",
+            "why": "Reversal: committed money makes a failing project hard to abandon.",
+            "trap": "Distorts the passage"
           }
-        ],
-        "answer": 3
-      }
-    ],
-    "recall": [
-      {
-        "q": "Who named the planning fallacy?",
-        "options": [
-          "Daniel Kahneman and Amos Tversky",
-          "Herbert Simon and Daniel Kahneman",
-          "Amos Tversky and Richard Thaler",
-          "Frederic Bartlett"
         ],
         "answer": 0
       },
       {
-        "q": "What is the exercise of imagining that a project has already failed called?",
+        "type": "except",
+        "stem": "According to the passage, each of the following is a remedy for the planning fallacy EXCEPT:",
+        "proof": [
+          4
+        ],
         "options": [
-          "A postmortem",
-          "A premortem",
-          "A pre-mortgage",
-          "A reference class"
+          {
+            "t": "building comparisons with the record of past projects into the formal budgets of a large undertaking.",
+            "why": "Reference-class forecasting, paragraph 5.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "requiring planners to itemise the steps of each stage in still finer detail.",
+            "why": "Itemising steps is the inside view that generates the fallacy."
+          },
+          {
+            "t": "imagining in advance that a project has failed and then reconstructing the reasons for its failure.",
+            "why": "The premortem, paragraph 5.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "consulting how long the last comparable plan actually took to complete before adopting a new one.",
+            "why": "The simplest counsel, paragraph 5.",
+            "trap": "True but not the answer"
+          }
         ],
         "answer": 1
+      }
+    ],
+    "recall": [
+      {
+        "q": "What did Kahneman call the way of predicting that considers a case in all its particularity?",
+        "options": [
+          "The inside view",
+          "The outside view",
+          "The premortem",
+          "Reference-class forecasting"
+        ],
+        "answer": 0
+      },
+      {
+        "q": "In the premortem, what does a team imagine?",
+        "options": [
+          "That the project's budget has been cut by half.",
+          "That a rival team has completed the same project.",
+          "That each task will take exactly as long as planned.",
+          "That the project has already failed, and why."
+        ],
+        "answer": 3
       }
     ]
   },
@@ -624,67 +743,67 @@
     "genre": "psychology",
     "difficulty": "medium",
     "paras": [
-      "We tend to picture memory as a recording: an experience is stored somewhere in the brain and, when we remember, the recording is played back, perhaps a little faded. A century of research has made this picture hard to defend. Remembering appears to be less like playing a tape than like reconstructing a scene from fragments, with the gaps filled in by general knowledge, expectation and the questions we are asked.",
-      "The British psychologist Frederic Bartlett showed this in the 1930s by asking students to retell an unfamiliar folk tale at intervals. With each retelling the story became shorter, more coherent and more like the stories the students already knew; puzzling details dropped out or were changed into familiar ones. Later experiments found that a single word could shift recall. People who watched a film of a car crash and were asked how fast the cars were going when they 'smashed' into each other gave higher estimates, and were more likely to remember broken glass that was never there, than people asked about cars that 'hit' each other.",
-      "Even vivid memories are not exempt. After shocking public events, psychologists have asked people where they were when they heard the news, and then asked them again a year or two later. The accounts often change substantially, yet confidence remains high. The feeling of vividness, it seems, is a poor guide to accuracy.",
-      "This has obvious consequences for the law, where eyewitness testimony has long been treated as powerful evidence. Many wrongful convictions later overturned by DNA evidence turned out to rest on confident but mistaken identification. Researchers have proposed changes to how line-ups are run and how witnesses are questioned, so that the procedure itself does not supply the details that the witness then remembers.",
-      "It would be a mistake, though, to conclude that memory is simply defective. A system that stored every detail would be costly and, arguably, less useful. Reconstruction allows us to generalise from experience, to imagine the future using the same machinery we use to recall the past, and to make sense of events rather than merely retain them. The price of that flexibility is that memory serves the present as much as it records the past."
+      "We are inclined to picture memory as a recording: an experience is deposited in the brain and, when we recall it, replayed, perhaps somewhat faded. A century of research has rendered this picture difficult to defend. Remembering appears to resemble the reconstruction of a scene from fragments far more than the playing of a tape, the lacunae being filled by general knowledge, expectation and even the phrasing of the questions we are asked.",
+      "Frederic Bartlett demonstrated as much in the 1930s by asking students to retell an unfamiliar folk tale at intervals. With each repetition the story grew shorter, more coherent and more like the narratives the students already knew; unfamiliar details were omitted or transmuted into familiar ones. Subsequent work by Elizabeth Loftus and her collaborators showed that a single verb could shift recall. Subjects who watched a film of a collision and were asked how fast the cars were going when they 'smashed' into each other offered higher estimates, and were likelier to report broken glass that had not been present, than subjects asked about cars that 'hit' each other.",
+      "Even vivid memories enjoy no exemption. After shocking public events, researchers have asked people where they were when they heard the news, and have asked them again a year or two later. The accounts frequently diverge substantially while the confidence of the rememberers remains high: students who had written down their recollections of the Challenger disaster the morning after, and were asked again two and a half years later, often produced a different story and were certain that the later version was the true one. The sense of vividness, it appears, is a poor guide to fidelity, and the confidence with which a memory is held cannot be treated as evidence of its truth. Nor need we suppose that such witnesses lie; the more disquieting inference is that they sincerely report what they have come to believe.",
+      "The implications for law are considerable, since eyewitness testimony has long been regarded as powerful evidence. Many convictions later overturned by DNA analysis had rested on confident but mistaken identification, and researchers have proposed reforms to the conduct of line-ups and to the questioning of witnesses, so that the procedure does not itself supply the details which the witness subsequently remembers.",
+      "It would nonetheless be an error to conclude that memory is simply defective. A system that preserved every detail would be costly and, arguably, less useful, since the retention of everything is not the same as the capacity to use anything. Reconstruction allows us to generalise from experience, to imagine the future with the same machinery we use to recall the past, and to make sense of events in place of merely retaining them. The price of this flexibility is that memory serves the present at least as much as it records the past."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best states the main idea of the passage?",
+        "stem": "Which one of the following best states the main idea of the passage?",
         "proof": [
           0,
           4
         ],
         "options": [
           {
-            "t": "Eyewitness testimony should never be used in court.",
-            "why": "The passage proposes better procedures, not a ban.",
+            "t": "Confidently held memories are unreliable, and eyewitness testimony should therefore be excluded from legal proceedings altogether.",
+            "why": "Extreme: the passage proposes reforms to procedure, not exclusion.",
             "trap": "Extreme wording"
           },
           {
-            "t": "Memories of shocking events are more accurate than ordinary memories.",
-            "why": "Paragraph 3 says even vivid memories change while confidence stays high.",
+            "t": "Memory is a defective faculty whose errors could be eliminated if the procedures used to elicit it were suitably reformed.",
+            "why": "Paragraph 5 rejects the view that memory is simply defective.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Memory reconstructs the past rather than replaying it, which makes it prone to error but also flexible.",
-            "why": "Paragraphs 1 to 4 show reconstruction and its errors; paragraph 5 gives its benefits."
+            "t": "Bartlett and Loftus showed that memories are shaped chiefly by the language in which they are elicited.",
+            "why": "Too narrow, and Bartlett's study concerned retelling and familiarisation, not the language of questions.",
+            "trap": "Too narrow or too broad"
           },
           {
-            "t": "Bartlett's experiment proved that memory works like a recording.",
-            "why": "Bartlett's results count against the recording picture.",
-            "trap": "Distorts the passage"
+            "t": "Memory reconstructs the past instead of replaying it, accounting both for its fallibility in testimony and for its usefulness.",
+            "why": "Paragraphs 1 to 4 document reconstruction and its costs; paragraph 5 supplies the benefits."
           }
         ],
-        "answer": 2
+        "answer": 3
       },
       {
         "type": "detail",
-        "stem": "In the film experiment, people asked about cars that 'smashed' into each other:",
+        "stem": "In the film experiment, subjects asked about cars that 'smashed' into each other:",
         "proof": [
           1
         ],
         "options": [
           {
-            "t": "remembered the speed of the cars more accurately",
-            "why": "They gave higher estimates; nothing suggests greater accuracy.",
+            "t": "gave lower estimates of speed but expressed greater confidence in their recollections.",
+            "why": "The estimates were higher, and confidence is not reported for this experiment.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "were more likely to recall broken glass that was not in the film",
-            "why": "Stated directly in paragraph 2."
+            "t": "gave higher estimates of speed and were likelier to report broken glass that was not there.",
+            "why": "Paragraph 2 states both findings."
           },
           {
-            "t": "forgot the crash entirely",
-            "why": "Nothing suggests this.",
-            "trap": "Extreme wording"
+            "t": "were likelier to recall the colours and the number of the vehicles involved.",
+            "why": "No such recollections are reported.",
+            "trap": "Out of scope"
           },
           {
-            "t": "gave lower estimates of speed",
-            "why": "They gave higher estimates.",
+            "t": "gave estimates that did not differ from those of subjects asked about cars that 'hit' each other.",
+            "why": "The point of the experiment is that the verb shifted recall.",
             "trap": "Distorts the passage"
           }
         ],
@@ -692,32 +811,32 @@
       },
       {
         "type": "inference",
-        "stem": "Which of the following can be inferred from the third paragraph?",
+        "stem": "Which one of the following can be inferred from the third paragraph?",
         "proof": [
           2
         ],
         "options": [
           {
-            "t": "A witness's certainty about a memory does not show that the memory is accurate.",
-            "why": "Accounts changed while 'confidence remains high', so confidence is 'a poor guide to accuracy'."
-          },
-          {
-            "t": "Memories of public events fade faster than memories of private ones.",
-            "why": "No comparison with private memories is made.",
+            "t": "Memories of shocking public events are less accurate than memories of ordinary ones.",
+            "why": "No comparison with ordinary events is made.",
             "trap": "Out of scope"
           },
           {
-            "t": "People who report vivid memories are lying.",
-            "why": "The passage describes honest error, not lying.",
-            "trap": "Extreme wording"
+            "t": "People who recount a shocking event differently over time are deliberately misrepresenting it.",
+            "why": "The paragraph says such people need not be lying.",
+            "trap": "Distorts the passage"
           },
           {
-            "t": "Confidence in a memory falls as the memory changes.",
-            "why": "Confidence 'remains high' as accounts change.",
+            "t": "Vividness is a dependable guide to the accuracy of recollections of public events.",
+            "why": "Reversal: vividness is 'a poor guide to fidelity'.",
             "trap": "Distorts the passage"
+          },
+          {
+            "t": "A witness's certainty about a memory does not show it to be accurate.",
+            "why": "Confidence remains high while the accounts diverge; confidence cannot be treated as evidence of truth."
           }
         ],
-        "answer": 0
+        "answer": 3
       },
       {
         "type": "structure",
@@ -727,46 +846,75 @@
         ],
         "options": [
           {
-            "t": "propose new ways of questioning witnesses",
-            "why": "That is paragraph 4.",
+            "t": "reject the earlier findings by showing that reconstruction is in fact a rare feature of memory.",
+            "why": "The author accepts the findings and treats reconstruction as general.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "argue that memory is too unreliable to be useful",
-            "why": "It argues the opposite: memory should not be seen as simply defective.",
+            "t": "propose legal reforms intended to remove the errors in eyewitness testimony.",
+            "why": "Reforms are discussed in paragraph 4.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "summarise Bartlett's experiment",
-            "why": "Bartlett is not mentioned in the final paragraph.",
-            "trap": "Out of scope"
+            "t": "qualify the earlier findings by explaining what a reconstructive system gains in exchange for its errors.",
+            "why": "It begins with 'nonetheless', denies that memory is simply defective, and lists the gains of reconstruction."
           },
           {
-            "t": "qualify the earlier findings by explaining what a reconstructive memory gains",
-            "why": "It says reconstruction lets us generalise, imagine the future and make sense of events."
+            "t": "argue that a system that stored every detail could not be built with the machinery of the brain.",
+            "why": "The claim is that it would be costly and less useful, not impossible.",
+            "trap": "Distorts the passage"
           }
         ],
-        "answer": 3
+        "answer": 2
+      },
+      {
+        "type": "application",
+        "stem": "Which one of the following reforms would the passage most directly support?",
+        "proof": [
+          3
+        ],
+        "options": [
+          {
+            "t": "Giving the greatest weight to testimony from those witnesses who express the most confidence.",
+            "why": "Confidence is not a guide to accuracy (paragraph 3).",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Questioning witnesses in ways that avoid suggesting details they might later absorb.",
+            "why": "Paragraph 4 recommends procedures that do not themselves supply the details witnesses subsequently remember."
+          },
+          {
+            "t": "Excluding from trial any witness who has described an event differently on two occasions.",
+            "why": "Extreme: divergence is normal and does not imply lying.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "Encouraging witnesses to rehearse their accounts repeatedly until they are sure of every detail.",
+            "why": "Repetition is the process by which Bartlett's stories were reshaped (paragraph 2).",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 1
       }
     ],
     "recall": [
       {
-        "q": "In which decade did Bartlett carry out his folk-tale study?",
+        "q": "What happened to the folk tale as Bartlett's students retold it?",
         "options": [
-          "The 1950s",
-          "The 1930s",
-          "The 1970s",
-          "The 1910s"
+          "It became longer and more detailed with each retelling.",
+          "It became shorter, more coherent and more like familiar stories.",
+          "It was retold identically by most of the students.",
+          "It lost its characters but kept its unfamiliar details."
         ],
         "answer": 1
       },
       {
-        "q": "What evidence later overturned many wrongful convictions?",
+        "q": "What had many convictions overturned by DNA analysis rested upon?",
         "options": [
-          "Video recordings",
-          "Confessions",
-          "DNA evidence",
-          "Fingerprints"
+          "Confessions obtained under pressure.",
+          "Forged documentary evidence.",
+          "Confident but mistaken identification.",
+          "Testimony from expert witnesses."
         ],
         "answer": 2
       }
@@ -778,10 +926,10 @@
     "genre": "psychology",
     "difficulty": "medium",
     "paras": [
-      "In a study published in 2005, researchers showed volunteers pairs of photographs of faces and asked them to choose the more attractive one. After each choice, the experimenter slid the chosen card across the table and asked the volunteer to explain the preference. On some trials, using a simple card trick, the experimenter handed over the face the volunteer had rejected. Most of the time, no one noticed. More striking still, volunteers went on to explain why they preferred a face they had not chosen, sometimes citing features, such as earrings, that only the rejected face had.",
-      "The researchers called the phenomenon choice blindness, and they have since found it in many settings. Shoppers tasting two jams and two teas failed to notice when the samples were secretly swapped before they explained their preference; the jars had two compartments, so a quiet flip did the trick. In a survey on political questions, respondents whose answers had been reversed on the page defended positions they had just rejected, and some even shifted their later views towards the reversed answers.",
-      "Such findings fit an older argument in psychology: that people have less access to the causes of their own behaviour than they believe. In the 1970s, the psychologists Richard Nisbett and Timothy Wilson had shown that people readily give confident reasons for behaviour that experiments traced to quite different causes. When asked why we chose something, we may not be reporting a reason that drove the choice so much as constructing a plausible story after the fact. The story feels like memory, and we have no inner signal that tells us when we are inventing rather than recalling.",
-      "It would be wrong, however, to conclude that people's stated reasons are worthless. Detection rates rise sharply when the swapped options are very different, or when people care a great deal about the decision. Choice blindness shows that our sense of knowing our own minds is fallible, not that it is always mistaken. Its practical lesson may be modest: surveys, interviews and even our own diaries record what people say about their choices, which is not the same thing as why they made them."
+      "In a study published in 2005, researchers showed volunteers pairs of photographs of faces and asked them to select the more attractive in each pair. After every choice the experimenter slid the chosen card across the table and invited the volunteer to explain the preference. On some trials, by a simple sleight of hand, the volunteer was handed instead the face that had been rejected. Most of the time nobody noticed, although the faces lay side by side and the volunteers could look as long as they liked. More striking still, volunteers went on to justify a preference for a face they had not chosen, sometimes citing features, such as earrings, which only the rejected face possessed.",
+      "The manipulation was, in short, mundane; what was extraordinary was the ease with which it passed unobserved. The investigators named the phenomenon choice blindness and have since found it in other settings. Shoppers asked to sample two jams or two teas failed to notice when the samples had been covertly exchanged before they explained their preferences; the jars were fitted with two compartments, so that a quiet inversion accomplished the swap. In a survey on political questions, respondents whose answers had been reversed on the page defended positions they had just rejected, and some later shifted their stated views toward the reversed answers.",
+      "These results are congenial to an older argument in psychology, that people have less access to the causes of their own behaviour than they suppose. In the 1970s Richard Nisbett and Timothy Wilson had shown that subjects readily gave confident reasons for behaviour which experiments traced to quite different causes. Their subjects, asked to choose the best of four identical pairs of stockings laid in a row, favoured the pair on the right, yet cited the texture and sheen of the stockings and never the position. Asked why we chose something, we may be reporting not a reason that drove the choice but a plausible story composed after the fact. The story feels like memory, and we possess no inner signal that distinguishes inventing from recalling.",
+      "It would be rash to conclude that stated reasons are worthless. Detection rates rise substantially when the swapped options differ markedly, or when people care a great deal about the decision. Choice blindness demonstrates that our sense of knowing our own minds is fallible, not that it is invariably mistaken. Its practical lesson may be modest but is worth heeding: surveys, interviews and even our own diaries record what people say about their choices, which is not the same thing as why they made them. Where a stated reason cannot be checked against anything else, it is better treated as a datum to be explained than as an explanation to be accepted."
     ],
     "questions": [
       {
@@ -794,23 +942,23 @@
         ],
         "options": [
           {
-            "t": "showing that people's explanations of their choices can be built after the fact, while warning against dismissing such explanations altogether",
-            "why": "Paragraphs 1 to 3 show reasons being constructed; paragraph 4 says stated reasons are fallible, not worthless."
+            "t": "showing that explanations of choices may be composed after the fact, and so, though not worthless, must be distinguished from causes.",
+            "why": "Paragraphs 1 and 2 give the evidence, paragraph 3 the interpretation and paragraph 4 the qualification."
           },
           {
-            "t": "proving that people never know why they make their decisions",
-            "why": "Paragraph 4 says our self-knowledge is 'fallible, not that it is always mistaken'.",
+            "t": "demonstrating that people are unable to distinguish between the faces, jams and political answers among which they are asked to choose.",
+            "why": "The volunteers made real choices; what failed was the noticing of swaps and the access to causes.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "arguing that surveys and interviews are so unreliable a source of evidence about behaviour that social scientists should now abandon them.",
+            "why": "Extreme: the author draws a 'modest' lesson, that reports are not the same as causes.",
             "trap": "Extreme wording"
           },
           {
-            "t": "describing a card trick that psychologists use to study attractiveness",
-            "why": "The trick is only the method of one study; the passage is about self-knowledge.",
+            "t": "defending Nisbett and Wilson's thesis against the objection that people readily detect swapped options in a variety of settings.",
+            "why": "Too narrow, and the passage treats detection as a qualification, not an objection to be answered.",
             "trap": "Too narrow or too broad"
-          },
-          {
-            "t": "arguing that political surveys should no longer be trusted",
-            "why": "The survey is one example, and the passage draws only a modest lesson about what surveys record.",
-            "trap": "Out of scope"
           }
         ],
         "answer": 0
@@ -819,112 +967,139 @@
         "type": "except",
         "stem": "All of the following are presented as evidence of choice blindness EXCEPT:",
         "proof": [
-          0,
-          1,
           3
         ],
         "options": [
           {
-            "t": "volunteers explaining a preference for a face they had in fact rejected",
-            "why": "This is the first study's central finding.",
+            "t": "volunteers citing features of a face that they had not chosen.",
+            "why": "Paragraph 1.",
             "trap": "True but not the answer"
           },
           {
-            "t": "tasters failing to notice that jams and teas had been swapped",
-            "why": "Paragraph 2 gives this as one of the settings.",
+            "t": "people noticing a swap more often when the options differed markedly.",
+            "why": "This is a qualification in paragraph 4, which limits the phenomenon."
+          },
+          {
+            "t": "shoppers failing to notice that samples of jam or tea had been exchanged.",
+            "why": "Paragraph 2.",
             "trap": "True but not the answer"
           },
           {
-            "t": "respondents defending political positions they had just rejected",
-            "why": "Paragraph 2 gives this as another setting.",
+            "t": "respondents defending political answers that had been reversed on the page.",
+            "why": "Paragraph 2.",
             "trap": "True but not the answer"
-          },
-          {
-            "t": "people noticing swaps more often when the options were very different",
-            "why": "Paragraph 4 gives this as a limit on choice blindness, not evidence for it."
           }
         ],
-        "answer": 3
+        "answer": 1
       },
       {
         "type": "structure",
-        "stem": "The author mentions earrings in the first paragraph most likely in order to:",
+        "stem": "The author mentions the earrings in order to:",
         "proof": [
           0
         ],
         "options": [
           {
-            "t": "show how carefully the volunteers examined the photographs",
-            "why": "Volunteers did not even notice the swap, so they were not examining carefully.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "show that the explanations were drawn from the face in hand, not remembered from the choice",
-            "why": "Citing a feature only the rejected face had proves the reason was built on the spot."
-          },
-          {
-            "t": "suggest that jewellery strongly affects judgements of attractiveness",
-            "why": "Nothing is said about what makes a face attractive.",
+            "t": "indicate that volunteers generally favoured faces which were adorned with some kind of jewellery or ornament.",
+            "why": "No such preference is reported.",
             "trap": "Out of scope"
           },
           {
-            "t": "prove that the card trick sometimes failed",
-            "why": "The trick worked; that is why the volunteers described the wrong face.",
+            "t": "suggest that the experimenters selected distinctive features in order to make the swaps easier for volunteers to detect.",
+            "why": "The author does not discuss the selection of faces.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "show that the explanations drew on the face in hand and not on the face first chosen.",
+            "why": "Only the rejected face (the one handed over) had earrings, yet they were cited as reasons for the choice."
+          },
+          {
+            "t": "illustrate that volunteers had noticed the swap but concealed their awareness of it from the experimenter.",
+            "why": "The point is that most did not notice.",
             "trap": "Distorts the passage"
           }
         ],
-        "answer": 1
+        "answer": 2
       },
       {
         "type": "inference",
-        "stem": "Which of the following would the author most likely accept?",
+        "stem": "Which one of the following can be inferred from the third paragraph?",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "A confident account of one's reasons does not show that those reasons produced the choice.",
+            "why": "Subjects gave confident reasons for behaviour that experiments traced to other causes."
+          },
+          {
+            "t": "People are unable to give accurate reasons for any of the choices that they make.",
+            "why": "Extreme; paragraph 4 says the sense of self-knowledge is fallible, not invariably mistaken.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "Memory of a decision is generally more accurate than the explanation that is later given for it.",
+            "why": "Memory is said to feel like the story, with no signal to tell them apart.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "Nisbett and Wilson's subjects were misled chiefly because the experimenters had supplied false reasons.",
+            "why": "The passage does not say the reasons were supplied by experimenters.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 0
+      },
+      {
+        "type": "inference",
+        "stem": "The author's closing remark about diaries and interviews implies that:",
         "proof": [
           3
         ],
         "options": [
           {
-            "t": "A customer feedback form shows exactly why customers bought a product.",
-            "why": "The last sentence says such records show what people say, not why they chose.",
+            "t": "diaries are less trustworthy than interviews because they are composed some time after the choices have been made by the writer.",
+            "why": "No comparison between diaries and interviews is made.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "With enough practice, introspection becomes an infallible guide to our motives.",
-            "why": "Nothing suggests self-knowledge can be made infallible.",
+            "t": "people who keep diaries are less liable to choice blindness than those who do not.",
+            "why": "Nothing is said about diary-keepers as a class.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "self-reports should be disregarded altogether in the study of how decisions are made.",
+            "why": "Extreme: the author warns against concluding that stated reasons are worthless.",
             "trap": "Extreme wording"
           },
           {
-            "t": "People who care a great deal about a decision are more likely to notice if it is switched.",
-            "why": "Paragraph 4: detection rates rise sharply when people care a great deal about the decision."
-          },
-          {
-            "t": "Choice blindness occurs only in laboratory tests with photographs.",
-            "why": "Paragraph 2 says it has been found in many settings, including tasting and surveys.",
-            "trap": "Distorts the passage"
+            "t": "records of what people say about their choices are not direct evidence of the causes of those choices.",
+            "why": "The paragraph says that what people say about their choices 'is not the same thing as why they made them'."
           }
         ],
-        "answer": 2
+        "answer": 3
       }
     ],
     "recall": [
       {
-        "q": "What were volunteers first asked to choose between?",
+        "q": "What happened on the trials in which the volunteer was handed the face he or she had rejected?",
         "options": [
-          "Two jams",
-          "Two photographs of faces",
-          "Two political statements",
-          "Two cups of tea"
+          "Most volunteers protested at once and asked to repeat the trial.",
+          "Most volunteers noticed but could not say which face they had chosen.",
+          "Most volunteers changed their choice to match the face they were handed.",
+          "Most volunteers did not notice, and many explained a preference for the face they had not chosen."
         ],
-        "answer": 1
+        "answer": 3
       },
       {
-        "q": "When did people notice swaps much more often?",
+        "q": "Under which conditions, according to the passage, do detection rates rise substantially?",
         "options": [
-          "When the options were very different",
-          "When the experimenter left the room",
-          "When they were paid",
-          "When the photos were in colour"
+          "When the volunteers are asked to explain their choices in writing.",
+          "When the options differ markedly or the decision matters greatly to the person.",
+          "When the experimenter slows the exchange of the cards.",
+          "When the volunteers have previously heard of choice blindness."
         ],
-        "answer": 0
+        "answer": 1
       }
     ]
   },
@@ -934,41 +1109,41 @@
     "genre": "psychology",
     "difficulty": "hard",
     "paras": [
-      "In a well-known experiment from the late 1990s, hungry volunteers sat in a room that smelled of freshly baked cookies. Some were allowed to eat the cookies; others had to eat radishes instead and leave the cookies untouched. Afterwards, all of them worked on a puzzle that, unknown to them, could not be solved. Those who had resisted the cookies gave up considerably sooner. The effect was large, and the design was easy to copy. The researchers proposed that self-control draws on a limited resource, which is used up by one act of restraint and leaves less for the next.",
-      "The idea, soon called ego depletion, was attractive because it matched ordinary experience: after a day of difficult decisions, the biscuit tin is harder to resist. Hundreds of studies appeared to confirm it, and some researchers went further, suggesting that the resource was glucose and that a sugary drink could restore flagging willpower. Popular books advised readers to schedule hard choices for the morning and to treat willpower like a muscle that tires with use.",
-      "Doubts grew as psychology began to examine its own methods. Small studies, flexible analyses and a tendency to publish only positive results can together produce a literature full of effects that are not really there. In 2016, a project involving more than twenty laboratories ran the same carefully specified depletion task and found an effect close to zero. The laboratories had agreed on the procedure and published their plan before collecting any data, which left no room for flexible analysis. The glucose explanation fared no better; critics pointed out that the brain's use of sugar barely changes during demanding mental work.",
-      "The story is not simply one of a theory overturned. Later large studies have produced mixed results, and some researchers argue that the tasks used were too weak to deplete anyone. Others found that people who believe willpower is limited show depletion-like effects, while those who do not show little. If so, fatigue after effort may be real but shaped by expectation rather than by a fuel gauge in the brain. What the episode clearly shows is how a finding that seems to explain everyday life can spread far beyond the strength of its evidence."
+      "In an experiment of the late 1990s, hungry volunteers were seated in a room redolent of freshly baked cookies. Some were permitted to eat the cookies; others were obliged to eat radishes and to leave the cookies untouched. All were then set a puzzle which, unknown to them, could not be solved. Those who had resisted the cookies abandoned the puzzle markedly sooner. The effect was large and the design easily copied, and the experimenters proposed that self-control draws upon a limited resource, depleted by one act of restraint and therefore diminished for the next. For two decades the result was cited in textbooks, in policy papers and in the advice offered to dieters.",
+      "The hypothesis, soon christened ego depletion, owed much of its appeal to its fit with ordinary experience: after a day of onerous decisions the biscuit tin is harder to resist. Hundreds of studies seemed to corroborate it, and some investigators went further, proposing that the depleted resource was glucose and that a sugared drink might restore flagging willpower. Popular books counselled readers to schedule difficult choices for the morning and to regard willpower as a muscle that tires with use. The theory was elegant in a further respect: it promised a single mechanism for dieting, drinking, temper and procrastination, and this power to unify such disparate failures lent it an authority that no individual study could have earned.",
+      "Doubts grew as psychology began to scrutinise its own methods. Small samples, flexible analysis and a preference for publishing positive results can jointly generate a literature replete with effects that are not really there. In 2016 a consortium of more than twenty laboratories ran the same carefully specified depletion task and found an effect close to zero; the laboratories had agreed the protocol and registered their plan before collecting any data, which left no scope for flexible analysis. Even the meta-analyses that had seemed to confirm the effect proved to be distorted by selective publication, and correcting for it reduced the estimated effect sharply. The glucose explanation fared no better, since critics observed that the brain's consumption of sugar barely alters during demanding mental work.",
+      "The tale is not simply one of a theory overturned. Later large studies have yielded mixed results, and some researchers contend that the tasks employed were too feeble to deplete anyone. Others have found that people who believe willpower to be limited exhibit depletion-like effects, while those who do not show little. If so, fatigue after effort may be real but shaped by expectation and not by a fuel gauge in the brain. What the episode incontestably shows is how a finding that seems to explain everyday life may spread far beyond the strength of its evidence."
     ],
     "questions": [
       {
         "type": "tone",
-        "stem": "The author's attitude towards the theory of ego depletion is best described as:",
+        "stem": "The author's attitude to the theory of ego depletion is best described as:",
         "proof": [
           2,
           3
         ],
         "options": [
           {
-            "t": "enthusiastic support, since hundreds of studies confirmed it",
-            "why": "The author stresses that the evidence was weaker than those studies suggested.",
-            "trap": "Distorts the passage"
+            "t": "cautiously sceptical: the evidence proved weaker than supposed, though the matter is not wholly closed.",
+            "why": "Paragraph 3 reports the failure to replicate; paragraph 4 says the story is 'not simply one of a theory overturned'."
           },
           {
-            "t": "cautious scepticism: the evidence turned out weaker than the theory's popularity suggested",
-            "why": "The last paragraph keeps some effect open but says the finding spread 'far beyond the strength of its evidence'."
-          },
-          {
-            "t": "outright dismissal of any link between effort and fatigue",
-            "why": "The author allows that 'fatigue after effort may be real'.",
+            "t": "dismissive: the theory has been conclusively refuted by large replications, and no part of it survives.",
+            "why": "Paragraph 4 allows that fatigue after effort may be real and that the results are mixed.",
             "trap": "Extreme wording"
           },
           {
-            "t": "indifference, since the debate has no practical importance",
-            "why": "The author draws a clear lesson from the episode.",
+            "t": "enthusiastic: later studies have vindicated the theory in a refined and more convincing form than before.",
+            "why": "The later results are called mixed, and the closing sentence stresses the weakness of the evidence.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "indifferent: the theory has little bearing on ordinary experience and deserves little further attention.",
+            "why": "Paragraph 2 says the theory fitted ordinary experience; the author is interested in why it spread.",
             "trap": "Distorts the passage"
           }
         ],
-        "answer": 1
+        "answer": 0
       },
       {
         "type": "detail",
@@ -978,26 +1153,26 @@
         ],
         "options": [
           {
-            "t": "found that a sugary drink restored self-control",
-            "why": "The glucose explanation 'fared no better'.",
+            "t": "allowed each laboratory to choose its own task and found a small but reliable effect in most of them.",
+            "why": "The laboratories ran the same specified task and found an effect close to zero.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "ran the same carefully specified task and found an effect close to zero",
-            "why": "Paragraph 3 says exactly this."
+            "t": "confirmed the glucose explanation although it failed to replicate the result of the cookie experiment.",
+            "why": "The glucose explanation is said to have fared no better.",
+            "trap": "Distorts the passage"
           },
           {
-            "t": "proved that self-control does not exist",
-            "why": "It tested one effect, not whether self-control exists.",
-            "trap": "Extreme wording"
+            "t": "used one carefully specified task, with a plan registered in advance, and found an effect near zero.",
+            "why": "Paragraph 3 states all three points."
           },
           {
-            "t": "showed that the cookie experiment had been made up",
-            "why": "No one is accused of inventing data.",
-            "trap": "Out of scope"
+            "t": "found an effect close to zero only after excluding those studies whose analysis had been flexible.",
+            "why": "Half right: the effect was near zero, but analysis was fixed in advance, not filtered afterwards.",
+            "trap": "Half right, half wrong"
           }
         ],
-        "answer": 1
+        "answer": 2
       },
       {
         "type": "strengthen",
@@ -1007,23 +1182,23 @@
         ],
         "options": [
           {
-            "t": "Volunteers told that mental effort is energising persist longer after a hard task than volunteers told it is tiring.",
-            "why": "Changing only the belief changes the after-effect, which is what the expectation view predicts."
+            "t": "Volunteers told that mental effort is energising persist longer on a second task than volunteers told that it is tiring.",
+            "why": "A change in persistence produced by a change in belief alone is what the suggestion requires."
           },
           {
-            "t": "The brain's use of glucose rises sharply during difficult mental tasks.",
-            "why": "This would support the fuel-gauge view that the paragraph sets aside, not expectation.",
+            "t": "Volunteers given a sugared drink persist longer on a second task than volunteers given an artificially sweetened drink.",
+            "why": "This supports the glucose explanation, which the passage says fared badly.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Small studies are more likely than large ones to report positive results.",
-            "why": "This explains why the literature misled, but says nothing about expectation.",
+            "t": "Volunteers who rest for twenty minutes between two demanding tasks perform better on the second than those who do not.",
+            "why": "Compatible with a limited resource as well as with expectation, so it does not discriminate between them.",
             "trap": "True but not the answer"
           },
           {
-            "t": "People who resist cookies always give up sooner on puzzles.",
-            "why": "'Always' goes beyond any finding in the passage, and it says nothing about belief.",
-            "trap": "Extreme wording"
+            "t": "Volunteers in laboratories in several countries show similar effects of the first task on the second.",
+            "why": "Cross-laboratory consistency says nothing about the role of belief.",
+            "trap": "Out of scope"
           }
         ],
         "answer": 0
@@ -1036,48 +1211,77 @@
         ],
         "options": [
           {
-            "t": "describe the original experiment in more detail",
-            "why": "The experiment is described in paragraph 1.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "show that psychology's methods are now beyond criticism",
-            "why": "It describes methods that went wrong.",
+            "t": "show that every earlier study of depletion had been conducted fraudulently by researchers eager for attention.",
+            "why": "Extreme: the weaknesses cited are statistical and methodological, not fraud.",
             "trap": "Extreme wording"
           },
           {
-            "t": "argue that popular books on willpower should be withdrawn",
-            "why": "No such recommendation is made.",
+            "t": "offer a fresh explanation of why volunteers abandon puzzles that cannot be solved within the time allowed.",
+            "why": "No new explanation of persistence is offered here.",
             "trap": "Out of scope"
           },
           {
-            "t": "explain why the evidence for ego depletion came to be doubted",
-            "why": "It gives the methodological reasons, the failed replication and the problem with glucose."
+            "t": "defend the glucose explanation of depletion against the criticisms that have been made of it in recent years.",
+            "why": "The glucose explanation is criticised, not defended.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "explain why the evidence for depletion came to be doubted and how the replication avoided earlier flaws.",
+            "why": "It names the methodological weaknesses and the safeguards of the 2016 project."
           }
         ],
         "answer": 3
+      },
+      {
+        "type": "except",
+        "stem": "The passage cites each of the following as contributing to unreliable findings in psychology EXCEPT:",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "the use of small samples in individual studies.",
+            "why": "Named in paragraph 3.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "flexibility in the analysis of data once collected.",
+            "why": "Named in paragraph 3.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "pressure on researchers to publish before replication is attempted.",
+            "why": "Not mentioned in the passage."
+          },
+          {
+            "t": "a preference among journals for publishing positive results over null ones.",
+            "why": "Named in paragraph 3.",
+            "trap": "True but not the answer"
+          }
+        ],
+        "answer": 2
       }
     ],
     "recall": [
       {
-        "q": "What did some volunteers have to eat instead of the cookies?",
+        "q": "After resisting the cookies, what were volunteers less willing to do?",
         "options": [
-          "Apples",
-          "Radishes",
-          "Bread",
-          "Carrots"
+          "Persist at a puzzle that could not be solved.",
+          "Eat the radishes that had been provided.",
+          "Remain in the room that smelled of baking.",
+          "Trust the experimenters' account of the task."
         ],
-        "answer": 1
+        "answer": 0
       },
       {
-        "q": "How many laboratories took part in the 2016 project?",
+        "q": "What did the laboratories do before collecting any data in 2016?",
         "options": [
-          "About five",
-          "More than twenty",
-          "Exactly two",
-          "Over two hundred"
+          "Selected only the most favourable earlier studies.",
+          "Measured the glucose levels of their volunteers.",
+          "Excluded volunteers who had read about depletion.",
+          "Agreed the protocol and registered their plan."
         ],
-        "answer": 1
+        "answer": 3
       }
     ]
   },
@@ -1087,15 +1291,15 @@
     "genre": "philosophy",
     "difficulty": "hard",
     "paras": [
-      "Most of us believe we can wrong people who do not yet exist. A government that buries nuclear waste in a way that will leak in three hundred years seems to act badly towards the people living then, even though none of them is alive today. Much of what we think we owe the future rests on cases like this. The philosopher Derek Parfit showed that explaining the belief is surprisingly difficult.",
-      "His argument begins with a simple fact about reproduction. Who is born depends on exactly when conception happens, and that depends on countless details of people's lives. Had your parents met a year later, or even conceived a child a month later, someone else would have been born in your place. A major policy, such as a choice between using up a resource quickly or conserving it, changes how millions of people live, work and meet one another. Within a few generations, the people who exist under one policy will be entirely different individuals from those who would have existed under the other.",
-      "Suppose, then, that we choose rapid depletion, and that people two centuries from now have a lower, though still worthwhile, quality of life than their counterparts would have had under conservation. Have we harmed them? It seems not, in the ordinary sense of harm, which means making someone worse off than they would otherwise have been. Had we chosen conservation, these particular people would never have been born at all. Since their lives are worth living, our choice has not made any of them worse off. Yet the choice still seems wrong.",
-      "Parfit called this the non-identity problem, and he concluded that our moral thinking cannot rest entirely on harm to particular persons. What matters, he suggested, is the quality of life of whoever will exist, whoever they turn out to be. The problem bears directly on debates about climate change, where policies chosen now will shape both how future people live and which people there will be. An argument that future generations cannot complain because they owe their very existence to our choices is not a curiosity of philosophy seminars; it is a position someone could seriously advance, which is why answering it matters."
+      "We commonly suppose that the unborn can be wronged. A government that entombs radioactive waste in a manner certain to breach containment in three centuries seems to act wickedly towards those who will then be living, although not one of them is alive to be injured today. Our legislation, our pension schemes and our conservation efforts all presuppose that those who come after us have claims upon us, and the presupposition seems too natural to need defence. A great deal of what we believe we owe the future depends upon intuitions of this kind, and it is therefore disquieting that Derek Parfit, in the 1980s, showed them to rest on a foundation far less secure than they appear.",
+      "The argument begins from an unglamorous fact about reproduction. Which person is born depends upon the precise moment of conception, and this in turn depends on innumerable circumstances in the lives of the parents: had yours met a year later, or conceived a month later, someone else would have been born in your place. A far-reaching policy, such as a choice between consuming a resource swiftly and husbanding it, alters how millions work, travel and encounter one another. Within a few generations the individuals who exist under one policy will be wholly different from those who would have existed under the other; the two futures may share a population in number, but not in persons.",
+      "Suppose, then, that we select rapid depletion, and that people two centuries hence enjoy a lower, though still worthwhile, quality of life than their counterparts would have enjoyed under conservation. Have we harmed them? On the ordinary understanding of harm, as making someone worse off than he would otherwise have been, it seems we have not. Had we chosen conservation, these particular people would never have existed, and since their lives are worth living, our choice has made none of them worse off. The conclusion is perverse, for the choice still seems wrong; yet its wrongness cannot be located in a victim.",
+      "Parfit called this the non-identity problem, and he inferred that our moral thinking cannot rest wholly on the interests of particular persons. What matters, he proposed, is the quality of the lives that will be led, whoever the persons living them turn out to be. The inference is not forced upon us: some philosophers have defended person-affecting accounts, and others have questioned whether bringing someone into a worse life can be harmless merely because the alternative was non-existence. But the difficulty is practical as well as academic. In debates about climate policy, where decisions taken now will determine both how future people live and which people there will be, the argument that posterity cannot complain, since it owes its very existence to our choices, is a position someone could seriously advance, and one which an adequate ethics must be able to answer."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best states the main point of the passage?",
+        "stem": "Which one of the following best expresses the main point of the passage?",
         "proof": [
           1,
           2,
@@ -1103,133 +1307,162 @@
         ],
         "options": [
           {
-            "t": "Because our choices decide who will exist, they may not harm particular future people, so wrongs to future generations must be explained in other terms.",
-            "why": "This is the non-identity problem and Parfit's conclusion in paragraph 4."
-          },
-          {
-            "t": "We have no moral duties towards people who do not yet exist.",
-            "why": "The choice 'still seems wrong', and Parfit looks for a better basis for the duty, not its absence.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "Conservation policies always produce happier future generations.",
-            "why": "The example compares two possible futures; nothing is claimed about 'always'.",
+            "t": "Parfit demonstrated that we owe nothing to future generations, because those who will live under our policies cannot be made worse off by them.",
+            "why": "Extreme: the choice 'still seems wrong' and Parfit infers a different basis for obligation, not the absence of one.",
             "trap": "Extreme wording"
           },
           {
-            "t": "Nuclear waste should be stored more safely than it is today.",
-            "why": "Nuclear waste is only the opening illustration.",
-            "trap": "Out of scope"
-          }
-        ],
-        "answer": 0
-      },
-      {
-        "type": "structure",
-        "stem": "The second paragraph mainly establishes that:",
-        "proof": [
-          1
-        ],
-        "options": [
-          {
-            "t": "most people are born at random",
-            "why": "It says birth depends on countless details, not that it is random.",
+            "t": "Policies that deplete resources are justified whenever the people who later exist still have lives worth living, whatever the alternative.",
+            "why": "The passage treats this as the troubling consequence of the harm-based view, not as a conclusion it accepts.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "large policies change which individuals are born, not just how they live",
-            "why": "This is the premise the depletion example needs."
-          },
-          {
-            "t": "governments should control when people conceive children",
-            "why": "No such proposal is made.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "using up resources quickly lowers the birth rate",
-            "why": "The paragraph is about who is born, not how many.",
-            "trap": "Distorts the passage"
-          }
-        ],
-        "answer": 1
-      },
-      {
-        "type": "detail",
-        "stem": "According to the passage, the choice of rapid depletion does not harm the future people in the example because:",
-        "proof": [
-          2
-        ],
-        "options": [
-          {
-            "t": "their quality of life is higher than it would have been",
-            "why": "It is lower than their counterparts' would have been.",
+            "t": "Intuitions about wronging the unborn are unreliable and ought to be abandoned in the formulation of any policy on climate.",
+            "why": "The author says an adequate ethics must be able to answer the challenge, not that the intuitions should be dropped.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "harm can only be done to people who are alive today",
-            "why": "The passage never says this; the argument rests on who would have existed.",
-            "trap": "Extreme wording"
-          },
-          {
-            "t": "the effects of depletion are two centuries away",
-            "why": "Distance in time is not the reason given.",
-            "trap": "True but not the answer"
-          },
-          {
-            "t": "they would not have existed under the other policy, and their lives are worth living",
-            "why": "Paragraph 3: had we conserved, 'these particular people would never have been born', so none is worse off."
+            "t": "Since our choices decide who will exist, harm to particular persons cannot wholly explain our duties to the future.",
+            "why": "Paragraphs 2 and 3 establish the problem; paragraph 4 draws Parfit's inference and notes its practical importance."
           }
         ],
         "answer": 3
       },
       {
+        "type": "structure",
+        "stem": "The second paragraph chiefly serves to establish that:",
+        "proof": [
+          1
+        ],
+        "options": [
+          {
+            "t": "parents bear moral responsibility for the circumstances in which their children come to be conceived.",
+            "why": "Responsibility of parents is not discussed.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "the populations produced by rival policies will differ in size as well as in composition.",
+            "why": "The paragraph allows that the numbers may be the same ('may share a population in number').",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "conservation policies alter patterns of conception more than depleting policies do in the long run.",
+            "why": "No comparison between the two policies in this respect is made.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "large policies determine which individuals come to exist, not merely how well they fare.",
+            "why": "Paragraph 2: the people under one policy 'will be wholly different from those' under the other."
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "type": "detail",
+        "stem": "According to the passage, the choice of rapid depletion does not harm the people of two centuries hence because:",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "they would not have existed under the alternative policy, and their lives are nonetheless worth living.",
+            "why": "Paragraph 3 gives both conditions."
+          },
+          {
+            "t": "their lives are worth living, and they would have existed whichever policy was chosen.",
+            "why": "Half right: the second clause is false; they would not have existed under conservation.",
+            "trap": "Half right, half wrong"
+          },
+          {
+            "t": "their quality of life, though lower than under conservation, exceeds that of earlier generations.",
+            "why": "No comparison with earlier generations is made.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "the effects of the policy lie too far in the future to be foreseen by those who adopt it.",
+            "why": "The example stipulates that the effects are known; foreseeability is not the issue.",
+            "trap": "Out of scope"
+          }
+        ],
+        "answer": 0
+      },
+      {
         "type": "application",
-        "stem": "Which of the following arguments is closest to the one the author says 'someone could seriously advance'?",
+        "stem": "Which of the following arguments is closest to the one that the author says 'someone could seriously advance'?",
         "proof": [
           3
         ],
         "options": [
           {
-            "t": "We must cut emissions because future people will be worse off than they would otherwise have been.",
-            "why": "This is the ordinary harm argument that the non-identity problem undermines.",
+            "t": "We need not curb emissions, since future people will be wealthy enough to repair whatever damage we leave behind.",
+            "why": "A different argument, from future capacity; it does not rest on the identity of the people.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Philosophy seminars should not discuss climate change.",
-            "why": "The author says the problem matters well beyond seminars.",
-            "trap": "Out of scope"
+            "t": "We may bequeath whatever we like to the future, since the unborn have no rights while they remain unborn.",
+            "why": "This denies the unborn any standing; the argument in the passage grants standing but denies a complaint.",
+            "trap": "Distorts the passage"
           },
           {
-            "t": "We need not cut emissions for future people's sake, since another policy would have produced different people, and those who exist cannot complain of existing.",
-            "why": "This uses non-identity to excuse the choice, which is the position the last sentence warns about."
+            "t": "We need not curb emissions for their sake, since without our present economy they would never exist.",
+            "why": "This is the 'owes its very existence to our choices' argument of paragraph 4."
           },
           {
-            "t": "Future people will be happier than us, so we owe them nothing.",
-            "why": "The argument the author warns of rests on who exists, not on how happy they are.",
+            "t": "We must curb emissions, since every person who will ever live has an equal claim on the earth's resources.",
+            "why": "This is an argument for curbs, opposite in direction.",
             "trap": "Distorts the passage"
           }
         ],
         "answer": 2
+      },
+      {
+        "type": "structure",
+        "stem": "The author mentions that 'some philosophers have defended person-affecting accounts' chiefly in order to indicate that:",
+        "proof": [
+          3
+        ],
+        "options": [
+          {
+            "t": "the non-identity problem arises only for those who hold person-affecting accounts of morality in general.",
+            "why": "The problem arises from the ordinary understanding of harm; person-affecting accounts are one response to it.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Parfit himself later withdrew the view that wrongdoing requires an identifiable victim in the face of such objections.",
+            "why": "Nothing is said about any change in Parfit's view.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "most philosophers reject Parfit's account of how conception depends on the circumstances of the parents.",
+            "why": "The challenge mentioned concerns his inference, not the facts of reproduction.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Parfit's inference from the problem is open to challenge, though the problem itself remains.",
+            "why": "The paragraph says the inference is 'not forced upon us' but that the difficulty is practical and requires an answer."
+          }
+        ],
+        "answer": 3
       }
     ],
     "recall": [
       {
-        "q": "Whose argument does the passage discuss?",
+        "q": "On what fact about reproduction does Parfit's argument begin?",
         "options": [
-          "Derek Parfit",
-          "John Rawls",
-          "Peter Singer",
-          "Immanuel Kant"
+          "Parents cannot choose how many children they will have.",
+          "Every child is born with a worthwhile life.",
+          "Populations grow more quickly when resources are conserved.",
+          "Which person is born depends on the precise moment of conception."
         ],
-        "answer": 0
+        "answer": 3
       },
       {
-        "q": "Which example policy does the passage work through?",
+        "q": "How does the passage define harm on 'the ordinary understanding'?",
         "options": [
-          "Building roads",
-          "Using up or conserving a resource",
-          "Raising taxes",
-          "Banning cars"
+          "Causing suffering that cannot later be repaired.",
+          "Making someone worse off than he would otherwise have been.",
+          "Infringing the rights of someone who is already alive.",
+          "Lowering the average quality of life in a society."
         ],
         "answer": 1
       }
@@ -1242,15 +1475,15 @@
     "difficulty": "medium",
     "since": "2026-10-18",
     "paras": [
-      "Until recently, the animal welfare laws of many countries protected only vertebrates: mammals, birds, reptiles, amphibians and fish. Crabs, lobsters and octopuses fell outside them, which is why a lobster could legally be boiled alive in places where doing the same to a chicken would be a crime. The line was drawn less by evidence than by habit, and by the difficulty of knowing what, if anything, such creatures feel.",
-      "The difficulty is real. We cannot ask a crab whether it is in pain, and behaviour that looks like distress might be a reflex with nothing felt behind it. Scientists therefore look for indirect signs. Does the animal protect an injured part of its body? Will it trade off avoiding harm against other needs? Hermit crabs given small shocks inside their shells, for instance, were more likely to abandon a poor shell than a good one. Does it learn to avoid places where it was hurt, and does it seek out painkillers when injured? None of these proves feeling, but together they make it more or less likely.",
-      "In 2021 a team at the London School of Economics, led by the philosopher Jonathan Birch, reviewed more than three hundred studies using such criteria. It concluded that there was strong evidence of sentience in octopuses and other cephalopods, and substantial evidence in decapod crustaceans such as crabs and lobsters. The following year Britain extended its animal welfare law to cover both groups. The report recommended against boiling decapods alive and called for further study rather than claiming certainty.",
-      "The case shows a way of acting under uncertainty that may matter well beyond lobsters. We will probably never be sure what it is like, if anything, to be a crab. But the question for law is not whether we are certain; it is how strong the evidence must be before we take reasonable care. If the cost of precaution is small, such as stunning an animal before killing it, and the cost of being wrong is great suffering, then waiting for proof that may never come is itself a choice, and not obviously the cautious one."
+      "Until recently the animal-welfare statutes of many jurisdictions protected only vertebrates. Crabs, lobsters and octopuses lay beyond their reach, which is why a lobster might lawfully be boiled alive where the same treatment of a chicken would be a crime. The boundary was drawn less by evidence than by habit, and by the intractable difficulty of ascertaining what, if anything, such creatures feel. It is worth observing that the difficulty is of a peculiar kind: it arises not from a missing instrument but from the absence of any agreed test.",
+      "Because we cannot interrogate a crab, and because behaviour resembling distress may be a reflex with nothing felt behind it, investigators have looked for converging indirect indicators. Does the animal guard an injured part of its body? Will it weigh avoidance of harm against competing needs? Hermit crabs subjected to mild shocks within their shells, for instance, abandoned poor shells more readily than good ones, as though trading the discomfort against the value of the dwelling. Does it learn to shun places where it was hurt, and will it seek relief when injured? No single indicator establishes feeling; their conjunction renders it more or less probable. The method is that of the clinic or the courtroom, not the laboratory bench: a verdict is reached on the balance of probabilities, by weighing evidence none of which is individually decisive.",
+      "In 2021 a team at the London School of Economics, led by the philosopher Jonathan Birch, reviewed more than three hundred studies against such criteria, and judged the evidence of sentience sufficiently strong in cephalopod molluscs, and in decapod crustaceans such as crabs and lobsters, to warrant legal protection. The following year Britain extended its welfare legislation to both groups. The report advised against boiling decapods alive, but it did not pretend to certainty: it urged further research, and it presented its conclusions as a judgement about what the evidence made reasonable and not as a proof.",
+      "The episode models a form of reasoning under uncertainty with a range well beyond lobsters. We shall probably never know what it is like, if it is like anything, to be a crab. But the question for law is not whether we are certain; it is how strong the evidence must be before reasonable care is owed. Where the cost of precaution is small, as in stunning an animal before killing it, and the cost of error is great suffering, the demand for proof that may never arrive is itself a decision, and not obviously the cautious one. To insist on certainty before extending care is to assign the entire risk of our ignorance to the creature least able to bear it. The costs of a false positive and a false negative are unequal, and a policy that ignores the inequality is not thereby neutral."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best states the main point of the passage?",
+        "stem": "Which one of the following best states the main point of the passage?",
         "proof": [
           1,
           2,
@@ -1258,135 +1491,164 @@
         ],
         "options": [
           {
-            "t": "Indirect evidence suggests crabs, lobsters and octopuses may feel pain, and when precaution is cheap, uncertainty is a reason to act rather than wait.",
-            "why": "Covers the evidence, the change in law and the principle in the last paragraph."
-          },
-          {
-            "t": "Scientists have proved that lobsters feel pain exactly as humans do.",
-            "why": "The passage stresses that none of the signs proves feeling.",
+            "t": "Crabs, lobsters and octopuses have been proved to feel pain, and the law has rightly been changed to reflect that proof.",
+            "why": "Paragraph 3 says the report did not pretend to certainty and offered no proof.",
             "trap": "Extreme wording"
           },
           {
-            "t": "Animal welfare laws should protect every living thing, including plants.",
-            "why": "Plants are never discussed.",
+            "t": "Where evidence of sentience is indirect but convergent, precaution need not await certainty, as the extension of welfare law to crustaceans illustrates.",
+            "why": "Paragraphs 2 and 3 give the convergent evidence and the legal outcome; paragraph 4 states the principle."
+          },
+          {
+            "t": "Scientists cannot determine whether any invertebrate is sentient, and the law should therefore withhold protection from all of them until they can.",
+            "why": "The author argues that the absence of proof is not a reason to withhold care.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "The cost of stunning an animal before killing it is small, and this alone justifies the legislation of 2022.",
+            "why": "Too narrow: stunning is an illustration in paragraph 4, and the legislation rested on the evidence reviewed in paragraph 3.",
+            "trap": "Too narrow or too broad"
+          }
+        ],
+        "answer": 1
+      },
+      {
+        "type": "except",
+        "stem": "The passage mentions all of the following as signs that investigators look for EXCEPT:",
+        "proof": [
+          1
+        ],
+        "options": [
+          {
+            "t": "the emission of sounds resembling human cries of pain.",
+            "why": "Not mentioned; paragraph 2 lists guarding, weighing, avoidance learning and relief-seeking."
+          },
+          {
+            "t": "protection of an injured part of the body.",
+            "why": "Named in paragraph 2.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "a willingness to weigh avoidance of harm against other needs.",
+            "why": "Named in paragraph 2.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "the learning of avoidance of places where harm was suffered.",
+            "why": "Named in paragraph 2.",
+            "trap": "True but not the answer"
+          }
+        ],
+        "answer": 0
+      },
+      {
+        "type": "inference",
+        "stem": "The hermit-crab study supports the view that crabs may feel pain chiefly because the crabs:",
+        "proof": [
+          1
+        ],
+        "options": [
+          {
+            "t": "left their shells every time they were shocked, which shows that shocks are unpleasant to them.",
+            "why": "Shells were abandoned more readily when poor, not on every occasion; a uniform response would suggest a reflex.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "preferred good shells to poor ones whether or not they had been shocked at any point.",
+            "why": "The study concerns the response to shocks; preference without shocks is not mentioned.",
             "trap": "Out of scope"
           },
           {
-            "t": "Since we cannot ask animals what they feel, the law should ignore the question.",
-            "why": "The author argues for acting on strong evidence without certainty.",
+            "t": "traded the shock against the worth of their shells, as a mere reflex would not.",
+            "why": "Paragraph 2: poor shells were abandoned more readily than good ones, 'as though trading' discomfort against the dwelling's value."
+          },
+          {
+            "t": "learned to avoid the particular shells in which they had earlier been shocked.",
+            "why": "Avoidance learning is a separate indicator and is not attributed to this study.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 2
+      },
+      {
+        "type": "structure",
+        "stem": "The last paragraph serves mainly to:",
+        "proof": [
+          3
+        ],
+        "options": [
+          {
+            "t": "draw from the case a general principle about acting under uncertainty.",
+            "why": "It moves from lobsters to 'a form of reasoning under uncertainty with a range well beyond' them."
+          },
+          {
+            "t": "concede that the evidence for sentience in crustaceans is weaker than the report implied.",
+            "why": "The author does not retreat from the report; certainty is argued to be the wrong standard.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "argue that stunning is the only humane method of killing a crab or a lobster.",
+            "why": "Stunning is given as an example of a cheap precaution, not as the only method.",
+            "trap": "Too narrow or too broad"
+          },
+          {
+            "t": "explain why invertebrates were left outside the law for so long.",
+            "why": "That explanation is offered in paragraph 1.",
             "trap": "Distorts the passage"
           }
         ],
         "answer": 0
       },
       {
-        "type": "except",
-        "stem": "All of the following are presented as signs that scientists look for EXCEPT:",
-        "proof": [
-          1
-        ],
-        "options": [
-          {
-            "t": "protecting an injured part of the body",
-            "why": "Named in paragraph 2.",
-            "trap": "True but not the answer"
-          },
-          {
-            "t": "learning to avoid places where the animal was hurt",
-            "why": "Named in paragraph 2.",
-            "trap": "True but not the answer"
-          },
-          {
-            "t": "making sounds like human cries of pain",
-            "why": "Sounds are never mentioned among the signs."
-          },
-          {
-            "t": "seeking out painkillers when injured",
-            "why": "Named in paragraph 2.",
-            "trap": "True but not the answer"
-          }
-        ],
-        "answer": 2
-      },
-      {
-        "type": "inference",
-        "stem": "The hermit crab study supports the view that crabs may feel pain because the crabs:",
-        "proof": [
-          1
-        ],
-        "options": [
-          {
-            "t": "always left their shells when shocked",
-            "why": "They were 'more likely' to leave poor shells, not always.",
-            "trap": "Extreme wording"
-          },
-          {
-            "t": "did not respond to the shocks",
-            "why": "They did respond, by leaving shells.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "preferred shells of a particular size",
-            "why": "The study is about trading off shocks against shell quality, not size.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "weighed the shock against the value of their shell, which a simple reflex would not do",
-            "why": "Abandoning a poor shell more readily than a good one shows a trade-off between needs."
-          }
-        ],
-        "answer": 3
-      },
-      {
-        "type": "structure",
-        "stem": "The last paragraph mainly serves to:",
+        "type": "application",
+        "stem": "Which one of the following would the author be most likely to endorse?",
         "proof": [
           3
         ],
         "options": [
           {
-            "t": "summarise the evidence for sentience in crabs",
-            "why": "The evidence is in paragraphs 2 and 3.",
+            "t": "A government unsure whether a new class of animals is sentient should extend protections where precautions are cheap and suffering great.",
+            "why": "This is the principle of paragraph 4 applied to a new case."
+          },
+          {
+            "t": "A government unsure whether a class of animals is sentient should withhold all protection until science removes reasonable doubt on the point.",
+            "why": "The author calls the demand for proof a decision and 'not obviously the cautious one'.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "draw a general principle about acting under uncertainty from the case",
-            "why": "It moves from lobsters to how much evidence should prompt reasonable care."
+            "t": "A government should extend identical protections to every animal species irrespective of the evidence of sentience that exists.",
+            "why": "The author ties protection to the strength of evidence.",
+            "trap": "Extreme wording"
           },
           {
-            "t": "argue that octopuses are more intelligent than crabs",
-            "why": "Intelligence is not compared.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "criticise the report for claiming certainty",
-            "why": "The report 'called for further study rather than claiming certainty'.",
-            "trap": "Distorts the passage"
+            "t": "A government should prohibit the killing of any such animal for food until the science of sentience is finally settled.",
+            "why": "The author recommends reasonable care where the cost is small, not prohibition pending proof.",
+            "trap": "Extreme wording"
           }
         ],
-        "answer": 1
+        "answer": 0
       }
     ],
     "recall": [
       {
-        "q": "Which groups did Britain add to its animal welfare law in 2022?",
+        "q": "Which two groups did Britain add to its welfare legislation in 2022?",
         "options": [
-          "Insects and spiders",
-          "Cephalopods and decapod crustaceans",
-          "Fish and amphibians",
-          "Worms and snails"
+          "Insects and spiders.",
+          "Reptiles and amphibians.",
+          "Cephalopod molluscs and decapod crustaceans.",
+          "Fish and cephalopod molluscs."
         ],
-        "answer": 1
+        "answer": 2
       },
       {
-        "q": "About how many studies did the review examine?",
+        "q": "What did hermit crabs do that suggested a weighing of discomfort against value?",
         "options": [
-          "Thirty",
-          "More than three hundred",
-          "Three thousand",
-          "Twelve"
+          "They refused to leave good shells even when shocked.",
+          "They sought out painkillers when injured.",
+          "They abandoned poor shells more readily than good ones.",
+          "They guarded an injured claw more carefully than a sound one."
         ],
-        "answer": 1
+        "answer": 2
       }
     ]
   },
@@ -1397,42 +1659,43 @@
     "difficulty": "medium",
     "since": "2026-10-18",
     "paras": [
-      "In a classic experiment from the 1970s, Amos Tversky and Daniel Kahneman spun a wheel of fortune in front of volunteers. The wheel was rigged to stop at either 10 or 65, and the volunteers knew it had nothing to do with what followed. They were then asked whether the percentage of African countries in the United Nations was higher or lower than that number, and then to estimate the true figure. Those who had seen 10 gave a median estimate of 25 per cent; those who had seen 65 gave 45 per cent. A number they knew to be random had pulled their judgement towards it.",
-      "The effect, called anchoring, has since been found far outside the laboratory. Experienced estate agents shown different asking prices for the same house valued it differently, while insisting that the listed price had not influenced them. In one study, German judges with years of experience rolled loaded dice before recommending a sentence for a shoplifter, and those who rolled higher numbers proposed longer sentences. Retailers rely on the same effect when they print a crossed-out 'original' price beside a discounted one, and in negotiations the first offer tends to shape the final deal.",
-      "Psychologists have proposed two explanations, which may both be right. In one, people start from the anchor and adjust away from it, but stop too soon, once they reach a value that seems plausible. In the other, the anchor quietly brings to mind information consistent with it: thinking about a high price makes a house's good features more vivid, and a low price its faults. Both accounts explain why the effect survives even when people know the anchor is irrelevant.",
-      "Anchoring is remarkably robust. Even absurd anchors, such as asking whether Gandhi died before or after the age of 140, can nudge later estimates, and people with real expertise are rarely immune, though they are sometimes less affected. Warnings about the effect help only a little. The most reliable remedy seems to be deliberately considering the opposite: asking why the anchor might be wrong and generating reasons for a very different answer. It is easier said than done, since the whole difficulty is that the anchor does its work without our noticing."
+      "In a celebrated experiment of the 1970s, Amos Tversky and Daniel Kahneman spun a wheel of fortune before their volunteers. It had been rigged to stop at either 10 or 65, and the volunteers, who watched it turn, knew that it bore no relation to what followed. They were asked whether the proportion of African countries in the United Nations was higher or lower than the number the wheel had shown, and then to estimate the true figure. Those who had seen 10 gave a median estimate of 25 per cent; those who had seen 65 gave 45. A number known to be random had drawn their judgement toward itself.",
+      "The effect, termed anchoring, has since been found far from the laboratory. Experienced estate agents shown different asking prices for the same house valued it differently, while insisting that the figure had not influenced them. German judges of long standing, who rolled loaded dice before recommending a sentence for a shoplifter, proposed longer terms after high throws. Retailers exploit the same tendency in printing a crossed-out 'original' price beside a reduced one, and in negotiation the first offer tends to shape the final settlement. In each case the anchor is conspicuous, or arbitrary, or both, and in each case those affected deny being affected, which is perhaps the most instructive feature of the phenomenon.",
+      "Two explanations have been proposed, and both may be correct. On the first, people begin from the anchor and adjust away from it, but halt prematurely, as soon as they reach a value that seems plausible. On the second, the anchor quietly summons information consistent with itself: contemplating a high price makes a house's merits more vivid, and a low price its defects. Either account would explain why the effect persists even when people know the anchor to be irrelevant. The two are not merely academic rivals, for they suggest different remedies: the first implies that people might be induced to adjust further, whereas the second implies that the damage is done at the moment the anchor is encountered, so that urging further adjustment would achieve little.",
+      "Anchoring is notably robust. Even absurd anchors, such as asking whether Gandhi died before or after the age of 140, can nudge subsequent estimates, and people with genuine expertise are seldom immune, though they are sometimes less affected. Warnings help only a little. The most reliable remedy appears to be deliberate consideration of the opposite: asking why the anchor might be mistaken and generating reasons for a very different answer. Nor is the effect confined to the kind of numerical judgement that a laboratory can conveniently measure; it appears wherever a quantity must be guessed and a convenient reference point lies to hand. It is easier recommended than practised, since the whole difficulty is that an anchor does its work without our noticing."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best captures the main idea of the passage?",
+        "stem": "Which one of the following best captures the main idea of the passage?",
         "proof": [
           0,
           1,
+          2,
           3
         ],
         "options": [
           {
-            "t": "Experts are immune to anchoring because they know the true values.",
-            "why": "Experts are 'rarely immune'.",
+            "t": "Anchoring affects only the judgements of novices, and can be eliminated entirely by warning people that an irrelevant number is present.",
+            "why": "Paragraph 4 says experts are seldom immune and that warnings help only a little.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "A first number, even an irrelevant one, pulls later estimates towards it, and the effect is robust and hard to undo without deliberate effort.",
-            "why": "Covers the finding, its reach, its explanations and its remedy."
+            "t": "Retailers and negotiators exploit anchoring more successfully than judges, estate agents and other professionals are able to resist it.",
+            "why": "No comparison of this kind is made.",
+            "trap": "Out of scope"
           },
           {
-            "t": "Most people do not know how many African countries belong to the United Nations.",
-            "why": "This is only the question used in one experiment.",
+            "t": "A first number, even an irrelevant one, pulls later estimates toward itself, a robust effect best countered by considering the opposite.",
+            "why": "Paragraph 1 shows the effect, 2 its range, 3 the explanations and 4 the robustness and the remedy."
+          },
+          {
+            "t": "People adjust insufficiently from an anchor because they cannot call to mind any information that is inconsistent with it.",
+            "why": "Too narrow, and it merges the two explanations, which the passage treats as separate.",
             "trap": "Too narrow or too broad"
-          },
-          {
-            "t": "Negotiators should never make the first offer.",
-            "why": "The passage says the first offer tends to shape the deal, which favours making it.",
-            "trap": "Distorts the passage"
           }
         ],
-        "answer": 1
+        "answer": 2
       },
       {
         "type": "detail",
@@ -1442,26 +1705,26 @@
         ],
         "options": [
           {
-            "t": "decide whether the shoplifter was guilty",
-            "why": "The dice came before a sentencing recommendation, not a verdict.",
+            "t": "decide at random which sentence each judge would recommend for the shoplifter.",
+            "why": "The judges themselves proposed the terms; the dice supplied the anchor.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "measure how experienced the judges were",
-            "why": "Experience was a feature of the judges, not something the dice measured.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "show that random numbers do not affect experts",
-            "why": "Higher rolls led to longer sentences.",
+            "t": "test whether judges could distinguish a reliable reference figure from a random one.",
+            "why": "The study measured the pull of the number, not the judges' ability to tell the two apart.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "give the judges an irrelevant number before they recommended a sentence",
-            "why": "Loaded dice supplied a number that then anchored the sentence."
+            "t": "give the judges an irrelevant number before they recommended a sentence.",
+            "why": "Paragraph 2: judges rolled loaded dice before recommending a sentence, and high throws were followed by longer terms."
+          },
+          {
+            "t": "provide the judges with a reference sentence drawn from comparable earlier cases.",
+            "why": "The number was random and unrelated to the case.",
+            "trap": "Distorts the passage"
           }
         ],
-        "answer": 3
+        "answer": 2
       },
       {
         "type": "inference",
@@ -1471,51 +1734,80 @@
         ],
         "options": [
           {
-            "t": "notice the house's faults more readily",
-            "why": "A low price brings to mind information consistent with it: the faults."
-          },
-          {
-            "t": "start from the price and adjust upwards, stopping too soon",
-            "why": "That is the first explanation, not the second.",
+            "t": "start from the asking price and adjust upward until a plausible figure is reached.",
+            "why": "This is the first explanation (adjustment), not the second.",
             "trap": "True but not the answer"
           },
           {
-            "t": "ignore the price entirely",
-            "why": "The point is that the price has an effect.",
+            "t": "dismiss the asking price as irrelevant and rely on his own prior valuation.",
+            "why": "The passage says the effect persists even when the anchor is known to be irrelevant.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "value the house more highly than other buyers",
-            "why": "A low anchor would pull the valuation down.",
+            "t": "recall the house's merits more vividly and therefore value it higher.",
+            "why": "Reversal: a high price, not a low one, makes the merits vivid.",
             "trap": "Distorts the passage"
+          },
+          {
+            "t": "notice the house's defects more readily and therefore value it lower.",
+            "why": "Paragraph 3: a low price makes a house's defects more vivid."
           }
         ],
-        "answer": 0
+        "answer": 3
       },
       {
         "type": "application",
-        "stem": "Based on the passage, which strategy would best reduce the effect of an anchor on your own estimate?",
+        "stem": "Based on the passage, which of the following strategies would best reduce the influence of an anchor on one's own estimate?",
         "proof": [
           3
         ],
         "options": [
           {
-            "t": "Reading a warning about anchoring before you estimate",
-            "why": "Warnings 'help only a little'.",
-            "trap": "True but not the answer"
+            "t": "Reminding oneself repeatedly that the anchor is irrelevant to the question.",
+            "why": "Warnings help only a little, and the effect persists when the anchor is known to be irrelevant.",
+            "trap": "Distorts the passage"
           },
           {
-            "t": "Looking at a second, higher anchor to cancel out a low one",
-            "why": "The passage suggests no such remedy.",
-            "trap": "Out of scope"
+            "t": "Deferring to an expert's estimate in place of forming one's own.",
+            "why": "Experts are seldom immune.",
+            "trap": "Distorts the passage"
           },
           {
-            "t": "Listing reasons why the anchor might be badly wrong before you estimate",
-            "why": "This is 'considering the opposite', the most reliable remedy."
+            "t": "Starting from the first plausible figure that comes to mind and adjusting until the result seems reasonable.",
+            "why": "This describes the mechanism of the first explanation, with its premature halt.",
+            "trap": "Distorts the passage"
           },
           {
-            "t": "Trusting your first instinct",
-            "why": "The first instinct is what the anchor shapes.",
+            "t": "Listing reasons why the anchor might be badly wrong before settling on an estimate.",
+            "why": "Considering the opposite is the most reliable remedy named in paragraph 4."
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "type": "inference",
+        "stem": "If the second explanation in the third paragraph is correct, which of the following is most likely to be true?",
+        "proof": [
+          3
+        ],
+        "options": [
+          {
+            "t": "Warning people about the anchor before they judge will remove its effect entirely, whatever the task.",
+            "why": "Contradicted: warnings help only a little, and the second explanation implies the effect arises at once.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "Experts will be wholly unaffected by anchors, because they are able to recall far more relevant information.",
+            "why": "Paragraph 4 says experts are seldom immune.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "Urging people to adjust further from an anchor will do little to reduce its effect.",
+            "why": "The paragraph says that on the second explanation the damage is done when the anchor is encountered."
+          },
+          {
+            "t": "The effect will disappear whenever the anchor is plainly seen to be random by those who judge.",
+            "why": "The wheel of fortune shows that a plainly random anchor still works.",
             "trap": "Distorts the passage"
           }
         ],
@@ -1524,22 +1816,22 @@
     ],
     "recall": [
       {
-        "q": "What did Tversky and Kahneman use to produce a random number?",
+        "q": "What median estimates were given by volunteers who had seen the wheel stop at 10 and at 65?",
         "options": [
-          "A wheel of fortune",
-          "A deck of cards",
-          "A pair of dice",
-          "A coin"
+          "25 per cent and 45 per cent, respectively.",
+          "10 per cent and 65 per cent, respectively.",
+          "45 per cent and 25 per cent, respectively.",
+          "35 per cent in both groups."
         ],
         "answer": 0
       },
       {
-        "q": "Who rolled loaded dice in one study?",
+        "q": "What does the author identify as the most reliable remedy for anchoring?",
         "options": [
-          "Estate agents",
-          "German judges",
-          "Students",
-          "Shopkeepers"
+          "Warning people that the anchor is irrelevant.",
+          "Deliberately considering reasons for a very different answer.",
+          "Asking experienced professionals to make the estimate.",
+          "Letting people adjust for as long as they wish."
         ],
         "answer": 1
       }
@@ -1552,15 +1844,15 @@
     "difficulty": "hard",
     "since": "2026-10-18",
     "paras": [
-      "In the late 1960s and early 1970s, the psychologist Walter Mischel offered preschool children at a Stanford nursery a choice. They could eat one treat, such as a marshmallow, straight away, or wait alone in a room for up to twenty minutes and receive two. Years later, Mischel and his colleagues followed up some of the children and reported that those who had waited longer went on to do better at school and to cope better with stress as adolescents. The marshmallow test became a famous symbol of self-control, and of the idea that the ability to delay gratification in early childhood predicts success in life.",
-      "The original follow-ups, however, involved small numbers of children, almost all from families connected with Stanford University. In 2018 a team repeated the study with a larger and more varied group of nearly a thousand children. Waiting longer was again linked to later achievement, but the link was about half as strong as before, and it shrank much further once the researchers took account of the children's family background, home environment and early abilities. Much of what the test seemed to predict, it appeared, was already captured by these other factors.",
-      "Another line of research questioned what waiting actually means. In a 2013 experiment, children first dealt with an adult who either kept or broke promises to bring better art supplies. Those whose adult had proved unreliable waited, on average, a few minutes for the second marshmallow; those whose adult had kept promises waited far longer. The researchers concluded that the decision to wait is partly a judgement about the environment. For a child whose world has taught that promises are often broken, taking the sweet now is not a failure of willpower but a sensible bet.",
-      "None of this shows that self-control is unimportant, or that Mischel's research was worthless; he himself warned against treating the test as a measure of fixed character. But the story of the marshmallow test shows how a vivid experiment can carry a message larger than its evidence. Read one way, it suggested that some children are simply born with more discipline. Read with the later findings, it suggests that the capacity to wait depends heavily on whether waiting has ever paid off."
+      "In the late 1960s and early 1970s the psychologist Walter Mischel offered preschool children at a Stanford nursery a choice: they might eat one treat, such as a marshmallow, at once, or wait alone in a room for up to twenty minutes and receive two. The experiment's attraction lay in its austerity, a single child, a single sweet and a closed door. Years later Mischel and his colleagues followed up some of the children and reported that those who had waited longer went on to do better at school and to cope more effectively with stress in adolescence. The test became a famous emblem of self-control and of the notion that the capacity to defer gratification in early childhood predicts success in later life.",
+      "The original follow-ups, however, involved small numbers of children, almost all from families connected with the university. In 2018 a team repeated the study with a larger and more varied group of nearly a thousand children. Waiting longer was again associated with later achievement, but the association was about half as strong as before, and it shrank much further once the researchers allowed for the children's family background, home environment and early cognitive abilities. Much of what the test appeared to predict, it seemed, had already been captured by those other factors. A sample so narrow as the original could scarcely have distinguished the influence of a child's temperament from the influence of the child's household.",
+      "A different line of inquiry questioned what waiting means. In a 2013 experiment, children first dealt with an adult who either kept or broke a promise to supply better art materials. Those whose adult had proved unreliable waited, on average, only a few minutes for the second marshmallow, while those whose adult had been dependable waited several times as long. The researchers inferred that the decision to wait is in part a judgement about the environment. For a child whose experience has taught that promises are often broken, taking the sweet at once is not a failure of willpower but a rational wager.",
+      "None of this shows that self-control is unimportant, or that Mischel's research was worthless; he himself warned against treating the test as a measure of fixed character. But the history of the marshmallow test illustrates how a vivid experiment may carry a message larger than its evidence. Read one way, it suggested that some children are simply born with more discipline. Read in the light of later findings, it suggests that the capacity to wait depends heavily on whether waiting has ever paid off, a reading with the further merit of being actionable, since it directs attention to the conditions in which children grow up and not to the dispositions with which they are said to begin."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best expresses the main idea of the passage?",
+        "stem": "Which one of the following best expresses the main idea of the passage?",
         "proof": [
           1,
           2,
@@ -1568,26 +1860,26 @@
         ],
         "options": [
           {
-            "t": "Later research suggests the marshmallow test reflected children's circumstances and experience as well as self-control, so it predicts less than once claimed.",
-            "why": "Covers the larger study, the reliability experiment and the conclusion."
-          },
-          {
-            "t": "Self-control has no effect on success in life.",
-            "why": "The last paragraph says self-control is not unimportant.",
+            "t": "The marshmallow test has been discredited, since studies with larger samples found no relation between waiting and later achievement of any kind.",
+            "why": "Paragraph 2 says the association remained, though weaker.",
             "trap": "Extreme wording"
           },
           {
-            "t": "Mischel's research was fraudulent.",
-            "why": "The author says it was not worthless and reports no fraud.",
+            "t": "Later research suggests the test reflected children's circumstances and expectations as much as fixed self-discipline, though self-control still matters.",
+            "why": "Paragraphs 2 and 3 supply the circumstances and expectations; paragraph 4 preserves the value of self-control and of Mischel's work."
+          },
+          {
+            "t": "Children from unreliable environments lack self-control, which accounts for their poorer achievement in later life and in school.",
+            "why": "Paragraph 3 argues that such children are making a rational judgement, not showing a lack of self-control.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Children from Stanford families are more patient than other children.",
-            "why": "The passage compares no groups on patience.",
-            "trap": "Out of scope"
+            "t": "Mischel's original findings were distorted, and his conclusions should therefore be set aside by psychologists as unsound.",
+            "why": "Paragraph 4 says his research was not worthless and that he warned against the popular reading.",
+            "trap": "Extreme wording"
           }
         ],
-        "answer": 0
+        "answer": 1
       },
       {
         "type": "detail",
@@ -1597,23 +1889,23 @@
         ],
         "options": [
           {
-            "t": "found no link at all between waiting and later achievement",
-            "why": "A link remained, though weaker.",
-            "trap": "Extreme wording"
-          },
-          {
-            "t": "studied only children from Stanford families",
-            "why": "It used 'a larger and more varied group'.",
+            "t": "found no association at all between waiting and later achievement in the larger and more varied group.",
+            "why": "The association remained, at about half its former strength.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "found a weaker link, which shrank further once family background and early abilities were considered",
-            "why": "Paragraph 2 says exactly this."
+            "t": "found a stronger association among children from less advantaged homes than among the more favoured.",
+            "why": "No such subgroup result is reported.",
+            "trap": "Out of scope"
           },
           {
-            "t": "showed that waiting causes later success",
-            "why": "It suggested much of the link came from other factors.",
-            "trap": "Distorts the passage"
+            "t": "found a weaker association, which shrank further once family background and early abilities were allowed for.",
+            "why": "Paragraph 2."
+          },
+          {
+            "t": "found a similar association, which persisted undiminished once background was considered by the researchers.",
+            "why": "Half right: the association was weaker and shrank further with controls.",
+            "trap": "Half right, half wrong"
           }
         ],
         "answer": 2
@@ -1626,26 +1918,26 @@
         ],
         "options": [
           {
-            "t": "without any capacity for self-control",
-            "why": "The experiment suggests the choice may be a reasonable judgement.",
-            "trap": "Extreme wording"
-          },
-          {
-            "t": "less intelligent than children who wait",
-            "why": "Intelligence is not discussed.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "unaware that waiting brings a reward",
-            "why": "All the children were told of the second marshmallow.",
+            "t": "lacking the capacity for self-control that other children possess.",
+            "why": "The experiment's point is that this is not a failure of willpower.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "acting sensibly, given experience that promises are often broken",
-            "why": "Paragraph 3 calls taking the sweet 'a sensible bet' for such a child."
+            "t": "acting sensibly, given experience that promises are often broken.",
+            "why": "Paragraph 3 calls it a rational wager for such a child."
+          },
+          {
+            "t": "less intelligent than the children who are able to wait.",
+            "why": "Intelligence is not discussed in the experiment.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "displaying a trait of character that will persist throughout later life.",
+            "why": "The author warns against treating the test as a measure of fixed character.",
+            "trap": "Distorts the passage"
           }
         ],
-        "answer": 3
+        "answer": 1
       },
       {
         "type": "tone",
@@ -1655,48 +1947,77 @@
         ],
         "options": [
           {
-            "t": "contemptuous",
-            "why": "The author defends the research as not worthless.",
+            "t": "respectful, while critical of the way in which the test was popularly interpreted.",
+            "why": "He is said not to be worthless and to have warned against the popular reading; the message 'larger than its evidence' is the criticism."
+          },
+          {
+            "t": "dismissive of his methods while admiring of his conclusions.",
+            "why": "Reversed: the conclusions are qualified, and the work is not dismissed.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "respectful, while critical of how the test was popularly interpreted",
-            "why": "Mischel is credited with warning against misuse; the criticism is of the 'message larger than its evidence'."
+            "t": "defensive, since the later studies have unfairly diminished his reputation.",
+            "why": "The author treats the later studies as informative, not unfair.",
+            "trap": "Distorts the passage"
           },
           {
-            "t": "wholly uncritical",
-            "why": "The paragraph criticises the popular reading of the test.",
-            "trap": "Extreme wording"
-          },
-          {
-            "t": "uninterested",
-            "why": "The paragraph draws a pointed lesson.",
+            "t": "neutral, since the author merely reports the history of the experiment without assessing it.",
+            "why": "The paragraph assesses the experiment, notably its message larger than the evidence.",
             "trap": "Distorts the passage"
           }
         ],
-        "answer": 1
+        "answer": 0
+      },
+      {
+        "type": "strengthen",
+        "stem": "Which of the following, if true, would most support the view in the third paragraph that waiting reflects a judgement about the environment?",
+        "proof": [
+          3
+        ],
+        "options": [
+          {
+            "t": "Children whose earlier rewards had arrived as promised waited longer for a second marshmallow elsewhere than other children.",
+            "why": "Past experience of reliable reward changes how long a child waits, which is the environmental judgement described."
+          },
+          {
+            "t": "Children with larger vocabularies waited longer than children with smaller vocabularies, and their families were no better off.",
+            "why": "Vocabulary is unrelated to the environmental explanation.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "Children who could not wait at the age of four were also less patient at the age of fourteen.",
+            "why": "Consistent with a fixed trait, and so it does not support the environmental reading.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Children tested alone waited longer than children tested in pairs, which suggests that company shortens patience.",
+            "why": "Testing conditions of this sort are not the reliability of promises.",
+            "trap": "Out of scope"
+          }
+        ],
+        "answer": 0
       }
     ],
     "recall": [
       {
-        "q": "What were the children offered?",
+        "q": "What did the 2013 experiment vary?",
         "options": [
-          "A toy",
-          "A treat such as a marshmallow",
-          "Money",
-          "A book"
+          "The length of time the children were left alone.",
+          "Whether the adult kept or broke a promise before the test.",
+          "The kind of treat offered to each child.",
+          "The age of the children who took part."
         ],
         "answer": 1
       },
       {
-        "q": "What did the 2013 experiment vary?",
+        "q": "How did the 2018 sample differ from the original one?",
         "options": [
-          "The size of the treat",
-          "Whether an adult kept promises",
-          "The colour of the room",
-          "The children's ages"
+          "It was larger and more varied, with nearly a thousand children.",
+          "It was smaller but drawn from a single university.",
+          "It consisted only of children from poorer families.",
+          "It was followed for a shorter period of time."
         ],
-        "answer": 1
+        "answer": 0
       }
     ]
   }

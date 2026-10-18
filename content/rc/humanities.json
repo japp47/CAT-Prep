@@ -5,152 +5,151 @@
     "genre": "literature",
     "difficulty": "hard",
     "paras": [
-      "A common complaint about translations is that something is always lost. The Italian proverb puts it more harshly: traduttore, traditore, translator, traitor. Behind the complaint lies a picture of translation as the transfer of fixed content from one container to another, in which the best a translator can do is to spill as little as possible.",
-      "Anyone who has tried to translate a poem knows that the picture is wrong. Words do not carry meanings in isolation; they carry sounds, rhythms, associations and histories, and these never line up neatly between languages. A word for 'home' may suggest a building in one language, a family in another and a native region in a third. A translator who keeps the literal sense may lose the tone; one who keeps the rhyme may have to change the image. There is no neutral solution, only a choice of which losses to accept.",
-      "This is why the best translators are increasingly described as writers rather than conduits. The question they face is not 'what does this sentence mean?' but 'what is this sentence doing, and how can English do something like it?' Two excellent translations of the same novel can differ on almost every page and both be faithful, because faithfulness is not a property of individual words. It belongs to the relationship between a whole work and its readers.",
-      "Seen this way, translation is also a form of criticism. To decide that a phrase is ironic rather than sincere, or that a character's formality marks distance rather than class, the translator must interpret the work, and readers of the translation inherit that interpretation, often without knowing it. This gives translators a quiet power that their usual invisibility on book covers conceals.",
-      "It also suggests that the anxiety about loss is misplaced, or at least incomplete. Translations gain as well as lose: a work read in a new language acquires new echoes and can be understood in ways its first readers could not. Literature has always moved between languages, and much of what we call a national tradition was shaped by translations from elsewhere. The traitor of the proverb may be better described as a collaborator."
+      "The Italian pun that makes the translator a traitor, traduttore, traditore, owes its longevity to a picture of language that few people examine. On that picture a text is a vessel for a meaning that exists independently of its words, and translation is the pouring of the contents into a second vessel; the best translator is the one who spills least. The picture explains why translations are so often judged by what they lack, and why the highest praise for one is that it does not read like a translation at all. It has the advantage of simplicity. Its disadvantage is that it is not true of any text worth translating.",
+      "Poetry shows why. A word carries not only a sense but a sound, a rhythm, a history of previous uses and a penumbra of association, and none of these travels intact. The word that one language uses for 'home' may summon a building, another a family, a third a native region; the translator who preserves the literal sense may flatten the tone, and the one who preserves the rhyme may have to alter the image. John Dryden, three centuries ago, distinguished between rendering word for word, rendering sense for sense and imitating freely, and recommended the middle course, but the middle course is less a position at which a translator arrives than a series of local decisions, each sacrificing something. Vladimir Nabokov, who held that anything short of the literal was a betrayal, produced an Onegin so burdened with footnotes that the poem is scarcely legible without them, and demonstrated chiefly that literalism is also a choice, with casualties of its own.",
+      "It does not follow that translation is merely free composition. The critic Lawrence Venuti has argued that English-language publishing rewards translations that read fluently, as though they had been written in English, and so effaces both the translator's labour and the foreignness of the original; the translator is made invisible so that the reader may be spared the sensation of reading something from elsewhere. The complaint is just, but it assumes that a translation could choose to be transparent, and that transparency is the default against which other styles must justify themselves. There is no transparent translation, only translations whose interpretive decisions are concealed from the reader with more or less skill. To decide that a phrase is ironical rather than sincere, or that a character's formality marks distance rather than rank, is to interpret the work, and the reader of the translation inherits the interpretation without seeing the evidence for it.",
+      "This suggests that the anxiety about loss, though natural, is incomplete. Two translations of the same novel may differ on nearly every page and both be faithful, since faithfulness belongs not to individual words but to the relationship between a whole work and the readers it finds. A work read in a new language also acquires what it did not possess: echoes of other books in that language, readers with different expectations, questions its first audience could not have asked. Much of what is called a national literature was formed by importation, and its writers did not regard themselves as passive recipients of foreign goods. The traitor of the proverb is better described as a collaborator, though the word is double-edged: it implies partnership and also the possibility of betrayal."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best states the main idea of the passage?",
+        "stem": "Which one of the following best states the central argument of the passage?",
         "proof": [
-          1,
+          0,
           2,
-          4
+          3
         ],
         "options": [
           {
-            "t": "Poems cannot be translated.",
-            "why": "The passage says translation involves choosing which losses to accept, not that it is impossible.",
-            "trap": "Extreme wording"
-          },
-          {
-            "t": "Translation is an act of interpretation and creative choice rather than a transfer of fixed meaning, and it adds as well as loses.",
-            "why": "Paragraphs 2 and 3 replace the container picture, paragraph 4 calls it criticism, and paragraph 5 says translations gain too."
-          },
-          {
-            "t": "Literal translation is more faithful than free translation.",
-            "why": "Faithfulness, the passage says, is not a property of individual words.",
+            "t": "Since every translation sacrifices some feature of the original, translators should be as literal as possible and supply commentary wherever meaning would otherwise be lost.",
+            "why": "The author treats Nabokov's literalism as one more set of choices with casualties of its own (paragraph 2), not as the solution to loss.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Translators deserve to have their names on book covers.",
-            "why": "Their invisibility is mentioned in passing, not argued about.",
-            "trap": "Too narrow or too broad"
+            "t": "Translators should make their interpretive work visible to readers, because fluent translations misrepresent their originals by concealing the foreignness of the source text.",
+            "why": "This is Venuti's complaint, which the author calls just but says rests on a false assumption about transparency (paragraph 3).",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Translation interprets a work instead of moving a fixed meaning across languages, so it is judged by how work and readers relate.",
+            "why": "Paragraph 1 rejects the container picture, paragraphs 2 and 3 show translation as interpretation, and paragraph 4 moves faithfulness to the relation between work and readers and adds that translations gain too."
+          },
+          {
+            "t": "Because faithfulness belongs to a whole work and not to its words, any two translations of a novel are equally faithful provided that both read fluently to their audiences.",
+            "why": "The author says two translations may both be faithful, not that all are equal, and fluency is the very standard the author questions.",
+            "trap": "Extreme wording"
           }
         ],
-        "answer": 1
+        "answer": 2
       },
       {
         "type": "structure",
-        "stem": "The example of the word for 'home' is used to illustrate that:",
+        "stem": "The author refers to Nabokov's translation of Onegin chiefly in order to:",
         "proof": [
           1
         ],
         "options": [
           {
-            "t": "some languages have no word for 'home'",
-            "why": "Each language has a word; they differ in what they suggest.",
+            "t": "show that literal rendering is no less a matter of choice than free rendering, and has losses of its own.",
+            "why": "The author says Nabokov's footnote-laden Onegin demonstrated that literalism is also a choice, with casualties of its own (paragraph 2)."
+          },
+          {
+            "t": "illustrate the middle course between literal and free rendering that Dryden recommended, and its success in practice.",
+            "why": "Nabokov rejected anything short of the literal; Dryden's recommendation is a separate point, and the author calls the middle course a series of sacrifices.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "translators should always keep the literal sense",
-            "why": "The paragraph says keeping the literal sense may lose the tone.",
+            "t": "demonstrate that poetry cannot be translated at all into a language with a different metre and different associations.",
+            "why": "The author says each choice sacrifices something, not that poetry cannot be translated.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "support the view that translators should remain invisible to the readers whom they serve and not draw attention to themselves.",
+            "why": "A translation crowded with footnotes is the reverse of invisible, and the author does not endorse invisibility.",
             "trap": "Distorts the passage"
-          },
-          {
-            "t": "family matters more in some cultures than in others",
-            "why": "The passage draws no cultural conclusion.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "words in different languages carry associations that do not match exactly",
-            "why": "Building, family and region are different associations for corresponding words."
-          }
-        ],
-        "answer": 3
-      },
-      {
-        "type": "inference",
-        "stem": "Which of the following can be inferred from the fourth paragraph?",
-        "proof": [
-          3
-        ],
-        "options": [
-          {
-            "t": "Readers of a translation may take the translator's interpretation for the author's intention.",
-            "why": "Readers 'inherit that interpretation, often without knowing it'."
-          },
-          {
-            "t": "Translators deliberately distort the works they translate.",
-            "why": "Interpretation is necessary, not deliberate distortion.",
-            "trap": "Extreme wording"
-          },
-          {
-            "t": "Literary critics make better translators than novelists do.",
-            "why": "No such comparison is made.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "A character's formality always signals social class.",
-            "why": "The example is that formality might mark distance rather than class.",
-            "trap": "Extreme wording"
           }
         ],
         "answer": 0
       },
       {
-        "type": "application",
-        "stem": "With which statement would the author most likely agree?",
+        "type": "inference",
+        "stem": "The author's response to Venuti's complaint implies that:",
         "proof": [
           2
         ],
         "options": [
           {
-            "t": "The best translation is the one that changes the fewest words.",
-            "why": "The author rejects word-level faithfulness.",
-            "trap": "Distorts the passage"
+            "t": "English-language publishers should commission translations that deliberately sound foreign to their readers in every case.",
+            "why": "The author makes no recommendation about publishing practice.",
+            "trap": "Out of scope"
           },
           {
-            "t": "A translation is always inferior to its original.",
-            "why": "Paragraph 5 says translations also gain.",
+            "t": "fluent translations are always less faithful to their originals than translations that read awkwardly to the ordinary reader.",
+            "why": "No such comparison is made; the author denies that fluency or awkwardness settles faithfulness.",
             "trap": "Extreme wording"
           },
           {
-            "t": "Two very different translations of a novel could both be faithful to it.",
-            "why": "Paragraph 3 says exactly this."
+            "t": "the labour of the translator is in fact plainly visible to readers who take the trouble to read a translation closely.",
+            "why": "The author says the reader inherits the interpretation without seeing the evidence for it (paragraph 3).",
+            "trap": "Distorts the passage"
           },
           {
-            "t": "Translation has played little part in national literary traditions.",
-            "why": "Paragraph 5 says national traditions were shaped by translations.",
-            "trap": "Distorts the passage"
+            "t": "no translation, however conspicuous its strangeness, can spare readers from inheriting interpretive decisions they cannot inspect.",
+            "why": "If there is no transparent translation, only more or less skilfully concealed decisions, then even a deliberately strange translation embodies interpretations that readers cannot easily check."
           }
         ],
-        "answer": 2
+        "answer": 3
+      },
+      {
+        "type": "strengthen",
+        "stem": "Which of the following, if true, would most weaken the author's claim that faithfulness belongs to the relationship between a whole work and its readers, and not to individual words?",
+        "proof": [
+          3
+        ],
+        "options": [
+          {
+            "t": "Two published translations of the same novel were found to differ on almost every page of the text, though both are widely admired.",
+            "why": "The author says exactly this and draws the conclusion that both may be faithful, so it does not weaken the claim.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "Competent bilingual readers asked to rank translations overwhelmingly agree that the one closest to the original word by word is most faithful.",
+            "why": "If informed readers consistently equate faithfulness with word-level closeness, the claim that faithfulness is not a property of individual words loses its support."
+          },
+          {
+            "t": "Several of the most admired translators of fiction were also successful novelists who published work of their own.",
+            "why": "The translators' other careers have no bearing on where faithfulness lies.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "Works read in a new language often acquire echoes and meanings that their first readers in the original language did not perceive.",
+            "why": "This is the author's own point about gains in translation; it is consistent with the claim, not a challenge to it.",
+            "trap": "True but not the answer"
+          }
+        ],
+        "answer": 1
       }
     ],
     "recall": [
       {
-        "q": "What does the Italian proverb say?",
+        "q": "What does English-language publishing tend to reward, according to the argument the author reports?",
         "options": [
-          "Translator, traitor",
-          "Every word is a home",
-          "Meaning is lost at sea",
-          "The writer is a reader"
+          "Translations that preserve the rhyme and metre of the original verse.",
+          "Translations that read fluently, as though originally written in English.",
+          "Translations accompanied by scholarly notes explaining the original.",
+          "Translations that follow the source text word for word."
         ],
-        "answer": 0
+        "answer": 1
       },
       {
-        "q": "What does the author suggest the proverb's traitor might better be called?",
+        "q": "How does the author finally describe the translator of the proverb?",
         "options": [
-          "A critic",
-          "A writer",
-          "A collaborator",
-          "A conduit"
+          "As a conduit who spills as little as possible of the original.",
+          "As a rival who competes with the original author for readers.",
+          "As a critic whose judgment replaces that of the original author.",
+          "As a collaborator, a word that implies both partnership and possible betrayal."
         ],
-        "answer": 2
+        "answer": 3
       }
     ]
   },
@@ -160,68 +159,38 @@
     "genre": "literature",
     "difficulty": "medium",
     "paras": [
-      "Novels let us do something that ordinary life does not: overhear another person's thoughts. In conversation we infer what others think from what they say and do; in fiction we are often told directly, or something close to it. The most distinctive technique for this, developed by writers such as Jane Austen and Gustave Flaubert, is known as free indirect style.",
-      "In free indirect style, the narration slips into a character's way of thinking without announcing it. Instead of writing 'She thought that the party was a disaster', the narrator writes 'The party was a disaster. Why had she ever agreed to come?' The words remain in the third person and the past tense, yet the judgment and the question belong to the character. The reader is placed, for a moment, inside a mind while still standing a little outside it.",
-      "That double position makes the technique a powerful tool for irony. Austen can let a character's vanity or self-deception speak in the narrator's voice, so that the reader both shares the character's view and sees around it. Much of the pleasure of her novels lies in noticing the gap between what a character believes and what the story reveals.",
-      "Some psychologists have suggested that reading fiction of this kind exercises our capacity to understand other minds, the ability to recognise that other people have beliefs and desires different from our own. A few experiments found that reading literary fiction briefly improved performance on tests of this capacity; later attempts to repeat the results produced mixed findings. The idea remains plausible but unproved, and the effects, if real, may be small or slow to appear.",
-      "Whatever the experiments show, the claim that novels teach empathy can be overstated. Readers can enjoy entering the minds of characters and remain unmoved by real people, and a novelist who makes a cruel character understandable does not make cruelty attractive. What fiction offers is perhaps less a moral training than a form of knowledge: a detailed sense of how a life looks from the inside, which no other art provides in quite the same way."
+      "Novels permit what life forbids: they let us overhear another mind. In conversation we infer what others think from what they say and do, and are often wrong; in fiction we are, if not told directly, given something so close to certainty that the difference rarely troubles us. The technique most closely associated with this privilege is free indirect style, brought to its fullest development by Jane Austen and Gustave Flaubert, though its roots are older and its uses have since multiplied. It deserves examination, because the claims made for fiction as a school of sympathy frequently rest on a vague idea of what fiction actually does.",
+      "In free indirect style the narration slides into a character's idiom without warning. Where a plainer narrator would report that she thought the party a disaster, Austen's narrator writes that the party was a disaster, and then asks why she had ever agreed to come. The pronouns remain those of the third person and the verbs those of the past tense, but the judgment and the exasperated question are the character's own, and no quotation marks announce the transfer. The reader is placed inside a mind and, at the same moment, outside it: close enough to feel the exasperation, far enough to ask whether it is justified. Ordinary conversation cannot offer this position, and the theatre can approximate it only through the artifice of the soliloquy.",
+      "That double vision is the source of the technique's most celebrated use, irony. Austen can let a character's vanity or self-deception speak in the narrator's own voice, so that the reader at once adopts the character's view and sees around it; much of the pleasure of Emma lies in noticing the distance between what the heroine believes and what the story reveals. Irony of this kind requires the reader to supply the judgment that the narrator withholds, and the work is a form of attention to people's flattering accounts of themselves. It is possible that such attention, repeated across hundreds of pages, becomes a habit; it is equally possible that it merely makes readers better at detecting vanity in fictional characters.",
+      "Some psychologists have proposed that fiction of this kind exercises our capacity to ascribe beliefs and desires to others, and an influential experiment reported that reading a few pages of literary fiction improved performance on tests of that capacity. Attempts to reproduce the result gave mixed findings, and the effect, if it exists, appears small and short-lived. The more fundamental difficulty is conceptual. Understanding another mind is not the same as caring about it: a skilful manipulator understands his victims very well, and a reader can relish a character's inner life while remaining indifferent to the people around her. What fiction offers is perhaps less a moral training than a form of knowledge, a detailed sense of how a life looks from the inside, available from no other art in quite the same way, and valuable even if it improves no one."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best captures the main idea of the passage?",
+        "stem": "Which one of the following best captures the author's view?",
         "proof": [
           1,
-          3,
-          4
+          2,
+          3
         ],
         "options": [
           {
-            "t": "Reading novels has been proven to make people more empathetic.",
-            "why": "Paragraph 4 calls the idea 'plausible but unproved'.",
+            "t": "Free indirect style proves that fiction makes readers more empathetic, because it obliges them to share the thoughts of characters whose views they would otherwise reject.",
+            "why": "The author calls the experimental evidence mixed and the effect doubtful, and says understanding is not the same as caring (paragraph 4).",
             "trap": "Extreme wording"
           },
           {
-            "t": "Jane Austen invented free indirect style.",
-            "why": "It was developed by 'writers such as' Austen and Flaubert.",
-            "trap": "Distorts the passage"
+            "t": "Free indirect style gives fiction a double vision whose secure value is knowledge of inner life, while the claim that it makes readers kinder remains doubtful.",
+            "why": "Paragraphs 2 and 3 explain the double vision, and paragraph 4 doubts the sympathy claim and defends fiction as a form of knowledge."
           },
           {
-            "t": "Free indirect style lets fiction show a mind from inside and outside at once, and the claim that this makes readers kinder is plausible but uncertain.",
-            "why": "Paragraphs 1 to 3 explain the technique; paragraphs 4 and 5 weigh the claims made for it."
+            "t": "Experiments on reading and social understanding have been refuted, so the value of fiction is purely aesthetic and carries no knowledge of other people at all.",
+            "why": "The author doubts the experimental claim but says fiction still offers a form of knowledge.",
+            "trap": "Extreme wording"
           },
           {
-            "t": "Novels are morally dangerous because they make cruel characters understandable.",
-            "why": "Paragraph 5 says understanding cruelty does not make it attractive.",
-            "trap": "Distorts the passage"
-          }
-        ],
-        "answer": 2
-      },
-      {
-        "type": "application",
-        "stem": "Which of the following sentences is written in free indirect style?",
-        "proof": [
-          1
-        ],
-        "options": [
-          {
-            "t": "He thought that she might refuse him.",
-            "why": "The thought is announced with 'he thought that', which free indirect style avoids.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "He looked at the letter again. Surely she could not mean to refuse him?",
-            "why": "Third person and past tense, but the doubt and the question belong to the character, unannounced."
-          },
-          {
-            "t": "'Will she refuse me?' he asked himself.",
-            "why": "This is direct speech, quoted and announced.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "I looked at the letter and wondered whether she would refuse me.",
-            "why": "This is first-person narration, not third.",
+            "t": "Austen's irony shows that novelists intended their fiction to train readers to detect vanity and self-deception in their own conduct as well as in characters.",
+            "why": "The author says only that such attention may become a habit, and ascribes no such intention to novelists.",
             "trap": "Distorts the passage"
           }
         ],
@@ -229,81 +198,110 @@
       },
       {
         "type": "inference",
-        "stem": "The author's comment on the psychological experiments implies that:",
+        "stem": "The author's remark that 'a skilful manipulator understands his victims very well' is intended to show that:",
         "proof": [
           3
         ],
         "options": [
           {
-            "t": "the experiments were badly designed",
-            "why": "The author says nothing about their design.",
+            "t": "psychologists have exaggerated the danger of reading fiction about cruel or manipulative characters.",
+            "why": "No danger of reading such fiction is discussed in the passage.",
             "trap": "Out of scope"
           },
           {
-            "t": "reading fiction harms our understanding of other minds",
-            "why": "No experiment found harm.",
+            "t": "readers of fiction are more likely than other people to manipulate those around them in daily life.",
+            "why": "The passage makes no claim about how readers behave towards others.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "psychologists have proved the idea false",
-            "why": "The findings are 'mixed', and the idea 'remains plausible'.",
+            "t": "understanding another person's mind is a reliable guide to feeling sympathy for that person.",
+            "why": "This is the very assumption that the remark is meant to undermine.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "the evidence that reading fiction improves the understanding of other minds is not yet reliable",
-            "why": "Early results did not replicate consistently, so the idea is 'unproved'."
+            "t": "understanding another mind does not by itself imply concern for the person understood.",
+            "why": "A manipulator understands minds without caring about them, so understanding and sympathy can come apart (paragraph 4)."
           }
         ],
         "answer": 3
       },
       {
-        "type": "structure",
-        "stem": "In the final paragraph, the author's main purpose is to:",
+        "type": "application",
+        "stem": "Which of the following sentences is written in the free indirect style described in the second paragraph?",
         "proof": [
-          4
+          1
         ],
         "options": [
           {
-            "t": "suggest that fiction's value may lie more in a kind of knowledge than in moral improvement",
-            "why": "It contrasts 'moral training' with 'a form of knowledge' and favours the second."
+            "t": "Mr Hale's generosity was, of course, beyond question. Who else in the parish would have thought to lend the curate his own carriage?",
+            "why": "Third person and past tense, but the self-satisfied judgment and the rhetorical question are Mr Hale's, delivered without any announcement."
           },
           {
-            "t": "argue that novelists should avoid cruel characters",
-            "why": "The author defends making cruel characters understandable.",
+            "t": "Mr Hale told the curate that he was the most generous man in the parish and that nobody else would have lent a carriage.",
+            "why": "This is reported speech announced by 'told', in the narrator's own register.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "dismiss fiction as a source of understanding",
-            "why": "It ends by praising the knowledge fiction gives.",
+            "t": "'I am the most generous man in the parish,' declared Mr Hale. 'Who else would have lent the curate a carriage?'",
+            "why": "This is direct speech, with quotation marks and attribution.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "summarise the experiments described earlier",
-            "why": "The experiments are set aside: 'Whatever the experiments show'.",
-            "trap": "Out of scope"
+            "t": "I have always been generous, I thought; who else in the parish would have lent the curate his own carriage?",
+            "why": "This is first-person narration, and the thought is announced by 'I thought'.",
+            "trap": "Distorts the passage"
           }
         ],
         "answer": 0
+      },
+      {
+        "type": "strengthen",
+        "stem": "Which of the following findings, if true, would most strengthen the claim that reading literary fiction improves our ability to ascribe beliefs and desires to others?",
+        "proof": [
+          3
+        ],
+        "options": [
+          {
+            "t": "Readers of literary fiction report greater enjoyment of reading than readers of other kinds of writing report.",
+            "why": "Enjoyment is not the same as an improved ability to ascribe beliefs and desires.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "Participants who read a literary story performed better on such tests than those who read nothing, but no better than those who read a newspaper article.",
+            "why": "This suggests that reading in general, and not literary fiction in particular, produces the effect.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "In several independent laboratories, participants who read literary fiction performed reliably better on such tests than those who read non-fiction of equal difficulty.",
+            "why": "Replication across laboratories, against a matched non-fiction control, isolates literary fiction as the cause and answers the doubts about the original result."
+          },
+          {
+            "t": "Participants who performed well on such tests were also found to own more books than those who performed poorly on them.",
+            "why": "Owning books shows a correlation at best and does not show that reading fiction caused the better performance.",
+            "trap": "Out of scope"
+          }
+        ],
+        "answer": 2
       }
     ],
     "recall": [
       {
-        "q": "Which writers does the passage name as developing free indirect style?",
+        "q": "What does free indirect style retain from conventional narration?",
         "options": [
-          "Charles Dickens and Leo Tolstoy",
-          "Jane Austen and Gustave Flaubert",
-          "Virginia Woolf and James Joyce",
-          "George Eliot and Henry James"
+          "The first person and the present tense.",
+          "Quotation marks around the character's thoughts.",
+          "The third person and the past tense.",
+          "A neutral and detached vocabulary throughout."
         ],
-        "answer": 1
+        "answer": 2
       },
       {
-        "q": "What did later attempts to repeat the experiments produce?",
+        "q": "What does the author say about attempts to reproduce the experimental result?",
         "options": [
-          "Mixed findings",
-          "Stronger effects",
-          "No data",
-          "Identical results"
+          "They gave mixed findings, and any effect appears small and short-lived.",
+          "They confirmed the effect and showed it to be large and lasting.",
+          "They could not be carried out because too few volunteers took part.",
+          "They showed that reading fiction harms the understanding of other people."
         ],
         "answer": 0
       }
@@ -313,153 +311,153 @@
     "id": "lit-tragedy",
     "title": "Why we watch tragedy",
     "genre": "literature",
-    "difficulty": "easy",
+    "difficulty": "medium",
     "paras": [
-      "Tragedy poses an old puzzle. In ordinary life we avoid suffering and do not seek out the sight of it. Yet for two and a half thousand years audiences have paid to watch kings blind themselves, mothers lose their children and lovers die through misunderstanding, and they leave the theatre saying they enjoyed it. What is the pleasure in pain that is only pretended? The question was already old when Aristotle took it up, and it has never quite been settled.",
-      "Aristotle's answer was catharsis, a word that has been translated as purging, cleansing and clarification. On the most familiar reading, tragedy arouses pity and fear and then releases them, leaving the audience calmer, as a medicine might expel a harmful substance. On another reading, the experience is less medical than intellectual: we come to understand pity and fear better by feeling them about events shaped into a meaningful whole. Scholars still argue over which reading Aristotle intended, since he says little about the term in the text that survives.",
-      "Later thinkers offered other explanations. Some argued that we enjoy the skill of the representation rather than the events represented, as we can admire a painting of a corpse. Others pointed to a sense of relief or even superiority: we are safe while the hero falls. The philosopher David Hume suggested that the eloquence of a tragedy converts our distress into something pleasurable, so that the stronger the feeling, the stronger the delight, provided the art is good enough.",
-      "None of these accounts is entirely satisfying, perhaps because the experience itself is mixed. Audiences do not simply enjoy tragedy; they are moved, disturbed and sometimes changed by it. The pleasure may lie partly in the sense that suffering, presented with care, becomes meaningful rather than random, and partly in the shared experience of an audience feeling the same thing at once.",
-      "That may explain why tragedy survives in forms Aristotle never imagined, from novels to films to television dramas that end badly. We continue to seek out stories that do not console us with happy endings, not because we enjoy pain, but because we value seeing it given a shape."
+      "Aristotle's contemporaries did not need to be told that tragedy gave pleasure; the puzzle they bequeathed us is why. In ordinary life we avoid suffering and seldom pay to watch it, yet for more than two thousand years audiences have watched kings blind themselves and mothers lose their children and gone home, by their own account, satisfied. The puzzle is sometimes called the paradox of tragedy, and the name conceals an assumption: that pleasure and pain are two feelings, one of which has somehow been smuggled into the theatre to compensate for the other. Most attempted solutions have accepted the assumption and differed only about the compensation.",
+      "The oldest, traced to Aristotle's remark that tragedy accomplishes through pity and fear the catharsis of such emotions, takes the pleasure to be the relief of an overcharged system. The word has been rendered as purging, cleansing and clarification, and the dispute over which is meant has never been settled, partly because Aristotle explains the term nowhere in the text that survives. On the medical reading we are calmer for having discharged our fears; on the intellectual reading we understand pity and fear better for having felt them about events arranged into a meaningful whole. The two readings imply very different theatres, one a clinic and the other a school, and much later criticism can be read as a choice between them.",
+      "Later writers looked elsewhere. Lucretius, in a famous image, found pleasure in watching a shipwreck from the shore, not because another's misery delights us but because our own safety is thrown into relief. Others have located the pleasure in the representation rather than in the thing represented, as one may admire a painting of a corpse. Hume proposed that the eloquence of a tragedy converts our distress into delight, so that the stronger the sorrow the keener the pleasure, provided the art is good enough. His account cannot easily explain why a clumsy tragedy merely bores us instead of distressing us less, as though pleasure and pain had been drawn from a single source and withdrawn together.",
+      "Each of these accounts, whatever its merits, preserves the assumption of two feelings. There is another possibility: that what the audience feels is not a mixture of pain and pleasure but a single response to suffering that has been given form. In life, suffering is usually shapeless, the consequence of accident or of other people's carelessness, and a good deal of its cruelty lies in its apparent pointlessness. Tragedy arranges suffering so that it appears to follow from character and circumstance, to have been foreshadowed and to mean something, and we respond to the arrangement rather than to the pain. This would explain why audiences do not seek out tragedies in order to be consoled, which a happy ending would do more efficiently, and why the form has migrated, in ways Aristotle could not have foreseen, to the novel, the film and the television drama that ends badly."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best summarises the passage?",
+        "stem": "Which one of the following best expresses the main point of the passage?",
         "proof": [
-          3,
-          4
+          0,
+          2,
+          3
         ],
         "options": [
           {
-            "t": "Aristotle's theory of catharsis fully explains why people enjoy tragedy.",
-            "why": "Paragraph 4: 'None of these accounts is entirely satisfying'.",
-            "trap": "Extreme wording"
-          },
-          {
-            "t": "People enjoy tragedy because they feel superior to its heroes.",
-            "why": "This is one of several explanations reported.",
-            "trap": "Too narrow or too broad"
-          },
-          {
-            "t": "Tragedy has declined because modern audiences prefer happy endings.",
-            "why": "Paragraph 5 says tragedy survives in new forms.",
+            "t": "Aristotle's account of catharsis, correctly understood, resolves the paradox of tragedy, and later accounts merely restate his solution in different words.",
+            "why": "The author says the meaning of catharsis has never been settled and that later accounts looked elsewhere.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Several explanations have been offered for the appeal of tragedy; the author suggests the experience is mixed and lies partly in giving suffering a meaning.",
-            "why": "Paragraphs 2 and 3 survey explanations; paragraphs 4 and 5 give the author's view."
+            "t": "The pleasure of tragedy is best explained by relief or superiority, since audiences watch the hero's fall from a position of safety and security.",
+            "why": "This is one reported explanation (Lucretius), which the author lists among accounts that keep the two-feelings assumption.",
+            "trap": "Too narrow or too broad"
+          },
+          {
+            "t": "Audiences no longer seek out tragedy, since modern novels, films and television programmes prefer endings that console their audiences more reliably.",
+            "why": "Paragraph 4 says tragedy has migrated to modern forms that end badly, and that audiences do not seek consolation.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Explanations of tragedy's pleasure assume pleasure and pain are separate feelings, whereas the author suggests audiences respond to suffering made meaningful by form.",
+            "why": "Paragraph 1 names the shared assumption, paragraphs 2 and 3 survey accounts that keep it, and paragraph 4 offers the single-response alternative."
           }
         ],
         "answer": 3
       },
       {
-        "type": "detail",
-        "stem": "According to the passage, Hume believed that:",
+        "type": "inference",
+        "stem": "The author's criticism of Hume's account is that it:",
         "proof": [
           2
         ],
         "options": [
           {
-            "t": "audiences enjoy tragedy because they feel safe",
-            "why": "That is the view of 'others', not Hume.",
+            "t": "makes the pleasure of tragedy depend on the audience's sense of its own safety while the hero suffers on stage.",
+            "why": "That is the view the author attributes to Lucretius, not to Hume.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "good art can turn the distress a tragedy causes into pleasure",
-            "why": "Hume: eloquence 'converts our distress into something pleasurable', provided the art is good enough."
+            "t": "cannot explain why a poorly made tragedy bores audiences instead of merely distressing them less.",
+            "why": "Paragraph 3 says Hume's account cannot easily explain why a clumsy tragedy bores us rather than distressing us less."
           },
           {
-            "t": "tragedy purges harmful emotions like a medicine",
-            "why": "That is the familiar reading of Aristotle.",
+            "t": "denies that tragedy arouses strong feelings of pity and fear in the members of its audience at all.",
+            "why": "Hume's account holds that the sorrow is strong; it is the conversion into pleasure that the author questions.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "the weaker the feeling, the greater the delight",
-            "why": "Hume says the stronger the feeling, the stronger the delight.",
+            "t": "treats the skill of the representation as the real object of the audience's admiration and enjoyment.",
+            "why": "This belongs to the writers who located the pleasure in the representation, which is a separate group from Hume.",
             "trap": "Distorts the passage"
           }
         ],
         "answer": 1
       },
       {
-        "type": "inference",
-        "stem": "The two readings of catharsis in the second paragraph differ in that the second:",
+        "type": "structure",
+        "stem": "The author refers to the migration of tragedy 'to the novel, the film and the television drama' in order to:",
         "proof": [
-          1
+          3
         ],
         "options": [
           {
-            "t": "denies that tragedy arouses pity and fear",
-            "why": "Both readings involve feeling pity and fear.",
+            "t": "show that Aristotle's theory of catharsis has been applied successfully to modern forms of drama and fiction.",
+            "why": "No application of catharsis to modern forms is described; the migration supports the author's own account.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "was put forward by David Hume",
-            "why": "Hume's view comes in paragraph 3 and is different.",
+            "t": "criticise modern audiences for neglecting the theatre in favour of cheaper and more accessible entertainments.",
+            "why": "The author does not criticise modern audiences; the new forms are presented as continuing tragedy.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "treats the experience as a way of understanding emotions rather than getting rid of them",
-            "why": "The second reading is 'less medical than intellectual': we understand pity and fear better."
+            "t": "support the suggestion that what audiences seek in tragedy is something other than consolation.",
+            "why": "The new forms are those that end badly, which fits the claim that audiences do not seek consolation (paragraph 4)."
           },
           {
-            "t": "applies only to modern films",
-            "why": "Films appear only in paragraph 5.",
+            "t": "suggest that the form of tragedy has been diluted by the commercial pressures of modern entertainment industries.",
+            "why": "No claim about dilution or commerce is made.",
             "trap": "Out of scope"
           }
         ],
         "answer": 2
       },
       {
-        "type": "structure",
-        "stem": "The final paragraph mainly serves to:",
+        "type": "strengthen",
+        "stem": "Which of the following, if true, would most weaken the author's own account of the appeal of tragedy?",
         "proof": [
-          4
+          3
         ],
         "options": [
           {
-            "t": "criticise television dramas for ending badly",
-            "why": "They are cited as evidence for tragedy's survival, not criticised.",
-            "trap": "Distorts the passage"
+            "t": "Audiences respond with equal pleasure to a tragedy whose events are random as to one whose events follow from character and circumstance.",
+            "why": "The author's account depends on suffering being given meaning by form; equal pleasure in meaningless suffering would remove the explanation."
           },
           {
-            "t": "argue that people enjoy pain",
-            "why": "It says we seek such stories 'not because we enjoy pain'.",
-            "trap": "Distorts the passage"
+            "t": "Audiences who have recently suffered a personal loss are less willing than other people to attend performances of tragedies at all.",
+            "why": "This concerns willingness to attend, not what the appeal of tragedy consists in.",
+            "trap": "Out of scope"
           },
           {
-            "t": "introduce Aristotle's theory",
-            "why": "Aristotle was introduced in paragraph 2.",
-            "trap": "Distorts the passage"
+            "t": "Greek tragedies were originally performed at religious festivals which were attended by most of the citizens of the city.",
+            "why": "The setting of the original performances says nothing about why audiences find tragedy appealing.",
+            "trap": "Out of scope"
           },
           {
-            "t": "use the survival of tragedy in new forms to support the author's account of its appeal",
-            "why": "'That may explain why' links the new forms back to the author's view in paragraph 4."
+            "t": "Most tragedies of the Greek stage end in the death or ruin of the central character after a sequence of earlier mistakes.",
+            "why": "Such events follow from character and circumstance, so this is consistent with the author's account.",
+            "trap": "True but not the answer"
           }
         ],
-        "answer": 3
+        "answer": 0
       }
     ],
     "recall": [
       {
-        "q": "For how long, according to the passage, have audiences watched tragedies?",
+        "q": "Why, according to the passage, has the meaning of 'catharsis' never been settled?",
         "options": [
-          "Five hundred years",
-          "A thousand years",
-          "Two and a half thousand years",
-          "Since the invention of film"
+          "Translators disagree about the meanings of the words 'pity' and 'fear'.",
+          "The relevant manuscripts of the Poetics were lost in antiquity.",
+          "Aristotle used the word in two incompatible senses in one passage.",
+          "Aristotle explains the term nowhere in the text that survives."
         ],
-        "answer": 2
+        "answer": 3
       },
       {
-        "q": "What was Aristotle's answer to the puzzle of tragedy?",
+        "q": "What does Lucretius find pleasurable in watching a shipwreck from the shore?",
         "options": [
-          "Catharsis",
-          "Eloquence",
-          "Superiority",
-          "Relief"
+          "The skill with which the disaster is later described.",
+          "The sense of one's own safety, thrown into relief.",
+          "The misfortune of other people, enjoyed for its own sake.",
+          "The release of fear built up during earlier storms."
         ],
-        "answer": 0
+        "answer": 1
       }
     ]
   },
@@ -469,152 +467,153 @@
     "genre": "history",
     "difficulty": "medium",
     "paras": [
-      "A map looks like a picture of the world, but it is better understood as an argument about it. Every map selects what to show and what to leave out, chooses a centre and a scale, and names places in someone's language. These choices are rarely neutral, and in the age of European empires they often did political work long before any soldier arrived.",
-      "Consider the blank spaces on nineteenth-century European maps of Africa and Asia. To European readers they suggested empty land awaiting exploration and settlement, though the regions were full of people, states and long-established trade routes that local maps and travellers knew well. By representing what Europeans did not know as what did not exist, the maps made claims of ownership seem natural. Some of these maps were drawn by people who had never visited the places they showed, working from second-hand reports and older maps.",
-      "Surveying was itself an instrument of rule. In India, the British spent decades measuring the subcontinent with chains, instruments and teams of local assistants, producing maps of unprecedented accuracy. The work had genuine scientific value, and it also served revenue collection, military planning and the drawing of administrative boundaries. Knowledge and control advanced together, and it is often impossible to say which was the aim and which the by-product.",
-      "The most lasting legacy is the border. Lines drawn across maps by officials, sometimes with little regard for the people living on the ground, later became the frontiers of independent states. Some divided communities that had long lived together; others enclosed rivals within a single state. Many of the disputes of the twentieth century were fought over lines that began as administrative conveniences. Few of the officials who drew them expected their lines to last as long as they did.",
-      "None of this means that maps are simply lies. A good map is an extraordinary tool, and colonial surveys contain information still used today. The point is to read maps as historical documents, asking who made them, for whom and to what end. Read that way, a map tells us as much about the people who drew it as about the land it shows."
+      "J. B. Harley, the historian of cartography, argued in the 1980s that maps should be read less as mirrors of the world than as texts that carry the interests of their makers. The suggestion was resisted by those who valued the map precisely for its freedom from argument, but it has since become orthodoxy, perhaps too comfortably. To say that a map selects, simplifies and chooses a centre is to say what is true of every representation; the interesting question is when such choices become instruments of power, and by what means. The history of European mapping of other continents offers a revealing, if complicated, answer.",
+      "The blank spaces on nineteenth-century maps of Africa and Asia are the familiar example. To European readers they suggested land awaiting exploration, though the regions were full of states, markets and trade routes known intimately to their inhabitants and to the travellers who crossed them. By treating what Europeans did not know as what did not exist, such maps made claims of possession appear natural, and the metaphor of the blank, once established, was hard to dislodge. The picture is nonetheless incomplete. European explorers depended on local guides, merchants and informants for almost everything they recorded, and much of the information that appeared on European maps had been gathered, and sometimes drawn, by people whom the maps then rendered invisible. The blank space was thus less an absence of knowledge than an absence of acknowledgement.",
+      "Surveying was an instrument of rule in a more literal sense. In India the British spent decades measuring the subcontinent in the Great Trigonometrical Survey, producing a map of unusual accuracy; it served science and also the collection of revenue, the planning of campaigns and the drawing of administrative boundaries. To ask whether the aim was knowledge or control is to ask a question the surveyors would hardly have recognised, since for them the two advanced together, and it is easy for later historians, who can distinguish them, to find sinister a distinction that was not felt at the time. Nor was the work done by Europeans alone: Indian assistants, some trained to count their paces precisely and to travel in disguise beyond British reach, supplied measurements of Tibet that no European could have obtained.",
+      "The most durable legacy of colonial cartography is the border. Lines drawn by officials, sometimes with scant knowledge of the ground, later became the frontiers of independent states; the Radcliffe Line that divided Punjab and Bengal in 1947 was drawn in a matter of weeks by a lawyer who had never visited the region before. It would be a mistake, however, to conclude that cartographers invented the divisions they drew. Many borders followed older administrative or natural boundaries, and many of the disputes that followed would have arisen whatever the maps had said. What maps did was to make some divisions precise, and thereby harder to negotiate, in places where life had previously gone on in the shades between them.",
+      "None of this is to say that maps are merely instruments of deception. The colonial surveys contain information still in use, and a map read with attention to who made it, for whom and to what end may tell us as much about its makers as about the land it depicts."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best states the main idea of the passage?",
+        "stem": "Which one of the following best expresses the main idea of the passage?",
         "proof": [
           0,
+          1,
+          3,
           4
         ],
         "options": [
           {
-            "t": "Colonial maps were inaccurate and are no longer used.",
-            "why": "The Indian survey was of 'unprecedented accuracy' and is still used.",
+            "t": "Colonial maps served power as well as knowledge, though their effects were more complicated than a simple story of imposed control suggests.",
+            "why": "Paragraph 1 poses the question, paragraphs 2 to 4 give complications to the simple story, and paragraph 5 draws the lesson."
+          },
+          {
+            "t": "Colonial maps were deliberate falsehoods designed to justify conquest, and information drawn from them should therefore be discarded by historians today.",
+            "why": "Paragraph 5 says the surveys contain information still in use and that maps are not merely instruments of deception.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "The borders drawn by colonial officials caused the disputes of the twentieth century, because earlier societies had known no precise divisions between them.",
+            "why": "Paragraph 4 says cartographers did not invent the divisions they drew and that many borders followed older boundaries.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Europeans explored regions of Africa and Asia that were empty.",
-            "why": "The passage says the regions were full of people and states.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "The borders of Africa and Asia should be redrawn.",
-            "why": "No such proposal is made.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "Maps make choices that can serve political ends, as colonial mapping shows, and should be read as historical documents.",
-            "why": "Paragraph 1 states the claim, paragraphs 2 to 4 illustrate it, and paragraph 5 draws the lesson."
+            "t": "Indigenous guides and assistants, rather than European officials, were the true authors of colonial maps and deserve the credit that has been withheld.",
+            "why": "Local contributions are noted in paragraphs 2 and 3, but the passage's claim is wider than the question of authorship.",
+            "trap": "Too narrow or too broad"
           }
         ],
-        "answer": 3
+        "answer": 0
       },
       {
         "type": "inference",
-        "stem": "The author suggests that the blank spaces on nineteenth-century maps:",
+        "stem": "The author's description of the blank space as 'an absence of acknowledgement' implies that:",
         "proof": [
           1
         ],
         "options": [
           {
-            "t": "reflected the limits of European knowledge rather than an absence of people",
-            "why": "The maps represented 'what Europeans did not know as what did not exist'."
-          },
-          {
-            "t": "showed regions that had no states or trade routes",
-            "why": "The regions had both.",
+            "t": "European mapmakers deliberately invented regions that did not exist in order to justify annexing them later.",
+            "why": "The passage says the blank regions were full of people and states; it does not say that regions were invented.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "were left blank by local mapmakers",
-            "why": "Local maps knew these regions well.",
+            "t": "local inhabitants of the mapped regions refused to share what they knew with the European explorers who visited.",
+            "why": "The passage says explorers depended on local guides and informants for almost everything they recorded.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "were later filled in by independent states",
-            "why": "Nothing is said about who filled them in.",
-            "trap": "Out of scope"
+            "t": "information supplied by local people often reached European maps without any credit being given to its source.",
+            "why": "Explorers depended on local informants, whom the maps 'rendered invisible' (paragraph 2)."
+          },
+          {
+            "t": "Europeans knew nothing at all about the regions that their maps left blank, and had no local sources.",
+            "why": "The passage says that much of the information on maps had been gathered by local people.",
+            "trap": "Extreme wording"
           }
         ],
-        "answer": 0
+        "answer": 2
       },
       {
         "type": "except",
-        "stem": "The passage gives each of the following as a use of the British survey of India EXCEPT:",
+        "stem": "The passage mentions all of the following about the survey of India EXCEPT that it:",
         "proof": [
           2
         ],
         "options": [
           {
-            "t": "collecting revenue",
+            "t": "helped to serve the collection of revenue by the colonial state.",
             "why": "Named in paragraph 3.",
             "trap": "True but not the answer"
           },
           {
-            "t": "promoting trade with other European empires",
-            "why": "Trade with other empires is never mentioned."
+            "t": "was paid for largely by contributions from the Indian princely states.",
+            "why": "Nothing in the passage says how the survey was financed."
           },
           {
-            "t": "planning military operations",
-            "why": "Named in paragraph 3.",
+            "t": "depended on Indian assistants for measurements that Europeans could not obtain.",
+            "why": "Paragraph 3: Indian assistants supplied measurements of Tibet that no European could have obtained.",
             "trap": "True but not the answer"
           },
           {
-            "t": "drawing administrative boundaries",
-            "why": "Named in paragraph 3.",
+            "t": "produced a map of unusually high accuracy over decades of work.",
+            "why": "Paragraph 3: the survey produced a map of unusual accuracy over decades.",
             "trap": "True but not the answer"
           }
         ],
         "answer": 1
       },
       {
-        "type": "tone",
-        "stem": "The author's attitude towards colonial maps is best described as:",
+        "type": "inference",
+        "stem": "Which one of the following would the author be most likely to accept?",
         "proof": [
-          2,
-          4
+          3
         ],
         "options": [
           {
-            "t": "entirely dismissive",
-            "why": "The author calls a good map 'an extraordinary tool'.",
-            "trap": "Extreme wording"
-          },
-          {
-            "t": "admiring of their neutrality",
-            "why": "The author says their choices were 'rarely neutral'.",
+            "t": "The Radcliffe Line created the hostility between communities in Punjab and Bengal where none had existed before the line was drawn.",
+            "why": "The author warns against concluding that cartographers invented the divisions they drew (paragraph 4).",
             "trap": "Distorts the passage"
           },
           {
-            "t": "critical of their political uses while recognising their value",
-            "why": "Paragraphs 1 to 4 show political uses; paragraph 5 grants scientific value and continued use."
+            "t": "Borders should never be drawn on maps without the consent of all the communities that would be affected by them.",
+            "why": "No such recommendation is made.",
+            "trap": "Out of scope"
           },
           {
-            "t": "indifferent",
-            "why": "The author takes a clear view.",
+            "t": "Maps are unreliable as historical documents, since they were always produced by people who had interests of their own.",
+            "why": "The author says maps can be read as documents, and that surveys contain information still in use (paragraph 5).",
             "trap": "Distorts the passage"
+          },
+          {
+            "t": "A precise boundary can make a dispute harder to settle without having created the underlying division.",
+            "why": "Paragraph 4: maps made some divisions precise, and thereby harder to negotiate, without inventing them."
           }
         ],
-        "answer": 2
+        "answer": 3
       }
     ],
     "recall": [
       {
-        "q": "Which of these did the British teams use to measure India?",
+        "q": "Who, according to the passage, drew the line that divided Punjab and Bengal in 1947?",
         "options": [
-          "Satellites",
-          "Chains",
-          "Aircraft",
-          "Lasers"
+          "A British general who had surveyed the subcontinent.",
+          "A lawyer who had never visited the region before.",
+          "A committee of Indian and Pakistani surveyors.",
+          "A colonial governor with long experience of the region."
         ],
         "answer": 1
       },
       {
-        "q": "What does the author call the most lasting legacy of colonial mapping?",
+        "q": "What did Harley argue about maps?",
         "options": [
-          "The border",
-          "The atlas",
-          "The census",
-          "The railway"
+          "That they are neutral mirrors of the physical world.",
+          "That they should be replaced by satellite photographs.",
+          "That colonial maps were drawn by people who never left Europe.",
+          "That they carry the interests of their makers and should be read as texts."
         ],
-        "answer": 0
+        "answer": 3
       }
     ]
   },
@@ -624,151 +623,152 @@
     "genre": "history",
     "difficulty": "hard",
     "paras": [
-      "It has become a commonplace that the printing press changed everything. After Johannes Gutenberg began printing with movable type in Mainz around 1450, the story goes, books became cheap, literacy spread, the Reformation became unstoppable and modern science became possible. The story is not wrong, but historians have spent decades complicating it, and the complications are instructive.",
-      "One line of criticism concerns timing. For much of the first century of print, books remained expensive, many of them were religious or legal texts that had already circulated in manuscript, and literacy rose slowly and unevenly. Scribes did not disappear overnight; in some fields hand copying continued alongside print for generations. If print was a revolution, it was a slow one, and its effects depended on markets, schools and governments that changed at their own pace.",
-      "Another concerns cause and effect. The historian Elizabeth Eisenstein argued that print transformed knowledge by fixing texts in identical copies, allowing scholars in different cities to compare the same page, correct errors and build on one another's work. Her critics accepted that this mattered but argued that she gave the technology credit for changes that depended on how people chose to use it. Early printed books were often full of errors and pirated editions, and the reliability she attributed to print had to be created by institutions such as learned societies and trusted publishers.",
-      "A third looks beyond Europe. Printing with woodblocks had flourished in East Asia for centuries before Gutenberg, and movable type had been used in China and Korea. Yet it did not produce the same consequences there, partly because of the nature of the writing systems and partly because of the different ways in which states and scholars controlled the circulation of texts. The comparison suggests that technology alone does not explain outcomes.",
-      "None of this diminishes the importance of print. What it changes is the kind of explanation we give. Rather than a machine that caused a series of transformations, print appears as one ingredient in a set of social changes, powerful in combination and modest in isolation. The lesson is plainly relevant to claims made about new technologies today."
+      "It is a commonplace that the printing press changed everything. After Gutenberg began to print from movable type at Mainz around 1450, the story runs, books became cheap, literacy spread, the Reformation became irresistible and modern science became possible. Historians have spent forty years complicating the story, and it is worth asking whether they have replaced it with something better or merely with something more cautious. The suspicion is warranted, because the most influential objections have a common structure: each takes a strong claim about the technology and shows that the outcome depended on something else.",
+      "The first objection is chronological. For most of the first century of print the new books remained expensive, many were religious and legal texts that had long circulated in manuscript, and literacy rose slowly and unevenly. Scribes did not vanish; in some trades hand copying persisted for generations, and certain texts, being wanted in too few copies to justify the cost of setting type, were never printed at all. If print was a revolution, it was an unusually leisurely one, and its effects waited upon markets, schools and governments that changed at their own pace. The objection is a sound one, though it risks proving too little: slow transformations are transformations nonetheless, and a process that takes a century may be as profound as one that takes a decade.",
+      "The second concerns causation. In 1979 Elizabeth Eisenstein argued that print altered the conditions of knowledge by fixing texts in identical copies, so that scholars in different cities could consult the same page, correct its errors and build upon each other's work. Her critics, notably Adrian Johns, conceded that this mattered but denied that the technology supplied it. Early printed books were frequently careless, and piracy was rife; the trustworthiness that Eisenstein ascribed to print, Johns argued, had to be manufactured by the printers, learned societies and legal conventions that made some books credible and others suspect. Fixity, on this view, is a social achievement that print made possible rather than a property that print possessed. This is persuasive, but it is worth noticing what it concedes: that without print the achievement would have lacked a medium in which to occur.",
+      "The third objection looks beyond Europe. Woodblock printing had flourished in East Asia for centuries before Gutenberg, and movable type, in clay and later in metal, had been used in China and Korea. It did not there produce the effects associated with it in Europe, partly because of the demands of writing systems with thousands of characters, partly because states and scholars governed the circulation of texts differently. The comparison suggests that technology cannot by itself account for outcomes. It does not, however, show that technology is irrelevant, since the same comparison could be turned against any single explanation, including the social ones that are offered in print's place.",
+      "What survives these qualifications is a change in the kind of explanation we give. Print appears not as a machine that caused a series of transformations but as one ingredient in a set of social changes, powerful in combination and modest in isolation. This is a sound conclusion, but it is also a comfortable one, since a thesis that attributes outcomes to everything is difficult to refute and correspondingly difficult to test. The lesson for claims about technologies of our own day is therefore double: to distrust the story in which one invention does everything, and to distrust equally the story in which the invention does nothing."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best states the main idea of the passage?",
+        "stem": "Which one of the following best states the author's main point?",
         "proof": [
           0,
+          3,
           4
         ],
         "options": [
           {
-            "t": "The printing press had little effect on European history.",
-            "why": "Paragraph 5: 'None of this diminishes the importance of print.'",
+            "t": "The objections of recent historians show that the printing press had little influence on European society during the first century after Gutenberg's invention.",
+            "why": "Paragraph 5 and the end of paragraph 2 say slow change is still change, and that none of the objections diminishes the importance of print.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Historians have qualified the view that print alone transformed society, showing its effects were slow and depended on social context.",
-            "why": "The three lines of criticism and the conclusion in paragraph 5 all support this."
-          },
-          {
-            "t": "Eisenstein's account of print has been entirely refuted.",
-            "why": "Her critics 'accepted that this mattered'.",
+            "t": "Elizabeth Eisenstein's thesis has been refuted, since early printed books proved to be less reliable than the manuscripts that they had replaced.",
+            "why": "Johns conceded that her point mattered but denied that the technology alone supplied the reliability (paragraph 3).",
             "trap": "Extreme wording"
           },
           {
-            "t": "Printing was invented in East Asia rather than in Europe.",
-            "why": "East Asia had printing earlier, but the passage does not deny Gutenberg's role; it uses the comparison for a different point.",
-            "trap": "Half right, half wrong"
-          }
-        ],
-        "answer": 1
-      },
-      {
-        "type": "inference",
-        "stem": "Eisenstein's critics would most likely agree that:",
-        "proof": [
-          2
-        ],
-        "options": [
-          {
-            "t": "print had no effect on scholarship",
-            "why": "They accepted that fixed, identical copies mattered.",
+            "t": "East Asian experience proves that technology plays no part in explaining historical change, which depends wholly on social institutions and customs.",
+            "why": "The author says the comparison does not show that technology is irrelevant (paragraph 4).",
             "trap": "Extreme wording"
           },
           {
-            "t": "early printed books were more reliable than manuscripts",
-            "why": "Early printed books were 'often full of errors and pirated editions'.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "identical copies made comparison between scholars impossible",
-            "why": "Identical copies made comparison possible.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "the reliability of printed texts depended partly on institutions people built around the technology",
-            "why": "Reliability 'had to be created by institutions such as learned societies and trusted publishers'."
+            "t": "The qualifications historians have placed on the print thesis are largely sound, though the resulting many-factor view is hard to test.",
+            "why": "Paragraphs 2 to 4 accept the three objections as largely sound, and paragraphs 1 and 5 warn that the replacement thesis is comfortable but difficult to test."
           }
         ],
         "answer": 3
       },
       {
-        "type": "structure",
-        "stem": "The discussion of East Asia in the fourth paragraph serves to:",
-        "proof": [
-          3
-        ],
-        "options": [
-          {
-            "t": "suggest that the same technology can have different effects in different societies",
-            "why": "Printing existed there but 'did not produce the same consequences', so 'technology alone does not explain outcomes'."
-          },
-          {
-            "t": "argue that Gutenberg copied Korean inventions",
-            "why": "No claim of copying is made.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "show that woodblock printing was better than movable type",
-            "why": "The two are not ranked.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "explain why literacy rose slowly in Europe",
-            "why": "Slow literacy is discussed in paragraph 2, not explained by East Asia.",
-            "trap": "Distorts the passage"
-          }
-        ],
-        "answer": 0
-      },
-      {
-        "type": "strengthen",
-        "stem": "Which of the following, if true, would most support the argument of the second paragraph?",
+        "type": "inference",
+        "stem": "The author's remark that the chronological objection 'risks proving too little' implies that:",
         "proof": [
           1
         ],
         "options": [
           {
-            "t": "Gutenberg's first printed Bible appeared around 1455.",
-            "why": "A date of publication says nothing about how fast print changed things.",
-            "trap": "Out of scope"
+            "t": "slow change can still be profound, so slowness alone does not show that print was no revolution.",
+            "why": "The paragraph ends by saying slow transformations are transformations nonetheless."
           },
           {
-            "t": "Woodblock printing had spread across East Asia before 1450.",
-            "why": "Relevant to paragraph 4, not to the argument about timing.",
-            "trap": "True but not the answer"
+            "t": "the first century of print produced no change that would be worth recording by the historians of the period.",
+            "why": "The author does not deny change; the claim is that slowness does not rule out significance.",
+            "trap": "Distorts the passage"
           },
           {
-            "t": "In some regions the number of professional scribes stayed steady for several decades after printing presses arrived.",
-            "why": "This supports the claim that change was slow and hand copying continued alongside print."
+            "t": "scribes continued to copy texts by hand because printing was more expensive than the manuscript copying it replaced.",
+            "why": "The passage says new books were expensive and some texts were too rarely wanted to justify type, not that print cost more than manuscript.",
+            "trap": "Distorts the passage"
           },
           {
-            "t": "Printed books sold in larger numbers than manuscripts by the year 1600.",
-            "why": "Growth by 1600 is compatible with a slow first century and does not support the claim that change was slow.",
+            "t": "historians who emphasise slowness have mistaken the date at which movable type was first invented in Europe.",
+            "why": "Dating is not the issue; the point concerns what slowness shows.",
             "trap": "Out of scope"
           }
         ],
-        "answer": 2
-      }
-    ],
-    "recall": [
+        "answer": 0
+      },
       {
-        "q": "In which city did Gutenberg begin printing with movable type?",
+        "type": "structure",
+        "stem": "The author's observation about what Johns's argument 'concedes' serves to:",
+        "proof": [
+          2
+        ],
         "options": [
-          "Venice",
-          "Paris",
-          "Mainz",
-          "London"
+          {
+            "t": "show that Johns's objection to Eisenstein's thesis is invalid and should be set aside by serious historians.",
+            "why": "The author calls the objection persuasive; the observation qualifies it rather than rejecting it.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "suggest that Eisenstein overlooked the importance of piracy in the early history of the printed book.",
+            "why": "Piracy is part of Johns's case; the observation is about what that case concedes.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "point out that even a critique of technological explanations presupposes some contribution from the technology.",
+            "why": "Paragraph 3: without print the achievement would have lacked a medium in which to occur."
+          },
+          {
+            "t": "argue that learned societies and printers were unimportant to the reliability of the books that they produced.",
+            "why": "The author accepts that institutions mattered; the concession concerns the role of print itself.",
+            "trap": "Distorts the passage"
+          }
         ],
         "answer": 2
       },
       {
-        "q": "Which historian argued that print transformed knowledge by fixing texts in identical copies?",
-        "options": [
-          "Elizabeth Eisenstein",
-          "Benedict Anderson",
-          "Lucien Febvre",
-          "Fernand Braudel"
+        "type": "strengthen",
+        "stem": "Which of the following, if true, would most strengthen the author's suggestion in the fourth paragraph that technology alone cannot account for outcomes?",
+        "proof": [
+          3
         ],
-        "answer": 0
+        "options": [
+          {
+            "t": "Movable type was in use in Korea some decades before Gutenberg began to print at Mainz, and spread through several kingdoms.",
+            "why": "This shows where type was used, not why outcomes differed, and the author has already noted that type was used there.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "In Korea, where movable type existed, printing stayed largely official while European commercial printers served a broad market.",
+            "why": "The same technology producing different uses in societies with different institutions is the pattern the author's suggestion needs."
+          },
+          {
+            "t": "Printing presses in Europe were more efficient than the equipment that was used in China and Korea at the same time.",
+            "why": "This would offer a technological explanation for the difference and so weaken the suggestion.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Most of the books printed in Europe in the fifteenth century were written in Latin rather than in the vernacular languages.",
+            "why": "The language of early books does not bear on whether technology alone explains outcomes.",
+            "trap": "Out of scope"
+          }
+        ],
+        "answer": 1
+      }
+    ],
+    "recall": [
+      {
+        "q": "What did Elizabeth Eisenstein argue about the effect of fixing texts in identical copies?",
+        "options": [
+          "It made books cheap enough for most ordinary readers to own.",
+          "It allowed governments to control more closely what was printed.",
+          "Scholars could consult identical pages and build on one another's work.",
+          "It ended the work of scribes within a single generation."
+        ],
+        "answer": 2
+      },
+      {
+        "q": "What does the author say about a thesis that attributes outcomes to everything?",
+        "options": [
+          "It is the only thesis that fits the evidence from East Asia.",
+          "It is difficult to refute and correspondingly difficult to test.",
+          "It has been refuted by Adrian Johns and his critics.",
+          "It is easy to test but seldom supported by evidence."
+        ],
+        "answer": 1
       }
     ]
   },
@@ -778,149 +778,149 @@
     "genre": "history",
     "difficulty": "medium",
     "paras": [
-      "In the late summer of 1854, cholera killed more than five hundred people in ten days in the Soho district of London. The disease was terrifying: it could kill a healthy adult within a day, through violent diarrhoea and dehydration. The dominant medical theory of the time held that the disease spread through miasma, a poisonous vapour rising from rotting matter, which is why the city's response focused on clearing filth and improving ventilation. The physician John Snow believed instead that cholera was carried in water contaminated by the waste of the sick.",
-      "Snow went door to door, recording where the dead had lived, and found that the deaths clustered around a public water pump on Broad Street. Marked on a street map, they gathered most thickly around the pump. The exceptions strengthened his case. Workers at a nearby brewery, who drank beer and water from the brewery's own well, were largely spared, while a woman who lived miles away, but had water from Broad Street brought to her because she liked its taste, died of the disease. Snow persuaded the local authorities to remove the pump's handle.",
-      "The story is often told as a tale of instant triumph, but the facts are more complicated. The outbreak was already declining when the handle came off, as many residents had fled, and Snow himself acknowledged this. Even the source of the contamination, a cesspool beside the well into which a sick baby's soiled nappies had been emptied, was traced only later, by a local clergyman. A government inquiry the following year considered his water theory and rejected it, preferring to explain the outbreak through conditions in the air. Only in the 1860s, after further outbreaks and the work of others, did the idea that cholera was waterborne gain general acceptance.",
-      "Snow's achievement lay less in stopping a single outbreak than in his method. By comparing who fell ill with who did not, and by looking hardest at the cases that did not fit, he turned a map of deaths into an argument about causes. That way of reasoning, rather than the image of a pump without a handle, is his real legacy to public health."
+      "In late August 1854 cholera struck the Soho district of London with extraordinary ferocity, and within ten days it had killed some five hundred people in a few streets. The disease was dreaded for its speed, which could kill a healthy adult within a day. Medical opinion held that it was carried by miasma, a poisonous exhalation of rotting matter, an idea with a respectable pedigree and a good deal of circumstantial support: cholera struck hardest in the poorest, dirtiest and lowest-lying districts, and sanitary campaigns directed against filth had reduced other diseases. The physician John Snow thought otherwise, holding that cholera was spread through water contaminated with the discharges of the sick, an idea he had advanced some years earlier on the strength of an earlier epidemic.",
+      "In Soho he went from door to door, recording where the dead had lived, and found that deaths clustered around a public pump in Broad Street. Plotted on a map, they gathered most thickly around it. The exceptions strengthened his case: workers at a nearby brewery, who drank beer and water from the brewery's own well, were largely spared, while a woman who lived miles away, but had water from the Broad Street pump delivered because she liked its taste, died. Snow persuaded the parish authorities to remove the pump's handle.",
+      "The story is usually told as a triumph, but the truth is less tidy. The epidemic was already declining when the handle was removed, as many residents had fled, a fact Snow acknowledged. A clergyman, Henry Whitehead, who had begun as a sceptic, later traced the contamination to a cesspool beside the well, into which the soiled nappies of a sick infant had been emptied. A government inquiry the following year considered Snow's theory and rejected it. The rejection was not irrational. A cluster around a pump is also what the miasma theory would predict if the pump stood in the foulest part of a foul district, and the map, which has since become the emblem of Snow's argument, could not by itself distinguish between the two. What distinguished them were the exceptions.",
+      "That is why Snow's achievement lies less in his map than in his method. By comparing those who fell ill with those who did not, and by looking hardest at the cases that failed to fit, he turned a picture of the dead into an argument about causes. His argument did not win quickly. It was accepted only in the following decades, as further outbreaks, the work of others and eventually the identification of the cholera bacillus made the waterborne theory difficult to resist. Nor did it win because it was the more elegant; for a time, the better theory was the one with the less impressive pedigree. The episode is a reminder that evidence does not announce its own meaning, and that the cases that matter most are often those that a theory in favour has to explain away."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best expresses the main idea of the passage?",
+        "stem": "Which one of the following best expresses the main idea of the passage?",
         "proof": [
           2,
           3
         ],
         "options": [
           {
-            "t": "Snow single-handedly ended the 1854 outbreak by removing a pump handle.",
-            "why": "Paragraph 3 says the outbreak was already declining.",
+            "t": "Snow's removal of a pump handle ended the 1854 cholera outbreak and at once demonstrated the superiority of the waterborne theory of the disease.",
+            "why": "Paragraph 3 says the epidemic was already declining and that the inquiry rejected his theory.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Snow's lasting contribution was a way of reasoning from comparisons, even though his theory was not accepted at once.",
-            "why": "Paragraph 4 names the method as his legacy; paragraph 3 records the slow acceptance."
+            "t": "Snow's map proved that cholera was waterborne, and the officials who rejected his theory did so out of simple ignorance of the evidence.",
+            "why": "Paragraph 3 says the map could not by itself distinguish between the theories and that the rejection was not irrational.",
+            "trap": "Extreme wording"
           },
           {
-            "t": "The miasma theory was correct about cholera after all.",
-            "why": "The passage treats the water theory as the one later accepted.",
+            "t": "Snow's lasting contribution was a way of reasoning from comparisons and anomalies, not the map itself, and his theory won acceptance only gradually.",
+            "why": "Paragraph 4 names the method as his achievement, and paragraphs 3 and 4 record the slow acceptance."
+          },
+          {
+            "t": "The miasma theory was well supported by the evidence of 1854, so the later acceptance of the waterborne view was merely a change of fashion.",
+            "why": "The author says the exceptions distinguished the theories and that outbreaks and further work made the water theory hard to resist.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 2
+      },
+      {
+        "type": "inference",
+        "stem": "The author suggests that the cluster of deaths around the Broad Street pump:",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "was sufficient proof of Snow's theory without any further evidence being needed to support it.",
+            "why": "The author says the map could not by itself distinguish the theories and that the exceptions did.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Cholera in Victorian London was spread mainly by breweries.",
-            "why": "The brewery is an exception that supported Snow's theory.",
+            "t": "was compatible with both theories, and so could not by itself decide between them.",
+            "why": "A cluster around a pump is also what miasma would predict if the pump stood in the foulest part of the district (paragraph 3)."
+          },
+          {
+            "t": "was largely an artefact of the density of the population in the streets that lay around the pump.",
+            "why": "Population density is never mentioned.",
             "trap": "Out of scope"
+          },
+          {
+            "t": "disappeared as soon as the handle of the pump had been removed by the parish authorities.",
+            "why": "The epidemic was already declining when the handle was removed.",
+            "trap": "Distorts the passage"
           }
         ],
         "answer": 1
       },
       {
         "type": "inference",
-        "stem": "The brewery workers and the woman who lived far away matter to Snow's argument because:",
+        "stem": "The cases of the brewery workers and the woman who lived far from Soho matter to Snow's argument because they:",
         "proof": [
           1
         ],
         "options": [
           {
-            "t": "they prove that beer protects against cholera",
-            "why": "The workers were spared because they did not drink the pump's water.",
+            "t": "were cases that the water theory predicted and that the miasma theory could not readily explain.",
+            "why": "Workers breathing Soho's air were spared, while a woman far away who drank its water died."
+          },
+          {
+            "t": "show that beer was a safer drink than water in London during the epidemics of cholera that struck the city.",
+            "why": "The workers were spared because they did not drink the pump's water, not because beer protects.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "they were the only people in the area who did not drink from the pump",
-            "why": "Nothing says they were the only ones.",
-            "trap": "Extreme wording"
-          },
-          {
-            "t": "they were the first victims of the outbreak",
-            "why": "Only the woman died, and nothing says she was among the first.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "their cases fitted the water theory but were hard to explain by bad air in the neighbourhood",
-            "why": "Workers breathing Soho's air were spared; a woman far from it, drinking its water, died."
-          }
-        ],
-        "answer": 3
-      },
-      {
-        "type": "inference",
-        "stem": "It can be inferred that the government inquiry of 1855:",
-        "proof": [
-          2
-        ],
-        "options": [
-          {
-            "t": "was influenced by the belief, common at the time, that disease spread through the air",
-            "why": "It preferred 'conditions in the air', in line with the miasma theory described in paragraph 1."
-          },
-          {
-            "t": "accepted Snow's theory but kept the finding quiet",
-            "why": "It 'rejected' his theory.",
+            "t": "demonstrate that the disease was caused by the quality of the air in the streets of Soho at that time.",
+            "why": "The brewery workers breathed the same air and were spared; the cases tell against the air theory.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "found that the pump handle had never been removed",
-            "why": "Nothing like this is reported.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "blamed the brewery for the outbreak",
-            "why": "The brewery is never connected with the inquiry.",
-            "trap": "Out of scope"
+            "t": "identify the original source of the contamination as a cesspool beside the well in Broad Street.",
+            "why": "The cesspool was traced later, by Whitehead (paragraph 3).",
+            "trap": "Distorts the passage"
           }
         ],
         "answer": 0
       },
       {
         "type": "tone",
-        "stem": "The author's attitude to the popular story of the pump handle is one of:",
+        "stem": "The author's attitude towards the 1855 inquiry's rejection of Snow's theory is best described as:",
         "proof": [
           2,
           3
         ],
         "options": [
           {
-            "t": "unqualified admiration",
-            "why": "The author calls the story more complicated than it is told.",
+            "t": "contemptuous, since the inquiry ignored evidence that any reasonable official would at once have accepted.",
+            "why": "The author does not blame the inquiry and calls its rejection not irrational.",
             "trap": "Extreme wording"
           },
           {
-            "t": "complete rejection: Snow contributed nothing to public health",
-            "why": "The author credits Snow with a lasting legacy.",
+            "t": "approving, since the inquiry rightly resisted a theory that had been put forward on rather weak evidence.",
+            "why": "The author says the better theory was the one with the less impressive pedigree, not that the inquiry was right.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "gentle correction: the story simplifies events and misses what mattered most",
-            "why": "Paragraph 3 corrects the 'instant triumph'; paragraph 4 moves the credit to his method."
+            "t": "indifferent, since the decision had no effect on the later acceptance of the waterborne theory of cholera.",
+            "why": "The author treats the rejection as part of the slow path to acceptance and takes a clear view of it.",
+            "trap": "Distorts the passage"
           },
           {
-            "t": "amusement at the foolishness of Victorian officials",
-            "why": "There is no mockery in the passage.",
-            "trap": "Out of scope"
+            "t": "understanding, since the rejection was not irrational in the light of the evidence then available.",
+            "why": "Paragraph 3 says the rejection was not irrational because the map could not distinguish the two theories."
           }
         ],
-        "answer": 2
+        "answer": 3
       }
     ],
     "recall": [
       {
-        "q": "On which street was the pump at the centre of the outbreak?",
+        "q": "Who traced the contamination to a cesspool beside the well?",
         "options": [
-          "Oxford Street",
-          "Broad Street",
-          "Baker Street",
-          "Fleet Street"
+          "John Snow himself, working door to door through the district.",
+          "A government inquiry that reported in the following year.",
+          "Henry Whitehead, a clergyman who had begun as a sceptic.",
+          "A brewery owner whose workers had been spared."
         ],
-        "answer": 1
+        "answer": 2
       },
       {
-        "q": "Which group was largely spared?",
+        "q": "Which of the following was among the exceptions that strengthened Snow's case?",
         "options": [
-          "Brewery workers",
-          "Doctors",
-          "Children",
-          "Shopkeepers"
+          "Brewery workers who drank from the brewery's own well.",
+          "Residents who fled Soho before the outbreak began.",
+          "Doctors who treated the sick in Broad Street.",
+          "Children who were kept indoors during the epidemic."
         ],
         "answer": 0
       }
@@ -932,10 +932,10 @@
     "genre": "history",
     "difficulty": "hard",
     "paras": [
-      "The phrase 'Silk Road' was coined only in 1877, by the German geographer Ferdinand von Richthofen, whose work in China included surveying routes for a proposed railway. It has since become one of the most evocative names in history, conjuring caravans carrying bolts of silk across deserts from Chang'an to Rome. The name caught on slowly, and became popular only in the twentieth century, through travel writing, exhibitions and, later, television. The image is not wrong so much as misleading, and the ways in which it misleads are instructive.",
-      "There was no single road, and almost no one travelled its full length. Goods moved in relays, changing hands many times between local merchants who knew only their own stretch of a network of routes running through oases, mountain passes and, increasingly, sea lanes. A Roman lady wearing Chinese silk had no idea where it came from, and the Chinese who made it had only hazy notions of Rome. Much of the traffic, moreover, was local and regional: horses, grain, paper and metalwork rather than luxuries bound for distant empires.",
-      "Silk itself was only one commodity among many, and in some periods not the most important. Its production, in any case, did not stay a Chinese secret: silkworms reached the Byzantine empire in the sixth century. What travelled furthest and lasted longest were often things that weighed nothing: religions such as Buddhism, which moved from India into Central Asia and China; techniques such as papermaking, which reached the Islamic world and later Europe; and, less happily, diseases, which used the same routes as merchants and pilgrims.",
-      "Why, then, does the romantic image persist? Partly because it suits modern purposes. Governments promoting new infrastructure and trade links across Asia invoke the Silk Road as a precedent, presenting their projects as the revival of an ancient, harmonious exchange. Historians are wary of such borrowings, which tend to leave out the soldiers, slaves and tax collectors who also travelled the routes. The networks they study were real and transformative, but they were also patchy, contested and often violent, and a name invented by a railway surveyor tells us at least as much about the nineteenth century's ambitions as about the past it claims to describe."
+      "The phrase 'Silk Road' was coined in 1877 by the German geographer Ferdinand von Richthofen, who had spent years in China surveying for the railways that he hoped would one day follow the old routes. It acquired its present glamour only in the twentieth century, through travel narratives, museum exhibitions and then television. The name now calls up a picture of caravans carrying bolts of silk from Chang'an to Rome, and the picture is a powerful one. It is also, in its main outline, misleading, and the ways in which it misleads are more interesting than the correction that follows.",
+      "There was no single road, and almost nobody travelled its length. Goods moved in relays, changing hands many times between local merchants who knew only their own stretch of a web of routes through oases, passes and, increasingly, sea lanes. A Roman matron in Chinese silk knew nothing of where it had come from; the Chinese who wove it had hazy notions of Rome. Much of the traffic, moreover, was local and regional, in horses, grain, paper and metalwork, not luxuries bound for distant empires. Even silk was only one commodity among many, and its manufacture did not remain a Chinese monopoly: silkworms had reached the Byzantine empire by the sixth century.",
+      "What travelled farthest and lasted longest was often weightless. Buddhism moved from India into Central Asia and China, carrying with it art, architecture and a vocabulary that enriched the languages through which it passed; paper-making travelled westward to the Islamic world and, much later, to Europe; and the plague bacillus, less welcome, used the same routes as merchants and pilgrims. The point may be generalised. The exchanges that mattered most were those that were adopted and adapted by local societies, not those that merely passed through them, and the history of the networks is therefore as much a history of the places that received what travelled as of the routes along which it came.",
+      "Why, then, does the romantic picture persist? Partly because the modern world finds it useful. Governments promoting new infrastructure and trade links across Asia invoke the Silk Road as a precedent, presenting their projects as the revival of an ancient and harmonious exchange. Historians view such borrowings with suspicion, since they omit the soldiers, tax collectors and slaves who also used the routes, and the empires that taxed or fought over them. Yet it would be an overcorrection to conclude that the name should simply be abandoned. The networks were real and transformative, and a term is needed for connections that were uneven, intermittent and contested without ceasing to be connections. The difficulty with 'Silk Road' is less that it is false than that it is too tidy, and a name invented by a railway surveyor reflects the ambitions of the nineteenth century at least as much as the past it claims to describe."
     ],
     "questions": [
       {
@@ -949,23 +949,52 @@
         ],
         "options": [
           {
-            "t": "the Silk Road was a single route that linked Chang'an directly to Rome",
-            "why": "Paragraph 2 says there was no single road.",
-            "trap": "Distorts the passage"
+            "t": "the popular image of the Silk Road misleads about the kind of network it was, though the connections it names were real.",
+            "why": "Each paragraph corrects part of the romantic image, and paragraph 4 says the networks were real and a term for them is still needed."
           },
           {
-            "t": "silk was the only commodity that mattered in trade between Asia and Europe",
-            "why": "Paragraph 3 says silk was one commodity among many.",
+            "t": "the Silk Road never existed, being a modern invention for which there is no historical basis whatever in the surviving evidence",
+            "why": "Paragraph 4 says the networks were real and transformative and that the name should not simply be abandoned.",
             "trap": "Extreme wording"
           },
           {
-            "t": "modern infrastructure projects in Asia are bound to fail",
-            "why": "The passage questions their use of history, not their prospects.",
+            "t": "silk was the principal commodity carried along the routes and the chief cause of their historical importance to the empires of Asia",
+            "why": "Paragraph 2 says silk was only one commodity among many, and paragraph 3 says what lasted longest was weightless.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "governments that invoke the Silk Road in their infrastructure projects are acting in bad faith towards the neighbours they address",
+            "why": "Paragraph 4 says historians are wary of such borrowings, not that governments act in bad faith.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 0
+      },
+      {
+        "type": "inference",
+        "stem": "The example of the Roman matron wearing Chinese silk is used to show that:",
+        "proof": [
+          1
+        ],
+        "options": [
+          {
+            "t": "Roman women controlled a large part of the trade in silk between Rome and the empires of China.",
+            "why": "She is a buyer who knew nothing of where the silk came from.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "silk reached Rome by sea rather than overland through the oases and passes of Central Asia.",
+            "why": "The example says nothing about the route.",
             "trap": "Out of scope"
           },
           {
-            "t": "the popular image misrepresents a patchy network whose most lasting exchanges were often of ideas and techniques",
-            "why": "Each paragraph corrects part of the romantic image."
+            "t": "Romans valued silk more highly than the Chinese who made it ever came to value it themselves.",
+            "why": "No comparison of how the two peoples valued silk is made.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "trade passed through so many hands that the two ends of the network knew little of each other.",
+            "why": "It illustrates goods moving in relays between merchants who knew only their own stretch."
           }
         ],
         "answer": 3
@@ -974,110 +1003,82 @@
         "type": "except",
         "stem": "The passage mentions all of the following as having travelled along these routes EXCEPT:",
         "proof": [
+          1,
           2
         ],
         "options": [
           {
-            "t": "Buddhism",
+            "t": "Buddhism, together with its art and architecture.",
             "why": "Named in paragraph 3.",
             "trap": "True but not the answer"
           },
           {
-            "t": "papermaking",
+            "t": "the techniques of paper-making, carried westward.",
             "why": "Named in paragraph 3.",
             "trap": "True but not the answer"
           },
           {
-            "t": "railway technology",
-            "why": "The railway appears only as the reason Richthofen was surveying routes."
+            "t": "gunpowder and the weapons that used it.",
+            "why": "Gunpowder is never mentioned; the passage names Buddhism, paper-making and disease."
           },
           {
-            "t": "diseases",
-            "why": "Named in paragraph 3.",
+            "t": "disease, carried by merchants and pilgrims alike.",
+            "why": "Paragraph 3 names the plague bacillus, which used the same routes as merchants and pilgrims.",
             "trap": "True but not the answer"
           }
         ],
         "answer": 2
       },
       {
-        "type": "inference",
-        "stem": "The example of the Roman lady wearing Chinese silk is used to show that:",
+        "type": "strengthen",
+        "stem": "Which of the following, if true, would most support the author's suggestion that the most important exchanges were those that local societies adopted and adapted?",
         "proof": [
-          1
+          2
         ],
         "options": [
           {
-            "t": "Romans valued silk more highly than the Chinese did",
-            "why": "Nothing compares how the two valued silk.",
+            "t": "Most of the silk that was carried westward was woven in a single province of China, which kept its methods secret for many centuries.",
+            "why": "The origin of the silk bears neither on adoption nor on adaptation, and paragraph 2 says the secret did not last.",
             "trap": "Out of scope"
           },
           {
-            "t": "trade passed through so many hands that the two ends knew little of each other",
-            "why": "It illustrates goods moving 'in relays' between merchants who knew only their own stretch."
+            "t": "Buddhism in China developed doctrines and artistic styles that differed markedly from those practised in India.",
+            "why": "A religion that was transformed in the society that received it is the kind of exchange the author says mattered most."
           },
           {
-            "t": "Roman women controlled the silk trade",
-            "why": "She is a buyer who knew nothing of the trade.",
+            "t": "Merchants on the routes usually travelled only a short stretch before selling their goods on to other merchants who knew the next stage.",
+            "why": "This is the author's relay claim from paragraph 2; it concerns how goods moved, not what societies adopted.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "Chinese silk reached Rome in larger quantities than any other single imported good during the centuries that the routes were in use.",
+            "why": "Paragraph 2 says silk was only one commodity among many; this would contradict the passage.",
             "trap": "Distorts the passage"
-          },
-          {
-            "t": "silk reached Rome by sea rather than over land",
-            "why": "The example says nothing about the route.",
-            "trap": "Out of scope"
           }
         ],
         "answer": 1
-      },
-      {
-        "type": "inference",
-        "stem": "The last sentence suggests that the name 'Silk Road':",
-        "proof": [
-          3
-        ],
-        "options": [
-          {
-            "t": "reflects nineteenth-century ambitions as much as the past it describes",
-            "why": "A railway surveyor's name 'tells us at least as much about the nineteenth century's ambitions'."
-          },
-          {
-            "t": "was invented by historians to describe violent conflicts",
-            "why": "It was coined by a geographer, and historians are wary of it.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "should be replaced in textbooks by a more accurate term",
-            "why": "No new term is proposed.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "accurately describes a harmonious exchange in the past",
-            "why": "The author calls the networks 'contested and often violent'.",
-            "trap": "Distorts the passage"
-          }
-        ],
-        "answer": 0
       }
     ],
     "recall": [
       {
-        "q": "Who coined the phrase 'Silk Road'?",
+        "q": "Why, according to the passage, was Richthofen in China?",
         "options": [
-          "Marco Polo",
-          "Ferdinand von Richthofen",
-          "A Roman historian",
-          "A Chinese emperor"
-        ],
-        "answer": 1
-      },
-      {
-        "q": "Which religion does the passage say travelled from India into Central Asia and China?",
-        "options": [
-          "Islam",
-          "Christianity",
-          "Buddhism",
-          "Zoroastrianism"
+          "He was trading in silk on behalf of a German firm.",
+          "He was recording the history of the Roman empire's trade.",
+          "He was surveying for railways that he hoped would follow the old routes.",
+          "He had been sent to study Buddhism in Central Asia."
         ],
         "answer": 2
+      },
+      {
+        "q": "How, according to the author, did goods move along the routes?",
+        "options": [
+          "In single caravans that travelled from Chang'an all the way to Rome.",
+          "In relays, changing hands between local merchants who knew only their own stretch.",
+          "By sea only, in ships owned by the Byzantine state.",
+          "Under the control of one empire that taxed all of the traffic."
+        ],
+        "answer": 1
       }
     ]
   },
@@ -1087,150 +1088,152 @@
     "genre": "literature",
     "difficulty": "medium",
     "paras": [
-      "For centuries readers wondered how a single poet could have composed the Iliad and the Odyssey, poems of more than twenty-seven thousand lines between them, without writing. Some scholars doubted that one person had composed them at all, and argued that they were stitched together from shorter songs by later editors. The question was transformed in the 1930s by Milman Parry, a young American scholar, and his assistant Albert Lord, who travelled to Yugoslavia to record singers of heroic songs in coffee houses and villages.",
-      "Parry had noticed that Homer's verse is built from repeated phrases, such as 'rosy-fingered dawn' or 'swift-footed Achilles', each of which fits a particular slot in the rhythm of the line. In the Balkan singers he found the same technique alive. A skilled singer did not memorise a fixed text. He knew a large stock of formulas and familiar scenes, such as the arming of a hero or the gathering of an assembly, and used them to compose the song afresh as he performed it, at a pace no reciter of memorised lines could match.",
-      "One consequence surprised the scholars. Singers insisted that they performed a song 'the same' each time, word for word, yet recordings of the same singer on different occasions showed long passages that differed considerably. One singer, asked to perform a song he had heard only once, produced a version far longer than the original, and still described it as the same song. For the singers, sameness meant the same story, the same heroes and the same events, not the identical sequence of words that a culture of print has taught us to expect.",
-      "Parry died in an accident in 1935, and Lord carried the work on. His book on these findings, The Singer of Tales, changed the study of early literature. It suggested that the Homeric poems were the product of a long tradition of oral composition, perhaps written down at a particular performance, rather than the invention of a solitary author working from a draft. Many questions remain open, including how and when the poems were fixed in writing. But the idea of a single correct text, which modern editors take for granted, may be a poor guide to how such poetry was made and heard."
+      "For centuries scholars were puzzled by how one poet could have composed the Iliad and the Odyssey, poems of more than twenty-seven thousand lines between them, without the aid of writing. Some concluded that no single poet had done so, and that the poems were assembled by editors from shorter songs. The problem was recast in the 1930s by Milman Parry, a young American classicist, who had noticed that Homer's verse is built from repeated phrases, 'rosy-fingered dawn' or 'swift-footed Achilles', each of which fits a particular place in the line's metre. Such phrases, he argued, were not decorations but tools, and a poet who possessed a sufficient stock of them could compose at speed without memorising.",
+      "To test the idea Parry and his assistant Albert Lord travelled to Yugoslavia, where they recorded singers of heroic songs in coffee houses and villages. They found the technique alive. A skilled singer did not learn a text. He possessed a large stock of formulas and of themes, such as the arming of a hero or the gathering of an assembly, and used them to compose the song anew in performance, at a pace that no reciter of memorised lines could sustain. Lord's book The Singer of Tales, published long after Parry's early death in 1935, argued that the Homeric poems were the product of such a tradition, and it transformed the study of early epic.",
+      "One consequence surprised the scholars. Singers insisted that they sang a song 'the same' each time, word for word, yet recordings of one singer on different occasions showed long passages that differed considerably. One singer, Avdo Međedović, asked to sing a song he had heard only once, produced a version several times longer than the original, which he still regarded as the same song. For the singers, sameness meant the same story, the same heroes and the same events, not the identical sequence of words that print has trained us to expect. The notion of a single correct text, in other words, may be less a fact about poetry than a habit of readers.",
+      "It would be rash, however, to treat the analogy as proof. The Balkan songs are far shorter than Homer's epics, and those who sang them were, for the most part, unlettered, whereas the Homeric poems may have been set down in writing, perhaps even dictated, at a moment when the art of the oral singer was at its height; some scholars suspect that the great length and unity of the poems are signs of writing's influence and not of its absence. The Parry-Lord thesis does not settle when or how the poems were fixed. What it does establish is that the oral composition of long poems is possible, and that memorisation and authorial invention are not the only alternatives. It also shows how readily a scholar trained by print will assume that a poem must exist in one authoritative form, and how little warrant there is for the assumption."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best captures the main point of the passage?",
+        "stem": "Which one of the following best captures the main point of the passage?",
         "proof": [
           1,
+          2,
           3
         ],
         "options": [
           {
-            "t": "Homer never existed, and the Iliad was really composed by Balkan singers.",
-            "why": "The Balkan singers offered a living parallel, not the source of the Iliad.",
+            "t": "The Iliad and the Odyssey were composed by Balkan singers whose songs were later carried to Greece and adapted by Homer himself.",
+            "why": "The Balkan singers served as a living parallel for the method of composition, not as a source of the poems.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Milman Parry was the greatest classical scholar of the twentieth century.",
-            "why": "The passage does not rank scholars.",
+            "t": "Studies of Balkan singers prove that Homer composed his poems without writing, in exactly the manner of the singers who were recorded.",
+            "why": "The author says the analogy is not proof and that the poems may have been dictated.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "Oral poets memorise their songs word for word, which explains how long poems could be preserved intact before writing came into use.",
+            "why": "Paragraph 2 says a skilled singer did not learn a text, and paragraph 3 shows the wording varied.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Balkan singers showed that long poems can be composed in performance, reshaping views of Homer without settling how his epics were fixed.",
+            "why": "Paragraphs 1 and 2 give the method and evidence, paragraph 3 the notion of sameness, and paragraph 4 the limits of the conclusion."
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "type": "inference",
+        "stem": "The singers' insistence that they sang a song 'the same' each time shows that:",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "they were consciously misleading the scholars who recorded them about the way in which they worked.",
+            "why": "Nothing suggests deceit; their idea of sameness simply differed from that of readers trained by print.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "the recordings made by Parry and Lord were too unreliable to be used as evidence about their songs.",
+            "why": "The recordings are the evidence on which the passage relies.",
             "trap": "Out of scope"
           },
           {
-            "t": "Studies of Balkan singers suggested that Homer's poems came from a tradition of composing in performance, not from fixed memorised texts.",
-            "why": "Covers the method, the evidence and the conclusion in paragraph 4."
+            "t": "their idea of sameness concerned the story and its events more than the identity of the words.",
+            "why": "Paragraph 3 says sameness meant the same story, heroes and events, not an identical sequence of words."
           },
           {
-            "t": "Oral poets memorise their songs word for word.",
-            "why": "Paragraph 2 says a skilled singer 'did not memorise a fixed text'.",
+            "t": "they had forgotten parts of the songs that they had once learned by heart from older singers.",
+            "why": "They composed anew by design; forgetting is not what the passage describes.",
             "trap": "Distorts the passage"
           }
         ],
         "answer": 2
       },
       {
-        "type": "detail",
-        "stem": "According to the passage, a phrase such as 'swift-footed Achilles' is useful to an oral poet because:",
+        "type": "strengthen",
+        "stem": "Which of the following, if true, would most weaken the author's reservation about treating the Balkan analogy as proof?",
         "proof": [
-          1
+          3
         ],
         "options": [
           {
-            "t": "it fits a particular place in the rhythm of the line",
-            "why": "Paragraph 2: each formula 'fits a particular slot in the rhythm of the line'."
-          },
-          {
-            "t": "it shows off the poet's originality",
-            "why": "Formulas are shared stock, not original phrasing.",
+            "t": "Many of the Balkan singers who were recorded could read and write, and had learned some of their songs from printed collections.",
+            "why": "This would add to the author's reservation by suggesting that print had shaped the singers' practice.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "it is easy to write down",
-            "why": "The point is composing without writing.",
+            "t": "Unlettered Balkan singers were recorded composing in performance poems as long as the Iliad, with a comparable unity of plot.",
+            "why": "The reservation rests on the shortness of the Balkan songs and the singers' lack of letters; singers who composed epics of Homeric length unaided would remove it."
+          },
+          {
+            "t": "The Homeric epics contain more repeated phrases than any other known body of oral poetry anywhere in the world.",
+            "why": "This bears on formulaic composition, not on whether Balkan practice is a good guide to Homer's.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "Albert Lord continued Parry's work after Parry's death in 1935 and published The Singer of Tales some time later.",
+            "why": "The history of the scholarship has no bearing on the strength of the analogy.",
             "trap": "Out of scope"
-          },
-          {
-            "t": "audiences demanded new phrases at each performance",
-            "why": "Formulas are repeated phrases.",
-            "trap": "Distorts the passage"
-          }
-        ],
-        "answer": 0
-      },
-      {
-        "type": "inference",
-        "stem": "The singers' claim that they performed a song 'the same' each time shows that:",
-        "proof": [
-          2
-        ],
-        "options": [
-          {
-            "t": "they were deliberately misleading the scholars",
-            "why": "Nothing suggests deceit; their idea of sameness differed.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "for them, sameness meant the same story rather than the same words",
-            "why": "Paragraph 3 says exactly this."
-          },
-          {
-            "t": "the recordings of their performances were faulty",
-            "why": "The recordings are trusted evidence in the passage.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "they had forgotten their songs",
-            "why": "They composed afresh by design, not through forgetting.",
-            "trap": "Distorts the passage"
           }
         ],
         "answer": 1
       },
       {
         "type": "application",
-        "stem": "The author would most likely regard a modern editor's search for the one original wording of the Iliad as:",
+        "stem": "The author would most likely regard an editor's search for the one original wording of the Iliad as:",
         "proof": [
+          2,
           3
         ],
         "options": [
           {
-            "t": "the only proper aim of classical scholarship",
-            "why": "The author questions the idea of a single correct text.",
+            "t": "an enterprise resting on an assumption about poetry that the evidence puts in doubt.",
+            "why": "Paragraph 4 says there is little warrant for assuming that a poem must exist in one authoritative form."
+          },
+          {
+            "t": "the only legitimate aim of classical scholarship, whatever the oral evidence may seem to show.",
+            "why": "The author questions the assumption of a single authoritative form.",
             "trap": "Extreme wording"
           },
           {
-            "t": "certain to succeed if enough manuscripts are found",
-            "why": "The author doubts such a text existed in the way editors assume.",
+            "t": "certain to succeed if enough early manuscripts of the poems can be recovered by later scholars.",
+            "why": "The author doubts that such a text existed in the way editors assume.",
             "trap": "Extreme wording"
           },
           {
-            "t": "pointless, since the Iliad was never written down",
-            "why": "The poems were written down at some point; how and when is still open.",
+            "t": "pointless, since the poems were never set down in writing by anyone at any time in antiquity.",
+            "why": "The poems were written down at some point; how and when is left open (paragraph 4).",
             "trap": "Distorts the passage"
-          },
-          {
-            "t": "possibly mistaken in what it assumes about how the poem was made",
-            "why": "The last sentence: a single correct text 'may be a poor guide' to how such poetry was made."
           }
         ],
-        "answer": 3
+        "answer": 0
       }
     ],
     "recall": [
       {
-        "q": "Where did Parry and Lord record singers?",
+        "q": "Where did Parry and Lord record singers of heroic songs?",
         "options": [
-          "Greece",
-          "Yugoslavia",
-          "Turkey",
-          "Italy"
+          "In monasteries and royal courts in Greece.",
+          "In coffee houses and villages in Yugoslavia.",
+          "In harbour taverns and market towns in southern Italy.",
+          "In schools and libraries in Turkey."
         ],
         "answer": 1
       },
       {
-        "q": "What is the title of Lord's book?",
+        "q": "How did Avdo Međedović respond when asked to sing a song he had heard only once?",
         "options": [
-          "The Iliad Explained",
-          "The Singer of Tales",
-          "Songs of the Balkans",
-          "Homer's Memory"
+          "He refused, saying the song belonged to its original singer.",
+          "He sang it word for word from memory, exactly as he had heard it.",
+          "He sang a shortened version and apologised for forgetting parts of it.",
+          "He sang a version several times longer and still regarded it as the same song."
         ],
-        "answer": 1
+        "answer": 3
       }
     ]
   },
@@ -1238,98 +1241,99 @@
     "id": "lit-detective",
     "title": "The rules of the murder game",
     "genre": "literature",
-    "difficulty": "easy",
+    "difficulty": "medium",
     "since": "2026-10-18",
     "paras": [
-      "In 1929 the priest and crime writer Ronald Knox published ten commandments for detective fiction. The criminal must be mentioned early in the story; no more than one secret room or passage is allowed; the detective must not commit the crime himself; and no clue may be hidden from the reader. Knox wrote partly in jest, but his list captured a real ambition of the period's writers. A detective story, in what is now called its golden age, was meant to be a fair contest between author and reader, in which a careful reader could, in principle, solve the crime before the final chapter.",
-      "The pleasure of such books was the pleasure of a puzzle. Agatha Christie's plots turn on a single overlooked detail, a clock set wrong or a letter read in the wrong order, and her characters are drawn just firmly enough to serve as suspects. Readers who wanted psychological depth were advised to look elsewhere. The setting is usually closed, a country house or a train cut off by snow, so that the circle of possible culprits is small. Violence happens offstage, and the corpse is less a person than the starting point of an argument.",
-      "Not everyone admired the form. In 1944 the American novelist Raymond Chandler complained that such stories were artificial, written by people who knew nothing of real crime, and praised writers who had taken murder 'out of the Venetian vase and dropped it into the alley'. In the hard-boiled fiction he championed, the detective walks through a corrupt city, the solution matters less than the journey, and the crime is a symptom of a society rather than a puzzle with a single answer.",
-      "The two traditions are often presented as rivals, but they answer different appetites. The puzzle story offers order: a world briefly disturbed by one crime and then restored by reason. The hard-boiled story offers recognition: a world that cannot be restored, seen clearly by someone who refuses to look away. Many modern crime novels borrow from both, setting a fair-play mystery inside a portrait of a troubled place, which may explain why the genre has outlived every announcement of its decline."
+      "In 1929 the priest and crime writer Ronald Knox set down ten commandments for detective fiction. The culprit must be mentioned early; no more than one secret passage is permitted; the detective must not commit the crime; and no clue may be withheld from the reader. Knox wrote partly in jest, but his list recorded a real ambition of the period. A detective story, in what is now called its golden age, was to be a fair contest between author and reader, in which a careful reader could in principle name the culprit before the detective did. The claim is usually accepted at face value, and it is worth noticing how often the books honour it only in the letter: the fairness consisted largely in the display of clues, and the conclusions drawn from them could depend on knowledge of an unusual poison, an obscure railway timetable or the habits of a particular social class.",
+      "The pleasure of such books was that of a puzzle. Agatha Christie's plots turn on an overlooked detail, a clock set wrong or a letter read in the wrong order, and her characters are drawn just firmly enough to serve as suspects. The setting is usually closed, a country house or a train halted by snow, so that the circle of possible culprits is small; violence happens offstage, and the corpse is less a person than the premise of an argument. W. H. Auden, who confessed to reading such stories addictively, argued that their appeal lay in a fantasy of innocence: the community is disturbed by a murder, the guilty party is identified and expelled, and the rest are restored to a state of grace.",
+      "Not everyone admired the form. In the mid-1940s the American critic Edmund Wilson announced that he could not care who had killed Roger Ackroyd, and in the same years Raymond Chandler complained that such stories were artificial, written by people who knew nothing of real crime, and praised Dashiell Hammett for taking murder out of the drawing room and putting it back in the street. In the hard-boiled fiction Chandler championed, the detective walks through a corrupt city, the solution matters less than the journey, and the crime is a symptom of a society rather than a puzzle with a single answer.",
+      "The two traditions are usually presented as rivals, but their opposition is less complete than it appears. Both are stories about order. The puzzle story offers a world briefly disturbed and then restored by reason; the hard-boiled story offers a world that cannot be restored, seen clearly by a man who declines to look away, and yet the detective of that world is himself a figure of order, bound by a private code in a place without public ones. Many modern crime novels borrow from both, setting a fair-play mystery inside a portrait of a troubled place, which may explain why the genre has outlived every announcement of its decline. It may also explain why neither side has ever quite won the argument: each offers the reader a form of consolation that the other regards as a lie."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best expresses the main idea of the passage?",
+        "stem": "Which one of the following best expresses the main idea of the passage?",
         "proof": [
+          2,
           3
         ],
         "options": [
           {
-            "t": "Golden-age detective stories were badly written and have rightly been forgotten.",
-            "why": "The author treats the puzzle story as answering a real appetite.",
+            "t": "Golden-age detective fiction was badly written, and the hard-boiled tradition rightly replaced it as the only serious kind of crime writing.",
+            "why": "The author treats the puzzle story as answering a real appetite and says neither side has won the argument.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Ronald Knox invented the detective story in 1929.",
-            "why": "Knox wrote rules for a form that already existed.",
+            "t": "Puzzle fiction and hard-boiled fiction, though often set against each other, both offer forms of order, and much later crime writing combines them.",
+            "why": "Paragraphs 2 and 3 describe the two traditions, and paragraph 4 argues that both concern order and are now often combined."
+          },
+          {
+            "t": "Knox's commandments were followed so strictly by golden-age writers that the genre became too predictable to survive into later decades.",
+            "why": "The author says the genre has outlived every announcement of its decline, and that the books honoured fairness only partly.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Puzzle stories and hard-boiled stories satisfy different desires, order and recognition, and much modern crime fiction combines them.",
-            "why": "This is the argument of the last paragraph, set up by the descriptions before it."
-          },
-          {
-            "t": "Raymond Chandler was a better writer than Agatha Christie.",
-            "why": "The passage reports Chandler's complaint but does not rank the two.",
-            "trap": "Out of scope"
+            "t": "Auden's theory of the detective story shows that readers of crime fiction are driven chiefly by feelings of guilt about their own lives.",
+            "why": "Auden's view is one detail reported in paragraph 2, not the main idea of the passage.",
+            "trap": "Too narrow or too broad"
           }
         ],
-        "answer": 2
+        "answer": 1
       },
       {
-        "type": "detail",
-        "stem": "According to the passage, golden-age writers set their stories in closed places in order to:",
+        "type": "inference",
+        "stem": "The author's observation that the fairness of golden-age stories 'consisted largely in the display of clues' suggests that:",
         "proof": [
-          1
+          0
         ],
         "options": [
           {
-            "t": "keep the circle of possible culprits small",
-            "why": "Paragraph 2: the setting is closed 'so that the circle of possible culprits is small'."
+            "t": "readers could be shown every clue and still be unable to solve the crime without specialised knowledge.",
+            "why": "Fair play meant that clues were displayed, but the conclusions could depend on poisons, timetables or social habits that readers might not know."
           },
           {
-            "t": "make the violence more vivid",
-            "why": "Violence 'happens offstage'.",
+            "t": "golden-age writers deliberately concealed important clues from their readers in order to preserve the surprise of the ending.",
+            "why": "The commandments forbid withholding clues; the author's point is about how much display was worth.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "show the corruption of modern cities",
-            "why": "That describes hard-boiled fiction.",
+            "t": "Knox's commandments were written in order to prevent readers from solving the crime before the detective did so.",
+            "why": "The commandments were meant to ensure fairness, so that readers could in principle solve the crime.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "obey one of Knox's commandments",
-            "why": "None of the rules quoted concerns the setting.",
-            "trap": "Out of scope"
+            "t": "readers of the period preferred stories whose solutions were obvious from the first chapter onwards.",
+            "why": "Nothing in the passage suggests that readers preferred obvious solutions.",
+            "trap": "Distorts the passage"
           }
         ],
         "answer": 0
       },
       {
         "type": "inference",
-        "stem": "Chandler's image of murder taken 'out of the Venetian vase and dropped into the alley' suggests that he valued crime fiction that:",
+        "stem": "Auden's view, as the passage reports it, implies that readers are drawn to detective stories because they:",
         "proof": [
-          2
+          1
         ],
         "options": [
           {
-            "t": "relied on elaborate clues and timetables",
-            "why": "That is the puzzle story he criticised.",
+            "t": "offer realistic portraits of crime as it actually happens in the streets of modern industrial cities.",
+            "why": "That is the claim of the hard-boiled tradition and of Chandler, not of Auden.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "kept violence out of sight",
-            "why": "He wanted crime brought into the rough world, not hidden.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "was written only by former police officers",
-            "why": "He said puzzle writers knew nothing of real crime, not that only police could write.",
+            "t": "teach readers to detect the guilty members of their own communities by attending to small details.",
+            "why": "No such educational effect is claimed.",
             "trap": "Out of scope"
           },
           {
-            "t": "placed crime in the rough real world rather than in an elegant, artificial one",
-            "why": "The vase is the refined puzzle; the alley is the street where real crime happens."
+            "t": "reward readers who possess specialised knowledge of poisons, railway timetables and social customs.",
+            "why": "Paragraph 1 mentions such knowledge as a limit on fairness, not as Auden's explanation of the appeal.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "offer an imaginary release from guilt through the identification and removal of the culprit.",
+            "why": "Auden's fantasy of innocence: the guilty party is expelled and the rest are restored to a state of grace (paragraph 2)."
           }
         ],
         "answer": 3
@@ -1342,48 +1346,48 @@
         ],
         "options": [
           {
-            "t": "A locked-room mystery set entirely in a country house, with thinly drawn characters",
-            "why": "This is a pure golden-age puzzle.",
+            "t": "A locked-room mystery set entirely in a country house, with thinly drawn suspects and a solution deduced from a timetable.",
+            "why": "This is a pure golden-age puzzle, with no portrait of a troubled society.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "A mystery that plays fair with its clues while portraying a run-down industrial town and its people",
-            "why": "A fair-play mystery inside a portrait of a troubled place combines both traditions."
-          },
-          {
-            "t": "A story in which the detective turns out to be the murderer",
-            "why": "This only breaks one of Knox's rules.",
+            "t": "A story in which the detective is revealed in the last chapter to have been the murderer all along.",
+            "why": "This only breaks one of Knox's rules and has nothing to do with combining the two traditions.",
             "trap": "Out of scope"
           },
           {
-            "t": "A novel about a corrupt city in which the crime is never solved or explained",
-            "why": "It has the portrait of a place, but no fair-play mystery.",
+            "t": "A mystery that plays fair with its clues while portraying a run-down industrial town and its people.",
+            "why": "A fair-play mystery inside a portrait of a troubled place is exactly the combination described in paragraph 4."
+          },
+          {
+            "t": "A novel about a corrupt city in which the crime is neither solved nor explained by the end of the book.",
+            "why": "It has the portrait of a place but no fair-play mystery, so it combines nothing.",
             "trap": "Half right, half wrong"
           }
         ],
-        "answer": 1
+        "answer": 2
       }
     ],
     "recall": [
       {
-        "q": "Who wrote ten commandments for detective fiction?",
+        "q": "Who set down ten commandments for detective fiction in 1929?",
         "options": [
-          "Agatha Christie",
-          "Ronald Knox",
-          "Raymond Chandler",
-          "Arthur Conan Doyle"
+          "Ronald Knox, a priest and crime writer.",
+          "Agatha Christie, the author of country-house puzzles.",
+          "Raymond Chandler, the critic of artificial plots.",
+          "W. H. Auden, the poet and reader of detective stories."
         ],
-        "answer": 1
+        "answer": 0
       },
       {
-        "q": "Where are golden-age stories often set?",
+        "q": "According to the passage, how does the hard-boiled tradition treat the crime?",
         "options": [
-          "In a city's back streets",
-          "In a country house or a snowbound train",
-          "In a courtroom",
-          "On a ship at sea"
+          "As a puzzle whose fair solution is hidden in a timetable.",
+          "As the starting point of an argument between author and reader.",
+          "As a symptom of a society rather than a puzzle with a single answer.",
+          "As a private matter to be settled within a closed community."
         ],
-        "answer": 1
+        "answer": 2
       }
     ]
   },
@@ -1394,15 +1398,15 @@
     "difficulty": "medium",
     "since": "2026-10-18",
     "paras": [
-      "The calendar that Julius Caesar introduced in 46 BCE assumed that a year lasts exactly 365 and a quarter days, and added a leap day every fourth year to keep pace. The true solar year is about eleven minutes shorter. The error is tiny, but it accumulates: by the sixteenth century the calendar had drifted about ten days away from the seasons, and the spring equinox, which the Church used to fix the date of Easter, was arriving around 11 March instead of 21 March.",
-      "In 1582 Pope Gregory XIII issued a reform, worked out largely by the astronomers and mathematicians Aloysius Lilius and Christopher Clavius. Ten days were removed at a stroke, so that Thursday 4 October was followed by Friday 15 October, and the leap-year rule was adjusted: century years would be leap years only if divisible by 400. Under the new rule, 1600 and 2000 were leap years but 1700, 1800 and 1900 were not, which keeps the calendar within a day of the sun for thousands of years.",
-      "Catholic countries such as Spain, Portugal and the Italian states adopted the change at once. Protestant states were slower, unwilling to accept a reform issued by the Pope, however sound its arithmetic. Sweden tried to switch gradually by skipping leap days, made a mess of it, and for one year had a 30 February. Britain and its colonies held out until 1752, by which time eleven days had to be dropped. Russia changed only after the revolution of 1917, which is why the October Revolution is commemorated in November.",
-      "British history adds a popular story: that crowds rioted in 1752, demanding 'Give us our eleven days!' Historians have found little evidence that any such riots took place. The slogan appears in a satirical painting by William Hogarth, and the tale seems to have grown from it, helped by a later fondness for stories of an ignorant public. The episode shows how a joke can harden into fact, and how readily we accept accounts that flatter the present at the expense of the past."
+      "The calendar introduced by Julius Caesar in 46 BCE assumed a year of exactly 365 and a quarter days, and added a leap day every fourth year to keep pace. The true solar year is about eleven minutes shorter. The error is trivial in a lifetime and considerable in a millennium: by the sixteenth century the calendar had drifted some ten days from the seasons, and the spring equinox, which the Church used to fix the date of Easter, fell around 11 March rather than the 21 March on which the calculations assumed it. A discrepancy of this kind offended astronomers, but it was the Church's concern with Easter that turned it into a matter of state.",
+      "In 1582 Pope Gregory XIII issued a reform, devised chiefly by the astronomer Aloysius Lilius and elaborated by the Jesuit Christopher Clavius. Ten days were deleted, so that Thursday 4 October was followed by Friday 15 October, and the rule for leap years was refined: century years were to be leap years only if divisible by 400. Under the new rule 1600 and 2000 were leap years but 1700, 1800 and 1900 were not, which keeps the calendar within a day of the sun for several thousand years. As arithmetic the reform was excellent. As policy it was a good deal less so, for it was promulgated by a pope to a Europe that was no longer willing to take instruction from one.",
+      "Catholic states such as Spain, Portugal and most of Italy adopted the change at once. Protestant states hesitated, unwilling to accept from Rome even a correct answer, and the result was a continent in which the same day had different dates according to the border one crossed. Sweden attempted a gradual transition by omitting leap days, mismanaged it and for a time was out of step with both calendars, and in 1712 had a 30 February to restore order. Britain and its colonies held out until 1752, by which time eleven days had to be dropped. Russia did not change until after the revolution of 1917, which is why the October Revolution is commemorated in November. Orthodox churches still calculate Easter by the older reckoning.",
+      "A popular story has it that crowds rioted in 1752 demanding 'Give us our eleven days!' Historians have found little evidence of any such disturbance. The slogan appears in a satirical painting by William Hogarth, in which it is chalked on a banner during an election, and the historian Robert Poole has argued that the tale grew from the painting and from the election politics of the mid-1750s. The legend endured because it flatters its tellers: it presents the eighteenth-century public as credulous and the present as enlightened. A joke that has been repeated often enough becomes evidence, and we are most ready to believe accounts that make our ancestors foolish."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best summarises the passage?",
+        "stem": "Which one of the following best summarises the passage?",
         "proof": [
           0,
           2,
@@ -1410,135 +1414,135 @@
         ],
         "options": [
           {
-            "t": "The Julian calendar was accurate, but the Pope changed it for religious reasons.",
-            "why": "It drifted by about ten days; the reform corrected a real error.",
+            "t": "The Julian calendar was accurate, but the Pope changed it for religious reasons that had nothing whatever to do with astronomy or the seasons.",
+            "why": "Paragraph 1 says the calendar had drifted some ten days, so the reform corrected a real error.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "A small error in the Julian calendar led to a reform that spread unevenly across Europe, and a famous story about it is probably a myth.",
-            "why": "Covers the error, the reform, its slow adoption and the riot story."
+            "t": "Protestant states rejected the Gregorian calendar permanently because it had been devised by astronomers and issued on the authority of a pope.",
+            "why": "Paragraph 3 says Britain, Sweden and other states adopted it later.",
+            "trap": "Extreme wording"
           },
           {
-            "t": "Protestant countries rejected the Gregorian calendar permanently.",
-            "why": "Britain and Sweden adopted it, only later.",
+            "t": "A small calendar error prompted a sound reform whose adoption was shaped by religious politics, and a famous tale about it is probably a myth.",
+            "why": "This covers the error (paragraph 1), the reform and its uneven adoption (paragraphs 2 and 3) and the riot story (paragraph 4)."
+          },
+          {
+            "t": "The Gregorian reform failed in the end because ordinary people rioted against the loss of days that they believed had been taken from their lives.",
+            "why": "Paragraph 4 says there is little evidence that such riots occurred, and the reform succeeded.",
             "trap": "Distorts the passage"
-          },
-          {
-            "t": "Easter is now celebrated on the same date every year.",
-            "why": "Nothing is said about Easter falling on a fixed date.",
-            "trap": "Out of scope"
           }
         ],
-        "answer": 1
+        "answer": 2
       },
       {
-        "type": "detail",
-        "stem": "Under the Gregorian rule, which of the following years was NOT a leap year?",
+        "type": "application",
+        "stem": "Under the leap-year rule described in the passage, which of the following years would NOT be a leap year?",
         "proof": [
           1
         ],
         "options": [
           {
-            "t": "1600",
-            "why": "The passage names 1600 as a leap year.",
+            "t": "2000",
+            "why": "A century year divisible by 400; the passage names it as a leap year.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "2000",
-            "why": "The passage names 2000 as a leap year.",
+            "t": "2400",
+            "why": "A century year divisible by 400, so a leap year under the rule.",
             "trap": "Distorts the passage"
           },
           {
             "t": "1996",
-            "why": "It is divisible by 4 and is not a century year, so it is a leap year under either rule.",
+            "why": "Divisible by 4 and not a century year, so a leap year under either calendar.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "1900",
-            "why": "A century year not divisible by 400, so not a leap year; the passage names it."
+            "t": "2100",
+            "why": "A century year not divisible by 400, like 1700, 1800 and 1900."
           }
         ],
         "answer": 3
       },
       {
         "type": "inference",
-        "stem": "The fact that the October Revolution is commemorated in November shows that:",
+        "stem": "The fact that the October Revolution is commemorated in November implies that:",
         "proof": [
           2
         ],
         "options": [
           {
-            "t": "Russia was still using the older Julian calendar in 1917",
-            "why": "The date was October in Russia's calendar but November in the Gregorian one used today."
-          },
-          {
-            "t": "Russia had adopted the Gregorian calendar before the revolution",
-            "why": "It changed 'only after the revolution'.",
+            "t": "Russia had adopted the Gregorian calendar before the revolution took place, and kept the date of the event unchanged.",
+            "why": "The passage says Russia changed 'after the revolution of 1917'.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "the Pope ordered Russia to change its calendar",
-            "why": "Nothing suggests papal involvement in Russia.",
+            "t": "Russia still used the older calendar in 1917, so a date then called October falls in November by today's reckoning.",
+            "why": "Russia changed only after the revolution (paragraph 3), so the event's date under the old calendar corresponds to a November date now."
+          },
+          {
+            "t": "the leaders of the revolution chose to move the anniversary to a later month in order to disguise its true origins.",
+            "why": "No such motive is mentioned anywhere in the passage.",
             "trap": "Out of scope"
           },
           {
-            "t": "the revolution's leaders wished to hide its true date",
-            "why": "No such motive is mentioned.",
+            "t": "the Pope had required Russia to change its calendar in the years that followed the revolution of that year.",
+            "why": "Nothing suggests papal involvement in Russia's change.",
             "trap": "Out of scope"
           }
         ],
-        "answer": 0
+        "answer": 1
       },
       {
         "type": "structure",
-        "stem": "The author's main purpose in the final paragraph is to:",
+        "stem": "The author's purpose in the final paragraph is chiefly to:",
         "proof": [
           3
         ],
         "options": [
           {
-            "t": "prove that Hogarth's painting caused riots",
-            "why": "The author doubts the riots happened.",
+            "t": "question a popular story and draw a general lesson about how such stories survive.",
+            "why": "The paragraph doubts the riots, traces the tale to a painting and ends with a lesson about why such accounts endure."
+          },
+          {
+            "t": "prove that Hogarth's painting caused the riots that were said to have broken out in England in 1752.",
+            "why": "The author says there is little evidence of riots, so there is nothing for the painting to have caused.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "show that the British public of 1752 was ignorant",
-            "why": "The author criticises that very assumption.",
+            "t": "show that the British public of 1752 was unusually ignorant of astronomy and of the reasons for the change.",
+            "why": "The author criticises the assumption that the public was credulous.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "question a popular story and draw a lesson about how such stories spread",
-            "why": "It doubts the riots, traces the tale to a painting and draws a moral."
-          },
-          {
-            "t": "explain why Britain adopted the reform so late",
-            "why": "That is covered in paragraph 3.",
+            "t": "explain why Britain adopted the Gregorian calendar so much later than the Catholic countries of Europe did.",
+            "why": "The reasons for the delay are discussed in paragraph 3, not in the final paragraph.",
             "trap": "Distorts the passage"
           }
         ],
-        "answer": 2
+        "answer": 0
       }
     ],
     "recall": [
       {
-        "q": "Who issued the 1582 calendar reform?",
+        "q": "Who issued the calendar reform of 1582?",
         "options": [
-          "Julius Caesar",
-          "Pope Gregory XIII",
-          "King George II",
-          "Christopher Columbus"
+          "Julius Caesar, correcting his own earlier calendar.",
+          "Pope Gregory XIII, on the advice of astronomers.",
+          "King Henry VIII, in order to settle the date of Easter.",
+          "The Council of Trent, meeting in Rome."
         ],
         "answer": 1
       },
       {
-        "q": "How many days did Britain drop in 1752?",
+        "q": "According to the passage, where does the slogan 'Give us our eleven days' appear?",
         "options": [
-          "Ten",
-          "Eleven",
-          "Twelve",
-          "Fourteen"
+          "In petitions sent to Parliament by rioting crowds in 1752.",
+          "In newspaper reports of disturbances in the English countryside.",
+          "In the text of the Act that introduced the new calendar.",
+          "On a banner in a satirical painting by William Hogarth."
         ],
-        "answer": 1
+        "answer": 3
       }
     ]
   }
