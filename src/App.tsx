@@ -33,10 +33,11 @@ const Stories = lazy(() => import("./pages/Stories"));
 const Today = lazy(load.today);
 const Updates = lazy(() => import("./pages/Updates"));
 const Words = lazy(() => import("./pages/Words"));
+const Journal = lazy(() => import("./pages/Journal"));
 
 const TITLES: Record<string, string> = {
   "/": "99ile: free CAT prep", "/today": "Today", "/plan": "Plan and time", "/practice": "Practice", "/practice/library": "RC library", "/practice/sectional": "VARC sectional", "/practice/va": "VA drill", "/practice/cr": "Critical reasoning drill", "/practice/speed": "Reading speed test", "/practice/redo": "Redo queue", "/varc": "VARC", "/dilr": "DILR", "/quant": "Quant",
-  "/progress": "Progress", "/errors": "Error log", "/words": "Words", "/updates": "Important updates", "/exams": "CAT and other exams",
+  "/progress": "Progress", "/errors": "Error log", "/words": "Words", "/journal": "Reading journal", "/updates": "Important updates", "/exams": "CAT and other exams",
   "/guides": "Guides", "/stories": "Topper stories", "/roadmap": "What's coming", "/settings": "Settings",
 };
 
@@ -81,6 +82,7 @@ export default function App() {
           <Route path="progress" element={<Progress />} />
           <Route path="errors" element={<Errors />} />
           <Route path="words" element={<Words />} />
+          <Route path="journal" element={<Journal />} />
           <Route path="updates" element={<Updates />} />
           <Route path="exams" element={<Exams />} />
           <Route path="guides" element={<GuideList />} />

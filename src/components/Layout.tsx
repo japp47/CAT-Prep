@@ -15,7 +15,7 @@ interface Item { to: string; label: string; soon?: boolean; end?: boolean }
 const GROUPS: { title: string; items: Item[] }[] = [
   { title: "Study", items: [{ to: "/", label: "Home", end: true }, { to: "/today", label: "Today" }, { to: "/practice", label: "Practice" }, { to: "/plan", label: "Plan and time" }] },
   { title: "Sections", items: SECTIONS.map((s) => ({ to: "/" + s.id, label: s.short, soon: s.status === "soon" })) },
-  { title: "Track", items: [{ to: "/progress", label: "Progress" }, { to: "/errors", label: "Error log" }, { to: "/words", label: "Words" }] },
+  { title: "Track", items: [{ to: "/progress", label: "Progress" }, { to: "/errors", label: "Error log" }, { to: "/words", label: "Words" }, { to: "/journal", label: "Reading journal" }] },
   { title: "Explore", items: [{ to: "/updates", label: "Updates" }, { to: "/exams", label: "CAT and other exams" }, { to: "/guides", label: "Guides" }, { to: "/stories", label: "Topper stories" }, { to: "/roadmap", label: "What's coming" }] },
 ];
 
