@@ -1,14 +1,15 @@
 import type { OptionTrap } from "../data/traps";
 
-export type Genre = "economics" | "philosophy" | "psychology" | "science" | "society" | "literature" | "history";
+export type Genre = "economics" | "philosophy" | "psychology" | "science" | "society" | "literature" | "history" | "arts";
 export const GENRES: Record<Genre, string> = {
   economics: "Economics and business",
   philosophy: "Philosophy",
   psychology: "Psychology",
   science: "Science and ecology",
   society: "Society and technology",
-  literature: "Literature and art",
+  literature: "Literature",
   history: "History",
+  arts: "Arts",
 };
 export type Difficulty = "easy" | "medium" | "hard";
 
@@ -52,7 +53,16 @@ export interface RcSet {
   recall: RecallQ[];
   /** The day this set may join the RC of the day rotation. See dailyPick in daily.ts. */
   since?: string;
+  /** The model summary shown after the set, before the answers. claim and qualifier are exact phrases from model. */
+  summary?: RcSummary;
 }
+
+export interface RcSummary { model: string; tone: Tone; claim: string; qualifier: string }
+
+/** Tones a student can pick for a passage, in the words CAT tone questions use. */
+export const TONES = ["analytical", "critical", "sceptical", "appreciative", "cautionary", "persuasive", "ironic", "optimistic", "neutral"] as const;
+export type Tone = (typeof TONES)[number];
+export const SUMMARY_MAX_WORDS = 25;
 
 export type CrType = "assumption" | "strengthen" | "weaken" | "inference" | "flaw" | "paradox";
 /** The six kinds of critical reasoning question, in the order a mixed drill takes them. */

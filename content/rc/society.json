@@ -181,7 +181,13 @@
         ],
         "answer": 0
       }
-    ]
+    ],
+    "summary": {
+      "model": "Algorithms can be more consistent than people but are never neutral: they embody human choices about data and fairness, which should be open to challenge.",
+      "tone": "critical",
+      "claim": "embody human choices about data and fairness",
+      "qualifier": "can be more consistent than people"
+    }
   },
   {
     "id": "soc-remote",
@@ -367,7 +373,13 @@
         ],
         "answer": 3
       }
-    ]
+    ],
+    "summary": {
+      "model": "Remote work brings real benefits, but mostly to already privileged desk workers and with hidden costs, so its effect on opportunity remains uncertain.",
+      "tone": "cautionary",
+      "claim": "mostly to already privileged desk workers",
+      "qualifier": "remains uncertain"
+    }
   },
   {
     "id": "soc-repair",
@@ -552,7 +564,13 @@
         ],
         "answer": 2
       }
-    ]
+    ],
+    "summary": {
+      "model": "Repair declined mainly because labour grew dear relative to goods and design obstructed it, not changing values; laws can restore choice, not the repair shop.",
+      "tone": "analytical",
+      "claim": "labour grew dear relative to goods",
+      "qualifier": "mainly"
+    }
   },
   {
     "id": "soc-cash",
@@ -735,7 +753,13 @@
         ],
         "answer": 3
       }
-    ]
+    ],
+    "summary": {
+      "model": "Evidence that the poor spend cash well has made it the benchmark for aid, though it cannot replace every other kind of help.",
+      "tone": "appreciative",
+      "claim": "made it the benchmark for aid",
+      "qualifier": "cannot replace every other kind of help"
+    }
   },
   {
     "id": "soc-streets",
@@ -921,7 +945,13 @@
         ],
         "answer": 2
       }
-    ]
+    ],
+    "summary": {
+      "model": "Jacobs's view that busy, mixed streets are safer became influential, but evidence is mixed and such neighbourhoods may price out their watchful residents.",
+      "tone": "appreciative",
+      "claim": "busy, mixed streets are safer",
+      "qualifier": "evidence is mixed"
+    }
   },
   {
     "id": "soc-corrections",
@@ -1106,6 +1136,12 @@
         ],
         "answer": 1
       }
-    ]
+    ],
+    "summary": {
+      "model": "Corrections rarely backfire, yet their effects are modest and fade, so some researchers now teach people to recognise manipulation in advance.",
+      "tone": "analytical",
+      "claim": "Corrections rarely backfire",
+      "qualifier": "modest and fade"
+    }
   }
 ]

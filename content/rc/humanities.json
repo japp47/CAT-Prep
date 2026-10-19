@@ -151,7 +151,13 @@
         ],
         "answer": 3
       }
-    ]
+    ],
+    "summary": {
+      "model": "Translation interprets rather than moves a fixed meaning; loss is real, but faithfulness lies in how the whole work meets new readers.",
+      "tone": "analytical",
+      "claim": "interprets rather than moves a fixed meaning",
+      "qualifier": "loss is real"
+    }
   },
   {
     "id": "lit-minds",
@@ -305,7 +311,13 @@
         ],
         "answer": 0
       }
-    ]
+    ],
+    "summary": {
+      "model": "Free indirect style lets readers share a character's view while seeing around it; its sure value is knowledge of inner life, not necessarily kinder readers.",
+      "tone": "sceptical",
+      "claim": "its sure value is knowledge of inner life",
+      "qualifier": "not necessarily"
+    }
   },
   {
     "id": "lit-tragedy",
@@ -459,7 +471,13 @@
         ],
         "answer": 1
       }
-    ]
+    ],
+    "summary": {
+      "model": "Theories of tragic pleasure assume pain and pleasure are separate feelings; perhaps instead audiences respond to suffering given meaningful form.",
+      "tone": "analytical",
+      "claim": "respond to suffering given meaningful form",
+      "qualifier": "perhaps"
+    }
   },
   {
     "id": "hist-maps",
@@ -615,7 +633,13 @@
         ],
         "answer": 3
       }
-    ]
+    ],
+    "summary": {
+      "model": "Colonial maps served power as well as knowledge, partly by erasing local contributors, but their effects were more complicated than simple imposed control.",
+      "tone": "analytical",
+      "claim": "served power as well as knowledge",
+      "qualifier": "more complicated than simple imposed control"
+    }
   },
   {
     "id": "hist-print",
@@ -770,7 +794,13 @@
         ],
         "answer": 1
       }
-    ]
+    ],
+    "summary": {
+      "model": "Historians' qualifications of the print revolution are largely sound: print mattered in combination, not alone; yet that many-factor view is hard to test.",
+      "tone": "analytical",
+      "claim": "print mattered in combination, not alone",
+      "qualifier": "largely"
+    }
   },
   {
     "id": "hist-cholera",
@@ -924,7 +954,13 @@
         ],
         "answer": 0
       }
-    ]
+    ],
+    "summary": {
+      "model": "Snow's real achievement was a method of reasoning from comparisons and awkward exceptions, not the map, and his correct theory won acceptance only slowly.",
+      "tone": "analytical",
+      "claim": "reasoning from comparisons and awkward exceptions",
+      "qualifier": "only slowly"
+    }
   },
   {
     "id": "hist-silk",
@@ -1080,7 +1116,13 @@
         ],
         "answer": 1
       }
-    ]
+    ],
+    "summary": {
+      "model": "The popular Silk Road image misleads: trade moved in relays along many mostly regional routes, yet the connections were real, just untidier than the name.",
+      "tone": "analytical",
+      "claim": "The popular Silk Road image misleads",
+      "qualifier": "yet the connections were real"
+    }
   },
   {
     "id": "lit-oral",
@@ -1235,7 +1277,13 @@
         ],
         "answer": 3
       }
-    ]
+    ],
+    "summary": {
+      "model": "Living oral traditions show long poems can be composed in performance, not memorised, which reshapes views of Homer without settling how his epics were fixed.",
+      "tone": "analytical",
+      "claim": "long poems can be composed in performance",
+      "qualifier": "without settling how his epics were fixed"
+    }
   },
   {
     "id": "lit-detective",
@@ -1389,7 +1437,13 @@
         ],
         "answer": 2
       }
-    ]
+    ],
+    "summary": {
+      "model": "Puzzle and hard-boiled crime fiction are less opposed than they seem: both are stories about order, which may explain why modern writers blend them.",
+      "tone": "analytical",
+      "claim": "both are stories about order",
+      "qualifier": "less opposed than they seem"
+    }
   },
   {
     "id": "hist-calendar",
@@ -1544,6 +1598,12 @@
         ],
         "answer": 3
       }
-    ]
+    ],
+    "summary": {
+      "model": "A tiny calendar drift prompted a sound reform, slowed by religious politics; the famous tale of riots over it is probably myth.",
+      "tone": "analytical",
+      "claim": "slowed by religious politics",
+      "qualifier": "probably"
+    }
   }
 ]

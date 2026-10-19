@@ -152,7 +152,13 @@
         ],
         "answer": 3
       }
-    ]
+    ],
+    "summary": {
+      "model": "When cities raise wages, it may partly be by teaching skills, so limits on building quietly tax learning, though the best city size is unknown.",
+      "tone": "analytical",
+      "claim": "limits on building quietly tax learning",
+      "qualifier": "may partly"
+    }
   },
   {
     "id": "econ-thrift",
@@ -306,7 +312,13 @@
         ],
         "answer": 0
       }
-    ]
+    ],
+    "summary": {
+      "model": "When everyone saves at once, incomes can shrink unless investment keeps pace; this justifies stimulus in principle, though in practice stimulus is rarely withdrawn.",
+      "tone": "analytical",
+      "claim": "incomes can shrink unless investment keeps pace",
+      "qualifier": "in principle"
+    }
   },
   {
     "id": "econ-rules",
@@ -461,7 +473,13 @@
         ],
         "answer": 1
       }
-    ]
+    ],
+    "summary": {
+      "model": "Independent central banks answer the credibility problem by disciplining judgment, but in times of strain they raise a legitimacy problem credibility cannot settle.",
+      "tone": "analytical",
+      "claim": "a legitimacy problem credibility cannot settle",
+      "qualifier": "in times of strain"
+    }
   },
   {
     "id": "econ-lemons",
@@ -616,7 +634,13 @@
         ],
         "answer": 2
       }
-    ]
+    ],
+    "summary": {
+      "model": "Markets where sellers know more than buyers usually survive because someone pays, mostly unseen, to make information believable; the signals themselves invite fakes.",
+      "tone": "analytical",
+      "claim": "someone pays, mostly unseen, to make information believable",
+      "qualifier": "usually"
+    }
   },
   {
     "id": "econ-minwage",
@@ -770,7 +794,13 @@
         ],
         "answer": 2
       }
-    ]
+    ],
+    "summary": {
+      "model": "For moderate rises, a minimum wage's effect on jobs depends on the local market; confident predictions from theory alone claimed more than they could know.",
+      "tone": "analytical",
+      "claim": "effect on jobs depends on the local market",
+      "qualifier": "For moderate rises"
+    }
   },
   {
     "id": "econ-commons",
@@ -925,6 +955,12 @@
         ],
         "answer": 1
       }
-    ]
+    ],
+    "summary": {
+      "model": "Shared resources need not be ruined: users who devise their own rules can sustain them, though mainly in small, close-knit groups, not global commons.",
+      "tone": "appreciative",
+      "claim": "users who devise their own rules can sustain them",
+      "qualifier": "mainly in small, close-knit groups"
+    }
   }
 ]

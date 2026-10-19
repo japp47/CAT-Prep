@@ -182,7 +182,13 @@
         ],
         "answer": 0
       }
-    ]
+    ],
+    "summary": {
+      "model": "Identity puzzles show 'same' covers several criteria that usually agree; for persons, their split may unsettle the concern and responsibility we attach to selves.",
+      "tone": "analytical",
+      "claim": "'same' covers several criteria",
+      "qualifier": "may unsettle"
+    }
   },
   {
     "id": "phil-luck",
@@ -366,7 +372,13 @@
         ],
         "answer": 0
       }
-    ]
+    ],
+    "summary": {
+      "model": "Judging people by outcomes they could not control clashes with the principle that blame requires control; whether such moral luck is genuine remains unsettled.",
+      "tone": "analytical",
+      "claim": "clashes with the principle that blame requires control",
+      "qualifier": "remains unsettled"
+    }
   },
   {
     "id": "phil-experts",
@@ -550,7 +562,13 @@
         ],
         "answer": 2
       }
-    ]
+    ],
+    "summary": {
+      "model": "Relying on experts is unavoidable and rational, but only when trust is calibrated to signs of reliability a non-specialist can actually check.",
+      "tone": "analytical",
+      "claim": "Relying on experts is unavoidable and rational",
+      "qualifier": "only when trust is calibrated"
+    }
   },
   {
     "id": "psy-planning",
@@ -735,7 +753,13 @@
         ],
         "answer": 3
       }
-    ]
+    ],
+    "summary": {
+      "model": "We underestimate our own projects because we reason from their particulars, helped by incentives to be optimistic; comparing similar past projects generally forecasts better.",
+      "tone": "analytical",
+      "claim": "we reason from their particulars",
+      "qualifier": "generally"
+    }
   },
   {
     "id": "psy-memory",
@@ -918,7 +942,13 @@
         ],
         "answer": 2
       }
-    ]
+    ],
+    "summary": {
+      "model": "Memory rebuilds rather than replays the past: confidence is no proof of accuracy, yet the flexibility is not simply a defect.",
+      "tone": "analytical",
+      "claim": "rebuilds rather than replays the past",
+      "qualifier": "not simply a defect"
+    }
   },
   {
     "id": "psy-choice-blind",
@@ -1101,7 +1131,13 @@
         ],
         "answer": 1
       }
-    ]
+    ],
+    "summary": {
+      "model": "Our reasons for choices may be stories composed afterwards, so stated reasons, though not worthless, should be checked rather than taken as causes.",
+      "tone": "cautionary",
+      "claim": "stories composed afterwards",
+      "qualifier": "though not worthless"
+    }
   },
   {
     "id": "psy-willpower",
@@ -1283,7 +1319,13 @@
         ],
         "answer": 3
       }
-    ]
+    ],
+    "summary": {
+      "model": "The idea that willpower is a limited fuel spread far beyond its evidence, which later checks weakened, though fatigue after effort may still be real.",
+      "tone": "sceptical",
+      "claim": "spread far beyond its evidence",
+      "qualifier": "may still be real"
+    }
   },
   {
     "id": "phil-future",
@@ -1466,7 +1508,13 @@
         ],
         "answer": 1
       }
-    ]
+    ],
+    "summary": {
+      "model": "Because our choices decide who will exist, harm to particular people cannot fully explain our duties to future generations; an adequate ethics must answer this.",
+      "tone": "analytical",
+      "claim": "harm to particular people",
+      "qualifier": "cannot fully"
+    }
   },
   {
     "id": "phil-sentience",
@@ -1650,7 +1698,13 @@
         ],
         "answer": 2
       }
-    ]
+    ],
+    "summary": {
+      "model": "Where evidence of feeling is indirect but convergent, care need not wait for certainty, especially when precaution is cheap and wrongly withheld care costs suffering.",
+      "tone": "persuasive",
+      "claim": "care need not wait for certainty",
+      "qualifier": "especially when precaution is cheap"
+    }
   },
   {
     "id": "psy-anchoring",
@@ -1835,7 +1889,13 @@
         ],
         "answer": 1
       }
-    ]
+    ],
+    "summary": {
+      "model": "A first number, even an irrelevant one, pulls later estimates toward it, often unnoticed; considering the opposite seems to help more than warnings.",
+      "tone": "analytical",
+      "claim": "pulls later estimates toward it",
+      "qualifier": "even an irrelevant one"
+    }
   },
   {
     "id": "psy-marshmallow",
@@ -2019,6 +2079,12 @@
         ],
         "answer": 0
       }
-    ]
+    ],
+    "summary": {
+      "model": "The marshmallow test's link to later success shrank in larger studies; waiting reflects children's circumstances as much as fixed self-control, though self-control still matters.",
+      "tone": "critical",
+      "claim": "waiting reflects children's circumstances",
+      "qualifier": "as much as"
+    }
   }
 ]
