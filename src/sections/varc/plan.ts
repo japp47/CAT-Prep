@@ -2,7 +2,7 @@ import { EXAM_ISO, PHASES, phaseOf } from "../../data/exam";
 import { diffDays, dow, parseIso } from "../../lib/date";
 import type { Block, DayTemplate, Link, PlanCtx } from "../types";
 import { paperPdf } from "../../data/papers";
-import { EARLY_SRC, L, ROTATION } from "./resources";
+import { EARLY_SRC, L, ROTATION } from "./links";
 
 export const PRACTICE_PAPERS = ["CAT 2017 Slot 1", "CAT 2017 Slot 2", "CAT 2018 Slot 1", "CAT 2018 Slot 2", "CAT 2019 Slot 1", "CAT 2019 Slot 2",
   "CAT 2020 Slot 1", "CAT 2020 Slot 2", "CAT 2020 Slot 3", "CAT 2021 Slot 1", "CAT 2021 Slot 2", "CAT 2021 Slot 3",

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { addDays } from "../lib/date";
-import { CONTENT } from "./bank";
+import { CONTENT } from "./full";
 import { DAILY_EPOCH, dailyPick, rcOfDay, speedSetOfDay, vaKeysOfDay } from "./daily";
 import { RC_SETS } from "./rc";
 import { computeStreak } from "./streak";

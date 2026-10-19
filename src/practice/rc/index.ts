@@ -11,4 +11,6 @@ import arts from "../../../content/rc/arts.json";
  * Add a set to one of those files. JSON has no types, so content.test.ts checks their shape and answer keys.
  */
 export const RC_SETS: RcSet[] = [...economics, ...mind, ...science, ...society, ...humanities, ...arts] as unknown as RcSet[];
+/** The same sets by file name. The site loads one file at a time (bank.ts); the catalog records which file holds each set. */
+export const RC_BY_FILE = { economics, mind, science, society, humanities, arts } as unknown as Record<string, RcSet[]>;
 export const rcById = (id: string) => RC_SETS.find((s) => s.id === id);

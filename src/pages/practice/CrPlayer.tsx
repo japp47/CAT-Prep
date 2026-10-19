@@ -19,7 +19,7 @@ const SECS_PER_ITEM = 90;
 /** A new query string (a new custom drill) starts a fresh page. */
 export default function CrPlayer() {
   const loc = useLocation();
-  return <ContentGate>{(c) => <CrPage key={loc.search} bank={c.crItems} />}</ContentGate>;
+  return <ContentGate need={{ cr: true }}>{(c) => <CrPage key={loc.search} bank={c.crItems} />}</ContentGate>;
 }
 
 function CrPage({ bank }: { bank: CrItem[] }) {

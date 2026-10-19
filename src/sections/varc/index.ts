@@ -1,6 +1,5 @@
 import type { SectionDef } from "../types";
 import { varcTemplate } from "./plan";
-import { CATEGORIES, RESOURCES } from "./resources";
 
 export const VARC: SectionDef = {
   id: "varc",
@@ -25,6 +24,6 @@ export const VARC: SectionDef = {
       check: "Walk in rested, with a fixed attempt order and time split." },
   },
   template: varcTemplate,
-  categories: CATEGORIES,
-  resources: RESOURCES,
+  // The list is about 10 KB, so it loads with the pages that show it rather than on every page.
+  resources: () => import("./resources").then((m) => ({ categories: m.CATEGORIES, resources: m.RESOURCES })),
 };

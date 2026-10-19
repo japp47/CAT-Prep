@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { daysLeft, examLine, PhaseBar } from "../components/Countdown";
 import { LinkButton, Page, Section, TextLink } from "../components/kit";
@@ -17,7 +16,7 @@ import { dueRedo } from "../practice/redo";
 import { activityDays } from "../practice/streak";
 import { GENRES } from "../practice/types";
 import { DAILY_MIX } from "../practice/va/build";
-import { StreakBadge } from "./practice/common";
+import { StreakBadge } from "../components/StreakBadge";
 
 const STATUS = { official: ["official", "text-success"], expected: ["expected", "text-warning"], tip: ["tip", "text-primary"] } as const;
 const WEEK = ["M", "T", "W", "T", "F", "S", "S"];
@@ -35,6 +34,19 @@ function useLeads() {
     return () => { live = false; };
   }, [leads]);
   return leads;
+}
+
+/**
+ * Grey bars the size of the opening paragraph, while its text loads. It is set in the same type as the real paragraph,
+ * with placeholder words of the same total length, so it wraps to about as many lines and nothing below it moves.
+ */
+function LeadPlaceholder({ chars }: { chars: number }) {
+  const filler = "xxxxxxx ".repeat(Math.max(1, Math.round(chars / 8))).trim();
+  return (
+    <p className="measure text-reading" aria-hidden>
+      <span className="animate-pulse rounded-sm bg-muted text-transparent [box-decoration-break:clone] [-webkit-box-decoration-break:clone] motion-reduce:animate-none">{filler}</span>
+    </p>
+  );
 }
 
 /**
@@ -56,7 +68,7 @@ function TodaysPassage() {
       </h2>
       {leads
         ? body && <p className="measure text-reading">{body}{turn && <> <mark className="hl text-inherit">{turn}</mark></>}</p>
-        : <div className="flex flex-col gap-3 py-1" aria-hidden><Skeleton className="h-4.5" /><Skeleton className="h-4.5" /><Skeleton className="h-4.5" /><Skeleton className="h-4.5" /><Skeleton className="h-4.5 w-2/3" /></div>}
+        : <LeadPlaceholder chars={rc.lead} />}
       <p className="text-base text-muted-foreground">
         Today's RC: {GENRES[rc.genre].toLowerCase()}, {rc.difficulty}, {rc.words} words and {rc.questions} questions, about 7 minutes. The same passage for everyone today, and a new one tomorrow.
       </p>

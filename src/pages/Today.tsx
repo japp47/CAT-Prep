@@ -21,11 +21,12 @@ import { buildDay, budgetFor, carryInfo, defaultMin, doneKey, doneMinutes, coreO
 import { useFocus } from "../lib/focus";
 import { LIVE_SECTIONS, SECTIONS } from "../sections";
 import type { SectionDef } from "../sections/types";
+import { useResources } from "../sections/useResources";
 import { rcOfDay } from "../practice/daily";
 import { dueRedo } from "../practice/redo";
 import { GENRES } from "../practice/types";
 import { DAILY_MIX } from "../practice/va/build";
-import { StreakBadge } from "./practice/common";
+import { StreakBadge } from "../components/StreakBadge";
 
 const POP = "flex w-[min(92vw,22rem)] flex-col gap-4 rounded-lg border-0 bg-popover p-4 shadow-xl"; // taste-skill-ignore: a popover floats
 const CHIP_MINS = [0, 30, 45, 60, 90, 120, 150, 180];
@@ -266,12 +267,16 @@ function Week({ d, today, onPick }: { d: string; today: string; onPick: (d: stri
 
 function MustDo() {
   const { state } = useStore();
-  const items = LIVE_SECTIONS.flatMap((s) => (s.resources ?? []).map((r) => ({ r, s }))).filter(({ r }) => r.p === "must" && !state.ticks[r.id]).slice(0, 5);
+  // Only VARC has a list so far; it loads on demand, and this section sits low on the page.
+  const varc = LIVE_SECTIONS[0];
+  const res = useResources(varc);
+  if (!res) return null;
+  const items = res.resources.map((r) => ({ r, s: varc })).filter(({ r }) => r.p === "must" && !state.ticks[r.id]).slice(0, 5);
   return (
     <Section title="Must-do resources left">
       <ul className="flex flex-col gap-1 rounded-lg bg-card p-2">
         {items.length ? items.map(({ r, s }) => {
-          const cat = s.categories?.find((c) => c.id === r.c)?.n ?? "";
+          const cat = res.categories.find((c) => c.id === r.c)?.n ?? "";
           return (
             <li key={r.id}>
               <Ext href={r.u} className="flex flex-col gap-0.5 rounded-md px-3 py-2.5 hover:bg-muted">

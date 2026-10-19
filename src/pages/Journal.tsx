@@ -88,7 +88,7 @@ function ModelToggle({ s }: { s: SummaryEntry }) {
 }
 
 function Model({ s }: { s: SummaryEntry }) {
-  const { content, failed } = useContent();
+  const { content, failed } = useContent({ rc: [s.set ?? ""] });
   if (failed) return <Meta>The model could not load. Check your connection and try again.</Meta>;
   if (!content) return <div role="status"><span className="sr-only">Loading…</span><Skeleton className="h-24" /></div>;
   const model = content.rcById(s.set ?? "")?.summary;

@@ -6,6 +6,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { CategoryBlock } from "../components/Resources";
 import { Empty, Ext, LinkButton, Page, PageHeader, Section as Block, TextLink } from "../components/kit";
@@ -19,7 +20,8 @@ import { SECTION_BY_ID } from "../sections";
 import type { SectionDef, SectionId } from "../sections/types";
 import { TYPE_GUIDES } from "../sections/varc/guides";
 import { FORMAT, TAB_NOTES, TOPICS, VA_MIX, VTABS } from "../sections/varc/learn";
-import { ROTATION } from "../sections/varc/resources";
+import { useResources } from "../sections/useResources";
+import { ROTATION } from "../sections/varc/links";
 import NotFound from "./NotFound";
 
 const TR = "border-t align-top"; // taste-skill-ignore: rows of a real table
@@ -140,7 +142,8 @@ function Live({ sec }: { sec: SectionDef }) {
   const [pri, setPri] = usePref<"all" | "must">("pri", "all");
   const [hideDone, setHideDone] = usePref("hideDone", false);
   const [q, setQ] = usePref("q:" + sec.id, "");
-  const all = sec.resources ?? [], cats = sec.categories ?? [];
+  const res = useResources(sec);
+  const all = res?.resources ?? [], cats = res?.categories ?? [];
   // Filtering waits for typing to pause, so the field stays quick on a slow phone.
   const query = useDeferredValue(q).trim().toLowerCase();
   const mustAll = all.filter((r) => r.p === "must");
@@ -151,6 +154,7 @@ function Live({ sec }: { sec: SectionDef }) {
     x.c === catId && (pri !== "must" || x.p === "must") && !(hideDone && state.ticks[x.id]) &&
     (!withQuery || (x.n + " " + x.w + " " + x.t).toLowerCase().includes(query)));
   const list = (tab: string | null, emptyMsg: string) => {
+    if (!res) return <div className="flex flex-col gap-3" role="status"><span className="sr-only">Loading resources…</span><Skeleton className="h-7 w-1/3" /><Skeleton className="h-40" /><Skeleton className="h-40" /></div>;
     const blocks = cats.filter((c) => tab === null || c.tab === tab).map((c) => ({ c, items: filter(c.id, tab === null) })).filter((x) => x.items.length);
     return blocks.length ? blocks.map(({ c, items }) => <CategoryBlock key={c.id} cat={c} items={items} all={all} />) : <Empty>{emptyMsg}</Empty>;
   };

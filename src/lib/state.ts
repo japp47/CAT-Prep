@@ -1,4 +1,4 @@
-import { DEFAULT_TARGET, TARGET_CHOICES } from "../data/percentiles";
+import { DEFAULT_TARGET, TARGET_CHOICES } from "../data/targets";
 import { clamp, isIsoDate, todayIso } from "./date";
 import type { SectionId } from "../sections/types";
 

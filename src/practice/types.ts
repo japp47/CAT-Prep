@@ -136,12 +136,13 @@ export interface VaPara {
  * What lists, the daily rotation and the redo queue need to know about an RC set, without its text.
  * catalog.gen.ts holds one of these per set, so the full passages can load only when a practice page opens.
  */
-export interface RcMeta { id: string; title: string; genre: Genre; difficulty: Difficulty; words: number; questions: number; since?: string }
+/** lead is the opening paragraph's length in characters: the home page reserves that much room while the text loads. */
+export interface RcMeta { id: string; title: string; genre: Genre; difficulty: Difficulty; words: number; questions: number; lead: number; since?: string }
 export interface VaMeta { id: string; topic: string; difficulty: Difficulty; since?: string }
 export interface CrMeta { id: string; type: CrType; difficulty: Difficulty; topic: string }
 
 export function rcMeta(s: RcSet): RcMeta {
-  const m: RcMeta = { id: s.id, title: s.title, genre: s.genre, difficulty: s.difficulty, words: setWords(s), questions: s.questions.length };
+  const m: RcMeta = { id: s.id, title: s.title, genre: s.genre, difficulty: s.difficulty, words: setWords(s), questions: s.questions.length, lead: s.paras[0].length };
   if (s.since) m.since = s.since;
   return m;
 }

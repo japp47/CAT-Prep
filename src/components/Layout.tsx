@@ -1,11 +1,11 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { Menu } from "lucide-react";
-import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { SECTIONS } from "../sections";
 import { useFocus } from "../lib/focus";
+import { whenIdle } from "../lib/idle";
 import { usePref } from "../lib/prefs";
 import { RedoSeeder } from "./Content";
 import FocusBar from "./FocusBar";
@@ -77,6 +77,10 @@ export function useTheme(): [Theme, (t: Theme) => void] {
 
 const BOTTOM_BAR = "fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t bg-card pb-[env(safe-area-inset-bottom)] lg:hidden"; // taste-skill-ignore: the edge of a fixed bar
 
+// The phone menu loads on first use; loadMenu fetches it early (on idle, or when a finger lands on a menu button).
+const loadMenu = () => import("./MenuSheet");
+const MenuSheet = lazy(loadMenu);
+
 // Toasts only follow an action, so their code loads after the page.
 const Toaster = lazy(() => import("@/components/ui/sonner").then((m) => ({ default: m.Toaster })));
 
@@ -89,10 +93,25 @@ const TABS = [
 
 export default function Layout() {
   const [open, setOpen] = useState(false);
+  // Mounted from the first open on, so later opens and closes animate.
+  const [menuUsed, setMenuUsed] = useState(false);
+  const openMenu = () => { setMenuUsed(true); setOpen(true); };
   const loc = useLocation();
   const { run } = useFocus();
   useTheme();
   useEffect(() => { window.scrollTo(0, 0); setOpen(false); }, [loc.pathname]);
+  // Fetch the menu when the browser is idle, so the first tap opens it at once. The toast code mounts then too:
+  // toasts only ever follow an action, so nothing needs it while the page is loading.
+  // A toast raised before then is not lost: the Toaster replays active toasts when it mounts. A first tap or key press
+  // mounts it at once, since toasts follow actions.
+  const [idle, setIdle] = useState(false);
+  useEffect(() => {
+    const ready = () => setIdle(true);
+    window.addEventListener("pointerdown", ready, { once: true });
+    window.addEventListener("keydown", ready, { once: true });
+    const stop = whenIdle(() => { void loadMenu(); ready(); });
+    return () => { stop(); window.removeEventListener("pointerdown", ready); window.removeEventListener("keydown", ready); };
+  }, []);
 
   return (
     <div className="min-h-dvh lg:grid lg:grid-cols-[248px_minmax(0,1fr)]">
@@ -106,7 +125,7 @@ export default function Layout() {
 
       <header className="sticky top-0 z-40 flex h-14 items-center justify-between bg-sidebar px-gutter lg:hidden">
         <Brand />
-        <button type="button" className="grid size-11 place-items-center rounded-md hover:bg-card" aria-label="Open menu" aria-expanded={open} onClick={() => setOpen(true)}><Menu className="size-6" /></button>
+        <button type="button" className="grid size-11 place-items-center rounded-md hover:bg-card" aria-label="Open menu" aria-expanded={open} onPointerDown={loadMenu} onClick={openMenu}><Menu className="size-6" /></button>
       </header>
 
       <main id="main" className={cn("min-w-0 px-gutter pt-6 pb-28 lg:pt-12 lg:pb-20", run && "pb-44 lg:pb-36")}>
@@ -115,7 +134,7 @@ export default function Layout() {
 
       <FocusBar />
       <RedoSeeder />
-      <Suspense fallback={null}><Toaster /></Suspense>
+      {idle && <Suspense fallback={null}><Toaster /></Suspense>}
 
       <nav aria-label="Quick" className={BOTTOM_BAR}>
         {TABS.map(({ to, label, Icon, end }) => (
@@ -123,15 +142,14 @@ export default function Layout() {
             <Icon />{label}
           </NavLink>
         ))}
-        <button type="button" aria-expanded={open} onClick={() => setOpen(true)} className="flex h-16 flex-col items-center justify-center gap-1 text-sm font-medium text-muted-foreground"><Menu className="size-6" />Menu</button>
+        <button type="button" aria-expanded={open} onPointerDown={loadMenu} onClick={openMenu} className="flex h-16 flex-col items-center justify-center gap-1 text-sm font-medium text-muted-foreground"><Menu className="size-6" />Menu</button>
       </nav>
 
-      <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent side="right" aria-describedby={undefined} className="w-[min(86vw,340px)] gap-6 overflow-y-auto overscroll-contain bg-sidebar pt-6 pb-8 pl-4 pr-[max(1rem,env(safe-area-inset-right))]">
-          <SheetTitle className="px-1"><Brand /></SheetTitle>
-          <Nav onPick={() => setOpen(false)} />
-        </SheetContent>
-      </Sheet>
+      {menuUsed && (
+        <Suspense fallback={null}>
+          <MenuSheet open={open} onOpenChange={setOpen} title={<Brand />}><Nav onPick={() => setOpen(false)} /></MenuSheet>
+        </Suspense>
+      )}
     </div>
   );
 }

@@ -80,6 +80,4 @@ export function benchmark(pct: number) {
   };
 }
 
-/** Percentiles a student can aim for in VARC. 99 is the default, because the chart's target band was always set for it. */
-export const TARGET_CHOICES = [90, 95, 97, 99] as const;
-export const DEFAULT_TARGET = 99;
+export { DEFAULT_TARGET, TARGET_CHOICES } from "./targets";

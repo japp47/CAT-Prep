@@ -2,16 +2,17 @@ import { useEffect, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useStore } from "../lib/store";
-import { loadContent, useContent, type Content } from "../practice/content";
+import { loadContent, useContent, type Content, type Need } from "../practice/content";
 import { seedRedo } from "../practice/redo";
 import { Page } from "./kit";
 
 /**
- * Renders its children once the practice content has loaded, with a skeleton until then.
+ * Renders its children once the practice content it needs has loaded, with a skeleton until then.
+ * `need` keeps the download small: one RC set loads only its own file (see practice/content.ts).
  * `inline` drops the page wrapper, for a gate inside a page that is already showing.
  */
-export function ContentGate({ children, inline }: { children: (c: Content) => ReactNode; inline?: boolean }) {
-  const { content, failed, retry } = useContent();
+export function ContentGate({ children, inline, need = "all" }: { children: (c: Content) => ReactNode; inline?: boolean; need?: Need }) {
+  const { content, failed, retry } = useContent(need);
   if (content) return <>{children(content)}</>;
   const body = failed ? (
     <div className="flex flex-col items-start gap-3 rounded-lg bg-card p-6" role="alert">
