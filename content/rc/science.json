@@ -3,18 +3,18 @@
     "id": "sci-shrinking",
     "title": "Smaller birds in a warming world",
     "genre": "science",
-    "difficulty": "medium",
+    "difficulty": "hard",
     "paras": [
-      "In the nineteenth century the biologist Carl Bergmann noticed that, within groups of related warm-blooded animals, those living in colder places tend to be larger. A large body has less surface area relative to its volume than a small one, so it loses heat more slowly; in the cold, size is an advantage, and in the heat a smaller body sheds warmth more easily. The pattern, now called Bergmann's rule, holds loosely but widely, from deer to sparrows.",
-      "If the rule reflects a response to temperature, a warming climate should make animals smaller, and there is evidence that it is doing so. One of the most striking studies used more than seventy thousand birds of over fifty species that had died after flying into buildings in Chicago over four decades. Measured specimen by specimen, their bodies became steadily smaller over the period while their wings grew slightly longer. Similar trends have been reported in birds in the Amazon and in several mammal species.",
-      "Interpreting such trends is harder than documenting them. Body size is affected by food supply, which a changing climate can also alter, and by conditions while young animals grow; a smaller adult may simply reflect a lean season in the nest rather than any inherited change. Researchers also have to rule out a quieter explanation: that collectors, or the circumstances of death, favoured particular birds in different decades. The Chicago study is valuable partly because the way its birds were collected changed little over time.",
-      "The longer wings are a puzzle in their own right. One suggestion is that they compensate for smaller bodies, helping birds keep the ability to fly the long distances of their migrations. Another is that wing length and body mass respond differently to the same conditions during development, so that the two trends are linked without either causing the other.",
-      "Shrinking is not necessarily a sign of successful adaptation. A smaller body may help an animal cope with heat but leave it with fewer reserves for cold snaps, storms or long flights, and changes in size can alter which predators and prey an animal encounters. What the trends show is that climate change is not only shifting where species live and when they breed; it is reshaping the bodies of animals that stay put."
+      "In 1847 the German biologist Carl Bergmann observed that, among closely related warm-blooded animals, the populations inhabiting colder regions tend to be larger. The reasoning usually attached to the pattern is geometrical: because volume increases faster than surface area as a body grows, a large animal sheds proportionally less heat than a small one and so enjoys an advantage in the cold, whereas in the heat a small body dissipates warmth more readily. Bergmann's rule, as it came to be called, is a tendency and not a law, and it has numerous exceptions; but it holds widely enough, from deer to sparrows, to have invited a bold extrapolation.",
+      "If body size does respond to temperature, a warming climate ought over time to produce smaller animals, and some of the evidence points that way. A study of unusual scope drew on more than seventy thousand birds, of over fifty species, that had been killed by collisions with buildings in Chicago across four decades and were preserved in a museum. Using the length of the lower leg bone as a proxy for overall size, the researchers found that bodies had grown steadily smaller over the period while wings had grown slightly longer. Comparable trends have since been reported in understory birds of the Amazon and in several mammals.",
+      "Documenting such trends is easier than interpreting them. Body size is influenced by food supply, which a changing climate may also alter, and by conditions during growth: a smaller adult may reflect nothing more than a lean season in the nest, and not any heritable change. A quieter hazard is bias in the sample itself, since collectors, or the circumstances of death, might have favoured particular birds in different decades, and a dataset in which the selection of specimens shifts would manufacture a trend from nothing. The Chicago collection is prized partly because the manner of gathering its birds altered little across the period, which makes a collecting artefact an unlikely explanation.",
+      "The longer wings are a puzzle in their own right. One suggestion is that they compensate for smaller bodies, since a bird that has lost mass but must still undertake the long flights of migration may benefit from a larger wing relative to its weight. Another is that wing length and body mass respond independently to the conditions of development, so that the two trends are associated without either being the cause of the other. The data in hand cannot easily discriminate between these readings, and the choice between them bears on how the trend is to be understood.",
+      "Nor is shrinkage necessarily evidence of successful adaptation. A smaller body may assist an animal in coping with heat while leaving it with fewer reserves against cold snaps, storms or long flights, and changes in size may alter the predators and prey it encounters. What the trends demonstrate is that climate change is not merely displacing species and shifting the timing of their breeding; it is reshaping the bodies of animals that stay where they are."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best captures the main point of the passage?",
+        "stem": "Which one of the following best captures the main point of the passage?",
         "proof": [
           1,
           2,
@@ -22,84 +22,84 @@
         ],
         "options": [
           {
-            "t": "Evidence suggests that warming is making some animals smaller, but explaining and judging the trend is complicated.",
-            "why": "Paragraph 2 gives the evidence; paragraphs 3 to 5 show the difficulties of interpreting and evaluating it."
-          },
-          {
-            "t": "Bergmann's rule has been disproved by studies of birds.",
-            "why": "The studies are consistent with the rule; nothing is disproved.",
+            "t": "Bergmann's rule has been refuted by recent evidence from birds, whose bodies have grown smaller in a climate that is growing warmer.",
+            "why": "The studies are consistent with the rule; nothing is refuted.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Birds are adapting successfully to climate change by growing longer wings.",
-            "why": "Paragraph 5 warns that shrinking is not necessarily successful adaptation, and the wings remain a puzzle.",
+            "t": "Evidence suggests that warming is making some animals smaller, but the causal interpretation of the trend and its significance remain uncertain.",
+            "why": "Paragraph 2 gives the evidence; paragraphs 3 to 5 set out the difficulties of interpreting and evaluating it."
+          },
+          {
+            "t": "Birds are adapting successfully to a warming climate through reductions in body size and a compensating lengthening of their wings.",
+            "why": "Paragraph 5 warns that shrinkage is not necessarily successful adaptation, and the wings are called a puzzle.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Collisions with buildings are a major threat to migratory birds.",
+            "t": "Collisions with buildings are now a major threat to migratory birds, as the Chicago collection of specimens plainly demonstrates.",
             "why": "The collisions are only how the specimens were obtained.",
             "trap": "Out of scope"
           }
         ],
-        "answer": 0
+        "answer": 1
       },
       {
         "type": "detail",
-        "stem": "Why does the author consider the Chicago study especially valuable?",
+        "stem": "Why does the author regard the Chicago collection as especially valuable?",
         "proof": [
           2
         ],
         "options": [
           {
-            "t": "It measured birds that were still alive.",
-            "why": "The birds had died after flying into buildings.",
+            "t": "It measured birds that were still alive, so that the conditions of their growth could be observed directly by the researchers.",
+            "why": "The birds had been killed in collisions with buildings.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "It included every bird species found in North America.",
+            "t": "Its birds were gathered in much the same manner throughout, making a collecting bias an unlikely source of the trend.",
+            "why": "Paragraph 3: prized partly because the manner of gathering altered little, which makes a collecting artefact unlikely."
+          },
+          {
+            "t": "It covered every species of bird found in North America, which allowed comparison with the understory birds of the Amazon.",
             "why": "It covered 'over fifty species', not every species.",
             "trap": "Extreme wording"
           },
           {
-            "t": "Its method of collecting birds stayed largely the same over the decades it covered.",
-            "why": "Paragraph 3: valuable 'partly because the way its birds were collected changed little over time', which rules out a collection bias."
-          },
-          {
-            "t": "It proved that the changes in size were inherited.",
-            "why": "Paragraph 3 says inherited change is hard to separate from growing conditions.",
+            "t": "It showed that the reduction in size is inherited and not caused by the conditions in which the young birds grew.",
+            "why": "Paragraph 3 says heritable change is hard to separate from growth conditions; the study is not said to have done so.",
             "trap": "Distorts the passage"
           }
         ],
-        "answer": 2
+        "answer": 1
       },
       {
         "type": "strengthen",
-        "stem": "Which of the following, if true, would most weaken the claim that warming caused the decline in body size?",
+        "stem": "Which of the following, if true, would most call into question the claim that warming caused the decline in body size?",
         "proof": [
           2
         ],
         "options": [
           {
-            "t": "Birds of the same species remain larger in colder regions than in warmer ones.",
+            "t": "The decline in size tracks a fall in the insects fed to nestlings, a fall arising from causes unrelated to temperature.",
+            "why": "It supplies the alternative cause the passage itself raises in paragraph 3, food supply during growth."
+          },
+          {
+            "t": "Birds of the same species remain larger in colder regions than in warmer regions at any given time and place.",
             "why": "This fits Bergmann's rule and leaves the warming explanation intact.",
             "trap": "Out of scope"
           },
           {
-            "t": "Several mammal species have also become smaller in recent decades.",
-            "why": "This extends the trend and, if anything, supports the warming explanation.",
+            "t": "Several mammalian species have also grown smaller in the same decades, in places far from the cities where the birds were collected.",
+            "why": "This extends the trend and so, if anything, supports the warming explanation.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Wing length increased more in some species than in others.",
+            "t": "The increase in wing length was greater in some species than in others over the same four decades of observation.",
             "why": "Variation in wing growth says nothing about what caused bodies to shrink.",
             "trap": "Out of scope"
-          },
-          {
-            "t": "The decline in size closely follows a fall in the insects that adults feed their young, a fall that happened for reasons unrelated to temperature.",
-            "why": "This offers the alternative cause the passage itself raises in paragraph 3, food supply during growth, which weakens the warming explanation."
           }
         ],
-        "answer": 3
+        "answer": 0
       },
       {
         "type": "inference",
@@ -109,48 +109,77 @@
         ],
         "options": [
           {
-            "t": "is proof that a species is thriving",
-            "why": "The paragraph says shrinking is not necessarily a sign of successful adaptation.",
-            "trap": "Extreme wording"
-          },
-          {
-            "t": "can bring disadvantages as well as help in coping with heat",
+            "t": "can bring disadvantages as well as help an animal to cope with heat.",
             "why": "It may help with heat but leave fewer reserves for cold snaps, storms and long flights."
           },
           {
-            "t": "protects animals from predators",
+            "t": "is evidence that a species is thriving in the changed climate which it now inhabits.",
+            "why": "The paragraph says shrinkage is not necessarily a sign of successful adaptation.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "protects an animal from the predators that it would otherwise meet in a warmer environment.",
             "why": "Size changes alter which predators are met; protection is not claimed.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "is found only in animals that migrate",
-            "why": "Nothing restricts the effect to migrants.",
+            "t": "occurs only in those species which undertake long migratory flights across the continents.",
+            "why": "Nothing restricts the effect to migrants; the Amazon birds and mammals are also cited.",
             "trap": "Out of scope"
           }
         ],
-        "answer": 1
+        "answer": 0
+      },
+      {
+        "type": "structure",
+        "stem": "The author discusses two explanations of the longer wings chiefly in order to:",
+        "proof": [
+          3
+        ],
+        "options": [
+          {
+            "t": "prove that migration, and not warming, is responsible for the reduction in the size of the birds' bodies over the decades.",
+            "why": "Migration appears only in one hypothesis about wings, and no such proof is offered.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "argue that wing length is a more reliable measure of overall size than the length of the lower leg bone.",
+            "why": "The relative merit of the two measures is not discussed.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "suggest that the Chicago results are an artefact of the way in which the birds were originally collected.",
+            "why": "Paragraph 3 makes a collecting artefact unlikely.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "show that one trend admits more than one reading, and that the data may not decide between them.",
+            "why": "Paragraph 4 offers compensation and independent development and says the data cannot easily discriminate."
+          }
+        ],
+        "answer": 3
       }
     ],
     "recall": [
       {
-        "q": "How had the birds in the large study died?",
+        "q": "What did the researchers use as a proxy for the overall size of the birds' bodies?",
         "options": [
-          "In a forest fire",
-          "After flying into buildings in Chicago",
-          "From disease in the Amazon",
-          "From lack of food in winter"
-        ],
-        "answer": 1
-      },
-      {
-        "q": "What happened to the birds' wings over the period?",
-        "options": [
-          "They grew shorter",
-          "They stayed the same",
-          "They grew slightly longer",
-          "They changed colour"
+          "The weight of each bird when it was collected.",
+          "The length of the wing from shoulder to tip.",
+          "The length of the lower leg bone.",
+          "The width of the skull at its broadest point."
         ],
         "answer": 2
+      },
+      {
+        "q": "According to Bergmann's rule, why is a large body an advantage in the cold?",
+        "options": [
+          "It needs less food to maintain its temperature.",
+          "It has more surface area for absorbing sunlight.",
+          "It can store more of the water on which it depends.",
+          "It has less surface area relative to its volume, and so loses heat more slowly."
+        ],
+        "answer": 3
       }
     ]
   },
@@ -160,16 +189,16 @@
     "genre": "science",
     "difficulty": "hard",
     "paras": [
-      "Beneath a forest floor, the roots of many trees are wrapped in threads of fungi. The relationship, called mycorrhiza, is ancient and usually beneficial to both sides: the fungus gathers water and minerals from the soil and passes some to the tree, which in return feeds the fungus sugars made by photosynthesis. Because a single fungus can connect to several trees, and a single tree to several fungi, ecologists began in the 1990s to describe forests as linked by underground networks.",
-      "From this point the story grew rapidly in the telling. Experiments using tracer chemicals suggested that carbon could pass between trees through fungal links. Popular books and articles described a 'wood wide web' through which mother trees nurtured their seedlings, warned neighbours of insect attack and shared food with the sick. The picture was moving, and it changed how many people thought about forests: not as collections of competing individuals but as cooperative communities.",
-      "A number of researchers have since argued that the popular account ran well ahead of the evidence. Reviewing field studies, they found that shared networks linking trees in the wild had been demonstrated in only a few forest types; that most claims of resources moving between trees came from experiments that could not rule out other routes, such as movement through the soil itself; and that evidence for preferential help to related seedlings was thin and inconsistent. Some studies, they noted, had been cited in ways that overstated what the original work found.",
-      "The critics did not claim that the networks are a myth. Fungal connections are real, and transfers of carbon and nitrogen through them may well occur. Their objection was to the inflation of tentative findings into confident stories, a process in which each retelling dropped a qualification. They also pointed out that, from the fungus's point of view, any transfer between trees might serve its own interests rather than those of the trees, which makes talk of cooperation and nurturing at best a metaphor.",
-      "The episode is less a scandal than an illustration of how scientific ideas travel. A finding enters the world hedged with caveats; the caveats are the first thing to go. Correcting the story does not require abandoning the wonder that drew people to it. It requires accepting that a forest may be remarkable for reasons less sentimental than the ones we were first told."
+      "Beneath the forest floor the roots of most trees are enveloped in the threads of fungi. The association, called mycorrhiza, is thought to be as old as land plants themselves and is ordinarily advantageous to both parties: the fungus gathers water and minerals from the soil and passes a portion to the tree, which in exchange supplies the fungus with sugars manufactured by photosynthesis. Because a single fungus may attach itself to several trees, and a single tree to several fungi, ecologists began in the 1990s to describe forests as joined by subterranean networks.",
+      "At this point the story acquired a momentum of its own. Experiments employing isotopic tracers suggested that carbon could pass between trees through fungal links, and popular books and articles went on to portray a 'wood wide web' through which 'mother trees' nurtured their seedlings, warned their neighbours of insect attack and shared nourishment with the ailing. The picture was affecting, and it altered the way many people thought about forests, which came to appear less as assemblies of rival individuals than as cooperative communities. That the picture also flattered a longing for harmony in nature was seldom remarked, and the union of a vivid metaphor with a suggestive experiment proved irresistible.",
+      "A number of researchers have since argued that the popular account ran well ahead of its evidence. Reviewing field studies, they found that shared networks linking trees in the wild had been demonstrated in only a few kinds of forest; that most claims of resources moving between trees derived from experiments unable to exclude other routes, such as passage through the soil itself; and that evidence for preferential assistance to related seedlings was thin and inconsistent. Several studies, they noted, had been cited in ways that overstated what the original work had found.",
+      "The critics did not claim that the networks are a myth. Fungal connections are real, and transfers of carbon and nitrogen along them may well occur. Their objection was to the inflation of tentative findings into confident narratives, a process in which each retelling shed a qualification. They observed too that, from the fungus's standpoint, any transfer between trees might serve the fungus's interests rather than the trees', which makes talk of cooperation and nurture at best a metaphor and at worst a misdescription.",
+      "The episode is less a scandal than an illustration of how scientific ideas travel. A finding enters the world hedged with caveats, and the caveats are the first baggage to be discarded. Correcting the story need not mean surrendering the wonder that drew people to it; it means accepting that a forest may be remarkable for reasons less sentimental than those we were first told. That ideas are simplified as they spread is hardly peculiar to ecology; what is peculiar is the readiness with which a flattering simplification found its audience."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best states the main idea of the passage?",
+        "stem": "Which one of the following best states the main idea of the passage?",
         "proof": [
           2,
           3,
@@ -177,26 +206,26 @@
         ],
         "options": [
           {
-            "t": "Researchers have shown that the wood wide web is a myth.",
+            "t": "Researchers have demonstrated that the idea of a wood wide web is a myth which ought to be discarded by ecologists.",
             "why": "Paragraph 4: 'The critics did not claim that the networks are a myth.'",
-            "trap": "Distorts the passage"
+            "trap": "Extreme wording"
           },
           {
-            "t": "Although underground fungal networks exist, popular claims about trees cooperating through them have gone beyond the evidence.",
-            "why": "Paragraphs 2 and 3 describe the inflated story and the review; paragraph 4 affirms that the networks are real."
-          },
-          {
-            "t": "Trees in forests compete rather than cooperate.",
+            "t": "Trees in forests compete with one another instead of cooperating, as the critics of the popular account have shown.",
             "why": "The passage does not replace one story with its opposite.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Fungi depend on trees for water and minerals.",
-            "why": "It is the other way round: fungi supply water and minerals and receive sugars.",
+            "t": "Fungi depend on the trees to which they are attached for the water and minerals on which they live.",
+            "why": "Reversal: fungi supply water and minerals and receive sugars (paragraph 1).",
             "trap": "Distorts the passage"
+          },
+          {
+            "t": "Although underground fungal networks exist, popular claims that trees cooperate through them have run well ahead of the available evidence.",
+            "why": "Paragraphs 2 and 3 describe the inflated story and the review; paragraph 4 affirms that the networks are real."
           }
         ],
-        "answer": 1
+        "answer": 3
       },
       {
         "type": "except",
@@ -206,55 +235,55 @@
         ],
         "options": [
           {
-            "t": "shared networks had been demonstrated in only a few forest types",
+            "t": "shared networks among wild trees had been demonstrated in only a few kinds of forest.",
             "why": "Stated in paragraph 3.",
             "trap": "True but not the answer"
           },
           {
-            "t": "some experiments could not rule out transfer through the soil",
+            "t": "the tracers used in the experiments had harmed the trees to which they were applied.",
+            "why": "Harm from tracers is never mentioned."
+          },
+          {
+            "t": "some experiments were unable to exclude the passage of resources through the soil.",
             "why": "Stated in paragraph 3.",
             "trap": "True but not the answer"
           },
           {
-            "t": "evidence of special help to related seedlings was weak",
+            "t": "evidence of preferential help to related seedlings in the wild was thin and inconsistent.",
             "why": "Stated in paragraph 3.",
             "trap": "True but not the answer"
-          },
-          {
-            "t": "tracer chemicals harm the trees they are used on",
-            "why": "Harm from tracers is never mentioned, so this is the exception."
           }
         ],
-        "answer": 3
+        "answer": 1
       },
       {
         "type": "inference",
-        "stem": "The critics' point that transfers might serve the fungus's interests implies that:",
+        "stem": "The critics' remark that a transfer might serve the fungus's interests implies that:",
         "proof": [
           3
         ],
         "options": [
           {
-            "t": "fungi harm the trees they connect",
-            "why": "The relationship is described as usually beneficial to both sides.",
+            "t": "fungi are parasites that harm the trees to which they attach and gain nothing in exchange for the water they supply.",
+            "why": "Paragraph 1 describes the relationship as ordinarily advantageous to both parties.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "no carbon ever passes between trees",
+            "t": "an observed movement of carbon between trees would not by itself show that the trees were cooperating with one another.",
+            "why": "If the fungus may be acting for itself, a transfer cannot be read as trees helping each other."
+          },
+          {
+            "t": "no carbon ever passes between trees by way of the fungal links which have been found in forests.",
             "why": "The critics allow that transfers 'may well occur'.",
             "trap": "Extreme wording"
           },
           {
-            "t": "an observed movement of carbon between trees would not by itself show that the trees were cooperating",
-            "why": "If the fungus may be acting for itself, a transfer cannot be read as trees helping each other."
-          },
-          {
-            "t": "trees gain nothing from mycorrhiza",
+            "t": "trees gain nothing from their association with fungi, since the benefits of the arrangement go entirely to the fungus.",
             "why": "Trees receive water and minerals, as paragraph 1 states.",
             "trap": "Distorts the passage"
           }
         ],
-        "answer": 2
+        "answer": 1
       },
       {
         "type": "tone",
@@ -264,46 +293,75 @@
         ],
         "options": [
           {
-            "t": "contemptuous of the scientists who first proposed it",
-            "why": "The author calls the episode 'less a scandal' and blames retelling, not scientists.",
+            "t": "contemptuous of the scientists who first proposed the idea and of the journalists who later popularised it for readers.",
+            "why": "The author calls the episode 'less a scandal' and attributes the inflation to retelling.",
             "trap": "Extreme wording"
           },
           {
-            "t": "wholly approving, since it changed public views of forests",
-            "why": "The author endorses the critics' case that it overstated the evidence.",
+            "t": "wholly approving, because it changed public thinking about forests in a way that benefits conservation.",
+            "why": "The author endorses the critics' case that the account overstated the evidence.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "indifferent, since the debate is purely technical",
-            "why": "The final paragraph takes a clear position.",
+            "t": "indifferent, since the dispute is a purely technical matter that has no bearing on how forests are understood.",
+            "why": "The final paragraph takes a clear position and draws a general lesson.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "sympathetic to the wonder it inspired but critical of its overstatement",
-            "why": "Paragraph 5: correcting the story 'does not require abandoning the wonder', but the caveats should not be dropped."
+            "t": "sympathetic towards the wonder it inspired in readers, yet critical of how far it overstated the evidence.",
+            "why": "Paragraph 5: correcting the story need not surrender the wonder, but the caveats should not be lost."
           }
         ],
         "answer": 3
+      },
+      {
+        "type": "structure",
+        "stem": "The final paragraph is chiefly intended to:",
+        "proof": [
+          4
+        ],
+        "options": [
+          {
+            "t": "condemn the authors of the popular accounts for deliberately misrepresenting the research which they cited.",
+            "why": "The author calls the episode 'less a scandal' than an illustration.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "urge ecologists to abandon the study of fungal networks until much better methods have been devised.",
+            "why": "No such recommendation is made; the networks are real.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "draw from the episode a general lesson about how qualified findings are simplified as they spread.",
+            "why": "It says caveats are 'the first baggage to be discarded' as ideas travel."
+          },
+          {
+            "t": "argue that scientific findings should be withheld from the public until all of their caveats have been resolved.",
+            "why": "No such argument appears.",
+            "trap": "Extreme wording"
+          }
+        ],
+        "answer": 2
       }
     ],
     "recall": [
       {
         "q": "When did ecologists begin describing forests as linked by underground networks?",
         "options": [
-          "In the 1960s",
           "In the 1990s",
+          "In the 1960s",
           "In the 2010s",
           "In the 1940s"
         ],
-        "answer": 1
+        "answer": 0
       },
       {
-        "q": "What do trees give the fungus in return for water and minerals?",
+        "q": "Why do the critics say that talk of cooperation and nurture is at best a metaphor?",
         "options": [
-          "Nitrogen",
-          "Shade",
-          "Sugars made by photosynthesis",
-          "Seeds"
+          "No carbon has ever been found passing between trees.",
+          "Trees are unable to detect the presence of fungal threads.",
+          "Any transfer between trees might serve the fungus's own interests and not the trees'.",
+          "Related seedlings receive no more help than unrelated ones."
         ],
         "answer": 2
       }
@@ -315,16 +373,16 @@
     "genre": "science",
     "difficulty": "medium",
     "paras": [
-      "In a well-designed drug trial, some patients receive the drug and others a placebo, an inactive substance made to look identical. Neither the patients nor the doctors treating them know who has received which. The point of this arrangement is not only to see whether the drug works but to measure how much better it works than the simple experience of being treated. That second quantity is often surprisingly large.",
-      "Patients given placebos frequently report less pain, better sleep and improved mood. Some of this improvement has nothing to do with the pill at all. Many conditions get better on their own, and people tend to enter trials when their symptoms are at their worst, so some recovery is to be expected whatever is done; statisticians call this regression to the mean. A trial that compared the drug only with no treatment at all would wrongly credit the drug with this natural improvement.",
-      "But not all of the placebo response can be explained away. In studies of pain, placebos can trigger the release of the brain's own pain-relieving chemicals, and drugs that block those chemicals reduce the placebo effect. The colour, price and size of a pill can change how much relief it gives, and so can the warmth and confidence of the person giving it. Expectation, it appears, has real physiological effects, at least for symptoms such as pain and nausea that the brain itself regulates.",
-      "The response appears to have grown in some fields. Analyses of antidepressant and pain trials have found that patients receiving placebos improved more in recent decades than in earlier ones, which makes it harder for new drugs to show an advantage. Explanations range from changes in who enrols in trials to the growing size and length of trials, with their more frequent contact between patients and staff.",
-      "This has prompted an odd question: could placebos be used deliberately? Some small studies have given patients pills openly described as placebos and still found improvements in conditions such as irritable bowel syndrome. The results are intriguing but limited, and no one suggests that a sugar pill can shrink a tumour. What they do suggest is that the context of care is not mere packaging around the active treatment. It is part of the treatment."
+      "In a well-designed drug trial, some patients receive the drug and others a placebo, an inert substance made to look identical to it, and neither the patients nor the clinicians treating them know who has received which. The purpose of the arrangement is not merely to establish whether the drug works but to measure how much better it works than the bare experience of being treated. That second quantity is often surprisingly large, and much of the interest of the placebo lies in its size. It attracted attention in 1955, when the anaesthetist Henry Beecher reported that roughly a third of patients obtained satisfactory relief from a placebo, a figure later criticised as too high.",
+      "Patients given placebos frequently report less pain, better sleep and improved mood, and some of this improvement owes nothing to the pill. Many conditions remit of their own accord, and people tend to enrol in trials when their symptoms are at their worst, so that some recovery is to be expected whatever is done; statisticians call this regression to the mean. A trial that compared the drug only with no treatment would wrongly credit the drug with this natural improvement, which is precisely why the placebo group exists.",
+      "Yet not all of the placebo response can be explained away. In studies of pain, placebos can provoke the release of the brain's own analgesic chemicals, the endogenous opioids, and drugs that block those chemicals diminish the effect. The colour, price and size of a pill alter the relief it gives, as do the warmth and apparent confidence of the person who administers it. Expectation, it appears, has genuine physiological consequences, at least for symptoms such as pain and nausea that the brain itself regulates; it would be rash to extend the finding to conditions for which no such pathway has been demonstrated.",
+      "The response appears to have strengthened in some fields. Analyses of antidepressant and pain trials have found that patients receiving placebos improved more in recent decades than in earlier ones, making it harder for new drugs to demonstrate an advantage. Proposed explanations range from changes in who enrols in trials to the increasing size and duration of trials, with their more frequent contact between patients and staff; none is established, and they are not mutually exclusive.",
+      "This has prompted an odd question: might placebos be used deliberately? Some small studies have given patients pills openly described as placebos and have still found improvement in conditions such as irritable bowel syndrome. The results are intriguing but limited, and nobody supposes that a sugar pill can shrink a tumour. What they suggest is that the context of care is not mere packaging around the active treatment. It is part of the treatment."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best captures the main idea of the passage?",
+        "stem": "Which one of the following best captures the main idea of the passage?",
         "proof": [
           1,
           2,
@@ -332,26 +390,26 @@
         ],
         "options": [
           {
-            "t": "Placebos are as effective as most drugs.",
-            "why": "Nothing in the passage supports this comparison.",
+            "t": "Improvement among patients given placebos has several sources, some of them genuine effects of expectation, bearing on trial design and on care.",
+            "why": "Paragraph 2 gives regression, paragraph 3 expectation, and paragraphs 4 and 5 the consequences for trials and care."
+          },
+          {
+            "t": "Placebos are about as effective as most active drugs, and clinical trials should therefore be redesigned to dispense with placebo groups altogether.",
+            "why": "Nothing supports the comparison, and the passage says placebo groups are what make trials sound.",
             "trap": "Extreme wording"
           },
           {
-            "t": "Drug trials are unreliable because of the placebo response.",
-            "why": "Placebo groups are what make trials reliable; the passage criticises no trial design except one without a placebo.",
+            "t": "Drug trials are unreliable as a means of testing treatments, because the response of patients to placebos has grown over recent decades of research.",
+            "why": "The growth makes advantage harder to show; it does not make trials unreliable.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Regression to the mean explains the whole placebo response.",
+            "t": "Regression to the mean accounts for the whole of the placebo response, which implies that expectation has no physiological effect on patients.",
             "why": "Paragraph 3 says 'not all of the placebo response can be explained away'.",
             "trap": "Distorts the passage"
-          },
-          {
-            "t": "Improvement in patients given placebos has several sources, some of them real effects of expectation, which matter for both trials and care.",
-            "why": "Paragraph 2 gives regression, paragraph 3 expectation, and paragraphs 4 and 5 the consequences for trials and care."
           }
         ],
-        "answer": 3
+        "answer": 0
       },
       {
         "type": "structure",
@@ -361,26 +419,26 @@
         ],
         "options": [
           {
-            "t": "explain part of the improvement in placebo groups that the placebo itself does not cause",
-            "why": "It accounts for natural recovery from a low point, which would occur whatever was done."
-          },
-          {
-            "t": "show that placebos are useless",
+            "t": "show that placebos are useless as a means of treating the symptoms for which patients commonly seek relief.",
             "why": "Paragraph 3 goes on to show that placebos have real effects.",
             "trap": "Extreme wording"
           },
           {
-            "t": "argue that trials should compare drugs with no treatment",
-            "why": "The passage says such a comparison would wrongly credit the drug.",
+            "t": "argue that trials ought to compare drugs with the absence of any treatment at all, to isolate the effect of the drug.",
+            "why": "The passage says such a comparison would wrongly credit the drug with natural improvement.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "explain why placebos release pain-relieving chemicals",
+            "t": "explain why placebos are able to provoke the release of the brain's own pain-relieving chemicals in some patients.",
             "why": "That is a separate mechanism, described in paragraph 3.",
             "trap": "Distorts the passage"
+          },
+          {
+            "t": "account for part of the improvement in placebo groups over the course of a trial that the placebo itself does not cause.",
+            "why": "It accounts for natural recovery from a low point, which would occur whatever was done."
           }
         ],
-        "answer": 0
+        "answer": 3
       },
       {
         "type": "inference",
@@ -390,8 +448,8 @@
         ],
         "options": [
           {
-            "t": "Recent drugs are less effective than older ones.",
-            "why": "The difficulty comes from larger placebo responses, not weaker drugs.",
+            "t": "Recent drugs for pain and depression are less effective than the older drugs which they were designed to replace in the clinic.",
+            "why": "The difficulty is said to come from larger placebo responses, not weaker drugs.",
             "trap": "Distorts the passage"
           },
           {
@@ -399,12 +457,12 @@
             "why": "Placebo groups now improve more, which 'makes it harder for new drugs to show an advantage'."
           },
           {
-            "t": "Larger trials are always less accurate than smaller ones.",
+            "t": "Larger trials are always less accurate than smaller ones, since they involve more contact between patients and staff.",
             "why": "Trial size is offered as one possible explanation, with no claim about accuracy.",
             "trap": "Extreme wording"
           },
           {
-            "t": "Placebo responses have grown in every area of medicine.",
+            "t": "Placebo responses have grown in every area of medicine in which controlled trials have been conducted in recent decades.",
             "why": "The paragraph says 'in some fields'.",
             "trap": "Extreme wording"
           }
@@ -413,54 +471,83 @@
       },
       {
         "type": "strengthen",
-        "stem": "Which finding would most support the claim that expectation has 'real physiological effects'?",
+        "stem": "Which finding would most support the claim that expectation has 'genuine physiological consequences'?",
         "proof": [
-          2
+          3
         ],
         "options": [
           {
-            "t": "Many patients enter trials when their symptoms are at their worst.",
+            "t": "Many patients enrol in trials at a time when their symptoms are at their worst, and recover somewhat whatever is done.",
             "why": "This supports regression to the mean, the explanation that does not involve expectation.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "More expensive brands of pills sell better than cheap ones.",
+            "t": "More expensive brands of analgesic pill are bought in greater quantities than cheaper brands containing the same ingredients.",
             "why": "Sales figures say nothing about effects in the body.",
             "trap": "Out of scope"
           },
           {
-            "t": "Pain relief from a placebo disappears when patients are given a drug that blocks the brain's natural painkillers.",
-            "why": "This ties the placebo's effect to a measurable chemical process in the body."
+            "t": "Pain relief from a placebo is markedly reduced when patients are also given a drug that blocks the brain's natural painkillers.",
+            "why": "It ties the placebo's effect to a measurable chemical process in the body."
           },
           {
-            "t": "Some conditions improve without any treatment.",
+            "t": "Some conditions, including many minor infections, improve without any treatment over a period of days or weeks.",
             "why": "Natural improvement is unrelated to expectation.",
             "trap": "Out of scope"
           }
         ],
         "answer": 2
+      },
+      {
+        "type": "except",
+        "stem": "The passage mentions each of the following as affecting how much relief a placebo gives EXCEPT:",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "the age of the patient who receives it.",
+            "why": "The age of patients is not mentioned."
+          },
+          {
+            "t": "the colour of the pill.",
+            "why": "Named in paragraph 3.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "the price of the pill.",
+            "why": "Named in paragraph 3.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "the warmth and confidence of the person who gives it.",
+            "why": "Named in paragraph 3.",
+            "trap": "True but not the answer"
+          }
+        ],
+        "answer": 0
       }
     ],
     "recall": [
       {
-        "q": "What is a placebo, as defined in the passage?",
+        "q": "Why, according to the passage, does a trial include a placebo group?",
         "options": [
-          "A weaker dose of the drug",
-          "An inactive substance made to look identical to the drug",
-          "A herbal remedy",
-          "A drug that blocks pain"
+          "To save the cost of supplying the drug to every patient.",
+          "To avoid crediting the drug with improvement that would have occurred anyway.",
+          "To test whether patients can detect the active drug.",
+          "To reduce the number of patients who need to be enrolled."
         ],
         "answer": 1
       },
       {
-        "q": "Which condition improved in studies of openly labelled placebos?",
+        "q": "In which condition did openly labelled placebos still produce improvement?",
         "options": [
-          "Irritable bowel syndrome",
           "Cancer",
+          "Irritable bowel syndrome",
           "Diabetes",
           "Asthma"
         ],
-        "answer": 0
+        "answer": 1
       }
     ]
   },
@@ -470,15 +557,15 @@
     "genre": "science",
     "difficulty": "medium",
     "paras": [
-      "Each of us carries tens of trillions of microbes in the gut, a community whose cells roughly match the number of human cells in the body. For most of medical history these organisms were treated mainly as a source of infection. Over the past two decades, cheap genetic sequencing has made it possible to catalogue them in detail, and the results have changed how scientists think about the body. The gut's microbes help digest fibre, make vitamins, train the immune system and keep harmful species in check.",
-      "Enthusiasm soon outran the evidence. Studies linked differences in gut microbes to obesity, depression, autism and dozens of other conditions, and a market in probiotic supplements grew rapidly. Many of these links, however, came from comparing the microbes of sick and healthy people, which shows that the two groups differ but not which difference came first. Illness changes diet, medication and daily habits, all of which reshape the microbial community, so the microbes may be a consequence of a disease rather than its cause.",
-      "Experiments in mice offer a way round this problem, since animals raised without any microbes can be given the microbes of a particular donor. When germ-free mice received gut microbes from obese people, some gained more fat than mice given microbes from lean people. Such results are striking, but mice differ from humans in diet, anatomy and the microbes that naturally live in them, and effects in an animal raised in a sterile bubble may not appear in a person who has carried a complex microbial community since birth. Researchers have also moved microbes from people with depression into rats and seen changes in behaviour, results that are intriguing but open to the same doubts.",
-      "The clearest success so far is narrower than the headlines. Patients with repeated infections of the bacterium Clostridioides difficile, often after courses of antibiotics, recover in most cases when given stool from a healthy donor, which restores a diverse community that keeps the bacterium in check. That treatment works because the cause is well understood. Even so, donors are now carefully screened, since stool can carry infections of its own. For most other conditions, the microbiome remains a promising field of research rather than a source of proven cures."
+      "Each of us carries tens of trillions of microbes in the gut, a community whose cells roughly equal in number the human cells of the body and whose collective genes are said to outnumber our own by a wide margin. For most of medical history these organisms were regarded chiefly as a source of infection. Over the past two decades, inexpensive genetic sequencing has allowed them to be catalogued in detail, and the results have altered how scientists think of the body, for the gut's inhabitants help to digest fibre, synthesise vitamins, educate the immune system and keep harmful species in check.",
+      "Enthusiasm soon outran the evidence. Studies linked differences in gut microbes to obesity, depression, autism and dozens of other conditions, and a market in probiotic supplements expanded rapidly. That the manufacturers of such supplements could cite genuine research made their claims harder to dismiss and no easier to verify. Many of these links, however, rested on comparing the microbes of sick and healthy people, a design that shows the two groups to differ but not which difference came first. Illness changes diet, medication and daily habit, each of which reshapes the microbial community, so that the microbes may be a consequence of a disease and not its cause.",
+      "Experiments on mice offer a way round this difficulty, since animals raised without any microbes can be colonised with those of a chosen donor. When germ-free mice received gut microbes from obese people, some gained more fat than mice given microbes from lean people. Such results are striking, but mice differ from humans in diet, anatomy and the microbes that naturally inhabit them, and an effect in an animal raised in a sterile bubble may not appear in a person who has carried a complex community since birth. Microbes from people with depression have likewise been transferred to rats, with changes in behaviour; these results are intriguing but exposed to the same doubts. The mouse model converts a correlation into an experiment, at the price of an inference from rodent to human.",
+      "The clearest success to date is narrower than the headlines. Patients with recurrent infection by the bacterium Clostridioides difficile, often following courses of antibiotics, recover in most cases when given stool from a healthy donor, which restores a diverse community able to hold the bacterium in check. The treatment works because the cause is well understood. Even so, donors are now carefully screened, since stool may carry infections of its own. A therapy founded on an understood mechanism is a different kind of thing from a supplement sold on the strength of a correlation, and for most other conditions the microbiome remains a promising field of research rather than a source of proven cures."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best captures the main idea of the passage?",
+        "stem": "Which one of the following best captures the main idea of the passage?",
         "proof": [
           1,
           2,
@@ -486,26 +573,26 @@
         ],
         "options": [
           {
-            "t": "Gut microbes have been shown to cause obesity, depression and autism.",
-            "why": "Paragraph 2 says these links may run the other way.",
+            "t": "Gut microbes matter, but most claimed health effects have not been shown to be causal, with a few well-understood exceptions.",
+            "why": "It covers the promise (paragraph 1), the caution (2 and 3) and the C. difficile exception (4)."
+          },
+          {
+            "t": "Gut microbes have been shown to cause obesity, depression and autism, and the evidence for this is strongest in studies of mice.",
+            "why": "Paragraph 2 says these links may run the other way, and paragraph 3 calls the mouse evidence limited.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Experiments on mice are useless for medical research.",
+            "t": "Experiments on mice are of no use to medical research, because animals raised in sterile conditions differ so much from human beings.",
             "why": "Mouse studies are called 'striking' but limited, not useless.",
             "trap": "Extreme wording"
           },
           {
-            "t": "Gut microbes matter, but most claimed health effects are not yet shown to be causes, with a few well-understood exceptions.",
-            "why": "Covers the promise, the caution and the C. difficile exception."
-          },
-          {
-            "t": "Probiotic supplements are the best way to improve health.",
+            "t": "Probiotic supplements are the best available way to improve health, since they restore the balance of microbes in the gut.",
             "why": "The supplement market is mentioned only as a sign of hype.",
             "trap": "Out of scope"
           }
         ],
-        "answer": 2
+        "answer": 0
       },
       {
         "type": "inference",
@@ -515,106 +602,135 @@
         ],
         "options": [
           {
-            "t": "cannot show whether a microbial difference causes an illness or results from it",
-            "why": "Paragraph 2: they show the groups differ 'but not which difference came first'."
-          },
-          {
-            "t": "always find that healthy people carry more microbes",
-            "why": "Nothing is said about numbers of microbes.",
+            "t": "always find that healthy people carry a greater number of microbes than people who are suffering from disease.",
+            "why": "Nothing is said about the numbers of microbes.",
             "trap": "Extreme wording"
           },
           {
-            "t": "are more reliable than experiments in mice",
+            "t": "cannot establish whether a microbial difference causes an illness or is merely a result of the illness.",
+            "why": "Paragraph 2: they show the groups differ 'but not which difference came first'."
+          },
+          {
+            "t": "are more reliable than experiments on mice, since they study human beings living under ordinary conditions.",
             "why": "Mouse experiments are presented as a way round their weakness.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "prove that diet has no effect on the microbiome",
+            "t": "prove that diet has no effect on the microbiome, since the groups differ even when they eat the same food.",
             "why": "Paragraph 2 says diet reshapes the microbial community.",
             "trap": "Distorts the passage"
           }
         ],
-        "answer": 0
+        "answer": 1
       },
       {
         "type": "strengthen",
-        "stem": "Which of the following, if true, would most weaken the conclusion suggested by the mouse experiments in the third paragraph?",
+        "stem": "Which of the following, if true, would most undermine the conclusion suggested by the mouse experiments in the third paragraph?",
         "proof": [
           2
         ],
         "options": [
           {
-            "t": "Mice raised in the ordinary way carry microbes that differ from those of humans.",
+            "t": "Mice raised in the ordinary way carry microbes that differ in several respects from those carried by human beings.",
             "why": "The passage already notes this limit; it does not undercut the comparison between donors.",
             "trap": "True but not the answer"
           },
           {
-            "t": "Germ-free mice gain the same amount of fat whether their microbes come from lean or obese donors.",
-            "why": "If donor type makes no difference, the experiments no longer point to obesity-related microbes."
-          },
-          {
-            "t": "Obese people often eat less fibre than lean people.",
+            "t": "Obese people often eat less fibre than lean people, and the difference in their diets is large and consistent.",
             "why": "This concerns diet in people, not what the mouse results show.",
             "trap": "Out of scope"
           },
           {
-            "t": "Stool transplants cure most repeated C. difficile infections.",
-            "why": "True, but it is about a different condition.",
+            "t": "Germ-free mice gain the same amount of fat whether their microbes come from lean donors or from obese donors.",
+            "why": "If the donor makes no difference, the experiments no longer point to obesity-related microbes."
+          },
+          {
+            "t": "Stool transplants cure most cases of recurrent infection by the bacterium Clostridioides difficile in human patients.",
+            "why": "True, but it concerns a different condition.",
             "trap": "True but not the answer"
           }
         ],
-        "answer": 1
+        "answer": 2
       },
       {
         "type": "detail",
-        "stem": "The treatment for Clostridioides difficile is described as working because:",
+        "stem": "According to the passage, the treatment for Clostridioides difficile works because:",
         "proof": [
           3
         ],
         "options": [
           {
-            "t": "it uses antibiotics to kill every bacterium in the gut",
-            "why": "Antibiotics often come before the infection; the treatment restores microbes.",
+            "t": "it uses antibiotics to kill every bacterium in the gut so that the infection is removed together with its host.",
+            "why": "Antibiotics often precede the infection; the treatment restores microbes.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "it was first tested on germ-free mice",
+            "t": "it was first tested on germ-free mice, whose response to human microbes had shown the way to a treatment.",
             "why": "Nothing is said about how it was tested.",
             "trap": "Out of scope"
           },
           {
-            "t": "it also cures obesity and depression",
+            "t": "it also cures obesity and depression, which are linked to the same community of microbes in the gut.",
             "why": "The paragraph calls it a narrow success.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "its cause is well understood, and donor stool restores a community that holds the bacterium in check",
+            "t": "its cause is well understood, and donor stool restores a diverse community able to hold the bacterium in check.",
             "why": "Paragraph 4 says both."
           }
         ],
         "answer": 3
+      },
+      {
+        "type": "structure",
+        "stem": "The author discusses the treatment of Clostridioides difficile in order to:",
+        "proof": [
+          3
+        ],
+        "options": [
+          {
+            "t": "show that microbial therapy works where the mechanism is understood, unlike the many claims that rest on correlation.",
+            "why": "Paragraph 4 contrasts an understood mechanism with a supplement sold on a correlation."
+          },
+          {
+            "t": "demonstrate that stool from healthy donors can cure the other conditions linked to microbes in the earlier paragraphs.",
+            "why": "The paragraph calls the success narrow and says other conditions remain unproven.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "argue that donor screening has now made microbial therapy safe for every patient who might be offered it.",
+            "why": "Screening is mentioned because stool can carry infections; no guarantee of safety is made.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "suggest that antibiotics are the principal cause of the obesity and depression that have been linked to gut microbes.",
+            "why": "Antibiotics are mentioned only as a precursor of C. difficile infection.",
+            "trap": "Out of scope"
+          }
+        ],
+        "answer": 0
       }
     ],
     "recall": [
       {
-        "q": "What made it possible to catalogue gut microbes in detail?",
+        "q": "What made it possible to catalogue the gut's microbes in detail?",
         "options": [
-          "Cheap genetic sequencing",
-          "Better microscopes",
-          "Germ-free mice",
-          "Probiotic supplements"
+          "Better optical microscopes",
+          "The use of germ-free mice",
+          "Inexpensive genetic sequencing",
+          "The sale of probiotic supplements"
         ],
-        "answer": 0
+        "answer": 2
       },
       {
-        "q": "Which infection does a stool transplant treat successfully?",
+        "q": "Why can a comparison of sick and healthy people not show that microbes cause an illness?",
         "options": [
-          "Malaria",
-          "Clostridioides difficile",
-          "Tuberculosis",
-          "Influenza"
+          "The microbes of sick people cannot be counted accurately.",
+          "Healthy people carry no microbes in the gut.",
+          "Sick people are never given antibiotics.",
+          "It shows that the groups differ but not which difference came first."
         ],
-        "answer": 1
+        "answer": 3
       }
     ]
   },
@@ -624,15 +740,15 @@
     "genre": "science",
     "difficulty": "hard",
     "paras": [
-      "For most of history, time was defined by the sky. A day was one turn of the Earth, and the second was a fraction of that day. In 1967 scientists cut this link, redefining the second by the vibrations of caesium atoms, which are far steadier than the planet's spin. The best atomic clocks now keep time so precisely that they would drift by less than a second over many millions of years.",
-      "The Earth, by comparison, is a poor timekeeper. Tides slowly brake its rotation, and movements of its molten core, its oceans and even its ice sheets make the length of the day wobble by fractions of a millisecond. Left alone, atomic time and the time of the sun would gradually part company. Since 1972, the world's official time scale has kept them together by occasionally adding a leap second, an extra second inserted at the end of a June or December day when the gap approaches nine-tenths of a second.",
-      "For the computers that now run telecommunications, finance and navigation, the leap second is a nuisance. Software that assumes every minute has sixty seconds can stumble on a minute with sixty-one, and a leap second in 2012 contributed to outages at several large websites. Because leap seconds depend on observations of the Earth, they are announced only months ahead and cannot be programmed in advance like leap years. Some companies have taken to 'smearing' the extra second, slowing their clocks slightly over a day, which means their systems briefly disagree with official time.",
-      "In 2022 the body that oversees international measurement voted to stop adding leap seconds by 2035. The gap between atomic and solar time will then be allowed to grow, perhaps to a minute over a century, before any correction is made. Few people will notice, since the sun's position at noon already varies by far more than that across a single time zone. Astronomers and some systems that rely on the Earth's orientation will need adjustments, and a few critics regret cutting the last formal link between our clocks and the turning planet. For most users, though, the decision trades a symbolic connection for practical reliability."
+      "For most of history time was defined by the sky. A day was one turn of the Earth, and the second a fraction of that day, a definition that could not survive the discovery that the day is not constant. In 1967 metrologists severed this link, redefining the second by the vibrations of caesium atoms, which are far steadier than the planet's spin. The best atomic clocks now keep time so exactly that they would drift by less than a second in many millions of years.",
+      "The Earth, by comparison, is an indifferent timekeeper. Tides slowly brake its rotation, and shifts in its molten core, its oceans and even its ice sheets make the length of the day fluctuate by a millisecond or so. Left alone, atomic time and the time of the sun would gradually part company. Because the planet's spin has lately quickened slightly, a negative leap second, in which a second would be omitted, has even been contemplated, an event for which software has been tested still less than for its positive counterpart. Since 1972 the world's official time scale, Coordinated Universal Time, has kept the two in step by an occasional leap second, an extra second inserted, usually at the end of a June or December day, whenever the gap approaches nine-tenths of a second.",
+      "For the computers that now run telecommunications, finance and navigation, the leap second is a nuisance. Software that presumes every minute to contain sixty seconds can stumble on one containing sixty-one, and a leap second in 2012 contributed to outages at several large websites. Because the corrections depend on observations of the Earth's rotation, they are announced only months in advance and cannot be programmed ahead of time, as leap years can. The difficulty is compounded by the fact that the extra second is inserted at a single instant the world over, so that every system must alter its behaviour at the same moment, whatever zone it serves. Some companies have taken to 'smearing' the extra second across a day, slowing their clocks imperceptibly, a remedy that keeps their systems running but leaves them briefly at odds with official time, and with one another when different firms smear differently.",
+      "In 2022 the body that oversees international measurement voted to stop adding leap seconds by 2035. The gap between atomic and solar time will then be permitted to grow, perhaps to a minute over a century, before any correction is attempted. Few people will notice, since the sun's position at noon already varies by far more than that across a single time zone. Astronomers, and systems that depend on the Earth's orientation, will need to make adjustments, and a few critics regret severing the last formal link between our clocks and the turning planet. For most users, though, the decision exchanges a symbolic connection for practical reliability."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best summarises the passage?",
+        "stem": "Which one of the following best summarises the passage?",
         "proof": [
           1,
           2,
@@ -640,84 +756,84 @@
         ],
         "options": [
           {
-            "t": "Atomic clocks are less reliable than the Earth's rotation.",
-            "why": "Paragraph 2 calls the Earth 'a poor timekeeper' by comparison.",
+            "t": "Atomic clocks have proved less reliable than the Earth's rotation, which is why a leap second must be added from time to time in the official reckoning.",
+            "why": "Paragraph 2 calls the Earth 'an indifferent timekeeper' by comparison.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "The leap second, which keeps atomic and solar time together, is being dropped because it troubles computers, at the cost of a symbolic link.",
-            "why": "Covers why leap seconds exist, why they cause trouble and what their end means."
-          },
-          {
-            "t": "The Earth's rotation is slowing so fast that days will soon be noticeably longer.",
-            "why": "The changes are 'fractions of a millisecond'.",
+            "t": "The Earth's rotation is slowing so rapidly that the days will soon be noticeably longer, and clocks must be corrected at once by the nations that keep them.",
+            "why": "The fluctuations are of a millisecond or so.",
             "trap": "Extreme wording"
           },
           {
-            "t": "Leap seconds and leap years exist for exactly the same reason.",
-            "why": "Leap years follow a fixed rule; leap seconds depend on observation.",
+            "t": "The leap second, which keeps atomic and solar time together, is being abandoned because it troubles computers, at the price of a symbolic link with the planet.",
+            "why": "It covers why leap seconds exist, why they cause trouble and what their end means."
+          },
+          {
+            "t": "Leap seconds and leap years exist for exactly the same reason, and both can be scheduled long before they are needed by the authorities that keep time.",
+            "why": "Leap years follow a fixed rule; leap seconds depend on observation (paragraph 3).",
             "trap": "Distorts the passage"
-          }
-        ],
-        "answer": 1
-      },
-      {
-        "type": "detail",
-        "stem": "According to the passage, leap seconds cannot be programmed in advance like leap years because:",
-        "proof": [
-          2
-        ],
-        "options": [
-          {
-            "t": "caesium atoms vibrate irregularly",
-            "why": "Caesium atoms are 'far steadier than the planet's spin'.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "computers cannot handle a minute with sixty-one seconds",
-            "why": "That is why leap seconds are a nuisance, not why they cannot be scheduled.",
-            "trap": "True but not the answer"
-          },
-          {
-            "t": "they depend on observations of the Earth and are announced only months ahead",
-            "why": "Paragraph 3 says exactly this."
-          },
-          {
-            "t": "the body that oversees measurement refuses to publish a schedule",
-            "why": "No refusal is mentioned.",
-            "trap": "Out of scope"
           }
         ],
         "answer": 2
       },
       {
+        "type": "detail",
+        "stem": "According to the passage, leap seconds cannot be programmed in advance, as leap years can, because:",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "they depend on observations of the Earth's rotation, and are announced only a few months ahead of time.",
+            "why": "Paragraph 3 says exactly this."
+          },
+          {
+            "t": "caesium atoms vibrate irregularly, and the length of the second must therefore be adjusted from year to year.",
+            "why": "Caesium atoms are 'far steadier than the planet's spin'.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "computers cannot cope with a minute containing sixty-one seconds, and so the extra second must be hidden from them.",
+            "why": "That is why leap seconds are a nuisance, not why they cannot be scheduled.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "the body that oversees measurement refuses to publish a schedule until the last possible moment before the change.",
+            "why": "No refusal is mentioned.",
+            "trap": "Out of scope"
+          }
+        ],
+        "answer": 0
+      },
+      {
         "type": "inference",
-        "stem": "The author mentions that the sun's position at noon varies across a time zone in order to:",
+        "stem": "The author mentions the variation of the sun's position at noon across a time zone in order to:",
         "proof": [
           3
         ],
         "options": [
           {
-            "t": "argue that time zones should be abolished",
+            "t": "argue that time zones ought to be abolished in favour of a single time scale for the whole of the world.",
             "why": "No such proposal is made.",
             "trap": "Out of scope"
           },
           {
-            "t": "prove that solar time is more accurate than atomic time",
-            "why": "The point is about noticing a gap, not accuracy.",
+            "t": "prove that solar time is a more accurate measure of the passage of time than the time kept by atomic clocks.",
+            "why": "The point concerns noticing a gap, not accuracy.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "explain why astronomers oppose the decision",
-            "why": "Astronomers are said to need adjustments, not to be convinced by this point.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "show that a gap of a minute or so will make little practical difference to most people",
+            "t": "show that a gap of a minute or so will make little practical difference to most people.",
             "why": "People already live with a larger gap within one time zone, so 'few people will notice'."
+          },
+          {
+            "t": "explain why astronomers have opposed the decision to stop adding leap seconds to the official time scale.",
+            "why": "Astronomers are said to need adjustments; this point is not offered to explain any opposition.",
+            "trap": "Distorts the passage"
           }
         ],
-        "answer": 3
+        "answer": 2
       },
       {
         "type": "tone",
@@ -727,48 +843,77 @@
         ],
         "options": [
           {
-            "t": "It is a sensible trade of a symbolic link for reliability, though not without costs.",
-            "why": "The last paragraph weighs adjustments and regrets against practical reliability."
-          },
-          {
-            "t": "It is a reckless choice that will throw navigation into chaos.",
-            "why": "Only 'some systems' need adjustments.",
+            "t": "It is a reckless choice that will throw navigation and astronomy into confusion for generations to come.",
+            "why": "Only 'some systems' will need adjustments.",
             "trap": "Extreme wording"
           },
           {
-            "t": "It is pointless, because leap seconds never caused any problems.",
+            "t": "It is pointless, because leap seconds have never caused any serious difficulty to the computers that depend on them.",
             "why": "Paragraph 3 describes real problems.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "It was forced on scientists by large technology companies.",
-            "why": "Nothing is said about who pushed for it.",
+            "t": "It was forced on the scientists responsible for measuring time by the large technology companies that rely on clocks.",
+            "why": "Nothing is said about who pressed for it.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "It is a sensible exchange of a symbolic link for practical reliability, though not without costs for astronomers.",
+            "why": "The last paragraph weighs adjustments and regrets against reliability."
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "type": "application",
+        "stem": "Which of the following would be a consequence of the 'smearing' described in the third paragraph?",
+        "proof": [
+          3
+        ],
+        "options": [
+          {
+            "t": "Systems that smear the extra second will thereafter run permanently ahead of the official time scale.",
+            "why": "The disagreement is brief, not permanent.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Software will no longer require any assumption about the number of seconds that a minute contains.",
+            "why": "Smearing avoids a sixty-first second; it does not change what software assumes.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Two systems that smear the extra second in different ways may briefly disagree with each other about the time.",
+            "why": "Paragraph 3: smearing leaves systems at odds with official time, and with one another when firms smear differently."
+          },
+          {
+            "t": "Leap seconds will be added to official time on a different date from the one on which they are announced.",
+            "why": "Smearing affects local clocks only; official time is unchanged.",
             "trap": "Out of scope"
           }
         ],
-        "answer": 0
+        "answer": 2
       }
     ],
     "recall": [
       {
-        "q": "Since 1967, the second has been defined by:",
+        "q": "Since 1967, by what has the second been defined?",
         "options": [
+          "The vibrations of caesium atoms",
           "The Earth's rotation",
-          "Vibrations of caesium atoms",
           "The movement of the moon",
           "The swing of a pendulum"
         ],
-        "answer": 1
+        "answer": 0
       },
       {
-        "q": "By when did the 2022 vote say leap seconds should stop?",
+        "q": "What reason does the author give for thinking few people will notice a gap of a minute?",
         "options": [
-          "2025",
-          "2030",
-          "2035",
-          "2050"
+          "The sun's position at noon already varies by more than that across a single time zone.",
+          "Atomic clocks will be reset every year to match the sun.",
+          "Almost nobody now uses solar time for any purpose.",
+          "The gap will be corrected before it reaches a minute."
         ],
-        "answer": 2
+        "answer": 0
       }
     ]
   },
@@ -776,102 +921,102 @@
     "id": "sci-dinobirds",
     "title": "The dinosaurs that never died",
     "genre": "science",
-    "difficulty": "easy",
+    "difficulty": "medium",
     "since": "2026-10-18",
     "paras": [
-      "In 1861, just two years after Charles Darwin published On the Origin of Species, quarry workers in Bavaria found a fossil that seemed made to order for his theory. Archaeopteryx had feathers and wings like a bird, but also teeth, clawed fingers and a long bony tail like a small reptile. Only a dozen or so specimens have been found since, each treated as a treasure. It looked like a creature caught halfway between two groups, and it set off a debate about where birds came from that lasted for more than a century.",
-      "For much of the twentieth century, many scientists doubted that birds descended from dinosaurs. One problem was the wishbone, the fused collarbones found in birds, which dinosaurs were thought to lack. Another was the general picture of dinosaurs as slow, cold-blooded giants, very unlike any bird. Some argued that the resemblances between birds and dinosaurs were coincidences, the result of similar ways of life rather than shared ancestry. Both objections weakened as discoveries piled up: wishbones turned up in many meat-eating dinosaurs, and studies of dinosaur bones suggested fast growth and active lives.",
-      "The decisive evidence came from north-eastern China in the 1990s. Fine-grained rocks there, formed from volcanic ash settling in lakes, preserved soft tissue in extraordinary detail, and they revealed dozens of small dinosaurs covered in feathers. Some had simple filaments, like down; others had fully formed feathers on their arms and legs, though they could not have flown. One small dinosaur, Microraptor, had long feathers on all four limbs. Feathers, it became clear, had first evolved for other purposes, such as warmth or display, and were only later put to use in flight.",
-      "Today most palaeontologists regard birds not merely as descendants of dinosaurs but as dinosaurs themselves, the one branch that survived the asteroid impact sixty-six million years ago. That changes how we should picture the extinction. It did not end the dinosaurs; it ended most of them. Why birds survived when their relatives did not is still debated; their small size, and a diet of seeds that could last through the dark years after the impact, may have helped. The roughly ten thousand species of birds alive today, from sparrows to ostriches, make dinosaurs one of the most successful groups of land animals on the planet."
+      "In 1861, only two years after Darwin published On the Origin of Species, quarrymen in Bavaria uncovered a fossil that might have been made to order for his theory. Archaeopteryx had the feathers and wings of a bird but also the teeth, clawed fingers and long bony tail of a small reptile. Only a dozen or so specimens have been found since, and each is treated as a treasure. Thomas Huxley, Darwin's most combative defender, soon remarked on the likeness between the skeletons of birds and those of small dinosaurs, and the new fossil seemed to confirm his suspicion. The animal appeared to be caught midway between two groups, and it set off a debate about the origin of birds that lasted more than a century.",
+      "For much of the twentieth century many scientists doubted that birds descended from dinosaurs. The Danish artist and naturalist Gerhard Heilmann had argued in the 1920s that dinosaurs lacked the wishbone, the fused collarbones characteristic of birds, and the objection proved durable; another was the general picture of dinosaurs as sluggish, cold-blooded giants, unlike any bird. Some maintained that the likenesses between birds and dinosaurs were coincidences, products of similar ways of life and not of common ancestry. Both objections weakened as discoveries accumulated: wishbones turned up in many meat-eating dinosaurs, and studies of dinosaur bone suggested fast growth and active lives.",
+      "The decisive evidence came from north-eastern China in the 1990s. Fine-grained rocks there, formed from volcanic ash settling in lakes, preserved soft tissue in extraordinary detail and revealed dozens of small dinosaurs covered in feathers. Some bore simple filaments, like down; others had fully formed feathers on their arms and legs, though many could not have flown. One small dinosaur, Microraptor, had long feathers on all four limbs. These were not rare curiosities: in the same rocks the remains of many feathered species lay in abundance, so that the find was less a single fossil than an entire fauna. It became clear that feathers had probably first evolved for other purposes, such as insulation or display, and were only later pressed into service for flight.",
+      "Most palaeontologists now regard birds not merely as descendants of dinosaurs but as dinosaurs themselves, the one lineage to survive the asteroid impact of sixty-six million years ago. This changes how the extinction should be pictured: it did not end the dinosaurs; it ended most of them. Why birds survived when their relatives did not is still debated. Small size and a diet of seeds, which could last through the dark years after the impact, may have helped. The roughly ten thousand living species of birds, from sparrows to ostriches, make dinosaurs one of the most successful groups of land animals on the planet."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best states the main idea of the passage?",
+        "stem": "Which one of the following best states the main idea of the passage?",
         "proof": [
           2,
           3
         ],
         "options": [
           {
-            "t": "Archaeopteryx is the direct ancestor of all modern birds.",
-            "why": "The passage presents it as a transitional form, not a proven ancestor.",
+            "t": "Fossil evidence, above all the feathered dinosaurs of China, overturned older doubts and showed that birds are living dinosaurs.",
+            "why": "It covers the old debate (paragraphs 1 and 2), the decisive evidence (3) and the conclusion (4)."
+          },
+          {
+            "t": "Archaeopteryx is the direct ancestor of all modern birds, as its combination of feathers and reptilian features demonstrates.",
+            "why": "The passage presents it as a creature caught between two groups, not as a proven ancestor.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Dinosaurs were slow, cold-blooded giants.",
-            "why": "That old picture weakened as evidence piled up.",
+            "t": "Dinosaurs were sluggish, cold-blooded giants, and the birds that descended from them became active only after the extinction.",
+            "why": "That picture weakened as evidence accumulated (paragraph 2).",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Fossil evidence, above all the feathered dinosaurs of China, has shown that birds are living dinosaurs.",
-            "why": "Covers the old debate, the decisive evidence and the conclusion."
-          },
-          {
-            "t": "Feathers evolved so that dinosaurs could fly.",
-            "why": "They first evolved for other purposes.",
+            "t": "Feathers evolved so that small dinosaurs could take to the air, and flight was their sole purpose from the beginning.",
+            "why": "Feathers first evolved for other purposes (paragraph 3).",
             "trap": "Distorts the passage"
-          }
-        ],
-        "answer": 2
-      },
-      {
-        "type": "detail",
-        "stem": "The wishbone was an obstacle to the idea that birds came from dinosaurs because:",
-        "proof": [
-          1
-        ],
-        "options": [
-          {
-            "t": "dinosaurs were thought not to have one",
-            "why": "Paragraph 2 says exactly this."
-          },
-          {
-            "t": "birds were thought not to have one",
-            "why": "Birds have wishbones; dinosaurs were thought to lack them.",
-            "trap": "Distorts the passage"
-          },
-          {
-            "t": "it was found only in Archaeopteryx",
-            "why": "Nothing of the kind is said.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "it showed that dinosaurs could fly",
-            "why": "Flight is not linked to the wishbone in the passage.",
-            "trap": "Out of scope"
           }
         ],
         "answer": 0
       },
       {
+        "type": "detail",
+        "stem": "The wishbone was once an obstacle to the idea that birds descended from dinosaurs because:",
+        "proof": [
+          1
+        ],
+        "options": [
+          {
+            "t": "it was thought to be absent from birds although it is characteristic of the dinosaurs from which they descended.",
+            "why": "Reversal: birds have wishbones; dinosaurs were thought to lack them.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "it had been found only in the fossils of Archaeopteryx and in no other creature that was alive at that time.",
+            "why": "Nothing of the kind is said.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "it suggested that dinosaurs had been able to fly, which the other evidence of their bones and their growth contradicted.",
+            "why": "Flight is not linked to the wishbone in the passage.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "it was believed to be absent from the dinosaurs of the fossil record, although it is characteristic of birds.",
+            "why": "Paragraph 2 says exactly this."
+          }
+        ],
+        "answer": 3
+      },
+      {
         "type": "inference",
-        "stem": "Feathered Chinese dinosaurs that could not fly suggest that:",
+        "stem": "The discovery of feathered dinosaurs that could not have flown suggests that:",
         "proof": [
           2
         ],
         "options": [
           {
-            "t": "they had lost the ability to fly",
-            "why": "Nothing suggests their ancestors flew.",
+            "t": "these dinosaurs were descended from ancestors that could fly but had later lost the ability to do so.",
+            "why": "Nothing in the passage suggests that their ancestors flew.",
             "trap": "Out of scope"
           },
           {
-            "t": "feathers were of no use to them",
-            "why": "Feathers served warmth or display.",
+            "t": "feathers existed before the evolution of flight, and first served other purposes such as insulation or display.",
+            "why": "Paragraph 3 draws exactly this conclusion."
+          },
+          {
+            "t": "feathers were of no practical use to the animals which bore them, being merely an accident of their growth.",
+            "why": "Feathers served insulation or display.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "the fossils were forgeries",
-            "why": "The fossils are treated as genuine.",
-            "trap": "Out of scope"
-          },
-          {
-            "t": "feathers existed before flight and first served other purposes",
-            "why": "Paragraph 3 draws exactly this conclusion."
+            "t": "the fossils from north-eastern China are less reliable than the specimens of Archaeopteryx found in Bavaria.",
+            "why": "The Chinese fossils are described as decisive evidence.",
+            "trap": "Distorts the passage"
           }
         ],
-        "answer": 3
+        "answer": 1
       },
       {
         "type": "structure",
@@ -881,48 +1026,77 @@
         ],
         "options": [
           {
-            "t": "some large dinosaurs survived the asteroid",
-            "why": "Only birds survived.",
+            "t": "some large dinosaurs survived the asteroid impact and lived on for many millions of years afterwards.",
+            "why": "Only the lineage of birds is said to have survived.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "birds are themselves dinosaurs",
-            "why": "If birds are dinosaurs, dinosaurs survive in them."
+            "t": "birds are themselves dinosaurs, so that the dinosaurs survive in the lineage of the birds.",
+            "why": "If birds are dinosaurs, then dinosaurs survived the impact in the lineage of birds."
           },
           {
-            "t": "the asteroid never struck",
-            "why": "The passage says it did.",
+            "t": "birds first appeared after the extinction, when the competing groups of land animals had been removed.",
+            "why": "Birds were the branch that survived the impact, so they existed before it.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "birds first appeared after the extinction",
-            "why": "Birds were the branch that survived it, so they existed before.",
+            "t": "the asteroid impact was less destructive than has been supposed, since most of the dinosaurs lived through it.",
+            "why": "The sentence says it ended most of them.",
             "trap": "Distorts the passage"
           }
         ],
         "answer": 1
+      },
+      {
+        "type": "except",
+        "stem": "The passage mentions all of the following as grounds for doubting that birds descended from dinosaurs EXCEPT:",
+        "proof": [
+          1
+        ],
+        "options": [
+          {
+            "t": "the absence of feathers from every dinosaur fossil that had been found.",
+            "why": "Not mentioned; feathered dinosaurs were found later and were decisive evidence for descent."
+          },
+          {
+            "t": "the belief that dinosaurs lacked a wishbone.",
+            "why": "Named in paragraph 2.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "the picture of dinosaurs as sluggish, cold-blooded giants.",
+            "why": "Named in paragraph 2.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "the argument that likenesses were coincidences produced by similar ways of life.",
+            "why": "Named in paragraph 2.",
+            "trap": "True but not the answer"
+          }
+        ],
+        "answer": 0
       }
     ],
     "recall": [
       {
-        "q": "Where was Archaeopteryx found?",
+        "q": "Where were the first specimens of Archaeopteryx found?",
         "options": [
-          "Bavaria",
-          "China",
-          "Montana",
-          "Patagonia"
-        ],
-        "answer": 0
-      },
-      {
-        "q": "About how many species of birds are alive today?",
-        "options": [
-          "One thousand",
-          "Ten thousand",
-          "One hundred thousand",
-          "One million"
+          "In north-eastern China",
+          "In Bavaria",
+          "In Montana",
+          "In Patagonia"
         ],
         "answer": 1
+      },
+      {
+        "q": "According to the passage, why might birds have survived the asteroid impact when other dinosaurs did not?",
+        "options": [
+          "They could fly far from the site of the impact.",
+          "They had thicker feathers than other dinosaurs.",
+          "They lived in lakes where volcanic ash had settled.",
+          "Their small size and a diet of seeds that could last through the dark years may have helped."
+        ],
+        "answer": 3
       }
     ]
   },
@@ -933,15 +1107,15 @@
     "difficulty": "medium",
     "since": "2026-10-18",
     "paras": [
-      "In 1985 three British scientists reported that the ozone layer over Antarctica was thinning dramatically each spring. Ozone high in the atmosphere absorbs most of the sun's ultraviolet radiation, which damages DNA and causes skin cancer and cataracts. The cause was soon traced to chlorofluorocarbons, or CFCs, gases used in refrigerators, aerosol sprays and foam. Stable and harmless at ground level, CFCs drift into the stratosphere, where ultraviolet light breaks them apart and releases chlorine that destroys ozone.",
-      "The response was unusually fast. In 1987, only two years after the discovery was published, governments agreed the Montreal Protocol, which set out to phase out CFCs and related chemicals. The treaty was strengthened several times as the science improved, and it became the first in the history of the United Nations to be ratified by every member state. Production of the most damaging chemicals fell by more than ninety-nine per cent. Some of the substitutes adopted later turned out to warm the climate, and in 2016 the treaty was amended once more to cut them too.",
-      "Several features made success possible. A handful of large companies produced most CFCs, so the problem had few owners. Substitutes were available, and once the leading manufacturer accepted that a ban was coming, it had an interest in selling them. The treaty also gave poorer countries extra time and money to switch. Above all, the danger was easy to picture: a hole in the sky and a rise in skin cancer were more vivid than the slow, diffuse harms that make other environmental problems hard to act on.",
-      "The ozone layer is now recovering, though slowly, because CFCs linger in the atmosphere for decades; scientists expect the Antarctic hole to close around the 2060s. In the 2010s scientists detected a rise in new CFC emissions, traced it to factories in eastern China, and saw it fall once the source was found. The protocol had a bonus few anticipated: since CFCs are also powerful greenhouse gases, phasing them out has done more to slow warming than many treaties designed for that purpose. It is often held up as a model for climate action, though the comparison has limits, since carbon dioxide comes from almost every part of the economy rather than from a few factories."
+      "In 1985 three British scientists reported that the ozone layer above Antarctica was thinning dramatically each spring. Ozone high in the atmosphere absorbs most of the sun's ultraviolet radiation, which damages DNA and causes skin cancer and cataracts. The cause was soon traced to chlorofluorocarbons, or CFCs, gases used in refrigerators, aerosol sprays and foam, the danger of which two chemists, Mario Molina and Sherwood Rowland, had foreseen in 1974 and for which they shared a Nobel prize in 1995 with Paul Crutzen. Stable and harmless at ground level, CFCs drift into the stratosphere, where ultraviolet light breaks them apart and releases chlorine, which destroys ozone.",
+      "The response was unusually swift. In 1987, only two years after the discovery was published, governments agreed the Montreal Protocol, which set out to phase out CFCs and related chemicals. The treaty owed part of its success to its flexibility: control measures were reviewed at regular intervals, and the schedule for each chemical could be tightened as new findings arrived. It was strengthened several times as the science improved, and it became the first in the history of the United Nations to be ratified by every member state. Production of the most damaging chemicals has fallen by about ninety-nine per cent. Some of the substitutes adopted later proved to warm the climate, and in 2016 the treaty was amended again to curb them too.",
+      "Several features made success possible. A handful of large companies produced most CFCs, so the problem had few owners. Substitutes were available, and once the leading manufacturer accepted that a ban was coming it had an interest in selling them. The treaty also gave poorer countries extra time and money to make the change. Above all, the danger was easy to picture: a hole in the sky and a rise in skin cancer were more vivid than the slow, diffuse harms that make other environmental problems resistant to action.",
+      "The ozone layer is now recovering, though slowly, because CFCs linger in the atmosphere for decades; scientists expect the Antarctic hole to close around the 2060s, and the Arctic, where the thinning has been milder, to recover sooner. In the 2010s scientists detected a rise in new CFC emissions, traced it to factories in eastern China, and saw it fall once the source was found. The protocol had a bonus few anticipated: since CFCs are also powerful greenhouse gases, phasing them out has done more to slow warming than many treaties designed for that purpose. By the United Nations' own estimate, the treaty will have averted millions of cases of skin cancer by the middle of the century. It is often held up as a model for climate action, though the comparison has limits, since carbon dioxide comes from almost every part of the economy rather than from a few factories."
     ],
     "questions": [
       {
         "type": "main",
-        "stem": "Which of the following best summarises the passage?",
+        "stem": "Which one of the following best summarises the passage?",
         "proof": [
           1,
           2,
@@ -949,26 +1123,26 @@
         ],
         "options": [
           {
-            "t": "CFCs were harmless chemicals banned by mistake.",
-            "why": "They release chlorine that destroys ozone.",
+            "t": "CFCs were harmless chemicals which were banned by mistake, and the ozone layer would have recovered without any treaty.",
+            "why": "CFCs release chlorine that destroys ozone, and recovery follows the phase-out.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "The ozone hole has already closed completely.",
-            "why": "It is expected to close around the 2060s.",
+            "t": "The ozone hole has already closed completely, and the Montreal Protocol is therefore no longer needed by the governments of the world.",
+            "why": "The hole is expected to close around the 2060s.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "Climate change can be solved in exactly the way the ozone problem was.",
+            "t": "The ozone threat was met by a swift, effective treaty, helped by features that may not carry over to climate change.",
+            "why": "It covers the problem, the treaty, why it worked and its limits as a model."
+          },
+          {
+            "t": "Climate change can be solved in exactly the way the ozone problem was, simply by agreeing a treaty among the nations of the world.",
             "why": "The author says the comparison has limits.",
             "trap": "Extreme wording"
-          },
-          {
-            "t": "The ozone threat was met by a fast, effective treaty, helped by features that may not carry over to climate change.",
-            "why": "Covers the problem, the treaty, why it worked and its limits as a model."
           }
         ],
-        "answer": 3
+        "answer": 2
       },
       {
         "type": "detail",
@@ -978,55 +1152,55 @@
         ],
         "options": [
           {
-            "t": "they are poisonous at ground level",
+            "t": "they are poisonous at ground level and are carried upward by winds into the layer in which the ozone is found.",
             "why": "They are 'stable and harmless at ground level'.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "ultraviolet light breaks them apart high in the atmosphere, releasing chlorine",
-            "why": "Paragraph 1 describes exactly this."
-          },
-          {
-            "t": "they trap heat in the stratosphere",
+            "t": "they trap heat in the stratosphere, and the rise in temperature there destroys ozone faster than it can form.",
             "why": "Their warming effect is a separate point, not how they harm ozone.",
             "trap": "Distorts the passage"
           },
           {
-            "t": "they react with carbon dioxide",
-            "why": "Carbon dioxide is not part of the mechanism.",
+            "t": "ultraviolet light breaks them apart high in the atmosphere, releasing chlorine, and the chlorine destroys ozone molecules there.",
+            "why": "Paragraph 1 describes exactly this."
+          },
+          {
+            "t": "they react with carbon dioxide in the upper atmosphere, forming compounds that absorb ultraviolet radiation.",
+            "why": "Carbon dioxide is not part of the mechanism described.",
             "trap": "Out of scope"
           }
         ],
-        "answer": 1
+        "answer": 2
       },
       {
         "type": "except",
-        "stem": "All of the following are given as reasons the Montreal Protocol succeeded EXCEPT:",
+        "stem": "All of the following are given as reasons why the Montreal Protocol succeeded EXCEPT:",
         "proof": [
           2
         ],
         "options": [
           {
-            "t": "every country could replace CFCs cheaply without any help",
+            "t": "a small number of companies produced most CFCs.",
+            "why": "Named in paragraph 3.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "every country could replace CFCs cheaply and without any outside help.",
             "why": "The treaty gave poorer countries extra time and money, so this contradicts the passage."
           },
           {
-            "t": "a small number of companies produced most CFCs",
+            "t": "substitutes were available for the chemicals to be replaced.",
             "why": "Named in paragraph 3.",
             "trap": "True but not the answer"
           },
           {
-            "t": "substitutes were available",
-            "why": "Named in paragraph 3.",
-            "trap": "True but not the answer"
-          },
-          {
-            "t": "the danger was easy to picture",
+            "t": "the danger of the loss of ozone was easy to picture.",
             "why": "Named in paragraph 3.",
             "trap": "True but not the answer"
           }
         ],
-        "answer": 0
+        "answer": 1
       },
       {
         "type": "inference",
@@ -1036,23 +1210,52 @@
         ],
         "options": [
           {
-            "t": "no substitutes exist for any greenhouse gas",
+            "t": "no substitutes exist for any of the greenhouse gases which are responsible for the warming of the climate.",
             "why": "The passage says nothing of the kind.",
             "trap": "Extreme wording"
           },
           {
-            "t": "climate scientists are less reliable than ozone scientists",
+            "t": "climate scientists are less reliable than the scientists who studied the ozone layer in the years before 1987.",
             "why": "No comparison of scientists is made.",
             "trap": "Out of scope"
           },
           {
-            "t": "carbon dioxide comes from almost every part of the economy, not from a few producers",
-            "why": "The last sentence gives this as the limit of the comparison."
-          },
-          {
-            "t": "poorer countries refuse all help",
+            "t": "poorer countries have refused to accept the help which was offered to them under the earlier treaty on ozone.",
             "why": "Help for poorer countries was part of the protocol's success.",
             "trap": "Out of scope"
+          },
+          {
+            "t": "carbon dioxide comes from almost every part of the economy, and not from a few large producers.",
+            "why": "The last sentence gives this as the limit of the comparison."
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "type": "structure",
+        "stem": "The author mentions the rise in new CFC emissions detected in the 2010s in order to:",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "suggest that the treaty has failed to reduce the overall production of the chemicals which it was meant to phase out.",
+            "why": "The passage says production has fallen by about ninety-nine per cent.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "argue that eastern China alone was responsible for the delay in the recovery of the ozone layer above Antarctica.",
+            "why": "The recovery is slow because CFCs linger for decades.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "show that the treaty's gains can be defended when violations are detected by monitoring and traced to their source.",
+            "why": "The rise was traced to factories in eastern China and fell once the source was found."
+          },
+          {
+            "t": "show that CFCs no longer affect the ozone layer, since their effects ceased as soon as the treaty took effect.",
+            "why": "The author says CFCs linger for decades and recovery is slow.",
+            "trap": "Distorts the passage"
           }
         ],
         "answer": 2
@@ -1060,22 +1263,22 @@
     ],
     "recall": [
       {
-        "q": "Over which continent was the ozone hole found?",
+        "q": "Over which continent was the thinning of the ozone layer first reported?",
         "options": [
-          "Africa",
           "Antarctica",
+          "Africa",
           "Asia",
           "Australia"
         ],
-        "answer": 1
+        "answer": 0
       },
       {
-        "q": "In which year was the Montreal Protocol agreed?",
+        "q": "Why is the recovery of the ozone layer slow?",
         "options": [
-          "1975",
-          "1987",
-          "1997",
-          "2016"
+          "Substitutes for CFCs still destroy ozone.",
+          "CFCs linger in the atmosphere for decades.",
+          "New treaties have delayed the phase-out.",
+          "The Antarctic hole is refilled only in the spring."
         ],
         "answer": 1
       }
