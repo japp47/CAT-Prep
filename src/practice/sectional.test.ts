@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { blankState, normalize } from "../lib/state";
-import { CONTENT } from "./bank";
+import { CONTENT } from "./full";
 import { resolveExam, resolveRedo } from "./redo";
 import { buildPaper, byType, newDraft, qStatus, recordSectional, scorePaper, secsLeft, SECTIONAL_SECS, SECTIONAL_SRC } from "./sectional";
 import { DAILY_MIX } from "./va/build";

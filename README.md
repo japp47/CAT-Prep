@@ -61,7 +61,7 @@ The Today page, Plan page, navigation, Progress and Error log pick it up automat
 - **VA paragraph:** add to `content/va/paragraphs-2.json` (new paragraphs go in JSON; the first 50 are in `src/practice/va/paragraphs.ts`): four or five core sentences in order (five-sentence ones also give the jumble and odd-sentence views in `pj` and `ooo`), a cue for each, an odd sentence, an insertion sentence with its gap, and four para summary options, each with `t` (text), `why` and a `trap` on every wrong one. Each paragraph becomes a para summary, a para jumble, an odd sentence out and a sentence insertion. The tests also check that the right summary is not usually the longest option, so students cannot guess by length.
 - **Before publishing new content,** have a second person check the answer keys. Students can report problems from any question's review.
 
-After adding or changing content, run `npm run catalog`. It writes `src/practice/catalog.gen.ts` (titles, genres, word counts and dates), which the main bundle uses; the full passages load as a separate file only when a practice page opens. `npm run build` regenerates it too, and `npm test` fails if it is out of date.
+After adding or changing content, run `npm run catalog`. It writes `src/practice/catalog.gen.ts` (titles, genres, word counts, dates and which file holds each set), which the main bundle uses. The passages load only when a practice page opens, one content file at a time: an RC set loads just its own genre file, the VA drill just the paragraphs (`src/practice/bank.ts`, `content.ts`). A new file in `content/rc/` also needs a line in `src/practice/rc/index.ts`; a test checks the two agree. `npm run build` regenerates it too, and `npm test` fails if it is out of date.
 
 Give every new RC set or VA paragraph `since: "YYYY-MM-DD"`, set to the day after you publish. The RC of the day and the daily VA drill rotate in cycles, and new content joins at the next cycle after that date, so days already served never change. A test freezes the first days of the series to catch mistakes.
 
@@ -71,7 +71,7 @@ When CAT 2027 is announced, update `EXAM_ISO`, `EXAM_CONFIRMED` and, if needed, 
 
 ## Checks and deploy
 
-**CI.** `.github/workflows/ci.yml` runs on every pull request and every push to `main`: typecheck, tests, a production build, a check that the generated catalog is committed, and `npm run size`, which fails if the first download grows past its budget (main script 150 KB and stylesheet 20 KB gzipped, practice content 200 KB). In repo Settings → Branches, add a rule for `main` that requires the **CI / check** status, so only green code is merged.
+**CI.** `.github/workflows/ci.yml` runs on every pull request and every push to `main`: typecheck, tests, a production build, a check that the generated catalog is committed, and `npm run size`, which fails if the first download grows past its budget (main script 150 KB and stylesheet 20 KB gzipped, fonts 100 KB, and 70 KB for the largest practice content file, since each page loads only the content it shows). In repo Settings → Branches, add a rule for `main` that requires the **CI / check** status, so only green code is merged.
 
 **Deploy: Cloudflare Pages.** Cloudflare builds and publishes the site itself on every push to `main`, and gives every pull request its own preview link. One-time setup:
 

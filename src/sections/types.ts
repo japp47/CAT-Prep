@@ -79,6 +79,8 @@ export interface SectionDef {
   errorTypes: string[];
   phaseText?: Record<number, PhaseText>;
   template?: (d: string, ctx: PlanCtx) => DayTemplate;
-  categories?: Category[];
-  resources?: Resource[];
+  /** The curated resource list, loaded on demand: only the section page and Today show it. Use useResources(). */
+  resources?: () => Promise<SectionResources>;
 }
+
+export interface SectionResources { categories: Category[]; resources: Resource[] }

@@ -3,6 +3,7 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
+import { whenIdle } from "./lib/idle";
 
 // Each page loads when it is first opened, so the first visit downloads only the shell and the home page.
 // The pages in the phone's bottom bar are fetched once the browser is idle, so they open without a wait.
@@ -50,13 +51,15 @@ function Title() {
   return null;
 }
 
+/**
+ * Fetches the bottom-bar pages in advance, once the page in front of the student has loaded and the browser is idle,
+ * so they never compete with it for a slow connection. Skipped with Data Saver on or on 2G.
+ */
 function usePreload() {
   useEffect(() => {
-    const run = () => { load.today(); load.practice(); load.progress(); };
-    // Safari has no requestIdleCallback.
-    if ("requestIdleCallback" in window) { const id = requestIdleCallback(run, { timeout: 4000 }); return () => cancelIdleCallback(id); }
-    const id = setTimeout(run, 2000);
-    return () => clearTimeout(id);
+    const net = (navigator as { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+    if (net?.saveData || /2g/.test(net?.effectiveType ?? "")) return;
+    return whenIdle(() => { load.today(); load.practice(); load.progress(); }, 4000);
   }, []);
 }
 

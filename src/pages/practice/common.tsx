@@ -1,39 +1,11 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
-import { Flame } from "lucide-react";
+import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
 import { reportUrl } from "../../data/site";
-import { todayIso } from "../../lib/date";
 import { fmtSecs } from "../../practice/record";
 import { Tnum } from "../../components/kit";
-import { useStore } from "../../lib/store";
-import { activityDays, computeStreak } from "../../practice/streak";
-
-export function useStreak() {
-  const { state } = useStore();
-  return useMemo(() => computeStreak(activityDays(state), todayIso()), [state]);
-}
-
-const StreakNote = lazy(() => import("../../components/StreakNote"));
-
-export function StreakBadge() {
-  const s = useStreak();
-  const note = s.days
-    ? `${s.days}-day streak${s.activeToday ? "" : ". Practice today to keep it going"}. ${s.shieldsLeft} of 2 shields left this month; a shield covers one missed day.`
-    : "Practice or tick a timetable block to start a streak.";
-  const cls = "inline-flex items-center gap-1.5 rounded-full bg-card px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-colors hover:bg-card/70";
-  const face = (
-    <>
-      <Flame className={cn("size-4", s.days ? "text-warning" : "text-muted-foreground")} aria-hidden />
-      {/* One span, so the badge's flex gap does not open a space before the comma. */}
-      <span>{s.days ? `${s.days}-day streak` : "No streak yet"}{s.days > 0 && <span className="text-muted-foreground">, {s.shieldsLeft} shield{s.shieldsLeft === 1 ? "" : "s"}</span>}</span>
-    </>
-  );
-  // A tap opens the note, so it reaches phones too, not only a mouse hover.
-  return <Suspense fallback={<span className={cls}>{face}</span>}><StreakNote note={note} className={cls}>{face}</StreakNote></Suspense>;
-}
 
 /** Seconds since the component mounted, ticking once a second while `running`. */
 export function useElapsed(running: boolean, startAt: number) {

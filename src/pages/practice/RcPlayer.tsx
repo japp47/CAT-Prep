@@ -32,13 +32,14 @@ const COMMON = new Set("the and for are but not you all any can had her was one 
 const TARGET_SECS = 7 * 60;
 
 export default function RcPlayer() {
-  return <ContentGate>{(c) => <RcRoute rcById={c.rcById} />}</ContentGate>;
+  const { id } = useParams();
+  const setId = id === "today" ? rcOfDay(todayIso()).id : id ?? "";
+  // Only this set's file loads, about a tenth of all the passages.
+  return <ContentGate need={{ rc: [setId] }}>{(c) => <RcRoute set={c.rcById(setId)} />}</ContentGate>;
 }
 
-function RcRoute({ rcById }: { rcById: (id: string) => RcSet | undefined }) {
-  const { id } = useParams();
+function RcRoute({ set }: { set: RcSet | undefined }) {
   const [sp] = useSearchParams();
-  const set = rcById(id === "today" ? rcOfDay(todayIso()).id : id ?? "");
   if (!set) return <NotFound />;
   const review = sp.get("review");
   return <Player key={set.id + ":" + (review ?? "") + ":" + (sp.get("n") ?? "")} set={set} reviewId={review} />;

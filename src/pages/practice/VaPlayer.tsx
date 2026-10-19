@@ -22,7 +22,7 @@ const SECS_PER_ITEM = 90;
 /** A new query string (a new custom drill) starts a fresh page. */
 export default function VaPlayer() {
   const loc = useLocation();
-  return <ContentGate>{(c) => <VaPage key={loc.search} paras={c.vaParas} />}</ContentGate>;
+  return <ContentGate need={{ va: true }}>{(c) => <VaPage key={loc.search} paras={c.vaParas} />}</ContentGate>;
 }
 
 function VaPage({ paras }: { paras: VaPara[] }) {

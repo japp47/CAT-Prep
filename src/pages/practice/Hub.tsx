@@ -12,7 +12,7 @@ import { dueRedo } from "../../practice/redo";
 import { loadDraft } from "../../practice/sectional";
 import { CR_TYPE, CR_TYPES, GENRES, type CrType } from "../../practice/types";
 import { DAILY_MIX, VA_KIND, type VaKind } from "../../practice/va/build";
-import { StreakBadge } from "./common";
+import { StreakBadge } from "../../components/StreakBadge";
 
 /** Rows on one sheet, set apart by a hairline of the page's own tone rather than as separate cards. */
 function Rows({ children }: { children: ReactNode }) {

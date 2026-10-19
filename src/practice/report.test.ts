@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { ErrorEntry, PracticeSet, RcAttempt, SpeedRun } from "../lib/state";
 import { CR_CATALOG, RC_CATALOG } from "./catalog.gen";
-import { CONTENT } from "./bank";
+import { CONTENT } from "./full";
 import { accuracy, byPracticeType, crByKind, focusLines, paceTrend, rcByDifficulty, rcByGenre, rcByQuestionType, topTraps, weakest, type Row } from "./report";
 
 const row = (key: string, attempted: number, correct: number): Row => ({ key, label: key, attempted, correct });

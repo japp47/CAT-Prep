@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { blankState, normalize, type AppState } from "../lib/state";
-import { CONTENT } from "./bank";
+import { CONTENT } from "./full";
 import { RC_SETS } from "./rc";
 import { CR_ITEMS } from "./cr";
 import { crError, recordCr, recordRc, recordRedoAnswer, recordVa, REDO_SRC } from "./record";

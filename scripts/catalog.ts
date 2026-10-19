@@ -7,7 +7,7 @@
  */
 import { writeFileSync } from "node:fs";
 import { CR_ITEMS } from "../src/practice/cr";
-import { RC_SETS } from "../src/practice/rc";
+import { RC_BY_FILE, RC_SETS } from "../src/practice/rc";
 import { crMeta, rcLead, rcMeta, vaMeta } from "../src/practice/types";
 import { VA_PARAS } from "../src/practice/va/paragraphs";
 
@@ -26,6 +26,11 @@ ${rows(VA_PARAS.map(vaMeta))}
 export const CR_CATALOG: CrMeta[] = [
 ${rows(CR_ITEMS.map(crMeta))}
 ];
+
+/** The content/rc file that holds each set, so a page loads only that file. */
+export const RC_FILE: Record<string, string> = {
+${Object.entries(RC_BY_FILE).flatMap(([f, sets]) => sets.map((s) => "  " + JSON.stringify(s.id) + ": " + JSON.stringify(f) + ",")).join("\n")}
+};
 `;
 writeFileSync(new URL("../src/practice/catalog.gen.ts", import.meta.url), out);
 
