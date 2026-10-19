@@ -42,6 +42,11 @@ export const RC_CATALOG: RcMeta[] = [
   {"id":"lit-oral","title":"Singers who never sang the same song twice","genre":"literature","difficulty":"medium","words":496,"questions":4},
   {"id":"lit-detective","title":"The rules of the murder game","genre":"literature","difficulty":"medium","words":520,"questions":4,"since":"2026-10-18"},
   {"id":"hist-calendar","title":"The days that vanished","genre":"history","difficulty":"medium","words":476,"questions":4,"since":"2026-10-18"},
+  {"id":"arts-perspective","title":"Is perspective natural?","genre":"arts","difficulty":"hard","words":512,"questions":5,"since":"2026-10-20"},
+  {"id":"arts-halls","title":"The science of a good hall","genre":"arts","difficulty":"medium","words":475,"questions":5,"since":"2026-10-20"},
+  {"id":"arts-forgery","title":"The forger's reward","genre":"arts","difficulty":"hard","words":483,"questions":5,"since":"2026-10-20"},
+  {"id":"arts-camera","title":"Did the camera free the painter?","genre":"arts","difficulty":"medium","words":459,"questions":5,"since":"2026-10-20"},
+  {"id":"arts-montage","title":"The face that meant nothing","genre":"arts","difficulty":"medium","words":455,"questions":5,"since":"2026-10-20"},
 ];
 
 export const VA_CATALOG: VaMeta[] = [

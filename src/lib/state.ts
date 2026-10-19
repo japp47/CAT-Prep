@@ -54,6 +54,15 @@ export interface SectionalAttempt { id: string; d: string; qs: string[]; a: stri
  * box counts right answers in a row; cleared is the date it left the queue.
  */
 export interface RedoItem { k: string; added: string; due: string; box: number; tries: number; last?: string; cleared?: string }
+/**
+ * One written summary. src "rc" is a summary of a set on this site (set and att name it); "article" is one of an outside
+ * article from the Today reading block (from, title and url describe it). checks are the four self-checks in
+ * practice/summary.ts, ticked or not; the score is how many are ticked. updatedAt is for sync (docs/plan.md, 2D).
+ */
+export interface SummaryEntry {
+  id: string; d: string; src: "rc" | "article"; text: string; tone: string; checks: boolean[]; words: number; updatedAt: number;
+  set?: string; att?: string; from?: string; title?: string; url?: string;
+}
 
 export interface AppState {
   version: 4;
@@ -71,6 +80,7 @@ export interface AppState {
   speedRuns: SpeedRun[];
   redo: RedoItem[];
   sectionals: SectionalAttempt[];
+  summaries: SummaryEntry[];
   /** False for saves from before the redo queue; RedoSeeder then builds the queue from past attempts. */
   redoSeeded: boolean;
   /** The percentile the student is aiming for in each section. Only VARC has percentile tables so far. */
@@ -82,7 +92,7 @@ const emptyDow = () => [null, null, null, null, null, null, null] as (number | n
 export function blankState(): AppState {
   const settings = {} as Record<SectionId, TimeSettings>;
   SECTION_IDS.forEach((id) => (settings[id] = { ...DEFAULT_TIME[id], dow: emptyDow() }));
-  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], crAttempts: [], speedRuns: [], redo: [], sectionals: [], redoSeeded: true, targets: { varc: DEFAULT_TARGET } };
+  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], crAttempts: [], speedRuns: [], redo: [], sectionals: [], summaries: [], redoSeeded: true, targets: { varc: DEFAULT_TARGET } };
 }
 
 type Obj = Record<string, unknown>;
@@ -153,6 +163,14 @@ export function normalize(raw: unknown): AppState {
     id: str(x.id), d: str(x.d), secs: num(x.secs), c: num(x.c), w: num(x.w), updatedAt: num(x.updatedAt),
     qs: Array.isArray(x.qs) ? x.qs.map(str) : [], a: Array.isArray(x.a) ? x.a.map(str) : [], t: Array.isArray(x.t) ? x.t.map(num) : [],
   })).filter((x) => x.id && x.qs.length && x.a.length === x.qs.length);
+  b.summaries = list(raw.summaries, (x) => {
+    const e: SummaryEntry = {
+      id: str(x.id), d: str(x.d), src: x.src === "article" ? "article" : "rc", text: str(x.text), tone: str(x.tone),
+      checks: [0, 1, 2, 3].map((i) => Array.isArray(x.checks) && x.checks[i] === true), words: num(x.words), updatedAt: num(x.updatedAt),
+    };
+    (["set", "att", "from", "title", "url"] as const).forEach((k) => { const v = x[k]; if (typeof v === "string" && v) e[k] = v; });
+    return e;
+  }).filter((e) => e.id && e.text.trim() && isIsoDate(e.d));
   if (Array.isArray(raw.redo)) {
     b.redo = list(raw.redo, (x) => {
       const r: RedoItem = { k: str(x.k), added: str(x.added), due: str(x.due), box: clamp(num(x.box), 0, 9), tries: num(x.tries) };

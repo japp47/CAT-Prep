@@ -1,0 +1,961 @@
+[
+  {
+    "id": "arts-perspective",
+    "title": "Is perspective natural?",
+    "genre": "arts",
+    "difficulty": "hard",
+    "since": "2026-10-20",
+    "paras": [
+      "In the early fifteenth century Florentine painters acquired a technique that was to govern, for some five hundred years, what it meant for a picture to look correct. Linear perspective, associated with the architect Filippo Brunelleschi and set out in treatise form by Leon Battista Alberti in the 1430s, prescribes that parallel lines receding from the spectator converge upon a single vanishing point, so that a flat panel may simulate a window onto a measured space. The technique is commonly narrated as a discovery: painters, after centuries of groping, at last learned to render the world as it really appears.",
+      "This narrative has been disputed on several grounds. The eye is not a camera; we see with two eyes that are perpetually in motion, and the image upon the retina is curved rather than planar. A perspectival picture is therefore strictly correct only when viewed from one position with one eye, a condition that no visitor to a gallery fulfils. Wide-angle photographs, which obey the geometry scrupulously, stretch objects at their margins, a distortion we notice only when we stand in the wrong place. Moreover, painters in other traditions, among them Chinese scroll artists and Persian miniaturists, devised subtle means of suggesting depth without a single vanishing point, and few modern viewers consider their work a deficient attempt at representation.",
+      "The art historian Erwin Panofsky drew a more radical inference. Perspective, he argued in an essay of 1927, is a 'symbolic form': not a transcript of vision but a convention that expresses a particular conception of space as infinite, continuous and uniform. Classical antiquity, despite its mastery of geometry, seems never to have arrived at a unified vanishing point, which he took as evidence that the habit reflects a way of thinking rather than mere skill. On this account the Renaissance did not discover how the world looks; it adopted a method of ordering the world that accorded with the mathematical and philosophical temper of its age. Some later writers have gone further, proposing that perspective taught Europeans to expect things to look that way.",
+      "Yet the constructivist position can be pressed too far. Perspective works as a device precisely because it exploits regularities of ordinary seeing: distant objects subtend smaller angles at the eye, and the edges of a receding road do appear to converge. Reports concerning viewers unfamiliar with pictorial conventions are mixed, but several suggest that recognition of perspectival depth demands less schooling than a purely conventional code would require. A photograph, which obeys the same geometry, is not ordinarily regarded as an arbitrary cipher.",
+      "The most defensible conclusion is probably an intermediate one. Perspective is neither a mirror of nature nor a mere habit of the eye: it is a convention that happens to be unusually persuasive because it harnesses the geometry of light. To call it natural is to overlook its dependence upon a fixed viewpoint; to call it arbitrary is to forget that painters adopted it because it worked, and that it went on working long after the circumstances of its invention had faded from memory."
+    ],
+    "questions": [
+      {
+        "type": "main",
+        "stem": "Which one of the following best expresses the main point of the passage?",
+        "proof": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "options": [
+          {
+            "t": "Linear perspective was a genuine discovery of Florentine painters, who at length learned to depict the world precisely as the human eye perceives it.",
+            "why": "This is the 'commonly narrated' view of paragraph 1, which the author goes on to dispute.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Perspective is neither a mirror of the world's appearance nor an arbitrary code, but a persuasive convention that exploits the geometry of light.",
+            "why": "Paragraphs 2 and 3 press the conventional view, paragraph 4 qualifies it, and paragraph 5 states the intermediate conclusion."
+          },
+          {
+            "t": "Perspective is a cultural convention possessing no foundation in the optics of vision, which Europeans learned to accept through prolonged schooling.",
+            "why": "Paragraph 4 says that perspective exploits regularities of ordinary seeing.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "Painters in the Chinese and Persian traditions represented depth more subtly than Renaissance painters did, and their methods deserve to be preferred.",
+            "why": "A detail from paragraph 2, and no preference is expressed.",
+            "trap": "Too narrow or too broad"
+          }
+        ],
+        "answer": 1
+      },
+      {
+        "type": "inference",
+        "stem": "It can be inferred from the second paragraph that a visitor looking at a perspectival picture in a gallery:",
+        "proof": [
+          1
+        ],
+        "options": [
+          {
+            "t": "will find the picture distorted unless she closes both eyes and stands very close to the canvas on which it is painted.",
+            "why": "The passage does not say the picture is perceived as distorted; it says only that strict correctness requires a single position.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "will perceive its depth only if she has been trained in the conventions of Renaissance painting and the mathematics of its construction.",
+            "why": "Paragraph 4 suggests such depth demands little schooling; paragraph 2 does not discuss training.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "will see a curved image upon her retina, which proves that the picture itself must be geometrically defective in some respect.",
+            "why": "The curvature of the retinal image is given as a difference between eye and picture, not as a defect of the picture.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "will generally view it from a position other than the one for which it is strictly correct.",
+            "why": "Strict correctness requires one eye at one position, 'a condition that no visitor ... fulfils'."
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "type": "except",
+        "stem": "The passage offers each of the following as a ground for doubting that perspective simply records how the world looks EXCEPT:",
+        "proof": [
+          1,
+          2,
+          3
+        ],
+        "options": [
+          {
+            "t": "The human eye moves constantly and works in pairs, whereas a perspectival picture presumes a fixed single viewpoint.",
+            "why": "Given in paragraph 2.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "Viewers unfamiliar with pictorial conventions have been shown to be unable to recognise depth in perspectival images.",
+            "why": "Paragraph 4 says reports are mixed and that recognition seems to require little schooling."
+          },
+          {
+            "t": "Painters in other traditions suggested depth successfully without relying upon a single vanishing point.",
+            "why": "Given in paragraph 2.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "Classical artists, though skilled in geometry, did not arrive at a single unified vanishing point.",
+            "why": "Given in paragraph 3.",
+            "trap": "True but not the answer"
+          }
+        ],
+        "answer": 1
+      },
+      {
+        "type": "tone",
+        "stem": "The author's attitude to Panofsky's argument is best described as:",
+        "proof": [
+          2,
+          3
+        ],
+        "options": [
+          {
+            "t": "dismissive, on the ground that it takes no account of the mathematical sophistication of Renaissance painters.",
+            "why": "The argument rests precisely on the mathematical temper of the age.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "wholly persuaded, since it explains the diversity of pictorial traditions better than any rival account has done.",
+            "why": "The author qualifies the argument in paragraph 4.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "sceptical, because it relies upon a single essay and has never been examined by later writers.",
+            "why": "Later writers are said to have extended it.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "respectful of its insight, yet unwilling to accept it in its strongest form.",
+            "why": "The author grants the argument force (paragraph 3) but says the position 'can be pressed too far' (paragraph 4)."
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "type": "strengthen",
+        "stem": "Which of the following, if true, would most strengthen the view that perspective is a 'symbolic form'?",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "Photographs, which obey strict geometrical perspective, are recognised without difficulty by viewers in every society that has been tested so far, however unfamiliar they are with pictures.",
+            "why": "This suggests the geometry is naturally legible and so weakens the view.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Chinese scroll painters were as proficient as their Florentine contemporaries in depicting buildings and landscapes of great complexity and subtlety.",
+            "why": "True, perhaps, but it does not bear on whether perspective is learned.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "Brunelleschi is reported to have demonstrated, by means of mirrors, that his method yielded accurate views of well-known buildings in Florence.",
+            "why": "A report of accuracy points toward the 'discovery' view.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Adults from a society without pictures, shown a perspectival drawing for the first time, consistently misjudged the distances shown until instructed.",
+            "why": "Misreading that disappears with instruction suggests that perspectival reading is learned."
+          }
+        ],
+        "answer": 3
+      }
+    ],
+    "recall": [
+      {
+        "q": "Who set out linear perspective in treatise form in the 1430s?",
+        "options": [
+          "Filippo Brunelleschi",
+          "Erwin Panofsky",
+          "Giotto",
+          "Leon Battista Alberti"
+        ],
+        "answer": 3
+      },
+      {
+        "q": "According to Panofsky, perspective expresses which conception of space?",
+        "options": [
+          "Infinite, continuous and uniform",
+          "Finite, hierarchical and sacred",
+          "Flat, bounded and symbolic",
+          "Fixed by the position of the spectator"
+        ],
+        "answer": 0
+      }
+    ],
+    "summary": {
+      "model": "Linear perspective is neither a mirror of how we see nor an arbitrary code, but probably a convention made persuasive by the geometry of light.",
+      "tone": "analytical",
+      "claim": "a convention made persuasive by the geometry of light",
+      "qualifier": "probably"
+    }
+  },
+  {
+    "id": "arts-halls",
+    "title": "The science of a good hall",
+    "genre": "arts",
+    "difficulty": "medium",
+    "since": "2026-10-20",
+    "paras": [
+      "Concert halls are among the few buildings whose quality is judged by ear, yet the judgement has proved remarkably elusive. Until the late nineteenth century acoustics was a matter of lore and happenstance: halls that sounded splendid were copied, those that did not were quietly altered or abandoned, and nobody could say with confidence why. The turning point is conventionally dated to 1895, when Wallace Sabine, a young Harvard physicist, was asked to remedy the muddy acoustics of a lecture theatre. By timing how long sound lingered in rooms, he established that reverberation depends upon a room's volume and upon the absorbing materials within it, and he reduced the relation to a formula. Boston Symphony Hall, opened in 1900, was the first hall designed with its help.",
+      "Reverberation, however, proved to be only one of several variables. In the decades after the Second World War the acoustician Leo Beranek questioned conductors and critics about celebrated halls and tried to correlate their verdicts with physical measurements. Halls in which sound reaches the listener from the sides within a small fraction of a second, a feature of tall, narrow 'shoebox' rooms such as the Musikverein in Vienna, tended to be praised for their warmth and sense of envelopment. The correlation was suggestive rather than conclusive, for the sample of halls was small and the raters' tastes had been formed by the very halls they praised. Beranek's findings nonetheless suggested that a hall's shape mattered at least as much as its dimensions.",
+      "Knowledge of these principles has not guaranteed success. Philharmonic Hall in New York, opened in 1962 with every advantage of contemporary science, was criticised from the outset and subjected to alterations, culminating in an almost complete reconstruction. Conversely, the Berlin Philharmonie, completed in 1963, abandoned the shoebox for a plan in which the audience is arranged in terraces around the orchestra, and it has been admired and imitated, although it departs from the model that the science seemed to favour. A hall that satisfies listeners in the stalls may, moreover, disappoint those in the gallery, while musicians on the stage, who hear it differently still, have interests of their own.",
+      "What these episodes illustrate is not that science is irrelevant but that it is incomplete. Preferences in sound are not purely physical: they are conditioned by the repertoire one knows, by the halls in which one first heard it, and by the reputation of the building. A hall praised in advance may well be heard as warmer. Rigorous comparison is difficult to arrange, since halls cannot be exchanged and the judgements of experts correlate only imperfectly with those of ordinary audiences. Critics add that the vocabulary of the trade, warm, dry, brilliant, is borrowed from other senses and lacks agreed definitions. Acoustics can tell designers how to avoid the gravest faults; it cannot yet guarantee sublimity."
+    ],
+    "questions": [
+      {
+        "type": "main",
+        "stem": "Which one of the following best summarises the passage?",
+        "proof": [
+          1,
+          2,
+          3
+        ],
+        "options": [
+          {
+            "t": "Acoustic science has taught designers to avoid grave faults, but a hall's quality also depends on factors it cannot yet capture.",
+            "why": "Paragraphs 1 and 2 give the science; 3 and 4 show its limits."
+          },
+          {
+            "t": "Shoebox halls such as the Musikverein remain the only dependable model for new concert halls, since experts judge them to be the warmest.",
+            "why": "The Berlin Philharmonie, a departure from the model, is admired.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "Wallace Sabine's formula made the design of acoustically successful halls a predictable matter of calculating reverberation time for each room.",
+            "why": "Paragraph 2 says reverberation was only one of several variables.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Listeners' ratings of halls are determined by reputation and repertoire rather than by anything physical about the sound they hear.",
+            "why": "Preferences are 'not purely physical', which is weaker than 'not physical at all'.",
+            "trap": "Half right, half wrong"
+          }
+        ],
+        "answer": 0
+      },
+      {
+        "type": "structure",
+        "stem": "The author mentions the Berlin Philharmonie in order to:",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "show that a design departing from the favoured model can nevertheless be acclaimed.",
+            "why": "It 'abandoned the shoebox' and has been admired and imitated."
+          },
+          {
+            "t": "argue that terraced seating is acoustically superior to the shoebox form on which most celebrated halls have been based.",
+            "why": "The author makes no claim of superiority.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "illustrate the costly alterations to which halls are subject once their faults have been discovered by the public.",
+            "why": "The costly alterations belong to Philharmonic Hall, not the Philharmonie.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "confirm Beranek's finding that reflections reaching the listener from the sides are essential to warmth.",
+            "why": "The Philharmonie departs from the model Beranek's findings favoured.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 0
+      },
+      {
+        "type": "inference",
+        "stem": "The remark that 'a hall praised in advance may well be heard as warmer' implies that:",
+        "proof": [
+          3
+        ],
+        "options": [
+          {
+            "t": "halls with the finest reputations are invariably those with the best acoustics when measured by instruments.",
+            "why": "Reputation can shape perception without tracking measurement; 'invariably' is also too strong.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "critics ought to be prevented from publishing their opinions of new halls before audiences have attended them.",
+            "why": "No such recommendation is made.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "warmth is a property of reverberation that instruments are for the present unable to measure with precision.",
+            "why": "The remark concerns expectation, not measurement.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "what listeners report hearing can be influenced by what they expect to hear.",
+            "why": "Reputation is listed among the conditioners of preference."
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "type": "except",
+        "stem": "The passage mentions each of the following as complicating the assessment of concert halls EXCEPT:",
+        "proof": [
+          2,
+          3
+        ],
+        "options": [
+          {
+            "t": "the tendency of halls to deteriorate acoustically as their building materials age.",
+            "why": "Ageing materials are not mentioned."
+          },
+          {
+            "t": "the impossibility of exchanging halls so that they can be compared directly.",
+            "why": "Named in paragraph 4.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "the imperfect agreement between the judgements of experts and those of ordinary audiences.",
+            "why": "Named in paragraph 4.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "the way in which listeners hear differently from the stalls, from the gallery and from the stage.",
+            "why": "Named in paragraph 3.",
+            "trap": "True but not the answer"
+          }
+        ],
+        "answer": 0
+      },
+      {
+        "type": "strengthen",
+        "stem": "Which of the following, if true, would most strengthen the author's claim that reputation conditions what listeners hear?",
+        "proof": [
+          3
+        ],
+        "options": [
+          {
+            "t": "Listeners rated halls in which sound reaches them from the sides more highly for envelopment than halls lacking such reflections.",
+            "why": "This concerns a physical feature and so does not bear on reputation.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "Musicians on the stage often disagree with listeners in the stalls about which of two halls sounds the better.",
+            "why": "Interesting, but it concerns position and not reputation.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "Reverberation times in the most admired halls of the world vary by more than a second from one hall to another.",
+            "why": "A measurement that says nothing about expectation.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "Listeners told that a recording came from a celebrated hall rated it more highly than those who heard it uninformed.",
+            "why": "The only difference is the information given, so the rating shift must come from expectation."
+          }
+        ],
+        "answer": 3
+      }
+    ],
+    "recall": [
+      {
+        "q": "Upon what did Sabine find that reverberation depends?",
+        "options": [
+          "The height of its ceiling and the number of its seats",
+          "A room's volume and the absorbing materials within it",
+          "The shape of its stage and the position of its organ",
+          "The sound of the instruments and the size of the audience"
+        ],
+        "answer": 1
+      },
+      {
+        "q": "Which hall was the first designed with the help of Sabine's formula?",
+        "options": [
+          "The Musikverein in Vienna",
+          "Philharmonic Hall in New York",
+          "Boston Symphony Hall",
+          "The Berlin Philharmonie"
+        ],
+        "answer": 2
+      }
+    ],
+    "summary": {
+      "model": "Acoustic science helps designers avoid the worst faults, but a hall's quality also depends on taste and expectation that science cannot yet capture.",
+      "tone": "analytical",
+      "claim": "also depends on taste and expectation",
+      "qualifier": "cannot yet"
+    }
+  },
+  {
+    "id": "arts-forgery",
+    "title": "The forger's reward",
+    "genre": "arts",
+    "difficulty": "hard",
+    "since": "2026-10-20",
+    "paras": [
+      "In 1937 a Rotterdam museum bought a large biblical canvas, the Supper at Emmaus, after it had been warmly endorsed by Abraham Bredius, the most eminent Vermeer scholar of his day. Vermeer's surviving output is tiny, some three dozen pictures, and scholars had long hoped that a lost cache of early works would come to light. After the Second World War the canvas's true author, the Dutch painter Han van Meegeren, was arrested for selling a supposed national treasure to the Nazi leader Hermann Göring, and in his defence he took the unlikely course of confessing that the Vermeers were his own forgeries. To convince the sceptical he painted another before witnesses. Once the truth was known, critics who had hailed the canvases as sublime began to find them crude. Nothing about the paint had altered. Why should knowledge of a picture's origin change our estimate of it?",
+      "One answer holds that artistic value is not exclusively visual. A painting is not merely an arrangement of colours but an act performed by a particular person at a particular time, and to prize a Vermeer is in part to prize what it records: a vision realised with particular difficulty. A forgery, however accomplished, records nothing of the kind, and what it appears to say about its maker is false. Collectors who pay for authenticity are not, on this view, fools; they are paying for a relation to a past event. Nelson Goodman added a subtler argument: even if two pictures now look identical, a trained eye might later learn to discriminate them, and the knowledge that a difference exists may therefore properly alter how we look.",
+      "The opposing view is that if two objects cannot be told apart by looking, no difference of aesthetic merit can exist, and the preference for the original is snobbery, a fetish for provenance dressed up as principle. No one, its defenders add, is harmed by a beautiful object merely because its label is false. There is some support for this in the van Meegeren case. His fakes succeeded partly because they filled a gap in the story that scholars wished to tell, namely that the young Vermeer had painted religious subjects, so that the experts were deceived less by the quality of the forgery than by their own expectations.",
+      "Neither position is entirely comfortable. The first seems to make a picture's worth depend upon facts invisible in it; the second cannot explain why the discovery of deceit felt like more than a revision of a market price. Courts and markets, in any event, have seldom hesitated, treating the forger as a criminal however beautiful his product. Perhaps the dispute turns upon what appreciation is taken to be. If it is a response to a surface, forgery is no vice; if it is an engagement with an achievement, the forger's work is a fraud upon the very thing admired."
+    ],
+    "questions": [
+      {
+        "type": "main",
+        "stem": "Which one of the following best summarises the passage?",
+        "proof": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "options": [
+          {
+            "t": "Han van Meegeren's forgeries demonstrate that expert connoisseurs cannot be trusted to distinguish authentic masterpieces from skilful imitations of the work of the old masters.",
+            "why": "A detail used by the author, not the point of the passage.",
+            "trap": "Too narrow or too broad"
+          },
+          {
+            "t": "The van Meegeren case raises the question whether a work's origin bears upon its value, and each rival answer leaves something unexplained.",
+            "why": "Paragraph 1 poses the question; 2 and 3 give the answers; 4 notes what each leaves out."
+          },
+          {
+            "t": "A forged painting that cannot be told from an original possesses exactly the same aesthetic merit, and ought to be valued equally.",
+            "why": "This is one of the two rival views, which the author does not endorse.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "The price of a painting is fixed by its provenance, which collectors and courts regard as more important than its beauty.",
+            "why": "The passage concerns aesthetic value, not the setting of prices.",
+            "trap": "Half right, half wrong"
+          }
+        ],
+        "answer": 1
+      },
+      {
+        "type": "inference",
+        "stem": "The author's statement that the experts were deceived 'by their own expectations' suggests that:",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "van Meegeren's paintings were so poorly made that only prejudiced observers could have mistaken them for genuine works by Vermeer.",
+            "why": "The experts hailed them as sublime; the claim is about expectation, not poor workmanship.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "scholars knowingly accepted the canvases because they wished to profit from a sensational discovery about a famous painter.",
+            "why": "The passage speaks of expectation, not deliberate dishonesty.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "the success of a forgery may depend on how closely it fits what viewers already hope to find.",
+            "why": "The fakes filled a gap scholars wished to fill."
+          },
+          {
+            "t": "experts can judge authenticity reliably only when they hold no theory whatever about the artist whose work they are asked to judge.",
+            "why": "'Only' and 'no theory whatever' go far beyond the passage.",
+            "trap": "Extreme wording"
+          }
+        ],
+        "answer": 2
+      },
+      {
+        "type": "structure",
+        "stem": "The author introduces Nelson Goodman's argument in order to:",
+        "proof": [
+          1
+        ],
+        "options": [
+          {
+            "t": "offer a more refined defence of the view that knowing a work's origin can properly affect how it is appreciated.",
+            "why": "It appears in the paragraph that gives the first view and refines it."
+          },
+          {
+            "t": "undermine the claim that identical-looking pictures can differ in value by showing that they never in fact look identical.",
+            "why": "Goodman allows that pictures may look identical now; his point is that this may change.",
+            "trap": "Half right, half wrong"
+          },
+          {
+            "t": "rebut the charge that attention to provenance is snobbery by quoting the opinions of leading connoisseurs.",
+            "why": "The charge belongs to the opposing view; no connoisseurs are quoted.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "show that the experts who endorsed van Meegeren's canvases ought to have been able to detect that they were forgeries.",
+            "why": "The argument concerns future discrimination, not the failure of the experts.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 0
+      },
+      {
+        "type": "application",
+        "stem": "Which of the following would proponents of the first view most likely regard as analogous to a forged Vermeer?",
+        "proof": [
+          1
+        ],
+        "options": [
+          {
+            "t": "A reproduction openly sold in a museum shop as such, with its status clearly stated upon the label.",
+            "why": "There is no deception, and so no fraud upon what is admired.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "A flawless replica of a famous explorer's medal, sold as the very medal that she wore.",
+            "why": "It records nothing of the event it claims, and the sale rests on a false claim about origin."
+          },
+          {
+            "t": "An original painting by an unknown artist, bought cheaply by a collector who admires its use of colour.",
+            "why": "No question of authenticity or deceit arises.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "A genuine painting wrongly attributed to a minor artist because no one had examined its history.",
+            "why": "The work is authentic; only the label is mistaken.",
+            "trap": "True but not the answer"
+          }
+        ],
+        "answer": 1
+      },
+      {
+        "type": "except",
+        "stem": "The passage mentions each of the following in connection with van Meegeren EXCEPT that he:",
+        "proof": [
+          0,
+          2
+        ],
+        "options": [
+          {
+            "t": "painted a further canvas before witnesses in order to prove his claim.",
+            "why": "Stated in paragraph 1.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "had a canvas purchased by a museum on the strength of a scholar's endorsement.",
+            "why": "Stated in paragraph 1.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "was convicted of fraud for selling forged paintings to private collectors.",
+            "why": "His arrest concerned the sale of a supposed national treasure to Göring; no conviction is mentioned."
+          },
+          {
+            "t": "produced fakes that filled a gap in what scholars hoped to learn of Vermeer's early career.",
+            "why": "Stated in paragraph 3.",
+            "trap": "True but not the answer"
+          }
+        ],
+        "answer": 2
+      }
+    ],
+    "recall": [
+      {
+        "q": "Who confessed to having forged the Vermeers?",
+        "options": [
+          "Abraham Bredius",
+          "Nelson Goodman",
+          "Hermann Göring",
+          "Han van Meegeren"
+        ],
+        "answer": 3
+      },
+      {
+        "q": "How did van Meegeren convince sceptics that he was the forger?",
+        "options": [
+          "He produced the genuine canvases from which his copies were made.",
+          "He persuaded Bredius to withdraw his endorsement.",
+          "He painted another forgery in front of witnesses.",
+          "He showed that the pigments were of modern manufacture."
+        ],
+        "answer": 2
+      }
+    ],
+    "summary": {
+      "model": "Whether a forgery is worth less than an original perhaps turns on what appreciation is; each rival answer leaves something unexplained.",
+      "tone": "analytical",
+      "claim": "each rival answer leaves something unexplained",
+      "qualifier": "perhaps"
+    }
+  },
+  {
+    "id": "arts-camera",
+    "title": "Did the camera free the painter?",
+    "genre": "arts",
+    "difficulty": "medium",
+    "since": "2026-10-20",
+    "paras": [
+      "When Louis Daguerre announced his photographic process in 1839, the French painter Paul Delaroche is supposed to have declared that 'from today painting is dead'. The remark is probably apocryphal, but the sentiment it expresses has long underwritten a familiar story. Painting, according to the story, had existed chiefly to record appearances; the camera did so more quickly and exactly; painters, relieved of the burden of resemblance, were therefore liberated to pursue colour, feeling and finally abstraction. Impressionism, Expressionism and the rest are thus presented as the dividend of a technological accident. It is the kind of explanation that flatters both machinery and art, and it has been repeated in textbooks for generations.",
+      "The story has an appealing economy, but historians have found it too tidy. The first Impressionist exhibition took place in 1874, some thirty-five years after Daguerre, and in the interval academic painters of high finish continued to prosper, many of them working from photographs. The earliest cameras, moreover, required long exposures and could not arrest movement, so the claim that they had superseded painted depictions of life was premature. Degas and others studied photographs for the poses and the cropping that painters had been slow to notice; far from fleeing the camera, many artists used it as an instrument. Nor did early photographers regard themselves as the heirs of painting's former task. A good many, in the movement known as Pictorialism, sought to prove that photography was itself an art by imitating the soft focus and the allegorical themes of painting.",
+      "Other causes of modern painting are, besides, easily listed: new paints sold in portable tubes, which made working outdoors practicable; the example of Japanese woodblock prints, with their flattened space and asymmetric composition; and a changing market, in which dealers and private buyers rather than the Academy conferred success. Any of these might have prompted experiment without the camera. To say so is not to deny that photography mattered, but to ask what it changed. The most persuasive suggestion is that it altered the claims painting made for itself. Once resemblance could be had cheaply, painters had an incentive to emphasise what a machine could not supply: the visible trace of the hand, the unique sensibility, the individual's way of seeing.",
+      "The relationship was therefore reciprocal rather than sequential. Photography did not kill the painter's old task and thereby free him; it unsettled a settled arrangement, and painters and photographers alike spent the following decades renegotiating what each could claim as their own. That the renegotiation is still in progress may be inferred from the fact that photorealist painting, which flourished in the 1970s, deliberately reproduced the look of photographs, a feat its admirers found remarkable precisely because a camera could have done it faster."
+    ],
+    "questions": [
+      {
+        "type": "main",
+        "stem": "Which one of the following best expresses the main point of the passage?",
+        "proof": [
+          1,
+          2,
+          3
+        ],
+        "options": [
+          {
+            "t": "Photography brought to an end the traditional purpose of painting, which explains why Impressionism and abstraction arose, in the decades that followed, as responses to the camera.",
+            "why": "This is the familiar story that the author calls too tidy.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Painters adopted new pigments and Japanese prints because they wished to compete with the camera by producing images of greater novelty and so holding their own.",
+            "why": "These are offered as causes independent of photography.",
+            "trap": "Half right, half wrong"
+          },
+          {
+            "t": "Early photographers cared more for imitating painting than painters cared for using photographs, a fact which shows the superiority of painting over the camera.",
+            "why": "A detail from paragraph 2, stretched into a claim of superiority the author does not make.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "The idea that photography freed painters from realism is too simple; it rather changed what painting claimed for itself, in a two-way exchange.",
+            "why": "Paragraphs 2 and 3 dismantle the tidy story, and paragraphs 3 and 4 offer the reciprocal alternative."
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "type": "strengthen",
+        "stem": "Which of the following, if true, would most strengthen the familiar story rejected by the author?",
+        "proof": [
+          0,
+          1
+        ],
+        "options": [
+          {
+            "t": "Painters' notebooks of the 1840s repeatedly cite the camera's accuracy as their reason for abandoning realism.",
+            "why": "It would supply direct evidence that painters turned away from resemblance because of photography."
+          },
+          {
+            "t": "Several leading Impressionists made photographs of their own in order to study poses and compositions for their paintings.",
+            "why": "This shows artists using the camera as an instrument, which fits the author's account.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Academic painters of high finish continued to enjoy great commercial success throughout the 1860s and the decades that followed.",
+            "why": "This tells against the claim that painters abandoned realism because of the camera.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Dealers and private buyers came increasingly to rival the Academy in conferring success on painters in the following decades.",
+            "why": "A cause independent of the camera, and so no support for the story.",
+            "trap": "Out of scope"
+          }
+        ],
+        "answer": 0
+      },
+      {
+        "type": "structure",
+        "stem": "The author mentions photorealist painting in the last paragraph in order to:",
+        "proof": [
+          3
+        ],
+        "options": [
+          {
+            "t": "show that painting has declined into the mere imitation of photographs since the nineteenth century.",
+            "why": "The author expresses no view that painting has declined.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "suggest that painters and photographers are still defining their relation to one another.",
+            "why": "The renegotiation 'is still in progress'."
+          },
+          {
+            "t": "prove that the camera could never have replaced the painter's skill with the brush in any age.",
+            "why": "'Never' and 'prove' go beyond the passage; the point is about the continuing renegotiation.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "illustrate that the earliest cameras were incapable of recording movement or of working at speed.",
+            "why": "That is a point about early cameras in paragraph 2.",
+            "trap": "Out of scope"
+          }
+        ],
+        "answer": 1
+      },
+      {
+        "type": "inference",
+        "stem": "It can be inferred from the second paragraph that Pictorialist photographers:",
+        "proof": [
+          1
+        ],
+        "options": [
+          {
+            "t": "considered the camera a means of recording appearances more accurately than painting could ever do.",
+            "why": "They imitated painting's soft focus, which is hardly a pursuit of accuracy.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "were chiefly painters who had abandoned the brush soon after the announcement of the daguerreotype.",
+            "why": "Nothing is said about their previous careers.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "sought for photography the standing that painting then enjoyed as an art.",
+            "why": "They imitated painting 'to prove that photography was itself an art'."
+          },
+          {
+            "t": "rejected the use of soft focus on the ground that it resembled the techniques of painters.",
+            "why": "They adopted soft focus precisely because it resembled painting.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 2
+      },
+      {
+        "type": "except",
+        "stem": "The author mentions each of the following as an influence on modern painting other than photography EXCEPT:",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "paints sold in portable tubes, which made working outdoors practicable.",
+            "why": "Named in paragraph 3.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "the example of Japanese woodblock prints, with their flattened space.",
+            "why": "Named in paragraph 3.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "the growing prestige of the Academy as arbiter of success.",
+            "why": "The market is said to have replaced the Academy as the source of success."
+          },
+          {
+            "t": "the rise of dealers and private buyers as arbiters of success.",
+            "why": "Named in paragraph 3.",
+            "trap": "True but not the answer"
+          }
+        ],
+        "answer": 2
+      }
+    ],
+    "recall": [
+      {
+        "q": "In what year was the first Impressionist exhibition held?",
+        "options": [
+          "1839",
+          "1874",
+          "1859",
+          "1889"
+        ],
+        "answer": 1
+      },
+      {
+        "q": "What did Pictorialist photographers imitate?",
+        "options": [
+          "The soft focus and the allegorical themes of painting",
+          "The sharp detail and the exact likeness of academic portraits",
+          "The flattened space and the asymmetric composition of Japanese prints",
+          "The bright colours and the broken brushwork of the Impressionists"
+        ],
+        "answer": 0
+      }
+    ],
+    "summary": {
+      "model": "Photography did not simply free painters from realism; it changed what painting claimed for itself, in an exchange both arts are still renegotiating.",
+      "tone": "analytical",
+      "claim": "changed what painting claimed for itself",
+      "qualifier": "did not simply"
+    }
+  },
+  {
+    "id": "arts-montage",
+    "title": "The face that meant nothing",
+    "genre": "arts",
+    "difficulty": "medium",
+    "since": "2026-10-20",
+    "paras": [
+      "Film-makers have long believed in montage: the meaning of a shot, it is said, depends less on what it contains than on what precedes and follows it. The founding illustration is an experiment attributed to the Soviet director Lev Kuleshov, who taught at the Moscow film school and regarded editing as the essence of cinema. A shot of an actor's expressionless face, so the story runs, was alternated with images of a bowl of soup, a child in a coffin and a woman on a divan; audiences praised the actor's subtle rendering of hunger, grief and desire, though the face had not changed. The anecdote has been retold in countless textbooks as proof that the viewer, rather than the performer, makes the emotion.",
+      "The evidence, however, is oddly thin. The original film is lost, and the accounts that survive, chiefly by Kuleshov's pupils and colleagues, differ about which images were used, which actor appeared and whether the experiment took place as described. Kuleshov's own writings, moreover, describe other trials, such as joining shots of different places, filmed separately, into a single imaginary location, which may have been conflated with the soup. When psychologists in the 1990s tried to recreate the experiment, they reported little or no effect: viewers' judgements of the actor's feeling were scarcely influenced by the images with which his face was paired. Such a failure is hard to interpret, since the stimuli, the audiences and the wording of the questions all differed from those of the original.",
+      "Later studies, using more carefully controlled designs and larger numbers of participants, have been kinder to the legend. Some found that neutral faces were judged more positive after pleasant images and more negative after unpleasant ones, though the effects were modest and varied from one viewer to another. Researchers who recorded brain activity found that responses differed according to the pairing, a result whose meaning is still debated. The finding is consistent with a large body of research showing that people infer emotion from faces by taking context into account, rather than by reading expressions as isolated signals. It does not follow, however, that the face contributes nothing: expressive faces appear to resist a context that contradicts them.",
+      "The most reasonable verdict is thus intermediate. Context shapes what we see in a face, and editors exploit that fact daily; but the strong claim that montage can create emotion from nothing rests on a story as much as on a demonstration. A sceptic might add that audiences watching a short film in a laboratory are not audiences in a cinema. The episode is instructive in another way: a result that fits a profession's convictions may be repeated for a century before anyone troubles to check it."
+    ],
+    "questions": [
+      {
+        "type": "main",
+        "stem": "Which one of the following best expresses the main point of the passage?",
+        "proof": [
+          1,
+          2,
+          3
+        ],
+        "options": [
+          {
+            "t": "The Kuleshov effect, long cited as proof of montage, rests on thin evidence, though later research supports a weaker form.",
+            "why": "Paragraph 2 gives the doubts, paragraph 3 the partial vindication, paragraph 4 the verdict."
+          },
+          {
+            "t": "Context determines the emotion that viewers see in a face, and an actor's expressions therefore contribute nothing to the effect of a film.",
+            "why": "Paragraph 3 says that it does not follow that the face contributes nothing.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "Kuleshov's experiment has been conclusively disproved by psychologists who found that viewers ignore the images that precede a face.",
+            "why": "Later studies were 'kinder to the legend', and the failed recreation was 'hard to interpret'.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Film editors have exploited a mistaken belief in montage in order to make audiences feel emotions that the actors did not intend.",
+            "why": "The author says only that editors exploit context, which is real.",
+            "trap": "Out of scope"
+          }
+        ],
+        "answer": 0
+      },
+      {
+        "type": "inference",
+        "stem": "The statement that the failed recreation is 'hard to interpret' implies that:",
+        "proof": [
+          1
+        ],
+        "options": [
+          {
+            "t": "the original experiment must have been conducted dishonestly, since no later study has reproduced its findings.",
+            "why": "Later studies did find modest effects, and dishonesty is not suggested.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "the recreation proves that Kuleshov's audiences were unusually credulous in the way they responded to the images.",
+            "why": "The author treats the recreation as inconclusive, not as proof of anything.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "differences between the recreation and the original may account for its different result.",
+            "why": "The stimuli, audiences and wording all differed."
+          },
+          {
+            "t": "studies of film conducted by psychologists are inevitably unreliable, because audiences in laboratories behave abnormally.",
+            "why": "The author later cites laboratory studies with approval; the doubt is raised only as a possibility.",
+            "trap": "Extreme wording"
+          }
+        ],
+        "answer": 2
+      },
+      {
+        "type": "structure",
+        "stem": "The third paragraph serves chiefly to:",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "qualify the sceptical evidence of the second paragraph with findings that partly vindicate the effect.",
+            "why": "Later, better-controlled studies 'have been kinder to the legend'."
+          },
+          {
+            "t": "reject the evidence of the second paragraph on the ground that laboratory studies have no bearing upon cinema.",
+            "why": "The author does not reject the evidence, and laboratory studies are used throughout.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "show that faces contribute nothing to the emotions that viewers attribute to the people whom they watch.",
+            "why": "The paragraph says the opposite: faces seem to resist contradictory context.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "explain why Kuleshov's pupils and colleagues described the original experiment in different ways.",
+            "why": "The differences are noted in paragraph 2 and left unexplained.",
+            "trap": "Out of scope"
+          }
+        ],
+        "answer": 0
+      },
+      {
+        "type": "strengthen",
+        "stem": "Which of the following, if true, would most strengthen the claim that 'expressive faces appear to resist a context that contradicts them'?",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "Viewers shown neutral faces after pleasant images judged them more positive than neutral faces shown after unpleasant ones, though the difference was small.",
+            "why": "This is the modest effect on neutral faces, and not a case of resistance.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "Viewers shown a frightened face after a pleasant image still judged it frightened, though less so than after a threatening image.",
+            "why": "The expression survives the contradicting context, though weakened."
+          },
+          {
+            "t": "The brain activity of viewers differed according to the image paired with a neutral face, though its meaning was unclear.",
+            "why": "It concerns neutral faces and not expressive ones.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "Viewers cited the plot of the film as the main reason for their judgements of an actor's feelings, not the images shown.",
+            "why": "Plot is not at issue in the passage.",
+            "trap": "Out of scope"
+          }
+        ],
+        "answer": 1
+      },
+      {
+        "type": "except",
+        "stem": "The passage gives each of the following as a reason for caution about the Kuleshov anecdote EXCEPT that:",
+        "proof": [
+          1
+        ],
+        "options": [
+          {
+            "t": "the original film is lost and cannot now be examined.",
+            "why": "Stated in paragraph 2.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "surviving accounts disagree about the details of the experiment.",
+            "why": "Stated in paragraph 2.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "the actor in the experiment later denied having taken part.",
+            "why": "No such denial is mentioned."
+          },
+          {
+            "t": "a later recreation differed from the original in its stimuli, audiences and questions.",
+            "why": "Stated in paragraph 2.",
+            "trap": "True but not the answer"
+          }
+        ],
+        "answer": 2
+      }
+    ],
+    "recall": [
+      {
+        "q": "What became of the original Kuleshov film?",
+        "options": [
+          "It was banned by the authorities.",
+          "It is lost.",
+          "It was re-edited by his pupils.",
+          "It was donated to a film school."
+        ],
+        "answer": 1
+      },
+      {
+        "q": "What did psychologists in the 1990s report when they tried to recreate the experiment?",
+        "options": [
+          "Little or no effect on viewers' judgements.",
+          "A strong effect, exactly as in the original.",
+          "An effect only among trained actors.",
+          "An effect that grew with each repetition."
+        ],
+        "answer": 0
+      }
+    ],
+    "summary": {
+      "model": "The famous proof that editing alone creates emotion rests on thin evidence; context does shape how faces are read, but only modestly.",
+      "tone": "sceptical",
+      "claim": "rests on thin evidence",
+      "qualifier": "only modestly"
+    }
+  }
+]

@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
+import { ChevronDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -14,10 +16,12 @@ import type { RcAttempt } from "../../lib/state";
 import { useStore } from "../../lib/store";
 import { ContentGate } from "../../components/Content";
 import { Field, LinkButton, Page, TextLink } from "../../components/kit";
+import { Checklist, ModelSummary, SummaryPair, WriteCard } from "../../components/Summary";
 import { RC_CATALOG } from "../../practice/catalog.gen";
 import { rcOfDay } from "../../practice/daily";
 import { fmtSecs, LETTERS, rcError, rcErrorSrc, recordRc, scoreRc } from "../../practice/record";
-import { GENRES, RC_QTYPE, setWords, type RcSet } from "../../practice/types";
+import { recordRcSummary, summaryFor, summaryScore } from "../../practice/summary";
+import { GENRES, RC_QTYPE, setWords, SUMMARY_MAX_WORDS, words, type RcSet, type RcSummary } from "../../practice/types";
 import NotFound from "../NotFound";
 import { Choice, ChoiceGroup, Confirm, ElapsedTimer, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard } from "./common";
 
@@ -65,10 +69,98 @@ interface RcDraft { ans: (number | null)[]; marked: boolean[]; cur: number; secs
 /** One RC set: answering it, then reviewing it on the same page. */
 function Player({ set, reviewId }: { set: RcSet; reviewId: string | null }) {
   const { state } = useStore();
-  const [attemptId, setAttemptId] = useState<string | null>(() => (reviewId && state.rcAttempts.some((a) => a.id === reviewId && a.set === set.id) ? reviewId : null));
+  // Right after a submit, a set with a model summary asks for the student's own first: the main-idea answer would give it away.
+  // The pending step is kept as a draft, so a reload or a phone switching apps comes back to it instead of a fresh set.
+  const pendingKey = "sumfor:" + set.id;
+  const [pending] = useState(() => { const id = readDraft<string>(pendingKey); return !reviewId && id && state.rcAttempts.some((a) => a.id === id) ? id : null; });
+  const [attemptId, setAttemptId] = useState<string | null>(() => pending ?? (reviewId && state.rcAttempts.some((a) => a.id === reviewId && a.set === set.id) ? reviewId : null));
+  const [writing, setWriting] = useState(!!pending);
   const attempt = attemptId ? state.rcAttempts.find((a) => a.id === attemptId) : undefined;
-  useEffect(() => { window.scrollTo(0, 0); }, [attemptId]);
-  return attempt ? <Review set={set} attempt={attempt} /> : <Attempt set={set} onDone={setAttemptId} />;
+  useEffect(() => { window.scrollTo(0, 0); }, [attemptId, writing]);
+  if (attempt && writing && set.summary) return <SummaryStep set={set} model={set.summary} attempt={attempt} onDone={() => { writeDraft(pendingKey, null); setWriting(false); }} />;
+  return attempt ? <Review set={set} attempt={attempt} /> : <Attempt set={set} onDone={(id) => { setAttemptId(id); if (set.summary) { writeDraft(pendingKey, id); setWriting(true); } }} />;
+}
+
+interface SummaryDraft { text: string; tone: string }
+
+/** Step 2e: write a summary, compare it with the model, tick what you got, then go on to the answers. */
+function SummaryStep({ set, model, attempt, onDone }: { set: RcSet; model: RcSummary; attempt: RcAttempt; onDone: () => void }) {
+  const { update } = useStore();
+  const key = "sum:" + attempt.id;
+  const [saved] = useState(() => readDraft<SummaryDraft>(key));
+  const [text, setText] = useState(saved?.text ?? "");
+  const [tone, setTone] = useState(saved?.tone ?? "");
+  const [comparing, setComparing] = useState(false);
+  const [checks, setChecks] = useState([false, false, false, false]);
+  const [pane, setPane] = useState<"p" | "q">("q");
+  const [id] = useState(uid);
+  useEffect(() => { if (!comparing) writeDraft(key, text.trim() || tone ? ({ text, tone } satisfies SummaryDraft) : null); }, [key, text, tone, comparing]);
+  const n = words(text);
+  const s = scoreRc(set, attempt.ans);
+  const compare = () => { setComparing(true); setPane("q"); window.scrollTo(0, 0); };
+  const finish = (save: boolean) => {
+    writeDraft(key, null);
+    if (save) update((st) => { if (!summaryFor(st, attempt.id)) recordRcSummary(st, id, set, attempt.id, text, tone, checks, todayIso(), Date.now()); });
+    onDone();
+  };
+
+  return (
+    <Page className="gap-6 lg:gap-8">
+      <PlayerBar kicker="Summary, before the answers" title={set.title}>
+        <Button variant="ghost" size="sm" onClick={() => finish(false)}>Skip to the answers</Button>
+      </PlayerBar>
+      <p className="measure text-base text-muted-foreground">
+        Set saved: {s.c} of {set.questions.length} right. {comparing
+          ? "Compare yours with the model, then tick what you got. Be strict: the ticks are your score."
+          : `Before the answers, sum up the passage in ${SUMMARY_MAX_WORDS} words or fewer: what the author claims, and how strongly.`}
+      </p>
+
+      <PaneSwitch pane={pane} setPane={setPane} q={comparing ? "Compare" : "Your summary"} />
+
+      <Split pane={pane}>
+        <Passage set={set} highlight={[]} wordMode={false} />
+        {comparing ? (
+          <>
+            <SummaryPair text={text.trim()} tone={tone} model={model} />
+            <Checklist checks={checks} onChange={setChecks} model={model} />
+            <div><Button onClick={() => finish(true)}>Save and see the answers</Button></div>
+          </>
+        ) : (
+          <>
+            <WriteCard text={text} onText={setText} tone={tone} onTone={setTone} />
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              <Button disabled={n < 5} onClick={compare}>Compare with the model</Button>
+              {n < 5 && <span className="text-sm text-muted-foreground">Write at least 5 words first.</span>}
+            </div>
+            {saved && <p className="text-sm text-muted-foreground">Your summary from earlier is back.</p>}
+          </>
+        )}
+      </Split>
+    </Page>
+  );
+}
+
+/** In the review: the summary written after this attempt beside the model, or the model alone. Folded, so it does not push the questions down. */
+function SummaryReview({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
+  const { state } = useStore();
+  if (!set.summary) return null;
+  const mine = summaryFor(state, attempt.id);
+  return (
+    <Collapsible className="group rounded-lg bg-card">
+      <CollapsibleTrigger className="flex min-h-11 w-full items-center justify-between gap-3 rounded-lg px-5 py-4 text-left">
+        <span className="text-base font-semibold">{mine ? `Your summary and the model, ${summaryScore(mine.checks)} of 4` : "Model summary"}</span>
+        <ChevronDown className="size-5 shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-180 motion-reduce:transition-none" aria-hidden />
+      </CollapsibleTrigger>
+      <CollapsibleContent className="px-5 pb-5">
+        {mine ? <SummaryPair text={mine.text} tone={mine.tone} model={set.summary} /> : (
+          <div className="flex flex-col gap-1.5">
+            <ModelSummary s={set.summary} />
+            <p className="text-sm text-muted-foreground">Tone: {set.summary.tone}. The highlighted words are the claim and the qualifier a good summary keeps.</p>
+          </div>
+        )}
+      </CollapsibleContent>
+    </Collapsible>
+  );
 }
 
 function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) {
@@ -179,6 +271,7 @@ function Review({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
       </PlayerBar>
 
       <Summary set={set} attempt={attempt} />
+      <SummaryReview set={set} attempt={attempt} />
 
       <PaneSwitch pane={pane} setPane={setPane} q={`Question ${cur + 1} of ${n}`} />
 

@@ -181,7 +181,13 @@
         ],
         "answer": 3
       }
-    ]
+    ],
+    "summary": {
+      "model": "Warming may be making some animals smaller, but what causes the trend and whether it helps them remain uncertain.",
+      "tone": "analytical",
+      "claim": "making some animals smaller",
+      "qualifier": "remain uncertain"
+    }
   },
   {
     "id": "sci-wood",
@@ -365,7 +371,13 @@
         ],
         "answer": 2
       }
-    ]
+    ],
+    "summary": {
+      "model": "Underground fungal networks between trees are real, but popular claims that trees cooperate and nurture through them ran well ahead of the evidence.",
+      "tone": "critical",
+      "claim": "ran well ahead of the evidence",
+      "qualifier": "are real, but"
+    }
   },
   {
     "id": "sci-placebo",
@@ -549,7 +561,13 @@
         ],
         "answer": 1
       }
-    ]
+    ],
+    "summary": {
+      "model": "Placebo improvement partly reflects natural recovery, but expectation has real effects on symptoms the brain regulates, so the context of care is part of treatment.",
+      "tone": "analytical",
+      "claim": "expectation has real effects",
+      "qualifier": "on symptoms the brain regulates"
+    }
   },
   {
     "id": "sci-microbiome",
@@ -732,7 +750,13 @@
         ],
         "answer": 3
       }
-    ]
+    ],
+    "summary": {
+      "model": "Gut microbes matter to health, but most claimed effects show correlation rather than cause; proven treatments exist only where the mechanism is understood.",
+      "tone": "sceptical",
+      "claim": "correlation rather than cause",
+      "qualifier": "only where the mechanism is understood"
+    }
   },
   {
     "id": "sci-leapsecond",
@@ -915,7 +939,13 @@
         ],
         "answer": 0
       }
-    ]
+    ],
+    "summary": {
+      "model": "Leap seconds, keeping atomic time in step with Earth, are being dropped because they trouble computers: a sensible trade, though not without costs.",
+      "tone": "neutral",
+      "claim": "dropped because they trouble computers",
+      "qualifier": "though not without costs"
+    }
   },
   {
     "id": "sci-dinobirds",
@@ -1098,7 +1128,13 @@
         ],
         "answer": 3
       }
-    ]
+    ],
+    "summary": {
+      "model": "Fossil evidence overturned long-held doubts and showed birds are not just descended from dinosaurs but are living dinosaurs, though why they alone survived is debated.",
+      "tone": "neutral",
+      "claim": "birds are not just descended from dinosaurs but are living dinosaurs",
+      "qualifier": "though why they alone survived is debated"
+    }
   },
   {
     "id": "sci-ozone",
@@ -1282,6 +1318,12 @@
         ],
         "answer": 1
       }
-    ]
+    ],
+    "summary": {
+      "model": "The ozone threat was met by a swift, flexible treaty that worked, helped by conditions that may not carry over to climate change.",
+      "tone": "appreciative",
+      "claim": "met by a swift, flexible treaty that worked",
+      "qualifier": "may not carry over"
+    }
   }
 ]

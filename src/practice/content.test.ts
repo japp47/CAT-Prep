@@ -3,7 +3,7 @@ import { OPTION_TRAPS } from "../data/traps";
 import { VARC } from "../sections/varc";
 import { CR_ITEMS } from "./cr";
 import { RC_SETS } from "./rc";
-import { CR_TYPE, CR_TYPES, RC_QTYPE, setWords, words } from "./types";
+import { CR_TYPE, CR_TYPES, RC_QTYPE, setWords, SUMMARY_MAX_WORDS, TONES, words } from "./types";
 import { VA_PARAS } from "./va/paragraphs";
 
 describe("RC library", () => {
@@ -32,6 +32,20 @@ describe("RC library", () => {
         expect(r.options).toHaveLength(4);
         expect(r.answer).toBeLessThan(4);
       }
+    });
+    // The model summary must pass the same four checks the student ticks (practice/summary.ts).
+    it(`${s.id} has a model summary that passes its own checklist`, () => {
+      const m = s.summary;
+      expect(m, "every set needs a model summary").toBeDefined();
+      if (!m) return;
+      expect(words(m.model)).toBeLessThanOrEqual(SUMMARY_MAX_WORDS);
+      expect(TONES).toContain(m.tone);
+      // The claim and qualifier rows of the checklist quote these, and the model highlights them.
+      expect(m.model.toLowerCase()).toContain(m.claim.toLowerCase());
+      expect(m.model.toLowerCase()).toContain(m.qualifier.toLowerCase());
+      expect(m.claim.toLowerCase()).not.toBe(m.qualifier.toLowerCase());
+      // No figures: a summary keeps the argument and leaves out the numbers.
+      expect(m.model).not.toMatch(/\d/);
     });
   }
   it("spreads right answers across A to D", () => {
