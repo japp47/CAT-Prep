@@ -7,7 +7,7 @@ const EXAMS = ["All", ...Array.from(new Set(UPDATES.map((u) => u.exam)))];
 
 export default function Updates() {
   const [f, setF] = useState("All");
-  const list = UPDATES.filter((u) => f === "All" || u.exam === f);
+  const list = [...UPDATES].sort((a, b) => b.date.localeCompare(a.date)).filter((u) => f === "All" || u.exam === f);
   return (
     <Page width="read">
       <PageHeader title="Important updates">
