@@ -4,13 +4,14 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { daysLeft, examLine, PhaseBar } from "../components/Countdown";
-import { LinkButton, Page, Section, TextLink } from "../components/kit";
+import { Ext, LinkButton, Page, Section, TextLink } from "../components/kit";
 import { CAT_PATTERN, CHECKED_ON, EXAM_CONFIRMED, EXAM_NAME, PHASES, phaseOf } from "../data/exam";
+import { REPO_URL } from "../data/site";
 import { UPDATES } from "../data/updates";
 import { addDays, clamp, diffDays, longDate, mediumDate, shortDate, todayIso, weekStart } from "../lib/date";
 import { useStore } from "../lib/store";
 import { budgetFor, buildDay, doneMinutes } from "../planner/engine";
-import { LIVE_SECTIONS } from "../sections";
+import { LIVE_SECTIONS, SECTIONS } from "../sections";
 import { rcOfDay } from "../practice/daily";
 import { dueRedo } from "../practice/redo";
 import { activityDays } from "../practice/streak";
@@ -18,7 +19,7 @@ import { GENRES } from "../practice/types";
 import { DAILY_MIX } from "../practice/va/build";
 import { StreakBadge } from "../components/StreakBadge";
 
-const STATUS = { official: ["official", "text-success"], expected: ["expected", "text-warning"], tip: ["tip", "text-primary"] } as const;
+const STATUS = { official: ["Official", "success"], expected: ["Expected", "warning"], tip: ["Tip", "secondary"] } as const;
 const WEEK = ["M", "T", "W", "T", "F", "S", "S"];
 
 type Leads = Record<string, [string, string]>;
@@ -41,10 +42,13 @@ function useLeads() {
  * with placeholder words of the same total length, so it wraps to about as many lines and nothing below it moves.
  */
 function LeadPlaceholder({ chars }: { chars: number }) {
-  const filler = "xxxxxxx ".repeat(Math.max(1, Math.round(chars / 8))).trim();
+  const turnChars = Math.round(chars * 0.32);
+  const body = "xxxxxxx ".repeat(Math.max(1, Math.round((chars - turnChars) / 8))).trim();
+  const turn = "xxxxxxx ".repeat(Math.max(1, Math.round(turnChars / 8))).trim();
   return (
     <p className="measure text-reading" aria-hidden>
-      <span className="animate-pulse rounded-sm bg-muted text-transparent [box-decoration-break:clone] [-webkit-box-decoration-break:clone] motion-reduce:animate-none">{filler}</span>
+      <span className="block line-clamp-4 animate-pulse rounded-sm bg-muted text-transparent [box-decoration-break:clone] [-webkit-box-decoration-break:clone] motion-reduce:animate-none">{body}</span>
+      <span className="block animate-pulse rounded-sm bg-muted text-transparent [box-decoration-break:clone] [-webkit-box-decoration-break:clone] motion-reduce:animate-none">{turn}</span>
     </p>
   );
 }
@@ -62,12 +66,12 @@ function TodaysPassage() {
   const tried = state.rcAttempts.filter((a) => a.set === rc.id && a.d === t).pop();
   const to = tried ? `/practice/rc/${rc.id}?review=${tried.id}` : `/practice/rc/${rc.id}`;
   return (
-    <article aria-labelledby="todays-passage" className="flex min-w-0 flex-col gap-5 rounded-xl bg-card px-6 py-7 sm:px-9 sm:py-9">
+    <article aria-labelledby="todays-passage" className="flex min-w-0 flex-col gap-5 rounded-xl bg-card px-6 py-7 sm:px-9 sm:py-9 xl:translate-y-4">
       <h2 id="todays-passage" className="font-serif text-[clamp(1.5rem,1.25rem+0.9vw,2rem)] leading-tight font-semibold tracking-[-0.01em]">
         <Link to={to} className="hover:text-primary">{rc.title}</Link>
       </h2>
       {leads
-        ? body && <p className="measure text-reading">{body}{turn && <> <mark className="hl text-inherit">{turn}</mark></>}</p>
+        ? body && <p className="measure text-reading"><span className="block line-clamp-4">{body}</span>{turn && <span className="block"><mark className="hl text-inherit">{turn}</mark></span>}</p>
         : <LeadPlaceholder chars={rc.lead} />}
       <p className="text-base text-muted-foreground">
         Today's RC: {GENRES[rc.genre].toLowerCase()}, {rc.difficulty}, {rc.words} words and {rc.questions} questions, about 7 minutes. The same passage for everyone today, and a new one tomorrow.
@@ -80,16 +84,125 @@ function TodaysPassage() {
 
 function Hero({ isNew }: { isNew: boolean }) {
   return (
-    <header className="grid items-start gap-x-14 gap-y-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
-      <div className="flex max-w-[640px] flex-col gap-5 xl:pt-6">
-        {/* No-break spaces keep "one day at a time" and the exam name whole, so the headline never breaks mid-phrase. */}
-        <h1 className="text-[clamp(2rem,0.9rem+1.9vw,2.75rem)] leading-[1.05] font-bold tracking-[-0.035em]">Prepare for {EXAM_NAME.replace(/ /g, "\u00a0")}, {"one\u00a0day\u00a0at\u00a0a\u00a0time."}</h1>
-        <p className="text-lg leading-relaxed text-foreground/80">A free study plan that fits the time you have, with original practice and plain guidance. No sign-up. Everything stays on your device.</p>
-        <div className="flex flex-wrap gap-3"><LinkButton to="/today" size="lg" variant="secondary">Open today's plan</LinkButton></div>
-        {isNew && <p className="text-base text-muted-foreground">New here? <TextLink to="/guides/start-here">Read the start guide</TextLink>, about 4 minutes.</p>}
+    <header className="grid items-start gap-x-10 gap-y-8 xl:min-h-[calc(100svh-10.5rem)] xl:items-center xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] 2xl:gap-x-14">
+      <div className="flex min-w-0 flex-col gap-5 xl:pt-3">
+        {/* Keep the exam name together; let the rest of the headline wrap naturally. */}
+        <h1 className="max-w-[18ch] text-[clamp(2.25rem,1rem+2.5vw,3.5rem)] leading-[1.02] font-bold tracking-[-0.04em] xl:-translate-y-14">Prepare for {EXAM_NAME.replace(/ /g, "\u00a0")}, one day at a time.</h1>
+        <p className="max-w-[52ch] text-lg leading-relaxed text-foreground/80">A free CAT coach with a plan that fits your day, original practice, and clear explanations. No sign-up; your progress stays on this device.</p>
+        <div className="flex flex-wrap gap-4">
+          {isNew ? <>
+            <LinkButton to="/guides/start-here" size="lg" className="min-w-40">Start here</LinkButton>
+            <LinkButton to="/today" size="lg" variant="outline" className="min-w-48">Open today's plan</LinkButton>
+          </> : <>
+            <LinkButton to="/today" size="lg" className="min-w-48">Open today's plan</LinkButton>
+            <LinkButton to="/guides/start-here" size="lg" variant="outline" className="min-w-40">Start here</LinkButton>
+          </>}
+        </div>
+        <div className="mt-2 translate-y-0 border-t border-border/70 pt-6 xl:translate-y-10"><Countdown /></div>
       </div>
       <TodaysPassage />
     </header>
+  );
+}
+
+/** Capabilities students can use across the study cycle, rather than a count of the content library. */
+function StudyTools() {
+  const items = [
+    { title: "A plan that fits today", text: "Set the time you have. Your timetable puts core work first and carries unfinished work forward.", to: "/plan", link: "Shape your plan" },
+    { title: "Learn from every option", text: "See why an answer is right, why the others miss, and what trap made them tempting.", to: "/practice", link: "Explore practice" },
+    { title: "Bring mistakes back", text: "Missed questions return on a spaced schedule so you can practise them again while they still matter.", to: "/practice/redo", link: "See your redo queue" },
+  ];
+  return (
+    <Section title="A better way to build consistency" description="The tools connect your daily practice, review, and next step.">
+      <div className="grid gap-3 md:grid-cols-3">
+        {items.map((item) => (
+          <article key={item.title} className="flex min-h-48 flex-col gap-3 rounded-xl bg-card p-5 sm:p-6">
+            <h3 className="text-heading font-semibold">{item.title}</h3>
+            <p className="text-base leading-relaxed text-muted-foreground">{item.text}</p>
+            <TextLink to={item.to} className="mt-auto pt-1">{item.link}</TextLink>
+          </article>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+/** Every CAT section has a place on the home page; cards update as section status and practice types change. */
+function SectionOverview() {
+  return (
+    <Section title="Prepare across all three sections" description="Start with VARC today. DILR and Quant are part of the same roadmap and will open here as they launch.">
+      <div className="grid gap-3 lg:grid-cols-3">
+        {SECTIONS.map((sec) => {
+          const live = sec.status === "live";
+          return (
+            <article key={sec.id} className={cn("flex min-h-52 flex-col gap-4 rounded-xl p-5 sm:p-6", live ? "bg-card" : "border border-border bg-background")}>
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex flex-col gap-1">
+                  <h3 className="text-heading font-semibold">{sec.short}</h3>
+                  <p className="text-sm text-muted-foreground">{sec.name}</p>
+                </div>
+                <Badge variant={live ? "highlight" : "secondary"}>{live ? "Ready" : "Coming soon"}</Badge>
+              </div>
+              <p className="text-base text-foreground/80">{sec.tagline}</p>
+              <ul className="flex flex-wrap gap-2" aria-label={`${sec.short} practice types`}>
+                {sec.practiceTypes.slice(0, 4).map((type) => <li key={type} className="rounded-full bg-background px-2.5 py-1 text-sm text-muted-foreground">{type}</li>)}
+              </ul>
+              <Link to={`/${sec.id}`} className="mt-auto w-fit text-base font-semibold text-primary underline decoration-primary/40 underline-offset-4 hover:decoration-primary">
+                {live ? `Explore ${sec.short}` : `See ${sec.short} roadmap`}
+              </Link>
+            </article>
+          );
+        })}
+      </div>
+    </Section>
+  );
+}
+
+function About() {
+  return (
+    <Section id="about" className="scroll-mt-24" title="A CAT study space built around your day" description="99ile brings planning, original practice, and review together so you can keep moving without piecing your prep together across tabs.">
+      <div className="flex flex-wrap items-center justify-between gap-5 rounded-xl bg-card p-5 sm:p-6">
+        <p className="measure text-base leading-relaxed text-foreground/80">Start with the time you have, work through a clear daily plan, and revisit the questions that challenged you. No account is needed; your progress is stored in this browser.</p>
+        <div className="flex shrink-0 flex-wrap gap-4">
+          <LinkButton to="/guides/start-here" variant="outline">How to get started</LinkButton>
+          <Ext href={REPO_URL} className="self-center text-base font-medium text-primary underline decoration-primary/40 underline-offset-4 hover:decoration-primary">View the project</Ext>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+function LatestUpdates() {
+  const latest = [...UPDATES].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 4);
+  const [featured, ...rest] = latest;
+  if (!featured) return null;
+  const [featuredLabel, featuredVariant] = STATUS[featured.status];
+  return (
+    <Section title="Latest updates" action={<TextLink to="/updates">All updates</TextLink>}>
+      <div className="flex flex-col gap-2">
+        <article className="flex flex-col gap-3 rounded-xl bg-card p-5 sm:p-6">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="secondary">{featured.exam}</Badge>
+            <Badge variant={featuredVariant}>{featuredLabel}</Badge>
+            <span className="text-sm text-muted-foreground">{shortDate(featured.date)}</span>
+          </div>
+          <h3 className="text-heading font-semibold leading-snug">{featured.title}</h3>
+          <p className="line-clamp-2 text-base leading-relaxed text-muted-foreground">{featured.body}</p>
+          <TextLink to="/updates" className="w-fit pt-1">Read the update</TextLink>
+        </article>
+        {rest.length > 0 && <ul className="flex flex-col gap-1" aria-label="More recent updates">
+          {rest.map((u) => {
+            const [label, variant] = STATUS[u.status];
+            return <li key={u.id}>
+              <Link to="/updates" className="group flex flex-col gap-2 rounded-lg px-3 py-3 transition-colors hover:bg-card sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                <span className="min-w-0 text-base font-semibold leading-snug group-hover:text-primary">{u.title}</span>
+                <span className="flex shrink-0 items-center gap-2 text-sm text-muted-foreground"><Badge variant={variant}>{label}</Badge>{shortDate(u.date)}</span>
+              </Link>
+            </li>;
+          })}
+        </ul>}
+      </div>
+    </Section>
   );
 }
 
@@ -167,27 +280,14 @@ export default function Home() {
   const total = CAT_PATTERN.reduce((a, s) => ({ q: a.q + s.questions, m: a.m + s.minutes }), { q: 0, m: 0 });
 
   return (
-    <Page className="gap-14 lg:gap-16">
+    <Page className="max-w-[1440px] gap-14 lg:gap-16">
       <Hero isNew={isNew} />
-      <Countdown />
+      <SectionOverview />
+      <StudyTools />
       <TodayPanel />
 
       <div className="grid gap-14 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:gap-16">
-        <Section title="Latest updates" action={<TextLink to="/updates">All updates</TextLink>}>
-          <ul className="-mx-3 flex flex-col gap-1">
-            {UPDATES.slice(0, 4).map((u) => {
-              const [label, cls] = STATUS[u.status];
-              return (
-                <li key={u.id}>
-                  <Link to="/updates" className="group flex flex-col gap-1 rounded-md px-3 py-3 hover:bg-card">
-                    <span className="text-base text-muted-foreground">{shortDate(u.date)}, {u.exam}, <span className={cn("font-medium", cls)}>{label}</span></span>
-                    <span className="text-base font-semibold group-hover:text-primary">{u.title}</span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </Section>
+        <LatestUpdates />
         <Section title="The exam" action={<TextLink to="/exams">Pattern and marking</TextLink>}>
           <div className="flex flex-col gap-1 rounded-lg bg-card p-2">
             {CAT_PATTERN.map((s) => (
@@ -206,6 +306,8 @@ export default function Home() {
           <p className="text-sm text-muted-foreground sm:hidden">+3 for a right answer, −1 for a wrong MCQ, no penalty on TITA.</p>
         </Section>
       </div>
+
+      <About />
 
       <p className="measure text-base text-muted-foreground">Resources checked on {CHECKED_ON}. The {EXAM_NAME} date is an estimate until the conducting IIM announces it. Score benchmarks come from coaching institutes. Not affiliated with the IIMs or any coaching institute. Avoid pirated book PDFs; the papers and free mocks listed here are legitimately free.</p>
     </Page>
