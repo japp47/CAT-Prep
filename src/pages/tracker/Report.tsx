@@ -6,13 +6,15 @@ import { useStore } from "../../lib/store";
 import { sectionByLabel } from "../../sections";
 import { CR_CATALOG, RC_CATALOG } from "../../practice/catalog.gen";
 import { useContent } from "../../practice/content";
+import { HABIT_WINDOW, summaryHabits } from "../../practice/summary";
 import { accuracy, byPracticeType, crByKind, focusLines, MIN_TOTAL, paceTrend, rcByDifficulty, rcByGenre, rcByQuestionType, topTraps, type Row } from "../../practice/report";
 
 /** CAT has about 2,000 words of RC; reading them in 10 minutes leaves time for the questions. */
 const EXAM_PACE = 200;
 
 /** Accuracy bars, one row per group. Bars under 60% are red, and every row says how many questions it rests on. */
-function AccuracyList({ title, rows, empty }: { title: string; rows: Row[]; empty: string }) {
+/** `unit` names what each row counts; null hides the count when every row counts the same thing, as the title already says. */
+function AccuracyList({ title, rows, empty, unit = ["Q", "Qs"] }: { title: string; rows: Row[]; empty: string; unit?: [string, string] | null }) {
   return (
     <div className="flex min-w-0 flex-col gap-3">
       <h3 className="text-base font-semibold">{title}</h3>
@@ -25,7 +27,7 @@ function AccuracyList({ title, rows, empty }: { title: string; rows: Row[]; empt
                 <span className="leading-snug">{r.label}</span>
                 <span className="h-2.5 overflow-hidden rounded-full bg-secondary"><span className={cn("block h-full rounded-full", pct !== null && pct < 60 ? "bg-danger" : "bg-primary")} style={{ width: (pct ?? 0) + "%" }} /></span>
                 <span className="text-right leading-tight">
-                  {pct === null ? <span className="text-sm text-muted-foreground">None yet</span> : <><b className="font-semibold">{pct}%</b><span className="block text-sm text-muted-foreground">{r.attempted} Q{r.attempted === 1 ? "" : "s"}</span></>}
+                  {pct === null ? <span className="text-sm text-muted-foreground">None yet</span> : <><b className="font-semibold">{pct}%</b>{unit && <span className="block text-sm text-muted-foreground">{r.attempted} {unit[r.attempted === 1 ? 0 : 1]}</span>}</>}
                 </span>
               </li>
             );
@@ -63,6 +65,7 @@ export function Report({ sec }: { sec: string }) {
   const crKinds = varc ? crByKind(state.crAttempts, CR_CATALOG) : [];
   const pace = paceTrend(state.speedRuns);
   const lines = varc ? focusLines({ types, genres, traps, pace, examPace: EXAM_PACE }) : [];
+  const habits = summaryHabits(state.summaries);
 
   return (
     <div className="flex flex-col gap-12">
@@ -96,6 +99,22 @@ export function Report({ sec }: { sec: string }) {
           {varc && <AccuracyList title="Critical reasoning, by kind" rows={crKinds} empty="Answer a critical reasoning drill in Practice and its kinds of question appear here." />}
         </div>
       </Section>
+
+      {varc && (
+        <Section title="Summary habits" description={`How often each check was ticked in your last ${HABIT_WINDOW} summaries. The one you miss most is the habit to work on.`}
+          action={habits.count > 0 ? <TextLink to="/journal">Open your reading journal</TextLink> : undefined}>
+          {habits.count > 0 ? (
+            <div className="flex flex-col gap-5 rounded-lg bg-card p-5 sm:p-6">
+              {habits.weakest && <p className="measure text-base"><span className="hl">{habits.weakest}</span></p>}
+              <AccuracyList title={`Checks ticked, last ${habits.count}`} rows={habits.rows} empty="" unit={null} />
+            </div>
+          ) : (
+            <Empty action={<LinkButton to="/practice" variant="secondary">Go to Practice</LinkButton>}>
+              No summaries yet. After any RC set you are asked to sum up the passage in 25 words; your habits show here after the first one.
+            </Empty>
+          )}
+        </Section>
+      )}
 
       {varc && (
         <Section title="Reading pace" description="Words a minute in your reading speed tests. Only runs with both recall questions right count, because speed without recall proves nothing.">

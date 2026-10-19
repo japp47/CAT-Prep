@@ -141,7 +141,7 @@ export function Segmented<T extends string>({ value, onChange, options, label, c
 export function LogList({ children, empty }: { children: ReactNode[]; empty: ReactNode }) {
   return children.length ? <ul className="flex flex-col gap-1 rounded-lg bg-card p-1.5">{children}</ul> : <Empty>{empty}</Empty>;
 }
-type Logged = "practice" | "mocks" | "errors" | "vocab";
+type Logged = "practice" | "mocks" | "errors" | "vocab" | "summaries";
 /** Deletes a logged entry at once and offers Undo for a few seconds, so a slip costs nothing. */
 export function useDeleteWithUndo() {
   const { state, update } = useStore();

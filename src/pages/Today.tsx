@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
-import { ChevronDown, ChevronLeft, ChevronRight, Timer as TimerIcon } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, PenLine, Timer as TimerIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -9,6 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Progress } from "@/components/ui/progress";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
+import { ArticleSummarySheet } from "../components/ArticleSummary";
 import { phaseCaption } from "../components/Countdown";
 import { ErrorText, Ext, Field, LinkButton, LinkButtons, Meta, Page, PageHeader, Section, TextLink } from "../components/kit";
 import { NativeSelect } from "../components/Select";
@@ -138,6 +139,9 @@ function SectionDay({ sec, d, today }: { sec: SectionDef; d: string; today: stri
   const blocks = buildDay(sec, state, d, budget, { today });
   const ph = phaseOf(d);
   const canTick = d <= today;
+  // The reading block whose summary sheet is open, if any (step 2e, place 2).
+  const [summing, setSumming] = useState<PlacedBlock | null>(null);
+  const articleSums = state.summaries.filter((s) => s.src === "article" && s.d === d);
 
   const toggle = (b: PlacedBlock, on: boolean) => update((st) => {
     if (on) markDone(st, d, b, sec);
@@ -182,6 +186,13 @@ function SectionDay({ sec, d, today }: { sec: SectionDef; d: string; today: stri
                 </div>
                 <p className="measure text-base text-foreground/80">{b.desc}</p>
                 <LinkButtons links={b.links} />
+                {b.id === "read" && canTick && (articleSums.length ? (
+                  <p className="text-base text-success">
+                    Summary saved, {articleSums[articleSums.length - 1].checks.filter(Boolean).length} of 4 checks. <TextLink to="/journal" className="text-base">Reading journal</TextLink>
+                  </p>
+                ) : (
+                  <div><Button variant="secondary" size="sm" className="gap-1.5" onClick={() => setSumming(b)}><PenLine className="size-4" aria-hidden />Write your summary</Button></div>
+                ))}
                 {isToday && !done && (
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
                     {running ? <span className="inline-flex items-center gap-1.5 text-base text-success"><TimerIcon className="size-4" />Focus timer running</span>
@@ -215,6 +226,10 @@ function SectionDay({ sec, d, today }: { sec: SectionDef; d: string; today: stri
         </div>
       )}
       {body}
+      <ArticleSummarySheet open={!!summing} onOpenChange={(o) => { if (!o) setSumming(null); }} d={d}
+        sources={(summing?.links ?? []).filter(([, u]) => !u.startsWith("/")).map(([l]) => l)}
+        saveLabel={summing && !dm[summing.key] ? "Save and finish block" : "Save summary"}
+        onSave={(st) => { if (summing && !st.days[d]?.done?.[summing.key]) markDone(st, d, summing, sec); }} />
     </Section>
   );
 }
