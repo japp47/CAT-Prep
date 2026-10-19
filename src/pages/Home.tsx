@@ -159,16 +159,28 @@ function SectionOverview() {
 }
 
 function About() {
+  const points: [string, string][] = [
+    ["A plan that fits your day", "Tell it you have 30 minutes or 3 hours. The timetable reshapes itself, and a missed core task comes back as a catch-up."],
+    ["A reason for every wrong option", "Each wrong option names its trap, so you learn why it looked right, not only which answer was."],
+    ["Mistakes come back", "Every missed question returns after 1, 3 and 7 days, until you get it right three times in a row."],
+    ["Private and free", "No sign-up and no ads. Your progress stays in your browser, works offline, and you can back it up in Settings."],
+  ];
   return (
-    <Section id="about" className="scroll-mt-24" title="A CAT study space built around your day" description="99ile brings planning, original practice, and review together so you can keep moving without piecing your prep together across tabs.">
-      <div className="flex flex-wrap items-center justify-between gap-5 rounded-xl bg-card p-5 sm:p-6">
-        <p className="measure text-base leading-relaxed text-foreground/80">Start with the time you have, work through a clear daily plan, and revisit the questions that challenged you. No account is needed; your progress is stored in this browser.</p>
-        <div className="flex shrink-0 flex-wrap gap-4">
-          <LinkButton to="/guides/start-here" variant="outline">How to get started</LinkButton>
-          <Ext href={REPO_URL} className="self-center text-base font-medium text-primary underline decoration-primary/40 underline-offset-4 hover:decoration-primary">View the project</Ext>
-        </div>
+    <section id="about" aria-labelledby="about-h" className="grid scroll-mt-24 gap-x-14 gap-y-8 rounded-xl bg-card px-6 py-8 sm:px-9 sm:py-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+      <div className="flex flex-col gap-4">
+        <h2 id="about-h" className="text-title font-bold">About 99ile</h2>
+        <p className="measure text-lg leading-relaxed text-foreground/85">A free CAT coach built on one idea: a little every day, done well, beats a lot done once in a while. The name is the goal, the 99th percentile.</p>
+        <p className="measure text-base text-muted-foreground">Every passage and question is written for this site and checked by tests before it ships. The code is open on <Ext href={REPO_URL} className="font-medium text-primary underline decoration-primary/40 underline-offset-4 hover:decoration-primary">GitHub</Ext>.</p>
       </div>
-    </Section>
+      <dl className="flex flex-col gap-6">
+        {points.map(([title, detail]) => (
+          <div key={title} className="flex flex-col gap-1">
+            <dt className="text-heading font-semibold">{title}</dt>
+            <dd className="measure text-base text-foreground/80">{detail}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
   );
 }
 
@@ -309,7 +321,7 @@ export default function Home() {
 
       <About />
 
-      <p className="measure text-base text-muted-foreground">Resources checked on {CHECKED_ON}. The {EXAM_NAME} date is an estimate until the conducting IIM announces it. Score benchmarks come from coaching institutes. Not affiliated with the IIMs or any coaching institute. Avoid pirated book PDFs; the papers and free mocks listed here are legitimately free.</p>
+      <p className="w-full max-w-none text-base leading-relaxed text-muted-foreground">Resources checked on {CHECKED_ON}. The {EXAM_NAME} date is an estimate until the conducting IIM announces it. Score benchmarks come from coaching institutes. Not affiliated with the IIMs or any coaching institute. Avoid pirated book PDFs; the papers and free mocks listed here are legitimately free.</p>
     </Page>
   );
 }

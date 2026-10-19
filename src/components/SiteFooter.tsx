@@ -1,0 +1,45 @@
+import { Link } from "react-router-dom";
+import { SECTIONS } from "../sections";
+import Brand from "./Brand";
+import type { SiteNavItem } from "./SiteHeader";
+
+function FooterColumn({ title, items }: { title: string; items: SiteNavItem[] }) {
+  return (
+    <nav aria-label={`Footer ${title}`} className="flex flex-col items-start gap-3">
+      <h2 className="text-xs font-semibold tracking-[0.1em] text-muted-foreground uppercase">{title}</h2>
+      <ul className="flex flex-col items-start gap-1">
+        {items.map((item) => <li key={item.to}>
+          <Link to={item.to} className="inline-flex min-h-8 items-center gap-2 rounded-sm text-sm font-medium text-foreground/75 transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
+            {item.label}{item.soon && <span className="text-xs font-normal text-muted-foreground">Soon</span>}
+          </Link>
+        </li>)}
+      </ul>
+    </nav>
+  );
+}
+
+export default function SiteFooter() {
+  return (
+    <footer className="mt-10 border-t border-border/70 pt-7">
+      <div className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1.35fr_repeat(5,minmax(0,1fr))]">
+        <div className="flex max-w-64 flex-col items-start gap-4">
+          <Brand />
+          <p className="text-sm leading-relaxed text-muted-foreground">A free CAT study space for steady practice, clear review, and a plan that fits your day.</p>
+        </div>
+        <FooterColumn title="Study" items={[{ to: "/today", label: "Today" }, { to: "/practice", label: "Practice" }, { to: "/plan", label: "Plan and time" }]} />
+        <FooterColumn title="Sections" items={SECTIONS.map((section) => ({ to: "/" + section.id, label: section.short, soon: section.status === "soon" }))} />
+        <FooterColumn title="Progress" items={[{ to: "/progress", label: "Overview" }, { to: "/errors", label: "Error log" }, { to: "/words", label: "Words" }, { to: "/journal", label: "Reading journal" }]} />
+        <FooterColumn title="Explore" items={[{ to: "/updates", label: "Updates" }, { to: "/exams", label: "CAT and other exams" }, { to: "/guides", label: "Guides" }, { to: "/stories", label: "Topper stories" }, { to: "/roadmap", label: "What's coming" }]} />
+        <div className="flex flex-col items-start gap-3">
+          <h2 className="text-xs font-semibold tracking-[0.1em] text-muted-foreground uppercase">Support</h2>
+          <Link to="/settings" className="inline-flex min-h-8 items-center rounded-sm text-sm font-medium text-foreground/75 transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">Settings and backup</Link>
+          <p className="text-sm text-muted-foreground">Contact &amp; support<br />Coming soon</p>
+        </div>
+      </div>
+      <div className="mt-6 flex flex-col gap-2 border-t border-border/70 py-4 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+        <p>© {new Date().getFullYear()} 99ile</p>
+        <p>Free CAT preparation. Your progress stays in this browser.</p>
+      </div>
+    </footer>
+  );
+}
