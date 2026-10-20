@@ -140,7 +140,7 @@ export default function Layout() {
         {!sidebarCollapsed && <p className="px-3 text-sm text-muted-foreground">Free and open. Your data stays in this browser.</p>}
       </aside>
 
-      <main id="main" className={cn("min-w-0 px-gutter pt-6 pb-28 lg:pt-12 lg:pb-8", landing && "lg:pt-8", run && "pb-44 lg:pb-36")}>
+      <main id="main" className={cn("min-w-0 px-gutter pt-6 pb-[calc(4rem+env(safe-area-inset-bottom))] lg:pt-12 lg:pb-8", landing && "lg:pt-8", run && "pb-44 lg:pb-36")}>
         <Suspense fallback={<PageSkeleton />}><Outlet /></Suspense>
         <SiteFooter />
       </main>

@@ -172,23 +172,23 @@ function SectionDay({ sec, d, today }: { sec: SectionDef; d: string; today: stri
           const core = b.pri === 1;
           const tickId = "tick-" + sec.id + "-" + b.key;
           return (
-            <li key={b.key} className={cn("relative grid grid-cols-[1.5rem_minmax(0,1fr)] gap-x-3.5 gap-y-1 overflow-hidden rounded-lg bg-card py-4 pr-4 pl-5 sm:pr-6", core && !done && "before:absolute before:inset-y-0 before:left-0 before:w-1.5 before:bg-highlight")}>
+            <li key={b.key} className={cn("relative grid grid-cols-[1.5rem_minmax(0,1fr)] gap-x-3 gap-y-1 overflow-hidden rounded-lg bg-card py-3 pr-3 pl-4 sm:gap-x-3.5 sm:py-4 sm:pr-6 sm:pl-5", core && !done && "before:absolute before:inset-y-0 before:left-0 before:w-1.5 before:bg-highlight")}>
               {canTick ? <Checkbox id={tickId} checked={done} onCheckedChange={(v) => toggle(b, v === true)} className="mt-1" /> : <span />}
-              <div className={cn("flex min-w-0 flex-col gap-2", done && "opacity-60")}>
+              <div className={cn("flex min-w-0 flex-col gap-1.5 sm:gap-2", done && "opacity-60")}>
                 <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
                   {/* The block's name is the checkbox's label, so tapping it ticks the block too. */}
                   {canTick
-                    ? <label htmlFor={tickId} className={cn("cursor-pointer text-lg font-semibold", done && "line-through decoration-muted-foreground")}>{b.name}</label>
-                    : <span className="text-lg font-semibold">{b.name}</span>}
-                  <span className="text-base text-muted-foreground tabular-nums">{b.mins} min</span>
+                    ? <label htmlFor={tickId} className={cn("cursor-pointer text-base font-semibold sm:text-lg", done && "line-through decoration-muted-foreground")}>{b.name}</label>
+                    : <span className="text-base font-semibold sm:text-lg">{b.name}</span>}
+                  <span className="text-sm text-muted-foreground tabular-nums sm:text-base">{b.mins} min</span>
                   {core && <Badge variant="highlight">Core</Badge>}
                   {b.pri === 9 && <Badge variant="secondary">Extra time</Badge>}
                   {b.carryFrom && <Badge variant="warning">Catch-up</Badge>}
                 </div>
-                <p className="measure text-base text-foreground/80">{b.desc}</p>
+                <p className="measure text-sm text-foreground/80 sm:text-base">{b.desc}</p>
                 <LinkButtons links={b.links} />
                 {b.id === "read" && canTick && (articleSums.length ? (
-                  <p className="text-base text-success">
+                  <p className="text-sm text-success sm:text-base">
                     Summary saved, {articleSums[articleSums.length - 1].checks.filter(Boolean).length} of 4 checks. <TextLink to="/journal" className="text-base">Reading journal</TextLink>
                   </p>
                 ) : (
@@ -196,7 +196,7 @@ function SectionDay({ sec, d, today }: { sec: SectionDef; d: string; today: stri
                 ))}
                 {isToday && !done && (
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-                    {running ? <span className="inline-flex items-center gap-1.5 text-base text-success"><TimerIcon className="size-4" />Focus timer running</span>
+                    {running ? <span className="inline-flex items-center gap-1.5 text-sm text-success sm:text-base"><TimerIcon className="size-4" />Focus timer running</span>
                       : focus.run ? <Meta>Another block's timer is running</Meta>
                       : <Button variant="link" size="sm" className="gap-1.5"
                           onClick={() => focus.start({ key: b.key, name: sec.short + ": " + b.name, sec: sec.id, d, target: b.mins, log: !!b.kind, carryFrom: b.carryFrom })}>
@@ -206,7 +206,7 @@ function SectionDay({ sec, d, today }: { sec: SectionDef; d: string; today: stri
                 )}
                 {done && timed > 0 && <Meta>Timed {timed} of {b.mins} min.</Meta>}
                 {canTick && !done && b.kind && <LogForm sec={sec} b={b} d={d} />}
-                {done && b.kind && <p className="text-base text-success">Logged and done.</p>}
+                {done && b.kind && <p className="text-sm text-success sm:text-base">Logged and done.</p>}
               </div>
             </li>
           );
@@ -218,12 +218,12 @@ function SectionDay({ sec, d, today }: { sec: SectionDef; d: string; today: stri
   return (
     <Section
       title={<>{sec.short}{blocks.length > 0 && ph.kind === "phase" && <span className="font-normal text-muted-foreground">, {ph.phase.name} phase</span>}</>}
-      action={<div className="flex items-center gap-3"><TimeControl sec={sec} d={d} /><TextLink to={"/" + sec.id} className="text-base">Resources</TextLink></div>}>
+      action={<div className="flex w-full items-center justify-between gap-3 sm:w-auto sm:justify-end"><TimeControl sec={sec} d={d} /><TextLink to={"/" + sec.id} className="text-sm sm:text-base">Resources</TextLink></div>}>
       {blocks.length > 0 && <Meta className="-mt-2">{blocks.length} block{blocks.length === 1 ? "" : "s"}, {total} min, {doneCount} done{timedTotal > 0 ? `, ${timedTotal} min timed` : ""}</Meta>}
       {carry && (
-        <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-warning-soft px-4 py-3 text-base">
+        <div className="flex flex-col items-start gap-2 rounded-lg bg-warning-soft px-4 py-3 text-sm sm:flex-row sm:items-center sm:justify-between sm:text-base">
           <span>Catch-up added from {shortDate(carry.date)}: {carry.block.name}.</span>
-          <Button variant="link" size="sm" onClick={() => update((st) => { ((st.days[carry.date] ??= {}).dismiss ??= {})[sec.id] = 1; })}>Skip it</Button>
+          <Button variant="link" size="sm" className="self-end sm:self-auto" onClick={() => update((st) => { ((st.days[carry.date] ??= {}).dismiss ??= {})[sec.id] = 1; })}>Skip it</Button>
         </div>
       )}
       {body}
@@ -256,8 +256,8 @@ function Week({ d, today, onPick }: { d: string; today: string; onPick: (d: stri
   });
   return (
     <Section title="This week">
-      <div className="flex flex-col gap-4 rounded-lg bg-card p-5">
-        <p className="text-base">Done <b className="font-semibold tabular-nums">{done}</b> of <b className="font-semibold tabular-nums">{target}</b> min, studied <b className="font-semibold">{studied}</b> of 7 days</p>
+      <div className="flex flex-col gap-4 rounded-lg bg-card p-4 sm:p-5">
+        <p className="text-sm sm:text-base">Done <b className="font-semibold tabular-nums">{done}</b> of <b className="font-semibold tabular-nums">{target}</b> min, studied <b className="font-semibold">{studied}</b> of 7 days</p>
         <Progress value={target ? clamp(done / target, 0, 1) * 100 : 0} aria-label="Minutes done this week" className="h-2" />
         <div className="grid grid-cols-7 gap-1">{cells}</div>
       </div>
@@ -279,8 +279,8 @@ function MustDo() {
           const cat = res.categories.find((c) => c.id === r.c)?.n ?? "";
           return (
             <li key={r.id}>
-              <Ext href={r.u} className="flex flex-col gap-0.5 rounded-md px-3 py-2.5 hover:bg-muted">
-                <span className="text-base font-semibold">{r.n}</span>
+              <Ext href={r.u} className="flex flex-col gap-0.5 rounded-md px-3 py-2 hover:bg-muted">
+                <span className="text-sm font-semibold sm:text-base">{r.n}</span>
                 <Meta>{s.short}, {cat.toLowerCase()}{r.find ? ", opens a search" : ""}</Meta>
               </Ext>
             </li>
@@ -302,13 +302,13 @@ export default function Today() {
   const soon = SECTIONS.filter((s) => s.status === "soon");
 
   return (
-    <Page>
-      <PageHeader title={isToday ? "Today" : past ? "A past day" : "Planning ahead"} aside={<StreakBadge />}>{phaseCaption(goal)}</PageHeader>
+    <Page className="gap-8 lg:gap-12">
+      <PageHeader title={isToday ? "Today" : past ? "A past day" : "Planning ahead"} aside={<StreakBadge />}><span className="text-sm sm:text-base">{phaseCaption(goal)}</span></PageHeader>
 
-      <div className="-mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+      <div className="-mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 sm:gap-x-4">
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="icon-sm" aria-label="Previous day" onClick={() => setD(addDays(d, -1))}><ChevronLeft className="size-5" /></Button>
-          <span className="min-w-[11.5rem] text-center text-heading font-semibold">{longDate(d)}</span>
+          <span className="min-w-0 text-center text-base font-semibold sm:min-w-[11.5rem] sm:text-heading">{longDate(d)}</span>
           <Button variant="ghost" size="icon-sm" aria-label="Next day" onClick={() => setD(addDays(d, 1))}><ChevronRight className="size-5" /></Button>
         </div>
         {!isToday && <Button variant="link" size="sm" onClick={() => setD(today)}>Back to today</Button>}
@@ -345,11 +345,11 @@ function PracticeToday({ today }: { today: string }) {
     <Section title="Practice on this site today" action={<TextLink to="/practice" className="text-base">All practice</TextLink>} description="Scores log themselves in Progress. Tick the matching timetable block when you are done.">
       <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
         {rows.map((r) => (
-          <li key={r.label} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 rounded-lg bg-card p-5">
+          <li key={r.label} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 rounded-lg bg-card p-4 sm:gap-x-4 sm:p-5">
             <div className="flex min-w-0 flex-col gap-1">
               <Meta>{r.label}</Meta>
-              <Link to={r.to} className="text-base font-semibold text-pretty hover:text-primary">{r.title}</Link>
-              {r.done && <p className="text-base text-success">Done: {r.done}</p>}
+              <Link to={r.to} className="text-sm font-semibold text-pretty hover:text-primary sm:text-base">{r.title}</Link>
+              {r.done && <p className="text-sm text-success sm:text-base">Done: {r.done}</p>}
             </div>
             {/* Quiet: the timetable above already has this screen's one filled button. */}
             <LinkButton to={r.to} size="sm" variant="secondary">{r.go}</LinkButton>

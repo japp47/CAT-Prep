@@ -20,8 +20,8 @@ function FooterColumn({ title, items }: { title: string; items: SiteNavItem[] })
 
 export default function SiteFooter() {
   return (
-    <footer className="mt-10 border-t border-border/70 pt-7">
-      <div className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1.35fr_repeat(5,minmax(0,1fr))]">
+    <footer className="mt-6 border-t border-border/70 pt-4 lg:mt-10 lg:pt-7">
+      <div className="hidden gap-x-8 gap-y-10 lg:grid lg:grid-cols-3 xl:grid-cols-[1.35fr_repeat(5,minmax(0,1fr))]">
         <div className="flex max-w-64 flex-col items-start gap-4">
           <Brand />
           <p className="text-sm leading-relaxed text-muted-foreground">A free CAT study space for steady practice, clear review, and a plan that fits your day.</p>
@@ -36,7 +36,7 @@ export default function SiteFooter() {
           <p className="text-sm text-muted-foreground">Contact &amp; support<br />Coming soon</p>
         </div>
       </div>
-      <div className="mt-6 flex flex-col gap-2 border-t border-border/70 py-4 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col items-start gap-1 text-left text-xs leading-relaxed text-muted-foreground lg:mt-6 lg:flex-row lg:justify-between lg:gap-2 lg:border-t lg:border-border/70 lg:py-4 lg:text-sm">
         <p>© {new Date().getFullYear()} 99ile</p>
         <p>Free CAT preparation. Your progress stays in this browser.</p>
       </div>
