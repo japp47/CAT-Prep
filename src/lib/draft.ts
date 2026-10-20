@@ -1,5 +1,5 @@
 /**
- * Unfinished RC sets and VA drills, so leaving the page or closing the tab does not lose the answers.
+ * Unfinished RC sets and CR/VA drills, so leaving the page or closing the tab does not lose the attempt.
  * All drafts sit under one key. A draft older than a day is dropped: by then the attempt is stale.
  * The timed sectional keeps its own draft (practice/sectional.ts), because its clock never stops.
  */

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import { useBlocker } from "react-router-dom";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
@@ -16,6 +17,37 @@ export function useElapsed(running: boolean, startAt: number) {
     return () => clearInterval(t);
   }, [running]);
   return Math.max(0, Math.floor((now - startAt) / 1000));
+}
+
+/** Keep an in-progress practice session from being left accidentally. */
+export function useLeaveConfirmation(active: boolean) {
+  const allowNextNavigation = useRef(false);
+  const blocker = useBlocker(({ currentLocation, nextLocation }) => {
+    if (allowNextNavigation.current) {
+      allowNextNavigation.current = false;
+      return false;
+    }
+    if (!active) return false;
+    return currentLocation.pathname !== nextLocation.pathname ||
+      currentLocation.search !== nextLocation.search ||
+      currentLocation.hash !== nextLocation.hash;
+  });
+  const proceeding = useRef(false);
+
+  return {
+    open: blocker.state === "blocked",
+    onOpenChange: (open: boolean) => {
+      if (open || blocker.state !== "blocked") return;
+      if (proceeding.current) proceeding.current = false;
+      else blocker.reset();
+    },
+    onLeave: () => {
+      if (blocker.state !== "blocked") return;
+      proceeding.current = true;
+      blocker.proceed();
+    },
+    allowNextNavigation: () => { allowNextNavigation.current = true; },
+  };
 }
 
 /** The practice clock. It ticks on its own, so the passage and the questions do not redraw every second. */
@@ -145,8 +177,8 @@ export function ScoreCard({ score, of, unit, parts, children }: { score: ReactNo
 }
 
 /** "Submit this set?" and similar: a real dialog instead of a box in the page. */
-export function Confirm({ open, onOpenChange, title, children, action, onAction, cancel = "Keep going", danger }: {
-  open: boolean; onOpenChange: (o: boolean) => void; title: string; children: ReactNode; action: string; onAction: () => void; cancel?: string; danger?: boolean;
+export function Confirm({ open, onOpenChange, title, children, action, onAction, cancel = "Keep going", danger, actionClassName }: {
+  open: boolean; onOpenChange: (o: boolean) => void; title: string; children: ReactNode; action: string; onAction: () => void; cancel?: string; danger?: boolean; actionClassName?: string;
 }) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -157,7 +189,7 @@ export function Confirm({ open, onOpenChange, title, children, action, onAction,
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>{cancel}</AlertDialogCancel>
-          <AlertDialogAction onClick={onAction} className={danger ? "bg-danger text-white hover:bg-danger/90" : undefined}>{action}</AlertDialogAction>
+          <AlertDialogAction onClick={onAction} className={cn(danger && "bg-danger text-white hover:bg-danger/90", actionClassName)}>{action}</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

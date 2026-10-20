@@ -18,7 +18,7 @@ import {
 } from "../../practice/sectional";
 import { VA_KIND } from "../../practice/va/build";
 import NotFound from "../NotFound";
-import { Choice, ChoiceGroup, Confirm, PaletteCell, PlayerBar, ScoreCard, Timer } from "./common";
+import { Choice, ChoiceGroup, Confirm, PaletteCell, PlayerBar, ScoreCard, Timer, useLeaveConfirmation } from "./common";
 import { Passage, PaneSwitch, ReviewQuestion, Split } from "./RcPlayer";
 import { ItemInput, ItemReview } from "./VaPlayer";
 
@@ -98,6 +98,7 @@ function Clock({ d, onEnd }: { d: Draft; onEnd: () => void }) {
 function Exam({ start, c, onQuit }: { start: Draft; c: Content; onQuit: () => void }) {
   const { update } = useStore();
   const navigate = useNavigate();
+  const leave = useLeaveConfirmation(true);
   const [d, setD] = useState(start);
   const [pane, setPane] = useState<"p" | "q">("p");
   const [confirm, setConfirm] = useState<"submit" | "quit" | null>(null);
@@ -127,6 +128,7 @@ function Exam({ start, c, onQuit }: { start: Draft; c: Content; onQuit: () => vo
     const at = Date.now(), secs = Math.min(SECTIONAL_SECS, (at - d.startedAt) / 1000);
     update((st) => recordSectional(st, d.id, final.qs, final.a, final.t, secs, todayIso(), c, at));
     saveDraft(null);
+    leave.allowNextNavigation();
     navigate(`/practice/sectional/${d.id}`, { replace: true });
   };
 
@@ -233,6 +235,9 @@ function Exam({ start, c, onQuit }: { start: Draft; c: Content; onQuit: () => vo
       </Confirm>
       <Confirm open={confirm === "quit"} onOpenChange={(o) => setConfirm(o ? "quit" : null)} title="Discard this sectional?" action="Discard" onAction={onQuit} danger>
         Nothing is saved to Progress. You can start a new one any time.
+      </Confirm>
+      <Confirm open={leave.open} onOpenChange={leave.onOpenChange} title="Leave this sectional?" action="Leave sectional" onAction={leave.onLeave} cancel="Keep practicing" danger actionClassName="!text-black">
+        Your answers are saved. The 40-minute clock keeps running while you are away, so you can resume only if time remains.
       </Confirm>
     </Page>
   );

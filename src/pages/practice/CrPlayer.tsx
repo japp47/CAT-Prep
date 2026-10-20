@@ -12,7 +12,7 @@ import { Empty, LinkButton, Page } from "../../components/kit";
 import { customCr } from "../../practice/crdrill";
 import { crError, crErrorSrc, fmtSecs, LETTERS, recordCr, scoreCr } from "../../practice/record";
 import { CR_TYPE, type CrItem, type CrType } from "../../practice/types";
-import { Choice, ChoiceGroup, Confirm, ElapsedTimer, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard } from "./common";
+import { Choice, ChoiceGroup, Confirm, ElapsedTimer, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, useLeaveConfirmation } from "./common";
 
 const SECS_PER_ITEM = 90;
 
@@ -57,28 +57,46 @@ const kindLabel = (c: CrItem) => CR_TYPE[c.type].label;
 
 function DrillAttempt({ items, draftKey, onDone }: { items: CrItem[]; draftKey: string; onDone: (id: string) => void }) {
   const { update } = useStore();
+  const leave = useLeaveConfirmation(true);
   const [saved] = useState(() => {
     const d = readDraft<CrDraft>(draftKey);
     return d && d.ids?.join() === items.map((i) => i.id).join() ? d : null;
   });
+  const [resumed, setResumed] = useState(!!saved);
   const [answers, setAnswers] = useState<(number | null)[]>(saved?.answers ?? items.map(() => null));
   const [cur, setCur] = useState(saved?.cur ?? 0);
   const [confirming, setConfirming] = useState(false);
+  const [confirmRestart, setConfirmRestart] = useState(false);
   // A restored drill carries on the clock from where it stopped.
-  const [startAt] = useState(() => Date.now() - (saved?.secs ?? 0) * 1000);
+  const [startAt, setStartAt] = useState(() => Date.now() - (saved?.secs ?? 0) * 1000);
+  const startAtRef = useRef(startAt);
+  startAtRef.current = startAt;
   const submitted = useRef(false);
 
-  // Keep the answers on every change, when the page is hidden and when it closes.
+  const draft: CrDraft = { ids: items.map((i) => i.id), answers, cur, secs: (Date.now() - startAt) / 1000 };
+  const draftRef = useRef(draft);
+  draftRef.current = draft;
+
+  // Persist once per state change; pagehide and unmount flush the latest snapshot.
+  useEffect(() => {
+    if (!submitted.current) writeDraft(draftKey, { ids: items.map((i) => i.id), answers, cur, secs: (Date.now() - startAt) / 1000 });
+  }, [draftKey, items, answers, cur, startAt]);
   useEffect(() => {
     const keep = () => {
-      if (submitted.current) return;
-      const draft: CrDraft = { ids: items.map((i) => i.id), answers, cur, secs: (Date.now() - startAt) / 1000 };
-      writeDraft(draftKey, answers.some((a) => a !== null) ? draft : null);
+      if (!submitted.current) writeDraft(draftKey, { ...draftRef.current, secs: (Date.now() - startAtRef.current) / 1000 });
     };
-    keep();
     window.addEventListener("pagehide", keep);
     return () => { window.removeEventListener("pagehide", keep); keep(); };
-  }, [draftKey, items, startAt, answers, cur]);
+  }, [draftKey]);
+
+  const restart = () => {
+    writeDraft(draftKey, null);
+    setAnswers(items.map(() => null));
+    setCur(0);
+    setStartAt(Date.now());
+    setResumed(false);
+    setConfirmRestart(false);
+  };
 
   const item = items[cur];
   const setPick = (v: number | null) => setAnswers((a) => a.map((x, i) => (i === cur ? v : x)));
@@ -98,7 +116,10 @@ function DrillAttempt({ items, draftKey, onDone }: { items: CrItem[]; draftKey: 
         <ElapsedTimer startAt={startAt} target={items.length * SECS_PER_ITEM} />
         <Button size="sm" onClick={() => setConfirming(true)}>Submit drill</Button>
       </PlayerBar>
-      {saved && <p className="text-base text-muted-foreground">Your answers from earlier are back, and the clock carries on from {fmtSecs(saved.secs)}.</p>}
+      {resumed && saved && <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-card px-4 py-3">
+        <p className="text-sm text-muted-foreground">Your saved answers are back. The timer paused while you were away ({fmtSecs(saved.secs)} elapsed).</p>
+        <Button variant="ghost" size="sm" onClick={() => setConfirmRestart(true)}>Start over</Button>
+      </div>}
 
       <div className="flex flex-wrap gap-2" role="group" aria-label="Questions">
         {items.map((it, i) => (
@@ -120,6 +141,12 @@ function DrillAttempt({ items, draftKey, onDone }: { items: CrItem[]; draftKey: 
 
       <Confirm open={confirming} onOpenChange={setConfirming} title="Submit this drill?" action="Submit drill" onAction={submit}>
         {blanks ? `${blanks} question${blanks > 1 ? "s are" : " is"} blank.` : "Every question has an answer."}
+      </Confirm>
+      <Confirm open={confirmRestart} onOpenChange={setConfirmRestart} title="Start a new drill?" action="Start over" onAction={restart} cancel="Keep this drill" danger actionClassName="!text-black">
+        This clears your saved answers and elapsed time for this drill.
+      </Confirm>
+      <Confirm open={leave.open} onOpenChange={leave.onOpenChange} title="Leave this drill?" action="Leave drill" onAction={leave.onLeave} cancel="Keep practicing" danger actionClassName="!text-black">
+        Your answers, current question and elapsed time are saved. The timer pauses while you are away. Return within 24 hours to resume.
       </Confirm>
       <p className="text-sm text-muted-foreground">Questions are original practice material written for this site. CAT does not ask critical reasoning; XAT does.</p>
     </Page>

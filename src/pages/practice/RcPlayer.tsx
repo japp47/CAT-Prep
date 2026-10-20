@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
-import { ChevronDown } from "lucide-react";
+import { ArrowRight, ChevronDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -11,6 +11,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
 import { mediumDate, todayIso, uid } from "../../lib/date";
 import { readDraft, writeDraft } from "../../lib/draft";
+import { useFocus } from "../../lib/focus";
 import { usePref } from "../../lib/prefs";
 import type { RcAttempt } from "../../lib/state";
 import { useStore } from "../../lib/store";
@@ -23,7 +24,7 @@ import { fmtSecs, LETTERS, rcError, rcErrorSrc, recordRc, scoreRc } from "../../
 import { recordRcSummary, summaryFor, summaryScore } from "../../practice/summary";
 import { GENRES, RC_QTYPE, setWords, SUMMARY_MAX_WORDS, words, type RcSet, type RcSummary } from "../../practice/types";
 import NotFound from "../NotFound";
-import { Choice, ChoiceGroup, Confirm, ElapsedTimer, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard } from "./common";
+import { Choice, ChoiceGroup, Confirm, ElapsedTimer, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, useLeaveConfirmation } from "./common";
 
 /** Words too common to be worth saving to flashcards. */
 const COMMON = new Set("the and for are but not you all any can had her was one our out has him his how its may new now old see two way who did get let put say she too use that with have this will your from they know want been good much some time very when come here just like long make many more only over such take than them well were what which their there these those would could should about after other where while being because through between does into also each most even then upon whose".split(" "));
@@ -166,32 +167,56 @@ function SummaryReview({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
 
 function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) {
   const { update } = useStore();
+  const { run } = useFocus();
+  const leave = useLeaveConfirmation(true);
   const n = set.questions.length;
   const draftKey = "rc:" + set.id;
   const [saved] = useState(() => { const d = readDraft<RcDraft>(draftKey); return d && d.ans?.length === n ? d : null; });
+  const [resumed, setResumed] = useState(!!saved);
   const [ans, setAns] = useState<(number | null)[]>(saved?.ans ?? Array(n).fill(null));
   const [marked, setMarked] = useState<boolean[]>(saved?.marked ?? Array(n).fill(false));
   const [cur, setCur] = useState(saved?.cur ?? 0);
   const [pane, setPane] = useState<"p" | "q">("p");
   const [confirming, setConfirming] = useState(false);
+  const [confirmRestart, setConfirmRestart] = useState(false);
   const [hideTimer, setHideTimer] = usePref("rcHideTimer", false);
+  const questionRef = useRef<HTMLDivElement>(null);
+  const jumpToQuestion = useRef(false);
   // A restored set carries on the clock from where it stopped, not from when it was first opened.
-  const [startAt] = useState(() => Date.now() - (saved?.secs ?? 0) * 1000);
+  const [startAt, setStartAt] = useState(() => Date.now() - (saved?.secs ?? 0) * 1000);
+  const startAtRef = useRef(startAt);
+  startAtRef.current = startAt;
   const firstAt = useRef<number | null>(saved?.first != null ? startAt + saved.first * 1000 : null);
   const submitted = useRef(false);
 
-  // Keep the answers on every change, when the page is hidden and when it closes.
+  const first = firstAt.current === null ? null : (firstAt.current - startAt) / 1000;
+  const draft: RcDraft = { ans, marked, cur, secs: (Date.now() - startAt) / 1000, first };
+  const draftRef = useRef(draft);
+  draftRef.current = draft;
+
+  // Persist once per state change; pagehide and unmount flush the latest snapshot.
+  useEffect(() => {
+    if (!submitted.current) writeDraft(draftKey, { ans, marked, cur, secs: (Date.now() - startAt) / 1000, first } satisfies RcDraft);
+  }, [draftKey, ans, marked, cur, startAt, first]);
   useEffect(() => {
     const keep = () => {
       if (submitted.current) return;
-      const touched = ans.some((a) => a !== null) || marked.some(Boolean);
-      const first = firstAt.current === null ? null : (firstAt.current - startAt) / 1000;
-      writeDraft(draftKey, touched ? { ans, marked, cur, secs: (Date.now() - startAt) / 1000, first } satisfies RcDraft : null);
+      writeDraft(draftKey, { ...draftRef.current, secs: (Date.now() - startAtRef.current) / 1000 });
     };
-    keep();
     window.addEventListener("pagehide", keep);
     return () => { window.removeEventListener("pagehide", keep); keep(); };
-  }, [draftKey, startAt, ans, marked, cur]);
+  }, [draftKey]);
+
+  const restart = () => {
+    writeDraft(draftKey, null);
+    setAns(Array(n).fill(null));
+    setMarked(Array(n).fill(false));
+    setCur(0);
+    firstAt.current = null;
+    setStartAt(Date.now());
+    setResumed(false);
+    setConfirmRestart(false);
+  };
 
   const choose = (opt: number) => {
     if (firstAt.current === null) firstAt.current = Date.now();
@@ -211,6 +236,11 @@ function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) 
   };
   const blanks = ans.filter((a) => a === null).length;
   const go = (i: number) => { setCur(i); setPane("q"); };
+  useEffect(() => {
+    if (pane !== "q" || !jumpToQuestion.current) return;
+    jumpToQuestion.current = false;
+    questionRef.current?.scrollIntoView({ block: "start" });
+  }, [pane]);
 
   return (
     <Page className="gap-6 lg:gap-8">
@@ -220,12 +250,18 @@ function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) 
           : <ElapsedTimer startAt={startAt} target={TARGET_SECS} onClick={() => setHideTimer(true)} title="Target 7 minutes. Tap to hide." />}
         <Button size="sm" onClick={() => setConfirming(true)}>Submit set</Button>
       </PlayerBar>
-      {saved && <p className="text-base text-muted-foreground">Your answers from earlier are back, and the clock carries on from {fmtSecs(saved.secs)}.</p>}
+      {resumed && saved && <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-card px-4 py-3">
+        <p className="text-sm text-muted-foreground">Your saved answers are back. The timer paused while you were away ({fmtSecs(saved.secs)} elapsed).</p>
+        <Button variant="ghost" size="sm" onClick={() => setConfirmRestart(true)}>Start over</Button>
+      </div>}
 
       <PaneSwitch pane={pane} setPane={setPane} q={`Question ${cur + 1} of ${n}`} />
 
       <Split pane={pane}>
-        <Passage set={set} highlight={[]} wordMode={false} />
+        <>
+          <Passage set={set} highlight={[]} wordMode={false} />
+          <div className={cn("lg:hidden", run ? "h-40" : "h-20")} aria-hidden />
+        </>
         <>
           <div className="flex flex-wrap gap-2" role="group" aria-label="Questions">
             {set.questions.map((_, i) => {
@@ -233,7 +269,7 @@ function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) 
               return <PaletteCell key={i} n={i + 1} state={s} current={i === cur} onClick={() => go(i)} label={`Question ${i + 1}, ${ans[i] === null ? "not answered" : "answered"}${marked[i] ? ", marked" : ""}`} />;
             })}
           </div>
-          <div className="flex flex-col gap-4">
+          <div ref={questionRef} className="scroll-mt-28 flex flex-col gap-4">
             <p className="text-sm text-muted-foreground">Question {cur + 1} of {n}</p>
             <p className="text-lg leading-snug font-semibold">{set.questions[cur].stem}</p>
             <ChoiceGroup label={"Options for question " + (cur + 1)}>
@@ -253,8 +289,26 @@ function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) 
         </>
       </Split>
 
+      {pane === "p" && (
+        <div className={cn(
+          "fixed inset-x-0 z-30 bg-background/95 px-gutter py-3 backdrop-blur-sm lg:hidden",
+          run ? "bottom-[calc(15rem+env(safe-area-inset-bottom))]" : "bottom-[calc(4rem+env(safe-area-inset-bottom))]",
+        )}>
+          <Button className="w-full" onClick={() => { jumpToQuestion.current = true; setPane("q"); }}>
+            Question {cur + 1} of {n}
+            <ArrowRight aria-hidden />
+          </Button>
+        </div>
+      )}
+
       <Confirm open={confirming} onOpenChange={setConfirming} title="Submit this set?" action="Submit set" onAction={submit}>
         {blanks ? `${blanks} question${blanks > 1 ? "s are" : " is"} unanswered. Blanks score 0; wrong answers cost 1 mark.` : "All questions answered."}
+      </Confirm>
+      <Confirm open={confirmRestart} onOpenChange={setConfirmRestart} title="Start a new attempt?" action="Start over" onAction={restart} cancel="Keep this attempt" danger actionClassName="!text-black">
+        This clears your saved answers and elapsed time for this set.
+      </Confirm>
+      <Confirm open={leave.open} onOpenChange={leave.onOpenChange} title="Leave this practice?" action="Leave practice" onAction={leave.onLeave} cancel="Keep practicing" danger actionClassName="!text-black">
+        Your answers, current question and elapsed time are saved. The timer pauses while you are away. Return within 24 hours to resume.
       </Confirm>
     </Page>
   );

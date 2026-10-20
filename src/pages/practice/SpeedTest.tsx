@@ -9,7 +9,7 @@ import type { Content } from "../../practice/content";
 import { speedSetOfDay } from "../../practice/daily";
 import { fmtSecs, LETTERS } from "../../practice/record";
 import { setWords, type RcSet } from "../../practice/types";
-import { Choice, ChoiceGroup, ScoreCard } from "./common";
+import { Choice, ChoiceGroup, Confirm, ScoreCard, useLeaveConfirmation } from "./common";
 
 /** CAT has about 2,000 words of RC; reading them in 10 minutes leaves time for the questions. */
 const EXAM_PACE = 200;
@@ -41,6 +41,7 @@ function SpeedPage({ c }: { c: Content }) {
   const [result, setResult] = useState<{ wpm: number; secs: number; recall: number } | null>(null);
   const startAt = useRef(0);
   const readSecs = useRef(0);
+  const leave = useLeaveConfirmation(phase === "read" || phase === "recall");
 
   const runs = [...state.speedRuns].sort((a, b) => (a.d < b.d ? 1 : -1));
   const best = runs.filter((r) => r.recall === 2).reduce((m, r) => Math.max(m, r.wpm), 0);
@@ -122,6 +123,10 @@ function SpeedPage({ c }: { c: Content }) {
           </div>
         </ScoreCard>
       )}
+
+      <Confirm open={leave.open} onOpenChange={leave.onOpenChange} title="Leave this test?" action="Leave test" onAction={leave.onLeave} cancel="Keep reading" danger actionClassName="!text-black">
+        This run is not saved. If you return, you will start a new test from the beginning.
+      </Confirm>
 
       {runs.length > 0 && phase !== "read" && (
         <Section title="Your recent runs">
