@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
-import { Menu, PanelLeftClose, PanelLeftOpen, UserRound } from "lucide-react";
+import { Menu, PanelLeftClose, PanelLeftOpen, Search, UserRound } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { SECTIONS } from "../sections";
@@ -14,6 +14,7 @@ import Brand from "./Brand";
 import SiteFooter from "./SiteFooter";
 import SiteHeader, { type SiteNavGroup } from "./SiteHeader";
 import ThemeToggle, { type Theme as ThemeValue } from "./ThemeToggle";
+const SearchPalette = lazy(() => import("./SearchPalette"));
 
 const GROUPS: SiteNavGroup[] = [
   { title: "Study", items: [{ to: "/", label: "Home", end: true }, { to: "/today", label: "Today" }, { to: "/practice", label: "Practice" }, { to: "/plan", label: "Plan and time" }] },
@@ -85,6 +86,9 @@ const TABS = [
 
 export default function Layout() {
   const [open, setOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchUsed, setSearchUsed] = useState(false);
+  const openSearch = () => { setSearchUsed(true); setSearchOpen(true); };
   // Mounted from the first open on, so later opens and closes animate.
   const [menuUsed, setMenuUsed] = useState(false);
   const openMenu = () => { setMenuUsed(true); setOpen(true); };
@@ -93,6 +97,16 @@ export default function Layout() {
   useTheme();
   const [sidebarCollapsed, setSidebarCollapsed] = usePref<boolean>("sidebar-collapsed", false);
   const landing = loc.pathname === "/";
+  useEffect(() => {
+    const onShortcut = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        openSearch();
+      }
+    };
+    window.addEventListener("keydown", onShortcut);
+    return () => window.removeEventListener("keydown", onShortcut);
+  }, []);
   useEffect(() => {
     setOpen(false);
     if (loc.hash) {
@@ -116,7 +130,7 @@ export default function Layout() {
     <div className={cn("min-h-dvh", !landing && "lg:grid", !landing && (sidebarCollapsed ? "lg:grid-cols-[72px_minmax(0,1fr)]" : "lg:grid-cols-[248px_minmax(0,1fr)]"))}>
       <a href="#main" className="sr-only z-50 rounded-md bg-card px-3 py-2 focus:not-sr-only focus:fixed focus:top-2 focus:left-2">Skip to content</a>
 
-      <SiteHeader landing={landing} groups={GROUPS} open={open} onOpenChange={setOpen} onLoadMenu={loadMenu} onOpenMenu={openMenu} />
+      <SiteHeader landing={landing} groups={GROUPS} open={open} onOpenChange={setOpen} onLoadMenu={loadMenu} onOpenMenu={openMenu} onOpenSearch={openSearch} />
 
       <aside className={cn("sticky top-0 hidden h-dvh flex-col gap-7 overflow-y-auto bg-sidebar pt-6 pb-6", !landing && "lg:flex", sidebarCollapsed ? "items-center px-2" : "px-4")}>
         <div className={cn("flex w-full items-center", sidebarCollapsed ? "flex-col gap-4" : "justify-between gap-2 px-1")}>
@@ -127,6 +141,11 @@ export default function Layout() {
             {sidebarCollapsed ? <PanelLeftOpen className="size-5" aria-hidden /> : <PanelLeftClose className="size-5" aria-hidden />}
           </button>
         </div>
+        <button type="button" onClick={openSearch} aria-label="Search" title="Search (⌘K)" aria-keyshortcuts="Meta+K Control+K"
+          className={cn("flex h-11 shrink-0 items-center rounded-md text-foreground/75 transition-colors hover:bg-card hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none", sidebarCollapsed ? "w-11 justify-center" : "w-full justify-between px-3")}>
+          <span className="flex items-center gap-3"><Search className="size-5" aria-hidden />{!sidebarCollapsed && <span className="text-sm font-medium">Search</span>}</span>
+          {!sidebarCollapsed && <kbd className="rounded border border-border px-1.5 py-0.5 text-xs text-muted-foreground">⌘ K</kbd>}
+        </button>
         {!sidebarCollapsed && <>
           <Nav />
         </>}
@@ -163,6 +182,7 @@ export default function Layout() {
           <MenuSheet open={open} onOpenChange={setOpen} title={<Brand />}><Nav onPick={() => setOpen(false)} /></MenuSheet>
         </Suspense>
       )}
+      {searchUsed && <Suspense fallback={null}><SearchPalette open={searchOpen} onOpenChange={setSearchOpen} /></Suspense>}
     </div>
   );
 }
