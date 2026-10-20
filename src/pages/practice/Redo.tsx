@@ -150,7 +150,7 @@ function RedoQuestion({ c, k, n, of, onAnswered, onNext }: { c: Content; k: stri
           {actions}
         </div>
       )}
-      <Confirm open={leave.open} onOpenChange={leave.onOpenChange} title="Leave this question?" action="Leave question" onAction={leave.onLeave} cancel="Keep practicing" danger actionClassName="!text-black">
+      <Confirm open={leave.open} onOpenChange={leave.onOpenChange} title="Leave this question?" action="Leave question" onAction={leave.onLeave} cancel="Keep practicing" danger actionClassName="!text-white dark:!text-black">
         Your answer will be recorded when you check it. Leave now or stay and finish this question.
       </Confirm>
     </div>

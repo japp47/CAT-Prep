@@ -304,10 +304,10 @@ function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) 
       <Confirm open={confirming} onOpenChange={setConfirming} title="Submit this set?" action="Submit set" onAction={submit}>
         {blanks ? `${blanks} question${blanks > 1 ? "s are" : " is"} unanswered. Blanks score 0; wrong answers cost 1 mark.` : "All questions answered."}
       </Confirm>
-      <Confirm open={confirmRestart} onOpenChange={setConfirmRestart} title="Start a new attempt?" action="Start over" onAction={restart} cancel="Keep this attempt" danger actionClassName="!text-black">
+      <Confirm open={confirmRestart} onOpenChange={setConfirmRestart} title="Start a new attempt?" action="Start over" onAction={restart} cancel="Keep this attempt" danger actionClassName="!text-white dark:!text-black">
         This clears your saved answers and elapsed time for this set.
       </Confirm>
-      <Confirm open={leave.open} onOpenChange={leave.onOpenChange} title="Leave this practice?" action="Leave practice" onAction={leave.onLeave} cancel="Keep practicing" danger actionClassName="!text-black">
+      <Confirm open={leave.open} onOpenChange={leave.onOpenChange} title="Leave this practice?" action="Leave practice" onAction={leave.onLeave} cancel="Keep practicing" danger actionClassName="!text-white dark:!text-black">
         Your answers, current question and elapsed time are saved. The timer pauses while you are away. Return within 24 hours to resume.
       </Confirm>
     </Page>

@@ -236,7 +236,7 @@ function Exam({ start, c, onQuit }: { start: Draft; c: Content; onQuit: () => vo
       <Confirm open={confirm === "quit"} onOpenChange={(o) => setConfirm(o ? "quit" : null)} title="Discard this sectional?" action="Discard" onAction={onQuit} danger>
         Nothing is saved to Progress. You can start a new one any time.
       </Confirm>
-      <Confirm open={leave.open} onOpenChange={leave.onOpenChange} title="Leave this sectional?" action="Leave sectional" onAction={leave.onLeave} cancel="Keep practicing" danger actionClassName="!text-black">
+      <Confirm open={leave.open} onOpenChange={leave.onOpenChange} title="Leave this sectional?" action="Leave sectional" onAction={leave.onLeave} cancel="Keep practicing" danger actionClassName="!text-white dark:!text-black">
         Your answers are saved. The 40-minute clock keeps running while you are away, so you can resume only if time remains.
       </Confirm>
     </Page>

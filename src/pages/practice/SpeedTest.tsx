@@ -124,7 +124,7 @@ function SpeedPage({ c }: { c: Content }) {
         </ScoreCard>
       )}
 
-      <Confirm open={leave.open} onOpenChange={leave.onOpenChange} title="Leave this test?" action="Leave test" onAction={leave.onLeave} cancel="Keep reading" danger actionClassName="!text-black">
+      <Confirm open={leave.open} onOpenChange={leave.onOpenChange} title="Leave this test?" action="Leave test" onAction={leave.onLeave} cancel="Keep reading" danger actionClassName="!text-white dark:!text-black">
         This run is not saved. If you return, you will start a new test from the beginning.
       </Confirm>
 

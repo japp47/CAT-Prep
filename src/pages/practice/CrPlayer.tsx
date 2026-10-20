@@ -142,10 +142,10 @@ function DrillAttempt({ items, draftKey, onDone }: { items: CrItem[]; draftKey: 
       <Confirm open={confirming} onOpenChange={setConfirming} title="Submit this drill?" action="Submit drill" onAction={submit}>
         {blanks ? `${blanks} question${blanks > 1 ? "s are" : " is"} blank.` : "Every question has an answer."}
       </Confirm>
-      <Confirm open={confirmRestart} onOpenChange={setConfirmRestart} title="Start a new drill?" action="Start over" onAction={restart} cancel="Keep this drill" danger actionClassName="!text-black">
+      <Confirm open={confirmRestart} onOpenChange={setConfirmRestart} title="Start a new drill?" action="Start over" onAction={restart} cancel="Keep this drill" danger actionClassName="!text-white dark:!text-black">
         This clears your saved answers and elapsed time for this drill.
       </Confirm>
-      <Confirm open={leave.open} onOpenChange={leave.onOpenChange} title="Leave this drill?" action="Leave drill" onAction={leave.onLeave} cancel="Keep practicing" danger actionClassName="!text-black">
+      <Confirm open={leave.open} onOpenChange={leave.onOpenChange} title="Leave this drill?" action="Leave drill" onAction={leave.onLeave} cancel="Keep practicing" danger actionClassName="!text-white dark:!text-black">
         Your answers, current question and elapsed time are saved. The timer pauses while you are away. Return within 24 hours to resume.
       </Confirm>
       <p className="text-sm text-muted-foreground">Questions are original practice material written for this site. CAT does not ask critical reasoning; XAT does.</p>
