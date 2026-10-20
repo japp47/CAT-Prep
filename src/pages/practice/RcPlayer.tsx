@@ -22,9 +22,10 @@ import { RC_CATALOG } from "../../practice/catalog.gen";
 import { rcOfDay } from "../../practice/daily";
 import { fmtSecs, LETTERS, rcError, rcErrorSrc, recordRc, scoreRc } from "../../practice/record";
 import { recordRcSummary, summaryFor, summaryScore } from "../../practice/summary";
+import { rcStale } from "../../practice/versions";
 import { GENRES, RC_QTYPE, setWords, SUMMARY_MAX_WORDS, words, type RcSet, type RcSummary } from "../../practice/types";
 import NotFound from "../NotFound";
-import { Choice, ChoiceGroup, Confirm, ElapsedTimer, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, useLeaveConfirmation } from "./common";
+import { Choice, ChoiceGroup, Confirm, ElapsedTimer, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, useLeaveConfirmation } from "./common";
 
 /** Words too common to be worth saving to flashcards. */
 const COMMON = new Set("the and for are but not you all any can had her was one our out has him his how its may new now old see two way who did get let put say she too use that with have this will your from they know want been good much some time very when come here just like long make many more only over such take than them well were what which their there these those would could should about after other where while being because through between does into also each most even then upon whose".split(" "));
@@ -87,7 +88,7 @@ export function PaneJump({ onClick, children }: { onClick: () => void; children:
 /** Shows the question pane from the top, for screens that keep their question near the top. */
 export const showQuestion = (setPane: (p: "p" | "q") => void) => { setPane("q"); window.scrollTo(0, 0); };
 
-interface RcDraft { ans: (number | null)[]; marked: boolean[]; cur: number; secs: number; first: number | null }
+interface RcDraft { ans: (number | null)[]; marked: boolean[]; cur: number; secs: number; first: number | null; unsure?: boolean[] }
 
 /** One RC set: answering it, then reviewing it on the same page. */
 function Player({ set, reviewId }: { set: RcSet; reviewId: string | null }) {
@@ -196,6 +197,7 @@ function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) 
   const [resumed, setResumed] = useState(!!saved);
   const [ans, setAns] = useState<(number | null)[]>(saved?.ans ?? Array(n).fill(null));
   const [marked, setMarked] = useState<boolean[]>(saved?.marked ?? Array(n).fill(false));
+  const [unsure, setUnsure] = useState<boolean[]>(saved?.unsure?.length === n ? saved.unsure : Array(n).fill(false));
   const [cur, setCur] = useState(saved?.cur ?? 0);
   const [pane, setPane] = useState<"p" | "q">("p");
   const [confirming, setConfirming] = useState(false);
@@ -211,14 +213,14 @@ function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) 
   const submitted = useRef(false);
 
   const first = firstAt.current === null ? null : (firstAt.current - startAt) / 1000;
-  const draft: RcDraft = { ans, marked, cur, secs: (Date.now() - startAt) / 1000, first };
+  const draft: RcDraft = { ans, marked, cur, secs: (Date.now() - startAt) / 1000, first, unsure };
   const draftRef = useRef(draft);
   draftRef.current = draft;
 
   // Persist once per state change; pagehide and unmount flush the latest snapshot.
   useEffect(() => {
-    if (!submitted.current) writeDraft(draftKey, { ans, marked, cur, secs: (Date.now() - startAt) / 1000, first } satisfies RcDraft);
-  }, [draftKey, ans, marked, cur, startAt, first]);
+    if (!submitted.current) writeDraft(draftKey, { ans, marked, cur, secs: (Date.now() - startAt) / 1000, first, unsure } satisfies RcDraft);
+  }, [draftKey, ans, marked, cur, startAt, first, unsure]);
   useEffect(() => {
     const keep = () => {
       if (submitted.current) return;
@@ -232,6 +234,7 @@ function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) 
     writeDraft(draftKey, null);
     setAns(Array(n).fill(null));
     setMarked(Array(n).fill(false));
+    setUnsure(Array(n).fill(false));
     setCur(0);
     firstAt.current = null;
     setStartAt(Date.now());
@@ -251,7 +254,7 @@ function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) 
     const id = uid();
     submitted.current = true;
     writeDraft(draftKey, null);
-    update((st) => recordRc(st, id, set, ans, secs, first, mode, today));
+    update((st) => recordRc(st, id, set, ans, secs, first, mode, today, unsure.flatMap((u, i) => (u ? [i] : []))));
     setConfirming(false);
     onDone(id);
   };
@@ -299,6 +302,7 @@ function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) 
               <div className="flex flex-wrap gap-2">
                 <Button variant="ghost" size="sm" onClick={() => setAns((a) => a.map((x, i) => (i === cur ? null : x)))} disabled={ans[cur] === null}>Clear</Button>
                 <Button variant="ghost" size="sm" aria-pressed={marked[cur]} onClick={() => setMarked((m) => m.map((x, i) => (i === cur ? !x : x)))}>{marked[cur] ? "Unmark" : "Mark for review"}</Button>
+                <NotSure on={unsure[cur]} onChange={(v) => setUnsure((u) => u.map((x, i) => (i === cur ? v : x)))} />
               </div>
               <div className="flex gap-2">
                 <Button variant="secondary" size="sm" disabled={cur === 0} onClick={() => setCur(cur - 1)}>Previous</Button>
@@ -325,6 +329,28 @@ function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) 
 }
 
 function Review({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
+  if (rcStale(attempt)) return <StaleReview set={set} attempt={attempt} />;
+  return <FullReview set={set} attempt={attempt} />;
+}
+
+/** The set was rewritten after this attempt: the old answers would point at new questions, so only the score is shown. */
+function StaleReview({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
+  const [seed] = useState(uid);
+  const skipped = attempt.ans.filter((a) => a === null).length;
+  return (
+    <Page className="gap-6 lg:gap-8">
+      <PlayerBar kicker={`Review, ${GENRES[set.genre].toLowerCase()}, ${set.difficulty}`} title={set.title}>
+        <LinkButton to="/practice" variant="secondary" size="sm">Back to Practice</LinkButton>
+      </PlayerBar>
+      <ScoreCard score={(3 * attempt.c - attempt.w > 0 ? "+" : "") + (3 * attempt.c - attempt.w)} parts={[["Correct", attempt.c], ["Wrong", attempt.w], ["Skipped", skipped], ["Time", fmtSecs(attempt.secs)]]}>
+        <p className="measure text-base">This set was rewritten after you took it on {mediumDate(attempt.d)}, so your old answers no longer match its questions. Your score stays in Progress.</p>
+        <div><LinkButton to={`/practice/rc/${set.id}?n=${seed}`}>Take the new version</LinkButton></div>
+      </ScoreCard>
+    </Page>
+  );
+}
+
+function FullReview({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
   const n = set.questions.length;
   const [cur, setCur] = useState(0);
   const [pane, setPane] = useState<"p" | "q">("q");
@@ -453,7 +479,7 @@ export function ReviewQuestion({ set, qi, chosen }: { set: RcSet; qi: number; ch
       </ul>
       <p className="text-sm text-muted-foreground">The highlighted paragraph{q.proof.length > 1 ? "s settle" : " settles"} this question.</p>
       {!ok && (inLog
-        ? <p className="text-base text-success">In your Error log.</p>
+        ? <ErrorCause src={rcErrorSrc(set, qi)} />
         : <Button variant="secondary" size="sm" className="self-start" onClick={() => { update((st) => { st.errors.push(rcError(set, qi, chosen, todayIso())); }); toast("Added to your Error log."); }}>Add to Error log</Button>)}
       <ReportLink what={`${set.title}, Q${qi + 1} (${set.id})`} />
     </div>
@@ -478,7 +504,7 @@ function Summary({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
     <ScoreCard score={(s.marks > 0 ? "+" : "") + s.marks} of={3 * set.questions.length} parts={parts}>
       <p className="text-base text-muted-foreground">Attempted {mediumDate(attempt.d)}. Logged in Progress as an RC practice set. Each wrong option shows its trap: the reason it looked right.</p>
       <div className="flex flex-wrap gap-3">
-        {missing.length > 0 && <Button onClick={() => { update((st) => { missing.forEach((i) => st.errors.push(rcError(set, i, attempt.ans[i], todayIso()))); }); toast(`Added ${missing.length} to your Error log.`); }}>Add {missing.length} to Error log</Button>}
+        {missing.length > 0 && <Button onClick={() => { update((st) => { missing.forEach((i) => st.errors.push(rcError(set, i, attempt.ans[i], todayIso(), !!attempt.unsure?.includes(i)))); }); toast(`Added ${missing.length} to your Error log.`); }}>Add {missing.length} to Error log</Button>}
         <Button asChild variant="secondary"><Link to={`/practice/rc/${next.id}`}>Next set: {next.title}</Link></Button>
         <Button asChild variant="ghost"><Link to={`/practice/rc/${set.id}?n=${seed}`}>Retake</Link></Button>
       </div>

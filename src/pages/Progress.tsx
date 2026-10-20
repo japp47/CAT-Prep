@@ -7,6 +7,7 @@ import { SECTIONS, sectionByLabel } from "../sections";
 import { Log } from "./tracker/Log";
 import { Mocks } from "./tracker/Mocks";
 import { Report } from "./tracker/Report";
+import { ThreeAnswers } from "./tracker/Fixing";
 
 type Tab = "report" | "mocks" | "log";
 const TAB = "h-auto min-h-10 flex-auto whitespace-normal px-2.5 leading-tight sm:px-3.5";
@@ -33,6 +34,7 @@ export default function Progress() {
           <Stat value={papers} label="Papers and mocks" />
           <Stat value={state.errors.filter((e) => e.sec === sec).length} label="Errors logged" />
         </div>
+        {def.short === "VARC" && <ThreeAnswers />}
       </div>
 
       <Tabs value={tab} onValueChange={(v) => setTab(v as Tab)} className="gap-8">

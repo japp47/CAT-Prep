@@ -6,11 +6,11 @@ import type { SiteNavItem } from "./SiteHeader";
 function FooterColumn({ title, items }: { title: string; items: SiteNavItem[] }) {
   return (
     <nav aria-label={`Footer ${title}`} className="flex flex-col items-start gap-3">
-      <h2 className="text-xs font-semibold tracking-[0.1em] text-muted-foreground uppercase">{title}</h2>
+      <h2 className="text-sm font-semibold text-foreground">{title}</h2>
       <ul className="flex flex-col items-start gap-1">
         {items.map((item) => <li key={item.to}>
           <Link to={item.to} className="inline-flex min-h-8 items-center gap-2 rounded-sm text-sm font-medium text-foreground/75 transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
-            {item.label}{item.soon && <span className="text-xs font-normal text-muted-foreground">Soon</span>}
+            {item.label}{item.soon && <span className="text-sm font-normal text-muted-foreground">Soon</span>}
           </Link>
         </li>)}
       </ul>
@@ -31,12 +31,12 @@ export default function SiteFooter() {
         <FooterColumn title="Progress" items={[{ to: "/progress", label: "Overview" }, { to: "/review", label: "Weekly review" }, { to: "/errors", label: "Error log" }, { to: "/words", label: "Words" }, { to: "/journal", label: "Reading journal" }]} />
         <FooterColumn title="Explore" items={[{ to: "/updates", label: "Updates" }, { to: "/exams", label: "CAT and other exams" }, { to: "/guides", label: "Guides" }, { to: "/stories", label: "Topper stories" }, { to: "/roadmap", label: "What's coming" }]} />
         <div className="flex flex-col items-start gap-3">
-          <h2 className="text-xs font-semibold tracking-[0.1em] text-muted-foreground uppercase">Support</h2>
+          <h2 className="text-sm font-semibold text-foreground">Support</h2>
           <Link to="/settings" className="inline-flex min-h-8 items-center rounded-sm text-sm font-medium text-foreground/75 transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">Settings and backup</Link>
           <p className="text-sm text-muted-foreground">Contact &amp; support<br />Coming soon</p>
         </div>
       </div>
-      <div className="flex flex-col items-start gap-1 text-left text-xs leading-relaxed text-muted-foreground lg:mt-6 lg:flex-row lg:justify-between lg:gap-2 lg:border-t lg:border-border/70 lg:py-4 lg:text-sm">
+      <div className="flex flex-col items-start gap-1 text-left text-sm leading-relaxed text-muted-foreground lg:mt-6 lg:flex-row lg:justify-between lg:gap-2 lg:border-t lg:border-border/70 lg:py-4">
         <p>© {new Date().getFullYear()} 99ile</p>
         <p>Free CAT preparation. Your progress stays in this browser.</p>
       </div>

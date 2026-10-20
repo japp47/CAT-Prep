@@ -3,9 +3,10 @@ import { addDays, weekStart } from "../lib/date";
 import type { AppState, Recommendation, WeekReview } from "../lib/state";
 import { budgetFor } from "../planner/engine";
 import { LIVE_SECTIONS } from "../sections";
-import { accuracy } from "./report";
+import { accuracy, drillForType } from "./report";
+
+export { drillForType };
 import { activityDays } from "./streak";
-import { VA_KIND, VA_KINDS } from "./va/build";
 import { reviewOf, reviewWeek } from "./weekopen";
 
 export { reviewOf, reviewWeek };
@@ -102,12 +103,6 @@ export function weekFacts(st: AppState, monday: string, today: string): WeekFact
     // Minutes are only compared once the week is over: on a Wednesday every week looks light.
     light: longest >= 3 || (days.length === 7 && lastWeek >= 60 && done <= lastWeek / 2),
   };
-}
-
-/** Where to practise a practice type ("Para jumble", "RC", "Critical reasoning"). */
-export function drillForType(t: string): string {
-  const k = VA_KINDS.find((x) => VA_KIND[x].practice === t);
-  return k ? `/practice/va?type=${k}&n=6` : t === "Critical reasoning" ? "/practice/cr?n=6" : t === "RC" ? "/practice/library" : "/practice";
 }
 
 export type FocusOption = Pick<Recommendation, "skill" | "text" | "why" | "to" | "before"> & { rec?: string };

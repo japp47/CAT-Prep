@@ -1,3 +1,5 @@
+import { todayIso } from "../../lib/date";
+import { Fixing } from "./Fixing";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { Bars, PaceChart } from "../../components/Chart";
@@ -7,7 +9,7 @@ import { sectionByLabel } from "../../sections";
 import { CR_CATALOG, RC_CATALOG } from "../../practice/catalog.gen";
 import { useContent } from "../../practice/content";
 import { HABIT_WINDOW, summaryHabits } from "../../practice/summary";
-import { accuracy, byPracticeType, crByKind, focusLines, MIN_TOTAL, paceTrend, rcByDifficulty, rcByGenre, rcByQuestionType, topTraps, type Row } from "../../practice/report";
+import { accuracy, byPracticeType, crByKind, focusLines, luckyGuesses, MIN_TOTAL, paceTrend, patterns, rcByDifficulty, rcByGenre, rcByQuestionType, topTraps, type Row } from "../../practice/report";
 
 /** CAT has about 2,000 words of RC; reading them in 10 minutes leaves time for the questions. */
 const EXAM_PACE = 200;
@@ -64,7 +66,9 @@ export function Report({ sec }: { sec: string }) {
   const levels = varc ? rcByDifficulty(state.rcAttempts, RC_CATALOG) : [];
   const crKinds = varc ? crByKind(state.crAttempts, CR_CATALOG) : [];
   const pace = paceTrend(state.speedRuns);
-  const lines = varc ? focusLines({ types, genres, traps, pace, examPace: EXAM_PACE }) : [];
+  const lines = varc ? focusLines({ types, genres, traps, pace, examPace: EXAM_PACE, pattern: patterns(state.errors, state.practice, todayIso(), sec)[0] }) : [];
+  const lucky = varc ? luckyGuesses(state) : [];
+  const luckyN = lucky.reduce((s, [, n]) => s + n, 0);
   const habits = summaryHabits(state.summaries);
 
   return (
@@ -87,8 +91,11 @@ export function Report({ sec }: { sec: string }) {
               The report card needs about {MIN_TOTAL} questions before it can say what to work on. You have done {attempted}. The daily RC and VA drill make about 12.
             </Empty>
           )}
+          {luckyN > 0 && <p className="measure text-base">You got {luckyN === 1 ? "1 answer" : `${luckyN} answers`} right while marked “Not sure”{lucky.length ? `, most in ${lucky[0][0].toLowerCase() === "rc" ? "RC" : lucky[0][0].toLowerCase()}` : ""}. They count in your score, and come back once in your <TextLink to="/practice/redo">redo queue</TextLink> to check the skill is really there.</p>}
         </Section>
       )}
+
+      {varc && <Fixing />}
 
       <Section title="Accuracy" description="Bars under 60% are red. Spend more drill time on those. A group with only a few questions can swing a lot, so check the count.">
         <div className="grid gap-x-12 gap-y-10 rounded-lg bg-card p-5 sm:p-6 md:grid-cols-2">

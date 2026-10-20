@@ -137,12 +137,26 @@ export interface VaPara {
  * catalog.gen.ts holds one of these per set, so the full passages can load only when a practice page opens.
  */
 /** lead is the opening paragraph's length in characters: the home page reserves that much room while the text loads. */
-export interface RcMeta { id: string; title: string; genre: Genre; difficulty: Difficulty; words: number; questions: number; lead: number; since?: string }
-export interface VaMeta { id: string; topic: string; difficulty: Difficulty; since?: string }
-export interface CrMeta { id: string; type: CrType; difficulty: Difficulty; topic: string }
+/** v is the content version (contentHash): it changes when a question, option or answer changes, so old attempts can tell. */
+export interface RcMeta { id: string; title: string; genre: Genre; difficulty: Difficulty; words: number; questions: number; lead: number; v: string; since?: string }
+export interface VaMeta { id: string; topic: string; difficulty: Difficulty; v: string; since?: string }
+export interface CrMeta { id: string; type: CrType; difficulty: Difficulty; topic: string; v: string }
+
+/**
+ * A short fingerprint (32-bit FNV-1a, 8 hex digits) of what decides an answer. Not for security; it only has to change
+ * when the content does. RC sets hash their questions, options and answers but not the passage, so fixing a typo in a
+ * paragraph does not mark old attempts as outdated.
+ */
+export function contentHash(x: unknown): string {
+  const str = JSON.stringify(x);
+  let h = 0x811c9dc5;
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193); }
+  return (h >>> 0).toString(16).padStart(8, "0");
+}
+export const rcVersion = (s: RcSet) => contentHash(s.questions.map((q) => [q.stem, q.options.map((o) => o.t), q.answer]));
 
 export function rcMeta(s: RcSet): RcMeta {
-  const m: RcMeta = { id: s.id, title: s.title, genre: s.genre, difficulty: s.difficulty, words: setWords(s), questions: s.questions.length, lead: s.paras[0].length };
+  const m: RcMeta = { id: s.id, title: s.title, genre: s.genre, difficulty: s.difficulty, words: setWords(s), questions: s.questions.length, lead: s.paras[0].length, v: rcVersion(s) };
   if (s.since) m.since = s.since;
   return m;
 }
@@ -157,9 +171,14 @@ export function rcLead(s: RcSet): [string, string] {
   const at = p.lastIndexOf(sents[sents.length - 1].trim());
   return [p.slice(0, at).trimEnd(), p.slice(at).trim()];
 }
-export const crMeta = (c: CrItem): CrMeta => ({ id: c.id, type: c.type, difficulty: c.difficulty, topic: c.topic });
+export const crMeta = (c: CrItem): CrMeta => ({ id: c.id, type: c.type, difficulty: c.difficulty, topic: c.topic, v: contentHash(c) });
+/** A VA paragraph's content version; its publishing date does not count. */
+export function vaVersion(p: VaPara): string {
+  const { since: _since, ...rest } = p;
+  return contentHash(rest);
+}
 export function vaMeta(p: VaPara): VaMeta {
-  const m: VaMeta = { id: p.id, topic: p.topic, difficulty: p.difficulty };
+  const m: VaMeta = { id: p.id, topic: p.topic, difficulty: p.difficulty, v: vaVersion(p) };
   if (p.since) m.since = p.since;
   return m;
 }

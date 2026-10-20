@@ -25,6 +25,8 @@ import { useResources } from "../sections/useResources";
 import { rcOfDay } from "../practice/daily";
 import { dueRedo } from "../practice/redo";
 import { FOCUS_DAYS, focusToday, reviewOf, reviewWeek } from "../practice/week";
+import { nextSteps } from "../practice/next";
+import { loadDraft, secsLeft } from "../practice/sectional";
 import { GENRES } from "../practice/types";
 import { DAILY_MIX } from "../practice/va/build";
 import { StreakBadge } from "../components/StreakBadge";
@@ -78,7 +80,7 @@ function LogForm({ sec, b, d }: { sec: SectionDef; b: PlacedBlock; d: string }) 
             <Field label="Wrong MCQ"><Input name="w" type="number" inputMode="numeric" min={0} max={sec.maxQ} required /></Field>
           </>
         )}
-        <Button type="submit" className="col-span-2 sm:col-span-1">Log and finish</Button>
+        <Button type="submit" variant="secondary" className="col-span-2 sm:col-span-1">Log and finish</Button>
       </div>
       <ErrorText>{err}</ErrorText>
     </form>
@@ -218,6 +220,7 @@ function SectionDay({ sec, d, today }: { sec: SectionDef; d: string; today: stri
 
   return (
     <Section
+      id={"plan-" + sec.id} className="scroll-mt-24"
       title={<>{sec.short}{blocks.length > 0 && ph.kind === "phase" && <span className="font-normal text-muted-foreground">, {ph.phase.name} phase</span>}</>}
       action={<div className="flex w-full items-center justify-between gap-3 sm:w-auto sm:justify-end"><TimeControl sec={sec} d={d} /><TextLink to={"/" + sec.id} className="relative text-sm after:absolute after:-inset-x-2 after:-inset-y-3 after:content-[''] sm:text-base">Resources</TextLink></div>}>
       {blocks.length > 0 && <Meta className="-mt-2">{blocks.length} block{blocks.length === 1 ? "" : "s"}, {total} min, {doneCount} done{timedTotal > 0 ? `, ${timedTotal} min timed` : ""}</Meta>}
@@ -316,6 +319,7 @@ export default function Today() {
         {isToday && coreLeft > 0 && <Badge variant="highlight">{coreLeft} core task{coreLeft > 1 ? "s" : ""} left</Badge>}
       </div>
 
+      {isToday && <StartHere today={today} />}
       {isToday && <ReviewCard today={today} />}
 
       {LIVE_SECTIONS.map((s) => <SectionDay key={s.id} sec={s} d={d} today={today} />)}
@@ -329,6 +333,31 @@ export default function Today() {
         <MustDo />
       </div>
     </Page>
+  );
+}
+
+/**
+ * One thing to do now, with its time and reason (F41). "Something else" shows the next suggestion, one at a time.
+ * It has the screen's one filled button and the highlighter's edge, because it is the thing that matters most here.
+ */
+function StartHere({ today }: { today: string }) {
+  const { state } = useStore();
+  const [skip, setSkip] = useState(0);
+  const [sectionalMinsLeft] = useState(() => { const d = loadDraft(); const left = d ? secsLeft(d, Date.now()) : 0; return left > 0 ? Math.ceil(left / 60) : null; });
+  const steps = nextSteps(state, today, { sectionalMinsLeft });
+  const s = steps[skip % steps.length];
+  return (
+    <div className="relative flex flex-col gap-4 overflow-hidden rounded-lg bg-card py-5 pr-5 pl-6 before:absolute before:inset-y-0 before:left-0 before:w-1.5 before:bg-highlight sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:py-6 sm:pr-6 sm:pl-7" aria-live="polite">
+      <div className="flex min-w-0 flex-col gap-1">
+        <Meta>Start here, about {s.mins} min</Meta>
+        <h2 className="text-heading font-semibold text-pretty">{s.title}</h2>
+        <p className="text-base text-muted-foreground">{s.why}</p>
+      </div>
+      <div className="flex shrink-0 flex-wrap items-center gap-2">
+        {s.to.startsWith("#") ? <Button asChild><a href={s.to}>Start</a></Button> : <LinkButton to={s.to}>Start</LinkButton>}
+        {steps.length > 1 && <Button variant="ghost" onClick={() => setSkip((k) => k + 1)}>Something else</Button>}
+      </div>
+    </div>
   );
 }
 

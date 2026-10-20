@@ -4,7 +4,14 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
+import { Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { reportUrl } from "../../data/site";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { CAUSES } from "../../data/traps";
+import { usePref } from "../../lib/prefs";
+import { CAUSE_IDS, type Cause } from "../../lib/state";
+import { useStore } from "../../lib/store";
 import { fmtSecs } from "../../practice/record";
 import { Tnum } from "../../components/kit";
 
@@ -48,6 +55,48 @@ export function useLeaveConfirmation(active: boolean) {
     },
     allowNextNavigation: () => { allowNextNavigation.current = true; },
   };
+}
+
+/**
+ * "Not sure": a quiet toggle beside a question while practising. A right answer marked this way was a lucky guess,
+ * so it comes back once in the redo queue (docs/research/step-2g.md). It can be turned off in Settings.
+ */
+export function NotSure({ on, onChange }: { on: boolean; onChange: (v: boolean) => void }) {
+  const [enabled] = usePref("notSure", true);
+  if (!enabled) return null;
+  return (
+    <Button variant="ghost" size="sm" aria-pressed={on} onClick={() => onChange(!on)} className={cn(on && "bg-mark/10 text-mark hover:bg-mark/15")}>
+      {on && <Check aria-hidden />}Not sure
+    </Button>
+  );
+}
+
+/**
+ * Under a wrong answer that is in the Error log: one tap for why it went wrong. The trap is already known from the
+ * option; this is what happened to the student, which they can change later in the Error log.
+ */
+export function ErrorCause({ src }: { src: string }) {
+  const { state, update } = useStore();
+  const e = [...state.errors].reverse().find((x) => x.src === src);
+  if (!e) return null;
+  const pick = (c: Cause) => update((st) => {
+    const x = st.errors.find((y) => y.id === e.id);
+    if (!x || x.cause === c) return;
+    if (x.cause && !x.causeWas) x.causeWas = x.cause;
+    x.cause = c;
+  });
+  return (
+    <div className="flex flex-col gap-2">
+      <p className="text-base"><span className="text-success">In your Error log.</span> Why did you miss it?</p>
+      <ToggleGroup type="single" value={e.cause ?? ""} onValueChange={(v) => v && pick(v as Cause)} aria-label="Why did you miss it" className="flex flex-wrap justify-start gap-2">
+        {CAUSE_IDS.map((c) => (
+          <ToggleGroupItem key={c} value={c} className="min-h-11 flex-none rounded-md bg-secondary px-3.5 text-base data-[state=on]:bg-card data-[state=on]:font-semibold data-[state=on]:text-primary data-[state=on]:ring-1 data-[state=on]:ring-inset data-[state=on]:ring-primary/40">
+            {CAUSES[c]}
+          </ToggleGroupItem>
+        ))}
+      </ToggleGroup>
+    </div>
+  );
 }
 
 /** The practice clock. It ticks on its own, so the passage and the questions do not redraw every second. */
