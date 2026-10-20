@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from "react";
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Menu, PanelLeftClose, PanelLeftOpen, Search, UserRound } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
@@ -84,15 +84,31 @@ const TABS = [
   { to: "/progress", label: "Progress", Icon: IconChart },
 ];
 
+const SEARCH_HISTORY_KEY = "__99ileSearchPalette";
+
 export default function Layout() {
   const [open, setOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
   const [searchUsed, setSearchUsed] = useState(false);
-  const openSearch = () => { setSearchUsed(true); setSearchOpen(true); };
   // Mounted from the first open on, so later opens and closes animate.
   const [menuUsed, setMenuUsed] = useState(false);
   const openMenu = () => { setMenuUsed(true); setOpen(true); };
   const loc = useLocation();
+  const navigate = useNavigate();
+  const routeState = loc.state && typeof loc.state === "object" ? loc.state as Record<string, unknown> : {};
+  const searchOpen = routeState[SEARCH_HISTORY_KEY] === true;
+  const openSearch = () => {
+    if (searchOpen) return;
+    setSearchUsed(true);
+    navigate(`${loc.pathname}${loc.search}${loc.hash}`, {
+      state: { ...routeState, [SEARCH_HISTORY_KEY]: true },
+      preventScrollReset: true,
+    });
+  };
+  const setSearchOpen = (nextOpen: boolean) => {
+    if (nextOpen) openSearch();
+    else if (searchOpen) navigate(-1);
+  };
+  const navigateFromSearch = (href: string) => navigate(href, { replace: searchOpen });
   const { run } = useFocus();
   useTheme();
   const [sidebarCollapsed, setSidebarCollapsed] = usePref<boolean>("sidebar-collapsed", false);
@@ -106,7 +122,7 @@ export default function Layout() {
     };
     window.addEventListener("keydown", onShortcut);
     return () => window.removeEventListener("keydown", onShortcut);
-  }, []);
+  }, [openSearch]);
   useEffect(() => {
     setOpen(false);
     if (loc.hash) {
@@ -159,10 +175,12 @@ export default function Layout() {
         {!sidebarCollapsed && <p className="px-3 text-sm text-muted-foreground">Free and open. Your data stays in this browser.</p>}
       </aside>
 
-      <main id="main" className={cn("min-w-0 px-gutter pt-6 pb-[calc(4rem+env(safe-area-inset-bottom))] lg:pt-12 lg:pb-8", landing && "lg:pt-8", run && "pb-44 lg:pb-36")}>
-        <Suspense fallback={<PageSkeleton />}><Outlet /></Suspense>
+      <div className={cn("min-w-0 px-gutter", !landing && "lg:flex lg:min-h-dvh lg:flex-col")}>
+        <main id="main" className={cn("min-w-0 pt-6 pb-[calc(4rem+env(safe-area-inset-bottom))] lg:flex-1 lg:pt-12 lg:pb-0.5", landing && "lg:pt-8", run && "pb-44 lg:pb-36")}>
+          <Suspense fallback={<PageSkeleton />}><Outlet /></Suspense>
+        </main>
         <SiteFooter />
-      </main>
+      </div>
 
       <FocusBar />
       <RedoSeeder />
@@ -182,7 +200,7 @@ export default function Layout() {
           <MenuSheet open={open} onOpenChange={setOpen} title={<Brand />}><Nav onPick={() => setOpen(false)} /></MenuSheet>
         </Suspense>
       )}
-      {searchUsed && <Suspense fallback={null}><SearchPalette open={searchOpen} onOpenChange={setSearchOpen} /></Suspense>}
+      {searchUsed && <Suspense fallback={null}><SearchPalette open={searchOpen} onOpenChange={setSearchOpen} onNavigate={navigateFromSearch} /></Suspense>}
     </div>
   );
 }
