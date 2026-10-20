@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
-import { useNavigate } from "react-router-dom";
 import { ArrowUpRight, BookOpen, CalendarDays, RotateCcw, Search, SearchX, X } from "lucide-react";
 import { Dialog } from "radix-ui";
 import { cn } from "@/lib/utils";
@@ -17,7 +16,7 @@ interface SearchResult {
   external?: boolean;
 }
 interface SearchGroup { title: string; results: SearchResult[]; more?: { label: string; href: string } }
-interface SearchPaletteProps { open: boolean; onOpenChange: (open: boolean) => void }
+interface SearchPaletteProps { open: boolean; onOpenChange: (open: boolean) => void; onNavigate: (href: string) => void }
 
 const PAGES = [
   { title: "Home", href: "/", keywords: "landing start" },
@@ -91,9 +90,8 @@ function sortMatches<T>(items: T[], scoreFor: (item: T) => number) {
     .map(({ item }) => item);
 }
 
-export default function SearchPalette({ open, onOpenChange }: SearchPaletteProps) {
+export default function SearchPalette({ open, onOpenChange, onNavigate }: SearchPaletteProps) {
   const { state } = useStore();
-  const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [resourceData, setResourceData] = useState<{ sectionId: string; resources: Resource[]; categories: { id: string; n: string }[] }[]>([]);
   const [resourceLoading, setResourceLoading] = useState(false);
@@ -177,9 +175,9 @@ export default function SearchPalette({ open, onOpenChange }: SearchPaletteProps
     if (selected) document.getElementById(`search-result-${selected.id}`)?.scrollIntoView({ block: "nearest" });
   }, [selected]);
   const choose = (result: SearchResult) => {
-    onOpenChange(false);
     if (result.external) window.open(result.href, "_blank", "noopener,noreferrer");
-    else navigate(result.href);
+    if (result.external) onOpenChange(false);
+    else onNavigate(result.href);
   };
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Home" && flatResults.length) { event.preventDefault(); setActive(0); }
