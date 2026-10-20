@@ -96,6 +96,9 @@ export default function Layout() {
   const navigate = useNavigate();
   const routeState = loc.state && typeof loc.state === "object" ? loc.state as Record<string, unknown> : {};
   const searchOpen = routeState[SEARCH_HISTORY_KEY] === true;
+  useEffect(() => {
+    if (searchOpen) setSearchUsed(true);
+  }, [searchOpen]);
   const openSearch = () => {
     if (searchOpen) return;
     setSearchUsed(true);
@@ -175,8 +178,8 @@ export default function Layout() {
         {!sidebarCollapsed && <p className="px-3 text-sm text-muted-foreground">Free and open. Your data stays in this browser.</p>}
       </aside>
 
-      <div className={cn("min-w-0 px-gutter", !landing && "lg:flex lg:min-h-dvh lg:flex-col")}>
-        <main id="main" className={cn("min-w-0 pt-6 pb-[calc(4rem+env(safe-area-inset-bottom))] lg:flex-1 lg:pt-12 lg:pb-0.5", landing && "lg:pt-8", run && "pb-44 lg:pb-36")}>
+      <div className={cn("min-w-0 px-gutter pb-[calc(4.5rem+env(safe-area-inset-bottom))] lg:pb-0", !landing && "lg:flex lg:min-h-dvh lg:flex-col")}>
+        <main id="main" className={cn("min-w-0 pt-6 pb-6 lg:flex-1 lg:pt-12 lg:pb-0.5", landing && "lg:pt-8", run && "pb-44 lg:pb-36")}>
           <Suspense fallback={<PageSkeleton />}><Outlet /></Suspense>
         </main>
         <SiteFooter />

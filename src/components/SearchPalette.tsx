@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
-import { ArrowUpRight, BookOpen, CalendarDays, RotateCcw, Search, SearchX, X } from "lucide-react";
+import { ArrowRight, ArrowUpRight, BookOpen, CalendarDays, Command, RotateCcw, Search, SearchX, X } from "lucide-react";
 import { Dialog } from "radix-ui";
 import { cn } from "@/lib/utils";
 import { shortDate } from "../lib/date";
+import { usePref } from "../lib/prefs";
 import { useStore } from "../lib/store";
 import { SECTION_BY_ID, SECTIONS } from "../sections";
 import type { Resource } from "../sections/types";
@@ -90,8 +91,60 @@ function sortMatches<T>(items: T[], scoreFor: (item: T) => number) {
     .map(({ item }) => item);
 }
 
+const TOUR_STEPS = [
+  { title: "Your whole study space, one search away", detail: "Open search from the magnifying glass, or press ⌘K on Mac / Ctrl+K on Windows." },
+  { title: "Search the way you remember it", detail: "Try a page name, a book, or a phrase from a saved word, note, or mistake. The closest matches come first." },
+  { title: "Go straight to the next step", detail: "Choose a result to jump there. On a keyboard, use the arrow keys and press Enter." },
+];
+
+function SearchTourArt({ step }: { step: number }) {
+  if (step === 0) return (
+    <div className="flex min-h-36 items-center justify-center rounded-2xl bg-muted/60 p-5">
+      <div className="flex items-center gap-4 rounded-2xl bg-card px-5 py-4">
+        <span className="grid size-12 place-items-center rounded-xl bg-accent text-primary"><Search className="size-6" aria-hidden /></span>
+        <span className="flex flex-col gap-1.5">
+          <span className="text-sm font-semibold">Open search</span>
+          <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground"><Command className="size-4" aria-hidden /><kbd className="rounded-md bg-muted px-2 py-1">K</kbd><span>from anywhere</span></span>
+        </span>
+      </div>
+    </div>
+  );
+
+  if (step === 1) return (
+    <div className="flex min-h-36 flex-col justify-center gap-3 rounded-2xl bg-muted/60 p-4">
+      <div className="flex h-11 items-center gap-3 rounded-xl bg-card px-3 text-sm text-muted-foreground">
+        <Search className="size-5 text-primary" aria-hidden /><span>progress</span>
+      </div>
+      <div className="rounded-xl bg-card p-3">
+        <p className="text-sm font-medium text-muted-foreground">Pages</p>
+        <div className="mt-2 flex items-center gap-3 rounded-lg bg-accent px-3 py-2.5 text-sm font-semibold text-accent-foreground">
+          <BookOpen className="size-5 shrink-0" aria-hidden /><span><mark className="rounded-sm bg-highlight px-0.5 text-highlight-foreground">Progress</mark></span>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="flex min-h-36 flex-col justify-center gap-3 rounded-2xl bg-muted/60 p-4">
+      <div className="flex items-center gap-3 rounded-xl bg-accent px-3 py-3 text-accent-foreground">
+        <BookOpen className="size-5 shrink-0" aria-hidden />
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-sm font-semibold">Progress</span>
+          <span className="block text-sm text-muted-foreground">Open page</span>
+        </span>
+        <ArrowRight className="size-5 shrink-0" aria-hidden />
+      </div>
+      <p className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+        <kbd className="rounded-md bg-card px-2 py-1">↑</kbd><kbd className="rounded-md bg-card px-2 py-1">↓</kbd>
+        <span>move</span><span className="px-1">·</span><kbd className="rounded-md bg-card px-2 py-1">Enter</kbd><span>open</span>
+      </p>
+    </div>
+  );
+}
+
 export default function SearchPalette({ open, onOpenChange, onNavigate }: SearchPaletteProps) {
   const { state } = useStore();
+  const [tourSeen, setTourSeen] = usePref("search-tour-seen", false);
   const [query, setQuery] = useState("");
   const [resourceData, setResourceData] = useState<{ sectionId: string; resources: Resource[]; categories: { id: string; n: string }[] }[]>([]);
   const [resourceLoading, setResourceLoading] = useState(false);
@@ -99,6 +152,7 @@ export default function SearchPalette({ open, onOpenChange, onNavigate }: Search
   const [resourceError, setResourceError] = useState(false);
   const [reloadCount, setReloadCount] = useState(0);
   const [active, setActive] = useState(0);
+  const [tourStep, setTourStep] = useState(0);
   const input = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -116,7 +170,7 @@ export default function SearchPalette({ open, onOpenChange, onNavigate }: Search
     return () => { live = false; };
   }, [resourceLoaded, reloadCount]);
 
-  useEffect(() => { if (open) { setQuery(""); setActive(0); requestAnimationFrame(() => input.current?.focus()); } }, [open]);
+  useEffect(() => { if (open) { setQuery(""); setActive(0); setTourStep(0); requestAnimationFrame(() => input.current?.focus()); } }, [open]);
 
   const groups = useMemo<SearchGroup[]>(() => {
     const q = query.trim().toLocaleLowerCase();
@@ -175,6 +229,7 @@ export default function SearchPalette({ open, onOpenChange, onNavigate }: Search
     if (selected) document.getElementById(`search-result-${selected.id}`)?.scrollIntoView({ block: "nearest" });
   }, [selected]);
   const choose = (result: SearchResult) => {
+    setTourSeen(true);
     if (result.external) window.open(result.href, "_blank", "noopener,noreferrer");
     if (result.external) onOpenChange(false);
     else onNavigate(result.href);
@@ -186,9 +241,14 @@ export default function SearchPalette({ open, onOpenChange, onNavigate }: Search
     if (event.key === "ArrowUp" && flatResults.length) { event.preventDefault(); setActive((value) => Math.max(value - 1, 0)); }
     if (event.key === "Enter" && selected) { event.preventDefault(); choose(selected); }
   };
+  const finishTour = () => { setTourSeen(true); input.current?.focus(); };
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen && !tourSeen && !query.trim()) setTourSeen(true);
+    onOpenChange(nextOpen);
+  };
 
   return (
-    <Dialog.Root open={open} onOpenChange={onOpenChange}>
+    <Dialog.Root open={open} onOpenChange={handleOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-[100] bg-foreground/25 backdrop-blur-sm" />
         <Dialog.Content className="fixed top-[10vh] left-1/2 z-[101] flex max-h-[80dvh] w-[min(44rem,calc(100vw-2rem))] -translate-x-1/2 flex-col overflow-hidden rounded-2xl bg-card shadow-2xl outline-none max-sm:top-3 max-sm:max-h-[calc(100dvh-1.5rem)] max-sm:w-[calc(100vw-1.5rem)]">
@@ -196,7 +256,7 @@ export default function SearchPalette({ open, onOpenChange, onNavigate }: Search
           <Dialog.Description className="sr-only">Search books, study resources, saved words, notes, mistakes and pages.</Dialog.Description>
           <div className="flex h-16 shrink-0 items-center gap-3 border-b border-border/70 px-4 sm:h-[4.5rem] sm:px-5">
             <Search className="size-5 shrink-0 text-primary" aria-hidden />
-            <input ref={input} value={query} onChange={(event) => { setQuery(event.target.value); setActive(0); }} onKeyDown={onKeyDown}
+            <input ref={input} value={query} onChange={(event) => { if (event.target.value.trim()) setTourSeen(true); setQuery(event.target.value); setActive(0); }} onKeyDown={onKeyDown}
               role="combobox" aria-expanded="true" aria-controls="search-results" aria-activedescendant={selected ? `search-result-${selected.id}` : undefined}
               aria-autocomplete="list" placeholder="Search books, words, notes…" className="h-full min-w-0 flex-1 bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground/75 sm:text-lg" />
             {query && <button type="button" onClick={() => { setQuery(""); setActive(0); input.current?.focus(); }} aria-label="Clear search" className="grid size-10 shrink-0 place-items-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"><X className="size-5" aria-hidden /></button>}
@@ -204,7 +264,24 @@ export default function SearchPalette({ open, onOpenChange, onNavigate }: Search
           </div>
 
           <div id="search-results" className="min-h-0 flex-1 overflow-y-auto p-3 sm:p-4">
-            {!query.trim() ? <div className="flex flex-col gap-4 px-1 py-2 sm:px-2">
+            {!query.trim() && !tourSeen ? <div className="mx-auto flex w-full max-w-xl flex-col gap-4 px-1 py-2 sm:gap-5 sm:px-2">
+              <div role="group" aria-label={`Step ${tourStep + 1} of ${TOUR_STEPS.length}`} className="flex items-center gap-2">
+                {TOUR_STEPS.map((step, index) => <span key={step.title} className={cn("h-1.5 flex-1 rounded-full", index <= tourStep ? "bg-primary" : "bg-muted")} />)}
+                <span className="ml-1 shrink-0 text-sm text-muted-foreground">{tourStep + 1} of {TOUR_STEPS.length}</span>
+              </div>
+              <SearchTourArt step={tourStep} />
+              <div className="min-h-16">
+                <h2 className="text-lg font-semibold sm:text-xl">{TOUR_STEPS[tourStep].title}</h2>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground sm:text-base">{TOUR_STEPS[tourStep].detail}</p>
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <button type="button" onClick={finishTour} className="min-h-11 rounded-lg px-3 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">Skip tour</button>
+                <button type="button" onClick={() => tourStep + 1 < TOUR_STEPS.length ? setTourStep((step) => step + 1) : finishTour()}
+                  className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none">
+                  {tourStep + 1 < TOUR_STEPS.length ? "Next" : "Try search"}<ArrowRight className="size-4" aria-hidden />
+                </button>
+              </div>
+            </div> : !query.trim() ? <div className="flex flex-col gap-4 px-1 py-2 sm:px-2">
               <div>
                 <p className="text-base font-semibold sm:text-lg">Search your study space</p>
                 <p className="mt-1 text-sm text-muted-foreground">Find a page, book, saved word, note, or mistake.</p>
@@ -222,6 +299,10 @@ export default function SearchPalette({ open, onOpenChange, onNavigate }: Search
                   </button>
                 ))}
               </div>
+              <button type="button" onClick={() => { setTourStep(0); setTourSeen(false); }}
+                className="min-h-10 self-start text-sm font-medium text-primary underline underline-offset-4 hover:decoration-2 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
+                See how search works
+              </button>
             </div> : groups.length ? <div role="listbox" aria-label="Search results">
               {groups.map((group) => <section key={group.title} role="group" aria-label={group.title} className="mb-3 last:mb-0">
               <h2 className="px-3 pb-1 pt-2 text-sm font-semibold text-muted-foreground">{group.title}</h2>
