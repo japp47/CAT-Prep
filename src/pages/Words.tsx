@@ -69,7 +69,7 @@ export default function Words() {
           <Field label="Word"><Input name="w" required placeholder="ostensibly" /></Field>
           <Field label="Meaning"><Input name="m" required placeholder="apparently, but not actually" /></Field>
           <Field label="Seen in"><Input name="s" placeholder="Aeon essay on complex systems" /></Field>
-          <Button type="submit">Add word</Button>
+          <Button type="submit" variant="secondary">Add word</Button>
         </form>
       </Section>
 

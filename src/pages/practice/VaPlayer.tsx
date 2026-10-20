@@ -122,7 +122,7 @@ function DrillAttempt({ items, mode, draftKey, onDone }: { items: VaItem[]; mode
     <Page width="read" className="gap-6 lg:gap-8">
       <PlayerBar kicker={`${mode === "daily" ? "Today's VA drill" : "Custom VA drill"}, ${items.length} questions`} title={VA_KIND[item.kind].label}>
         <ElapsedTimer startAt={startAt} target={items.length * SECS_PER_ITEM} />
-        <Button size="sm" onClick={() => setConfirming(true)}>Submit drill</Button>
+        <Button size="sm" variant="secondary" onClick={() => setConfirming(true)}>Submit drill</Button>
       </PlayerBar>
       {resumed && saved && <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-card px-4 py-3">
         <p className="text-sm text-muted-foreground">Your saved answers are back. The timer paused while you were away ({fmtSecs(saved.secs)} elapsed).</p>

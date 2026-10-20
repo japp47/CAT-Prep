@@ -24,6 +24,7 @@ import type { SectionDef } from "../sections/types";
 import { useResources } from "../sections/useResources";
 import { rcOfDay } from "../practice/daily";
 import { dueRedo } from "../practice/redo";
+import { FOCUS_DAYS, focusToday, reviewOf, reviewWeek } from "../practice/week";
 import { GENRES } from "../practice/types";
 import { DAILY_MIX } from "../practice/va/build";
 import { StreakBadge } from "../components/StreakBadge";
@@ -218,7 +219,7 @@ function SectionDay({ sec, d, today }: { sec: SectionDef; d: string; today: stri
   return (
     <Section
       title={<>{sec.short}{blocks.length > 0 && ph.kind === "phase" && <span className="font-normal text-muted-foreground">, {ph.phase.name} phase</span>}</>}
-      action={<div className="flex w-full items-center justify-between gap-3 sm:w-auto sm:justify-end"><TimeControl sec={sec} d={d} /><TextLink to={"/" + sec.id} className="text-sm sm:text-base">Resources</TextLink></div>}>
+      action={<div className="flex w-full items-center justify-between gap-3 sm:w-auto sm:justify-end"><TimeControl sec={sec} d={d} /><TextLink to={"/" + sec.id} className="relative text-sm after:absolute after:-inset-x-2 after:-inset-y-3 after:content-[''] sm:text-base">Resources</TextLink></div>}>
       {blocks.length > 0 && <Meta className="-mt-2">{blocks.length} block{blocks.length === 1 ? "" : "s"}, {total} min, {doneCount} done{timedTotal > 0 ? `, ${timedTotal} min timed` : ""}</Meta>}
       {carry && (
         <div className="flex flex-col items-start gap-2 rounded-lg bg-warning-soft px-4 py-3 text-sm sm:flex-row sm:items-center sm:justify-between sm:text-base">
@@ -315,6 +316,8 @@ export default function Today() {
         {isToday && coreLeft > 0 && <Badge variant="highlight">{coreLeft} core task{coreLeft > 1 ? "s" : ""} left</Badge>}
       </div>
 
+      {isToday && <ReviewCard today={today} />}
+
       {LIVE_SECTIONS.map((s) => <SectionDay key={s.id} sec={s} d={d} today={today} />)}
 
       {isToday && <PracticeToday today={today} />}
@@ -329,13 +332,38 @@ export default function Today() {
   );
 }
 
+/** From Saturday evening to Monday: the weekly review is ready. "Not now" hides it until next Saturday. */
+function ReviewCard({ today }: { today: string }) {
+  const { state, update } = useStore();
+  const monday = reviewWeek(today, new Date().getHours());
+  if (!monday || reviewOf(state, monday)) return null;
+  const skip = () => update((st) => { if (!st.weekReviews.some((r) => r.id === monday)) st.weekReviews.push({ id: monday, d: today, updatedAt: Date.now(), days: [], closed: true, skipped: true }); });
+  return (
+    <div className="flex flex-col gap-3 rounded-lg bg-card p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:p-6">
+      <div className="flex flex-col gap-1">
+        <h2 className="text-heading font-semibold">Your week in review is ready</h2>
+        <p className="text-base text-muted-foreground">Two minutes: what moved this week, and one focus for the next.</p>
+      </div>
+      <div className="flex shrink-0 flex-wrap gap-2">
+        <LinkButton to="/review" variant="secondary">Open the review</LinkButton>
+        <Button variant="ghost" onClick={skip}>Not now</Button>
+      </div>
+    </div>
+  );
+}
+
 /** The two daily sets, so the timetable's RC and VA blocks have something to open on this site. */
 function PracticeToday({ today }: { today: string }) {
-  const { state } = useStore();
+  const { state, update } = useStore();
   const rc = rcOfDay(today);
   const rcTry = state.rcAttempts.filter((a) => a.set === rc.id && a.d === today).pop();
   const vaTry = state.vaAttempts.filter((a) => a.mode === "daily" && a.d === today).pop();
   const redo = dueRedo(state.redo, today).length;
+  const focus = focusToday(state, today);
+  const markFocus = () => update((st) => {
+    const r = st.weekReviews.find((x) => x.id === focus?.review.id);
+    if (r) { r.days = r.days.includes(today) ? r.days.filter((x) => x !== today) : [...r.days, today]; r.updatedAt = Date.now(); }
+  });
   const rows: { label: string; to: string; title: string; done?: string; go: string }[] = [
     { label: `RC of the day, ${GENRES[rc.genre].toLowerCase()}`, to: rcTry ? `/practice/rc/${rc.id}?review=${rcTry.id}` : `/practice/rc/${rc.id}`, title: rc.title, done: rcTry && `${rcTry.c} of ${rc.questions} correct`, go: rcTry ? "Review" : "Start" },
     { label: "Daily VA drill", to: "/practice/va", title: `${DAILY_MIX.length} questions, all four VA types`, done: vaTry && `${vaTry.items.filter((i) => i.ok).length} of ${vaTry.items.length} correct`, go: vaTry ? "Review" : "Start" },
@@ -344,6 +372,19 @@ function PracticeToday({ today }: { today: string }) {
   return (
     <Section title="Practice on this site today" action={<TextLink to="/practice" className="text-base">All practice</TextLink>} description="Scores log themselves in Progress. Tick the matching timetable block when you are done.">
       <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        {focus && (
+          <li className="grid gap-3 rounded-lg bg-card p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-x-6 sm:p-5 md:col-span-2 xl:col-span-3">
+            <div className="flex min-w-0 flex-col gap-1">
+              <Meta>Focus of the week, from your weekly review{focus.left ? `, ${focus.left} of ${FOCUS_DAYS} days left` : ""}</Meta>
+              <p className="text-base font-semibold text-pretty">{focus.rec.text}</p>
+              {focus.doneToday && <p className="text-base text-success">Done today.</p>}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {focus.rec.to && !focus.doneToday && <LinkButton to={focus.rec.to} size="sm" variant="secondary">Practise it</LinkButton>}
+              <Button size="sm" variant="ghost" onClick={markFocus}>{focus.doneToday ? "Undo" : "Mark done for today"}</Button>
+            </div>
+          </li>
+        )}
         {rows.map((r) => (
           <li key={r.label} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 rounded-lg bg-card p-4 sm:gap-x-4 sm:p-5">
             <div className="flex min-w-0 flex-col gap-1">

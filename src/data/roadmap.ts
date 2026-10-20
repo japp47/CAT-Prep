@@ -11,10 +11,10 @@ export const ROADMAP: RoadGroup[] = [
     { title: "Critical reasoning drill", text: "30 original questions in the six types XAT asks: assumption, strengthen, weaken, inference, flaw and paradox. Every option shows the trap it sets, wrong answers join your redo queue and Error log, and Progress shows your accuracy by type." },
     { title: "Report card and percentile estimator", text: "Progress now shows what to work on: accuracy by question type, RC question kind, genre and difficulty, reading pace over time and the traps that cost you most. Set a target percentile in Plan, and turn any score into an estimated percentile, from two years of published tables, with a grid of what attempts and accuracy are worth." },
     { title: "Install as an app and work offline", text: "Add the site to your home screen and open it without internet. A daily study reminder goes straight into Google, Apple or Outlook calendar." },
+    { title: "Mock analysis", text: "A guided 15-minute review after any mock or sectional: mark what went wrong and why, re-try the doable skips, see where the marks went, and keep at most three actions for the next mock." },
+    { title: "Weekly review", text: "From Saturday evening to Monday: what you did this week, which question types improved or slipped, the trap that cost most, and one focus for next week that shows on Today until you have done it three times." },
   ] },
   { title: "Next up", status: "In progress", items: [
-    { title: "Mock analysis wizard", text: "A guided 20-minute review after any coaching mock: time per question, skipped versus wrong, and traps. The result shapes next week's plan." },
-    { title: "Sunday review", text: "A short weekly report on what improved, your weakest area and what to focus on next. The plan updates itself." },
     { title: "Optional sign-in and sync", text: "Use the site as a guest as today, or sign in with email or Google so your plan and logs follow you across phone and laptop." },
     { title: "DILR section", text: "Concepts, set types, a set player with MCQ and TITA questions, past paper sets and a phase plan with its own time settings." },
     { title: "Quant section", text: "Topic-wise plan for arithmetic, algebra, geometry, numbers and modern maths, with formula sheets and timed drills." },

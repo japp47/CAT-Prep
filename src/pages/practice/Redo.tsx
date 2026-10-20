@@ -13,7 +13,7 @@ import { CR_TYPE, RC_QTYPE } from "../../practice/types";
 import { cleanAnswer, scoreItem, VA_KIND } from "../../practice/va/build";
 import { Choice, ChoiceGroup, Confirm, useLeaveConfirmation } from "./common";
 import { CrQuestion, CrReview } from "./CrPlayer";
-import { PaneSwitch, Passage, ReviewQuestion, Split } from "./RcPlayer";
+import { PaneJump, PaneSwitch, Passage, ReviewQuestion, showQuestion, Split } from "./RcPlayer";
 import { ItemInput, ItemReview } from "./VaPlayer";
 
 const HOW = `Every question you get wrong or skip in Practice comes back here after ${REDO_GAPS[0]} day. Get it right and it returns after ${REDO_GAPS[1]} days, then ${REDO_GAPS[2]}. Right ${REDO_GAPS.length} times in a row and it leaves the queue. A miss starts it again from tomorrow.`;
@@ -138,6 +138,7 @@ function RedoQuestion({ c, k, n, of, onAnswered, onNext }: { c: Content; k: stri
             {actions}
           </>
         </Split>
+        {pane === "p" && <PaneJump onClick={() => showQuestion(setPane)}>Question</PaneJump>}
         </>
       ) : ref.kind === "cr" ? (
         <div className="mx-auto flex w-full max-w-[760px] flex-col gap-5">

@@ -64,6 +64,41 @@ export interface SummaryEntry {
   set?: string; att?: string; from?: string; title?: string; url?: string;
 }
 
+/** What happened to the student on a question they got wrong. Labels are in data/traps.ts (CAUSES). */
+export type Cause = "misread" | "qualifier" | "beyond" | "trap" | "method" | "slip" | "guess" | "select" | "time";
+export const CAUSE_IDS: Cause[] = ["misread", "qualifier", "beyond", "trap", "method", "slip", "guess", "select", "time"];
+/**
+ * One question of a reviewed mock. type is "rc" or a VA kind ("ps", "si", "oso", "pj").
+ * Right answers can be slow; wrong ones carry a cause; skipped or unreached ones say whether they were doable (could),
+ * and, for doable ones re-tried untimed after the mock, whether they were solved.
+ */
+export interface MockQ { st: "right" | "wrong" | "skip" | "unseen"; type: string; slow?: boolean; cause?: Cause; could?: boolean; solved?: boolean; secs?: number }
+/**
+ * A guided review of one mock or sectional (docs/feature.md, F12). mock is the Mock row it explains; att the sectional
+ * when it came from this site. layout gives the questions per RC passage, then the VA questions by kind, in grid order.
+ * recs are the recommendations kept at the end.
+ */
+export interface MockReview {
+  id: string; d: string; updatedAt: number; mock: string; sec: string; from: "manual" | "sectional"; att?: string; name: string;
+  layout: { rc: number[]; va: string[] }; planned?: number; qs: MockQ[]; recs: string[];
+}
+/**
+ * A suggestion made to the student, with its evidence, kept so we can later tell whether it helped (F43).
+ * skill names what it targets; before and after are right answers out of attempted on that skill.
+ */
+export interface Recommendation {
+  id: string; d: string; updatedAt: number; from: "mock" | "week" | "next"; src?: string; sec: string;
+  skill: { kind: "type" | "cause" | "pace" | "skips" | "redo"; key: string }; text: string; why: string; to?: string;
+  status: "open" | "done" | "dismissed"; before?: { c: number; n: number }; after?: { c: number; n: number; d: string };
+}
+
+/**
+ * One weekly review (F13). id is the Monday of the week reviewed. focus is the recommendation chosen for the next week,
+ * or absent for "no focus"; days are the dates in that next week the focus was done (it asks for three).
+ * closed means the review card was dismissed or the review saved; skipped, that it was dismissed with "Not now".
+ */
+export interface WeekReview { id: string; d: string; updatedAt: number; focus?: string; light?: boolean; note?: string; days: string[]; closed: boolean; skipped?: boolean }
+
 export interface AppState {
   version: 4;
   ticks: Record<string, 1>;
@@ -81,6 +116,9 @@ export interface AppState {
   redo: RedoItem[];
   sectionals: SectionalAttempt[];
   summaries: SummaryEntry[];
+  mockReviews: MockReview[];
+  recs: Recommendation[];
+  weekReviews: WeekReview[];
   /** False for saves from before the redo queue; RedoSeeder then builds the queue from past attempts. */
   redoSeeded: boolean;
   /** The percentile the student is aiming for in each section. Only VARC has percentile tables so far. */
@@ -92,7 +130,7 @@ const emptyDow = () => [null, null, null, null, null, null, null] as (number | n
 export function blankState(): AppState {
   const settings = {} as Record<SectionId, TimeSettings>;
   SECTION_IDS.forEach((id) => (settings[id] = { ...DEFAULT_TIME[id], dow: emptyDow() }));
-  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], crAttempts: [], speedRuns: [], redo: [], sectionals: [], summaries: [], redoSeeded: true, targets: { varc: DEFAULT_TARGET } };
+  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], crAttempts: [], speedRuns: [], redo: [], sectionals: [], summaries: [], mockReviews: [], recs: [], weekReviews: [], redoSeeded: true, targets: { varc: DEFAULT_TARGET } };
 }
 
 type Obj = Record<string, unknown>;
@@ -171,6 +209,50 @@ export function normalize(raw: unknown): AppState {
     (["set", "att", "from", "title", "url"] as const).forEach((k) => { const v = x[k]; if (typeof v === "string" && v) e[k] = v; });
     return e;
   }).filter((e) => e.id && e.text.trim() && isIsoDate(e.d));
+  b.mockReviews = list(raw.mockReviews, (x) => {
+    const layout = isObj(x.layout) ? x.layout : {};
+    const r: MockReview = {
+      id: str(x.id), d: str(x.d), updatedAt: num(x.updatedAt), mock: str(x.mock), sec: str(x.sec) || "VARC",
+      from: x.from === "sectional" ? "sectional" : "manual", name: str(x.name),
+      layout: { rc: Array.isArray(layout.rc) ? layout.rc.map((n: unknown) => clamp(Math.round(num(n)), 1, 10)) : [], va: Array.isArray(layout.va) ? layout.va.map(str) : [] },
+      qs: list(x.qs, (q) => {
+        const o: MockQ = { st: q.st === "wrong" || q.st === "skip" || q.st === "unseen" ? q.st : "right", type: str(q.type) };
+        if (q.slow === true) o.slow = true;
+        if ((CAUSE_IDS as unknown[]).includes(q.cause)) o.cause = q.cause as Cause;
+        if (typeof q.could === "boolean") o.could = q.could;
+        if (typeof q.solved === "boolean") o.solved = q.solved;
+        if (isFinite(Number(q.secs)) && q.secs != null) o.secs = num(q.secs);
+        return o;
+      }),
+      recs: Array.isArray(x.recs) ? x.recs.map(str) : [],
+    };
+    if (typeof x.att === "string" && x.att) r.att = x.att;
+    if (isFinite(Number(x.planned)) && x.planned != null) r.planned = Math.round(num(x.planned));
+    return r;
+  }).filter((r) => r.id && isIsoDate(r.d) && r.qs.length);
+  const KINDS = ["type", "cause", "pace", "skips", "redo"] as const;
+  b.recs = list(raw.recs, (x) => {
+    const sk = isObj(x.skill) ? x.skill : {};
+    const r: Recommendation = {
+      id: str(x.id), d: str(x.d), updatedAt: num(x.updatedAt), from: x.from === "week" || x.from === "next" ? x.from : "mock", sec: str(x.sec) || "VARC",
+      skill: { kind: (KINDS as readonly unknown[]).includes(sk.kind) ? (sk.kind as Recommendation["skill"]["kind"]) : "type", key: str(sk.key) },
+      text: str(x.text), why: str(x.why), status: x.status === "done" || x.status === "dismissed" ? x.status : "open",
+    };
+    if (typeof x.src === "string" && x.src) r.src = x.src;
+    if (typeof x.to === "string" && x.to.startsWith("/")) r.to = x.to;
+    const cn = (o: unknown) => (isObj(o) ? { c: num(o.c), n: num(o.n) } : undefined);
+    if (cn(x.before)) r.before = cn(x.before);
+    if (isObj(x.after) && isIsoDate(x.after.d)) r.after = { ...cn(x.after)!, d: x.after.d };
+    return r;
+  }).filter((r) => r.id && isIsoDate(r.d) && r.text.trim());
+  b.weekReviews = list(raw.weekReviews, (x) => {
+    const r: WeekReview = { id: str(x.id), d: str(x.d), updatedAt: num(x.updatedAt), days: Array.isArray(x.days) ? x.days.filter(isIsoDate) : [], closed: x.closed !== false };
+    if (typeof x.focus === "string" && x.focus) r.focus = x.focus;
+    if (x.light === true) r.light = true;
+    if (x.skipped === true) r.skipped = true;
+    if (typeof x.note === "string" && x.note.trim()) r.note = x.note.slice(0, 300);
+    return r;
+  }).filter((r) => isIsoDate(r.id) && isIsoDate(r.d));
   if (Array.isArray(raw.redo)) {
     b.redo = list(raw.redo, (x) => {
       const r: RedoItem = { k: str(x.k), added: str(x.added), due: str(x.due), box: clamp(num(x.box), 0, 9), tries: num(x.tries) };
