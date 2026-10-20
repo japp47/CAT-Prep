@@ -1,5 +1,5 @@
 import { lazy, useEffect } from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { createBrowserRouter, createRoutesFromElements, Outlet, Route, useLocation } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
@@ -63,40 +63,47 @@ function usePreload() {
   }, []);
 }
 
-export default function App() {
+function App() {
   usePreload();
   return (
     <>
       <Title />
-      <Routes>
-        <Route element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="today" element={<Today />} />
-          <Route path="plan" element={<Plan />} />
-          <Route path="practice" element={<PracticeHub />} />
-          <Route path="practice/library" element={<Library />} />
-          <Route path="practice/rc/:id" element={<RcPlayer />} />
-          <Route path="practice/va" element={<VaPlayer />} />
-          <Route path="practice/cr" element={<CrPlayer />} />
-          <Route path="practice/speed" element={<SpeedTest />} />
-          <Route path="practice/redo" element={<Redo />} />
-          <Route path="practice/sectional" element={<Sectional />} />
-          <Route path="practice/sectional/:id" element={<SectionalReview />} />
-          <Route path="progress" element={<Progress />} />
-          <Route path="errors" element={<Errors />} />
-          <Route path="words" element={<Words />} />
-          <Route path="journal" element={<Journal />} />
-          <Route path="updates" element={<Updates />} />
-          <Route path="exams" element={<Exams />} />
-          <Route path="guides" element={<GuideList />} />
-          <Route path="guides/:id" element={<GuidePage />} />
-          <Route path="stories" element={<Stories />} />
-          <Route path="roadmap" element={<Roadmap />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path=":id" element={<Section />} />
-          <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
+      <Outlet />
     </>
   );
 }
+
+export const router = createBrowserRouter(createRoutesFromElements(
+  <Route element={<App />}>
+    <Route element={<Layout />}>
+      <Route index element={<Home />} />
+      <Route path="today" element={<Today />} />
+      <Route path="plan" element={<Plan />} />
+      <Route path="practice" element={<PracticeHub />} />
+      <Route path="practice/library" element={<Library />} />
+      <Route path="practice/rc/:id" element={<RcPlayer />} />
+      <Route path="practice/va" element={<VaPlayer />} />
+      <Route path="practice/cr" element={<CrPlayer />} />
+      <Route path="practice/speed" element={<SpeedTest />} />
+      <Route path="practice/redo" element={<Redo />} />
+      <Route path="practice/sectional" element={<Sectional />} />
+      <Route path="practice/sectional/:id" element={<SectionalReview />} />
+      <Route path="progress" element={<Progress />} />
+      <Route path="errors" element={<Errors />} />
+      <Route path="words" element={<Words />} />
+      <Route path="journal" element={<Journal />} />
+      <Route path="updates" element={<Updates />} />
+      <Route path="exams" element={<Exams />} />
+      <Route path="guides" element={<GuideList />} />
+      <Route path="guides/:id" element={<GuidePage />} />
+      <Route path="stories" element={<Stories />} />
+      <Route path="roadmap" element={<Roadmap />} />
+      <Route path="settings" element={<Settings />} />
+      <Route path=":id" element={<Section />} />
+      <Route path="*" element={<NotFound />} />
+    </Route>
+  </Route>,
+), {
+  basename: import.meta.env.BASE_URL,
+  future: { v7_relativeSplatPath: true },
+});

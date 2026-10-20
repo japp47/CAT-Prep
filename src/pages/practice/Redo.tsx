@@ -11,7 +11,7 @@ import { LETTERS, recordRedoAnswer } from "../../practice/record";
 import { answerRedo, dueRedo, REDO_GAPS, REDO_PER_SESSION, redoPracticeType, resolveRedo, upcomingRedo, type RedoRef } from "../../practice/redo";
 import { CR_TYPE, RC_QTYPE } from "../../practice/types";
 import { cleanAnswer, scoreItem, VA_KIND } from "../../practice/va/build";
-import { Choice, ChoiceGroup } from "./common";
+import { Choice, ChoiceGroup, Confirm, useLeaveConfirmation } from "./common";
 import { CrQuestion, CrReview } from "./CrPlayer";
 import { PaneSwitch, Passage, ReviewQuestion, Split } from "./RcPlayer";
 import { ItemInput, ItemReview } from "./VaPlayer";
@@ -77,11 +77,12 @@ export default function Redo() {
 
 function RedoQuestion({ c, k, n, of, onAnswered, onNext }: { c: Content; k: string; n: number; of: number; onAnswered: (ok: boolean, cleared: boolean) => void; onNext: () => void }) {
   const { state, update } = useStore();
+  const [result, setResult] = useState<{ ok: boolean; cleared: boolean; box: number; gaveUp: boolean } | null>(null);
+  const leave = useLeaveConfirmation(result === null);
   const ref = resolveRedo(k, c);
   const [pick, setPick] = useState<number | null>(null);
   const [typed, setTyped] = useState("");
   const [pane, setPane] = useState<"p" | "q">("p");
-  const [result, setResult] = useState<{ ok: boolean; cleared: boolean; box: number; gaveUp: boolean } | null>(null);
   const item = state.redo.find((r) => r.k === k);
   if (!ref || !item) return null;
 
@@ -149,6 +150,9 @@ function RedoQuestion({ c, k, n, of, onAnswered, onNext }: { c: Content; k: stri
           {actions}
         </div>
       )}
+      <Confirm open={leave.open} onOpenChange={leave.onOpenChange} title="Leave this question?" action="Leave question" onAction={leave.onLeave} cancel="Keep practicing" danger actionClassName="!text-black">
+        Your answer will be recorded when you check it. Leave now or stay and finish this question.
+      </Confirm>
     </div>
   );
 }
