@@ -3,7 +3,7 @@ import { RC_CATALOG, VA_CATALOG } from "./catalog.gen";
 import type { Content } from "./content";
 import { queueMiss, rcRedoKey, resolveExam, type ExamRef } from "./redo";
 import { shuffle } from "./random";
-import type { RcMeta } from "./types";
+import { rcVersion, vaVersion, type RcMeta } from "./types";
 import { DAILY_MIX, scoreItem, VA_KIND, VA_KINDS } from "./va/build";
 
 /** CAT's VARC section: 4 passages of 4 questions, then 8 VA questions, in 40 minutes. */
@@ -95,7 +95,8 @@ export function recordSectional(st: AppState, id: string, qs: string[], a: strin
   const rows = scorePaper(qs, a, c);
   const correct = rows.filter((r) => r.ok).length;
   const penalised = rows.filter((r) => r.pts < 0).length;
-  st.sectionals.push({ id, d, qs, a, t: t.map(Math.round), secs: Math.round(secs), c: correct, w: penalised, updatedAt: now });
+  const v = qs.map((k) => { const ref = resolveExam(k, c); return !ref ? "" : ref.kind === "rc" ? rcVersion(ref.set) : vaVersion(ref.item.para); });
+  st.sectionals.push({ id, d, qs, a, t: t.map(Math.round), secs: Math.round(secs), c: correct, w: penalised, updatedAt: now, v });
   byType(rows, t).forEach((x) => { if (x.attempted) st.practice.push({ id: id + x.type, d, sec: "VARC", t: x.type, a: x.attempted, c: x.correct, src: SECTIONAL_SRC }); });
   rows.forEach((r) => { if (!r.ok) queueMiss(st, r.ref.kind === "rc" ? rcRedoKey(r.ref.set.id, r.ref.qi) : r.ref.item.key, d); });
   st.mocks.push({ id: id + "m", d, sec: "VARC", n: "VARC sectional on this site", k: "Sectional", c: correct, w: penalised });

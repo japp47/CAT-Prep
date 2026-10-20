@@ -1,4 +1,7 @@
+import { CAUSES, OPTION_TRAPS } from "../data/traps";
+import { addDays } from "../lib/date";
 import type { CrAttempt, ErrorEntry, PracticeSet, RcAttempt, SpeedRun } from "../lib/state";
+import { rcStale } from "./versions";
 import { CR_TYPE, CR_TYPES, GENRES, RC_QTYPE, type CrMeta, type Difficulty, type RcMeta, type RcSet } from "./types";
 
 /** Questions attempted and right for one group, such as one question type or one genre. Skipped questions are not counted. */
@@ -57,7 +60,8 @@ export function rcByQuestionType(attempts: RcAttempt[], rcById: (id: string) => 
   const m = new Map<string, Row>();
   attempts.forEach((a) => {
     const set = rcById(a.set);
-    if (!set) return;
+    // An attempt on a set rewritten since would count its answers against the new questions.
+    if (!set || rcStale(a)) return;
     set.questions.forEach((q, i) => {
       if (a.ans[i] == null) return;
       add(m, q.type, RC_QTYPE[q.type].label, a.ans[i] === q.answer);
@@ -114,7 +118,7 @@ export function topTraps(errors: ErrorEntry[], sec: string, n = 6): [string, num
 export interface FocusLine { text: string; to: string; cta: string }
 
 /** Plain sentences on what to work on next, from what the student has logged. Empty until there is enough to say. */
-export function focusLines(i: { types: Row[]; genres: Row[]; traps: [string, number][]; pace: Pace; examPace: number }): FocusLine[] {
+export function focusLines(i: { types: Row[]; genres: Row[]; traps: [string, number][]; pace: Pace; examPace: number; pattern?: Pattern }): FocusLine[] {
   const total = i.types.reduce((s, r) => s + r.attempted, 0);
   if (total < MIN_TOTAL) return [];
   const out: FocusLine[] = [];
@@ -134,8 +138,72 @@ export function focusLines(i: { types: Row[]; genres: Row[]; traps: [string, num
       : { text: `Your reading pace with full recall, ${i.pace.best} words a minute, is at CAT pace.`, to: "/practice/speed", cta: "Test your pace again" });
   }
 
+  // A pattern (same trap on the same kind of question) says more than the most common trap overall.
+  if (i.pattern) { out.push({ text: i.pattern.text, to: i.pattern.to, cta: "Drill it" }); return out; }
   const [trap, n] = i.traps[0] ?? [];
   if (trap && n >= 2) out.push({ text: `The trap that caught you most is “${trap}”, ${n} times.`, to: "/errors", cta: "Open the Error log" });
   return out;
 }
 
+
+/** The practice type an Error log type belongs to: "RC: inference" counts under "RC". */
+export const practiceTypeOf = (t: string) => (t.startsWith("RC") ? "RC" : t);
+
+/** Where to drill a practice type ("Para jumble", "RC", "Critical reasoning"). */
+export function drillForType(t: string): string {
+  const va: Record<string, string> = { "Para summary": "ps", "Para jumble": "pj", "Odd sentence out": "oso", "Sentence insertion": "si" };
+  return va[t] ? `/practice/va?type=${va[t]}&n=6` : t === "Critical reasoning" ? "/practice/cr?n=6" : t === "RC" ? "/practice/library" : "/practice";
+}
+
+export interface Pattern { key: string; text: string; n: number; of: number; to: string }
+/** Errors in one pair before it is a pattern, and questions of the type practised (docs/research/step-2g.md). */
+export const PATTERN_MIN = 4;
+
+/**
+ * Mistakes that repeat: the same trap, or the same cause, on the same kind of question within the last 30 days.
+ * Traps come from the content, so they are evidence; causes are the student's own read, so they come second.
+ */
+export function patterns(errors: ErrorEntry[], practice: PracticeSet[], today: string, sec = "VARC", days = 30): Pattern[] {
+  const from = addDays(today, -days);
+  const recent = errors.filter((e) => e.sec === sec && e.d >= from && e.d <= today);
+  const practised = new Map<string, number>();
+  practice.forEach((p) => { if (p.sec === sec) practised.set(p.t, (practised.get(p.t) ?? 0) + p.a); });
+  const ofType = new Map<string, number>(), pairs = new Map<string, { t: string; what: string; kind: "trap" | "cause"; n: number }>();
+  const traps = new Set<string>(OPTION_TRAPS);
+  recent.forEach((e) => {
+    ofType.set(e.t, (ofType.get(e.t) ?? 0) + 1);
+    const bump = (kind: "trap" | "cause", what: string) => {
+      const k = kind + "|" + e.t + "|" + what;
+      const p = pairs.get(k) ?? { t: e.t, what, kind, n: 0 };
+      p.n++; pairs.set(k, p);
+    };
+    if (e.trap && traps.has(e.trap)) bump("trap", e.trap);
+    if (e.cause) bump("cause", e.cause);
+  });
+  const name = (t: string) => (t.startsWith("RC: ") ? t.slice(4) : t.toLowerCase());
+  return [...pairs.entries()]
+    .filter(([, p]) => p.n >= PATTERN_MIN && (practised.get(practiceTypeOf(p.t)) ?? 0) >= MIN_Q)
+    .sort((a, b) => (a[1].kind === b[1].kind ? b[1].n - a[1].n : a[1].kind === "trap" ? -1 : 1))
+    .slice(0, 3)
+    .map(([key, p]) => {
+      const of = ofType.get(p.t) ?? p.n;
+      const text = p.kind === "trap"
+        ? `${p.n} of your last ${of} ${name(p.t)} misses fell for “${p.what.toLowerCase()}”.`
+        : `${p.n} of your last ${of} ${name(p.t)} misses: you marked “${CAUSES[p.what as keyof typeof CAUSES].toLowerCase()}”.`;
+      return { key, text, n: p.n, of, to: drillForType(practiceTypeOf(p.t)) };
+    });
+}
+
+const VA_LABEL: Record<string, string> = { ps: "Para summary", pj: "Para jumble", oso: "Odd sentence out", si: "Sentence insertion" };
+/**
+ * Right answers the student marked "Not sure", by practice type, most first. Lucky guesses: the score counted them,
+ * but the skill may not be there yet (docs/research/step-2g.md).
+ */
+export function luckyGuesses(st: { rcAttempts: RcAttempt[]; vaAttempts: { items: { k: string; ok: boolean; unsure?: true }[] }[]; crAttempts: CrAttempt[] }): [string, number][] {
+  const m = new Map<string, number>();
+  const bump = (t: string) => m.set(t, (m.get(t) ?? 0) + 1);
+  st.rcAttempts.forEach((a) => a.lucky?.forEach(() => bump("RC")));
+  st.vaAttempts.forEach((a) => a.items.forEach((i) => { if (i.unsure && i.ok) bump(VA_LABEL[i.k.split(":")[0]] ?? "VA"); }));
+  st.crAttempts.forEach((a) => a.items.forEach((i) => { if (i.unsure && i.ok) bump("Critical reasoning"); }));
+  return [...m].sort((a, b) => b[1] - a[1]);
+}

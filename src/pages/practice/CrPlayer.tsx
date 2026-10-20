@@ -12,7 +12,7 @@ import { Empty, LinkButton, Page } from "../../components/kit";
 import { customCr } from "../../practice/crdrill";
 import { crError, crErrorSrc, fmtSecs, LETTERS, recordCr, scoreCr } from "../../practice/record";
 import { CR_TYPE, type CrItem, type CrType } from "../../practice/types";
-import { Choice, ChoiceGroup, Confirm, ElapsedTimer, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, useLeaveConfirmation } from "./common";
+import { Choice, ChoiceGroup, Confirm, ElapsedTimer, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, useLeaveConfirmation } from "./common";
 
 const SECS_PER_ITEM = 90;
 
@@ -39,7 +39,7 @@ function CrPage({ bank }: { bank: CrItem[] }) {
   return <Drill key={reviewId ?? "new"} items={items} initialAttempt={reviewId} draftKey={"cr:" + sp.toString()} />;
 }
 
-interface CrDraft { ids: string[]; answers: (number | null)[]; cur: number; secs: number }
+interface CrDraft { unsure?: boolean[]; ids: string[]; answers: (number | null)[]; cur: number; secs: number }
 
 /** One critical reasoning drill: answering it, then reviewing it on the same page. */
 function Drill({ items, initialAttempt, draftKey }: { items: CrItem[]; initialAttempt: string | null; draftKey: string }) {
@@ -65,6 +65,7 @@ function DrillAttempt({ items, draftKey, onDone }: { items: CrItem[]; draftKey: 
   const [resumed, setResumed] = useState(!!saved);
   const [answers, setAnswers] = useState<(number | null)[]>(saved?.answers ?? items.map(() => null));
   const [cur, setCur] = useState(saved?.cur ?? 0);
+  const [unsure, setUnsure] = useState<boolean[]>(saved?.unsure?.length === items.length ? saved.unsure : items.map(() => false));
   const [confirming, setConfirming] = useState(false);
   const [confirmRestart, setConfirmRestart] = useState(false);
   // A restored drill carries on the clock from where it stopped.
@@ -73,14 +74,14 @@ function DrillAttempt({ items, draftKey, onDone }: { items: CrItem[]; draftKey: 
   startAtRef.current = startAt;
   const submitted = useRef(false);
 
-  const draft: CrDraft = { ids: items.map((i) => i.id), answers, cur, secs: (Date.now() - startAt) / 1000 };
+  const draft: CrDraft = { ids: items.map((i) => i.id), answers, cur, secs: (Date.now() - startAt) / 1000, unsure };
   const draftRef = useRef(draft);
   draftRef.current = draft;
 
   // Persist once per state change; pagehide and unmount flush the latest snapshot.
   useEffect(() => {
-    if (!submitted.current) writeDraft(draftKey, { ids: items.map((i) => i.id), answers, cur, secs: (Date.now() - startAt) / 1000 });
-  }, [draftKey, items, answers, cur, startAt]);
+    if (!submitted.current) writeDraft(draftKey, { ids: items.map((i) => i.id), answers, cur, secs: (Date.now() - startAt) / 1000, unsure });
+  }, [draftKey, items, answers, cur, startAt, unsure]);
   useEffect(() => {
     const keep = () => {
       if (!submitted.current) writeDraft(draftKey, { ...draftRef.current, secs: (Date.now() - startAtRef.current) / 1000 });
@@ -92,6 +93,7 @@ function DrillAttempt({ items, draftKey, onDone }: { items: CrItem[]; draftKey: 
   const restart = () => {
     writeDraft(draftKey, null);
     setAnswers(items.map(() => null));
+    setUnsure(items.map(() => false));
     setCur(0);
     setStartAt(Date.now());
     setResumed(false);
@@ -104,7 +106,7 @@ function DrillAttempt({ items, draftKey, onDone }: { items: CrItem[]; draftKey: 
     const id = uid();
     submitted.current = true;
     writeDraft(draftKey, null);
-    update((st) => recordCr(st, id, items, answers, (Date.now() - startAt) / 1000, todayIso()));
+    update((st) => recordCr(st, id, items, answers, (Date.now() - startAt) / 1000, todayIso(), unsure));
     setConfirming(false);
     onDone(id);
   };
@@ -131,11 +133,14 @@ function DrillAttempt({ items, draftKey, onDone }: { items: CrItem[]; draftKey: 
       <div className="flex flex-col gap-5">
         <p className="text-sm text-muted-foreground">Question {cur + 1} of {items.length}</p>
         <CrQuestion key={cur} item={item} pick={answers[cur]} setPick={setPick} />
-        <div className="flex justify-between gap-2 pt-1">
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+          <NotSure on={unsure[cur]} onChange={(v) => setUnsure((u) => u.map((x, i) => (i === cur ? v : x)))} />
+          <div className="ml-auto flex gap-2">
           <Button variant="secondary" size="sm" disabled={cur === 0} onClick={() => setCur(cur - 1)}>Previous</Button>
           {cur < items.length - 1
             ? <Button size="sm" onClick={() => setCur(cur + 1)}>Next</Button>
             : <Button size="sm" onClick={() => setConfirming(true)}>Submit drill</Button>}
+          </div>
         </div>
       </div>
 
@@ -246,7 +251,7 @@ export function CrReview({ item, chosen }: { item: CrItem; chosen: number | null
       </ul>
       <p className="rounded-lg bg-card px-5 py-4 text-base"><b className="font-semibold">{CR_TYPE[item.type].label}:</b> {item.takeaway}</p>
       {!s.ok && (inLog
-        ? <p className="text-base text-success">In your Error log.</p>
+        ? <ErrorCause src={crErrorSrc(item)} />
         : <Button variant="secondary" size="sm" className="self-start" onClick={() => { update((st) => { st.errors.push(crError(item, chosen, todayIso())); }); toast("Added to your Error log."); }}>Add to Error log</Button>)}
       <ReportLink what={`Critical reasoning: ${item.topic} (${item.id})`} />
     </div>

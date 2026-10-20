@@ -15,7 +15,7 @@ import { vaKeysOfDay } from "../../practice/daily";
 import { fmtSecs, LETTERS, recordVa, vaError, vaErrorSrc } from "../../practice/record";
 import { answerLabel, cleanAnswer, customDrill, parseKey, scoreItem, sentenceAt, sumAt, VA_KIND, type VaItem, type VaKind } from "../../practice/va/build";
 import { paraText, type VaPara } from "../../practice/types";
-import { Choice, ChoiceGroup, Confirm, ElapsedTimer, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, useLeaveConfirmation } from "./common";
+import { Choice, ChoiceGroup, Confirm, ElapsedTimer, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, useLeaveConfirmation } from "./common";
 
 const SECS_PER_ITEM = 90;
 
@@ -49,7 +49,7 @@ function VaPage({ paras }: { paras: VaPara[] }) {
   return <Drill key={initial ?? "new"} items={items} mode={mode} initialAttempt={initial} draftKey={draftKey} />;
 }
 
-interface VaDraft { keys: string[]; answers: string[]; cur: number; secs: number }
+interface VaDraft { unsure?: boolean[]; keys: string[]; answers: string[]; cur: number; secs: number }
 
 /** One VA drill: answering it, then reviewing it on the same page. */
 function Drill({ items, mode, initialAttempt, draftKey }: { items: VaItem[]; mode: "daily" | "custom"; initialAttempt: string | null; draftKey: string }) {
@@ -73,6 +73,7 @@ function DrillAttempt({ items, mode, draftKey, onDone }: { items: VaItem[]; mode
   const [resumed, setResumed] = useState(!!saved);
   const [answers, setAnswers] = useState<string[]>(saved?.answers ?? items.map(() => ""));
   const [cur, setCur] = useState(saved?.cur ?? 0);
+  const [unsure, setUnsure] = useState<boolean[]>(saved?.unsure?.length === items.length ? saved.unsure : items.map(() => false));
   const [confirming, setConfirming] = useState(false);
   const [confirmRestart, setConfirmRestart] = useState(false);
   // A restored drill carries on the clock from where it stopped.
@@ -81,14 +82,14 @@ function DrillAttempt({ items, mode, draftKey, onDone }: { items: VaItem[]; mode
   startAtRef.current = startAt;
   const submitted = useRef(false);
 
-  const draft: VaDraft = { keys: items.map((i) => i.key), answers, cur, secs: (Date.now() - startAt) / 1000 };
+  const draft: VaDraft = { keys: items.map((i) => i.key), answers, cur, secs: (Date.now() - startAt) / 1000, unsure };
   const draftRef = useRef(draft);
   draftRef.current = draft;
 
   // Persist once per state change; pagehide and unmount flush the latest snapshot.
   useEffect(() => {
-    if (!submitted.current) writeDraft(draftKey, { keys: items.map((i) => i.key), answers, cur, secs: (Date.now() - startAt) / 1000 });
-  }, [draftKey, items, answers, cur, startAt]);
+    if (!submitted.current) writeDraft(draftKey, { keys: items.map((i) => i.key), answers, cur, secs: (Date.now() - startAt) / 1000, unsure });
+  }, [draftKey, items, answers, cur, startAt, unsure]);
   useEffect(() => {
     const keep = () => {
       if (!submitted.current) writeDraft(draftKey, { ...draftRef.current, secs: (Date.now() - startAtRef.current) / 1000 });
@@ -100,6 +101,7 @@ function DrillAttempt({ items, mode, draftKey, onDone }: { items: VaItem[]; mode
   const restart = () => {
     writeDraft(draftKey, null);
     setAnswers(items.map(() => ""));
+    setUnsure(items.map(() => false));
     setCur(0);
     setStartAt(Date.now());
     setResumed(false);
@@ -112,7 +114,7 @@ function DrillAttempt({ items, mode, draftKey, onDone }: { items: VaItem[]; mode
     const id = uid();
     submitted.current = true;
     writeDraft(draftKey, null);
-    update((st) => recordVa(st, id, items, answers, (Date.now() - startAt) / 1000, mode, todayIso()));
+    update((st) => recordVa(st, id, items, answers, (Date.now() - startAt) / 1000, mode, todayIso(), unsure));
     setConfirming(false);
     onDone(id);
   };
@@ -139,11 +141,14 @@ function DrillAttempt({ items, mode, draftKey, onDone }: { items: VaItem[]; mode
       <div className="flex flex-col gap-5">
         <p className="text-sm text-muted-foreground">Question {cur + 1} of {items.length}, {VA_KIND[item.kind].tita ? "TITA, no negative marks" : "MCQ, −1 if wrong"}</p>
         <ItemInput key={cur} item={item} answer={answers[cur]} setAnswer={setAnswer} />
-        <div className="flex justify-between gap-2 pt-1">
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+          <NotSure on={unsure[cur]} onChange={(v) => setUnsure((u) => u.map((x, i) => (i === cur ? v : x)))} />
+          <div className="ml-auto flex gap-2">
           <Button variant="secondary" size="sm" disabled={cur === 0} onClick={() => setCur(cur - 1)}>Previous</Button>
           {cur < items.length - 1
             ? <Button size="sm" onClick={() => setCur(cur + 1)}>Next</Button>
             : <Button size="sm" onClick={() => setConfirming(true)}>Submit drill</Button>}
+          </div>
         </div>
       </div>
 
@@ -359,7 +364,7 @@ export function ItemReview({ item, answer }: { item: VaItem; answer: string }) {
         </>
       )}
       {!s.ok && (inLog
-        ? <p className="text-base text-success">In your Error log.</p>
+        ? <ErrorCause src={vaErrorSrc(item)} />
         : <Button variant="secondary" size="sm" className="self-start" onClick={() => { update((st) => { st.errors.push(vaError(item, a, todayIso())); }); toast("Added to your Error log."); }}>Add to Error log</Button>)}
       <ReportLink what={`${VA_KIND[item.kind].label}: ${p.topic} (${item.key})`} />
     </>

@@ -61,6 +61,8 @@ export default function Settings() {
         <Segmented label="Theme" value={theme} onChange={setTheme} options={(["auto", "light", "dark"] as Theme[]).map((t) => [t, t === "auto" ? "Match device" : t[0].toUpperCase() + t.slice(1)] as [Theme, string])} />
       </Section>
 
+      <PracticeCard />
+
       <InstallCard />
       <ReminderCard />
 
@@ -89,6 +91,16 @@ export default function Settings() {
         This removes everything from this browser and cannot be undone.
       </Confirm>
     </Page>
+  );
+}
+
+/** Practice options that change what the players show. */
+function PracticeCard() {
+  const [notSure, setNotSure] = usePref("notSure", true);
+  return (
+    <Section title="Practice" description="A right answer you marked “Not sure” was a lucky guess, so it comes back once in your redo queue.">
+      <Segmented label="Show the Not sure button" value={notSure ? "on" : "off"} onChange={(v) => setNotSure(v === "on")} options={[["on", "Show “Not sure”"], ["off", "Hide it"]]} />
+    </Section>
   );
 }
 

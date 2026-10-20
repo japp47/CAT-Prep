@@ -32,15 +32,23 @@ export interface DayRec {
 }
 
 export interface Mock { id: string; d: string; sec: string; n: string; k: string; c: number; w: number }
-export interface ErrorEntry { id: string; d: string; sec: string; t: string; trap: string; src: string; why: string; fix: string }
+/**
+ * One logged mistake. trap is what the wrong option did (from the content); cause is what happened to the student
+ * (types below, picked by the student or pre-filled from data). trapWas and causeWas keep the first values when corrected.
+ */
+export interface ErrorEntry { id: string; d: string; sec: string; t: string; trap: string; src: string; why: string; fix: string; cause?: Cause; trapWas?: string; causeWas?: Cause }
 export interface Word { id: string; w: string; m: string; s: string; b: number; due: string }
 export interface PracticeSet { id: string; d: string; sec: string; t: string; a: number; c: number; src: string }
-/** One attempt at an in-app RC set. ans[i] is the chosen option index, or null when skipped. */
-export interface RcAttempt { id: string; d: string; set: string; mode: "daily" | "library"; ans: (number | null)[]; c: number; w: number; secs: number; first: number }
-/** One VA drill run. a is what the student entered for each item, pts the marks it earned. */
-export interface VaAttempt { id: string; d: string; mode: "daily" | "custom"; items: { k: string; a: string; ok: boolean; pts: number }[]; secs: number }
+/**
+ * One attempt at an in-app RC set. ans[i] is the chosen option index, or null when skipped.
+ * v is the set's content version when it was taken (practice/types.ts, contentHash); unsure lists the questions marked "Not sure",
+ * lucky those of them answered right.
+ */
+export interface RcAttempt { id: string; d: string; set: string; mode: "daily" | "library"; ans: (number | null)[]; c: number; w: number; secs: number; first: number; v?: string; unsure?: number[]; lucky?: number[] }
+/** One VA drill run. a is what the student entered for each item, pts the marks it earned; v and unsure as for RC, per item. */
+export interface VaAttempt { id: string; d: string; mode: "daily" | "custom"; items: { k: string; a: string; ok: boolean; pts: number; v?: string; unsure?: true }[]; secs: number }
 /** One critical reasoning drill. a is the option index chosen for each item, or null when it was left blank. */
-export interface CrAttempt { id: string; d: string; items: { k: string; a: number | null; ok: boolean }[]; secs: number }
+export interface CrAttempt { id: string; d: string; items: { k: string; a: number | null; ok: boolean; v?: string; unsure?: true }[]; secs: number }
 /** One reading speed test. recall is the number of recall questions answered correctly, out of 2. */
 export interface SpeedRun { id: string; d: string; set: string; words: number; secs: number; wpm: number; recall: number }
 /**
@@ -48,7 +56,7 @@ export interface SpeedRun { id: string; d: string; set: string; words: number; s
  * a the answer to each ("" for blank; an RC option index such as "2"; a VA answer as typed), t the seconds spent on each.
  * w counts only wrong answers that cost a mark (MCQs), so 3c - w is the score. updatedAt is for sync (docs/plan.md, 2D).
  */
-export interface SectionalAttempt { id: string; d: string; qs: string[]; a: string[]; t: number[]; secs: number; c: number; w: number; updatedAt: number }
+export interface SectionalAttempt { id: string; d: string; qs: string[]; a: string[]; t: number[]; secs: number; c: number; w: number; updatedAt: number; v?: string[] }
 /**
  * A question in the redo queue. k is "rc:<set>:<question>", a VA item key such as "pj:bees", or a critical reasoning key such as "cr:CR-01".
  * box counts right answers in a row; cleared is the date it left the queue.
@@ -146,6 +154,8 @@ const flags = (o: unknown) => {
 /** CAT's "para completion" questions are sentence insertion; older saves used the old name. */
 const renamed = (t: string) => (t === "Para completion" ? "Sentence insertion" : t);
 const list = <T,>(arr: unknown, f: (x: Obj) => T): T[] => (Array.isArray(arr) ? arr.filter(isObj).map(f) : []);
+/** The optional per-item fields of VA and CR attempts: the content version and the "Not sure" flag. */
+const extra = (i: Obj) => ({ ...(typeof i.v === "string" && i.v ? { v: i.v } : {}), ...(i.unsure === true ? { unsure: true as const } : {}) });
 
 /** Turns anything read from storage or an imported backup into a valid state. Unknown fields are dropped. */
 export function normalize(raw: unknown): AppState {
@@ -179,7 +189,13 @@ export function normalize(raw: unknown): AppState {
   }
   if (isIsoDate(raw.since)) b.since = raw.since;
   b.mocks = list(raw.mocks, (x) => ({ id: str(x.id), d: str(x.d), sec: str(x.sec) || "VARC", n: str(x.n), k: str(x.k), c: num(x.c), w: num(x.w) }));
-  b.errors = list(raw.errors, (x) => ({ id: str(x.id), d: str(x.d), sec: str(x.sec) || "VARC", t: str(x.t), trap: str(x.trap), src: str(x.src), why: str(x.why), fix: str(x.fix) }));
+  b.errors = list(raw.errors, (x) => {
+    const e: ErrorEntry = { id: str(x.id), d: str(x.d), sec: str(x.sec) || "VARC", t: str(x.t), trap: str(x.trap), src: str(x.src), why: str(x.why), fix: str(x.fix) };
+    if ((CAUSE_IDS as unknown[]).includes(x.cause)) e.cause = x.cause as Cause;
+    if ((CAUSE_IDS as unknown[]).includes(x.causeWas)) e.causeWas = x.causeWas as Cause;
+    if (typeof x.trapWas === "string") e.trapWas = x.trapWas;
+    return e;
+  });
   b.vocab = list(raw.vocab, (x) => ({ id: str(x.id), w: str(x.w), m: str(x.m), s: str(x.s), b: clamp(num(x.b), 0, 5), due: str(x.due) }));
   b.practice = list(raw.practice, (x) => ({ id: str(x.id), d: str(x.d), sec: str(x.sec) || "VARC", t: renamed(str(x.t)), a: num(x.a), c: num(x.c), src: str(x.src) }));
   b.errors.forEach((e) => (e.t = renamed(e.t)));
@@ -187,19 +203,23 @@ export function normalize(raw: unknown): AppState {
     id: str(x.id), d: str(x.d), set: str(x.set), mode: x.mode === "daily" ? "daily" : "library",
     ans: Array.isArray(x.ans) ? x.ans.map((a: unknown) => (typeof a === "number" ? a : null)) : [],
     c: num(x.c), w: num(x.w), secs: num(x.secs), first: num(x.first),
+    ...(typeof x.v === "string" && x.v ? { v: x.v } : {}),
+    ...(Array.isArray(x.unsure) ? { unsure: x.unsure.filter((n: unknown) => Number.isInteger(n)) as number[] } : {}),
+    ...(Array.isArray(x.lucky) ? { lucky: x.lucky.filter((n: unknown) => Number.isInteger(n)) as number[] } : {}),
   }));
   b.vaAttempts = list(raw.vaAttempts, (x) => ({
     id: str(x.id), d: str(x.d), mode: x.mode === "daily" ? "daily" : "custom", secs: num(x.secs),
-    items: list(x.items, (i) => ({ k: str(i.k), a: str(i.a), ok: !!i.ok, pts: num(i.pts) })),
+    items: list(x.items, (i) => ({ k: str(i.k), a: str(i.a), ok: !!i.ok, pts: num(i.pts), ...extra(i) })),
   }));
   b.crAttempts = list(raw.crAttempts, (x) => ({
     id: str(x.id), d: str(x.d), secs: num(x.secs),
-    items: list(x.items, (i) => ({ k: str(i.k), a: typeof i.a === "number" ? i.a : null, ok: !!i.ok })),
+    items: list(x.items, (i) => ({ k: str(i.k), a: typeof i.a === "number" ? i.a : null, ok: !!i.ok, ...extra(i) })),
   }));
   b.speedRuns = list(raw.speedRuns, (x) => ({ id: str(x.id), d: str(x.d), set: str(x.set), words: num(x.words), secs: num(x.secs), wpm: num(x.wpm), recall: clamp(num(x.recall), 0, 2) }));
   b.sectionals = list(raw.sectionals, (x) => ({
     id: str(x.id), d: str(x.d), secs: num(x.secs), c: num(x.c), w: num(x.w), updatedAt: num(x.updatedAt),
     qs: Array.isArray(x.qs) ? x.qs.map(str) : [], a: Array.isArray(x.a) ? x.a.map(str) : [], t: Array.isArray(x.t) ? x.t.map(num) : [],
+    ...(Array.isArray(x.v) ? { v: x.v.map(str) } : {}),
   })).filter((x) => x.id && x.qs.length && x.a.length === x.qs.length);
   b.summaries = list(raw.summaries, (x) => {
     const e: SummaryEntry = {

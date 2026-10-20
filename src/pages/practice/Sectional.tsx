@@ -17,6 +17,7 @@ import {
   SECTIONAL_RC, SECTIONAL_SECS, type Draft, type QStatus,
 } from "../../practice/sectional";
 import { VA_KIND } from "../../practice/va/build";
+import { sectionalStale } from "../../practice/versions";
 import NotFound from "../NotFound";
 import { Choice, ChoiceGroup, Confirm, PaletteCell, PlayerBar, ScoreCard, Timer, useLeaveConfirmation } from "./common";
 import { PaneJump, Passage, PaneSwitch, ReviewQuestion, showQuestion, Split } from "./RcPlayer";
@@ -255,14 +256,16 @@ function Review({ c }: { c: Content }) {
   const [pane, setPane] = useState<"p" | "q">("q");
   const s = state.sectionals.find((x) => x.id === id);
   const review = state.mockReviews.find((r) => r.att === id);
+  const stale = s ? sectionalStale(s) : [];
   const rows = useMemo(() => (s ? scorePaper(s.qs, s.a, c) : []), [s, c]);
   useEffect(() => { window.scrollTo(0, 0); }, [cur]);
   if (!s) return <NotFound />;
 
-  const marks = marksOf(rows);
-  const types = byType(rows, s.t);
+  // With rewritten questions, the stored score is the true one; re-scoring would mark old answers against new questions.
   const attempted = rows.filter((r) => !r.blank).length;
-  const correct = rows.filter((r) => r.ok).length;
+  const marks = stale.length ? 3 * s.c - s.w : marksOf(rows);
+  const types = byType(rows, s.t);
+  const correct = stale.length ? s.c : rows.filter((r) => r.ok).length;
   const row = rows[cur];
   const slow = [...rows].sort((a, b) => (s.t[b.i] ?? 0) - (s.t[a.i] ?? 0)).slice(0, 3).filter((r) => (s.t[r.i] ?? 0) >= 120);
 
@@ -296,6 +299,7 @@ function Review({ c }: { c: Content }) {
         </div>
       </ScoreCard>
 
+      {stale.length > 0 && <p className="measure rounded-lg bg-muted px-4 py-3 text-base">{stale.length === 1 ? "One question was" : `${stale.length} questions were`} rewritten after this sectional ({stale.map((i) => "Q" + (i + 1)).join(", ")}). Their review shows the new version, so your old answer may not match it. Your score stays as it was.</p>}
       <div className="flex flex-wrap gap-2" role="group" aria-label="Questions">
         {rows.map((r, k) => <PaletteCell key={r.i} n={r.i + 1} state={r.blank ? "blank" : r.ok ? "right" : "wrong"} current={k === cur} onClick={() => setCur(k)} label={`Question ${r.i + 1}, ${r.blank ? "blank" : r.ok ? "correct" : "wrong"}`} />)}
       </div>
