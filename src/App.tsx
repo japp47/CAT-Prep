@@ -35,17 +35,19 @@ const Today = lazy(load.today);
 const Updates = lazy(() => import("./pages/Updates"));
 const Words = lazy(() => import("./pages/Words"));
 const Journal = lazy(() => import("./pages/Journal"));
+const MockReview = lazy(() => import("./pages/tracker/MockReview"));
+const Review = lazy(() => import("./pages/Review"));
 
 const TITLES: Record<string, string> = {
   "/": "99ile: free CAT prep", "/today": "Today", "/plan": "Plan and time", "/practice": "Practice", "/practice/library": "RC library", "/practice/sectional": "VARC sectional", "/practice/va": "VA drill", "/practice/cr": "Critical reasoning drill", "/practice/speed": "Reading speed test", "/practice/redo": "Redo queue", "/varc": "VARC", "/dilr": "DILR", "/quant": "Quant",
-  "/progress": "Progress", "/errors": "Error log", "/words": "Words", "/journal": "Reading journal", "/updates": "Important updates", "/exams": "CAT and other exams",
+  "/progress": "Progress", "/progress/mock-review": "Analyse a mock", "/review": "Weekly review", "/errors": "Error log", "/words": "Words", "/journal": "Reading journal", "/updates": "Important updates", "/exams": "CAT and other exams",
   "/guides": "Guides", "/stories": "Topper stories", "/roadmap": "What's coming", "/settings": "Settings",
 };
 
 function Title() {
   const { pathname } = useLocation();
   useEffect(() => {
-    const t = TITLES[pathname] ?? (pathname.startsWith("/guides/") ? "Guide" : pathname.startsWith("/practice/rc/") ? "RC practice" : "");
+    const t = TITLES[pathname] ?? (pathname.startsWith("/guides/") ? "Guide" : pathname.startsWith("/practice/rc/") ? "RC practice" : pathname.startsWith("/progress/mock-review/") ? "Mock review" : pathname.startsWith("/review/") ? "Weekly review" : "");
     document.title = t && pathname !== "/" ? t + " · 99ile" : TITLES["/"];
   }, [pathname]);
   return null;
@@ -89,6 +91,10 @@ export const router = createBrowserRouter(createRoutesFromElements(
       <Route path="practice/sectional" element={<Sectional />} />
       <Route path="practice/sectional/:id" element={<SectionalReview />} />
       <Route path="progress" element={<Progress />} />
+      <Route path="progress/mock-review" element={<MockReview />} />
+      <Route path="progress/mock-review/:id" element={<MockReview />} />
+      <Route path="review" element={<Review />} />
+      <Route path="review/:monday" element={<Review />} />
       <Route path="errors" element={<Errors />} />
       <Route path="words" element={<Words />} />
       <Route path="journal" element={<Journal />} />

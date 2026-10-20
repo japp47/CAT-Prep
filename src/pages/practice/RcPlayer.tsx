@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type MouseEvent, type ReactNode } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { ArrowRight, ChevronDown } from "lucide-react";
@@ -65,6 +65,27 @@ export function Split({ pane, children }: { pane: "p" | "q"; children: [React.Re
     </div>
   );
 }
+
+/**
+ * On a phone a long passage pushes the question out of reach, so a bar above the bottom navigation goes straight to it.
+ * It sits higher while the focus timer bar is showing. Render it only while the passage pane is open.
+ */
+export function PaneJump({ onClick, children }: { onClick: () => void; children: ReactNode }) {
+  const { run } = useFocus();
+  return (
+    <>
+      <div className={cn("lg:hidden", run ? "h-40" : "h-20")} aria-hidden />
+      <div className={cn(
+        "fixed inset-x-0 z-30 bg-background/95 px-gutter py-3 backdrop-blur-sm lg:hidden",
+        run ? "bottom-[calc(15rem+env(safe-area-inset-bottom))]" : "bottom-[calc(4rem+env(safe-area-inset-bottom))]",
+      )}>
+        <Button className="w-full" onClick={onClick}>{children}<ArrowRight aria-hidden /></Button>
+      </div>
+    </>
+  );
+}
+/** Shows the question pane from the top, for screens that keep their question near the top. */
+export const showQuestion = (setPane: (p: "p" | "q") => void) => { setPane("q"); window.scrollTo(0, 0); };
 
 interface RcDraft { ans: (number | null)[]; marked: boolean[]; cur: number; secs: number; first: number | null }
 
@@ -138,6 +159,7 @@ function SummaryStep({ set, model, attempt, onDone }: { set: RcSet; model: RcSum
           </>
         )}
       </Split>
+      {pane === "p" && <PaneJump onClick={() => showQuestion(setPane)}>{comparing ? "Compare with the model" : "Write your summary"}</PaneJump>}
     </Page>
   );
 }
@@ -167,7 +189,6 @@ function SummaryReview({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
 
 function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) {
   const { update } = useStore();
-  const { run } = useFocus();
   const leave = useLeaveConfirmation(true);
   const n = set.questions.length;
   const draftKey = "rc:" + set.id;
@@ -248,7 +269,7 @@ function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) 
         {hideTimer
           ? <Button variant="link" size="sm" onClick={() => setHideTimer(false)}>Show timer</Button>
           : <ElapsedTimer startAt={startAt} target={TARGET_SECS} onClick={() => setHideTimer(true)} title="Target 7 minutes. Tap to hide." />}
-        <Button size="sm" onClick={() => setConfirming(true)}>Submit set</Button>
+        <Button size="sm" variant="secondary" onClick={() => setConfirming(true)}>Submit set</Button>
       </PlayerBar>
       {resumed && saved && <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-card px-4 py-3">
         <p className="text-sm text-muted-foreground">Your saved answers are back. The timer paused while you were away ({fmtSecs(saved.secs)} elapsed).</p>
@@ -260,7 +281,6 @@ function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) 
       <Split pane={pane}>
         <>
           <Passage set={set} highlight={[]} wordMode={false} />
-          <div className={cn("lg:hidden", run ? "h-40" : "h-20")} aria-hidden />
         </>
         <>
           <div className="flex flex-wrap gap-2" role="group" aria-label="Questions">
@@ -289,17 +309,7 @@ function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) 
         </>
       </Split>
 
-      {pane === "p" && (
-        <div className={cn(
-          "fixed inset-x-0 z-30 bg-background/95 px-gutter py-3 backdrop-blur-sm lg:hidden",
-          run ? "bottom-[calc(15rem+env(safe-area-inset-bottom))]" : "bottom-[calc(4rem+env(safe-area-inset-bottom))]",
-        )}>
-          <Button className="w-full" onClick={() => { jumpToQuestion.current = true; setPane("q"); }}>
-            Question {cur + 1} of {n}
-            <ArrowRight aria-hidden />
-          </Button>
-        </div>
-      )}
+      {pane === "p" && <PaneJump onClick={() => { jumpToQuestion.current = true; setPane("q"); }}>Question {cur + 1} of {n}</PaneJump>}
 
       <Confirm open={confirming} onOpenChange={setConfirming} title="Submit this set?" action="Submit set" onAction={submit}>
         {blanks ? `${blanks} question${blanks > 1 ? "s are" : " is"} unanswered. Blanks score 0; wrong answers cost 1 mark.` : "All questions answered."}
@@ -346,6 +356,7 @@ function Review({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
           </div>
         </>
       </Split>
+      {pane === "p" && <PaneJump onClick={() => showQuestion(setPane)}>Question {cur + 1} of {n}</PaneJump>}
       <p className="text-sm text-muted-foreground">Tap any word in the passage, or type it below the passage, to save it to your Words. Passages and questions are original practice material written for this site.</p>
     </Page>
   );

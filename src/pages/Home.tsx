@@ -14,6 +14,7 @@ import { budgetFor, buildDay, doneMinutes } from "../planner/engine";
 import { LIVE_SECTIONS, SECTIONS } from "../sections";
 import { rcOfDay } from "../practice/daily";
 import { dueRedo } from "../practice/redo";
+import { reviewOf, reviewWeek } from "../practice/weekopen";
 import { activityDays } from "../practice/streak";
 import { GENRES } from "../practice/types";
 import { DAILY_MIX } from "../practice/va/build";
@@ -77,7 +78,7 @@ function TodaysPassage() {
         Today's RC: {GENRES[rc.genre].toLowerCase()}, {rc.difficulty}, {rc.words} words and {rc.questions} questions, about 7 minutes. The same passage for everyone today, and a new one tomorrow.
       </p>
       {tried && <p className="text-base text-success">Done today: {tried.c} of {rc.questions} correct.</p>}
-      <div><LinkButton to={to} size="lg">{tried ? "Review your answers" : "Start the passage"}</LinkButton></div>
+      <div><LinkButton to={to} size="lg" variant="secondary">{tried ? "Review your answers" : "Start the passage"}</LinkButton></div>
     </article>
   );
 }
@@ -250,6 +251,8 @@ function TodayPanel() {
   const mon = weekStart(t);
   const vaTry = state.vaAttempts.filter((a) => a.mode === "daily" && a.d === t).pop();
   const redo = dueRedo(state.redo, t).length;
+  const reviewFor = reviewWeek(t, new Date().getHours());
+  const reviewReady = !!reviewFor && !reviewOf(state, reviewFor);
 
   return (
     <Section title={<>Today<span className="font-normal text-muted-foreground">, {longDate(t)}</span></>} action={<StreakBadge />}>
@@ -272,6 +275,7 @@ function TodayPanel() {
               );
             })}
           </ol>
+          {reviewReady && <Link to="/review" className="rounded-md bg-secondary px-3 py-2 text-base hover:bg-secondary/70">Your week in review is ready: two minutes, one focus for next week</Link>}
           <TextLink to="/today" className="mt-auto pt-2">Open the timetable</TextLink>
         </div>
         <div className="flex flex-col gap-3 bg-card p-5 sm:p-6">

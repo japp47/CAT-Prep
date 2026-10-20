@@ -2,13 +2,14 @@ import { useState, type FormEvent } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ErrorText, Field, LogList, LogRow, Meta, Section, useDeleteWithUndo } from "../../components/kit";
+import { ErrorText, Field, LogList, LogRow, Meta, Section, TextLink, useDeleteWithUndo } from "../../components/kit";
 import { NativeSelect } from "../../components/Select";
 import { shortDate, todayIso, uid } from "../../lib/date";
 import { useStore } from "../../lib/store";
 import { sectionByLabel } from "../../sections";
+import { analyseLink } from "./MockReviews";
 
-const KINDS = ["Past paper", "Full mock", "Sectional", "Official IIM mock"];
+export const KINDS = ["Past paper", "Full mock", "Sectional", "Official IIM mock"];
 const sortDesc = <T extends { d: string }>(a: T, b: T) => (a.d < b.d ? 1 : a.d > b.d ? -1 : 0);
 
 export function Log({ sec }: { sec: string }) {
@@ -42,6 +43,7 @@ export function Log({ sec }: { sec: string }) {
     ["n", "c", "w"].forEach((k) => ((f.elements.namedItem(k) as HTMLInputElement).value = ""));
   };
 
+  const reviewOf = (mock: string) => state.mockReviews.find((r) => r.mock === mock)?.id;
   const practice = state.practice.filter((p) => p.sec === sec).sort(sortDesc).slice(0, 30);
   const mocksAsc = state.mocks.map((x, i) => ({ x, i })).filter((o) => o.x.sec === sec)
     .sort((a, b) => (a.x.d < b.x.d ? -1 : a.x.d > b.x.d ? 1 : a.i - b.i)).map((o) => o.x);
@@ -90,6 +92,9 @@ export function Log({ sec }: { sec: string }) {
                 <span className="flex flex-wrap items-center gap-2 text-base font-semibold">{x.n || x.k}<Badge variant="secondary">{x.k}</Badge></span>
                 <span className="text-base">{x.c} correct, {x.w} wrong, raw score {3 * x.c - x.w}</span>
                 <Meta>{shortDate(x.d)}</Meta>
+                {sec === "VARC" && (reviewOf(x.id)
+                  ? <TextLink to={`/progress/mock-review/${reviewOf(x.id)}`} className="w-fit text-sm">Open its review</TextLink>
+                  : <TextLink to={analyseLink(state, x)} className="w-fit text-sm">Analyse it</TextLink>)}
               </LogRow>
             ))}
           </LogList>

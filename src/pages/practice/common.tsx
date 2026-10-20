@@ -59,7 +59,7 @@ export function ElapsedTimer({ startAt, target, onClick, title }: { startAt: num
 /** "Report a problem" for one question. Opens a prefilled GitHub issue in a new tab. */
 export function ReportLink({ what }: { what: string }) {
   return (
-    <a className="w-fit text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground" href={reportUrl(what, window.location.href)} target="_blank" rel="noopener noreferrer">
+    <a className="relative w-fit text-sm text-muted-foreground underline after:absolute after:-inset-x-2 after:-inset-y-3 after:content-[''] underline-offset-4 hover:text-foreground" href={reportUrl(what, window.location.href)} target="_blank" rel="noopener noreferrer">
       Report a problem with this question
     </a>
   );
@@ -140,7 +140,7 @@ export function ReviewChoice({ mark, state, children, why, tags }: { mark: React
 
 export type Cell = "unseen" | "open" | "done" | "marked" | "doneMarked" | "right" | "wrong" | "blank";
 /** A question number in a palette, coloured like the CAT exam screen. */
-export function PaletteCell({ n, state, current, onClick, label }: { n: number; state: Cell; current?: boolean; onClick: () => void; label: string }) {
+export function PaletteCell({ n, state, current, onClick, label, className }: { n: number; state: Cell; current?: boolean; onClick: () => void; label: string; className?: string }) {
   return (
     <button type="button" onClick={onClick} aria-label={label} aria-current={current || undefined}
       className={cn("relative grid h-10 min-w-10 place-items-center rounded-md bg-card px-2 text-sm font-semibold tabular-nums ring-1 ring-inset ring-border transition-colors hover:ring-primary",
@@ -150,7 +150,8 @@ export function PaletteCell({ n, state, current, onClick, label }: { n: number; 
         state === "right" && "bg-success text-white ring-success",
         state === "wrong" && "bg-danger text-white ring-danger",
         state === "blank" && "bg-secondary text-muted-foreground ring-transparent",
-        current && "ring-2 ring-primary ring-offset-2 ring-offset-background")}>
+        current && "ring-2 ring-primary ring-offset-2 ring-offset-background",
+        className)}>
       {n}
       {(state === "marked" || state === "doneMarked") && <span className="absolute top-1 right-1 size-1.5 rounded-full bg-mark" aria-hidden />}
     </button>

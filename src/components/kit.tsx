@@ -8,15 +8,17 @@ import { useStore } from "../lib/store";
 /**
  * The app's building blocks on top of shadcn/ui. Every page is a Page with a PageHeader,
  * then Sections. Gaps between sections are larger than gaps inside them.
+ * A "read" page keeps its content to a 760px measure but starts at the same left edge as a wide page,
+ * so the title does not jump sideways when moving between pages.
  */
 export function Page({ className, width = "wide", ...props }: ComponentProps<"div"> & { width?: "wide" | "read" }) {
-  return <div className={cn("mx-auto flex w-full min-w-0 flex-col gap-10 lg:gap-12", width === "wide" ? "max-w-[1120px]" : "max-w-[760px]", className)} {...props} />;
+  return <div className={cn("mx-auto flex w-full min-w-0 flex-col gap-10 lg:gap-12", width === "wide" ? "max-w-[1120px]" : "max-w-[1120px] [&>*:not(.bleed-gutter)]:max-w-[760px]", className)} {...props} />;
 }
 
 export function PageHeader({ title, children, aside, back }: { title: ReactNode; children?: ReactNode; aside?: ReactNode; back?: { to: string; label: string } }) {
   return (
     <header className="flex flex-col gap-3">
-      {back && <RouterLink to={back.to} className="w-fit text-sm font-medium text-primary underline underline-offset-4 decoration-primary/40 hover:decoration-primary">{back.label}</RouterLink>}
+      {back && <RouterLink to={back.to} className="relative w-fit text-sm font-medium after:absolute after:-inset-x-2 after:-inset-y-3 after:content-[''] text-primary underline underline-offset-4 decoration-primary/40 hover:decoration-primary">{back.label}</RouterLink>}
       <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
         <h1 className="text-title font-bold">{title}</h1>
         {aside}

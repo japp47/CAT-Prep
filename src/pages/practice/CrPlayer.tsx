@@ -114,7 +114,7 @@ function DrillAttempt({ items, draftKey, onDone }: { items: CrItem[]; draftKey: 
     <Page width="read" className="gap-6 lg:gap-8">
       <PlayerBar kicker={`Critical reasoning drill, ${items.length} questions`} title={kindLabel(item)}>
         <ElapsedTimer startAt={startAt} target={items.length * SECS_PER_ITEM} />
-        <Button size="sm" onClick={() => setConfirming(true)}>Submit drill</Button>
+        <Button size="sm" variant="secondary" onClick={() => setConfirming(true)}>Submit drill</Button>
       </PlayerBar>
       {resumed && saved && <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-card px-4 py-3">
         <p className="text-sm text-muted-foreground">Your saved answers are back. The timer paused while you were away ({fmtSecs(saved.secs)} elapsed).</p>

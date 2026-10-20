@@ -28,6 +28,8 @@ const PAGES = [
   { title: "DILR", href: "/dilr", keywords: "data interpretation logical reasoning" },
   { title: "Quant", href: "/quant", keywords: "quantitative ability mathematics" },
   { title: "Progress", href: "/progress", keywords: "scores overview" },
+  { title: "Weekly review", href: "/review", keywords: "week sunday focus improved slipped reflection" },
+  { title: "Analyse a mock", href: "/progress/mock-review", keywords: "mock analysis review careless mistakes skipped" },
   { title: "Error log", href: "/errors", keywords: "mistakes review" },
   { title: "Words", href: "/words", keywords: "vocabulary flashcards saved" },
   { title: "Reading journal", href: "/journal", keywords: "summaries notes articles" },

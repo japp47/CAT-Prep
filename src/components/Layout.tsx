@@ -19,7 +19,7 @@ const SearchPalette = lazy(() => import("./SearchPalette"));
 const GROUPS: SiteNavGroup[] = [
   { title: "Study", items: [{ to: "/", label: "Home", end: true }, { to: "/today", label: "Today" }, { to: "/practice", label: "Practice" }, { to: "/plan", label: "Plan and time" }] },
   { title: "Sections", items: SECTIONS.map((s) => ({ to: "/" + s.id, label: s.short, soon: s.status === "soon" })) },
-  { title: "Progress", items: [{ to: "/progress", label: "Overview" }, { to: "/errors", label: "Error log" }, { to: "/words", label: "Words" }, { to: "/journal", label: "Reading journal" }] },
+  { title: "Progress", items: [{ to: "/progress", label: "Overview" }, { to: "/review", label: "Weekly review" }, { to: "/errors", label: "Error log" }, { to: "/words", label: "Words" }, { to: "/journal", label: "Reading journal" }] },
   { title: "Explore", items: [{ to: "/updates", label: "Updates" }, { to: "/exams", label: "CAT and other exams" }, { to: "/guides", label: "Guides" }, { to: "/stories", label: "Topper stories" }, { to: "/roadmap", label: "What's coming" }, { to: "/settings", label: "Settings and backup" }] },
 ];
 

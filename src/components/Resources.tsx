@@ -24,7 +24,6 @@ function Row({ x }: { x: Resource }) {
         </div>
         <p className="measure text-base text-foreground/80">{x.w}</p>
         <p className="text-sm text-muted-foreground">{x.t}{x.alt && <>. <Ext href={x.alt.u} className="underline underline-offset-4 hover:text-foreground">{x.alt.l}</Ext></>}</p>
-        {x.flag && <p className="text-sm text-danger">This link was not opened during research. Check it once.</p>}
       </div>
     </li>
   );

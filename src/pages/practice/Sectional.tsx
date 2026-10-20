@@ -19,7 +19,7 @@ import {
 import { VA_KIND } from "../../practice/va/build";
 import NotFound from "../NotFound";
 import { Choice, ChoiceGroup, Confirm, PaletteCell, PlayerBar, ScoreCard, Timer, useLeaveConfirmation } from "./common";
-import { Passage, PaneSwitch, ReviewQuestion, Split } from "./RcPlayer";
+import { PaneJump, Passage, PaneSwitch, ReviewQuestion, showQuestion, Split } from "./RcPlayer";
 import { ItemInput, ItemReview } from "./VaPlayer";
 
 const TR = "border-t align-top"; // taste-skill-ignore: rows of a real table
@@ -165,7 +165,7 @@ function Exam({ start, c, onQuit }: { start: Draft; c: Content; onQuit: () => vo
     <Page className="gap-6 lg:gap-8">
       <PlayerBar kicker={`VARC sectional, question ${d.cur + 1} of ${n}`} title={ref?.kind === "rc" ? `Passage ${passageNo} of ${SECTIONAL_RC}` : ref ? VA_KIND[ref.item.kind].label : "Question"}>
         <Clock d={d} onEnd={submit} />
-        <Button size="sm" onClick={() => setConfirm("submit")}>Submit section</Button>
+        <Button size="sm" variant="secondary" onClick={() => setConfirm("submit")}>Submit section</Button>
       </PlayerBar>
 
       <Collapsible open={palette} onOpenChange={setPalette} className="rounded-lg bg-card">
@@ -212,6 +212,7 @@ function Exam({ start, c, onQuit }: { start: Draft; c: Content; onQuit: () => vo
               {actions}
             </div>
           </Split>
+          {pane === "p" && <PaneJump onClick={() => showQuestion(setPane)}>Question {d.cur + 1}</PaneJump>}
         </>
       )}
       {ref?.kind === "va" && (
@@ -253,6 +254,7 @@ function Review({ c }: { c: Content }) {
   const [cur, setCur] = useState(0);
   const [pane, setPane] = useState<"p" | "q">("q");
   const s = state.sectionals.find((x) => x.id === id);
+  const review = state.mockReviews.find((r) => r.att === id);
   const rows = useMemo(() => (s ? scorePaper(s.qs, s.a, c) : []), [s, c]);
   useEffect(() => { window.scrollTo(0, 0); }, [cur]);
   if (!s) return <NotFound />;
@@ -288,7 +290,10 @@ function Review({ c }: { c: Content }) {
         </div>
         {slow.length > 0 && <p className="text-base">Longest on {slow.map((r) => `Q${r.i + 1} (${fmtSecs(s.t[r.i])}${r.ok ? ", right" : r.blank ? ", blank" : ", wrong"})`).join(", ")}. Over 2 minutes on one question is usually time better spent elsewhere.</p>}
         <p className="text-base text-muted-foreground">Saved in Progress as a sectional and by question type. Wrong and blank questions join your <TextLink to="/practice/redo">redo queue</TextLink>.</p>
-        <div><LinkButton to="/practice/sectional">Take another sectional</LinkButton></div>
+        <div className="flex flex-wrap gap-2">
+          <LinkButton to="/practice/sectional">Take another sectional</LinkButton>
+          <LinkButton to={review ? `/progress/mock-review/${review.id}` : `/progress/mock-review?sectional=${s.id}`} variant="secondary">{review ? "Open its mock review" : "Analyse this sectional"}</LinkButton>
+        </div>
       </ScoreCard>
 
       <div className="flex flex-wrap gap-2" role="group" aria-label="Questions">
@@ -303,6 +308,7 @@ function Review({ c }: { c: Content }) {
             <Passage set={row.ref.set} highlight={row.ref.set.questions[row.ref.qi].proof} wordMode />
             <ReviewQuestion set={row.ref.set} qi={row.ref.qi} chosen={s.a[row.i] === "" ? null : Number(s.a[row.i])} />
           </Split>
+          {pane === "p" && <PaneJump onClick={() => showQuestion(setPane)}>Question {row.i + 1}</PaneJump>}
         </>
       )}
       {row?.ref.kind === "va" && <div className="mx-auto flex w-full max-w-[760px] flex-col gap-5"><ItemReview item={row.ref.item} answer={s.a[row.i]} /></div>}

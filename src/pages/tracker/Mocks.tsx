@@ -3,6 +3,7 @@ import { Meta, Section, Stat } from "../../components/kit";
 import { useStore } from "../../lib/store";
 import { sectionByLabel } from "../../sections";
 import { targetBand } from "../../practice/percentile";
+import { MockReviews } from "./MockReviews";
 import { Estimator, TargetNeeds, TargetPicker } from "./Target";
 
 export function Mocks({ sec }: { sec: string }) {
@@ -45,6 +46,8 @@ export function Mocks({ sec }: { sec: string }) {
           {!varc && <Meta>The {sec} target band is a rough placeholder until the {sec} plan launches.</Meta>}
         </div>
       </Section>
+
+      {varc && <MockReviews sec={sec} />}
 
       {varc ? (
         <Section title="Percentile estimator" description="Turns a score into a percentile. Your last logged result is filled in.">

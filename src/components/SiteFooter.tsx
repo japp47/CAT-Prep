@@ -28,7 +28,7 @@ export default function SiteFooter() {
         </div>
         <FooterColumn title="Study" items={[{ to: "/today", label: "Today" }, { to: "/practice", label: "Practice" }, { to: "/plan", label: "Plan and time" }]} />
         <FooterColumn title="Sections" items={SECTIONS.map((section) => ({ to: "/" + section.id, label: section.short, soon: section.status === "soon" }))} />
-        <FooterColumn title="Progress" items={[{ to: "/progress", label: "Overview" }, { to: "/errors", label: "Error log" }, { to: "/words", label: "Words" }, { to: "/journal", label: "Reading journal" }]} />
+        <FooterColumn title="Progress" items={[{ to: "/progress", label: "Overview" }, { to: "/review", label: "Weekly review" }, { to: "/errors", label: "Error log" }, { to: "/words", label: "Words" }, { to: "/journal", label: "Reading journal" }]} />
         <FooterColumn title="Explore" items={[{ to: "/updates", label: "Updates" }, { to: "/exams", label: "CAT and other exams" }, { to: "/guides", label: "Guides" }, { to: "/stories", label: "Topper stories" }, { to: "/roadmap", label: "What's coming" }]} />
         <div className="flex flex-col items-start gap-3">
           <h2 className="text-xs font-semibold tracking-[0.1em] text-muted-foreground uppercase">Support</h2>
