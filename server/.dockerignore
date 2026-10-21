@@ -1,0 +1,7 @@
+.env
+bin/
+dev/
+*.md
+docker-compose.yml
+Makefile
+**/*_test.go

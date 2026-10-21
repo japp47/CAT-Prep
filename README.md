@@ -25,26 +25,20 @@ npm run build      # production build in dist/
 
 ## Go API
 
-The initial Go server exposes `GET /healthz` and does not use a database.
-Requires Go 1.23 or newer:
+The server behind sync lives in `server/` (Go 1.27, Postgres 17 in Docker for development):
 
 ```bash
 cd server
-go run ./cmd/api
+cp .env.example .env
+make run        # Postgres on port 5433, API on http://localhost:8080
 ```
 
-It listens on port `8080` by default (`PORT` can override it). Check that it is running:
-
-```bash
-curl http://localhost:8080/healthz
-```
-
-See [server/README.md](server/README.md) for details and Go test commands.
+See [server/README.md](server/README.md) for tests, settings and layout.
 
 ## Project layout
 
 ```
-server/            Go API skeleton and health endpoint
+server/            Go API (health, readiness; sync comes next)
 src/
   data/           exam dates and phases, updates, other exams, guides, stories, roadmap
   sections/       one folder per CAT section

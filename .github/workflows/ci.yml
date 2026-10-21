@@ -33,3 +33,35 @@ jobs:
       - name: Generated catalog is committed
         run: git diff --exit-code -- src/practice/catalog.gen.ts src/practice/leads.gen.ts || (echo "::error::Run npm run catalog and commit the result." && exit 1)
       - run: npm run size
+
+  server:
+    # The Go API: vet, unit tests, and integration tests against a real Postgres 17 (same major as Supabase).
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: server
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: cat
+          POSTGRES_PASSWORD: cat
+          POSTGRES_DB: cat_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U cat -d cat_test"
+          --health-interval 2s --health-timeout 3s --health-retries 20
+    env:
+      TEST_DATABASE_URL: postgres://cat:cat@localhost:5432/cat_test?sslmode=disable
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: server/go.mod
+          cache-dependency-path: server/go.sum
+      - run: go mod verify
+      - run: go vet ./...
+      - run: go test -count=1 -race ./...
+      - name: Production image builds
+        run: docker build -q -t cat-prep-api .
