@@ -1,0 +1,98 @@
+# Deploys the Go API after CI passes on main: migrate the live database first (as the owner), then ask Render to
+# deploy that exact commit, then wait until the live server reports it. Runs only when server/ changed since the
+# commit that is live, so a frontend-only change never restarts the server. Run it by hand (Actions → Deploy API
+# → Run workflow) to redeploy main even when nothing changed.
+#
+# Repository secrets (Settings → Secrets and variables → Actions):
+#   MIGRATE_DATABASE_URL  Supabase session pooler link for the owner, postgres.<ref> (server/README.md)
+#   RENDER_DEPLOY_HOOK    Render → service → Settings → Deploy Hook
+# Render's own auto-deploy stays off, so this workflow is the only way a new version goes live.
+name: Deploy API
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# One deploy at a time, and never cancel one halfway through a migration.
+concurrency:
+  group: deploy-api
+  cancel-in-progress: false
+
+env:
+  API: https://nine9ile-api.onrender.com
+
+jobs:
+  deploy:
+    if: >-
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ env.SHA }}
+          fetch-depth: 0
+
+      - name: Anything new for the server?
+        id: plan
+        run: |
+          # A free service may be asleep; the first request wakes it in about a minute.
+          live=$(curl -fsS --retry 6 --retry-delay 15 --retry-all-errors -m 90 "$API/healthz" | jq -r '.commit // empty') || live=""
+          echo "Live: ${live:-unknown}. This run: $SHA."
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Started by hand: deploying."; echo "deploy=true" >> "$GITHUB_OUTPUT"
+          elif [ -z "$live" ] || ! git cat-file -e "$live^{commit}" 2>/dev/null; then
+            echo "Live commit unknown: deploying."; echo "deploy=true" >> "$GITHUB_OUTPUT"
+          elif ! git merge-base --is-ancestor "$live" "$SHA"; then
+            echo "This commit is older than the live one: skipping."; echo "deploy=false" >> "$GITHUB_OUTPUT"
+          elif git diff --quiet "$live" "$SHA" -- server/; then
+            echo "No server changes since the live commit: skipping."; echo "deploy=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Server changed: deploying."; echo "deploy=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-go@v6
+        if: steps.plan.outputs.deploy == 'true'
+        with:
+          go-version-file: server/go.mod
+          cache-dependency-path: server/go.sum
+
+      # Migrations run before the new version starts. The running version keeps working on the newer schema,
+      # so a migration must only add (docs/database.md §2).
+      - name: Migrate the live database
+        if: steps.plan.outputs.deploy == 'true'
+        working-directory: server
+        env:
+          MIGRATE_DATABASE_URL: ${{ secrets.MIGRATE_DATABASE_URL }}
+        run: go run ./cmd/migrate
+
+      - name: Ask Render to deploy this commit
+        if: steps.plan.outputs.deploy == 'true'
+        env:
+          HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          code=$(curl -sS -o /dev/null -w '%{http_code}' -X POST "$HOOK&ref=$SHA")
+          echo "Render answered $code."
+          case "$code" in 200|202) ;; *) echo "::error::Render refused the deploy ($code). Check the RENDER_DEPLOY_HOOK secret."; exit 1;; esac
+
+      - name: Wait for the new version
+        if: steps.plan.outputs.deploy == 'true'
+        run: |
+          for i in $(seq 1 60); do
+            live=$(curl -fsS -m 30 "$API/healthz" | jq -r '.commit // empty') || live=""
+            if [ "$live" = "$SHA" ]; then
+              curl -fsS -m 30 "$API/readyz" && echo "Live and ready: $SHA" && exit 0
+              echo "::error::The new version is up but /readyz fails."; exit 1
+            fi
+            sleep 15
+          done
+          echo "::error::The new version was not live after 15 minutes. See the Render dashboard."; exit 1

@@ -28,7 +28,7 @@ func TestHealthHandler(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/healthz", nil)
 	rec := httptest.NewRecorder()
 
-	healthHandler(rec, req)
+	healthHandler("abc123").ServeHTTP(rec, req)
 
 	if rec.Code != http.StatusOK {
 		t.Fatalf("status = %d, want %d", rec.Code, http.StatusOK)
@@ -36,7 +36,7 @@ func TestHealthHandler(t *testing.T) {
 	if got := rec.Header().Get("Content-Type"); got != "application/json; charset=utf-8" {
 		t.Errorf("content type = %q, want application/json; charset=utf-8", got)
 	}
-	if got, want := rec.Body.String(), "{\"status\":\"ok\"}\n"; got != want {
+	if got, want := rec.Body.String(), "{\"commit\":\"abc123\",\"status\":\"ok\"}\n"; got != want {
 		t.Errorf("body = %q, want %q", got, want)
 	}
 }

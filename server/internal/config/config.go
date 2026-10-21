@@ -14,9 +14,9 @@ import (
 
 // Config is everything the server needs from its environment.
 type Config struct {
-	// Env is "dev" on a laptop and "prod" on Cloud Run. Prod refuses unsafe defaults.
+	// Env is "dev" on a laptop and "prod" on Render. Prod refuses unsafe defaults.
 	Env string
-	// Port the HTTP server listens on. Cloud Run sets PORT.
+	// Port the HTTP server listens on. Render sets PORT.
 	Port int
 	// DatabaseURL is a Postgres connection string.
 	DatabaseURL string
@@ -25,6 +25,9 @@ type Config struct {
 	AllowedOrigin string
 	// LogLevel is debug, info, warn or error.
 	LogLevel slog.Level
+	// Commit is the Git commit this build came from. Render sets RENDER_GIT_COMMIT; "dev" elsewhere.
+	// /healthz reports it, so the deploy workflow can tell when the new version is live.
+	Commit string
 }
 
 // Prod reports whether this is the live server.
@@ -66,6 +69,7 @@ func load(get func(string) string) (Config, error) {
 	if err := c.LogLevel.UnmarshalText([]byte(or(get("LOG_LEVEL"), "info"))); err != nil {
 		errs = append(errs, fmt.Errorf("LOG_LEVEL must be debug, info, warn or error, got %q", get("LOG_LEVEL")))
 	}
+	c.Commit = or(get("RENDER_GIT_COMMIT"), "dev")
 	return c, errors.Join(errs...)
 }
 
