@@ -17,7 +17,7 @@ type discard struct {
 	status int
 }
 
-func (d *discard) Header() http.Header       { return d.h }
+func (d *discard) Header() http.Header         { return d.h }
 func (d *discard) Write(b []byte) (int, error) { return len(b), nil }
 func (d *discard) WriteHeader(s int)           { d.status = s }
 

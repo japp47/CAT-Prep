@@ -4,11 +4,13 @@ package store
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"io/fs"
 	"log/slog"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/pressly/goose/v3"
@@ -64,7 +66,39 @@ func OpenWithRetry(ctx context.Context, url string, tries int, log *slog.Logger)
 	}
 }
 
-// Migrate applies every migration in fsys that has not run yet. A Postgres advisory lock makes two
+// ErrSchemaBehind means the database has not had this build's migrations yet.
+var ErrSchemaBehind = errors.New("database schema is older than this server expects")
+
+// SchemaVersion is the latest migration applied to the database, read from goose's table.
+// It needs only select on public.goose_db_version, which cat_app has.
+func SchemaVersion(ctx context.Context, pool *pgxpool.Pool) (int64, error) {
+	var v int64
+	err := pool.QueryRow(ctx, "select coalesce(max(version_id), 0) from public.goose_db_version where is_applied").Scan(&v)
+	var pgErr *pgconn.PgError
+	if errors.As(err, &pgErr) && pgErr.Code == "42P01" {
+		return 0, nil // no version table yet: no migration has ever run here
+	}
+	if err != nil {
+		return 0, fmt.Errorf("read schema version (run the migrate command first): %w", err)
+	}
+	return v, nil
+}
+
+// CheckSchema reports ErrSchemaBehind when the database is older than want. A newer database is fine:
+// migrations are deployed before the server, and an older server may still be running for a moment.
+func CheckSchema(ctx context.Context, pool *pgxpool.Pool, want int64) error {
+	v, err := SchemaVersion(ctx, pool)
+	if err != nil {
+		return err
+	}
+	if v < want {
+		return fmt.Errorf("%w: database is at %d, server needs %d", ErrSchemaBehind, v, want)
+	}
+	return nil
+}
+
+// Migrate applies every migration in fsys that has not run yet. Only the migrate command calls it, with the
+// owner's connection; the API never changes the schema. A Postgres advisory lock makes two
 // instances starting together take turns instead of racing.
 func Migrate(ctx context.Context, pool *pgxpool.Pool, fsys fs.FS, log *slog.Logger) error {
 	db := stdlib.OpenDBFromPool(pool)

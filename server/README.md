@@ -11,7 +11,7 @@ Needs Go 1.27 and Docker.
 ```sh
 cd server
 cp .env.example .env     # once
-make run                 # starts Postgres 17 in Docker on port 5433, then the API on :8080
+make run                 # Postgres 17 in Docker (port 5433), migrations as the owner, then the API as cat_app on :8080
 ```
 
 ```sh
@@ -25,7 +25,8 @@ Other commands:
 |---|---|
 | `make test` | Unit tests, no database needed |
 | `make test-int` | Unit and integration tests against the `cat_test` database (emptied by tests) |
-| `make migrate` | Apply migrations and exit (the server also does this when it starts) |
+| `make migrate` | Apply new migrations as the owner (`MIGRATE_DATABASE_URL`) and set the local passwords |
+| `make migrate-status` | The database's schema version and the one this code expects |
 | `make db-psql` | SQL prompt on the dev database |
 | `make db-down` / `make db-reset` | Stop Postgres / stop it and delete its data |
 | `make image` | Build the production image (distroless, about 20 MB) |
@@ -33,7 +34,8 @@ Other commands:
 ## Layout
 
 ```
-cmd/api/            main: settings, database, migrations, routes, graceful shutdown
+cmd/api/            the server: settings, database as cat_app, routes, graceful shutdown. Never migrates
+cmd/migrate/        applies migrations as the owner; a separate step before every deploy
 internal/config/    environment variables → Config; every problem reported at once
 internal/httpx/     JSON and the error shape, router (JSON 404 and 405), middleware:
                     request id, access log, recover, 64 KB body limit, same-origin check
@@ -52,9 +54,38 @@ query strings, cookies or headers.
 |---|---|---|
 | `ENV` | `dev` | `prod` on Cloud Run: JSON logs, https origin required |
 | `PORT` | `8080` | Cloud Run sets it |
-| `DATABASE_URL` | none, required | Local: see `.env.example`. Live: Supabase session pooler |
+| `DATABASE_URL` | none, required | The API's connection, as `cat_app`. Live: Supabase session pooler |
+| `MIGRATE_DATABASE_URL` | none | `cmd/migrate` only, as the owner. Live: a secret used only by the migrate step |
 | `ALLOWED_ORIGIN` | `http://localhost:5173` in dev | The site's origin; other sites cannot change data |
 | `LOG_LEVEL` | `info` | `debug`, `info`, `warn`, `error` |
 | `TEST_DATABASE_URL` | none | Integration tests only. Never point it at real data |
 
 Port 5433 is used because 5432 is often taken by another local Postgres.
+
+## Two logins, two steps
+
+The API never changes the schema. Migrations run first, as a separate command with the owner's connection; the
+API runs as `cat_app`, which can read and write data but cannot create, alter or drop anything. If the database
+is older than the API expects, the API still starts and `/readyz` answers 503 "waiting for a database update"
+until the migration has run. Live deploy order: run `/migrate` from the same image, then deploy the API.
+
+`cat_app` and `cat_readonly` are created by migration `00002` without passwords. Locally `make migrate` sets
+them to `cat_app` and `cat_readonly`; on Supabase set them once by hand:
+`alter role cat_app password '…';`
+
+## Live database
+
+The live database is Supabase (Singapore). Migrations reach it through the session pooler as the owner,
+`postgres`. Put that link once in `server/.env.prod`, which Git and Docker ignore:
+
+```sh
+MIGRATE_DATABASE_URL='postgresql://postgres.<project-ref>:<password>@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres?sslmode=require'
+```
+
+Keep the single quotes, and use a password of letters and numbers only (`openssl rand -hex 20`): `@ : / ? #`
+break the link. Then:
+
+- `make migrate-prod-status`: the live schema version and the one this code expects
+- `make migrate-prod`: apply new migrations
+
+Both print the database host before they start, so you can see where they point.

@@ -61,6 +61,8 @@ jobs:
           go-version-file: server/go.mod
           cache-dependency-path: server/go.sum
       - run: go mod verify
+      - name: Code is gofmt-formatted
+        run: test -z "$(gofmt -l .)" || (gofmt -l . && echo "::error::Run gofmt -w on these files." && exit 1)
       - run: go vet ./...
       - run: go test -count=1 -race ./...
       - name: Production image builds

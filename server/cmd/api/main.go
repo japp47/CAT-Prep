@@ -1,14 +1,14 @@
 // Command api is the 99ile server. It reads its settings from the environment (internal/config), connects to
-// Postgres, brings the schema up to date, and serves the API until it is stopped.
+// Postgres as the restricted cat_app role, and serves the API until it is stopped.
 //
-//	go run ./cmd/api            serve
-//	go run ./cmd/api -migrate   apply migrations and exit
+// It never changes the schema: migrations are a separate step (cmd/migrate) run with the owner's connection
+// before a new version starts. If the database is older than this build expects, the server still starts, logs
+// it, and /readyz answers 503 until the migration has run (docs/database.md §2).
 package main
 
 import (
 	"context"
 	"errors"
-	"flag"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -32,9 +32,6 @@ func main() {
 }
 
 func run() error {
-	migrateOnly := flag.Bool("migrate", false, "apply database migrations and exit")
-	flag.Parse()
-
 	cfg, err := config.Load()
 	if err != nil {
 		return fmt.Errorf("configuration:\n%w", err)
@@ -50,16 +47,19 @@ func run() error {
 		return err
 	}
 	defer pool.Close()
-	if err := store.Migrate(ctx, pool, migrations.FS, log); err != nil {
-		return err
+	ready := func(ctx context.Context) error {
+		if err := store.Ping(ctx, pool); err != nil {
+			return err
+		}
+		return store.CheckSchema(ctx, pool, migrations.Latest())
 	}
-	if *migrateOnly {
-		return nil
+	if err := ready(ctx); err != nil {
+		log.Error("not ready at start; /readyz answers 503 until this is fixed", "error", err)
 	}
 
 	server := &http.Server{
 		Addr:              ":" + strconv.Itoa(cfg.Port),
-		Handler:           newHandler(cfg, pool, log),
+		Handler:           newHandler(cfg, ready, log),
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       15 * time.Second,
 		WriteTimeout:      30 * time.Second,
@@ -98,16 +98,14 @@ func newLogger(cfg config.Config) *slog.Logger {
 	return slog.New(slog.NewTextHandler(os.Stdout, opts))
 }
 
-// pinger is the part of the database pool that /readyz needs, so tests can fake it.
-type pinger interface {
-	Ping(ctx context.Context) error
-}
+// readyFunc says whether the server can do real work: the database answers and has this build's schema.
+type readyFunc func(ctx context.Context) error
 
 // newHandler builds the routes and wraps them in the shared middleware (docs/architecture.md §4.4).
-func newHandler(cfg config.Config, db pinger, log *slog.Logger) http.Handler {
+func newHandler(cfg config.Config, ready readyFunc, log *slog.Logger) http.Handler {
 	rt := httpx.NewRouter()
 	rt.HandleFunc("GET /healthz", healthHandler)
-	rt.Handle("GET /readyz", readyHandler(db, log))
+	rt.Handle("GET /readyz", readyHandler(ready, log))
 	return httpx.Chain(rt,
 		httpx.RequestID,
 		httpx.AccessLog(log),
@@ -127,14 +125,18 @@ func healthHandler(w http.ResponseWriter, _ *http.Request) {
 	}
 }
 
-// readyHandler says whether the server can do real work: the database answers within 2 seconds.
-func readyHandler(db pinger, log *slog.Logger) http.Handler {
+// readyHandler answers 200 when the database answers within 2 seconds and has this build's schema.
+func readyHandler(ready readyFunc, log *slog.Logger) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
 		defer cancel()
-		if err := db.Ping(ctx); err != nil {
-			log.Warn("readyz: database not answering", "error", err, "request_id", httpx.RequestIDFrom(r.Context()))
-			httpx.WriteError(w, http.StatusServiceUnavailable, "not_ready", "The server cannot reach its database right now.")
+		if err := ready(ctx); err != nil {
+			log.Warn("readyz: not ready", "error", err, "request_id", httpx.RequestIDFrom(r.Context()))
+			msg := "The server cannot reach its database right now."
+			if errors.Is(err, store.ErrSchemaBehind) {
+				msg = "The server is waiting for a database update."
+			}
+			httpx.WriteError(w, http.StatusServiceUnavailable, "not_ready", msg)
 			return
 		}
 		httpx.WriteJSON(w, http.StatusOK, map[string]string{"status": "ready"})
