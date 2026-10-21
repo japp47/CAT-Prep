@@ -23,9 +23,28 @@ npm run catalog    # rebuild the content catalog after editing practice content
 npm run build      # production build in dist/
 ```
 
+## Go API
+
+The initial Go server exposes `GET /healthz` and does not use a database.
+Requires Go 1.23 or newer:
+
+```bash
+cd server
+go run ./cmd/api
+```
+
+It listens on port `8080` by default (`PORT` can override it). Check that it is running:
+
+```bash
+curl http://localhost:8080/healthz
+```
+
+See [server/README.md](server/README.md) for details and Go test commands.
+
 ## Project layout
 
 ```
+server/            Go API skeleton and health endpoint
 src/
   data/           exam dates and phases, updates, other exams, guides, stories, roadmap
   sections/       one folder per CAT section
