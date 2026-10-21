@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { iosSafariTab } from "./keep";
-import { appleMobile } from "./pwa";
+import { appleMobile, iosBrowser } from "./pwa";
 
 const IPHONE = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1";
 // iPad Safari asks for the desktop site by default and sends a Mac user agent.
@@ -17,5 +17,15 @@ describe("iPhone and iPad", () => {
     expect(iosSafariTab(IPAD, 5, false)).toBe(true);
     expect(iosSafariTab(IPAD, 5, true)).toBe(false);
     expect(iosSafariTab(IPAD_CHROME, 5, false)).toBe(false);
+  });
+});
+
+describe("which iPhone browser", () => {
+  it("tells Safari, Chrome, Edge and Firefox apart", () => {
+    expect(iosBrowser(IPHONE)).toBe("safari");
+    expect(iosBrowser(IPAD)).toBe("safari");
+    expect(iosBrowser(IPAD_CHROME)).toBe("chrome");
+    expect(iosBrowser(IPHONE.replace("Version/18.5", "EdgiOS/138.0 Version/18.5"))).toBe("edge");
+    expect(iosBrowser(IPHONE.replace("Version/18.5", "FxiOS/140.0 Version/18.5"))).toBe("firefox");
   });
 });
