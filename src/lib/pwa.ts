@@ -24,6 +24,14 @@ if (typeof window !== "undefined") {
   window.addEventListener("appinstalled", () => { deferred = null; notify(); });
 }
 
+/**
+ * iPhone, iPod or iPad. iPad Safari asks for desktop sites by default and calls itself a Mac, so a Mac user agent
+ * with a touch screen counts as an iPad (Macs have no touch screen).
+ */
+export function appleMobile(ua = navigator.userAgent, touch = navigator.maxTouchPoints ?? 0) {
+  return /iphone|ipad|ipod/i.test(ua) || (/macintosh/i.test(ua) && touch > 1);
+}
+
 const standalone = () =>
   typeof window !== "undefined" && (window.matchMedia?.("(display-mode: standalone)").matches || (navigator as { standalone?: boolean }).standalone === true);
 
@@ -35,7 +43,7 @@ export function useInstall() {
     listeners.add(f);
     return () => { listeners.delete(f); };
   }, []);
-  const ios = typeof navigator !== "undefined" && /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const ios = typeof navigator !== "undefined" && appleMobile();
   return {
     installed: standalone(),
     canPrompt: !!deferred,

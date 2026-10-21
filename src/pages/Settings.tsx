@@ -6,7 +6,10 @@ import { useTheme, type Theme } from "../components/Layout";
 import { Field, Meta, Page, PageHeader, Section, Segmented, Stat } from "../components/kit";
 import { NativeSelect } from "../components/Select";
 import { todayIso } from "../lib/date";
+import { downloadBackup } from "../lib/backup";
 import { googleCalendarUrl, reminderIcs } from "../lib/ics";
+import { MB, SHOW_SIZE, storedBytes, WARN_SIZE } from "../lib/keep";
+import KeepHint from "../components/KeepHint";
 import { usePref } from "../lib/prefs";
 import { useInstall } from "../lib/pwa";
 import { useStore } from "../lib/store";
@@ -23,14 +26,8 @@ export default function Settings() {
   const pending = useRef<unknown>(null);
   const file = useRef<HTMLInputElement>(null);
 
-  const exportData = () => {
-    const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "99ile-backup-" + todayIso() + ".json";
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-  };
+  const exportData = () => downloadBackup(state);
+  const bytes = storedBytes();
   const importData = async (f: File) => {
     try {
       const raw = JSON.parse(await f.text());
@@ -75,7 +72,11 @@ export default function Settings() {
             <input ref={file} type="file" accept="application/json,.json" hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) importData(f); e.target.value = ""; }} />
           </div>
           {msg && <p className={cn("text-base", msg.ok ? "text-success" : "text-danger")} role="status">{msg.text}</p>}
+          {bytes >= WARN_SIZE
+            ? <p className="rounded-lg bg-warning-soft px-5 py-4 text-base">Your progress uses {(bytes / MB).toFixed(1)} MB, close to the 5 MB this browser allows. Download a backup now: once it is full, new progress cannot be saved.</p>
+            : bytes >= SHOW_SIZE && <Meta>Your progress uses {(bytes / MB).toFixed(1)} MB of the 5 MB this browser allows.</Meta>}
         </Panel>
+        <KeepHint />
       </Section>
 
       <Section title="Start over" description="Deletes your time settings, ticks, logs and words from this browser. Download a backup first if you might want them back.">
@@ -110,7 +111,7 @@ function InstallCard() {
     <Section title="Install as an app" description="The installed app opens from your home screen like any other app. After your first visit the site also works without internet, because your plan and logs are stored on this device.">
       {installed ? <p className="text-base text-success">You are using the installed app.</p>
         : canPrompt ? <div><Button onClick={prompt}>Install 99ile</Button></div>
-        : ios ? <p className="measure text-base">On iPhone or iPad: open this site in Safari, tap the Share button, then <b className="font-semibold">Add to Home Screen</b>.</p>
+        : ios ? <p className="measure text-base">On iPhone or iPad: open this site in Safari, tap the Share button (on iPad it is at the top right; if you don&rsquo;t see it, tap <b className="font-semibold">⋯</b> first), then <b className="font-semibold">Add to Home Screen</b>. The Home Screen app keeps its own data, apart from Safari, so it starts empty: download a backup below first, then restore it in the app&rsquo;s Settings.</p>
         : <p className="measure text-base">In Chrome or Edge, use the install icon at the right of the address bar, or the browser menu and then <b className="font-semibold">Install</b>. On Android, open the menu and tap <b className="font-semibold">Add to Home screen</b>.</p>}
     </Section>
   );
