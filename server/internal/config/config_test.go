@@ -13,8 +13,15 @@ func TestDevDefaults(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if c.Env != "dev" || c.Port != 8080 || c.AllowedOrigin != "http://localhost:5173" || c.LogLevel != slog.LevelInfo {
+	if c.Env != "dev" || c.Port != 8080 || c.AllowedOrigin != "http://localhost:5173" || c.LogLevel != slog.LevelInfo || c.Commit != "dev" {
 		t.Fatalf("defaults = %+v", c)
+	}
+}
+
+func TestCommitComesFromRender(t *testing.T) {
+	c, err := load(env(map[string]string{"DATABASE_URL": "postgres://u:p@localhost:5433/cat", "RENDER_GIT_COMMIT": "4f2a9c1"}))
+	if err != nil || c.Commit != "4f2a9c1" {
+		t.Fatalf("commit = %q, %v", c.Commit, err)
 	}
 }
 

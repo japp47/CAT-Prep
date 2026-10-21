@@ -68,7 +68,7 @@ func run() error {
 
 	serverErrors := make(chan error, 1)
 	go func() {
-		log.Info("API server listening", "addr", server.Addr, "env", cfg.Env)
+		log.Info("API server listening", "addr", server.Addr, "env", cfg.Env, "commit", cfg.Commit)
 		serverErrors <- server.ListenAndServe()
 	}()
 
@@ -89,7 +89,7 @@ func run() error {
 	return nil
 }
 
-// newLogger writes JSON logs in prod (Cloud Run reads them) and readable text on a laptop.
+// newLogger writes JSON logs in prod (Render shows them) and readable text on a laptop.
 func newLogger(cfg config.Config) *slog.Logger {
 	opts := &slog.HandlerOptions{Level: cfg.LogLevel}
 	if cfg.Prod() {
@@ -104,7 +104,7 @@ type readyFunc func(ctx context.Context) error
 // newHandler builds the routes and wraps them in the shared middleware (docs/architecture.md §4.4).
 func newHandler(cfg config.Config, ready readyFunc, log *slog.Logger) http.Handler {
 	rt := httpx.NewRouter()
-	rt.HandleFunc("GET /healthz", healthHandler)
+	rt.Handle("GET /healthz", healthHandler(cfg.Commit))
 	rt.Handle("GET /readyz", readyHandler(ready, log))
 	return httpx.Chain(rt,
 		httpx.RequestID,
@@ -115,14 +115,13 @@ func newHandler(cfg config.Config, ready readyFunc, log *slog.Logger) http.Handl
 	)
 }
 
-// healthHandler says the process is up. It does not touch the database, so a slow database
-// never makes the platform restart a healthy server.
-func healthHandler(w http.ResponseWriter, _ *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-	if _, err := w.Write([]byte("{\"status\":\"ok\"}\n")); err != nil {
-		slog.Error("write health response", "error", err)
-	}
+// healthHandler says the process is up and which commit it runs. It does not touch the database, so a slow
+// database never makes the platform restart a healthy server.
+func healthHandler(commit string) http.Handler {
+	body := map[string]string{"status": "ok", "commit": commit}
+	return http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		httpx.WriteJSON(w, http.StatusOK, body)
+	})
 }
 
 // readyHandler answers 200 when the database answers within 2 seconds and has this build's schema.

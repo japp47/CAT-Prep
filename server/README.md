@@ -89,3 +89,7 @@ break the link. Then:
 - `make migrate-prod`: apply new migrations
 
 Both print the database host before they start, so you can see where they point.
+
+Normally you never run them: after CI passes on `main`, `.github/workflows/deploy-api.yml` migrates and then
+deploys, but only when `server/` changed. `/healthz` reports the live commit. To redeploy by hand: GitHub →
+Actions → Deploy API → Run workflow.

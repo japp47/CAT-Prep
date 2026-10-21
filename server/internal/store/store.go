@@ -18,7 +18,7 @@ import (
 )
 
 // Open connects to Postgres and checks the connection. The pool is small on purpose: the free database
-// allows few connections, and Cloud Run runs at most two instances (docs/plan.md 2I).
+// allows few connections, and the free Render service runs one instance.
 func Open(ctx context.Context, url string) (*pgxpool.Pool, error) {
 	cfg, err := pgxpool.ParseConfig(url)
 	if err != nil {
