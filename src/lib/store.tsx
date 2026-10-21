@@ -1,4 +1,5 @@
 import { createContext, use, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { whenIdle } from "./idle";
 import { loadState, normalize, saveState, STORAGE_KEY, type AppState } from "./state";
 
 interface Store {
@@ -11,6 +12,13 @@ interface Store {
 
 const StoreCtx = createContext<Store | null>(null);
 
+/** The sync ledger and the keep-data request load when the browser is idle, never with the first page. */
+let background: Promise<typeof import("./sync/background")> | null = null;
+function afterSave(st: AppState) {
+  background ??= new Promise((done) => whenIdle(() => done(import("./sync/background"))));
+  void background.then((m) => m.onSaved(st)).catch(() => { /* chunk failed to load offline: try on the next save */ background = null; });
+}
+
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AppState>(loadState);
   const [saved, setSaved] = useState(true);
@@ -18,7 +26,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (fromOtherTab.current) { fromOtherTab.current = false; return; }
-    setSaved(saveState(state));
+    const ok = saveState(state);
+    setSaved(ok);
+    if (ok) afterSave(state);
   }, [state]);
 
   // Keep two open tabs in step.

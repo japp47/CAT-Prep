@@ -46,5 +46,13 @@ export function weekStart(s: string): string {
   return addDays(s, -((dow(s) + 6) % 7));
 }
 export const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
-export const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+/**
+ * A row id: the time first (so ids sort in the order rows were made), then 10 random characters. With sync, ids
+ * from several devices share one space, so the random part comes from crypto (about 51 bits). Older ids had 4.
+ */
+export const uid = () => {
+  const r = new Uint8Array(10);
+  crypto.getRandomValues(r);
+  return Date.now().toString(36) + Array.from(r, (b) => (b % 36).toString(36)).join("");
+};
 export const isIsoDate = (s: unknown): s is string => typeof s === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s);

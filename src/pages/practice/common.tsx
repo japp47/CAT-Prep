@@ -14,6 +14,7 @@ import { CAUSE_IDS, type Cause } from "../../lib/state";
 import { useStore } from "../../lib/store";
 import { fmtSecs } from "../../practice/record";
 import { Tnum } from "../../components/kit";
+import KeepHint from "../../components/KeepHint";
 
 /** Seconds since the component mounted, ticking once a second while `running`. */
 export function useElapsed(running: boolean, startAt: number) {
@@ -222,6 +223,7 @@ export function ScoreCard({ score, of, unit, parts, children }: { score: ReactNo
         </dl>
       </div>
       {children}
+      <KeepHint />
     </div>
   );
 }
