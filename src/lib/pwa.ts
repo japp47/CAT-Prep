@@ -32,6 +32,18 @@ export function appleMobile(ua = navigator.userAgent, touch = navigator.maxTouch
   return /iphone|ipad|ipod/i.test(ua) || (/macintosh/i.test(ua) && touch > 1);
 }
 
+/**
+ * Which browser on an iPhone or iPad. All use Safari's engine, but each keeps its own copy of a site's data, and
+ * Chrome, Edge and Firefox name themselves in the user agent. Since iOS 16.4 each can add a site to the Home Screen.
+ */
+export type IosBrowser = "safari" | "chrome" | "edge" | "firefox" | "other";
+export function iosBrowser(ua = navigator.userAgent): IosBrowser {
+  if (/crios/i.test(ua)) return "chrome";
+  if (/edgios/i.test(ua)) return "edge";
+  if (/fxios/i.test(ua)) return "firefox";
+  return /safari/i.test(ua) && !/opios|gsa\//i.test(ua) ? "safari" : "other";
+}
+
 const standalone = () =>
   typeof window !== "undefined" && (window.matchMedia?.("(display-mode: standalone)").matches || (navigator as { standalone?: boolean }).standalone === true);
 
@@ -48,6 +60,7 @@ export function useInstall() {
     installed: standalone(),
     canPrompt: !!deferred,
     ios,
+    browser: ios ? iosBrowser() : null,
     prompt: async () => {
       if (!deferred) return;
       await deferred.prompt();

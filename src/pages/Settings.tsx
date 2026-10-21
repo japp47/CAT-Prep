@@ -11,7 +11,7 @@ import { googleCalendarUrl, reminderIcs } from "../lib/ics";
 import { MB, SHOW_SIZE, storedBytes, WARN_SIZE } from "../lib/keep";
 import KeepHint from "../components/KeepHint";
 import { usePref } from "../lib/prefs";
-import { useInstall } from "../lib/pwa";
+import { useInstall, type IosBrowser } from "../lib/pwa";
 import { useStore } from "../lib/store";
 import { blankState, normalize } from "../lib/state";
 import { Confirm } from "./practice/common";
@@ -106,14 +106,32 @@ function PracticeCard() {
 }
 
 function InstallCard() {
-  const { installed, canPrompt, ios, prompt } = useInstall();
+  const { installed, canPrompt, ios, browser, prompt } = useInstall();
   return (
     <Section id="install" className="scroll-mt-24" title="Install as an app" description="The installed app opens from your home screen like any other app. After your first visit the site also works without internet, because your plan and logs are stored on this device.">
       {installed ? <p className="text-base text-success">You are using the installed app.</p>
         : canPrompt ? <div><Button onClick={prompt}>Install 99ile</Button></div>
-        : ios ? <p className="measure text-base">On iPhone or iPad: open this site in Safari, tap the Share button (on iPad it is at the top right; if you don&rsquo;t see it, tap <b className="font-semibold">⋯</b> first), then <b className="font-semibold">Add to Home Screen</b>. The Home Screen app keeps its own data, apart from Safari, so it starts empty: download a backup below first, then restore it in the app&rsquo;s Settings.</p>
+        : ios ? <IosSteps browser={browser} />
         : <p className="measure text-base">In Chrome or Edge, use the install icon at the right of the address bar, or the browser menu and then <b className="font-semibold">Install</b>. On Android, open the menu and tap <b className="font-semibold">Add to Home screen</b>.</p>}
     </Section>
+  );
+}
+
+/**
+ * Add to Home Screen steps for the browser in use. Each iPhone browser keeps its own copy of the progress, so the
+ * steps never send the student to another browser, and the Home Screen app may start empty (docs/research/step-3.md, 16).
+ */
+function IosSteps({ browser }: { browser: IosBrowser | null }) {
+  const name = browser === "chrome" ? "Chrome" : browser === "edge" ? "Edge" : browser === "firefox" ? "Firefox" : browser === "other" ? "this browser" : "Safari";
+  const where = browser === "safari" || browser === null
+    ? <>tap the Share button (on iPad it is at the top right; if you don&rsquo;t see it, tap <b className="font-semibold">⋯</b> first)</>
+    : browser === "chrome" ? <>tap the Share button to the right of the address bar</>
+    : <>open the menu and tap Share</>;
+  return (
+    <div className="measure flex flex-col gap-2 text-base">
+      <p>{browser === "other" ? "In this browser" : `In ${name}`} on iPhone or iPad: {where}, then <b className="font-semibold">Add to Home Screen</b>.</p>
+      <p>Stay in {name}: each browser keeps its own copy of your progress. The Home Screen app may also start empty, so download a backup below first, and if it opens empty, restore it in the app&rsquo;s Settings.</p>
+    </div>
   );
 }
 
