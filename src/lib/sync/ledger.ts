@@ -10,8 +10,11 @@ export const LEDGER_KEY = "cat-prep-sync";
 
 /** [hash of the data ("" = deleted), changed at (ms), server rev last seen (0 = never), hash the server holds ("" = none)] */
 export type Row = [string, number, number, string];
-/** `hi` is the highest stamp this device has made or seen: the hybrid clock below never goes behind it. */
-export interface Ledger { v: 1; on: boolean; cursor: number; hi: number; rows: Record<string, Row> }
+/**
+ * `hi` is the highest stamp this device has made or seen: the hybrid clock below never goes behind it.
+ * `last` is when a sync round last finished (ms) and `who` the identity and device this browser syncs as.
+ */
+export interface Ledger { v: 1; on: boolean; cursor: number; hi: number; rows: Record<string, Row>; last?: number; who?: { identityId: string; deviceId: string } }
 
 export const blankLedger = (): Ledger => ({ v: 1, on: false, cursor: 0, hi: 0, rows: {} });
 
@@ -90,7 +93,12 @@ export function receive(L: Ledger, st: AppState, incoming: SyncRecord[], now = D
 export function loadLedger(): Ledger {
   try {
     const raw = JSON.parse(localStorage.getItem(LEDGER_KEY) ?? "null");
-    if (raw && raw.v === 1 && raw.rows && typeof raw.rows === "object") return { v: 1, on: raw.on === true, cursor: Number(raw.cursor) || 0, hi: Number(raw.hi) || 0, rows: raw.rows };
+    if (raw && raw.v === 1 && raw.rows && typeof raw.rows === "object") {
+      const L: Ledger = { v: 1, on: raw.on === true, cursor: Number(raw.cursor) || 0, hi: Number(raw.hi) || 0, rows: raw.rows };
+      if (typeof raw.last === "number") L.last = raw.last;
+      if (raw.who && typeof raw.who.identityId === "string" && typeof raw.who.deviceId === "string") L.who = { identityId: raw.who.identityId, deviceId: raw.who.deviceId };
+      return L;
+    }
   } catch { /* corrupt or blocked: start again; the next sync pulls and pushes everything */ }
   return blankLedger();
 }

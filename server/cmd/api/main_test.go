@@ -21,7 +21,7 @@ var quiet = slog.New(slog.NewTextHandler(io.Discard, nil))
 func fakeDB(err error) readyFunc { return func(context.Context) error { return err } }
 
 func testHandler(ready readyFunc) http.Handler {
-	return newHandler(config.Config{AllowedOrigin: "http://localhost:5173"}, ready, quiet)
+	return newHandler(config.Config{AllowedOrigin: "http://localhost:5173"}, ready, quiet, nil)
 }
 
 func TestHealthHandler(t *testing.T) {

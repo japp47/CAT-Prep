@@ -1,0 +1,236 @@
+import { describe as group, expect, it } from "vitest";
+import type { ApiResult } from "../api";
+import { blankState, normalize, type AppState } from "../state";
+import { canon, describe, join, round, turnOn, type SyncIO, type WireRecord } from "./client";
+import { blankLedger, dirty, track, type Ledger } from "./ledger";
+
+/**
+ * A fake of the Go server's sync API with the same rules (server/internal/syncapi): server revs, compare-and-set on
+ * baseRev, equal data counts as applied. Like Postgres jsonb, it hands JSON back with its keys reordered.
+ */
+class FakeServer {
+  rev = 0;
+  rows = new Map<string, WireRecord>();
+  ids = 0;
+  /** Set to make the next call fail after the server did its work (a lost answer). */
+  dropNextAnswer = false;
+  down = false;
+  pageSize = 500;
+
+  sorted(x: unknown): unknown {
+    if (Array.isArray(x)) return x.map((v) => this.sorted(v));
+    if (x && typeof x === "object") return Object.fromEntries(Object.keys(x).sort().reverse().map((k) => [k, this.sorted((x as Record<string, unknown>)[k])]));
+    return x;
+  }
+
+  handle(path: string, body: unknown): ApiResult<unknown> {
+    if (this.down) return { ok: false, status: 0, code: "offline", message: "offline" };
+    const out = this.route(path, body);
+    if (this.dropNextAnswer) { this.dropNextAnswer = false; return { ok: false, status: 503, code: "http_503", message: "lost" }; }
+    return out;
+  }
+
+  route(path: string, body: unknown): ApiResult<unknown> {
+    const ok = (data: unknown): ApiResult<unknown> => ({ ok: true, status: 200, data });
+    if (path === "/identity") return ok({ identityId: "id-" + ++this.ids, deviceId: "dev-" + this.ids });
+    if (path === "/dev/join") return ok({ identityId: (body as { identityId: string }).identityId, deviceId: "dev-" + ++this.ids });
+    if (path === "/sync/pull") {
+      const cursor = (body as { cursor: number }).cursor;
+      const recs = [...this.rows.values()].filter((r) => r.rev > cursor).sort((a, b) => a.rev - b.rev);
+      const page = recs.slice(0, this.pageSize).map((r) => ({ ...r, data: this.sorted(r.data) }));
+      return ok({ cursor: page.length ? page[page.length - 1].rev : cursor, records: page, more: recs.length > this.pageSize });
+    }
+    if (path === "/sync/push") {
+      const applied: unknown[] = [], stale: unknown[] = [];
+      for (const c of (body as { changes: (WireRecord & { baseRev: number })[] }).changes) {
+        const k = c.kind + ":" + c.id, cur = this.rows.get(k);
+        if (!cur) { this.rows.set(k, { kind: c.kind, id: c.id, data: c.data, deleted: c.deleted, stamp: c.stamp, rev: ++this.rev }); applied.push({ kind: c.kind, id: c.id, rev: this.rev }); }
+        else if (cur.deleted === c.deleted && canon(cur.data) === canon(c.data)) applied.push({ kind: c.kind, id: c.id, rev: cur.rev });
+        else if (cur.rev === c.baseRev) { this.rows.set(k, { ...cur, data: c.data, deleted: c.deleted, stamp: c.stamp, rev: ++this.rev }); applied.push({ kind: c.kind, id: c.id, rev: this.rev }); }
+        else stale.push({ ...cur, data: this.sorted(cur.data) });
+      }
+      return ok({ applied, stale });
+    }
+    return { ok: false, status: 404, code: "not_found", message: path };
+  }
+}
+
+/** One browser: its state and ledger in memory, stored through JSON like localStorage. */
+class Browser {
+  st: AppState;
+  ledger = JSON.stringify(blankLedger());
+  calls: string[] = [];
+  clock = 1_700_000_000_000;
+  io: SyncIO;
+  constructor(server: FakeServer, st = blankState()) {
+    this.st = normalize(JSON.parse(JSON.stringify(st)));
+    this.io = {
+      call: async <T,>(path: string, body?: unknown) => { this.calls.push(path); return server.handle(path, JSON.parse(JSON.stringify(body ?? null))) as ApiResult<T>; },
+      getState: () => this.st,
+      apply: async (fn) => { this.st = fn(this.st); },
+      load: () => JSON.parse(this.ledger) as Ledger,
+      save: (L) => { this.ledger = JSON.stringify(L); },
+      now: () => (this.clock += 1000),
+    };
+  }
+  get L() { return this.io.load(); }
+  /** What the app does after a save: the background ledger update. */
+  edit(fn: (st: AppState) => void) {
+    const next = structuredClone(this.st);
+    fn(next);
+    this.st = normalize(JSON.parse(JSON.stringify(next)));
+    this.io.save(track(this.io.load(), this.st, this.io.now()));
+  }
+  attempt(id: string, set = "set-a") {
+    this.edit((s) => { s.rcAttempts.push({ id, d: "2026-10-20", set, mode: "library", ans: [0, 1], c: 1, w: 1, secs: 300, first: 0 }); });
+  }
+  ids() { return this.st.rcAttempts.map((a) => a.id).sort(); }
+}
+
+const about = { label: "Test", platform: "mac" };
+
+group("sync client", () => {
+  it("turning on pushes every RC attempt and nothing else, and leaves nothing dirty", async () => {
+    const server = new FakeServer();
+    const a = new Browser(server);
+    a.attempt("a1");
+    a.edit((s) => { s.errors.push({ id: "e1", d: "2026-10-01", sec: "VARC", t: "Tone", trap: "", src: "", why: "", fix: "" }); });
+    const out = await turnOn(a.io, about);
+    expect(out.ok).toBe(true);
+    expect([...server.rows.keys()]).toEqual(["rc:a1"]);
+    expect(a.L.on).toBe(true);
+    expect(a.L.who?.identityId).toBe("id-1");
+    expect(dirty(a.L).filter((k) => k.startsWith("rc:"))).toEqual([]);
+  });
+
+  it("brings one browser's attempts to another and back", async () => {
+    const server = new FakeServer();
+    const a = new Browser(server), b = new Browser(server);
+    a.attempt("a1"); a.attempt("a2");
+    b.attempt("b1");
+    await turnOn(a.io, about);
+    await join(b.io, a.L.who!.identityId, about);
+    expect(b.ids()).toEqual(["a1", "a2", "b1"]);
+    await round(a.io);
+    expect(a.ids()).toEqual(["a1", "a2", "b1"]);
+    expect(server.rows.size).toBe(3);
+  });
+
+  it("does not push again what it just pulled, though the server reorders JSON keys", async () => {
+    const server = new FakeServer();
+    const a = new Browser(server), b = new Browser(server);
+    a.attempt("a1");
+    await turnOn(a.io, about);
+    const revBefore = server.rev;
+    await join(b.io, a.L.who!.identityId, about);
+    expect(b.calls).toEqual(["/dev/join", "/sync/pull"]);
+    b.calls = [];
+    await round(b.io);
+    expect(server.rev).toBe(revBefore);
+    expect(b.calls).toEqual(["/sync/pull"]);
+  });
+
+  it("a lost answer is safe: the retry changes nothing on the server", async () => {
+    const server = new FakeServer();
+    const a = new Browser(server);
+    await turnOn(a.io, about);
+    a.attempt("a1");
+    server.dropNextAnswer = true;
+    await round(a.io); // the pull answer is lost, nothing pushed yet
+    server.dropNextAnswer = false;
+    await round(a.io);
+    const rev = server.rev;
+    a.edit(() => {});
+    server.dropNextAnswer = true;
+    a.attempt("a2");
+    const lost = await round(a.io);
+    expect(lost.ok).toBe(false);
+    await round(a.io);
+    expect(server.rows.size).toBe(2);
+    expect(server.rev).toBe(rev + 1);
+    expect(dirty(a.L).filter((k) => k.startsWith("rc:"))).toEqual([]);
+  });
+
+  it("a deletion travels, and a stale write is merged instead of overwriting", async () => {
+    const server = new FakeServer();
+    const a = new Browser(server), b = new Browser(server);
+    a.attempt("a1"); a.attempt("a2");
+    await turnOn(a.io, about);
+    await join(b.io, a.L.who!.identityId, about);
+    a.edit((s) => { s.rcAttempts = s.rcAttempts.filter((x) => x.id !== "a1"); });
+    await round(a.io);
+    expect(server.rows.get("rc:a1")?.deleted).toBe(true);
+    // b changed a1 without having seen the deletion: its push is stale, the merge keeps the deletion.
+    b.edit((s) => { s.rcAttempts.find((x) => x.id === "a1")!.secs = 999; });
+    await round(b.io);
+    expect(b.ids()).toEqual(["a2"]);
+    await round(a.io);
+    expect(a.ids()).toEqual(["a2"]);
+  });
+
+  it("offline keeps everything; a removed device turns sync off here", async () => {
+    const server = new FakeServer();
+    const a = new Browser(server);
+    a.attempt("a1");
+    await turnOn(a.io, about);
+    server.down = true;
+    a.attempt("a2");
+    const out = await round(a.io);
+    expect(out.ok).toBe(false);
+    expect(a.ids()).toEqual(["a1", "a2"]);
+    expect(a.L.on).toBe(true);
+    server.down = false;
+    a.io.call = async <T,>() => ({ ok: false, status: 401, code: "signed_out", message: "x" }) as ApiResult<T>;
+    await round(a.io);
+    expect(a.L.on).toBe(false);
+    expect(a.ids()).toEqual(["a1", "a2"]);
+  });
+
+  it("pulls in pages", async () => {
+    const server = new FakeServer();
+    server.pageSize = 2;
+    const a = new Browser(server), b = new Browser(server);
+    ["1", "2", "3", "4", "5"].forEach((n) => a.attempt("a" + n));
+    await turnOn(a.io, about);
+    await join(b.io, a.L.who!.identityId, about);
+    expect(b.ids()).toEqual(["a1", "a2", "a3", "a4", "a5"]);
+    expect(b.L.cursor).toBe(server.rev);
+  });
+
+  it("two browsers editing in random order end up equal", async () => {
+    for (let seed = 1; seed <= 20; seed++) {
+      let x = seed;
+      const r = () => { x = (x * 1103515245 + 12345) % 2147483648; return x / 2147483648; };
+      const server = new FakeServer();
+      const a = new Browser(server), b = new Browser(server);
+      await turnOn(a.io, about);
+      await join(b.io, a.L.who!.identityId, about);
+      for (let step = 0; step < 30; step++) {
+        const d = r() < 0.5 ? a : b;
+        const roll = r();
+        if (roll < 0.4) d.attempt(`s${seed}-${step}`);
+        else if (roll < 0.55 && d.st.rcAttempts.length) { const id = d.st.rcAttempts[Math.floor(r() * d.st.rcAttempts.length)].id; d.edit((s) => { s.rcAttempts = s.rcAttempts.filter((q) => q.id !== id); }); }
+        else if (roll < 0.7) server.down = !server.down;
+        else await round(d.io);
+      }
+      server.down = false;
+      for (let i = 0; i < 3; i++) { await round(a.io); await round(b.io); }
+      expect(a.ids(), `seed ${seed}`).toEqual(b.ids());
+    }
+  });
+});
+
+group("describe", () => {
+  it("names the browser and platform for the device list", () => {
+    expect(describe("Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 Chrome/130.0 Mobile Safari/537.36")).toEqual({ label: "Chrome on Android", platform: "android" });
+    expect(describe("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Version/18.0 Safari/605.1.15", 5)).toEqual({ label: "Safari on iPhone or iPad", platform: "ios" });
+    expect(describe("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/130.0 Safari/537.36 Edg/130.0")).toEqual({ label: "Edge on Windows", platform: "windows" });
+  });
+});
+
+group("canon", () => {
+  it("ignores key order", () => {
+    expect(canon({ b: 1, a: [{ y: 2, x: 1 }] })).toBe(canon({ a: [{ x: 1, y: 2 }], b: 1 }));
+    expect(canon({ a: 1 })).not.toBe(canon({ a: 2 }));
+  });
+});

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { lazy, Suspense, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -15,6 +15,10 @@ import { useInstall, type IosBrowser } from "../lib/pwa";
 import { useStore } from "../lib/store";
 import { blankState, normalize } from "../lib/state";
 import { Confirm } from "./practice/common";
+import { API_ENABLED } from "../lib/api";
+
+// Sync is only in builds with the API on (B2 testing); the card and its code are never loaded otherwise.
+const SyncCard = API_ENABLED ? lazy(() => import("../components/SyncCard")) : null;
 
 const Panel = ({ children }: { children: React.ReactNode }) => <div className="flex flex-col gap-4 rounded-lg bg-card p-5 sm:p-6">{children}</div>;
 
@@ -78,6 +82,8 @@ export default function Settings() {
         </Panel>
         <KeepHint />
       </Section>
+
+      {SyncCard && <Suspense fallback={null}><SyncCard /></Suspense>}
 
       <Section title="Start over" description="Deletes your time settings, ticks, logs and words from this browser. Download a backup first if you might want them back.">
         <div><Button variant="destructive" onClick={() => setAsk("wipe")}>Delete all my data</Button></div>
