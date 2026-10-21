@@ -23,9 +23,22 @@ npm run catalog    # rebuild the content catalog after editing practice content
 npm run build      # production build in dist/
 ```
 
+## Go API
+
+The server behind sync lives in `server/` (Go 1.27, Postgres 17 in Docker for development):
+
+```bash
+cd server
+cp .env.example .env
+make run        # Postgres on port 5433, API on http://localhost:8080
+```
+
+See [server/README.md](server/README.md) for tests, settings and layout.
+
 ## Project layout
 
 ```
+server/            Go API (health, readiness; sync comes next)
 src/
   data/           exam dates and phases, updates, other exams, guides, stories, roadmap
   sections/       one folder per CAT section

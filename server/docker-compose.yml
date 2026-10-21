@@ -1,0 +1,25 @@
+# Local Postgres for 99ile development. Port 5433 on this Mac (5432 is often taken by another project).
+# Same major version as Supabase (17). Two databases: cat (for `make run`) and cat_test (for `make test-int`,
+# emptied by the tests). Data lives in the named volume; `make db-reset` wipes it.
+name: cat-prep
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: cat
+      POSTGRES_PASSWORD: cat
+      POSTGRES_DB: cat
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./dev/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cat -d cat"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  pgdata:
