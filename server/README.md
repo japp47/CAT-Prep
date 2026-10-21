@@ -52,8 +52,8 @@ query strings, cookies or headers.
 
 | Variable | Default | Notes |
 |---|---|---|
-| `ENV` | `dev` | `prod` on Cloud Run: JSON logs, https origin required |
-| `PORT` | `8080` | Cloud Run sets it |
+| `ENV` | `dev` | `prod` on Render: JSON logs, https origin required |
+| `PORT` | `8080` | Render sets it |
 | `DATABASE_URL` | none, required | The API's connection, as `cat_app`. Live: Supabase session pooler |
 | `MIGRATE_DATABASE_URL` | none | `cmd/migrate` only, as the owner. Live: a secret used only by the migrate step |
 | `ALLOWED_ORIGIN` | `http://localhost:5173` in dev | The site's origin; other sites cannot change data |
