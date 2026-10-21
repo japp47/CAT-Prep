@@ -108,7 +108,7 @@ function PracticeCard() {
 function InstallCard() {
   const { installed, canPrompt, ios, prompt } = useInstall();
   return (
-    <Section title="Install as an app" description="The installed app opens from your home screen like any other app. After your first visit the site also works without internet, because your plan and logs are stored on this device.">
+    <Section id="install" className="scroll-mt-24" title="Install as an app" description="The installed app opens from your home screen like any other app. After your first visit the site also works without internet, because your plan and logs are stored on this device.">
       {installed ? <p className="text-base text-success">You are using the installed app.</p>
         : canPrompt ? <div><Button onClick={prompt}>Install 99ile</Button></div>
         : ios ? <p className="measure text-base">On iPhone or iPad: open this site in Safari, tap the Share button (on iPad it is at the top right; if you don&rsquo;t see it, tap <b className="font-semibold">⋯</b> first), then <b className="font-semibold">Add to Home Screen</b>. The Home Screen app keeps its own data, apart from Safari, so it starts empty: download a backup below first, then restore it in the app&rsquo;s Settings.</p>

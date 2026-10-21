@@ -9,6 +9,7 @@ import { whenIdle } from "../lib/idle";
 import { usePref } from "../lib/prefs";
 import { RedoSeeder } from "./Content";
 import FocusBar from "./FocusBar";
+import InstallButton from "./InstallButton";
 import { IconChart, IconHome, IconPen, IconToday } from "./Icons";
 import Brand from "./Brand";
 import SiteFooter from "./SiteFooter";
@@ -170,6 +171,7 @@ export default function Layout() {
         </>}
         <div className={cn("mt-auto flex", sidebarCollapsed ? "flex-col gap-2" : "items-center gap-2 px-1")}>
           <ThemeToggle />
+          <InstallButton hideWhenInstalled />
           <button type="button" disabled aria-label="Profile page coming soon" title="Profile page coming soon"
             className="grid size-11 shrink-0 cursor-not-allowed place-items-center rounded-md text-muted-foreground/60 opacity-70" >
             <UserRound className="size-5" aria-hidden />

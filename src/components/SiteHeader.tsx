@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
-import { ChevronDown, Download, Menu, Search as SearchIcon } from "lucide-react";
+import { Link, NavLink } from "react-router-dom";
+import { ChevronDown, Menu, Search as SearchIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useInstall } from "../lib/pwa";
 import Brand from "./Brand";
+import InstallButton from "./InstallButton";
 import ThemeToggle from "./ThemeToggle";
 
 export interface SiteNavItem { to: string; label: string; soon?: boolean; end?: boolean }
@@ -28,8 +28,6 @@ const LANDING_LINKS: SiteNavItem[] = [
 
 export default function SiteHeader({ landing, groups, open, onOpenChange, onLoadMenu, onOpenMenu, onOpenSearch }: SiteHeaderProps) {
   const root = useRef<HTMLElement>(null);
-  const navigate = useNavigate();
-  const { installed, canPrompt, prompt } = useInstall();
   useEffect(() => {
     if (!open) return;
     const key = (event: KeyboardEvent) => { if (event.key === "Escape") onOpenChange(false); };
@@ -40,12 +38,6 @@ export default function SiteHeader({ landing, groups, open, onOpenChange, onLoad
   }, [open, onOpenChange]);
 
   const linkClass = "rounded-md px-3 py-2 text-base font-medium text-foreground/80 transition-colors hover:bg-card hover:text-foreground";
-  const install = async () => {
-    if (installed) return;
-    if (canPrompt) await prompt();
-    else navigate("/settings");
-  };
-  const installLabel = installed ? "99ile is installed" : canPrompt ? "Install 99ile" : "Install 99ile: see instructions";
   return <>
     {landing && <header ref={root} className="sticky top-0 z-40 hidden bg-background/95 px-gutter backdrop-blur-md lg:block">
       <div className="mx-auto flex h-[4.5rem] max-w-[1440px] items-center justify-between gap-5">
@@ -62,6 +54,7 @@ export default function SiteHeader({ landing, groups, open, onOpenChange, onLoad
           <button type="button" onClick={onOpenSearch} aria-label="Search" title="Search (⌘K)" aria-keyshortcuts="Meta+K Control+K"
             className="grid size-11 place-items-center rounded-md text-foreground/75 transition-colors hover:bg-card hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"><SearchIcon className="size-5" aria-hidden /></button>
           <ThemeToggle />
+          <InstallButton hideWhenInstalled />
           <button type="button" aria-expanded={open} aria-controls="all-pages" onClick={() => onOpenChange(!open)}
             className={cn("inline-flex h-11 items-center gap-2 rounded-md px-3 text-base font-medium text-foreground/80 transition-colors hover:bg-card hover:text-foreground", open && "bg-card text-foreground")}>
             All pages<ChevronDown className={cn("size-4 transition-transform motion-reduce:transition-none", open && "rotate-180")} aria-hidden />
@@ -90,10 +83,7 @@ export default function SiteHeader({ landing, groups, open, onOpenChange, onLoad
         <ThemeToggle />
         <button type="button" onClick={onOpenSearch} aria-label="Search" title="Search" aria-keyshortcuts="Meta+K Control+K"
           className="grid size-11 place-items-center rounded-md text-foreground/75 transition-colors hover:bg-card hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"><SearchIcon className="size-5" aria-hidden /></button>
-        <button type="button" onClick={() => { void install(); }} disabled={installed} aria-label={installLabel} title={installLabel}
-          className={cn("grid size-11 place-items-center rounded-md text-foreground/75 transition-colors hover:bg-card hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none", installed && "cursor-default text-muted-foreground/45 hover:bg-transparent hover:text-muted-foreground/45")}>
-          <Download className="size-5" aria-hidden />
-        </button>
+        <InstallButton />
         <button type="button" className="grid size-11 place-items-center rounded-md hover:bg-card" aria-label="Open menu" aria-expanded={open} onPointerDown={() => { void onLoadMenu(); }} onClick={onOpenMenu}><Menu className="size-6" /></button>
       </div>
     </header>
