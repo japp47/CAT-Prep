@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
-import { useBlocker } from "react-router-dom";
+import { useBlocker, useSearchParams } from "react-router-dom";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
@@ -246,4 +246,48 @@ export function Confirm({ open, onOpenChange, title, children, action, onAction,
       </AlertDialogContent>
     </AlertDialog>
   );
+}
+
+/**
+ * A review opened from the Error log at one question (?q=3): the question to start on, and a ref for the question
+ * block, which scrolls into view once so the student lands on it below the score card (docs/feature.md F52).
+ */
+export function useStartQuestion(n: number) {
+  const [sp] = useSearchParams();
+  const q = Number(sp.get("q"));
+  const asked = Number.isInteger(q) && q >= 1 && q <= n;
+  const el = useRef<HTMLDivElement>(null);
+  // After the layout's own scroll to the top of a new page, which runs after this component's effects.
+  useEffect(() => {
+    if (!asked) return;
+    const t = setTimeout(() => el.current?.scrollIntoView({ block: "start" }), 80);
+    return () => clearTimeout(t);
+  }, [asked]);
+  return { start: asked ? q - 1 : 0, el };
+}
+
+/**
+ * The attempt a player shows, and how it moves to a finished attempt (docs/feature.md F52).
+ * A finished attempt goes into the address (?review=), so a reload, the back button or a phone that drops the tab
+ * brings back these answers, never a fresh copy. The page restarts with the new address one moment before the saved
+ * attempt may reach it: then it waits (renders nothing) instead of starting a fresh attempt that would save itself as
+ * a draft. An id that never turns up (a deleted attempt) falls back to a fresh attempt after 1.5 s.
+ */
+export function useShownAttempt<T extends { id: string }>(list: T[], initial: string | null) {
+  const [, setSp] = useSearchParams();
+  const [id, setId] = useState<string | null>(initial);
+  const attempt = id ? list.find((a) => a.id === id) : undefined;
+  const waiting = !!id && !attempt;
+  useEffect(() => {
+    if (!waiting) return;
+    const t = setTimeout(() => setId(null), 1500);
+    return () => clearTimeout(t);
+  }, [waiting]);
+  useEffect(() => { window.scrollTo(0, 0); }, [id]);
+  /** `drop` lists address parameters that only meant "start a new attempt" (RC's retake seed n). */
+  const finish = (next: string, drop: string[] = []) => {
+    setId(next);
+    setSp((p) => { const q = new URLSearchParams(p); q.set("review", next); drop.forEach((k) => q.delete(k)); return q; }, { replace: true });
+  };
+  return { attempt, waiting, finish, retake: () => setId(null) };
 }

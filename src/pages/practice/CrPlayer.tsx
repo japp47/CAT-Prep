@@ -12,7 +12,7 @@ import { Empty, LinkButton, Page } from "../../components/kit";
 import { customCr } from "../../practice/crdrill";
 import { crError, crErrorSrc, fmtSecs, LETTERS, recordCr, scoreCr } from "../../practice/record";
 import { CR_TYPE, type CrItem, type CrType } from "../../practice/types";
-import { Choice, ChoiceGroup, Confirm, ElapsedTimer, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, useLeaveConfirmation } from "./common";
+import { Choice, ChoiceGroup, Confirm, ElapsedTimer, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
 
 const SECS_PER_ITEM = 90;
 
@@ -44,13 +44,12 @@ interface CrDraft { unsure?: boolean[]; ids: string[]; answers: (number | null)[
 /** One critical reasoning drill: answering it, then reviewing it on the same page. */
 function Drill({ items, initialAttempt, draftKey }: { items: CrItem[]; initialAttempt: string | null; draftKey: string }) {
   const { state } = useStore();
-  const [attemptId, setAttemptId] = useState<string | null>(() => (initialAttempt && state.crAttempts.some((a) => a.id === initialAttempt) ? initialAttempt : null));
-  const attempt = attemptId ? state.crAttempts.find((a) => a.id === attemptId) : undefined;
-  useEffect(() => { window.scrollTo(0, 0); }, [attemptId]);
+  const { attempt, waiting, finish, retake } = useShownAttempt(state.crAttempts, initialAttempt);
   if (!items.length) return <Page><Empty action={<LinkButton to="/practice">Back to Practice</LinkButton>}>No critical reasoning questions found.</Empty></Page>;
+  if (waiting) return null;
   return attempt
-    ? <DrillReview items={items} attempt={attempt} onRetake={() => setAttemptId(null)} />
-    : <DrillAttempt items={items} draftKey={draftKey} onDone={setAttemptId} />;
+    ? <DrillReview items={items} attempt={attempt} onRetake={retake} />
+    : <DrillAttempt items={items} draftKey={draftKey} onDone={finish} />;
 }
 
 const kindLabel = (c: CrItem) => CR_TYPE[c.type].label;
@@ -108,6 +107,7 @@ function DrillAttempt({ items, draftKey, onDone }: { items: CrItem[]; draftKey: 
     writeDraft(draftKey, null);
     update((st) => recordCr(st, id, items, answers, (Date.now() - startAt) / 1000, todayIso(), unsure));
     setConfirming(false);
+    leave.allowNextNavigation(); // the review goes into the address (?review=): not a "leave"
     onDone(id);
   };
   const blanks = answers.filter((a) => a === null).length;
@@ -159,7 +159,8 @@ function DrillAttempt({ items, draftKey, onDone }: { items: CrItem[]; draftKey: 
 }
 
 function DrillReview({ items, attempt, onRetake }: { items: CrItem[]; attempt: CrAttempt; onRetake: () => void }) {
-  const [cur, setCur] = useState(0);
+  const { start, el } = useStartQuestion(items.length);
+  const [cur, setCur] = useState(start);
   const [seed] = useState(uid);
   const answers = items.map((_, i) => attempt.items[i]?.a ?? null);
   const right = attempt.items.filter((i) => i.ok).length;
@@ -190,9 +191,9 @@ function DrillReview({ items, attempt, onRetake }: { items: CrItem[]; attempt: C
         })}
       </div>
 
-      <div className="flex flex-col gap-5">
+      <div ref={el} className="flex scroll-mt-24 flex-col gap-5">
         <p className="text-sm text-muted-foreground">Question {cur + 1} of {items.length}</p>
-        <CrReview item={item} chosen={answers[cur]} />
+        <CrReview item={item} chosen={answers[cur]} att={attempt.id} />
         <div className="flex justify-between gap-2 pt-1">
           <Button variant="secondary" size="sm" disabled={cur === 0} onClick={() => setCur(cur - 1)}>Previous</Button>
           {cur < items.length - 1 && <Button size="sm" onClick={() => setCur(cur + 1)}>Next</Button>}
@@ -228,7 +229,7 @@ export function CrQuestion({ item, pick, setPick }: { item: CrItem; pick: number
 }
 
 /** A question after marking: every option with the reason it is right or wrong, then the rule to take away. */
-export function CrReview({ item, chosen }: { item: CrItem; chosen: number | null }) {
+export function CrReview({ item, chosen, att }: { item: CrItem; chosen: number | null; att?: string }) {
   const { state, update } = useStore();
   const s = scoreCr(item, chosen);
   const inLog = state.errors.some((e) => e.src === crErrorSrc(item));
@@ -252,7 +253,7 @@ export function CrReview({ item, chosen }: { item: CrItem; chosen: number | null
       <p className="rounded-lg bg-card px-5 py-4 text-base"><b className="font-semibold">{CR_TYPE[item.type].label}:</b> {item.takeaway}</p>
       {!s.ok && (inLog
         ? <ErrorCause src={crErrorSrc(item)} />
-        : <Button variant="secondary" size="sm" className="self-start" onClick={() => { update((st) => { st.errors.push(crError(item, chosen, todayIso())); }); toast("Added to your Error log."); }}>Add to Error log</Button>)}
+        : <Button variant="secondary" size="sm" className="self-start" onClick={() => { update((st) => { st.errors.push(crError(item, chosen, todayIso(), att)); }); toast("Added to your Error log."); }}>Add to Error log</Button>)}
       <ReportLink what={`Critical reasoning: ${item.topic} (${item.id})`} />
     </div>
   );

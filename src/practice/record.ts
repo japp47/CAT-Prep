@@ -65,12 +65,12 @@ export const REDO_SRC = "Redo queue";
 export const rcErrorSrc = (set: RcSet, qi: number) => `${set.title}, Q${qi + 1} (Practice)`;
 
 /** A pre-filled Error log entry for a wrong or skipped RC question. A question marked "Not sure" starts with the cause "guessed". */
-export function rcError(set: RcSet, qi: number, chosen: number | null, d: string, unsure = false): ErrorEntry {
+export function rcError(set: RcSet, qi: number, chosen: number | null, d: string, unsure = false, att?: string): ErrorEntry {
   const q = set.questions[qi], right = q.options[q.answer];
   const picked = chosen == null ? null : q.options[chosen];
   return {
     id: uid(), d, sec: "VARC", t: RC_QTYPE[q.type].error, trap: picked?.trap ?? "", ...(unsure ? { cause: "guess" as const } : {}),
-    src: rcErrorSrc(set, qi),
+    src: rcErrorSrc(set, qi), q: rcRedoKey(set.id, qi), ...(att ? { att } : {}),
     why: picked ? `Chose ${LETTERS[chosen!]}: ${picked.t} ${picked.why}` : "Skipped this question.",
     fix: `Answer ${LETTERS[q.answer]}: ${right.t} ${right.why}`,
   };
@@ -78,7 +78,11 @@ export function rcError(set: RcSet, qi: number, chosen: number | null, d: string
 
 export const vaErrorSrc = (item: VaItem) => `${VA_KIND[item.kind].label}: ${item.para.topic} (Practice)`;
 
-export function vaError(item: VaItem, typed: string, d: string): ErrorEntry {
+export function vaError(item: VaItem, typed: string, d: string, att?: string): ErrorEntry {
+  return { ...vaErrorBody(item, typed, d), q: item.key, ...(att ? { att } : {}) };
+}
+
+function vaErrorBody(item: VaItem, typed: string, d: string): ErrorEntry {
   const p = item.para;
   if (item.kind === "ps") {
     const picked = typed ? sumAt(item, +typed - 1) : undefined, right = sumAt(item, +item.answer - 1);
@@ -95,10 +99,10 @@ export function vaError(item: VaItem, typed: string, d: string): ErrorEntry {
 export const crErrorSrc = (item: CrItem) => `Critical reasoning ${item.id}: ${item.topic}, ${CR_TYPE[item.type].label.toLowerCase()} (Practice)`;
 
 /** A pre-filled Error log entry for a wrong or blank critical reasoning question. */
-export function crError(item: CrItem, chosen: number | null, d: string): ErrorEntry {
+export function crError(item: CrItem, chosen: number | null, d: string, att?: string): ErrorEntry {
   const right = item.options[item.answer], picked = chosen == null ? null : item.options[chosen];
   return {
-    id: uid(), d, sec: "VARC", t: "Critical reasoning", trap: picked?.trap ?? "", src: crErrorSrc(item),
+    id: uid(), d, sec: "VARC", t: "Critical reasoning", trap: picked?.trap ?? "", src: crErrorSrc(item), q: crRedoKey(item.id), ...(att ? { att } : {}),
     why: picked ? `Chose ${LETTERS[chosen!]}: ${picked.t} ${picked.why}` : "Left it blank.",
     fix: `Answer ${LETTERS[item.answer]}: ${right.t} ${right.why} ${item.takeaway}`,
   };

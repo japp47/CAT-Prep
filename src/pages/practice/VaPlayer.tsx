@@ -15,7 +15,7 @@ import { vaKeysOfDay } from "../../practice/daily";
 import { fmtSecs, LETTERS, recordVa, vaError, vaErrorSrc } from "../../practice/record";
 import { answerLabel, cleanAnswer, customDrill, parseKey, scoreItem, sentenceAt, sumAt, VA_KIND, type VaItem, type VaKind } from "../../practice/va/build";
 import { paraText, type VaPara } from "../../practice/types";
-import { Choice, ChoiceGroup, Confirm, ElapsedTimer, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, useLeaveConfirmation } from "./common";
+import { Choice, ChoiceGroup, Confirm, ElapsedTimer, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
 
 const SECS_PER_ITEM = 90;
 
@@ -54,13 +54,12 @@ interface VaDraft { unsure?: boolean[]; keys: string[]; answers: string[]; cur: 
 /** One VA drill: answering it, then reviewing it on the same page. */
 function Drill({ items, mode, initialAttempt, draftKey }: { items: VaItem[]; mode: "daily" | "custom"; initialAttempt: string | null; draftKey: string }) {
   const { state } = useStore();
-  const [attemptId, setAttemptId] = useState<string | null>(() => (initialAttempt && state.vaAttempts.some((a) => a.id === initialAttempt) ? initialAttempt : null));
-  const attempt = attemptId ? state.vaAttempts.find((a) => a.id === attemptId) : undefined;
-  useEffect(() => { window.scrollTo(0, 0); }, [attemptId]);
+  const { attempt, waiting, finish, retake } = useShownAttempt(state.vaAttempts, initialAttempt);
   if (!items.length) return <Page><Empty action={<LinkButton to="/practice">Back to Practice</LinkButton>}>No drill questions found.</Empty></Page>;
+  if (waiting) return null;
   return attempt
-    ? <DrillReview items={items} attempt={attempt} onRetake={() => setAttemptId(null)} />
-    : <DrillAttempt items={items} mode={mode} draftKey={draftKey} onDone={setAttemptId} />;
+    ? <DrillReview items={items} attempt={attempt} onRetake={retake} />
+    : <DrillAttempt items={items} mode={mode} draftKey={draftKey} onDone={finish} />;
 }
 
 function DrillAttempt({ items, mode, draftKey, onDone }: { items: VaItem[]; mode: "daily" | "custom"; draftKey: string; onDone: (id: string) => void }) {
@@ -116,6 +115,7 @@ function DrillAttempt({ items, mode, draftKey, onDone }: { items: VaItem[]; mode
     writeDraft(draftKey, null);
     update((st) => recordVa(st, id, items, answers, (Date.now() - startAt) / 1000, mode, todayIso(), unsure));
     setConfirming(false);
+    leave.allowNextNavigation(); // the review goes into the address (?review=): not a "leave"
     onDone(id);
   };
   const blanks = answers.filter((a) => !cleanAnswer(a)).length;
@@ -167,7 +167,8 @@ function DrillAttempt({ items, mode, draftKey, onDone }: { items: VaItem[]; mode
 }
 
 function DrillReview({ items, attempt, onRetake }: { items: VaItem[]; attempt: VaAttempt; onRetake: () => void }) {
-  const [cur, setCur] = useState(0);
+  const { start, el } = useStartQuestion(items.length);
+  const [cur, setCur] = useState(start);
   const [seed] = useState(uid);
   const answers = items.map((_, i) => attempt.items[i]?.a ?? "");
   const score = items.reduce((s, it, i) => s + scoreItem(it, answers[i]).pts, 0);
@@ -200,9 +201,9 @@ function DrillReview({ items, attempt, onRetake }: { items: VaItem[]; attempt: V
         })}
       </div>
 
-      <div className="flex flex-col gap-5">
+      <div ref={el} className="flex scroll-mt-24 flex-col gap-5">
         <p className="text-sm text-muted-foreground">Question {cur + 1} of {items.length}, {VA_KIND[item.kind].tita ? "TITA, no negative marks" : "MCQ, −1 if wrong"}</p>
-        <ItemReview item={item} answer={answers[cur]} />
+        <ItemReview item={item} answer={answers[cur]} att={attempt.id} />
         <div className="flex justify-between gap-2 pt-1">
           <Button variant="secondary" size="sm" disabled={cur === 0} onClick={() => setCur(cur - 1)}>Previous</Button>
           {cur < items.length - 1 && <Button size="sm" onClick={() => setCur(cur + 1)}>Next</Button>}
@@ -302,7 +303,7 @@ function Marked({ text, mark }: { text: string; mark: string }) {
   return <>{text.slice(0, i)}<mark className="hl text-inherit">{mark}</mark>{text.slice(i + mark.length)}</>;
 }
 
-export function ItemReview({ item, answer }: { item: VaItem; answer: string }) {
+export function ItemReview({ item, answer, att }: { item: VaItem; answer: string; att?: string }) {
   const { state, update } = useStore();
   const a = cleanAnswer(answer);
   const s = scoreItem(item, a);
@@ -365,7 +366,7 @@ export function ItemReview({ item, answer }: { item: VaItem; answer: string }) {
       )}
       {!s.ok && (inLog
         ? <ErrorCause src={vaErrorSrc(item)} />
-        : <Button variant="secondary" size="sm" className="self-start" onClick={() => { update((st) => { st.errors.push(vaError(item, a, todayIso())); }); toast("Added to your Error log."); }}>Add to Error log</Button>)}
+        : <Button variant="secondary" size="sm" className="self-start" onClick={() => { update((st) => { st.errors.push(vaError(item, a, todayIso(), att)); }); toast("Added to your Error log."); }}>Add to Error log</Button>)}
       <ReportLink what={`${VA_KIND[item.kind].label}: ${p.topic} (${item.key})`} />
     </>
   );

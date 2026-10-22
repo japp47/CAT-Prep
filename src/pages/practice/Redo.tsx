@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -8,7 +9,9 @@ import { Empty, LinkButton, Page, PageHeader, Section, Stat } from "../../compon
 import { useStore } from "../../lib/store";
 import type { Content } from "../../practice/content";
 import { LETTERS, recordRedoAnswer } from "../../practice/record";
-import { answerRedo, dueRedo, REDO_GAPS, REDO_PER_SESSION, redoPracticeType, resolveRedo, upcomingRedo, type RedoRef } from "../../practice/redo";
+import { answerRedo, dueRedo, REDO_GAPS, REDO_PER_SESSION, redoKeyExists, redoNow, redoPracticeType, resolveRedo, upcomingRedo, type RedoRef } from "../../practice/redo";
+import { lastMistake } from "../../practice/errorlink";
+import { CAUSES } from "../../data/traps";
 import { CR_TYPE, RC_QTYPE } from "../../practice/types";
 import { cleanAnswer, scoreItem, VA_KIND } from "../../practice/va/build";
 import { Choice, ChoiceGroup, Confirm, useLeaveConfirmation } from "./common";
@@ -19,10 +22,15 @@ import { ItemInput, ItemReview } from "./VaPlayer";
 const HOW = `Every question you get wrong or skip in Practice comes back here after ${REDO_GAPS[0]} day. Get it right and it returns after ${REDO_GAPS[1]} days, then ${REDO_GAPS[2]}. Right ${REDO_GAPS.length} times in a row and it leaves the queue. A miss starts it again from tomorrow.`;
 
 export default function Redo() {
-  const { state } = useStore();
+  const { state, update } = useStore();
   const today = todayIso();
+  // "Try it again" from the Error log opens one question (?k=), back in the queue and due today.
+  const [sp] = useSearchParams();
+  const only = sp.get("k");
+  const one = only && redoKeyExists(only) ? only : null;
+  useEffect(() => { if (one) update((st) => redoNow(st, one, today)); }, [one, today, update]);
   // Fix the session's list when the page opens, so answering does not reshuffle it.
-  const [session, setSession] = useState(() => dueRedo(state.redo, today).slice(0, REDO_PER_SESSION).map((r) => r.k));
+  const [session, setSession] = useState(() => (one ? [one] : dueRedo(state.redo, today).slice(0, REDO_PER_SESSION).map((r) => r.k)));
   const [pos, setPos] = useState(0);
   const [results, setResults] = useState<{ ok: boolean; cleared: boolean }[]>([]);
   const dueNow = dueRedo(state.redo, today);
@@ -85,6 +93,7 @@ function RedoQuestion({ c, k, n, of, onAnswered, onNext }: { c: Content; k: stri
   const [pane, setPane] = useState<"p" | "q">("p");
   const item = state.redo.find((r) => r.k === k);
   if (!ref || !item) return null;
+  const last = lastMistake(state, k);
 
   const check = (giveUp = false) => {
     const ok = !giveUp && (ref.kind === "rc" ? pick === ref.set.questions[ref.qi].answer : ref.kind === "cr" ? pick === ref.item.answer : scoreItem(ref.item, typed).ok);
@@ -100,6 +109,7 @@ function RedoQuestion({ c, k, n, of, onAnswered, onNext }: { c: Content; k: stri
   const actions = result ? (
     <div className={cn("flex flex-col gap-3 rounded-lg p-5", result.ok ? "bg-success-soft" : "bg-card")} role="status">
       <p className="text-base"><b>{result.ok ? "Right." : "Not this time."}</b> {result.cleared ? "It leaves the queue." : result.ok ? `It comes back in ${REDO_GAPS[result.box]} days.` : "It comes back tomorrow."}</p>
+      {last && <LastTime e={last} />}
       <div><Button onClick={onNext} autoFocus>{n < of ? "Next question" : "Finish"}</Button></div>
     </div>
   ) : (
@@ -159,3 +169,16 @@ function RedoQuestion({ c, k, n, of, onAnswered, onNext }: { c: Content; k: stri
 }
 
 const label = (ref: RedoRef) => (ref.kind === "rc" ? "RC, " + RC_QTYPE[ref.set.questions[ref.qi].type].label.toLowerCase() : ref.kind === "cr" ? "critical reasoning, " + CR_TYPE[ref.item.type].label.toLowerCase() : VA_KIND[ref.item.kind].label.toLowerCase());
+
+/**
+ * After a retry: what the Error log says about the last miss, next to today's answer, so the student sees whether
+ * the same reasoning came back (docs/feature.md F52).
+ */
+function LastTime({ e }: { e: import("../../lib/state").ErrorEntry }) {
+  return (
+    <div className="flex flex-col gap-1 rounded-md bg-muted/60 px-4 py-3">
+      <p className="text-sm text-muted-foreground">Last time, {shortDate(e.d)}{e.cause ? `, you noted: ${CAUSES[e.cause].toLowerCase()}` : ""}</p>
+      {e.why && <p className="text-base">{e.why}</p>}
+    </div>
+  );
+}
