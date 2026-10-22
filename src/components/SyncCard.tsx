@@ -1,4 +1,4 @@
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, Meta, Section } from "@/components/kit";
@@ -18,8 +18,10 @@ export function ago(t: number | undefined, now = Date.now()) {
  * Sync between devices, for testing (B2): only in builds with the API on. Turning it on copies RC attempts to the
  * server; joining by id (development only, replaced by a link code in B4) brings them to a second browser.
  */
-export default function SyncCard() {
+export default function SyncCard({ onChange }: { onChange?: () => void }) {
   const s = useSyncExternalStore(subscribe, getStatus);
+  const on = s.phase !== "off";
+  useEffect(() => { onChange?.(); }, [on, onChange]);
   const [joinId, setJoinId] = useState("");
   const [note, setNote] = useState("");
   const busy = s.phase === "syncing";
@@ -30,13 +32,13 @@ export default function SyncCard() {
   };
 
   return (
-    <Section title="Sync between devices" description="Testing only. Copies your RC attempts to the 99ile server so another browser can get them. Your progress stays on this device either way.">
+    <Section title="Sync between devices" description="Testing only. Copies your progress to the 99ile server so your other browsers get it too. Your progress stays on this device either way.">
       <div className="flex flex-col gap-4 rounded-lg bg-card p-5 sm:p-6">
         {s.phase === "off" ? (
           <div><Button variant="secondary" disabled={busy} onClick={() => run(enable)}>Turn on sync</Button></div>
         ) : (
           <>
-            <p className="text-base" role="status">{busy ? "Syncing…" : s.phase === "error" ? s.message : ago(s.last)}</p>
+            <p className="text-base" role="status">{busy ? s.message ?? "Syncing…" : s.phase === "error" ? s.message : ago(s.last)}</p>
             {s.identityId && <Meta>Progress id: <span className="select-all break-all">{s.identityId}</span></Meta>}
             <div className="flex flex-wrap gap-3">
               <Button variant="secondary" disabled={busy} onClick={() => run(() => syncNow(true))}>Sync now</Button>

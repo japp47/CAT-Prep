@@ -16,6 +16,10 @@ class FakeServer {
   dropNextAnswer = false;
   down = false;
   pageSize = 500;
+  /** Rows the server refuses one by one, with a code, as the Go server does for too big or unknown kinds. */
+  refuse: (c: WireRecord) => string | undefined = () => undefined;
+  /** Another device writes this record just before every push: the worst case for stale answers. */
+  storm?: string;
 
   sorted(x: unknown): unknown {
     if (Array.isArray(x)) return x.map((v) => this.sorted(v));
@@ -41,15 +45,18 @@ class FakeServer {
       return ok({ cursor: page.length ? page[page.length - 1].rev : cursor, records: page, more: recs.length > this.pageSize });
     }
     if (path === "/sync/push") {
-      const applied: unknown[] = [], stale: unknown[] = [];
+      const applied: unknown[] = [], stale: unknown[] = [], rejected: unknown[] = [];
+      if (this.storm) { const r = this.rows.get(this.storm); if (r) this.rows.set(this.storm, { ...r, data: { ...(r.data as object), other: this.rev }, rev: ++this.rev }); }
       for (const c of (body as { changes: (WireRecord & { baseRev: number })[] }).changes) {
+        const why = this.refuse(c);
+        if (why) { rejected.push({ kind: c.kind, id: c.id, code: why }); continue; }
         const k = c.kind + ":" + c.id, cur = this.rows.get(k);
         if (!cur) { this.rows.set(k, { kind: c.kind, id: c.id, data: c.data, deleted: c.deleted, stamp: c.stamp, rev: ++this.rev }); applied.push({ kind: c.kind, id: c.id, rev: this.rev }); }
         else if (cur.deleted === c.deleted && canon(cur.data) === canon(c.data)) applied.push({ kind: c.kind, id: c.id, rev: cur.rev });
         else if (cur.rev === c.baseRev) { this.rows.set(k, { ...cur, data: c.data, deleted: c.deleted, stamp: c.stamp, rev: ++this.rev }); applied.push({ kind: c.kind, id: c.id, rev: this.rev }); }
         else stale.push({ ...cur, data: this.sorted(cur.data) });
       }
-      return ok({ applied, stale });
+      return ok({ applied, stale, rejected });
     }
     return { ok: false, status: 404, code: "not_found", message: path };
   }
@@ -88,19 +95,20 @@ class Browser {
 }
 
 const about = { label: "Test", platform: "mac" };
+const rcRows = (server: FakeServer) => [...server.rows.keys()].filter((k) => k.startsWith("rc:")).length;
 
 group("sync client", () => {
-  it("turning on pushes every RC attempt and nothing else, and leaves nothing dirty", async () => {
+  it("turning on pushes everything this device has, and leaves nothing dirty", async () => {
     const server = new FakeServer();
     const a = new Browser(server);
     a.attempt("a1");
     a.edit((s) => { s.errors.push({ id: "e1", d: "2026-10-01", sec: "VARC", t: "Tone", trap: "", src: "", why: "", fix: "" }); });
     const out = await turnOn(a.io, about);
     expect(out.ok).toBe(true);
-    expect([...server.rows.keys()]).toEqual(["rc:a1"]);
+    expect([...server.rows.keys()]).toEqual(expect.arrayContaining(["rc:a1", "error:e1", "profile:me"]));
     expect(a.L.on).toBe(true);
     expect(a.L.who?.identityId).toBe("id-1");
-    expect(dirty(a.L).filter((k) => k.startsWith("rc:"))).toEqual([]);
+    expect(dirty(a.L)).toEqual([]);
   });
 
   it("brings one browser's attempts to another and back", async () => {
@@ -113,7 +121,7 @@ group("sync client", () => {
     expect(b.ids()).toEqual(["a1", "a2", "b1"]);
     await round(a.io);
     expect(a.ids()).toEqual(["a1", "a2", "b1"]);
-    expect(server.rows.size).toBe(3);
+    expect(rcRows(server)).toBe(3);
   });
 
   it("does not push again what it just pulled, though the server reorders JSON keys", async () => {
@@ -146,7 +154,7 @@ group("sync client", () => {
     const lost = await round(a.io);
     expect(lost.ok).toBe(false);
     await round(a.io);
-    expect(server.rows.size).toBe(2);
+    expect(rcRows(server)).toBe(2);
     expect(server.rev).toBe(rev + 1);
     expect(dirty(a.L).filter((k) => k.startsWith("rc:"))).toEqual([]);
   });
@@ -216,6 +224,141 @@ group("sync client", () => {
       server.down = false;
       for (let i = 0; i < 3; i++) { await round(a.io); await round(b.io); }
       expect(a.ids(), `seed ${seed}`).toEqual(b.ids());
+    }
+  });
+});
+
+group("every kind", () => {
+  it("errors, words, mocks, settings and the profile travel", async () => {
+    const server = new FakeServer();
+    const a = new Browser(server), b = new Browser(server);
+    a.edit((s) => {
+      s.errors.push({ id: "e1", d: "2026-10-01", sec: "VARC", t: "Tone", trap: "", src: "", why: "", fix: "" });
+      s.vocab.push({ id: "w1", w: "laconic", m: "using few words", s: "", b: 0, due: "2026-10-02" });
+      s.ticks["guide-1"] = 1;
+      s.since = "2026-09-01";
+    });
+    await turnOn(a.io, about);
+    await join(b.io, a.L.who!.identityId, about);
+    expect(b.st.errors.map((e) => e.id)).toEqual(["e1"]);
+    expect(b.st.vocab.map((w) => w.id)).toEqual(["w1"]);
+    expect(b.st.ticks["guide-1"]).toBe(1);
+    expect(b.st.since).toBe("2026-09-01");
+  });
+
+  it("two devices tick blocks on the same day offline: both ticks survive", async () => {
+    const server = new FakeServer();
+    const a = new Browser(server), b = new Browser(server);
+    await turnOn(a.io, about);
+    await join(b.io, a.L.who!.identityId, about);
+    server.down = true;
+    a.edit((s) => { s.days["2026-10-21"] = { done: { "varc:rc": 30 } }; });
+    b.edit((s) => { s.days["2026-10-21"] = { done: { "varc:va": 20 }, spent: { "varc:va": 25 } }; });
+    await round(a.io); await round(b.io);
+    server.down = false;
+    await round(a.io); await round(b.io); await round(a.io);
+    for (const d of [a, b]) expect(d.st.days["2026-10-21"]).toEqual({ done: { "varc:rc": 30, "varc:va": 20 }, spent: { "varc:va": 25 } });
+  });
+
+  it("a redo item practised on both keeps the higher tries", async () => {
+    const server = new FakeServer();
+    const a = new Browser(server), b = new Browser(server);
+    a.edit((s) => { s.redo.push({ k: "rc:set-a:0", added: "2026-10-01", due: "2026-10-04", box: 1, tries: 1 }); });
+    await turnOn(a.io, about);
+    await join(b.io, a.L.who!.identityId, about);
+    a.edit((s) => { s.redo[0].tries = 3; s.redo[0].box = 3; });
+    b.edit((s) => { s.redo[0].tries = 2; });
+    await round(b.io); await round(a.io); await round(b.io);
+    expect(a.st.redo[0].tries).toBe(3);
+    expect(b.st.redo[0].tries).toBe(3);
+  });
+
+  it("unticking travels as a deletion", async () => {
+    const server = new FakeServer();
+    const a = new Browser(server), b = new Browser(server);
+    a.edit((s) => { s.ticks["guide-1"] = 1; s.ticks["guide-2"] = 1; });
+    await turnOn(a.io, about);
+    await join(b.io, a.L.who!.identityId, about);
+    a.edit((s) => { delete s.ticks["guide-1"]; });
+    await round(a.io); await round(b.io);
+    expect(Object.keys(b.st.ticks)).toEqual(["guide-2"]);
+  });
+
+  it("a big first sync goes in batches and reports its progress", async () => {
+    const server = new FakeServer();
+    const a = new Browser(server);
+    a.edit((s) => { for (let i = 0; i < 450; i++) s.ticks["t" + i] = 1; });
+    const seen: [number, number][] = [];
+    a.io.progress = (done, total) => seen.push([done, total]);
+    await turnOn(a.io, about);
+    expect([...server.rows.keys()].filter((k) => k.startsWith("tick:")).length).toBe(450);
+    expect(seen[0][0]).toBe(0);
+    expect(seen.length).toBeGreaterThanOrEqual(2);
+    expect(seen.every(([d, t]) => d < t)).toBe(true);
+    expect(a.calls.filter((c) => c === "/sync/push").length).toBeGreaterThanOrEqual(3);
+  });
+
+  it("wiping a device with sync turned off first sends no deletions", async () => {
+    const server = new FakeServer();
+    const a = new Browser(server);
+    a.attempt("a1");
+    a.edit((s) => { s.ticks["guide-1"] = 1; });
+    await turnOn(a.io, about);
+    const before = server.rev;
+    a.io.save({ ...a.L, on: false }); // what Settings does before "Delete from this device"
+    a.st = blankState();
+    a.io.save(track(a.io.load(), a.st, a.io.now()));
+    await round(a.io);
+    expect(server.rev).toBe(before);
+    expect([...server.rows.values()].some((r) => r.deleted)).toBe(false);
+  });
+});
+
+group("nothing gets stuck", () => {
+  it("a row the server refuses is set aside: the rest syncs, and it is tried again once it changes", async () => {
+    const server = new FakeServer();
+    server.refuse = (c) => (c.id === "huge" ? "record_too_big" : undefined);
+    const a = new Browser(server);
+    a.attempt("huge"); a.attempt("ok1");
+    expect((await turnOn(a.io, about)).ok).toBe(true);
+    expect(server.rows.has("rc:ok1")).toBe(true);
+    expect(dirty(a.L)).toEqual(["rc:huge"]); // only the refused row is still different from the server
+    a.calls = [];
+    a.attempt("ok2");
+    expect((await round(a.io)).ok).toBe(true);
+    const pushes = a.calls.filter((c) => c === "/sync/push").length;
+    expect(server.rows.has("rc:ok2")).toBe(true);
+    expect(pushes).toBe(1); // the refused row is not sent again and again
+    expect(dirty(a.L)).toEqual(["rc:huge"]);
+    server.refuse = () => undefined;
+    a.edit((s) => { s.rcAttempts.find((x) => x.id === "huge")!.secs = 1; });
+    await round(a.io);
+    expect(server.rows.has("rc:huge")).toBe(true);
+  });
+
+  it("another device writing the same record during every push does not trap a round", async () => {
+    const server = new FakeServer();
+    const a = new Browser(server);
+    a.edit((s) => { s.ticks["t"] = 1; });
+    await turnOn(a.io, about);
+    server.storm = "redo:x";
+    a.edit((s) => { s.redo.push({ k: "x", added: "2026-10-01", due: "2026-10-02", box: 0, tries: 1 }); });
+    await round(a.io);
+    a.edit((s) => { s.redo[0].tries = 2; });
+    a.calls = [];
+    const out = await round(a.io);
+    expect(out.ok).toBe(true);
+    expect(a.calls.length).toBeLessThanOrEqual(8);
+  });
+
+  it("a malformed answer is an error, not a crash", async () => {
+    const server = new FakeServer();
+    const a = new Browser(server);
+    await turnOn(a.io, about);
+    for (const bad of [null, {}, { records: "x" }, { cursor: 1, records: [{ kind: "rc" }], more: false }]) {
+      a.io.call = async <T,>() => ({ ok: true, status: 200, data: bad }) as ApiResult<T>;
+      const out = await round(a.io);
+      expect(out.ok, JSON.stringify(bad)).toBe(false);
     }
   });
 });

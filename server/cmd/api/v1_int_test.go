@@ -99,8 +99,9 @@ func (d *device) join(identity string) *device {
 }
 
 type pushResp struct {
-	Applied []syncapi.Applied `json:"applied"`
-	Stale   []syncapi.Record  `json:"stale"`
+	Applied  []syncapi.Applied  `json:"applied"`
+	Stale    []syncapi.Record   `json:"stale"`
+	Rejected []syncapi.Rejected `json:"rejected"`
 }
 
 type pullResp struct {
@@ -233,14 +234,14 @@ func TestBadPushesAreRefusedAndAudited(t *testing.T) {
 	a := newDevice(t, srv).turnOn()
 	bad := change("x", `{}`, 0)
 	bad.Kind = "day"
-	if _, code := a.push(bad); code != http.StatusBadRequest {
-		t.Fatalf("unknown kind: %d", code)
+	if res, code := a.push(bad); code != http.StatusOK || len(res.Rejected) != 1 || res.Rejected[0].Code != "unknown_kind" {
+		t.Fatalf("unknown kind: %d %+v", code, res)
 	}
 	if _, code := a.push(change("x", `{}`, 0), change("x", `{}`, 0)); code != http.StatusBadRequest {
 		t.Fatalf("duplicate: %d", code)
 	}
-	if _, code := a.push(change("x", `{"big":"`+string(bytes.Repeat([]byte("a"), syncapi.MaxData))+`"}`, 0)); code != http.StatusBadRequest {
-		t.Fatalf("too big: %d", code)
+	if res, code := a.push(change("x", `{"big":"`+string(bytes.Repeat([]byte("a"), syncapi.MaxData))+`"}`, 0)); code != http.StatusOK || len(res.Rejected) != 1 || res.Rejected[0].Code != "record_too_big" {
+		t.Fatalf("too big: %d %+v", code, res)
 	}
 	var n int
 	_ = admin.QueryRow(context.Background(), "select count(*) from audit.events where subject_identity_id = $1 and action = 'sync.rejected'", a.ID.IdentityID).Scan(&n)
@@ -260,11 +261,11 @@ func TestLimitPerIdentity(t *testing.T) {
 	if _, code := a.push(change("1", `{}`, 0), change("2", `{}`, 0), change("3", `{}`, 0)); code != http.StatusOK {
 		t.Fatalf("at the limit: %d", code)
 	}
-	if _, code := a.push(change("4", `{}`, 0)); code != http.StatusRequestEntityTooLarge {
-		t.Fatalf("over the limit: %d", code)
+	if res, code := a.push(change("4", `{}`, 0)); code != http.StatusOK || len(res.Rejected) != 1 || res.Rejected[0].Code != "over_limit" {
+		t.Fatalf("over the limit: %d %+v", code, res)
 	}
 	if p := a.pull(0); len(p.Records) != 3 {
-		t.Fatalf("the refused push must leave nothing behind: %d rows", len(p.Records))
+		t.Fatalf("the refused row must leave nothing behind: %d rows", len(p.Records))
 	}
 }
 
