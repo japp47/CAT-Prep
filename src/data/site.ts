@@ -15,3 +15,6 @@ export function reportUrl(what: string, page: string): string {
   ].join("\n");
   return `${REPO_URL}/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
 }
+
+/** Where privacy questions, requests and complaints go (the DPDP grievance contact on /privacy). */
+export const CONTACT_EMAIL = "99ile.team@gmail.com";

@@ -75,6 +75,10 @@ func TestSyncNeedsProxySecretAndIPKeyInProd(t *testing.T) {
 	}
 	base["PROXY_SECRET"] = strings.Repeat("s", 32)
 	base["IP_HASH_KEY"] = strings.Repeat("ab", 32)
+	if c, _ := load(env(base)); c.SyncReady() {
+		t.Fatal("prod without the Turnstile secret must not serve /v1")
+	}
+	base["TURNSTILE_SECRET"] = "0x4AAAAAAA"
 	c, err = load(env(base))
 	if err != nil || !c.SyncReady() || c.IPKeyID != 1 || len(c.IPHashKey) != 32 {
 		t.Fatalf("prod with secrets: %+v %v", c, err)

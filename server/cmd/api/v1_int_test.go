@@ -44,17 +44,23 @@ func apiServer(t *testing.T, opt syncapi.Options) (*httptest.Server, *pgxpool.Po
 	if _, err := admin.Exec(ctx, "alter role cat_app password 'cat_app'"); err != nil {
 		t.Fatal(err)
 	}
-	u, _ := url.Parse(owner)
+	cfg := config.Config{Env: "dev", AllowedOrigin: "http://localhost:5173"}
+	srv := httptest.NewTLSServer(newHandler(cfg, fakeDB(nil), quiet, v1Routes(cfg, appPool(t), quiet, opt)))
+	t.Cleanup(srv.Close)
+	return srv, admin
+}
+
+// appPool connects as cat_app to the test database, as the live server does (run after apiServer has migrated).
+func appPool(t *testing.T) *pgxpool.Pool {
+	t.Helper()
+	u, _ := url.Parse(os.Getenv("TEST_DATABASE_URL"))
 	u.User = url.UserPassword("cat_app", "cat_app")
-	pool, err := store.Open(ctx, u.String())
+	pool, err := store.Open(context.Background(), u.String())
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Cleanup(pool.Close)
-	cfg := config.Config{Env: "dev", AllowedOrigin: "http://localhost:5173"}
-	srv := httptest.NewTLSServer(newHandler(cfg, fakeDB(nil), quiet, v1Routes(cfg, pool, quiet, opt)))
-	t.Cleanup(srv.Close)
-	return srv, admin
+	return pool
 }
 
 // device is one browser: its own cookie jar.

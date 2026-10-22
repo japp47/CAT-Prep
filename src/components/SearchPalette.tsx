@@ -40,7 +40,8 @@ const PAGES = [
   { title: "Topper stories", href: "/stories", keywords: "student experience" },
   { title: "What's coming", href: "/roadmap", keywords: "roadmap future" },
   { title: "Settings and backup", href: "/settings", keywords: "install export restore data" },
-  { title: "About 99ile", href: "/#about", keywords: "about mission privacy" },
+  { title: "About 99ile", href: "/#about", keywords: "about mission" },
+  { title: "Privacy", href: "/privacy", keywords: "privacy data delete export contact grievance cookies stored" },
   // Only in builds with sync (B4); found by the words people use for it.
   ...(API_ENABLED ? [{ title: "Sync between devices", href: "/settings#sync", keywords: "sync link code qr scan devices phone laptop recovery move transfer progress another device" }] : []),
 ];

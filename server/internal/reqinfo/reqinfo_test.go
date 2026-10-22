@@ -41,7 +41,7 @@ func TestProdWithoutSecretsIsUnavailable(t *testing.T) {
 }
 
 func TestProxySecret(t *testing.T) {
-	cfg := config.Config{Env: "prod", ProxySecret: strings.Repeat("s", 32), IPHashKey: bytes.Repeat([]byte{1}, 32)}
+	cfg := config.Config{Env: "prod", ProxySecret: strings.Repeat("s", 32), IPHashKey: bytes.Repeat([]byte{1}, 32), TurnstileSecret: "x"}
 	if rec, _ := serve(cfg, nil); rec.Code != http.StatusForbidden {
 		t.Fatalf("no secret: %d", rec.Code)
 	}

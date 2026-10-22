@@ -10,10 +10,14 @@ student API under `/v1` (docs/architecture.md §5, §6):
 | `GET /v1/identity` | Which identity and device this browser is |
 | `POST /v1/sync/pull` | `{cursor}` → records written after it, oldest first, 500 a page |
 | `POST /v1/sync/push` | `{changes}` → `applied` and `stale`; at most 200 changes, 16 KB each |
-| `POST /v1/dev/join` | Development only: add this browser to an identity by its id (B4 replaces it with link codes) |
+| `POST /v1/identity/link-codes`, `/link`, `/recover`, `/recovery-code` | Link a device with a code, get progress back with the recovery code (B4) |
+| `GET /v1/devices`, `DELETE /v1/devices/{id}` (`me` = this browser) | The device list; remove one |
+| `GET /v1/me/export`, `DELETE /v1/me` | Everything the server keeps, as a download; delete it everywhere (B5) |
 
-B2 syncs RC attempts only (`SyncKinds` in `cmd/api/main.go`). In prod, `/v1` answers 503 until `PROXY_SECRET` and
-`IP_HASH_KEY` are set, so the live server runs before sync is switched on.
+Every kind of progress syncs (`SyncKinds` in `cmd/api/main.go`, checked against the browser's list by a test). In
+prod, `/v1` answers 503 until `PROXY_SECRET`, `IP_HASH_KEY` and `TURNSTILE_SECRET` are set, so the live server runs
+before sync is switched on. `cmd/cleanup` deletes expired link codes, devices removed over 90 days ago and audit
+events over 400 days old; `.github/workflows/cleanup.yml` runs it daily (or `make cleanup-prod`).
 
 Needs Go 1.27 and Docker.
 
@@ -80,6 +84,7 @@ query strings, cookies or headers.
 | `ALLOWED_ORIGIN` | `http://localhost:5173` in dev | The site's origin; other sites cannot change data |
 | `LOG_LEVEL` | `info` | `debug`, `info`, `warn`, `error` |
 | `PROXY_SECRET` | none | Shared with the Pages Function (`functions/api`); 32+ characters. Required in prod for `/v1` |
+| `TURNSTILE_SECRET` | none (no bot check in dev) | Cloudflare Turnstile secret key, checked on `POST /v1/identity`. Required in prod for `/v1` |
 | `IP_HASH_KEY`, `IP_HASH_KEY_ID` | random per run in dev | Hex key (32+ bytes) for `audit.events.ip_hash`, and which yearly key it is (default 1). Required in prod for `/v1` |
 | `TEST_DATABASE_URL` | none | Integration tests only. Never point it at real data |
 

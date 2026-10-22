@@ -51,8 +51,14 @@ type Limits struct {
 	WrongInARow   int // wrong codes in a row before the address waits an hour
 }
 
+// BotCheck checks a Turnstile token (internal/turnstile); nil means no check (development).
+type BotCheck interface {
+	Verify(ctx context.Context, token, ip string) error
+}
+
 // Service holds what the handlers share.
 type Service struct {
+	bot      BotCheck
 	db       *pgxpool.Pool
 	hash     reqinfo.Hasher
 	log      *slog.Logger
@@ -62,8 +68,8 @@ type Service struct {
 }
 
 // New returns the service.
-func New(db *pgxpool.Pool, hash reqinfo.Hasher, log *slog.Logger, lim Limits) *Service {
-	return &Service{db: db, hash: hash, log: log,
+func New(db *pgxpool.Pool, hash reqinfo.Hasher, log *slog.Logger, lim Limits, bot BotCheck) *Service {
+	return &Service{db: db, hash: hash, log: log, bot: bot,
 		newIdent: limit.New(lim.NewIdentities, time.Hour), tries: limit.New(lim.CodeTries, time.Hour), wrong: limit.New(lim.WrongInARow, time.Hour)}
 }
 
@@ -95,10 +101,14 @@ func (s *Service) CreateHandler() http.Handler {
 			httpx.WriteJSON(w, http.StatusOK, d)
 			return
 		}
-		var a about
-		if !httpx.DecodeJSON(w, r, &a, true) {
+		var body struct {
+			about
+			TurnstileToken string `json:"turnstileToken"`
+		}
+		if !httpx.DecodeJSON(w, r, &body, true) {
 			return
 		}
+		a := body.about
 		a.clean()
 		ip := reqinfo.IP(r.Context())
 		if ok, first := s.newIdent.Allow(ip); !ok {
@@ -107,6 +117,13 @@ func (s *Service) CreateHandler() http.Handler {
 			}
 			httpx.WriteError(w, http.StatusTooManyRequests, "rate_limited", "Too many tries from this network. Please try again in an hour.")
 			return
+		}
+		if s.bot != nil {
+			if err := s.bot.Verify(r.Context(), body.TurnstileToken, ip); err != nil {
+				s.reject(r, "bot_check")
+				httpx.WriteError(w, http.StatusForbidden, "bot_check", "The quick check did not go through. Please try turning sync on again.")
+				return
+			}
 		}
 		d := Device{IdentityID: ids.New(), DeviceID: ids.New()}
 		secret, hash := newSecret()
@@ -276,5 +293,33 @@ func setCookie(w http.ResponseWriter, value string) {
 	http.SetCookie(w, &http.Cookie{
 		Name: CookieName, Value: value, Path: "/", MaxAge: int(cookieAge / time.Second),
 		HttpOnly: true, Secure: true, SameSite: http.SameSiteLaxMode,
+	})
+}
+
+// DeleteHandler is DELETE /v1/me: deletes this progress from the server, everywhere (docs/architecture.md §6.3a).
+// One statement removes the identity and, by cascade, its devices, records, head and codes. The audit event is
+// written first and names the identity only as text, so the history of the deletion stays after the rows are gone.
+// Other devices get 401 on their next sync and keep what they have.
+func (s *Service) DeleteHandler() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		d, _ := FromContext(r.Context())
+		err := pgx.BeginFunc(r.Context(), s.db, func(tx pgx.Tx) error {
+			var records int
+			if err := tx.QueryRow(r.Context(), `select count(*) from sync.records where identity_id = $1`, d.IdentityID).Scan(&records); err != nil {
+				return err
+			}
+			e := s.event(r, d, "identity.deleted", "identity", d.IdentityID, map[string]any{"records": records})
+			if err := audit.Write(r.Context(), tx, e); err != nil {
+				return err
+			}
+			_, err := tx.Exec(r.Context(), `delete from account.identities where id = $1`, d.IdentityID)
+			return err
+		})
+		if err != nil {
+			s.fail(w, r, fmt.Errorf("delete identity: %w", err))
+			return
+		}
+		http.SetCookie(w, &http.Cookie{Name: CookieName, Value: "", Path: "/", MaxAge: -1, HttpOnly: true, Secure: true, SameSite: http.SameSiteLaxMode})
+		w.WriteHeader(http.StatusNoContent)
 	})
 }

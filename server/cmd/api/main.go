@@ -26,6 +26,7 @@ import (
 	"github.com/japp47/CAT-Prep/server/internal/reqinfo"
 	"github.com/japp47/CAT-Prep/server/internal/store"
 	"github.com/japp47/CAT-Prep/server/internal/syncapi"
+	"github.com/japp47/CAT-Prep/server/internal/turnstile"
 	"github.com/japp47/CAT-Prep/server/migrations"
 )
 
@@ -151,6 +152,9 @@ func readyHandler(ready readyFunc, log *slog.Logger) http.Handler {
 	})
 }
 
+// turnstileEndpoint is Cloudflare's; tests point it at a stand-in.
+var turnstileEndpoint = turnstile.SiteVerify
+
 // SyncKinds are the record kinds the browser may push: every kind in docs/architecture.md §6.1. It must match
 // KINDS in src/lib/sync/records.ts (a test checks).
 var SyncKinds = []string{"rc", "va", "cr", "speed", "sectional", "mockReview", "summary", "error", "word", "mock",
@@ -167,7 +171,13 @@ func v1Routes(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger, opt synca
 	if !cfg.Prod() {
 		lim.NewIdentities, lim.CodeTries = 100, 100 // two browsers and many restarts while developing
 	}
-	acc := account.New(pool, hash, log, lim)
+	var bot account.BotCheck
+	if cfg.TurnstileSecret != "" {
+		v := turnstile.New(cfg.TurnstileSecret)
+		v.Endpoint = turnstileEndpoint
+		bot = v
+	}
+	acc := account.New(pool, hash, log, lim, bot)
 	sy := syncapi.New(pool, hash, log, opt)
 
 	rt := httpx.NewRouter()
@@ -181,5 +191,7 @@ func v1Routes(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger, opt synca
 	rt.Handle("POST /v1/identity/recover", acc.RecoverHandler())
 	rt.Handle("GET /v1/devices", acc.Require(acc.DevicesHandler()))
 	rt.Handle("DELETE /v1/devices/{id}", acc.Require(acc.RemoveDeviceHandler()))
+	rt.Handle("GET /v1/me/export", acc.Require(sy.ExportHandler()))
+	rt.Handle("DELETE /v1/me", acc.Require(acc.DeleteHandler()))
 	return reqinfo.Gate(cfg)(rt)
 }
