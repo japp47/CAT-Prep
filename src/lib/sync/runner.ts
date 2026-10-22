@@ -6,8 +6,8 @@ import { deleteEverywhere, describe, leave, link, listDevices, newLinkCode, newR
  * A failed round waits 1, 5, 15, then 60 minutes before the next automatic try, and never shows a popup.
  */
 
-export type Phase = "off" | "idle" | "syncing" | "error";
-export interface Status { phase: Phase; last?: number; message?: string; identityId?: string }
+import { getStatus, setStatus, type Status } from "./status";
+export { getStatus, subscribe, type Phase, type Status } from "./status";
 
 const BACKOFF = [60_000, 5 * 60_000, 15 * 60_000, 60 * 60_000];
 const AFTER_CHANGE = 30_000;
@@ -17,29 +17,19 @@ let io: SyncIO | null = null;
 // The runner loads when the browser is idle; a tap on "Turn on sync" before that waits for it.
 let arrived: (io: SyncIO) => void = () => {};
 let ready = new Promise<SyncIO>((done) => { arrived = done; });
-let status: Status = { phase: "off" };
-const listeners = new Set<() => void>();
 let running: Promise<Outcome> | null = null;
 let again = false;
 let timer: ReturnType<typeof setTimeout> | undefined;
 let failures = 0;
 let retryAt = 0;
 
-function set(next: Status) {
-  status = next;
-  listeners.forEach((f) => f());
-}
+const set = (next: Status) => setStatus(next);
 
 function fromLedger(extra: Partial<Status> = {}): Status {
   const L = io!.load();
   return { phase: L.on ? "idle" : "off", last: L.last, identityId: L.who?.identityId, ...extra };
 }
 
-export const getStatus = () => status;
-export function subscribe(f: () => void) {
-  listeners.add(f);
-  return () => { listeners.delete(f); };
-}
 
 function finish(out: Outcome) {
   if (out.ok) { failures = 0; retryAt = 0; set(fromLedger()); return; }
@@ -86,7 +76,7 @@ export function poke() {
 /** Starts listening. Returns a function that stops. */
 export function start(next: SyncIO): () => void {
   const n = new Intl.NumberFormat("en-IN");
-  io = { ...next, progress: (done, total) => set({ ...status, phase: "syncing", message: `Copying your progress… ${n.format(done)} of ${n.format(total)}` }) };
+  io = { ...next, progress: (done, total) => set({ ...getStatus(), phase: "syncing", message: `Copying your progress… ${n.format(done)} of ${n.format(total)}` }) };
   arrived(io);
   set(fromLedger());
   const online = () => void syncNow(true);
@@ -115,9 +105,9 @@ async function whenReady(): Promise<SyncIO | null> {
 const NOT_READY: Outcome = { ok: false, status: 0, code: "not_ready", message: "Sync could not start. Reload the page and try again." };
 
 async function begin<T extends Outcome>(f: (io: SyncIO) => Promise<T>): Promise<T | Outcome> {
-  set({ ...status, phase: "syncing" });
+  set({ ...getStatus(), phase: "syncing" });
   const x = await whenReady();
-  if (!x) { set({ ...status, phase: "off" }); return NOT_READY; }
+  if (!x) { set({ ...getStatus(), phase: "off" }); return NOT_READY; }
   failures = 0; retryAt = 0;
   const out = await oneTab(() => f(x)).catch((): Outcome => ({ ok: false, status: 0, code: "client_error", message: "Sync stopped on an error. Try again." }));
   finish(out);

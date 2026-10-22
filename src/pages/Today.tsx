@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { ArticleSummarySheet } from "../components/ArticleSummary";
 import { phaseCaption } from "../components/Countdown";
 import { ErrorText, Ext, Field, LinkButton, LinkButtons, Meta, Page, PageHeader, Section, TextLink } from "../components/kit";
+import SyncPrompt from "../components/SyncPrompt";
 import { NativeSelect } from "../components/Select";
 import { PHASES, phaseOf } from "../data/exam";
 import { addDays, clamp, DOW, dow, isWeekend, longDate, shortDate, todayIso, uid, weekStart, mediumDate } from "../lib/date";
@@ -319,6 +320,7 @@ export default function Today() {
         {isToday && coreLeft > 0 && <Badge variant="highlight">{coreLeft} core task{coreLeft > 1 ? "s" : ""} left</Badge>}
       </div>
 
+      {isToday && <SyncPrompt />}
       {isToday && <StartHere today={today} />}
       {isToday && <ReviewCard today={today} />}
 
