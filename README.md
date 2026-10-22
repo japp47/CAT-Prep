@@ -83,12 +83,13 @@ flowchart TD
 - **Reading speed test.** Words per minute, with two recall questions so speed does not come at the cost of understanding.
 - **Real CAT papers.** Past papers linked from their free, legitimate sources.
 - **"Not sure."** Mark a guess; a lucky right answer comes back once for a second look.
-- **Safe to leave and come back.** Leaving an unfinished set asks first; a half-done set is kept for a day.
+- **Safe to leave and come back.** Leaving an unfinished set asks first; a half-done set is kept for a day; a submitted set stays on its review after a reload.
 - **Report a problem** on any question, in one tap.
 
 ### Learn from your mistakes
 - **Redo queue.** Every miss returns after 1, 3 and 7 days, until it is right three times in a row.
 - **Error log.** Entries are made from practice in one tap, with the option you chose, its trap and the right reasoning. Add the cause (misread, missed a qualifier, fell for a trap, careless slip…) and the log finds your patterns: "4 of your last 6 inference misses fell for extreme wording".
+- **From a mistake back to its question.** "See the question" opens your old attempt at that question; "Try it again" asks it with the answer hidden, and afterwards shows **what you thought last time** next to the right reasoning.
 - **Summaries.** After an RC set, sum up the passage in 25 words and compare it with a model summary and a four-point check; also for outside articles. All in the Reading journal.
 - **Words.** Tap a word in a reviewed passage to save it; spaced-repetition flashcards bring it back.
 
@@ -120,7 +121,6 @@ flowchart TD
 
 | Next | What it adds |
 |---|---|
-| **From a mistake back to its question** (built, shipping this week) | "See the question" opens your old attempt at that question; "Try it again" asks it with the answer hidden, then shows **what you thought last time** next to the right reasoning. A submitted set also stays on its review after a reload |
 | **History** | What you did each day: every passage with its score and time, minutes studied, a 12-week strip; find a passage you did a month ago |
 | **Error log filters** | By type, trap and cause, and "still happening" versus "fixed"; Progress weak spots lead straight to those mistakes |
 | **Weak-spot drill** | "10 minutes on inference with extreme wording", from your own misses plus new questions of that kind |
