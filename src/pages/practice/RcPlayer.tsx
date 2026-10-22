@@ -25,7 +25,7 @@ import { recordRcSummary, summaryFor, summaryScore } from "../../practice/summar
 import { rcStale } from "../../practice/versions";
 import { GENRES, RC_QTYPE, setWords, SUMMARY_MAX_WORDS, words, type RcSet, type RcSummary } from "../../practice/types";
 import NotFound from "../NotFound";
-import { Choice, ChoiceGroup, Confirm, ElapsedTimer, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, useLeaveConfirmation } from "./common";
+import { Choice, ChoiceGroup, Confirm, ElapsedTimer, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
 
 /** Words too common to be worth saving to flashcards. */
 const COMMON = new Set("the and for are but not you all any can had her was one our out has him his how its may new now old see two way who did get let put say she too use that with have this will your from they know want been good much some time very when come here just like long make many more only over such take than them well were what which their there these those would could should about after other where while being because through between does into also each most even then upon whose".split(" "));
@@ -96,13 +96,18 @@ function Player({ set, reviewId }: { set: RcSet; reviewId: string | null }) {
   // Right after a submit, a set with a model summary asks for the student's own first: the main-idea answer would give it away.
   // The pending step is kept as a draft, so a reload or a phone switching apps comes back to it instead of a fresh set.
   const pendingKey = "sumfor:" + set.id;
-  const [pending] = useState(() => { const id = readDraft<string>(pendingKey); return !reviewId && id && state.rcAttempts.some((a) => a.id === id) ? id : null; });
-  const [attemptId, setAttemptId] = useState<string | null>(() => pending ?? (reviewId && state.rcAttempts.some((a) => a.id === reviewId && a.set === set.id) ? reviewId : null));
+  const [pending] = useState(() => { const id = readDraft<string>(pendingKey); return id && (!reviewId || reviewId === id) && state.rcAttempts.some((a) => a.id === id) ? id : null; });
+  const { attempt: shown, waiting, finish } = useShownAttempt(state.rcAttempts, pending ?? reviewId);
+  const attempt = shown && shown.set === set.id ? shown : undefined;
   const [writing, setWriting] = useState(!!pending);
-  const attempt = attemptId ? state.rcAttempts.find((a) => a.id === attemptId) : undefined;
-  useEffect(() => { window.scrollTo(0, 0); }, [attemptId, writing]);
+  useEffect(() => { window.scrollTo(0, 0); }, [writing]);
+  if (waiting) return null;
   if (attempt && writing && set.summary) return <SummaryStep set={set} model={set.summary} attempt={attempt} onDone={() => { writeDraft(pendingKey, null); setWriting(false); }} />;
-  return attempt ? <Review set={set} attempt={attempt} /> : <Attempt set={set} onDone={(id) => { setAttemptId(id); if (set.summary) { writeDraft(pendingKey, id); setWriting(true); } }} />;
+  // A finished set goes into the address (?review=): see useShownAttempt.
+  return attempt ? <Review set={set} attempt={attempt} /> : <Attempt set={set} onDone={(id) => {
+    if (set.summary) { writeDraft(pendingKey, id); setWriting(true); }
+    finish(id, ["n"]);
+  }} />;
 }
 
 interface SummaryDraft { text: string; tone: string }
@@ -256,6 +261,7 @@ function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) 
     writeDraft(draftKey, null);
     update((st) => recordRc(st, id, set, ans, secs, first, mode, today, unsure.flatMap((u, i) => (u ? [i] : []))));
     setConfirming(false);
+    leave.allowNextNavigation(); // the review goes into the address (?review=): not a "leave"
     onDone(id);
   };
   const blanks = ans.filter((a) => a === null).length;
@@ -352,7 +358,8 @@ function StaleReview({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
 
 function FullReview({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
   const n = set.questions.length;
-  const [cur, setCur] = useState(0);
+  const { start, el } = useStartQuestion(n);
+  const [cur, setCur] = useState(start);
   const [pane, setPane] = useState<"p" | "q">("q");
   const ans = attempt.ans;
   return (
@@ -364,7 +371,7 @@ function FullReview({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
       <Summary set={set} attempt={attempt} />
       <SummaryReview set={set} attempt={attempt} />
 
-      <PaneSwitch pane={pane} setPane={setPane} q={`Question ${cur + 1} of ${n}`} />
+      <div ref={el} className="scroll-mt-24"><PaneSwitch pane={pane} setPane={setPane} q={`Question ${cur + 1} of ${n}`} /></div>
 
       <Split pane={pane}>
         <Passage set={set} highlight={set.questions[cur].proof} wordMode />
@@ -375,7 +382,7 @@ function FullReview({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
               return <PaletteCell key={i} n={i + 1} state={s} current={i === cur} onClick={() => { setCur(i); setPane("q"); }} label={`Question ${i + 1}, ${s === "right" ? "correct" : s === "wrong" ? "wrong" : "skipped"}`} />;
             })}
           </div>
-          <ReviewQuestion set={set} qi={cur} chosen={ans[cur]} />
+          <ReviewQuestion set={set} qi={cur} chosen={ans[cur]} att={attempt.id} />
           <div className="flex justify-between gap-2">
             <Button variant="secondary" size="sm" disabled={cur === 0} onClick={() => setCur(cur - 1)}>Previous question</Button>
             <Button variant="secondary" size="sm" disabled={cur === n - 1} onClick={() => setCur(cur + 1)}>Next question</Button>
@@ -457,7 +464,7 @@ function WordSheet({ word, source, onClose }: { word: string | null; source: str
   );
 }
 
-export function ReviewQuestion({ set, qi, chosen }: { set: RcSet; qi: number; chosen: number | null }) {
+export function ReviewQuestion({ set, qi, chosen, att }: { set: RcSet; qi: number; chosen: number | null; att?: string }) {
   const { state, update } = useStore();
   const q = set.questions[qi];
   const ok = chosen === q.answer;
@@ -480,7 +487,7 @@ export function ReviewQuestion({ set, qi, chosen }: { set: RcSet; qi: number; ch
       <p className="text-sm text-muted-foreground">The highlighted paragraph{q.proof.length > 1 ? "s settle" : " settles"} this question.</p>
       {!ok && (inLog
         ? <ErrorCause src={rcErrorSrc(set, qi)} />
-        : <Button variant="secondary" size="sm" className="self-start" onClick={() => { update((st) => { st.errors.push(rcError(set, qi, chosen, todayIso())); }); toast("Added to your Error log."); }}>Add to Error log</Button>)}
+        : <Button variant="secondary" size="sm" className="self-start" onClick={() => { update((st) => { st.errors.push(rcError(set, qi, chosen, todayIso(), false, att)); }); toast("Added to your Error log."); }}>Add to Error log</Button>)}
       <ReportLink what={`${set.title}, Q${qi + 1} (${set.id})`} />
     </div>
   );
@@ -504,7 +511,7 @@ function Summary({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
     <ScoreCard score={(s.marks > 0 ? "+" : "") + s.marks} of={3 * set.questions.length} parts={parts}>
       <p className="text-base text-muted-foreground">Attempted {mediumDate(attempt.d)}. Logged in Progress as an RC practice set. Each wrong option shows its trap: the reason it looked right.</p>
       <div className="flex flex-wrap gap-3">
-        {missing.length > 0 && <Button onClick={() => { update((st) => { missing.forEach((i) => st.errors.push(rcError(set, i, attempt.ans[i], todayIso(), !!attempt.unsure?.includes(i)))); }); toast(`Added ${missing.length} to your Error log.`); }}>Add {missing.length} to Error log</Button>}
+        {missing.length > 0 && <Button onClick={() => { update((st) => { missing.forEach((i) => st.errors.push(rcError(set, i, attempt.ans[i], todayIso(), !!attempt.unsure?.includes(i), attempt.id))); }); toast(`Added ${missing.length} to your Error log.`); }}>Add {missing.length} to Error log</Button>}
         <Button asChild variant="secondary"><Link to={`/practice/rc/${next.id}`}>Next set: {next.title}</Link></Button>
         <Button asChild variant="ghost"><Link to={`/practice/rc/${set.id}?n=${seed}`}>Retake</Link></Button>
       </div>

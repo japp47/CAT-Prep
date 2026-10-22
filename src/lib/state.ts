@@ -36,7 +36,12 @@ export interface Mock { id: string; d: string; sec: string; n: string; k: string
  * One logged mistake. trap is what the wrong option did (from the content); cause is what happened to the student
  * (types below, picked by the student or pre-filled from data). trapWas and causeWas keep the first values when corrected.
  */
-export interface ErrorEntry { id: string; d: string; sec: string; t: string; trap: string; src: string; why: string; fix: string; cause?: Cause; trapWas?: string; causeWas?: Cause }
+/**
+ * One Error log entry. Entries made from practice also name the question (q: its redo key, "rc:<set>:<i>", a VA key
+ * such as "pj:bees" or "cr:CR-01") and the attempt it was missed in (att: an RC, VA or CR attempt id), so the log can
+ * open the question again (docs/feature.md F52). Older entries have neither; practice/errorlink.ts matches them.
+ */
+export interface ErrorEntry { id: string; d: string; sec: string; t: string; trap: string; src: string; why: string; fix: string; cause?: Cause; trapWas?: string; causeWas?: Cause; q?: string; att?: string }
 export interface Word { id: string; w: string; m: string; s: string; b: number; due: string }
 export interface PracticeSet { id: string; d: string; sec: string; t: string; a: number; c: number; src: string }
 /**
@@ -193,6 +198,8 @@ export function normalize(raw: unknown): AppState {
     const e: ErrorEntry = { id: str(x.id), d: str(x.d), sec: str(x.sec) || "VARC", t: str(x.t), trap: str(x.trap), src: str(x.src), why: str(x.why), fix: str(x.fix) };
     if ((CAUSE_IDS as unknown[]).includes(x.cause)) e.cause = x.cause as Cause;
     if ((CAUSE_IDS as unknown[]).includes(x.causeWas)) e.causeWas = x.causeWas as Cause;
+    if (typeof x.q === "string" && x.q && x.q.length <= 200) e.q = x.q;
+    if (typeof x.att === "string" && x.att && x.att.length <= 100) e.att = x.att;
     if (typeof x.trapWas === "string") e.trapWas = x.trapWas;
     return e;
   });

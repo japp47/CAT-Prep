@@ -77,6 +77,17 @@ export function answerRedo(st: AppState, k: string, ok: boolean, d: string): boo
   return false;
 }
 
+/**
+ * "Try it again" from the Error log: the question is due today, in the queue again if it had left it. Its run of
+ * right answers starts over only if it had left; an open item keeps its progress and is just due now.
+ */
+export function redoNow(st: AppState, k: string, d: string): void {
+  const it = st.redo.find((r) => r.k === k);
+  if (!it) { st.redo.push({ k, added: d, due: d, box: 0, tries: 0 }); return; }
+  if (it.cleared) { delete it.cleared; it.box = 0; }
+  if (it.due > d) it.due = d;
+}
+
 /** Open questions due on or before d, oldest first, skipping any that no longer exist. */
 export function dueRedo(items: RedoItem[], d: string): RedoItem[] {
   return items.filter((r) => !r.cleared && r.due <= d && redoKeyExists(r.k)).sort((a, b) => (a.due < b.due ? -1 : a.due > b.due ? 1 : 0));
