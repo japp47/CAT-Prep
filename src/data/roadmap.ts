@@ -1,3 +1,5 @@
+import { API_ENABLED } from "../lib/api";
+
 export interface RoadItem { title: string; text: string }
 export interface RoadGroup { title: string; status: string; items: RoadItem[] }
 
@@ -13,10 +15,14 @@ export const ROADMAP: RoadGroup[] = [
     { title: "Install as an app and work offline", text: "Add the site to your home screen and open it without internet. A daily study reminder goes straight into Google, Apple or Outlook calendar." },
     { title: "Mock analysis", text: "A guided 15-minute review after any mock or sectional: mark what went wrong and why, re-try the doable skips, see where the marks went, and keep at most three actions for the next mock." },
     { title: "Weekly review", text: "From Saturday evening to Monday: what you did this week, which question types improved or slipped, the trap that cost most, and one focus for next week that shows on Today until you have done it three times." },
+    // Shows as shipped only in builds where sync is switched on (VITE_API_ENABLED), and "next" until then.
+    ...(API_ENABLED ? [{ title: "Sync between devices", text: "Keep your progress the same on your phone and laptop without signing up: link a device by scanning a code, get everything back with a recovery code, and download or delete what the server has at any time." }] : []),
     { title: "Learning from mistakes", text: "One next step at the top of Today, patterns like “4 of your last 6 inference misses fell for extreme wording”, a “Not sure” button so lucky guesses come back for a second look, and Progress shows which weak spots are actually getting fixed." },
   ] },
   { title: "Next up", status: "In progress", items: [
-    { title: "Optional sign-in and sync", text: "Use the site as a guest as today, or sign in with email or Google so your plan and logs follow you across phone and laptop." },
+    API_ENABLED
+      ? { title: "Optional Google sign-in", text: "Keep using 99ile without an account, or sign in with Google so your synced progress is tied to your account instead of a recovery code." }
+      : { title: "Sync between devices", text: "Keep your plan and logs the same on your phone and laptop, without signing up: link a device with a code." },
     { title: "DILR section", text: "Concepts, set types, a set player with MCQ and TITA questions, past paper sets and a phase plan with its own time settings." },
     { title: "Quant section", text: "Topic-wise plan for arithmetic, algebra, geometry, numbers and modern maths, with formula sheets and timed drills." },
   ] },

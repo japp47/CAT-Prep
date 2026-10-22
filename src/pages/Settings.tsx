@@ -18,7 +18,7 @@ import { Confirm } from "./practice/common";
 import { API_ENABLED } from "../lib/api";
 import { loadLedger, saveLedger, timeOf } from "../lib/sync/ledger";
 import { mergeBackup } from "../lib/sync/records";
-import { disable } from "../lib/sync/runner";
+import { deleteAll, disable } from "../lib/sync/runner";
 
 // Sync is only in builds with the API on; the card and its code are never loaded otherwise, and every use of the
 // ledger below sits behind API_ENABLED, so production builds drop it.
@@ -35,6 +35,7 @@ export default function Settings() {
   const [theme, setTheme] = useTheme();
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [ask, setAsk] = useState<"restore" | "wipe" | null>(null);
+  const [everywhere, setEverywhere] = useState(false);
   const pending = useRef<unknown>(null);
   const file = useRef<HTMLInputElement>(null);
 
@@ -108,15 +109,31 @@ export default function Settings() {
           Everything in this browser is replaced with the backup.
         </Confirm>
       )}
-      <Confirm open={ask === "wipe"} onOpenChange={(o) => !o && setAsk(null)} title={syncOn ? "Delete all your data on this device?" : "Delete all your data?"} action={syncOn ? "Delete from this device" : "Delete everything"} cancel="Cancel" danger
-        onAction={() => {
+      <Confirm open={ask === "wipe"} onOpenChange={(o) => { if (!o) { setAsk(null); setEverywhere(false); } }} title="Delete all your data?" action={everywhere ? "Delete everywhere" : syncOn ? "Delete from this device" : "Delete everything"} cancel="Cancel" danger
+        onAction={async () => {
+          setAsk(null);
+          if (syncOn && everywhere) {
+            // The server first: this device is cleared only once the server has deleted its copy.
+            const out = await deleteAll();
+            setEverywhere(false);
+            setMsg(out.ok ? { ok: true, text: "Deleted from the 99ile server and this device. Your other devices stop syncing and keep what they had; delete there too if you want." } : { ok: false, text: out.message });
+            return;
+          }
           // Sync turns off first, so the wipe is never pushed as deletions to the other devices.
           if (syncOn) { saveLedger({ ...loadLedger(), on: false }); void disable(); }
           replace(blankState());
           setMsg({ ok: true, text: syncOn ? "All data cleared on this device. Sync is off here; your other devices keep everything." : "All data cleared." });
-          setAsk(null);
         }}>
-        {syncOn ? "This removes everything from this browser and turns sync off here. Your other devices keep their progress." : "This removes everything from this browser and cannot be undone."}
+        {syncOn ? (
+          <span className="flex flex-col gap-2">
+            {([[false, "Only this device", "Sync turns off here. Your other devices and the server keep everything."], [true, "Everywhere", "Deletes your progress from the 99ile server and this device. Cannot be undone."]] as const).map(([v, t, d]) => (
+              <label key={String(v)} className={cn("flex cursor-pointer gap-3 rounded-md p-3 text-left", everywhere === v ? "bg-accent" : "bg-muted/60")}>
+                <input type="radio" name="where" checked={everywhere === v} onChange={() => setEverywhere(v)} className="mt-1 size-4 accent-primary" />
+                <span className="flex flex-col"><span className="text-base font-medium text-foreground">{t}</span><span className="text-sm">{d}</span></span>
+              </label>
+            ))}
+          </span>
+        ) : "This removes everything from this browser and cannot be undone."}
       </Confirm>
     </Page>
   );

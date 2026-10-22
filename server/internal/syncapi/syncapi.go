@@ -337,3 +337,61 @@ func jsonArg(b json.RawMessage) any {
 	}
 	return string(b)
 }
+
+// ExportHandler is GET /v1/me/export: everything the server holds for this progress (the DPDP right to access),
+// as a download. The browser turns the records into a backup file the existing restore can read.
+func (s *Service) ExportHandler() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		d, _ := account.FromContext(r.Context())
+		var created time.Time
+		if err := s.db.QueryRow(r.Context(), `select created_at from account.identities where id = $1`, d.IdentityID).Scan(&created); err != nil {
+			s.fail(w, r, fmt.Errorf("export: %w", err))
+			return
+		}
+		devRows, err := s.db.Query(r.Context(), `select label, platform, created_at, last_synced_at from account.devices
+			where identity_id = $1 and revoked_at is null order by created_at`, d.IdentityID)
+		if err != nil {
+			s.fail(w, r, fmt.Errorf("export: %w", err))
+			return
+		}
+		type device struct {
+			Label        string     `json:"label"`
+			Platform     string     `json:"platform"`
+			CreatedAt    time.Time  `json:"createdAt"`
+			LastSyncedAt *time.Time `json:"lastSyncedAt"`
+		}
+		devices, err := pgx.CollectRows(devRows, pgx.RowToStructByPos[device])
+		if err != nil {
+			s.fail(w, r, fmt.Errorf("export: %w", err))
+			return
+		}
+		recRows, err := s.db.Query(r.Context(), `select kind, rec_id, data, deleted, stamp, rev from sync.records
+			where identity_id = $1 and not deleted order by rev`, d.IdentityID)
+		if err != nil {
+			s.fail(w, r, fmt.Errorf("export: %w", err))
+			return
+		}
+		recs, err := pgx.CollectRows(recRows, func(row pgx.CollectableRow) (Record, error) {
+			var rec Record
+			err := row.Scan(&rec.Kind, &rec.ID, &rec.Data, &rec.Deleted, &rec.Stamp, &rec.Rev)
+			return rec, err
+		})
+		if err != nil {
+			s.fail(w, r, fmt.Errorf("export: %w", err))
+			return
+		}
+		h, k := s.hash.Hash(reqinfo.IP(r.Context()))
+		if err := audit.Write(r.Context(), s.db, audit.Event{Action: "data.exported", ActorType: audit.Device, ActorIdentity: d.IdentityID,
+			ActorDevice: d.DeviceID, SubjectIdentity: d.IdentityID, RequestID: httpx.RequestIDFrom(r.Context()), IPHash: h, IPKey: k,
+			Meta: map[string]any{"records": len(recs)}}); err != nil {
+			s.log.Warn("audit", "error", err)
+		}
+		w.Header().Set("Content-Disposition", `attachment; filename="99ile-server-export.json"`)
+		httpx.WriteJSON(w, http.StatusOK, map[string]any{
+			"exportedAt": time.Now().UTC(),
+			"identity":   map[string]any{"id": d.IdentityID, "createdAt": created},
+			"devices":    devices,
+			"records":    recs,
+		})
+	})
+}

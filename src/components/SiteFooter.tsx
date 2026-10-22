@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { SECTIONS } from "../sections";
 import Brand from "./Brand";
+import { CONTACT_EMAIL } from "../data/site";
 import type { SiteNavItem } from "./SiteHeader";
 
 function FooterColumn({ title, items }: { title: string; items: SiteNavItem[] }) {
@@ -33,12 +34,13 @@ export default function SiteFooter() {
         <div className="flex flex-col items-start gap-3">
           <h2 className="text-sm font-semibold text-foreground">Support</h2>
           <Link to="/settings" className="inline-flex min-h-8 items-center rounded-sm text-sm font-medium text-foreground/75 transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">Settings and backup</Link>
-          <p className="text-sm text-muted-foreground">Contact &amp; support<br />Coming soon</p>
+          <Link to="/privacy" className="inline-flex min-h-8 items-center rounded-sm text-sm font-medium text-foreground/75 transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">Privacy</Link>
+          <a href={"mailto:" + CONTACT_EMAIL} className="inline-flex min-h-8 items-center rounded-sm text-sm font-medium text-foreground/75 transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">{CONTACT_EMAIL}</a>
         </div>
       </div>
       <div className="flex flex-col items-start gap-1 text-left text-sm leading-relaxed text-muted-foreground lg:mt-6 lg:flex-row lg:justify-between lg:gap-2 lg:border-t lg:border-border/70 lg:py-4">
         <p>© {new Date().getFullYear()} 99ile</p>
-        <p>Free CAT preparation. Your progress stays in this browser.</p>
+        <p>Free CAT preparation. <Link to="/privacy" className="underline underline-offset-4 hover:text-primary">Privacy</Link></p>
       </div>
     </footer>
   );

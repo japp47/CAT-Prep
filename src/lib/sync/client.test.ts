@@ -1,7 +1,8 @@
 import { describe as group, expect, it } from "vitest";
 import type { ApiResult } from "../api";
 import { blankState, normalize, type AppState } from "../state";
-import { canon, describe, link, round, turnOn, type SyncIO, type WireRecord } from "./client";
+import { canon, deleteEverywhere, describe, link, round, turnOn, type SyncIO, type WireRecord } from "./client";
+import { exportToBackup } from "./exportFile";
 import { blankLedger, dirty, track, type Ledger } from "./ledger";
 
 /**
@@ -18,6 +19,7 @@ class FakeServer {
   pageSize = 500;
   /** Rows the server refuses one by one, with a code, as the Go server does for too big or unknown kinds. */
   refuse: (c: WireRecord) => string | undefined = () => undefined;
+  failDelete = false;
   /** Link and recovery codes and the identity each brings: link codes work once. */
   codes = new Map<string, string>();
   /** Another device writes this record just before every push: the worst case for stale answers. */
@@ -38,6 +40,9 @@ class FakeServer {
 
   route(path: string, body: unknown): ApiResult<unknown> {
     const ok = (data: unknown): ApiResult<unknown> => ({ ok: true, status: 200, data });
+    if (path === "/me" && this.failDelete) return { ok: false, status: 503, code: "http_503", message: "down" };
+    if (path === "/me") { this.rows.clear(); return { ok: true, status: 204, data: null }; }
+    if (path === "/me/export") return ok({ exportedAt: "2026-10-22T00:00:00Z", identity: { id: "id-1", createdAt: "2026-10-22T00:00:00Z" }, devices: [{ label: "Test", platform: "mac", createdAt: "x", lastSyncedAt: null }], records: [...this.rows.values()].filter((r) => !r.deleted).map((r) => ({ kind: r.kind, id: r.id, data: this.sorted(r.data) })) });
     if (path === "/identity") return ok({ identityId: "id-" + ++this.ids, deviceId: "dev-" + this.ids, recoveryCode: "RECO-VERY-CODE-" + this.ids });
     if (path === "/identity/link" || path === "/identity/recover") {
       const who = this.codes.get((body as { code: string }).code);
@@ -279,6 +284,47 @@ group("linking", () => {
     server.codes.set("RECOVERYCODE1234", a.L.who!.identityId);
     expect((await link(fresh.io, "recover", "RECOVERYCODE1234", about, true)).ok).toBe(true);
     expect(fresh.ids()).toEqual(["a1", "a2"]);
+  });
+});
+
+group("export and delete", () => {
+  it("the server's copy downloads as a backup that restores to the same progress", async () => {
+    const server = new FakeServer();
+    const a = new Browser(server);
+    a.attempt("a1");
+    a.edit((s) => { s.errors.push({ id: "e1", d: "2026-10-01", sec: "VARC", t: "Tone", trap: "", src: "", why: "", fix: "" }); s.ticks["g"] = 1; s.days["2026-10-21"] = { done: { "varc:rc": 30 } }; });
+    await turnOn(a.io, about);
+    const res = await a.io.call<import("./exportFile").ServerExport>("/me/export");
+    if (!res.ok) throw new Error("export failed");
+    const file = exportToBackup(res.data);
+    expect(file.server.devices).toHaveLength(1);
+    const restored = normalize(JSON.parse(JSON.stringify(file)));
+    expect(restored.rcAttempts).toEqual(a.st.rcAttempts);
+    expect(restored.errors).toEqual(a.st.errors);
+    expect(restored.ticks).toEqual(a.st.ticks);
+    expect(restored.days).toEqual(a.st.days);
+  });
+
+  it("delete everywhere clears the server and then this device", async () => {
+    const server = new FakeServer();
+    const a = new Browser(server);
+    a.attempt("a1");
+    await turnOn(a.io, about);
+    expect((await deleteEverywhere(a.io)).ok).toBe(true);
+    expect(server.rows.size).toBe(0);
+    expect(a.ids()).toEqual([]);
+    expect(a.L.on).toBe(false);
+  });
+
+  it("if the server could not delete, this device keeps everything", async () => {
+    const server = new FakeServer();
+    const a = new Browser(server);
+    a.attempt("a1");
+    await turnOn(a.io, about);
+    server.failDelete = true;
+    expect((await deleteEverywhere(a.io)).ok).toBe(false);
+    expect(a.ids()).toEqual(["a1"]);
+    expect(a.L.on).toBe(true);
   });
 });
 

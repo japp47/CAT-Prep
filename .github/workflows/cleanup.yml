@@ -1,0 +1,28 @@
+# Deletes what the privacy page says is kept only for a while: expired link codes, devices removed over 90 days
+# ago, audit events over 400 days old (server/internal/cleanup). Runs as the database owner, daily.
+name: Clean up old data
+
+on:
+  schedule:
+    - cron: "17 21 * * *" # 02:47 in India, a quiet hour
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: server/go.mod
+          cache-dependency-path: server/go.sum
+      - run: go run ./cmd/cleanup
+        env:
+          MIGRATE_DATABASE_URL: ${{ secrets.MIGRATE_DATABASE_URL }}

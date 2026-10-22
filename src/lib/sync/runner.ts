@@ -1,4 +1,4 @@
-import { describe, leave, link, listDevices, newLinkCode, newRecoveryCode, removeDevice, round, turnOn, type Outcome, type SyncIO } from "./client";
+import { deleteEverywhere, describe, leave, link, listDevices, newLinkCode, newRecoveryCode, removeDevice, round, serverExport, turnOn, type Outcome, type SyncIO } from "./client";
 
 /**
  * When sync runs (docs/architecture.md §6.2): on load, 30 s after the last change, when the connection returns,
@@ -125,7 +125,7 @@ async function begin<T extends Outcome>(f: (io: SyncIO) => Promise<T>): Promise<
 }
 
 /** Turns sync on. The answer carries the recovery code, which is shown once. */
-export const enable = () => begin((x) => turnOn(x, about())) as Promise<Outcome & { recoveryCode?: string }>;
+export const enable = (turnstileToken = "") => begin((x) => turnOn(x, about(), turnstileToken)) as Promise<Outcome & { recoveryCode?: string }>;
 /** Joins this device to other progress with a link or recovery code; `keep` adds this device's progress to it. */
 export const joinWith = (kind: "link" | "recover", code: string, keep: boolean) => begin((x) => link(x, kind, code, about(), keep));
 
@@ -138,6 +138,17 @@ export const makeLinkCode = () => call(newLinkCode);
 export const makeRecoveryCode = () => call(newRecoveryCode);
 export const devices = () => call(listDevices);
 export const removeOne = (id: string) => call((x) => removeDevice(x, id));
+export const exportServer = () => call(serverExport);
+
+/** Deletes this progress from the server and clears this device; on success sync is off here. */
+export async function deleteAll(): Promise<Outcome> {
+  const x = await whenReady();
+  if (!x) return NOT_READY;
+  clearTimeout(timer);
+  const out = await oneTab(() => deleteEverywhere(x));
+  set(fromLedger());
+  return out;
+}
 
 /** Turns sync off on this device (the server is told, so it leaves the device list); `clear` empties this device. */
 export async function disable(clear = false) {

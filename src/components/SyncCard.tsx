@@ -1,7 +1,9 @@
-import { lazy, Suspense, useEffect, useState, useSyncExternalStore } from "react";
+import { lazy, Suspense, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/kit";
-import { disable, enable, getStatus, makeRecoveryCode, subscribe, syncNow } from "@/lib/sync/runner";
+import { disable, enable, exportServer, getStatus, makeRecoveryCode, subscribe, syncNow } from "@/lib/sync/runner";
+import { botToken } from "@/lib/turnstile";
 import { Confirm } from "@/pages/practice/common";
 import { ago } from "./sync/ago";
 
@@ -31,11 +33,26 @@ export default function SyncCard({ onChange }: { onChange?: () => void }) {
   // Opened from search (/settings#sync): this card loads after the page, so it scrolls itself into view.
   useEffect(() => { if (location.hash === "#sync") document.getElementById("sync")?.scrollIntoView(); }, []);
 
+  const bot = useRef<HTMLDivElement>(null);
+  const [checking, setChecking] = useState(false);
   const turnOn = async () => {
     setNote("");
-    const out = await enable();
+    setChecking(true);
+    const token = await botToken(bot.current!).catch(() => null);
+    setChecking(false);
+    if (token === null) { setNote("The quick check did not load. Check your connection and try again."); return; }
+    const out = await enable(token);
     if (!out.ok) setNote(out.message);
     else if ("recoveryCode" in out && out.recoveryCode) setRecovery(out.recoveryCode);
+  };
+  const download = async () => {
+    setNote("");
+    const res = await exportServer();
+    if (!res.ok) { setNote(res.message); return; }
+    if (!("data" in res)) return;
+    const { exportToBackup, downloadJSON } = await import("@/lib/sync/exportFile");
+    downloadJSON("99ile-server-copy.json", exportToBackup(res.data));
+    setNote("Downloaded. It is also a backup: Restore from backup reads it.");
   };
   const newRecovery = async () => {
     setAsk(null);
@@ -44,16 +61,19 @@ export default function SyncCard({ onChange }: { onChange?: () => void }) {
   };
 
   return (
-    <Section id="sync" className="scroll-mt-24" title="Sync between devices" description="Keeps your progress the same on your phone and laptop. No sign-up: a code links your devices. Your progress stays on each device either way.">
+    <Section id="sync" className="scroll-mt-24" title="Sync between devices" description={<>Keeps your progress the same on your phone and laptop. No sign-up: a code links your devices. <Link to="/privacy" className="underline underline-offset-4">What sync stores</Link></>}>
       <Suspense fallback={null}>
         {recovery && <RecoveryPanel code={recovery} onDone={() => setRecovery("")} />}
       </Suspense>
       <Box>
         {!on && view !== "join" && (
+          <>
+          <p className="text-sm text-muted-foreground">Sync is for people 18 and over. Turning it on copies your progress to the 99ile server, as the <Link to="/privacy" className="underline underline-offset-4">privacy notice</Link> describes.</p>
           <div className="flex flex-wrap gap-3">
-            <Button variant="secondary" disabled={busy} onClick={turnOn}>{busy ? "Turning on…" : "Turn on sync"}</Button>
+            <Button variant="secondary" disabled={busy || checking} onClick={turnOn}>{busy || checking ? "Turning on…" : "Turn on sync"}</Button>
             <Button variant="outline" disabled={busy} onClick={() => setView("join")}>I use 99ile on another device</Button>
           </div>
+          </>
         )}
         {!on && view === "join" && (
           <Suspense fallback={null}>
@@ -71,6 +91,7 @@ export default function SyncCard({ onChange }: { onChange?: () => void }) {
             {view === "link" && <Suspense fallback={null}><LinkPanel onClose={() => { setView("none"); setRefresh((n) => n + 1); }} /></Suspense>}
           </>
         )}
+        <div ref={bot} />
         {note && <p className="text-base" role="status">{note}</p>}
       </Box>
       {on && (
@@ -78,6 +99,7 @@ export default function SyncCard({ onChange }: { onChange?: () => void }) {
           <Sub>Your devices</Sub>
           <Suspense fallback={null}><DeviceList refresh={refresh} /></Suspense>
           <div className="flex flex-wrap gap-3 pt-2">
+            <Button variant="outline" onClick={download}>Download what the server has</Button>
             <Button variant="outline" onClick={() => setAsk("recovery")}>Make a new recovery code</Button>
             <Button variant="ghost" onClick={() => setAsk("off")}>Turn off sync on this device</Button>
           </div>

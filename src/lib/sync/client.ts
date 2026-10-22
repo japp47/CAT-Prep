@@ -184,8 +184,8 @@ export function describe(ua: string, touch = 0): { label: string; platform: stri
 }
 
 /** Turns sync on: a new identity for this browser, then the first round. The recovery code comes back only now. */
-export async function turnOn(io: SyncIO, about: { label: string; platform: string }): Promise<Outcome & { recoveryCode?: string }> {
-  const res = await io.call<Who & { recoveryCode: string }>("/identity", about);
+export async function turnOn(io: SyncIO, about: { label: string; platform: string }, turnstileToken = ""): Promise<Outcome & { recoveryCode?: string }> {
+  const res = await io.call<Who & { recoveryCode: string }>("/identity", { ...about, ...(turnstileToken ? { turnstileToken } : {}) });
   if (!res.ok) return res;
   begin(io, { identityId: res.data.identityId, deviceId: res.data.deviceId });
   const out = await round(io);
@@ -223,6 +223,21 @@ export async function leave(io: SyncIO, clear: boolean): Promise<void> {
   await io.call<null>("/devices/me", undefined, { method: "DELETE" });
   io.save({ ...io.load(), on: false, who: undefined, last: undefined, ...(clear ? { rows: {} } : {}) });
   if (clear) await io.apply(() => blankState());
+}
+
+/** Everything the server holds for this progress (Settings, "Download what the server has"). */
+export const serverExport = (io: SyncIO) => io.call<import("./exportFile").ServerExport>("/me/export");
+
+/**
+ * Deletes this progress from the server, everywhere, then clears this device. Other devices stop syncing on their
+ * next try and keep what they have. Nothing here is cleared unless the server confirmed.
+ */
+export async function deleteEverywhere(io: SyncIO): Promise<Outcome> {
+  const res = await io.call<null>("/me", undefined, { method: "DELETE" });
+  if (!res.ok) return res;
+  io.save({ ...io.load(), on: false, rows: {}, cursor: 0, who: undefined, last: undefined });
+  await io.apply(() => blankState());
+  return { ok: true };
 }
 
 /** Stops syncing on this device without telling the server (used when it already said this device is gone). */

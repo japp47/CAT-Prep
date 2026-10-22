@@ -33,6 +33,9 @@ type Config struct {
 	// key it is. Required in prod for /v1; in dev a random key is made at start (IPKeyID 0).
 	IPHashKey []byte
 	IPKeyID   int16
+	// TurnstileSecret checks the bot test before sync is turned on (Cloudflare Turnstile). Required in prod for
+	// /v1; in dev, unset means no check.
+	TurnstileSecret string
 	// Commit is the Git commit this build came from. Render sets RENDER_GIT_COMMIT; "dev" elsewhere.
 	// /healthz reports it, so the deploy workflow can tell when the new version is live.
 	Commit string
@@ -41,9 +44,11 @@ type Config struct {
 // Prod reports whether this is the live server.
 func (c Config) Prod() bool { return c.Env == "prod" }
 
-// SyncReady reports whether the /v1 API may serve students. In prod it needs the proxy secret and the IP hash
-// key; until both are set on Render, /v1 answers 503 and the rest of the server works as before.
-func (c Config) SyncReady() bool { return !c.Prod() || (c.ProxySecret != "" && len(c.IPHashKey) > 0) }
+// SyncReady reports whether the /v1 API may serve students. In prod it needs the proxy secret, the IP hash key
+// and the Turnstile secret; until all three are set on Render, /v1 answers 503 and the rest of the server works.
+func (c Config) SyncReady() bool {
+	return !c.Prod() || (c.ProxySecret != "" && len(c.IPHashKey) > 0 && c.TurnstileSecret != "")
+}
 
 // Load reads the configuration from the process environment.
 func Load() (Config, error) { return load(os.Getenv) }
@@ -97,6 +102,8 @@ func load(get func(string) string) (Config, error) {
 		}
 		c.IPKeyID = int16(id)
 	}
+
+	c.TurnstileSecret = get("TURNSTILE_SECRET")
 
 	c.Commit = or(get("RENDER_GIT_COMMIT"), "dev")
 	return c, errors.Join(errs...)

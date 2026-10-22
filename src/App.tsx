@@ -38,13 +38,14 @@ const Words = lazy(() => import("./pages/Words"));
 const Journal = lazy(() => import("./pages/Journal"));
 const MockReview = lazy(() => import("./pages/tracker/MockReview"));
 const Review = lazy(() => import("./pages/Review"));
+const Privacy = lazy(() => import("./pages/Privacy"));
 // Only in builds with the API on: where a scanned link code lands (B4).
 const LinkPage = API_ENABLED ? lazy(() => import("./pages/Link")) : null;
 
 const TITLES: Record<string, string> = {
   "/": "99ile: free CAT prep", "/today": "Today", "/plan": "Plan and time", "/practice": "Practice", "/practice/library": "RC library", "/practice/sectional": "VARC sectional", "/practice/va": "VA drill", "/practice/cr": "Critical reasoning drill", "/practice/speed": "Reading speed test", "/practice/redo": "Redo queue", "/varc": "VARC", "/dilr": "DILR", "/quant": "Quant",
   "/progress": "Progress", "/progress/mock-review": "Analyse a mock", "/review": "Weekly review", "/errors": "Error log", "/words": "Words", "/journal": "Reading journal", "/updates": "Important updates", "/exams": "CAT and other exams",
-  "/guides": "Guides", "/stories": "Topper stories", "/roadmap": "What's coming", "/settings": "Settings", "/link": "Link this device",
+  "/guides": "Guides", "/stories": "Topper stories", "/roadmap": "What's coming", "/settings": "Settings", "/link": "Link this device", "/privacy": "Privacy",
 };
 
 function Title() {
@@ -108,6 +109,7 @@ export const router = createBrowserRouter(createRoutesFromElements(
       <Route path="stories" element={<Stories />} />
       <Route path="roadmap" element={<Roadmap />} />
       <Route path="settings" element={<Settings />} />
+      <Route path="privacy" element={<Privacy />} />
       {LinkPage && <Route path="link" element={<LinkPage />} />}
       <Route path=":id" element={<Section />} />
       <Route path="*" element={<NotFound />} />
