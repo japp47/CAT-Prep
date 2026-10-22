@@ -148,7 +148,7 @@ func TestAnAbandonedPushLeavesNothingBehind(t *testing.T) {
 func TestTwoWritersOnOneRecordExactlyOneWins(t *testing.T) {
 	srv, _ := apiServer(t, testOpts)
 	a := newDevice(t, srv).turnOn()
-	b := newDevice(t, srv).join(a.ID.IdentityID)
+	b := newDevice(t, srv).linkTo(a)
 	base, _ := a.push(change("shared", `{"v":0}`, 0))
 	rev := base.Applied[0].Rev
 	for i := 0; i < 20; i++ {
@@ -180,7 +180,7 @@ func TestTwoWritersOnOneRecordExactlyOneWins(t *testing.T) {
 func TestHeadsStayEqualToTheRowsUnderRandomConcurrency(t *testing.T) {
 	srv, admin := apiServer(t, syncapi.Options{Kinds: []string{"rc"}, MaxRecords: 10_000, MaxBytes: 8 << 20, PerMinute: 100_000})
 	a := newDevice(t, srv).turnOn()
-	devs := []*device{a, newDevice(t, srv).join(a.ID.IdentityID), newDevice(t, srv).join(a.ID.IdentityID)}
+	devs := []*device{a, newDevice(t, srv).linkTo(a), newDevice(t, srv).linkTo(a)}
 	var mu sync.Mutex
 	known := map[string]int64{} // the last rev each test device saw per record
 	var wg sync.WaitGroup
@@ -238,7 +238,7 @@ func TestHeadsStayEqualToTheRowsUnderRandomConcurrency(t *testing.T) {
 func TestAPullNeverSeesHalfAPush(t *testing.T) {
 	srv, _ := apiServer(t, syncapi.Options{Kinds: []string{"rc"}, MaxRecords: 10_000, MaxBytes: 8 << 20, PerMinute: 100_000})
 	a := newDevice(t, srv).turnOn()
-	b := newDevice(t, srv).join(a.ID.IdentityID)
+	b := newDevice(t, srv).linkTo(a)
 	done := make(chan struct{})
 	go func() {
 		defer close(done)

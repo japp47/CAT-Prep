@@ -4,6 +4,7 @@ import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import { whenIdle } from "./lib/idle";
+import { API_ENABLED } from "./lib/api";
 
 // Each page loads when it is first opened, so the first visit downloads only the shell and the home page.
 // The pages in the phone's bottom bar are fetched once the browser is idle, so they open without a wait.
@@ -37,11 +38,13 @@ const Words = lazy(() => import("./pages/Words"));
 const Journal = lazy(() => import("./pages/Journal"));
 const MockReview = lazy(() => import("./pages/tracker/MockReview"));
 const Review = lazy(() => import("./pages/Review"));
+// Only in builds with the API on: where a scanned link code lands (B4).
+const LinkPage = API_ENABLED ? lazy(() => import("./pages/Link")) : null;
 
 const TITLES: Record<string, string> = {
   "/": "99ile: free CAT prep", "/today": "Today", "/plan": "Plan and time", "/practice": "Practice", "/practice/library": "RC library", "/practice/sectional": "VARC sectional", "/practice/va": "VA drill", "/practice/cr": "Critical reasoning drill", "/practice/speed": "Reading speed test", "/practice/redo": "Redo queue", "/varc": "VARC", "/dilr": "DILR", "/quant": "Quant",
   "/progress": "Progress", "/progress/mock-review": "Analyse a mock", "/review": "Weekly review", "/errors": "Error log", "/words": "Words", "/journal": "Reading journal", "/updates": "Important updates", "/exams": "CAT and other exams",
-  "/guides": "Guides", "/stories": "Topper stories", "/roadmap": "What's coming", "/settings": "Settings",
+  "/guides": "Guides", "/stories": "Topper stories", "/roadmap": "What's coming", "/settings": "Settings", "/link": "Link this device",
 };
 
 function Title() {
@@ -105,6 +108,7 @@ export const router = createBrowserRouter(createRoutesFromElements(
       <Route path="stories" element={<Stories />} />
       <Route path="roadmap" element={<Roadmap />} />
       <Route path="settings" element={<Settings />} />
+      {LinkPage && <Route path="link" element={<LinkPage />} />}
       <Route path=":id" element={<Section />} />
       <Route path="*" element={<NotFound />} />
     </Route>

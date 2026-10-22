@@ -6,6 +6,7 @@ import { shortDate } from "../lib/date";
 import { usePref } from "../lib/prefs";
 import { useStore } from "../lib/store";
 import { SECTION_BY_ID, SECTIONS } from "../sections";
+import { API_ENABLED } from "../lib/api";
 import type { Resource } from "../sections/types";
 import { loadResources } from "../sections/useResources";
 
@@ -40,6 +41,8 @@ const PAGES = [
   { title: "What's coming", href: "/roadmap", keywords: "roadmap future" },
   { title: "Settings and backup", href: "/settings", keywords: "install export restore data" },
   { title: "About 99ile", href: "/#about", keywords: "about mission privacy" },
+  // Only in builds with sync (B4); found by the words people use for it.
+  ...(API_ENABLED ? [{ title: "Sync between devices", href: "/settings#sync", keywords: "sync link code qr scan devices phone laptop recovery move transfer progress another device" }] : []),
 ];
 
 function Highlight({ text, query }: { text: string; query: string }) {

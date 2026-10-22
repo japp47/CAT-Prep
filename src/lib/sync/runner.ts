@@ -1,4 +1,4 @@
-import { describe, join, round, turnOff, turnOn, type Outcome, type SyncIO } from "./client";
+import { describe, leave, link, listDevices, newLinkCode, newRecoveryCode, removeDevice, round, turnOn, type Outcome, type SyncIO } from "./client";
 
 /**
  * When sync runs (docs/architecture.md §6.2): on load, 30 s after the last change, when the connection returns,
@@ -108,21 +108,42 @@ export function start(next: SyncIO): () => void {
 
 const about = () => describe(navigator.userAgent, navigator.maxTouchPoints ?? 0);
 
-async function begin(f: (io: SyncIO) => Promise<Outcome>): Promise<Outcome> {
+/** The runner once it has loaded (it loads when the browser is idle); null after 15 s. */
+async function whenReady(): Promise<SyncIO | null> {
+  return io ?? Promise.race([ready, new Promise<null>((done) => setTimeout(() => done(null), 15_000))]);
+}
+const NOT_READY: Outcome = { ok: false, status: 0, code: "not_ready", message: "Sync could not start. Reload the page and try again." };
+
+async function begin<T extends Outcome>(f: (io: SyncIO) => Promise<T>): Promise<T | Outcome> {
   set({ ...status, phase: "syncing" });
-  const x = io ?? await Promise.race([ready, new Promise<null>((done) => setTimeout(() => done(null), 15_000))]);
-  if (!x) { set({ ...status, phase: "off" }); return { ok: false, status: 0, code: "not_ready", message: "Sync could not start. Reload the page and try again." }; }
+  const x = await whenReady();
+  if (!x) { set({ ...status, phase: "off" }); return NOT_READY; }
   failures = 0; retryAt = 0;
   const out = await oneTab(() => f(x)).catch((): Outcome => ({ ok: false, status: 0, code: "client_error", message: "Sync stopped on an error. Try again." }));
   finish(out);
   return out;
 }
 
-export const enable = () => begin((x) => turnOn(x, about()));
-export const joinIdentity = (identityId: string) => begin((x) => join(x, identityId, about()));
-export function disable() {
-  if (!io) return;
-  turnOff(io);
+/** Turns sync on. The answer carries the recovery code, which is shown once. */
+export const enable = () => begin((x) => turnOn(x, about())) as Promise<Outcome & { recoveryCode?: string }>;
+/** Joins this device to other progress with a link or recovery code; `keep` adds this device's progress to it. */
+export const joinWith = (kind: "link" | "recover", code: string, keep: boolean) => begin((x) => link(x, kind, code, about(), keep));
+
+/** Calls that need the runner but are not sync rounds: link codes, recovery codes, the device list. */
+async function call<T>(f: (io: SyncIO) => Promise<T>): Promise<T | Outcome> {
+  const x = await whenReady();
+  return x ? f(x) : NOT_READY;
+}
+export const makeLinkCode = () => call(newLinkCode);
+export const makeRecoveryCode = () => call(newRecoveryCode);
+export const devices = () => call(listDevices);
+export const removeOne = (id: string) => call((x) => removeDevice(x, id));
+
+/** Turns sync off on this device (the server is told, so it leaves the device list); `clear` empties this device. */
+export async function disable(clear = false) {
+  const x = await whenReady();
+  if (!x) return;
   clearTimeout(timer);
+  await leave(x, clear);
   set(fromLedger());
 }

@@ -1,7 +1,7 @@
 import { describe as group, expect, it } from "vitest";
 import type { ApiResult } from "../api";
 import { blankState, normalize, type AppState } from "../state";
-import { canon, describe, join, round, turnOn, type SyncIO, type WireRecord } from "./client";
+import { canon, describe, link, round, turnOn, type SyncIO, type WireRecord } from "./client";
 import { blankLedger, dirty, track, type Ledger } from "./ledger";
 
 /**
@@ -18,6 +18,8 @@ class FakeServer {
   pageSize = 500;
   /** Rows the server refuses one by one, with a code, as the Go server does for too big or unknown kinds. */
   refuse: (c: WireRecord) => string | undefined = () => undefined;
+  /** Link and recovery codes and the identity each brings: link codes work once. */
+  codes = new Map<string, string>();
   /** Another device writes this record just before every push: the worst case for stale answers. */
   storm?: string;
 
@@ -36,8 +38,13 @@ class FakeServer {
 
   route(path: string, body: unknown): ApiResult<unknown> {
     const ok = (data: unknown): ApiResult<unknown> => ({ ok: true, status: 200, data });
-    if (path === "/identity") return ok({ identityId: "id-" + ++this.ids, deviceId: "dev-" + this.ids });
-    if (path === "/dev/join") return ok({ identityId: (body as { identityId: string }).identityId, deviceId: "dev-" + ++this.ids });
+    if (path === "/identity") return ok({ identityId: "id-" + ++this.ids, deviceId: "dev-" + this.ids, recoveryCode: "RECO-VERY-CODE-" + this.ids });
+    if (path === "/identity/link" || path === "/identity/recover") {
+      const who = this.codes.get((body as { code: string }).code);
+      if (!who) return { ok: false, status: 404, code: "bad_code", message: "That code did not work." };
+      if (path === "/identity/link") this.codes.delete((body as { code: string }).code);
+      return { ok: true, status: 201, data: { identityId: who, deviceId: "dev-" + ++this.ids } };
+    }
     if (path === "/sync/pull") {
       const cursor = (body as { cursor: number }).cursor;
       const recs = [...this.rows.values()].filter((r) => r.rev > cursor).sort((a, b) => a.rev - b.rev);
@@ -95,6 +102,11 @@ class Browser {
 }
 
 const about = { label: "Test", platform: "mac" };
+/** b joins a's progress with a link code, as scanning a's QR does. */
+async function linkB(server: FakeServer, a: Browser, b: Browser, keep = true) {
+  server.codes.set("ABCDEFGH", a.L.who!.identityId);
+  return link(b.io, "link", "ABCDEFGH", about, keep);
+}
 const rcRows = (server: FakeServer) => [...server.rows.keys()].filter((k) => k.startsWith("rc:")).length;
 
 group("sync client", () => {
@@ -117,7 +129,7 @@ group("sync client", () => {
     a.attempt("a1"); a.attempt("a2");
     b.attempt("b1");
     await turnOn(a.io, about);
-    await join(b.io, a.L.who!.identityId, about);
+    await linkB(server, a, b);
     expect(b.ids()).toEqual(["a1", "a2", "b1"]);
     await round(a.io);
     expect(a.ids()).toEqual(["a1", "a2", "b1"]);
@@ -130,8 +142,8 @@ group("sync client", () => {
     a.attempt("a1");
     await turnOn(a.io, about);
     const revBefore = server.rev;
-    await join(b.io, a.L.who!.identityId, about);
-    expect(b.calls).toEqual(["/dev/join", "/sync/pull"]);
+    await linkB(server, a, b);
+    expect(b.calls).toEqual(["/identity/link", "/sync/pull"]);
     b.calls = [];
     await round(b.io);
     expect(server.rev).toBe(revBefore);
@@ -164,7 +176,7 @@ group("sync client", () => {
     const a = new Browser(server), b = new Browser(server);
     a.attempt("a1"); a.attempt("a2");
     await turnOn(a.io, about);
-    await join(b.io, a.L.who!.identityId, about);
+    await linkB(server, a, b);
     a.edit((s) => { s.rcAttempts = s.rcAttempts.filter((x) => x.id !== "a1"); });
     await round(a.io);
     expect(server.rows.get("rc:a1")?.deleted).toBe(true);
@@ -200,7 +212,7 @@ group("sync client", () => {
     const a = new Browser(server), b = new Browser(server);
     ["1", "2", "3", "4", "5"].forEach((n) => a.attempt("a" + n));
     await turnOn(a.io, about);
-    await join(b.io, a.L.who!.identityId, about);
+    await linkB(server, a, b);
     expect(b.ids()).toEqual(["a1", "a2", "a3", "a4", "a5"]);
     expect(b.L.cursor).toBe(server.rev);
   });
@@ -212,7 +224,7 @@ group("sync client", () => {
       const server = new FakeServer();
       const a = new Browser(server), b = new Browser(server);
       await turnOn(a.io, about);
-      await join(b.io, a.L.who!.identityId, about);
+      await linkB(server, a, b);
       for (let step = 0; step < 30; step++) {
         const d = r() < 0.5 ? a : b;
         const roll = r();
@@ -228,6 +240,48 @@ group("sync client", () => {
   });
 });
 
+group("linking", () => {
+  it("turning on hands back the recovery code once", async () => {
+    const server = new FakeServer();
+    const a = new Browser(server);
+    const out = await turnOn(a.io, about);
+    expect(out.ok && out.recoveryCode).toBe("RECO-VERY-CODE-1");
+    expect(JSON.stringify(a.L)).not.toContain("RECO"); // never stored on the device
+  });
+
+  it("start fresh: this device takes the server's progress and deletes nothing anywhere", async () => {
+    const server = new FakeServer();
+    const a = new Browser(server), b = new Browser(server);
+    a.attempt("a1");
+    b.attempt("b-old");
+    await turnOn(a.io, about);
+    const out = await linkB(server, a, b, false);
+    expect(out.ok).toBe(true);
+    expect(b.ids()).toEqual(["a1"]);
+    expect([...server.rows.values()].some((r) => r.deleted)).toBe(false);
+  });
+
+  it("a wrong code changes nothing on this device", async () => {
+    const server = new FakeServer();
+    const b = new Browser(server);
+    b.attempt("b1");
+    const out = await link(b.io, "link", "WRONGCDE", about, false);
+    expect(out.ok).toBe(false);
+    expect(b.ids()).toEqual(["b1"]);
+    expect(b.L.on).toBe(false);
+  });
+
+  it("a recovery code brings everything to a fresh browser", async () => {
+    const server = new FakeServer();
+    const a = new Browser(server), fresh = new Browser(server);
+    a.attempt("a1"); a.attempt("a2");
+    await turnOn(a.io, about);
+    server.codes.set("RECOVERYCODE1234", a.L.who!.identityId);
+    expect((await link(fresh.io, "recover", "RECOVERYCODE1234", about, true)).ok).toBe(true);
+    expect(fresh.ids()).toEqual(["a1", "a2"]);
+  });
+});
+
 group("every kind", () => {
   it("errors, words, mocks, settings and the profile travel", async () => {
     const server = new FakeServer();
@@ -239,7 +293,7 @@ group("every kind", () => {
       s.since = "2026-09-01";
     });
     await turnOn(a.io, about);
-    await join(b.io, a.L.who!.identityId, about);
+    await linkB(server, a, b);
     expect(b.st.errors.map((e) => e.id)).toEqual(["e1"]);
     expect(b.st.vocab.map((w) => w.id)).toEqual(["w1"]);
     expect(b.st.ticks["guide-1"]).toBe(1);
@@ -250,7 +304,7 @@ group("every kind", () => {
     const server = new FakeServer();
     const a = new Browser(server), b = new Browser(server);
     await turnOn(a.io, about);
-    await join(b.io, a.L.who!.identityId, about);
+    await linkB(server, a, b);
     server.down = true;
     a.edit((s) => { s.days["2026-10-21"] = { done: { "varc:rc": 30 } }; });
     b.edit((s) => { s.days["2026-10-21"] = { done: { "varc:va": 20 }, spent: { "varc:va": 25 } }; });
@@ -265,7 +319,7 @@ group("every kind", () => {
     const a = new Browser(server), b = new Browser(server);
     a.edit((s) => { s.redo.push({ k: "rc:set-a:0", added: "2026-10-01", due: "2026-10-04", box: 1, tries: 1 }); });
     await turnOn(a.io, about);
-    await join(b.io, a.L.who!.identityId, about);
+    await linkB(server, a, b);
     a.edit((s) => { s.redo[0].tries = 3; s.redo[0].box = 3; });
     b.edit((s) => { s.redo[0].tries = 2; });
     await round(b.io); await round(a.io); await round(b.io);
@@ -278,7 +332,7 @@ group("every kind", () => {
     const a = new Browser(server), b = new Browser(server);
     a.edit((s) => { s.ticks["guide-1"] = 1; s.ticks["guide-2"] = 1; });
     await turnOn(a.io, about);
-    await join(b.io, a.L.who!.identityId, about);
+    await linkB(server, a, b);
     a.edit((s) => { delete s.ticks["guide-1"]; });
     await round(a.io); await round(b.io);
     expect(Object.keys(b.st.ticks)).toEqual(["guide-2"]);

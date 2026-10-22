@@ -163,11 +163,11 @@ func newV1(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger) http.Handler
 
 func v1Routes(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger, opt syncapi.Options) http.Handler {
 	hash := reqinfo.NewHasher(cfg)
-	perHour := 5
+	lim := account.Limits{NewIdentities: 5, CodeTries: 10, WrongInARow: 5}
 	if !cfg.Prod() {
-		perHour = 100 // two browsers and many restarts while developing
+		lim.NewIdentities, lim.CodeTries = 100, 100 // two browsers and many restarts while developing
 	}
-	acc := account.New(pool, hash, log, perHour)
+	acc := account.New(pool, hash, log, lim)
 	sy := syncapi.New(pool, hash, log, opt)
 
 	rt := httpx.NewRouter()
@@ -175,8 +175,11 @@ func v1Routes(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger, opt synca
 	rt.Handle("GET /v1/identity", acc.Require(acc.ShowHandler()))
 	rt.Handle("POST /v1/sync/pull", acc.Require(sy.PullHandler()))
 	rt.Handle("POST /v1/sync/push", acc.Require(sy.PushHandler()))
-	if !cfg.Prod() {
-		rt.Handle("POST /v1/dev/join", acc.JoinHandler())
-	}
+	rt.Handle("POST /v1/identity/recovery-code", acc.Require(acc.RecoveryCodeHandler()))
+	rt.Handle("POST /v1/identity/link-codes", acc.Require(acc.LinkCodeHandler()))
+	rt.Handle("POST /v1/identity/link", acc.LinkHandler())
+	rt.Handle("POST /v1/identity/recover", acc.RecoverHandler())
+	rt.Handle("GET /v1/devices", acc.Require(acc.DevicesHandler()))
+	rt.Handle("DELETE /v1/devices/{id}", acc.Require(acc.RemoveDeviceHandler()))
 	return reqinfo.Gate(cfg)(rt)
 }

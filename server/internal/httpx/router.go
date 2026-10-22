@@ -24,7 +24,8 @@ func (d *discard) WriteHeader(s int)           { d.status = s }
 func (rt *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	h, pattern := rt.Handler(r)
 	if pattern != "" {
-		h.ServeHTTP(w, r)
+		// Served by the mux itself, which fills in path values such as {id}; calling h directly would not.
+		rt.ServeMux.ServeHTTP(w, r)
 		return
 	}
 	// No route: ServeMux answers 404, or 405 with an Allow header when the path exists for another method.

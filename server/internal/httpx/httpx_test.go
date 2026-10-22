@@ -162,3 +162,15 @@ func TestAccessLogHasNoQueryString(t *testing.T) {
 		t.Fatalf("log line = %q", out)
 	}
 }
+
+func TestRouterFillsInPathValues(t *testing.T) {
+	rt := NewRouter()
+	var got string
+	rt.HandleFunc("DELETE /v1/devices/{id}", func(w http.ResponseWriter, r *http.Request) { got = r.PathValue("id") })
+	outer := NewRouter()
+	outer.Handle("/v1/", rt)
+	outer.ServeHTTP(httptest.NewRecorder(), httptest.NewRequest(http.MethodDelete, "/v1/devices/abc", nil))
+	if got != "abc" {
+		t.Fatalf("path value = %q", got)
+	}
+}

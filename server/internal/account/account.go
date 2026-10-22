@@ -18,6 +18,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/japp47/CAT-Prep/server/internal/audit"
+	"github.com/japp47/CAT-Prep/server/internal/codes"
 	"github.com/japp47/CAT-Prep/server/internal/httpx"
 	"github.com/japp47/CAT-Prep/server/internal/ids"
 	"github.com/japp47/CAT-Prep/server/internal/limit"
@@ -43,17 +44,27 @@ func FromContext(ctx context.Context) (Device, bool) {
 	return d, ok
 }
 
+// Limits per address and hour.
+type Limits struct {
+	NewIdentities int // turning sync on
+	CodeTries     int // link and recovery codes tried
+	WrongInARow   int // wrong codes in a row before the address waits an hour
+}
+
 // Service holds what the handlers share.
 type Service struct {
 	db       *pgxpool.Pool
 	hash     reqinfo.Hasher
 	log      *slog.Logger
 	newIdent *limit.Limiter
+	tries    *limit.Limiter
+	wrong    *limit.Limiter
 }
 
-// New returns the service. newPerHour limits how many identities one address may create in an hour.
-func New(db *pgxpool.Pool, hash reqinfo.Hasher, log *slog.Logger, newPerHour int) *Service {
-	return &Service{db: db, hash: hash, log: log, newIdent: limit.New(newPerHour, time.Hour)}
+// New returns the service.
+func New(db *pgxpool.Pool, hash reqinfo.Hasher, log *slog.Logger, lim Limits) *Service {
+	return &Service{db: db, hash: hash, log: log,
+		newIdent: limit.New(lim.NewIdentities, time.Hour), tries: limit.New(lim.CodeTries, time.Hour), wrong: limit.New(lim.WrongInARow, time.Hour)}
 }
 
 var platforms = map[string]bool{"ios": true, "android": true, "mac": true, "windows": true, "linux": true, "other": true}
@@ -73,8 +84,8 @@ func (a *about) clean() {
 	}
 }
 
-// CreateHandler is POST /v1/identity: turns sync on for this browser. A browser that already has a working
-// device cookie gets its identity back instead of a second one.
+// CreateHandler is POST /v1/identity: turns sync on for this browser and makes its recovery code, returned only
+// this once. A browser that already has a working device cookie gets its identity back instead of a second one.
 func (s *Service) CreateHandler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if d, ok, err := s.lookup(r); err != nil {
@@ -99,8 +110,12 @@ func (s *Service) CreateHandler() http.Handler {
 		}
 		d := Device{IdentityID: ids.New(), DeviceID: ids.New()}
 		secret, hash := newSecret()
+		recovery := codes.New(codes.RecoveryLen)
 		err := pgx.BeginFunc(r.Context(), s.db, func(tx pgx.Tx) error {
 			if _, err := tx.Exec(r.Context(), `insert into account.identities (id) values ($1)`, d.IdentityID); err != nil {
+				return err
+			}
+			if _, err := tx.Exec(r.Context(), `insert into account.recovery_codes (identity_id, code_hash) values ($1, $2)`, d.IdentityID, codes.Hash(recovery)); err != nil {
 				return err
 			}
 			if _, err := tx.Exec(r.Context(), `insert into sync.heads (identity_id) values ($1)`, d.IdentityID); err != nil {
@@ -116,50 +131,14 @@ func (s *Service) CreateHandler() http.Handler {
 			return
 		}
 		setCookie(w, secret)
-		httpx.WriteJSON(w, http.StatusCreated, d)
+		httpx.WriteJSON(w, http.StatusCreated, created{d, codes.Format(recovery)})
 	})
 }
 
-// JoinHandler is POST /v1/dev/join {identityId}: adds this browser to an existing identity by hand. Development
-// only (never mounted when ENV=prod); linking with a code replaces it in B4.
-func (s *Service) JoinHandler() http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var body struct {
-			about
-			IdentityID string `json:"identityId"`
-		}
-		if !httpx.DecodeJSON(w, r, &body, false) {
-			return
-		}
-		if !ids.Valid(body.IdentityID) {
-			httpx.WriteError(w, http.StatusBadRequest, "bad_request", "That is not an identity id.")
-			return
-		}
-		body.clean()
-		d := Device{IdentityID: body.IdentityID, DeviceID: ids.New()}
-		secret, hash := newSecret()
-		err := pgx.BeginFunc(r.Context(), s.db, func(tx pgx.Tx) error {
-			var status string
-			if err := tx.QueryRow(r.Context(), `select status from account.identities where id = $1`, d.IdentityID).Scan(&status); err != nil {
-				return err
-			}
-			if status != "active" {
-				return errSuspended
-			}
-			return s.addDevice(r, tx, d, hash, body.about)
-		})
-		switch {
-		case errors.Is(err, pgx.ErrNoRows):
-			httpx.WriteError(w, http.StatusNotFound, "not_found", "No identity has that id.")
-		case errors.Is(err, errSuspended):
-			httpx.WriteError(w, http.StatusForbidden, "suspended", "Sync is paused for this progress.")
-		case err != nil:
-			s.fail(w, r, fmt.Errorf("join identity: %w", err))
-		default:
-			setCookie(w, secret)
-			httpx.WriteJSON(w, http.StatusCreated, d)
-		}
-	})
+// created is the answer to turning sync on: the device and its identity's recovery code, shown once.
+type created struct {
+	Device
+	RecoveryCode string `json:"recoveryCode"`
 }
 
 // ShowHandler is GET /v1/identity: which identity and device this browser is.

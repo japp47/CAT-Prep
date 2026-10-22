@@ -1,5 +1,5 @@
 import type { ApiResult, CallOptions } from "../api";
-import type { AppState } from "../state";
+import { blankState, type AppState } from "../state";
 import { dirty, hash, receive, records, track, type Ledger, type Row } from "./ledger";
 import { KINDS, parseKey, recKey, toRecords, type Kind, type SyncRecord } from "./records";
 
@@ -183,23 +183,49 @@ export function describe(ua: string, touch = 0): { label: string; platform: stri
   return { label: browser + " on " + os, platform };
 }
 
-/** Turns sync on: a new identity for this browser, then the first round. */
-export async function turnOn(io: SyncIO, about: { label: string; platform: string }): Promise<Outcome> {
-  const res = await io.call<Who>("/identity", about);
+/** Turns sync on: a new identity for this browser, then the first round. The recovery code comes back only now. */
+export async function turnOn(io: SyncIO, about: { label: string; platform: string }): Promise<Outcome & { recoveryCode?: string }> {
+  const res = await io.call<Who & { recoveryCode: string }>("/identity", about);
   if (!res.ok) return res;
+  begin(io, { identityId: res.data.identityId, deviceId: res.data.deviceId });
+  const out = await round(io);
+  return { ...out, recoveryCode: res.data.recoveryCode };
+}
+
+/**
+ * Joins this browser to the progress of a link code (from another device's QR) or a recovery code. `keep` adds
+ * this device's progress to it (the first round merges both, nothing is overwritten); otherwise this device starts
+ * from what the server has. Local data is cleared only after the code has worked.
+ */
+export async function link(io: SyncIO, kind: "link" | "recover", code: string, about: { label: string; platform: string }, keep: boolean): Promise<Outcome> {
+  const res = await io.call<Who>(kind === "link" ? "/identity/link" : "/identity/recover", { code, ...about });
+  if (!res.ok) return res;
+  if (!keep) {
+    io.save({ ...io.load(), on: false, rows: {} }); // forget the old rows first, so clearing sends no deletions
+    await io.apply(() => blankState());
+  }
   begin(io, res.data);
   return round(io);
 }
 
-/** Development only: adds this browser to an identity by its id, then merges both sides in the first round. */
-export async function join(io: SyncIO, identityId: string, about: { label: string; platform: string }): Promise<Outcome> {
-  const res = await io.call<Who>("/dev/join", { identityId: identityId.trim(), ...about });
-  if (!res.ok) return res;
-  begin(io, res.data);
-  return round(io);
+export interface DeviceInfo { id: string; label: string; platform: string; createdAt: string; lastSyncedAt: string | null; current: boolean }
+
+export const newLinkCode = (io: SyncIO) => io.call<{ code: string; expiresAt: string }>("/identity/link-codes", {});
+export const newRecoveryCode = (io: SyncIO) => io.call<{ recoveryCode: string }>("/identity/recovery-code", {});
+export const listDevices = (io: SyncIO) => io.call<{ devices: DeviceInfo[] }>("/devices");
+export const removeDevice = (io: SyncIO, id: string) => io.call<null>("/devices/" + encodeURIComponent(id), undefined, { method: "DELETE" });
+
+/**
+ * Stops syncing on this device: tells the server (so this device leaves the list) and turns sync off here, even
+ * offline. `clear` also empties this device; nothing is deleted anywhere else.
+ */
+export async function leave(io: SyncIO, clear: boolean): Promise<void> {
+  await io.call<null>("/devices/me", undefined, { method: "DELETE" });
+  io.save({ ...io.load(), on: false, who: undefined, last: undefined, ...(clear ? { rows: {} } : {}) });
+  if (clear) await io.apply(() => blankState());
 }
 
-/** Stops syncing on this device. The progress stays here; nothing is deleted anywhere. */
+/** Stops syncing on this device without telling the server (used when it already said this device is gone). */
 export function turnOff(io: SyncIO) {
   io.save({ ...io.load(), on: false });
 }

@@ -48,3 +48,18 @@ func (l *Limiter) Allow(key string) (ok, first bool) {
 	b.n++
 	return b.n <= l.max, b.n == l.max+1
 }
+
+// Over reports whether key has already used up this window, without counting an event.
+func (l *Limiter) Over(key string) bool {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	b := l.seen[key]
+	return b != nil && l.now().Sub(b.start) < l.window && b.n >= l.max
+}
+
+// Reset forgets key, for counts of failures in a row that end with a success.
+func (l *Limiter) Reset(key string) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	delete(l.seen, key)
+}
