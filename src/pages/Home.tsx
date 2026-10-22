@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import SyncPrompt from "../components/SyncPrompt";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -298,6 +299,7 @@ export default function Home() {
   return (
     <Page className="max-w-[1440px] gap-14 lg:gap-16">
       <Hero isNew={isNew} />
+      <SyncPrompt />
       <SectionOverview />
       <StudyTools />
       <TodayPanel />

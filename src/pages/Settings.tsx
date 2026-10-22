@@ -174,7 +174,9 @@ function IosSteps({ browser }: { browser: IosBrowser | null }) {
   return (
     <div className="measure flex flex-col gap-2 text-base">
       <p>{browser === "other" ? "In this browser" : `In ${name}`} on iPhone or iPad: {where}, then <b className="font-semibold">Add to Home Screen</b>.</p>
-      <p>Stay in {name}: each browser keeps its own copy of your progress. The Home Screen app may also start empty, so download a backup below first, and if it opens empty, restore it in the app&rsquo;s Settings.</p>
+      <p>{API_ENABLED
+        ? <>Each browser and the Home Screen app keep their own copy of your progress. To bring it into the app, turn on sync below, then link the app with a code.</>
+        : <>Stay in {name}: each browser keeps its own copy of your progress. The Home Screen app may also start empty, so download a backup below first, and if it opens empty, restore it in the app&rsquo;s Settings.</>}</p>
     </div>
   );
 }

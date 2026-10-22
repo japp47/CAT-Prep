@@ -1,4 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
+import { API_ENABLED } from "../lib/api";
+import { LinkButton } from "./kit";
 import { Ellipsis, Menu, Share, SquarePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
@@ -57,12 +59,17 @@ export default function InstallGuide({ open, onOpenChange }: { open: boolean; on
             </SheetDescription>
           </div>
 
-          {progress && (
+          {progress && (API_ENABLED ? (
+            <div className="flex flex-col gap-3 rounded-lg bg-warning-soft px-4 py-4">
+              <p className="text-base">On {device} the Home Screen app keeps its own data, so it starts empty. To bring your progress, turn on sync here first, then in the app tap <b className="font-semibold">Link this device</b> on Today and use the code from here.</p>
+              <LinkButton to="/settings#sync" variant="secondary" size="sm" className="self-start">Turn on sync</LinkButton>
+            </div>
+          ) : (
             <div className="flex flex-col gap-3 rounded-lg bg-warning-soft px-4 py-4">
               <p className="text-base">First, save your progress. On {device} the Home Screen app keeps its own data, so it starts empty. Download a backup, and restore it in the app&rsquo;s Settings.</p>
               <Button variant="secondary" size="sm" className="self-start" onClick={() => downloadBackup(state)}>Download backup</Button>
             </div>
-          )}
+          ))}
 
           <ol className="flex flex-col gap-3">
             {steps.map(([icon, text], i) => (

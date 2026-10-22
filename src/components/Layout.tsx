@@ -13,6 +13,7 @@ import InstallButton from "./InstallButton";
 import { IconChart, IconHome, IconPen, IconToday } from "./Icons";
 import Brand from "./Brand";
 import SiteFooter from "./SiteFooter";
+import { DataNote, SyncNavRow } from "./SyncNav";
 import SiteHeader, { type SiteNavGroup } from "./SiteHeader";
 import ThemeToggle, { type Theme as ThemeValue } from "./ThemeToggle";
 const SearchPalette = lazy(() => import("./SearchPalette"));
@@ -166,6 +167,7 @@ export default function Layout() {
           <span className="flex items-center gap-3"><Search className="size-5" aria-hidden />{!sidebarCollapsed && <span className="text-sm font-medium">Search</span>}</span>
           {!sidebarCollapsed && <kbd className="rounded border border-border px-1.5 py-0.5 text-xs text-muted-foreground">⌘ K</kbd>}
         </button>
+        <SyncNavRow collapsed={sidebarCollapsed} />
         {!sidebarCollapsed && <>
           <Nav />
         </>}
@@ -177,7 +179,7 @@ export default function Layout() {
             <UserRound className="size-5" aria-hidden />
           </button>
         </div>
-        {!sidebarCollapsed && <p className="px-3 text-sm text-muted-foreground">Free and open. Your data stays in this browser.</p>}
+        {!sidebarCollapsed && <p className="px-3 text-sm text-muted-foreground"><DataNote /></p>}
       </aside>
 
       {/* At least a screen tall, with main taking the spare height, so on a short page the footer sits at the bottom
@@ -204,7 +206,7 @@ export default function Layout() {
 
       {menuUsed && (
         <Suspense fallback={null}>
-          <MenuSheet open={open} onOpenChange={setOpen} title={<Brand />}><Nav onPick={() => setOpen(false)} /></MenuSheet>
+          <MenuSheet open={open} onOpenChange={setOpen} title={<Brand />}><SyncNavRow onPick={() => setOpen(false)} /><Nav onPick={() => setOpen(false)} /></MenuSheet>
         </Suspense>
       )}
       {searchUsed && <Suspense fallback={null}><SearchPalette open={searchOpen} onOpenChange={setSearchOpen} onNavigate={navigateFromSearch} /></Suspense>}
