@@ -9,10 +9,13 @@ const LinkQR = lazy(() => import("./LinkQR"));
 export default function LinkPanel({ onClose }: { onClose: () => void }) {
   const [code, setCode] = useState<{ code: string; expiresAt: number } | null>(null);
   const [error, setError] = useState("");
+  const [copyStatus, setCopyStatus] = useState("");
   const [now, setNow] = useState(Date.now());
 
   const fresh = useCallback(async () => {
     setError("");
+    setCopyStatus("");
+    setCode(null);
     const res = await makeLinkCode();
     if ("data" in res && res.ok) setCode({ code: res.data.code, expiresAt: Date.parse(res.data.expiresAt) });
     else setError(res.ok ? "" : res.message);
@@ -23,23 +26,52 @@ export default function LinkPanel({ onClose }: { onClose: () => void }) {
 
   const left = code ? Math.max(0, Math.round((code.expiresAt - now) / 1000)) : 0;
   const expired = !!code && left === 0;
+  const copy = async () => {
+    if (!code) return;
+    try {
+      await navigator.clipboard.writeText(code.code);
+      setCopyStatus("Code copied.");
+    } catch {
+      setCopyStatus("Could not copy. Select the code and copy it manually.");
+    }
+  };
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-base">On the other device, open 99ile, then Settings, Sync between devices, and tap “I use 99ile on another device”. Scan this code, or type it.</p>
-      {error && <p className="text-base text-danger" role="alert">{error}</p>}
-      {code && !expired && (
-        <div className="flex flex-col items-start gap-3">
-          <Suspense fallback={<div className="size-52 rounded-md bg-muted" />}>
-            <LinkQR url={linkUrl(location.origin, import.meta.env.BASE_URL, code.code.replace("-", ""))} label={"QR code for link code " + code.code} />
-          </Suspense>
-          <p className="select-all text-2xl font-semibold tracking-wider tabular-nums">{code.code}</p>
-          <p className="text-base text-muted-foreground" role="timer">Works for {Math.floor(left / 60)}:{String(left % 60).padStart(2, "0")} more, once.</p>
+      <div className="grid gap-4 rounded-xl bg-muted p-4 sm:grid-cols-2 sm:items-center sm:gap-6 sm:p-6">
+        <div className="flex min-h-60 flex-col items-center justify-center gap-3 rounded-lg bg-card p-4">
+          {code && !expired ? (
+            <Suspense fallback={<div className="size-48 animate-pulse rounded-md bg-muted sm:size-56" aria-label="Loading QR code" />}>
+              <LinkQR url={linkUrl(location.origin, import.meta.env.BASE_URL, code.code.replace("-", ""))} label={"QR code for link code " + code.code} />
+            </Suspense>
+          ) : (
+            <div className="flex min-h-48 items-center justify-center text-center text-base text-muted-foreground sm:min-h-56">
+              {expired ? "This code has expired." : error ? "QR code unavailable." : "Getting a secure link code…"}
+            </div>
+          )}
+          {code && !expired && <p className="text-sm text-muted-foreground" role="timer">Expires in {Math.floor(left / 60)}:{String(left % 60).padStart(2, "0")} · works once</p>}
         </div>
-      )}
-      {expired && <p className="text-base">This code has expired.</p>}
+
+        <div className="flex min-w-0 flex-col items-start gap-4">
+          <div className="flex flex-col gap-2">
+            <h3 className="text-heading font-semibold">Scan with your other device</h3>
+            <p className="text-base text-muted-foreground">On that device, open Settings → Sync between devices → “I use 99ile on another device”, then scan this QR code.</p>
+          </div>
+          <div className="flex w-full flex-col gap-2">
+            <p className="text-base font-medium">Or type this code</p>
+            <div className="flex flex-wrap items-center gap-3">
+              <p className="select-all text-2xl font-semibold tracking-wider tabular-nums" aria-label={code ? "Link code " + code.code.split("").join(" ") : undefined}>
+                {code && !expired ? code.code : "—"}
+              </p>
+              {code && !expired && <Button variant="outline" size="sm" className="cursor-pointer" onClick={copy}>Copy code</Button>}
+            </div>
+            {copyStatus && <p className="text-sm text-muted-foreground" role="status">{copyStatus}</p>}
+          </div>
+          {error && <p className="text-base text-danger" role="alert">{error}</p>}
+        </div>
+      </div>
       <div className="flex flex-wrap gap-3">
-        {(expired || error) && <Button variant="secondary" onClick={fresh}>New code</Button>}
-        <Button variant="ghost" onClick={onClose}>Done</Button>
+        {(expired || error) && <Button variant="secondary" className="cursor-pointer" onClick={fresh}>New code</Button>}
+        <Button variant="ghost" className="cursor-pointer" onClick={onClose}>Done</Button>
       </div>
     </div>
   );
