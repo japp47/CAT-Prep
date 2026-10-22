@@ -111,7 +111,7 @@ export default function Settings() {
       <Confirm open={ask === "wipe"} onOpenChange={(o) => !o && setAsk(null)} title={syncOn ? "Delete all your data on this device?" : "Delete all your data?"} action={syncOn ? "Delete from this device" : "Delete everything"} cancel="Cancel" danger
         onAction={() => {
           // Sync turns off first, so the wipe is never pushed as deletions to the other devices.
-          if (syncOn) { saveLedger({ ...loadLedger(), on: false }); disable(); }
+          if (syncOn) { saveLedger({ ...loadLedger(), on: false }); void disable(); }
           replace(blankState());
           setMsg({ ok: true, text: syncOn ? "All data cleared on this device. Sync is off here; your other devices keep everything." : "All data cleared." });
           setAsk(null);

@@ -26,3 +26,19 @@ func TestAllowCountsPerKeyAndWindow(t *testing.T) {
 		t.Fatal("a new window starts again")
 	}
 }
+
+func TestOverAndReset(t *testing.T) {
+	l := New(2, time.Hour)
+	l.Allow("a")
+	if l.Over("a") {
+		t.Fatal("one of two used")
+	}
+	l.Allow("a")
+	if !l.Over("a") {
+		t.Fatal("two of two used")
+	}
+	l.Reset("a")
+	if l.Over("a") {
+		t.Fatal("reset")
+	}
+}

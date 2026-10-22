@@ -59,15 +59,23 @@ func apiServer(t *testing.T, opt syncapi.Options) (*httptest.Server, *pgxpool.Po
 
 // device is one browser: its own cookie jar.
 type device struct {
-	t   *testing.T
-	srv *httptest.Server
-	c   *http.Client
-	ID  struct{ IdentityID, DeviceID string }
+	t        *testing.T
+	srv      *httptest.Server
+	c        *http.Client
+	ID       struct{ IdentityID, DeviceID string }
+	Recovery string
 }
 
 func newDevice(t *testing.T, srv *httptest.Server) *device {
 	jar, _ := cookiejar.New(nil)
 	return &device{t: t, srv: srv, c: &http.Client{Transport: srv.Client().Transport, Jar: jar}}
+}
+
+func decodeJSON(t *testing.T, resp *http.Response, out any) {
+	t.Helper()
+	if err := json.NewDecoder(resp.Body).Decode(out); err != nil {
+		t.Fatal(err)
+	}
 }
 
 func (d *device) call(path string, body, out any) int {
@@ -85,17 +93,30 @@ func (d *device) call(path string, body, out any) int {
 }
 
 func (d *device) turnOn() *device {
-	if code := d.call("/v1/identity", map[string]string{"label": "Test", "platform": "mac"}, &d.ID); code != http.StatusCreated {
+	var out struct{ IdentityID, DeviceID, RecoveryCode string }
+	if code := d.call("/v1/identity", map[string]string{"label": "Test", "platform": "mac"}, &out); code != http.StatusCreated {
 		d.t.Fatalf("turn on: %d", code)
+	}
+	d.ID.IdentityID, d.ID.DeviceID, d.Recovery = out.IdentityID, out.DeviceID, out.RecoveryCode
+	return d
+}
+
+// linkTo joins this browser to from's identity with a link code, as scanning the QR does.
+func (d *device) linkTo(from *device) *device {
+	d.t.Helper()
+	if code := d.call("/v1/identity/link", map[string]string{"code": from.linkCode()}, &d.ID); code != http.StatusCreated {
+		d.t.Fatalf("link: %d", code)
 	}
 	return d
 }
 
-func (d *device) join(identity string) *device {
-	if code := d.call("/v1/dev/join", map[string]string{"identityId": identity}, &d.ID); code != http.StatusCreated {
-		d.t.Fatalf("join: %d", code)
+func (d *device) linkCode() string {
+	d.t.Helper()
+	var out struct{ Code string }
+	if code := d.call("/v1/identity/link-codes", nil, &out); code != http.StatusCreated {
+		d.t.Fatalf("link code: %d", code)
 	}
-	return d
+	return out.Code
 }
 
 type pushResp struct {
@@ -169,7 +190,7 @@ func TestPushTwiceIsOneRowAndOneRev(t *testing.T) {
 func TestStaleBaseRevReturnsTheServerCopy(t *testing.T) {
 	srv, _ := apiServer(t, testOpts)
 	a := newDevice(t, srv).turnOn()
-	b := newDevice(t, srv).join(a.ID.IdentityID)
+	b := newDevice(t, srv).linkTo(a)
 	r1, _ := a.push(change("set1", `{"v":1}`, 0))
 	rev1 := r1.Applied[0].Rev
 	r2, _ := a.push(change("set1", `{"v":2}`, rev1))
@@ -191,7 +212,7 @@ func TestStaleBaseRevReturnsTheServerCopy(t *testing.T) {
 func TestPullReturnsOnlyNewerRowsOfThisIdentity(t *testing.T) {
 	srv, _ := apiServer(t, testOpts)
 	a := newDevice(t, srv).turnOn()
-	b := newDevice(t, srv).join(a.ID.IdentityID)
+	b := newDevice(t, srv).linkTo(a)
 	other := newDevice(t, srv).turnOn()
 	other.push(change("theirs", `{"x":1}`, 0))
 
@@ -274,8 +295,8 @@ func TestLimitPerIdentity(t *testing.T) {
 func TestConcurrentPushesNeverHideARowFromAPuller(t *testing.T) {
 	srv, _ := apiServer(t, syncapi.Options{Kinds: []string{"rc"}, MaxRecords: 1000, MaxBytes: 1 << 20, PerMinute: 100_000})
 	a := newDevice(t, srv).turnOn()
-	b := newDevice(t, srv).join(a.ID.IdentityID)
-	c := newDevice(t, srv).join(a.ID.IdentityID)
+	b := newDevice(t, srv).linkTo(a)
+	c := newDevice(t, srv).linkTo(a)
 
 	const each = 40
 	var wg sync.WaitGroup

@@ -1,6 +1,7 @@
 import { createContext, use, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { whenIdle } from "./idle";
-import { loadState, normalize, saveState, STORAGE_KEY, type AppState } from "./state";
+import { STORAGE_KEY, type AppState } from "./state";
+import { commit, fromOtherTab, loadTracked, merge3 } from "./tabs";
 
 interface Store {
   state: AppState;
@@ -22,22 +23,34 @@ function afterSave(st: AppState) {
 }
 
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<AppState>(loadState);
+  const [state, setState] = useState<AppState>(loadTracked);
   const [saved, setSaved] = useState(true);
-  const fromOtherTab = useRef(false);
+  // The state object known to be in storage already: never saved twice. See lib/tabs.ts for how two tabs save.
+  const stored = useRef<AppState>(state);
 
   useEffect(() => {
-    if (fromOtherTab.current) { fromOtherTab.current = false; return; }
-    const ok = saveState(state);
-    setSaved(ok);
-    if (ok) afterSave(state);
+    if (state === stored.current) return;
+    const res = commit(state);
+    setSaved(res.ok);
+    const final = res.merged ?? state;
+    stored.current = final;
+    // Another tab saved first: show the merged state, keeping any edit made here since (rebased onto it).
+    if (res.merged) setState((prev) => (prev === state ? res.merged! : merge3(state, prev, res.merged!)));
+    if (res.ok) afterSave(final);
   }, [state]);
 
-  // Keep two open tabs in step.
+  // Keep two open tabs in step: take the other tab's save, merged with anything not yet saved here.
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
       if (e.key !== STORAGE_KEY || !e.newValue) return;
-      try { fromOtherTab.current = true; setState(normalize(JSON.parse(e.newValue))); } catch { /* ignore */ }
+      const raw = e.newValue;
+      try {
+        setState((prev) => {
+          const r = fromOtherTab(prev, raw);
+          if (!r.needsSave) stored.current = r.st;
+          return r.st;
+        });
+      } catch { /* ignore a value we cannot read */ }
     };
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
