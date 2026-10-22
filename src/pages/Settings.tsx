@@ -1,4 +1,4 @@
-import { lazy, Suspense, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -16,14 +16,22 @@ import { useStore } from "../lib/store";
 import { blankState, normalize } from "../lib/state";
 import { Confirm } from "./practice/common";
 import { API_ENABLED } from "../lib/api";
+import { loadLedger, saveLedger, timeOf } from "../lib/sync/ledger";
+import { mergeBackup } from "../lib/sync/records";
+import { disable } from "../lib/sync/runner";
 
-// Sync is only in builds with the API on (B2 testing); the card and its code are never loaded otherwise.
+// Sync is only in builds with the API on; the card and its code are never loaded otherwise, and every use of the
+// ledger below sits behind API_ENABLED, so production builds drop it.
 const SyncCard = API_ENABLED ? lazy(() => import("../components/SyncCard")) : null;
 
 const Panel = ({ children }: { children: React.ReactNode }) => <div className="flex flex-col gap-4 rounded-lg bg-card p-5 sm:p-6">{children}</div>;
 
 export default function Settings() {
-  const { state, replace, saved } = useStore();
+  const { state, replace, transform, saved } = useStore();
+  const [, rerender] = useState(0);
+  const refresh = useCallback(() => rerender((n) => n + 1), []);
+  // While sync is on, restoring merges and deleting stays on this device (docs/architecture.md §6.3a).
+  const syncOn = API_ENABLED && loadLedger().on;
   const [theme, setTheme] = useTheme();
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [ask, setAsk] = useState<"restore" | "wipe" | null>(null);
@@ -55,7 +63,7 @@ export default function Settings() {
 
   return (
     <Page width="read">
-      <PageHeader title="Settings and backup">Everything you enter is saved in this browser only. Nothing is sent to a server.</PageHeader>
+      <PageHeader title="Settings and backup">{syncOn ? "Saved in this browser and synced to your other devices." : "Everything you enter is saved in this browser only. Nothing is sent to a server."}</PageHeader>
       {!saved && <p className="rounded-lg bg-warning-soft px-5 py-4 text-base">This browser is blocking storage, so changes will be lost when you close the tab. Turn off private browsing or allow site data.</p>}
 
       <Section title="Appearance">
@@ -83,19 +91,32 @@ export default function Settings() {
         <KeepHint />
       </Section>
 
-      {SyncCard && <Suspense fallback={null}><SyncCard /></Suspense>}
+      {SyncCard && <Suspense fallback={null}><SyncCard onChange={refresh} /></Suspense>}
 
       <Section title="Start over" description="Deletes your time settings, ticks, logs and words from this browser. Download a backup first if you might want them back.">
         <div><Button variant="destructive" onClick={() => setAsk("wipe")}>Delete all my data</Button></div>
       </Section>
 
-      <Confirm open={ask === "restore"} onOpenChange={(o) => !o && setAsk(null)} title="Restore this backup?" action="Replace my data" cancel="Cancel"
-        onAction={() => { replace(normalize(pending.current)); setMsg({ ok: true, text: "Backup restored." }); setAsk(null); }}>
-        Everything in this browser is replaced with the backup.
-      </Confirm>
-      <Confirm open={ask === "wipe"} onOpenChange={(o) => !o && setAsk(null)} title="Delete all your data?" action="Delete everything" cancel="Cancel" danger
-        onAction={() => { replace(blankState()); setMsg({ ok: true, text: "All data cleared." }); setAsk(null); }}>
-        This removes everything from this browser and cannot be undone.
+      {syncOn ? (
+        <Confirm open={ask === "restore"} onOpenChange={(o) => !o && setAsk(null)} title="Add this backup to your progress?" action="Add to my progress" cancel="Cancel"
+          onAction={() => { const raw = pending.current; transform((prev) => mergeBackup(prev, raw, timeOf(loadLedger()))); setMsg({ ok: true, text: "Backup added. Nothing was removed, and it syncs to your other devices." }); setAsk(null); }}>
+          Sync is on, so the backup is added to what you have instead of replacing it. Nothing is removed on any device.
+        </Confirm>
+      ) : (
+        <Confirm open={ask === "restore"} onOpenChange={(o) => !o && setAsk(null)} title="Restore this backup?" action="Replace my data" cancel="Cancel"
+          onAction={() => { replace(normalize(pending.current)); setMsg({ ok: true, text: "Backup restored." }); setAsk(null); }}>
+          Everything in this browser is replaced with the backup.
+        </Confirm>
+      )}
+      <Confirm open={ask === "wipe"} onOpenChange={(o) => !o && setAsk(null)} title={syncOn ? "Delete all your data on this device?" : "Delete all your data?"} action={syncOn ? "Delete from this device" : "Delete everything"} cancel="Cancel" danger
+        onAction={() => {
+          // Sync turns off first, so the wipe is never pushed as deletions to the other devices.
+          if (syncOn) { saveLedger({ ...loadLedger(), on: false }); disable(); }
+          replace(blankState());
+          setMsg({ ok: true, text: syncOn ? "All data cleared on this device. Sync is off here; your other devices keep everything." : "All data cleared." });
+          setAsk(null);
+        }}>
+        {syncOn ? "This removes everything from this browser and turns sync off here. Your other devices keep their progress." : "This removes everything from this browser and cannot be undone."}
       </Confirm>
     </Page>
   );

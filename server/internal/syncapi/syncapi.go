@@ -30,7 +30,7 @@ import (
 const (
 	PageSize   = 500    // records per pull
 	MaxChanges = 200    // records per push
-	MaxData    = 16_384 // bytes of JSON per record, as the database checks
+	MaxData    = 16_384 // bytes of JSON per record as the browser sends it (stored jsonb may be up to twice that)
 )
 
 // Options are the per-identity limits and the kinds this build accepts.
@@ -85,6 +85,14 @@ type Applied struct {
 	Kind string `json:"kind"`
 	ID   string `json:"id"`
 	Rev  int64  `json:"rev"`
+}
+
+// Rejected is a change the server will not store, with why. The rest of the push still applies, so one bad record
+// never holds the others back.
+type Rejected struct {
+	Kind string `json:"kind"`
+	ID   string `json:"id"`
+	Code string `json:"code"`
 }
 
 // PullHandler answers with this identity's records written after the cursor, oldest first, a page at a time.
@@ -152,7 +160,7 @@ func (s *Service) PushHandler() http.Handler {
 			httpx.WriteError(w, http.StatusBadRequest, code, msg)
 			return
 		}
-		applied, stale := []Applied{}, []Record{}
+		applied, stale, rejected := []Applied{}, []Record{}, []Rejected{}
 		err := pgx.BeginFunc(r.Context(), s.db, func(tx pgx.Tx) error {
 			var head struct {
 				rev, count, bytes int64
@@ -163,6 +171,10 @@ func (s *Service) PushHandler() http.Handler {
 			}
 			wrote := false
 			for _, c := range req.Changes {
+				if why := s.rejectReason(c); why != "" {
+					rejected = append(rejected, Rejected{c.Kind, c.ID, why})
+					continue
+				}
 				var (
 					cur  Record
 					size int64
@@ -174,6 +186,12 @@ func (s *Service) PushHandler() http.Handler {
 					d.IdentityID, c.Kind, c.ID, jsonArg(c.Data), c.Deleted).Scan(&cur.Data, &cur.Deleted, &cur.Stamp, &cur.Rev, &size, &same)
 				switch {
 				case errors.Is(err, pgx.ErrNoRows):
+					// A new row must fit the identity's limits; updates and deletions always may go through,
+					// so a full identity can still make room.
+					if head.count+1 > int64(s.opt.MaxRecords) || head.bytes+int64(len(c.Data)) > s.opt.MaxBytes {
+						rejected = append(rejected, Rejected{c.Kind, c.ID, "over_limit"})
+						continue
+					}
 					var rev, n int64
 					if err := tx.QueryRow(r.Context(), `
 						insert into sync.records (identity_id, kind, rec_id, data, deleted, stamp, device_id)
@@ -191,6 +209,10 @@ func (s *Service) PushHandler() http.Handler {
 				case same:
 					applied = append(applied, Applied{c.Kind, c.ID, cur.Rev})
 				case cur.Rev == c.BaseRev:
+					if grow := int64(len(c.Data)) - size; grow > 0 && head.bytes+grow > s.opt.MaxBytes {
+						rejected = append(rejected, Rejected{c.Kind, c.ID, "over_limit"})
+						continue
+					}
 					var rev, n int64
 					if err := tx.QueryRow(r.Context(), `
 						update sync.records set data = $4::jsonb, deleted = $5, stamp = $6, device_id = $7, rev = nextval('sync.rev')
@@ -207,9 +229,6 @@ func (s *Service) PushHandler() http.Handler {
 					stale = append(stale, cur)
 				}
 			}
-			if head.count > int64(s.opt.MaxRecords) || head.bytes > s.opt.MaxBytes {
-				return errOverLimit
-			}
 			if wrote {
 				if _, err := tx.Exec(r.Context(), `update sync.heads set rev = $2, record_count = $3, data_bytes = $4 where identity_id = $1`,
 					d.IdentityID, head.rev, head.count, head.bytes); err != nil {
@@ -218,21 +237,21 @@ func (s *Service) PushHandler() http.Handler {
 			}
 			return nil
 		})
-		if errors.Is(err, errOverLimit) {
-			s.reject(r, d, "over_limit")
-			httpx.WriteError(w, http.StatusRequestEntityTooLarge, "over_limit", "This progress has grown past what sync can hold. It is still on this device.")
-			return
-		}
 		if err != nil {
 			s.fail(w, r, fmt.Errorf("push: %w", err))
 			return
 		}
+		if len(rejected) > 0 {
+			codes := map[string]int{}
+			for _, x := range rejected {
+				codes[x.Code]++
+			}
+			s.reject(r, d, codes)
+		}
 		s.touch(r, d)
-		httpx.WriteJSON(w, http.StatusOK, map[string]any{"applied": applied, "stale": stale})
+		httpx.WriteJSON(w, http.StatusOK, map[string]any{"applied": applied, "stale": stale, "rejected": rejected})
 	})
 }
-
-var errOverLimit = errors.New("identity over its sync limit")
 
 // check validates a push before it touches the database. It returns an error code and message, or "".
 func (s *Service) check(changes []Change) (string, string) {
@@ -242,12 +261,6 @@ func (s *Service) check(changes []Change) (string, string) {
 	seen := map[string]bool{}
 	for i := range changes {
 		c := &changes[i]
-		if !s.kinds[c.Kind] {
-			return "unknown_kind", "This kind of progress cannot be synced yet."
-		}
-		if l := len(c.ID); l == 0 || l > 200 {
-			return "bad_request", "A record id is missing or too long."
-		}
 		if k := c.Kind + ":" + c.ID; seen[k] {
 			return "bad_request", "The same record was sent twice."
 		} else {
@@ -259,14 +272,24 @@ func (s *Service) check(changes []Change) (string, string) {
 		if c.Deleted != (c.Data == nil) {
 			return "bad_request", "A record must have data unless it is deleted."
 		}
-		if len(c.Data) > MaxData {
-			return "record_too_big", "One record is too big to sync."
-		}
 		if c.Stamp <= 0 || c.BaseRev < 0 {
 			return "bad_request", "A record has a bad stamp or base rev."
 		}
 	}
 	return "", ""
+}
+
+// rejectReason says why one change cannot be stored, or "". These are refused one by one, never the whole push.
+func (s *Service) rejectReason(c Change) string {
+	switch {
+	case !s.kinds[c.Kind] || len(c.Kind) > 24:
+		return "unknown_kind"
+	case len(c.ID) == 0 || len(c.ID) > 200:
+		return "bad_id"
+	case len(c.Data) > MaxData:
+		return "record_too_big"
+	}
+	return ""
 }
 
 // allow applies the per-device rate limit.
@@ -290,7 +313,8 @@ func (s *Service) touch(r *http.Request, d account.Device) {
 	}
 }
 
-func (s *Service) reject(r *http.Request, d account.Device, reason string) {
+// reject writes one sync.rejected event: a reason, or counts of rejected rows by code.
+func (s *Service) reject(r *http.Request, d account.Device, reason any) {
 	h, k := s.hash.Hash(reqinfo.IP(r.Context()))
 	e := audit.Event{
 		Action: "sync.rejected", ActorType: audit.Device, ActorIdentity: d.IdentityID, ActorDevice: d.DeviceID, SubjectIdentity: d.IdentityID,

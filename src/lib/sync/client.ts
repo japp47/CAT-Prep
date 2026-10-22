@@ -1,7 +1,7 @@
 import type { ApiResult, CallOptions } from "../api";
 import type { AppState } from "../state";
 import { dirty, hash, receive, records, track, type Ledger, type Row } from "./ledger";
-import { parseKey, recKey, toRecords, type Kind, type SyncRecord } from "./records";
+import { KINDS, parseKey, recKey, toRecords, type Kind, type SyncRecord } from "./records";
 
 /**
  * One sync round (docs/architecture.md §6.2): pull what the server has after the cursor and merge it in by kind,
@@ -9,8 +9,8 @@ import { parseKey, recKey, toRecords, type Kind, type SyncRecord } from "./recor
  * through `SyncIO`, so tests run it against a fake server.
  */
 
-/** Kinds this build syncs. B2 proves the path with RC attempts; B3 adds the rest. */
-export const SYNC_KINDS: ReadonlySet<Kind> = new Set<Kind>(["rc"]);
+/** Kinds this build syncs: all of them (docs/architecture.md §6.1). The server's allow-list matches (a Go test checks). */
+export const SYNC_KINDS: ReadonlySet<Kind> = new Set<Kind>(KINDS);
 
 export interface SyncIO {
   call: <T>(path: string, body?: unknown, opts?: CallOptions) => Promise<ApiResult<T>>;
@@ -21,17 +21,37 @@ export interface SyncIO {
   load: () => Ledger;
   save: (L: Ledger) => void;
   now: () => number;
+  /** Told how far a long push has got, for "Copying your progress… 340 of 1,200". */
+  progress?: (done: number, total: number) => void;
 }
 
 /** A record as the API sends it. */
 export interface WireRecord { kind: Kind; id: string; data: unknown; deleted: boolean; stamp: number; rev: number }
 interface PullAnswer { cursor: number; records: WireRecord[]; more: boolean }
-interface PushAnswer { applied: { kind: Kind; id: string; rev: number }[]; stale: WireRecord[] }
+interface PushAnswer { applied: { kind: Kind; id: string; rev: number }[]; stale: WireRecord[]; rejected?: { kind: Kind; id: string; code: string }[] }
 export interface Who { identityId: string; deviceId: string }
 
 export type Outcome = { ok: true } | { ok: false; code: string; message: string; status: number };
 
 const PUSH_ROWS = 200;
+const BAD_ANSWER: Outcome = { ok: false, status: 200, code: "bad_answer", message: "The server sent something unexpected. Your progress is safe on this device." };
+
+/** A row the server refused at this content is marked so (row[3] = "!" + hash) and skipped until it changes. */
+const refused = (row: Row) => row[3] === "!" + row[0];
+
+const isRecord = (r: unknown): r is WireRecord => {
+  const x = r as WireRecord;
+  return !!x && typeof x.kind === "string" && typeof x.id === "string" && typeof x.rev === "number" && typeof x.stamp === "number" && typeof x.deleted === "boolean";
+};
+const isList = <T,>(x: unknown, ok: (v: unknown) => v is T): x is T[] => Array.isArray(x) && x.every(ok);
+const isApplied = (a: unknown): a is { kind: Kind; id: string; rev: number } => {
+  const x = a as { kind: unknown; id: unknown; rev: unknown };
+  return !!x && typeof x.kind === "string" && typeof x.id === "string" && typeof x.rev === "number";
+};
+const isRefusal = (a: unknown): a is { kind: Kind; id: string; code: string } => {
+  const x = a as { kind: unknown; id: unknown; code: unknown };
+  return !!x && typeof x.kind === "string" && typeof x.id === "string" && typeof x.code === "string";
+};
 const PUSH_BYTES = 48_000; // under the server's 64 KB body cap, and under fetch keepalive's limit
 
 /** JSON with sorted keys: Postgres stores JSON with its own key order, so equal records must compare equal. */
@@ -66,6 +86,7 @@ async function pull(io: SyncIO, opts: CallOptions): Promise<Outcome> {
   for (let page = 0; page < 200; page++) {
     const res = await io.call<PullAnswer>("/sync/pull", { cursor: io.load().cursor }, opts);
     if (!res.ok) return res;
+    if (!res.data || typeof res.data.cursor !== "number" || !isList(res.data.records, isRecord)) return BAD_ANSWER;
     if (res.data.records.length) await take(io, res.data.records, res.data.cursor);
     if (!res.data.more) return { ok: true };
   }
@@ -74,7 +95,7 @@ async function pull(io: SyncIO, opts: CallOptions): Promise<Outcome> {
 
 /** Picks the dirty rows of the synced kinds that fit in one push. */
 function batch(L: Ledger, st: AppState) {
-  const keys = dirty(L).filter((k) => SYNC_KINDS.has(parseKey(k).kind));
+  const keys = dirty(L).filter((k) => SYNC_KINDS.has(parseKey(k).kind) && !refused(L.rows[k]));
   const changes: { kind: Kind; id: string; data: unknown; deleted: boolean; stamp: number; baseRev: number }[] = [];
   const sent = new Map<string, string>();
   let bytes = 0;
@@ -89,22 +110,41 @@ function batch(L: Ledger, st: AppState) {
   return { changes, sent };
 }
 
+/**
+ * Pushes in batches of up to 200 until nothing is dirty. Stops early if the server takes nothing from a batch, so
+ * a row it keeps refusing cannot loop.
+ */
 async function push(io: SyncIO, opts: CallOptions): Promise<Outcome> {
-  for (let round = 0; round < 10; round++) {
+  // `onlyStale` counts pushes in a row where another device won every row: after three, the round ends and the
+  // rows wait for the next round instead of racing a busy device.
+  let total = 0, done = 0, onlyStale = 0;
+  for (let round = 0; round < 1000; round++) {
     const st = io.getState();
     const L = track(io.load(), st, io.now());
     io.save(L);
     const { changes, sent } = batch(L, st);
     if (!changes.length) return { ok: true };
+    total = Math.max(total, done + changes.length + dirty(L).filter((k) => SYNC_KINDS.has(parseKey(k).kind) && !refused(L.rows[k]) && !sent.has(k)).length);
+    if (total > PUSH_ROWS) io.progress?.(done, total);
     const res = await io.call<PushAnswer>("/sync/push", { changes }, opts);
     if (!res.ok) return res;
+    const ans = res.data;
+    if (!ans || !isList(ans.applied, isApplied) || !isList(ans.stale, isRecord) || (ans.rejected !== undefined && !isList(ans.rejected, isRefusal))) return BAD_ANSWER;
     const after = io.load();
-    res.data.applied.forEach((a) => {
+    ans.applied.forEach((a) => {
       const k = recKey(a), row = after.rows[k];
       if (row) after.rows[k] = [row[0], row[1], a.rev, sent.get(k) ?? row[3]];
     });
+    (ans.rejected ?? []).forEach((x) => {
+      const k = recKey(x), row = after.rows[k];
+      if (row && row[0] === sent.get(k)) after.rows[k] = [row[0], row[1], row[2], "!" + row[0]];
+    });
     io.save(after);
-    if (res.data.stale.length) await take(io, res.data.stale);
+    done += ans.applied.length;
+    if (!ans.applied.length && !ans.stale.length) return { ok: true };
+    onlyStale = ans.applied.length ? 0 : onlyStale + 1;
+    if (ans.stale.length) await take(io, ans.stale);
+    if (onlyStale >= 3) return { ok: true };
   }
   return { ok: true };
 }
@@ -112,8 +152,13 @@ async function push(io: SyncIO, opts: CallOptions): Promise<Outcome> {
 /** One round: pull, merge, push. A 401 means this device was removed: sync turns off here, the data stays. */
 export async function round(io: SyncIO, opts: CallOptions = {}): Promise<Outcome> {
   if (!io.load().on) return { ok: true };
-  const pulled = await pull(io, opts);
-  const out = pulled.ok ? await push(io, opts) : pulled;
+  let out: Outcome;
+  try {
+    const pulled = await pull(io, opts);
+    out = pulled.ok ? await push(io, opts) : pulled;
+  } catch {
+    out = { ok: false, status: 0, code: "client_error", message: "Sync stopped on an error. It will try again later; your progress is safe on this device." };
+  }
   const L = io.load();
   if (!out.ok && out.status === 401) L.on = false;
   if (out.ok) L.last = io.now();

@@ -55,13 +55,25 @@ export function syncNow(force = false, keepalive = false): Promise<Outcome> | nu
   if (running) { again = true; return running; }
   clearTimeout(timer);
   set(fromLedger({ phase: "syncing" }));
-  running = round(io, { keepalive }).then((out) => {
+  // Never left hanging: whatever happens inside, the round ends, the status is set and the next one can run.
+  const x = io;
+  const work = oneTab(() => round(x, { keepalive })).catch((): Outcome => ({ ok: false, status: 0, code: "client_error", message: "Sync stopped on an error. It will try again later." }));
+  running = work.then((out) => {
     running = null;
     finish(out);
     if (again) { again = false; void syncNow(); }
     return out;
   });
   return running;
+}
+
+/**
+ * Two tabs of one browser share the ledger, so only one may run a round at a time: the Web Locks API queues the
+ * other. Browsers without it (very old ones) run unguarded, as before.
+ */
+function oneTab<T>(f: () => Promise<T>): Promise<T> {
+  const locks = (globalThis.navigator as Navigator | undefined)?.locks;
+  return locks ? locks.request("99ile-sync", f) as Promise<T> : f();
 }
 
 /** Called after every saved change: a round 30 s after the last one. */
@@ -73,8 +85,9 @@ export function poke() {
 
 /** Starts listening. Returns a function that stops. */
 export function start(next: SyncIO): () => void {
-  io = next;
-  arrived(next);
+  const n = new Intl.NumberFormat("en-IN");
+  io = { ...next, progress: (done, total) => set({ ...status, phase: "syncing", message: `Copying your progress… ${n.format(done)} of ${n.format(total)}` }) };
+  arrived(io);
   set(fromLedger());
   const online = () => void syncNow(true);
   const hidden = () => { if (document.visibilityState === "hidden") void syncNow(false, true); };
@@ -100,7 +113,7 @@ async function begin(f: (io: SyncIO) => Promise<Outcome>): Promise<Outcome> {
   const x = io ?? await Promise.race([ready, new Promise<null>((done) => setTimeout(() => done(null), 15_000))]);
   if (!x) { set({ ...status, phase: "off" }); return { ok: false, status: 0, code: "not_ready", message: "Sync could not start. Reload the page and try again." }; }
   failures = 0; retryAt = 0;
-  const out = await f(x);
+  const out = await oneTab(() => f(x)).catch((): Outcome => ({ ok: false, status: 0, code: "client_error", message: "Sync stopped on an error. Try again." }));
   finish(out);
   return out;
 }
