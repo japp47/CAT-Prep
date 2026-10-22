@@ -3,6 +3,7 @@
 package config
 
 import (
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"log/slog"
@@ -25,6 +26,13 @@ type Config struct {
 	AllowedOrigin string
 	// LogLevel is debug, info, warn or error.
 	LogLevel slog.Level
+	// ProxySecret is shared with the Cloudflare Pages proxy (functions/api). When set, /v1 requests must carry it
+	// in X-Proxy-Secret, and only then is the student's address taken from X-Client-Ip. Required in prod for /v1.
+	ProxySecret string
+	// IPHashKey keys the HMAC that turns an address into audit.events.ip_hash (D16); IPKeyID says which yearly
+	// key it is. Required in prod for /v1; in dev a random key is made at start (IPKeyID 0).
+	IPHashKey []byte
+	IPKeyID   int16
 	// Commit is the Git commit this build came from. Render sets RENDER_GIT_COMMIT; "dev" elsewhere.
 	// /healthz reports it, so the deploy workflow can tell when the new version is live.
 	Commit string
@@ -32,6 +40,10 @@ type Config struct {
 
 // Prod reports whether this is the live server.
 func (c Config) Prod() bool { return c.Env == "prod" }
+
+// SyncReady reports whether the /v1 API may serve students. In prod it needs the proxy secret and the IP hash
+// key; until both are set on Render, /v1 answers 503 and the rest of the server works as before.
+func (c Config) SyncReady() bool { return !c.Prod() || (c.ProxySecret != "" && len(c.IPHashKey) > 0) }
 
 // Load reads the configuration from the process environment.
 func Load() (Config, error) { return load(os.Getenv) }
@@ -69,6 +81,23 @@ func load(get func(string) string) (Config, error) {
 	if err := c.LogLevel.UnmarshalText([]byte(or(get("LOG_LEVEL"), "info"))); err != nil {
 		errs = append(errs, fmt.Errorf("LOG_LEVEL must be debug, info, warn or error, got %q", get("LOG_LEVEL")))
 	}
+	c.ProxySecret = get("PROXY_SECRET")
+	if c.ProxySecret != "" && len(c.ProxySecret) < 32 {
+		errs = append(errs, errors.New("PROXY_SECRET must be at least 32 characters (openssl rand -hex 32)"))
+	}
+	if k := get("IP_HASH_KEY"); k != "" {
+		b, err := hex.DecodeString(k)
+		if err != nil || len(b) < 32 {
+			errs = append(errs, errors.New("IP_HASH_KEY must be at least 32 bytes in hex (openssl rand -hex 32)"))
+		}
+		c.IPHashKey = b
+		id, err := strconv.Atoi(or(get("IP_HASH_KEY_ID"), "1"))
+		if err != nil || id < 1 || id > 32767 {
+			errs = append(errs, fmt.Errorf("IP_HASH_KEY_ID must be a number from 1 to 32767, got %q", get("IP_HASH_KEY_ID")))
+		}
+		c.IPKeyID = int16(id)
+	}
+
 	c.Commit = or(get("RENDER_GIT_COMMIT"), "dev")
 	return c, errors.Join(errs...)
 }

@@ -66,3 +66,29 @@ func TestDatabaseURLMustBePostgres(t *testing.T) {
 		t.Fatalf("err = %v", err)
 	}
 }
+
+func TestSyncNeedsProxySecretAndIPKeyInProd(t *testing.T) {
+	base := map[string]string{"ENV": "prod", "DATABASE_URL": "postgres://x@db/cat", "ALLOWED_ORIGIN": "https://99ile.pages.dev"}
+	c, err := load(env(base))
+	if err != nil || c.SyncReady() {
+		t.Fatalf("prod without secrets: ready=%v err=%v", c.SyncReady(), err)
+	}
+	base["PROXY_SECRET"] = strings.Repeat("s", 32)
+	base["IP_HASH_KEY"] = strings.Repeat("ab", 32)
+	c, err = load(env(base))
+	if err != nil || !c.SyncReady() || c.IPKeyID != 1 || len(c.IPHashKey) != 32 {
+		t.Fatalf("prod with secrets: %+v %v", c, err)
+	}
+	if c, _ := load(env(map[string]string{"DATABASE_URL": "postgres://x@db/cat"})); !c.SyncReady() {
+		t.Error("dev should always serve /v1")
+	}
+}
+
+func TestShortSecretsAreRefused(t *testing.T) {
+	_, err := load(env(map[string]string{"DATABASE_URL": "postgres://x@db/cat", "PROXY_SECRET": "short", "IP_HASH_KEY": "zz"}))
+	for _, want := range []string{"PROXY_SECRET", "IP_HASH_KEY"} {
+		if err == nil || !strings.Contains(err.Error(), want) {
+			t.Errorf("want %s error, got %v", want, err)
+		}
+	}
+}

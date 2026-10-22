@@ -7,6 +7,8 @@ interface Store {
   /** Mutate a copy of the state. The copy is saved to this browser. */
   update: (fn: (draft: AppState) => void) => void;
   replace: (next: AppState) => void;
+  /** Computes the next state from the latest one, after any edit still waiting to be applied (sync merges use it). */
+  transform: (fn: (prev: AppState) => AppState) => void;
   saved: boolean;
 }
 
@@ -49,8 +51,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     });
   }, []);
   const replace = useCallback((next: AppState) => setState(next), []);
+  const transform = useCallback((fn: (prev: AppState) => AppState) => setState(fn), []);
 
-  return <StoreCtx.Provider value={{ state, update, replace, saved }}>{children}</StoreCtx.Provider>;
+  return <StoreCtx.Provider value={{ state, update, replace, transform, saved }}>{children}</StoreCtx.Provider>;
 }
 
 export function useStore(): Store {

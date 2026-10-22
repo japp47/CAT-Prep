@@ -42,5 +42,7 @@ export default defineConfig({
   base: process.env.VITE_BASE || "/",
   plugins: [react(), tailwindcss(), offline()],
   resolve: { alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) } },
+  // npm run dev: /api goes to the Go server (API_TARGET, default :8080), as the Pages Function does in production (functions/api).
+  server: { proxy: { "/api": { target: process.env.API_TARGET || "http://localhost:8080", rewrite: (p) => p.replace(/^\/api/, "") } } },
   test: { environment: "node" },
 });

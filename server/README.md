@@ -1,8 +1,19 @@
 # 99ile API (Go)
 
 The server behind sync. It is optional: the site works fully without it (docs/architecture.md §1).
-Today it has `GET /healthz` (the process is up) and `GET /readyz` (the database answers). Identity and sync
-come in the next branches.
+It has `GET /healthz` (the process is up, and which commit), `GET /readyz` (the database answers) and the
+student API under `/v1` (docs/architecture.md §5, §6):
+
+| Route | What it does |
+|---|---|
+| `POST /v1/identity` | Turns sync on for this browser: a new identity and device, and the `__Host-dev` cookie (5 an hour per address) |
+| `GET /v1/identity` | Which identity and device this browser is |
+| `POST /v1/sync/pull` | `{cursor}` → records written after it, oldest first, 500 a page |
+| `POST /v1/sync/push` | `{changes}` → `applied` and `stale`; at most 200 changes, 16 KB each |
+| `POST /v1/dev/join` | Development only: add this browser to an identity by its id (B4 replaces it with link codes) |
+
+B2 syncs RC attempts only (`SyncKinds` in `cmd/api/main.go`). In prod, `/v1` answers 503 until `PROXY_SECRET` and
+`IP_HASH_KEY` are set, so the live server runs before sync is switched on.
 
 Needs Go 1.27 and Docker.
 
@@ -15,9 +26,13 @@ make run                 # Postgres 17 in Docker (port 5433), migrations as the 
 ```
 
 ```sh
-curl localhost:8080/healthz   # {"status":"ok"}
+curl localhost:8080/healthz   # {"commit":"dev","status":"ok"}
 curl localhost:8080/readyz    # {"status":"ready"}
 ```
+
+To try sync, run the site too (`npm run dev` at the repo root: `.env.development` turns the Sync card on and Vite
+forwards `/api` to `:8080`, or to `API_TARGET`). Open Settings in two browsers (Chrome or Firefox: the cookie is
+`Secure`, which they allow on localhost), turn sync on in one, and paste its progress id into "Join" in the other.
 
 Other commands:
 
@@ -37,6 +52,12 @@ Other commands:
 cmd/api/            the server: settings, database as cat_app, routes, graceful shutdown. Never migrates
 cmd/migrate/        applies migrations as the owner; a separate step before every deploy
 internal/config/    environment variables → Config; every problem reported at once
+internal/account/   turn sync on, the device cookie (only its SHA-256 is stored), Require middleware, dev join
+internal/syncapi/   pull and push: server revs, compare-and-set on baseRev, the per-identity head lock
+internal/audit/     rows for audit.events (append-only for the server)
+internal/reqinfo/   /v1 gate: proxy secret, the student's address, its keyed hash
+internal/ids/       uuid v7 ids
+internal/limit/     in-memory rate limits
 internal/httpx/     JSON and the error shape, router (JSON 404 and 405), middleware:
                     request id, access log, recover, 64 KB body limit, same-origin check
 internal/store/     Postgres pool (pgx), migrations (goose, with a lock for two instances)
@@ -58,6 +79,8 @@ query strings, cookies or headers.
 | `MIGRATE_DATABASE_URL` | none | `cmd/migrate` only, as the owner. Live: a secret used only by the migrate step |
 | `ALLOWED_ORIGIN` | `http://localhost:5173` in dev | The site's origin; other sites cannot change data |
 | `LOG_LEVEL` | `info` | `debug`, `info`, `warn`, `error` |
+| `PROXY_SECRET` | none | Shared with the Pages Function (`functions/api`); 32+ characters. Required in prod for `/v1` |
+| `IP_HASH_KEY`, `IP_HASH_KEY_ID` | random per run in dev | Hex key (32+ bytes) for `audit.events.ip_hash`, and which yearly key it is (default 1). Required in prod for `/v1` |
 | `TEST_DATABASE_URL` | none | Integration tests only. Never point it at real data |
 
 Port 5433 is used because 5432 is often taken by another local Postgres.
