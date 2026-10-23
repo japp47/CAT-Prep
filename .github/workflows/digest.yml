@@ -1,6 +1,7 @@
-# Posts new problem reports to the "Problem reports from students" issue once a day, then marks them seen
-# (server/internal/digest, docs/feature.md F39). GitHub emails the owner on each new comment. The repository is
-# public, so the comment has question ids and counts only; notes stay in the database.
+# Sends new problem reports once a day, then marks them seen (server/internal/digest, docs/feature.md F39):
+# an email with the students' notes to the team's Gmail, and a comment without notes on the public issue
+# "Problem reports from students". The email needs the DIGEST_SMTP_PASSWORD secret (a Gmail app password for
+# DIGEST_SMTP_USER); without it, only the issue is posted.
 name: Problem report digest
 
 on:
@@ -30,3 +31,5 @@ jobs:
           MIGRATE_DATABASE_URL: ${{ secrets.MIGRATE_DATABASE_URL }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+          DIGEST_SMTP_USER: 99ile.team@gmail.com
+          DIGEST_SMTP_PASSWORD: ${{ secrets.DIGEST_SMTP_PASSWORD }}

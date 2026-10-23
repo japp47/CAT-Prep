@@ -1,6 +1,6 @@
 // Package digest tells the owner about new problem reports once a day (docs/feature.md F39, B6b): new reports are
-// grouped by question and posted as a comment on one GitHub issue, then marked seen. The repository is public, so
-// the text carries question ids, kinds and counts only, never what a student wrote.
+// grouped by question, emailed to the team with the students' notes, posted without notes as a comment on one
+// GitHub issue (the repository is public), then marked seen.
 package digest
 
 import (
@@ -21,6 +21,14 @@ type Group struct {
 	First  time.Time
 	Last   time.Time
 	IDs    []int64
+	Notes  []Note // only reports with a note; for the email, never the public issue
+}
+
+// Note is what one student wrote, with when and on which page.
+type Note struct {
+	At   time.Time
+	Page string
+	Text string
 }
 
 // Pending is what the next digest holds: new reports, grouped, and how many seen ones are still not closed.
@@ -38,7 +46,7 @@ func (p Pending) IDs() []int64 {
 	return out
 }
 
-// Load reads the reports waiting for a digest. It runs as the owner, who may read notes, but never selects them.
+// Load reads the reports waiting for a digest, as the owner. Notes are read for the email only.
 func Load(ctx context.Context, db *pgxpool.Pool) (Pending, error) {
 	var p Pending
 	rows, err := db.Query(ctx, `
@@ -59,8 +67,35 @@ func Load(ctx context.Context, db *pgxpool.Pool) (Pending, error) {
 	if err := rows.Err(); err != nil {
 		return p, fmt.Errorf("load reports: %w", err)
 	}
+	if err := loadNotes(ctx, db, &p); err != nil {
+		return p, err
+	}
 	err = db.QueryRow(ctx, `select count(*) from support.feedback where status = 'seen'`).Scan(&p.StillOpen)
 	return p, err
+}
+
+func loadNotes(ctx context.Context, db *pgxpool.Pool, p *Pending) error {
+	at := map[string]int{}
+	for i, g := range p.Groups {
+		at[g.ItemID+"|"+g.Kind] = i
+	}
+	// Only the reports read above: one that arrives in between waits for the next digest, note and all.
+	rows, err := db.Query(ctx, `select item_id, kind, created_at, page, note from support.feedback where id = any($1) and note <> '' order by id`, p.IDs())
+	if err != nil {
+		return fmt.Errorf("load notes: %w", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var item, kind string
+		var n Note
+		if err := rows.Scan(&item, &kind, &n.At, &n.Page, &n.Text); err != nil {
+			return fmt.Errorf("read note: %w", err)
+		}
+		if i, ok := at[item+"|"+kind]; ok {
+			p.Groups[i].Notes = append(p.Groups[i].Notes, n)
+		}
+	}
+	return rows.Err()
 }
 
 // MarkSeen moves the digested reports from new to seen. Only new ones change, so a report closed meanwhile stays closed.

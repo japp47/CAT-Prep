@@ -333,6 +333,14 @@ Decisions this plan assumes (owner to confirm, `docs/analyze.md` §5): **D8** se
 - `.github/workflows/digest.yml`: daily at 09:00 in India, `issues: write`. `make digest-prod` prints today's digest locally (dry run).
 **Tests.** Markdown has no note and groups by question; the GitHub client against a fake server (label exists or not, issue exists or not, an error stops before marking); `Pending` and `MarkSeen` on the test database.
 
+### B6c. Email the digest with notes (F39) — built 23 Oct 2026
+`feat/digest-email` · `feat: email the daily problem report digest with the students' notes`
+- `internal/digest`: `Load` also reads each report's note (only for reports already in the digest); `Email` (plain text, notes indented, link to the issue); `SMTP.Send` (STARTTLS required except to `localhost`, Gmail app password, quoted-printable UTF-8); `Deliver` (issue, then email; marked seen if either worked; the run fails if either failed).
+- `cmd/digest`: either channel may be missing (`DIGEST_SMTP_USER`, `DIGEST_SMTP_PASSWORD`, `DIGEST_TO`), at least one needed; `-dry` prints both texts.
+- Workflow: `DIGEST_SMTP_USER: 99ile.team@gmail.com`, secret `DIGEST_SMTP_PASSWORD`.
+- Clean-up: closed reports deleted a year after closing. Privacy page: a "Problem reports" section, Google and GitHub under "Where it is kept", how long, and what "Delete all my data" does to reports.
+**Tests.** The email has the notes and the issue does not; `Deliver` in all four outcomes; `SMTP.Send` against a fake server on localhost (message readable, Hindi survives, failed login reported, no TLS refused); notes loaded on the test database; the clean-up rule.
+
 ### B7. Google sign-in, with "save this device's progress" (F47, level 3)
 `feat/google-sign-in` · `feat: sign in with Google and save your progress to your account`
 - Migration: `users(id, identity_id unique, email, name, created_at)`, `oauth_identities(provider, subject, user_id)`.

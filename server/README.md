@@ -126,12 +126,22 @@ Actions → Deploy API → Run workflow.
 
 "Report a problem" on a question posts to `POST /v1/feedback` and lands in `support.feedback` (B6).
 
-**How you hear about them.** Every day at 09:00 (India), `.github/workflows/digest.yml` posts the new reports as a
-comment on the GitHub issue "Problem reports from students" (label `problem-reports`; opened the first time) and
-marks them `seen`. GitHub emails you on each comment if you watch the repository (Watch → All activity, or
-Participating once you have commented on the issue). The repository is public, so the comment lists the question,
-the kind of problem and the count, never the student's note. Run it any time from Actions → Problem report digest
-→ Run workflow, or print it without posting: `make digest-prod`.
+**How you hear about them.** Every day at 09:00 (India), `.github/workflows/digest.yml` sends the new reports
+two ways, then marks them `seen`:
+
+- **Email to 99ile.team@gmail.com, with the students' notes.** Sent through Gmail with an app password, stored as
+  the repository secret `DIGEST_SMTP_PASSWORD` (99ile.team account: 2-Step Verification on, then
+  myaccount.google.com → App passwords). Without the secret the email is skipped and the job logs a warning.
+- **A comment on the GitHub issue "Problem reports from students"** (label `problem-reports`; opened the first
+  time). The repository is public, so it lists the question, the kind of problem and the count, never a note.
+
+If one way fails and the other works, the reports are still marked seen and the run shows red, so you notice.
+If both fail, nothing is marked and tomorrow tries again. Run it any time from Actions → Problem report digest →
+Run workflow, or print both texts without sending: `make digest-prod`. Notes are private: keep them out of GitHub.
+
+Closed reports (`fixed`, `wont_fix`) are deleted a year after they were closed by the daily clean-up job. The
+privacy page promises the same for the emails: once a month, search the 99ile.team inbox for
+`from:me subject:"99ile:" older_than:1y` and delete what it finds.
 
 **Reading and closing them.** There is no admin page until B8 (after Google sign-in). Use the Supabase SQL editor
 (it runs as the owner):
