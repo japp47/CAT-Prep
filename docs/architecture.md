@@ -346,6 +346,7 @@ Additions for anonymous identity:
 ## 11. Observability
 - JSON logs with request id, route, status, duration; never bodies or cookies.
 - Render's metrics and logs; cron-job.org calls `/healthz` every 5 minutes (keep-awake) and `/readyz` every hour, and emails on failure.
+- Problem reports reach the owner as a daily comment on one GitHub issue (B6b, `.github/workflows/digest.yml`); the repository is public, so it lists question ids and counts, never notes. An admin page follows B7 (B8).
 - Counters worth a log line: sync pushes and pulls (records, bytes), AI calls (valid, invalid, cached), rate-limit hits.
 
 ## 12. Testing

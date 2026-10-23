@@ -121,3 +121,30 @@ Both print the database host before they start, so you can see where they point.
 Normally you never run them: after CI passes on `main`, `.github/workflows/deploy-api.yml` migrates and then
 deploys, but only when `server/` changed. `/healthz` reports the live commit. To redeploy by hand: GitHub →
 Actions → Deploy API → Run workflow.
+
+## Problem reports
+
+"Report a problem" on a question posts to `POST /v1/feedback` and lands in `support.feedback` (B6).
+
+**How you hear about them.** Every day at 09:00 (India), `.github/workflows/digest.yml` posts the new reports as a
+comment on the GitHub issue "Problem reports from students" (label `problem-reports`; opened the first time) and
+marks them `seen`. GitHub emails you on each comment if you watch the repository (Watch → All activity, or
+Participating once you have commented on the issue). The repository is public, so the comment lists the question,
+the kind of problem and the count, never the student's note. Run it any time from Actions → Problem report digest
+→ Run workflow, or print it without posting: `make digest-prod`.
+
+**Reading and closing them.** There is no admin page until B8 (after Google sign-in). Use the Supabase SQL editor
+(it runs as the owner):
+
+```sql
+-- Open reports, newest first, with how many times each question was reported.
+select id, created_at, item_id, kind, note, page, count(*) over (partition by item_id) as reports_on_item
+from support.feedback where status in ('new', 'seen') order by id desc limit 50;
+
+-- Mark one seen, fixed, or not to be fixed (fixed and wont_fix need handled_at).
+update support.feedback set status = 'seen', updated_at = now() where id = 123;
+update support.feedback set status = 'fixed', handled_at = now(), updated_at = now() where id = 123;
+```
+
+The `item_id` names the question: `rc:<set>:<n>` (n counts from 0), a VA key such as `pj:bees`, or `cr:<id>`.
+Each network can send 10 reports an hour.

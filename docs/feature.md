@@ -291,9 +291,21 @@ Research: `docs/research/step-3.md`. How it is built: `docs/architecture.md` §5
 - Signing in with Google on a device with local progress and choosing "Save" puts every record in the account; a second device signing in sees it all, plus its own merged in.
 - Export my data and delete my data work for a synced student (DPDP Act 2023 and Rules 2025).
 
-#### F39. Report a problem and feedback inbox — Next (step 3)
+#### F39. Report a problem and feedback inbox — Built 23 Oct 2026 (B6)
 "Report a problem" on a question goes to `POST /v1/feedback` when the server is on (question id, what is wrong from four choices, an optional note; no personal data), and stays a prefilled GitHub issue when it is not. The owner reads reports from a simple list (a SQL view first, no admin page).
 **Acceptance.** A report arrives with the set and question id; sending ten in a minute is refused politely; with the server off, the GitHub link still works.
+**As built.** An inline form under each question in a review (not a dialog): wrong answer key, unclear question or option, typo, something else, and an optional note (1,000 characters). The page is stored without its query string. If sending fails, the GitHub link is offered. Ten reports an hour per network; with sync on, the report keeps the identity (set to null if it is deleted). Queries to read and close reports: `server/README.md`, "Problem reports".
+**How the owner hears about reports: a daily digest (B6b, built 23 Oct 2026).** Once a day a GitHub Actions job reads new reports and adds them to one open GitHub issue, "Problem reports from students" (label `problem-reports`); GitHub emails the owner on each update. The repository is public, so the issue carries only the question id, the kind of problem, how many reports and when; **never the student's note**, which stays in the database and is read with the query in `server/README.md`. Reports in a digest move from `new` to `seen`; the digest also says how many seen reports are still not fixed. No new reports, no comment.
+**Acceptance.** A new report appears in the next morning's digest exactly once; a failed GitHub call leaves it `new` for the next day; the issue text contains no note.
+
+#### F79. Admin page — Planned (after B7)
+**Problem.** Reading and closing reports with SQL works for one owner but is slow, and no one else can help.
+**What the owner gets.** `/admin`, only for signed-in staff (B7 accounts with the `feedback.read` and `feedback.resolve` permissions, `docs/database.md` §4):
+- **Reports**: open reports grouped by question, newest first, with the note, the page and a link that opens the question in review; mark seen, fixed or won't fix (writes `handled_by`, `handled_at`, and an audit event `feedback.resolved`).
+- **Overview**: counts only, no student data (D14): identities, devices, sync pushes and errors this week, reports open, database size against the free 500 MB.
+- Later, when needed: suspend an identity (abuse), the community review queue (F70).
+**Data.** `support.feedback.handled_by` (FK to `account.users`), the `access` schema with roles and permissions (`docs/database.md` §4). No student's answers are ever shown (D14).
+**Done when** a staff account can close a report from a phone, a non-staff account gets 404 on `/admin` and its API, and every change is in the audit log.
 
 #### Privacy page — Live (22 Oct 2026)
 A plain page at `/privacy`: what is stored on this device, what sync sends (progress only, no name, no email until an account), what the server logs and for how long (IP addresses kept 7 days), how to export and delete, and who to contact. Linked from the footer and the Sync section.
@@ -315,7 +327,7 @@ All AI features follow principle 3. They need the backend (the API key stays on 
 
 ### Sections (steps 4 and 5)
 
-#### F52. From a mistake back to its question — Live (22 Oct 2026): links, "Try it again" and "Last time"; filters and Progress links next
+#### F52. From a mistake back to its question — Live (22 Oct 2026): links, "Try it again" and "Last time"; filters and Progress links built 23 Oct 2026
 **Problem.** An Error log entry says "Climate economics, Q3 (Practice)" and the reasoning, but not the question itself. A week later the student has forgotten the passage and cannot go back to it: the entry keeps only text, no link (`ErrorEntry.src`). Error-log advice from GMAT tutors (Magoosh, Manhattan Prep, Target Test Prep, GMAT Club) agrees: a log is useful when it is reviewed, and the best review is re-solving the question without looking at the explanation; Duolingo built its "Mistakes" practice after learners asked to revisit past errors.
 **What the student gets.**
 - Every entry made from practice (RC, VA, CR, sectional) has **See the question**: the review of that attempt, opened at that question, with the passage, what they chose and the explanation.
@@ -323,6 +335,7 @@ All AI features follow principle 3. They need the backend (the API key stays on 
 - Old entries are linked too where possible (RC, VA and CR entries are matched by title and date); hand-written and mock entries stay as they are.
 - Filters on the Error log: question type, trap, cause, and "still happening" (a pattern seen in the last 2 weeks) vs "fixed".
 - From Progress, a weak spot ("Inference, 45%") leads to its entries in the Error log, and "Practise these" to those questions in the redo queue.
+**As built (23 Oct 2026).** Filters live in the URL (`/errors?sec=VARC&t=RC&trap=…&cause=…&status=open|fixed`; `t=RC` means every RC kind). **Fixed**: the question was answered right on its latest try after the mistake. **Still happening**: not fixed, and the same type with the same trap or cause was logged in the last 14 days. Each entry shows its status. "Try these again" puts up to 10 matching questions in the redo queue, due today (`/practice/redo?k=a,b,c`). Patterns have "See these mistakes"; report card rows (by question type, RC kinds) and weak spots (type or cause) link to their entries when there are any.
 **Data.** `ErrorEntry` gains optional `q` (question key: `rc:<set>:<i>`, a VA item key, `cr:<id>`) and `att` (the attempt id, or `sectional:<id>`), written by `rcError`, `vaError`, `crError` and the sectional review. They sync like any field. No server change.
 **Done when** an RC, VA, CR and sectional mistake each open their question from the Error log, on a phone, offline.
 

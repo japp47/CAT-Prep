@@ -2,7 +2,7 @@
 -include .env
 export
 
-.PHONY: db-up db-down db-reset db-psql dev-passwords run migrate migrate-status migrate-prod migrate-prod-status cleanup-prod test test-int vet image check
+.PHONY: db-up db-down db-reset db-psql dev-passwords run migrate migrate-status migrate-prod migrate-prod-status cleanup-prod digest-prod test test-int vet image check
 
 db-up:            ## start Postgres in Docker and wait until it answers
 	docker compose up -d --wait postgres
@@ -41,6 +41,10 @@ migrate-prod-status: ## the live database's schema version
 cleanup-prod:     ## delete expired link codes, old removed devices and old audit events on the live database
 	@test -f .env.prod || { echo "No .env.prod. See 'Live database' in README.md."; exit 1; }
 	@$(PROD) go run ./cmd/cleanup
+
+digest-prod:      ## print today's problem report digest from the live database (dry run: nothing posted or marked)
+	@test -f .env.prod || { echo "No .env.prod. See 'Live database' in README.md."; exit 1; }
+	@$(PROD) go run ./cmd/digest -dry
 
 # Local only: the roles are created by migration 00002 without a password. Live passwords are set by hand.
 dev-passwords:

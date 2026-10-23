@@ -316,14 +316,22 @@ Decisions this plan assumes (owner to confirm, `docs/analyze.md` §5): **D8** se
 ### Next, after sync (planned 22 Oct 2026): F52, then F51
 | Branch | Builds | Notes |
 |---|---|---|
-| `feat/error-links` (**core built 22 Oct 2026**: `q`/`att` on new entries, old entries matched from their text, "See the question" opening the RC/VA/CR review at that question (`?q=`, `useStartQuestion`, scrolled into view after the layout's own scroll), "Try it again" (`/practice/redo?k=`, `redoNow` puts it back in the queue due today), "Last time, <date>, you noted: <cause>" plus what was chosen after every redo answer; tests on real content; checked on a phone. **Still to do:** Error log filters and the Progress cross-links) | F52: `q`/`att` on new entries; match old RC/VA/CR entries by title and date (at display time, nothing rewritten); "See the question" (review opened at that question: `#q<n>` anchors in RC, VA, CR and sectional reviews); "Try it again" (`/practice/redo?k=<key>`, one question, answer hidden); Error log filters; Report card rows link to filtered entries | Tests: each builder writes `q`/`att`; old entries match; links resolve for every kind; a deleted attempt falls back to the set without review |
+| `feat/error-links` (**core built 22 Oct 2026**: `q`/`att` on new entries, old entries matched from their text, "See the question" opening the RC/VA/CR review at that question (`?q=`, `useStartQuestion`, scrolled into view after the layout's own scroll), "Try it again" (`/practice/redo?k=`, `redoNow` puts it back in the queue due today), "Last time, <date>, you noted: <cause>" plus what was chosen after every redo answer; tests on real content; checked on a phone. filters and the Progress cross-links **built 23 Oct 2026**: `practice/errorfilter.ts` (URL filters), `statuses` in `practice/errorlink.ts`, Error log filters and status badges, "Try these again", links from patterns, report rows and weak spots) | F52: `q`/`att` on new entries; match old RC/VA/CR entries by title and date (at display time, nothing rewritten); "See the question" (review opened at that question: `#q<n>` anchors in RC, VA, CR and sectional reviews); "Try it again" (`/practice/redo?k=<key>`, one question, answer hidden); Error log filters; Report card rows link to filtered entries | Tests: each builder writes `q`/`att`; old entries match; links resolve for every kind; a deleted attempt falls back to the set without review |
 | `feat/history` | F51: `practice/history.ts` (pure: days from state, newest first, per month), `pages/History.tsx` (lazy), the 12-week strip, filters, "Done today" on Today, search entries for passage titles | Tests: every kind of item appears on its day with its link; minutes match Today; a year of data builds in under 50 ms |
 
-### B6. Feedback inbox (F39)
+### B6. Feedback inbox (F39) — built 23 Oct 2026
+**As built:** migration `00009_feedback.sql` (schema `support`; `handled_by` waits for staff accounts in B7; cat_app may only insert; the note is hidden from cat_readonly), `internal/feedback`, `account.Optional` (a known device is attached, no cookie is fine), `components/ReportForm.tsx` loaded on first open. Tests: `internal/feedback/feedback_test.go` (clean, refuse, the 11th in an hour, store failure), `cmd/api/v1_feedback_int_test.go` (with and without sync, identity deletion keeps the report).
 `feat/feedback-inbox` · `feat: send problem reports to the server`
 - Migration: `feedback(id, at, page, item_id, kind, note, identity_id null)`. `POST /v1/feedback` (rate limit 10 an hour per IP, note ≤ 1,000 characters). No admin page: a saved SQL query in `server/README.md`.
 - "Report a problem" in `pages/practice/common.tsx` posts when the API is on, else opens the GitHub issue as today.
 **Tests.** Rate limit; long note refused; works without sync turned on.
+
+### B6b. Daily digest of problem reports (F39) — built 23 Oct 2026
+`feat/feedback-digest` · `feat: email the owner a daily digest of problem reports`
+- `internal/digest`: `Pending` (new reports grouped by question and kind), `Markdown` (no notes: the repository is public), `MarkSeen`, and a small GitHub client: make sure the `problem-reports` label exists, find the open issue with it, else open one, then add the digest as a comment.
+- `cmd/digest` (owner's connection, `MIGRATE_DATABASE_URL`; `GITHUB_TOKEN`, `GITHUB_REPOSITORY`; `-dry` prints without posting or marking). Posts first, then marks `seen`, so a failure repeats a report rather than losing it.
+- `.github/workflows/digest.yml`: daily at 09:00 in India, `issues: write`. `make digest-prod` prints today's digest locally (dry run).
+**Tests.** Markdown has no note and groups by question; the GitHub client against a fake server (label exists or not, issue exists or not, an error stops before marking); `Pending` and `MarkSeen` on the test database.
 
 ### B7. Google sign-in, with "save this device's progress" (F47, level 3)
 `feat/google-sign-in` · `feat: sign in with Google and save your progress to your account`
@@ -333,6 +341,13 @@ Decisions this plan assumes (owner to confirm, `docs/analyze.md` §5): **D8** se
 - Privacy page gains the account section (email stored, why, how to delete).
 **Tests.** Each row of the §5.2 table end to end with a fake OIDC provider; a merge where both devices edited the same day keeps both blocks; "No" offers the backup file before switching.
 **Email sign-in** (password with argon2id, verify and reset through Resend) is a later branch, `feat/email-sign-in`, when students ask (D9).
+
+### B8. Admin page (F79), after B7
+`feat/admin` · `feat: add an admin page to read and close problem reports`
+- Migration: schema `access` (roles, permissions, grants as in `docs/database.md` §4) seeded with `owner`; `support.feedback.handled_by` FK to `account.users`; cat_app gets `select` and `update (status, handled_by, handled_at, updated_at)` on `support.feedback`.
+- API: `GET /v1/admin/reports`, `POST /v1/admin/reports/{id}` (status), `GET /v1/admin/overview` (counts only); every handler checks a permission, never a role name; non-staff get 404; every change writes an audit event.
+- Browser: `/admin` (lazy, not in the menu), reports grouped by question with "Open the question", and the overview.
+**Tests.** Non-staff 404 on every admin route; a resolve writes `handled_by` and an audit event; the overview has no student data.
 
 ---
 
