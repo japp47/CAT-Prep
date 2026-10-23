@@ -156,6 +156,7 @@ Thinking practice (Arcade, Manager Lab, DILR and Quant ideas), community, and re
 | D23 | Reminders: off by default, inbox first, web push opt-in, email only for the weekly review after accounts | Recommended: yes |
 | D24 | Scheduled reminders run where? A GitHub Actions cron every 15 minutes calling a protected endpoint, or a goroutine ticker in the API (Render free stays awake with the ping) | Recommended: a ticker in the API with a Postgres advisory lock, idempotent; GitHub cron as a backup trigger. Decide in 4b |
 | D25 | How does the owner hear about reports? | **Decided 23 Oct 2026 (owner):** a daily digest emailed to 99ile.team@gmail.com with notes (B6c) and posted to one GitHub issue without notes (B6b), an admin page after B7 (B8, F79) |
+| D26 | Does History or search need the server? | **Decided 24 Oct 2026:** no. Both read the device's own synced data; Postgres full-text search comes only with community posts (F67, F68) |
 | Older | Cloud Run needs a card; AI limits; who checks DILR and Quant keys; leaderboard nicknames | As in `docs/plan.md` |
 
 ---

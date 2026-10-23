@@ -1,4 +1,5 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { daySummary, historyDays } from "../practice/history";
 import { Link } from "react-router-dom";
 import { ChevronDown, ChevronLeft, ChevronRight, PenLine, Timer as TimerIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -320,6 +321,8 @@ export default function Today() {
         {isToday && coreLeft > 0 && <Badge variant="highlight">{coreLeft} core task{coreLeft > 1 ? "s" : ""} left</Badge>}
       </div>
 
+      <DoneLine d={d} isToday={isToday} />
+
       {isToday && <SyncPrompt />}
       {isToday && <StartHere today={today} />}
       {isToday && <ReviewCard today={today} />}
@@ -429,5 +432,18 @@ function PracticeToday({ today }: { today: string }) {
         ))}
       </ul>
     </Section>
+  );
+}
+
+/** What was done on the day shown, in one line, linking to that day in History (F51). Nothing on an empty day. */
+function DoneLine({ d, isToday }: { d: string; isToday: boolean }) {
+  const { state } = useStore();
+  const text = useMemo(() => daySummary(historyDays(state).find((x) => x.d === d)), [state, d]);
+  if (!text) return null;
+  return (
+    <p className="-mt-4 text-base">
+      <span className="font-semibold">{isToday ? "Done today" : "Done that day"}:</span> {text}.{" "}
+      <TextLink to={`/history?d=${d}`}>See it in History</TextLink>
+    </p>
   );
 }

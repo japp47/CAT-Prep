@@ -339,7 +339,7 @@ All AI features follow principle 3. They need the backend (the API key stays on 
 **Data.** `ErrorEntry` gains optional `q` (question key: `rc:<set>:<i>`, a VA item key, `cr:<id>`) and `att` (the attempt id, or `sectional:<id>`), written by `rcError`, `vaError`, `crError` and the sectional review. They sync like any field. No server change.
 **Done when** an RC, VA, CR and sectional mistake each open their question from the Error log, on a phone, offline.
 
-#### F51. History: what I did each day — Next (after F52)
+#### F51. History: what I did each day — Built 24 Oct 2026
 **Problem.** Every attempt, drill, test and minute is saved, but scattered: Today shows only today, the RC library shows best scores, the Report card shows totals. There is no answer to "what did I do on Tuesday?" or "which passages have I done?". Students also lose heart when a streak breaks; keeping the record visible after a break is what habit apps do.
 **What the student gets.**
 - `/history` (Progress group in the menu): days, newest first. Each day: minutes studied (focus timer and ticked blocks) and every item done, with its score and time: RC sets by passage title, VA and CR drills, speed tests, sectionals, mocks logged, summaries written, words added, mistakes logged. Each item opens its review.
@@ -348,6 +348,15 @@ All AI features follow principle 3. They need the backend (the API key stays on 
 - On Today, "Done today: 2 RC sets, 1 VA drill, 54 min" links to today in History.
 **Data.** None new: built from what is already saved, so it works offline and syncs as it is. Built per month, lazily, so a year of history stays fast on a phone.
 **Done when** a student can find a passage they did a month ago in under 10 seconds, on a phone.
+**Design (24 Oct 2026).** Built with the house rules (`docs/design/redesign-plan.md`) and shadcn parts already in the project; 21st.dev's catalog was down when checked.
+- **Phone first.** One column: the summary line, the strip, filters, then day cards. On a desktop the strip sits beside a panel with four numbers (days studied, time, sets and tests, days in the last week) and minutes per week as bars; the filters and day cards share one column below.
+- **The strip** is 12 columns (weeks) by 7 rows (Monday to Sunday), each cell a square that fills the width on a phone (24 px from a tablet up), shaded in four steps of the primary colour by minutes (or by items when no minutes were ticked). Days with activity are buttons that jump to the day; empty days are plain and never red. Month names above, a "Less / More" key below, today ringed.
+- **Day cards**: "Tuesday, 21 Oct" with "Yesterday" or "Today", then minutes and how many items. Each item is one row: an icon for its kind, the title (passage title, drill kinds, mock name), the result ("3 of 4 right, 7 min") and a chevron; the row opens the review. Mistakes logged and redo answers are one summary row per day each, not one row per question.
+- **Filters**: a toggle group of kinds (All, Practice, Tests, Reviews, Writing, Mistakes) and a "Find a passage" box that filters by title. The URL keeps both (`?k=tests&q=climate`) and `?d=2026-10-21` opens a day.
+- **Fast**: items are built once from the saved state; 30 active days render first, then "Show older days".
+**Search (⌘K).** A "Your practice" group finds passages, drills, sectionals, mocks and summaries by title and opens that day in History. Search words now also match their simple forms, so "syncing" finds Sync, "linking" finds Link a device; the sync actions (link a device, recovery code, download, delete) are findable by name.
+**Recent practice on Progress → Log** shows the last 10 sets with their percentage, a "Show all" button for the rest, and a link to History. Log stays the place to add outside practice and delete wrong entries, so every set must stay reachable there (History cannot delete).
+**No backend needed, now or at scale (decided 24 Oct 2026).** History and search read this device's own data, which sync already copies to every device; nothing new is stored or sent. A student's data is capped by sync (20,000 records, 8 MB), so building the list in the browser stays fast: a year of heavy use (1,800 attempts) builds in about 10 ms; the test allows 150 ms for slow CI machines. Server search is needed only for what is shared between students: community posts (F67, F68) will use Postgres full-text search then.
 
 #### F21 to F23. DILR — Planned (step 4, Dec 2026 to Jan 2027)
 - Learn: set types (arrangement, games and tournaments, DI charts, Venn, networks, scheduling) and how to pick sets to attempt.

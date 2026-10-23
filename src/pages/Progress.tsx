@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Page, PageHeader, Segmented, Stat } from "../components/kit";
 import { usePref } from "../lib/prefs";
@@ -16,6 +17,10 @@ export default function Progress() {
   const { state } = useStore();
   const [sec, setSec] = useState("VARC");
   const [tab, setTab] = usePref<Tab>("progTab", "report");
+  // A link such as /progress?tab=log (from History) opens that tab once.
+  const [sp] = useSearchParams();
+  const asked = sp.get("tab");
+  useEffect(() => { if (asked === "report" || asked === "mocks" || asked === "log") setTab(asked); }, [asked, setTab]);
   const def = sectionByLabel(sec);
 
   const rows = state.practice.filter((p) => p.sec === sec);
