@@ -367,7 +367,7 @@ export function ItemReview({ item, answer, att }: { item: VaItem; answer: string
       {!s.ok && (inLog
         ? <ErrorCause src={vaErrorSrc(item)} />
         : <Button variant="secondary" size="sm" className="self-start" onClick={() => { update((st) => { st.errors.push(vaError(item, a, todayIso(), att)); }); toast("Added to your Error log."); }}>Add to Error log</Button>)}
-      <ReportLink what={`${VA_KIND[item.kind].label}: ${p.topic} (${item.key})`} />
+      <ReportLink what={`${VA_KIND[item.kind].label}: ${p.topic} (${item.key})`} item={item.key} />
     </>
   );
 }

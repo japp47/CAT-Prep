@@ -488,7 +488,7 @@ export function ReviewQuestion({ set, qi, chosen, att }: { set: RcSet; qi: numbe
       {!ok && (inLog
         ? <ErrorCause src={rcErrorSrc(set, qi)} />
         : <Button variant="secondary" size="sm" className="self-start" onClick={() => { update((st) => { st.errors.push(rcError(set, qi, chosen, todayIso(), false, att)); }); toast("Added to your Error log."); }}>Add to Error log</Button>)}
-      <ReportLink what={`${set.title}, Q${qi + 1} (${set.id})`} />
+      <ReportLink what={`${set.title}, Q${qi + 1} (${set.id})`} item={`rc:${set.id}:${qi}`} />
     </div>
   );
 }
