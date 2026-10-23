@@ -1,0 +1,32 @@
+# Posts new problem reports to the "Problem reports from students" issue once a day, then marks them seen
+# (server/internal/digest, docs/feature.md F39). GitHub emails the owner on each new comment. The repository is
+# public, so the comment has question ids and counts only; notes stay in the database.
+name: Problem report digest
+
+on:
+  schedule:
+    - cron: "30 3 * * *" # 09:00 in India
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: server/go.mod
+          cache-dependency-path: server/go.sum
+      - run: go run ./cmd/digest
+        env:
+          MIGRATE_DATABASE_URL: ${{ secrets.MIGRATE_DATABASE_URL }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
