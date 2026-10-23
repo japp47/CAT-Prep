@@ -11,6 +11,7 @@ import { ContentGate } from "../../components/Content";
 import { Empty, LinkButton, Page } from "../../components/kit";
 import { customCr } from "../../practice/crdrill";
 import { crError, crErrorSrc, fmtSecs, LETTERS, recordCr, scoreCr } from "../../practice/record";
+import { crRedoKey } from "../../practice/redo";
 import { CR_TYPE, type CrItem, type CrType } from "../../practice/types";
 import { Choice, ChoiceGroup, Confirm, ElapsedTimer, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
 
@@ -254,7 +255,7 @@ export function CrReview({ item, chosen, att }: { item: CrItem; chosen: number |
       {!s.ok && (inLog
         ? <ErrorCause src={crErrorSrc(item)} />
         : <Button variant="secondary" size="sm" className="self-start" onClick={() => { update((st) => { st.errors.push(crError(item, chosen, todayIso(), att)); }); toast("Added to your Error log."); }}>Add to Error log</Button>)}
-      <ReportLink what={`Critical reasoning: ${item.topic} (${item.id})`} />
+      <ReportLink what={`Critical reasoning: ${item.topic} (${item.id})`} item={crRedoKey(item.id)} />
     </div>
   );
 }

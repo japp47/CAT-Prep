@@ -22,6 +22,7 @@ import (
 
 	"github.com/japp47/CAT-Prep/server/internal/account"
 	"github.com/japp47/CAT-Prep/server/internal/config"
+	"github.com/japp47/CAT-Prep/server/internal/feedback"
 	"github.com/japp47/CAT-Prep/server/internal/httpx"
 	"github.com/japp47/CAT-Prep/server/internal/reqinfo"
 	"github.com/japp47/CAT-Prep/server/internal/store"
@@ -179,6 +180,11 @@ func v1Routes(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger, opt synca
 	}
 	acc := account.New(pool, hash, log, lim, bot)
 	sy := syncapi.New(pool, hash, log, opt)
+	fbPerHour := 10
+	if !cfg.Prod() {
+		fbPerHour = 100
+	}
+	fb := feedback.New(feedback.Postgres(pool), log, fbPerHour)
 
 	rt := httpx.NewRouter()
 	rt.Handle("POST /v1/identity", acc.CreateHandler())
@@ -193,5 +199,6 @@ func v1Routes(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger, opt synca
 	rt.Handle("DELETE /v1/devices/{id}", acc.Require(acc.RemoveDeviceHandler()))
 	rt.Handle("GET /v1/me/export", acc.Require(sy.ExportHandler()))
 	rt.Handle("DELETE /v1/me", acc.Require(acc.DeleteHandler()))
+	rt.Handle("POST /v1/feedback", acc.Optional(fb.Handler()))
 	return reqinfo.Gate(cfg)(rt)
 }

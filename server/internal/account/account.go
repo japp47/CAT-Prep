@@ -228,6 +228,21 @@ func (s *Service) Require(next http.Handler) http.Handler {
 	})
 }
 
+// Optional is Require for endpoints that also work without sync: a known device is put in the context, and a
+// missing or stale cookie is simply ignored.
+func (s *Service) Optional(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		d, ok, err := s.lookup(r)
+		if err != nil {
+			s.log.Warn("find device", "error", err)
+		}
+		if ok {
+			r = r.WithContext(context.WithValue(r.Context(), deviceKey{}, d))
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
 // lookup finds the device of a request that may or may not carry a cookie.
 func (s *Service) lookup(r *http.Request) (Device, bool, error) {
 	c, err := r.Cookie(CookieName)

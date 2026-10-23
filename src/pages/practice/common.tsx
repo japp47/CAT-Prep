@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { useBlocker, useSearchParams } from "react-router-dom";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { reportUrl } from "../../data/site";
+import { API_ENABLED } from "../../lib/api";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { CAUSES } from "../../data/traps";
 import { usePref } from "../../lib/prefs";
@@ -106,13 +107,20 @@ export function ElapsedTimer({ startAt, target, onClick, title }: { startAt: num
   return <Timer over={secs > target} onClick={onClick} title={title}><Tnum>{`${fmtSecs(secs)} / ${fmtSecs(target)}`}</Tnum></Timer>;
 }
 
-/** "Report a problem" for one question. Opens a prefilled GitHub issue in a new tab. */
-export function ReportLink({ what }: { what: string }) {
-  return (
-    <a className="relative w-fit text-sm text-muted-foreground underline after:absolute after:-inset-x-2 after:-inset-y-3 after:content-[''] underline-offset-4 hover:text-foreground" href={reportUrl(what, window.location.href)} target="_blank" rel="noopener noreferrer">
-      Report a problem with this question
-    </a>
-  );
+const ReportForm = lazy(() => import("../../components/ReportForm"));
+const reportClass = "relative w-fit text-sm text-muted-foreground underline after:absolute after:-inset-x-2 after:-inset-y-3 after:content-[''] underline-offset-4 hover:text-foreground";
+
+/**
+ * "Report a problem" for one question (F39). item is its redo key (rc:<set>:<n>, a VA key, cr:<id>). With the API
+ * on, it opens a short form that sends to the 99ile inbox; without it, a prefilled GitHub issue in a new tab.
+ */
+export function ReportLink({ what, item }: { what: string; item: string }) {
+  const [open, setOpen] = useState(false);
+  if (!API_ENABLED) {
+    return <a className={reportClass} href={reportUrl(what, window.location.href)} target="_blank" rel="noopener noreferrer">Report a problem with this question</a>;
+  }
+  if (open) return <Suspense fallback={null}><ReportForm what={what} item={item} onClose={() => setOpen(false)} /></Suspense>;
+  return <button type="button" className={cn(reportClass, "cursor-pointer text-left")} aria-expanded={false} onClick={() => setOpen(true)}>Report a problem with this question</button>;
 }
 
 /** The sticky bar on top of every practice screen: what you are doing, the clock, and the main action. */
