@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { LinkButton, Meta, Section, TextLink } from "../../components/kit";
 import { todayIso } from "../../lib/date";
-import type { Recommendation } from "../../lib/state";
+import type { Cause, ErrorEntry, Recommendation } from "../../lib/state";
 import { useStore } from "../../lib/store";
 import { AFTER_MIN, readiness, tracked, trend, type Measured } from "../../practice/recs";
+import { filterHref, matches, type ErrorFilter } from "../../practice/errorfilter";
 
 /** Progress opens on three plain answers (docs/feature.md, F44); the tabs below hold the detail. */
 export function ThreeAnswers() {
@@ -66,6 +67,12 @@ function Evidence({ m }: { m: Measured }) {
   return <Meta>{m.before}% before, {m.after}% on the {m.n} questions since.</Meta>;
 }
 
+/** The weak spot's entries in the Error log (F52), for a type or cause with at least one entry. */
+function mistakes(rec: Recommendation, errors: ErrorEntry[]): string | undefined {
+  const f: ErrorFilter | null = rec.skill.kind === "type" ? { sec: rec.sec, t: rec.skill.key } : rec.skill.kind === "cause" ? { sec: rec.sec, cause: rec.skill.key as Cause } : null;
+  return f && errors.some((e) => matches(e, f, null)) ? filterHref(f) : undefined;
+}
+
 /** Weak spots picked in mock and weekly reviews, and whether practice since has moved them (F43). */
 export function Fixing() {
   const { state, update } = useStore();
@@ -85,6 +92,7 @@ export function Fixing() {
               <Evidence m={m} />
               <div className="flex flex-wrap gap-2">
                 {m.rec.to && m.state !== "fixed" && <LinkButton to={m.rec.to} variant="secondary" size="sm">Practise it</LinkButton>}
+                {mistakes(m.rec, state.errors) && <LinkButton to={mistakes(m.rec, state.errors)!} variant="ghost" size="sm">See your mistakes</LinkButton>}
                 {m.state === "unmeasured" && m.rec.status === "open" && <Button variant="ghost" size="sm" onClick={() => setStatus(m.rec.id, "done")}>Mark as done</Button>}
                 <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={() => setStatus(m.rec.id, "dismissed")}>Not for me</Button>
               </div>

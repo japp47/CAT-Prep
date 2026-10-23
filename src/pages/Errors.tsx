@@ -1,4 +1,5 @@
-import { useState, type FormEvent } from "react";
+import { useMemo, useState, type FormEvent } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,7 +10,9 @@ import { NativeSelect } from "../components/Select";
 import { CAUSES, TRAPS } from "../data/traps";
 import { CAUSE_IDS, type Cause, type ErrorEntry } from "../lib/state";
 import { patterns } from "../practice/report";
-import { errorLink } from "../practice/errorlink";
+import { errorKey, errorLink, statuses } from "../practice/errorlink";
+import { filterErrors, filterHref, isEmpty, parseFilter, STATUS_LABEL, type ErrorFilter, type Status } from "../practice/errorfilter";
+import { redoKeyExists } from "../practice/redo";
 import { shortDate, todayIso, uid } from "../lib/date";
 import { useStore } from "../lib/store";
 import { SECTION_LABELS, sectionByLabel } from "../sections";
@@ -51,9 +54,13 @@ export default function Errors() {
   const remove = useDeleteWithUndo();
   const [sec, setSec] = useState("VARC");
   const [err, setErr] = useState("");
-  const [filter, setFilter] = useState("All");
   const [editing, setEditing] = useState<string | null>(null);
   const found = patterns(state.errors, state.practice, todayIso());
+  // Filters live in the URL, so Progress and patterns can link to the matching entries (F52).
+  const [sp, setSp] = useSearchParams();
+  const f = parseFilter(sp);
+  const setFilter = (next: ErrorFilter) => setSp(new URLSearchParams(filterHref(next).split("?")[1] ?? ""), { replace: true });
+  const status = useMemo(() => statuses(state.errors, state.redo, todayIso()), [state.errors, state.redo]);
 
   const add = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -71,7 +78,7 @@ export default function Errors() {
     byType[k] = (byType[k] || 0) + 1;
     if (e.trap) byTrap[e.trap] = (byTrap[e.trap] || 0) + 1;
   });
-  const list = state.errors.filter((e) => filter === "All" || e.sec === filter).slice().reverse();
+  const list = filterErrors(state.errors, f, status);
 
   return (
     <Page>
@@ -83,7 +90,7 @@ export default function Errors() {
             {found.map((p) => (
               <li key={p.key} className="flex min-w-0 flex-col items-start justify-between gap-4 rounded-xl bg-card p-5 sm:p-6">
                 <span className="text-base leading-relaxed">{p.text}</span>
-                <TextLink to={p.to}>Practise this pattern</TextLink>
+                <span className="flex flex-wrap gap-x-6 gap-y-2"><TextLink to={p.to}>Practise this pattern</TextLink><TextLink to={p.list}>See these mistakes</TextLink></span>
               </li>
             ))}
           </ul>
@@ -109,7 +116,8 @@ export default function Errors() {
         </form>
       </Section>
 
-      <Section title={`Your log (${list.length})`} action={<Segmented className="w-full sm:w-fit" label="Filter by section" value={filter} onChange={setFilter} options={["All", ...SECTION_LABELS]} />}>
+      <Section id="log" className="scroll-mt-24" title={`Your log (${list.length})`} action={<Segmented className="w-full sm:w-fit" label="Filter by section" value={f.sec ?? "All"} onChange={(v) => setFilter({ ...f, sec: v === "All" ? undefined : v, t: undefined })} options={["All", ...SECTION_LABELS]} />}>
+        {state.errors.length > 0 && <Filters f={f} total={state.errors.length} shown={list} onChange={setFilter} />}
         {list.length ? (
           <ul className="flex flex-col gap-3">
             {list.map((e) => (
@@ -121,7 +129,7 @@ export default function Errors() {
                     <div className="flex min-w-0 items-start justify-between gap-3">
                       <div className="flex min-w-0 flex-col gap-2">
                         <span className="flex flex-wrap items-center gap-2">
-                          <Badge variant="secondary">{e.sec}</Badge><Badge variant="default">{e.t}</Badge>{e.trap && <Badge variant="danger">{e.trap}</Badge>}{e.cause && <Badge variant="secondary">{CAUSES[e.cause]}</Badge>}
+                          <Badge variant="secondary">{e.sec}</Badge><Badge variant="default">{e.t}</Badge>{e.trap && <Badge variant="danger">{e.trap}</Badge>}{e.cause && <Badge variant="secondary">{CAUSES[e.cause]}</Badge>}<StatusBadge s={status.get(e.id)} />
                         </span>
                         <Meta>{shortDate(e.d)}{e.src ? `, ${e.src}` : ""}</Meta>
                       </div>
@@ -142,6 +150,10 @@ export default function Errors() {
               </li>
             ))}
           </ul>
+        ) : state.errors.length > 0 ? (
+          <div className="rounded-xl bg-card p-5 sm:p-6">
+            <p className="text-base text-muted-foreground">No entries match these filters.</p>
+          </div>
         ) : (
           <div className="rounded-xl bg-card p-5 sm:p-6">
             <p className="text-base text-muted-foreground">No mistakes logged yet. After each timed set, add one entry per wrong or skipped question.</p>
@@ -165,5 +177,44 @@ function QuestionLinks({ e }: { e: ErrorEntry }) {
       {link.retry && <LinkButton to={"/practice/redo?k=" + encodeURIComponent(link.key)} variant="secondary" size="sm">Try it again</LinkButton>}
       {link.review && <LinkButton to={link.review} variant="outline" size="sm">See the question</LinkButton>}
     </span>
+  );
+}
+
+function StatusBadge({ s }: { s: Status | null | undefined }) {
+  if (!s) return null;
+  return <Badge variant={s === "fixed" ? "success" : "warning"}>{STATUS_LABEL[s]}</Badge>;
+}
+
+const RETRY_MAX = 10;
+
+/**
+ * Narrow the log by question type, trap, cause and whether the mistake is still happening or fixed. "Try these
+ * again" puts the matching questions back in the redo queue, due today (up to ten at a time).
+ */
+function Filters({ f, total, shown, onChange }: { f: ErrorFilter; total: number; shown: ErrorEntry[]; onChange: (f: ErrorFilter) => void }) {
+  const { state } = useStore();
+  const types = f.sec ? sectionByLabel(f.sec).errorTypes : [...new Set(state.errors.map((e) => e.t))].sort();
+  const typeOptions = f.sec === "VARC" || types.some((t) => t.startsWith("RC: ")) ? ["RC", ...types] : types;
+  if (f.t && !typeOptions.includes(f.t)) typeOptions.unshift(f.t);
+  const keys = [...new Set(shown.filter((e) => e.sec === "VARC").map(errorKey).filter((k): k is string => !!k && redoKeyExists(k)))].slice(0, RETRY_MAX);
+  const set = (k: keyof ErrorFilter, v: string) => onChange({ ...f, [k]: v === "any" ? undefined : v });
+  return (
+    <div className="flex flex-col gap-4 rounded-xl bg-card p-4 sm:p-6">
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Field label="Question type"><NativeSelect value={f.t ?? "any"} onChange={(ev) => set("t", ev.target.value)}><option value="any">Any type</option>{typeOptions.map((t) => <option key={t} value={t}>{t === "RC" ? "RC, every kind" : t}</option>)}</NativeSelect></Field>
+        <Field label="What got you"><NativeSelect value={f.trap ?? "any"} onChange={(ev) => set("trap", ev.target.value)}><option value="any">Any trap</option>{TRAPS.map((t) => <option key={t}>{t}</option>)}</NativeSelect></Field>
+        <Field label="What happened to you"><NativeSelect value={f.cause ?? "any"} onChange={(ev) => set("cause", ev.target.value)}><option value="any">Any cause</option>{CAUSE_IDS.map((c) => <option key={c} value={c}>{CAUSES[c]}</option>)}</NativeSelect></Field>
+      </div>
+      <Segmented<"all" | Status> className="w-full sm:w-fit" label="Filter by status" value={f.status ?? "all"} onChange={(v) => onChange({ ...f, status: v === "all" ? undefined : v })}
+        options={[["all", "All"], ["open", STATUS_LABEL.open], ["fixed", STATUS_LABEL.fixed]]} />
+      <Meta>“Still happening”: the same kind of mistake was logged in the last two weeks. “Fixed”: you got the question right on your latest try.</Meta>
+      {!isEmpty(f) && (
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="text-base">{shown.length} of {total} entries</span>
+          {keys.length > 0 && <LinkButton to={"/practice/redo?k=" + keys.map(encodeURIComponent).join(",")} variant="secondary" size="sm">Try {keys.length === 1 ? "it" : `these ${keys.length}`} again</LinkButton>}
+          <Button variant="ghost" size="sm" onClick={() => onChange({ sec: f.sec })}>Clear filters</Button>
+        </div>
+      )}
+    </div>
   );
 }

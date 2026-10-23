@@ -1,4 +1,6 @@
-import type { AppState, ErrorEntry } from "../lib/state";
+import { addDays } from "../lib/date";
+import type { AppState, ErrorEntry, RedoItem } from "../lib/state";
+import { RECENT_DAYS, type Status } from "./errorfilter";
 import { CR_CATALOG, RC_CATALOG, VA_CATALOG } from "./catalog.gen";
 import { redoKeyExists } from "./redo";
 import { VA_KIND, VA_KINDS } from "./va/build";
@@ -59,4 +61,23 @@ export function errorLink(e: ErrorEntry, st: AppState): ErrorLink | null {
 export function lastMistake(st: AppState, key: string): ErrorEntry | undefined {
   const all = st.errors.filter((e) => errorKey(e) === key).sort((a, b) => (a.d < b.d ? -1 : a.d > b.d ? 1 : 0));
   return all[all.length - 1];
+}
+
+/** The status of every entry, by id. Worked out once per render: "open" needs the whole log. */
+export function statuses(errors: ErrorEntry[], redo: RedoItem[], today: string): Map<string, Status | null> {
+  const from = addDays(today, -RECENT_DAYS);
+  const recent = new Set<string>();
+  const sig = (e: ErrorEntry) => [e.sec + "|" + e.t + "|t|" + (e.trap || ""), e.sec + "|" + e.t + "|c|" + (e.cause ?? "")];
+  errors.forEach((e) => { if (e.d >= from && e.d <= today) sig(e).forEach((s) => recent.add(s)); });
+  const byKey = new Map(redo.map((r) => [r.k, r]));
+  const out = new Map<string, Status | null>();
+  errors.forEach((e) => {
+    const k = errorKey(e), r = k ? byKey.get(k) : undefined;
+    if (r && ((r.cleared && r.cleared >= e.d) || (r.box > 0 && r.last && r.last >= e.d))) { out.set(e.id, "fixed"); return; }
+    // Without a trap or cause, the type alone is the kind of mistake.
+    const [bt, bc] = sig(e);
+    const same = (e.trap ? recent.has(bt) : false) || (e.cause ? recent.has(bc) : false) || (!e.trap && !e.cause && recent.has(bt));
+    out.set(e.id, same ? "open" : null);
+  });
+  return out;
 }

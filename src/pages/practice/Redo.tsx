@@ -24,13 +24,12 @@ const HOW = `Every question you get wrong or skip in Practice comes back here af
 export default function Redo() {
   const { state, update } = useStore();
   const today = todayIso();
-  // "Try it again" from the Error log opens one question (?k=), back in the queue and due today.
+  // "Try it again" from the Error log opens one question (?k=), or a filtered list (?k=a,b,c), back in the queue and due today.
   const [sp] = useSearchParams();
-  const only = sp.get("k");
-  const one = only && redoKeyExists(only) ? only : null;
-  useEffect(() => { if (one) update((st) => redoNow(st, one, today)); }, [one, today, update]);
+  const only = (sp.get("k") ?? "").split(",").filter(redoKeyExists).slice(0, 20).join(",");
+  useEffect(() => { if (only) update((st) => only.split(",").forEach((k) => redoNow(st, k, today))); }, [only, today, update]);
   // Fix the session's list when the page opens, so answering does not reshuffle it.
-  const [session, setSession] = useState(() => (one ? [one] : dueRedo(state.redo, today).slice(0, REDO_PER_SESSION).map((r) => r.k)));
+  const [session, setSession] = useState(() => (only ? only.split(",") : dueRedo(state.redo, today).slice(0, REDO_PER_SESSION).map((r) => r.k)));
   const [pos, setPos] = useState(0);
   const [results, setResults] = useState<{ ok: boolean; cleared: boolean }[]>([]);
   const dueNow = dueRedo(state.redo, today);

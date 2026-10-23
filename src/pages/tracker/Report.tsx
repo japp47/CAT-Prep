@@ -9,6 +9,9 @@ import { sectionByLabel } from "../../sections";
 import { CR_CATALOG, RC_CATALOG } from "../../practice/catalog.gen";
 import { useContent } from "../../practice/content";
 import { HABIT_WINDOW, summaryHabits } from "../../practice/summary";
+import { filterHref, typeMatches } from "../../practice/errorfilter";
+import { RC_QTYPE, type RcQType } from "../../practice/types";
+import type { ErrorEntry } from "../../lib/state";
 import { accuracy, byPracticeType, crByKind, focusLines, luckyGuesses, MIN_TOTAL, paceTrend, patterns, rcByDifficulty, rcByGenre, rcByQuestionType, topTraps, type Row } from "../../practice/report";
 
 /** CAT has about 2,000 words of RC; reading them in 10 minutes leaves time for the questions. */
@@ -16,7 +19,7 @@ const EXAM_PACE = 200;
 
 /** Accuracy bars, one row per group. Bars under 60% are red, and every row says how many questions it rests on. */
 /** `unit` names what each row counts; null hides the count when every row counts the same thing, as the title already says. */
-function AccuracyList({ title, rows, empty, unit = ["Q", "Qs"] }: { title: string; rows: Row[]; empty: string; unit?: [string, string] | null }) {
+function AccuracyList({ title, rows, empty, unit = ["Q", "Qs"], link }: { title: string; rows: Row[]; empty: string; unit?: [string, string] | null; link?: (r: Row) => string | undefined }) {
   return (
     <div className="flex min-w-0 flex-col gap-3">
       <h3 className="text-base font-semibold">{title}</h3>
@@ -26,7 +29,7 @@ function AccuracyList({ title, rows, empty, unit = ["Q", "Qs"] }: { title: strin
             const pct = accuracy(r);
             return (
               <li key={r.key} className="grid grid-cols-[minmax(0,8.5rem)_minmax(0,1fr)_4.25rem] items-center gap-3 text-base sm:grid-cols-[minmax(0,10.5rem)_minmax(0,1fr)_4.5rem]">
-                <span className="leading-snug">{r.label}</span>
+                {(() => { const to = link?.(r); return to ? <TextLink to={to} className="leading-snug" aria-label={`${r.label}: see your mistakes`}>{r.label}</TextLink> : <span className="leading-snug">{r.label}</span>; })()}
                 <span className="h-2.5 overflow-hidden rounded-full bg-secondary"><span className={cn("block h-full rounded-full", pct !== null && pct < 60 ? "bg-danger" : "bg-primary")} style={{ width: (pct ?? 0) + "%" }} /></span>
                 <span className="text-right leading-tight">
                   {pct === null ? <span className="text-sm text-muted-foreground">None yet</span> : <><b className="font-semibold">{pct}%</b>{unit && <span className="block text-sm text-muted-foreground">{r.attempted} {unit[r.attempted === 1 ? 0 : 1]}</span>}</>}
@@ -52,7 +55,16 @@ function RcKindsLoaded() {
   const { state } = useStore();
   const { content } = useContent();
   if (!content) return <div className="flex flex-col gap-3" role="status"><span className="sr-only">Loading…</span><Skeleton className="h-5 w-1/3" /><Skeleton className="h-24" /></div>;
-  return <AccuracyList title="RC questions, by kind" rows={rcByQuestionType(state.rcAttempts, content.rcById)} empty="Answer an RC set in Practice and its kinds of question appear here." />;
+  return <AccuracyList title="RC questions, by kind" rows={rcByQuestionType(state.rcAttempts, content.rcById)} empty="Answer an RC set in Practice and its kinds of question appear here."
+    link={mistakesLink(state.errors, "VARC", (r) => RC_QTYPE[r.key as RcQType]?.error)} />;
+}
+
+/** A report row's label links to its mistakes in the Error log (F52), when there are any. */
+function mistakesLink(errors: ErrorEntry[], sec: string, typeOf: (r: Row) => string | undefined = (r) => r.key) {
+  return (r: Row) => {
+    const t = typeOf(r);
+    return t && errors.some((e) => e.sec === sec && typeMatches(e.t, t)) ? filterHref({ sec, t }) : undefined;
+  };
 }
 
 export function Report({ sec }: { sec: string }) {
@@ -99,7 +111,7 @@ export function Report({ sec }: { sec: string }) {
 
       <Section title="Accuracy" description="Bars under 60% are red. Spend more drill time on those. A group with only a few questions can swing a lot, so check the count.">
         <div className="grid gap-x-12 gap-y-10 rounded-lg bg-card p-5 sm:p-6 md:grid-cols-2">
-          <AccuracyList title="By question type" rows={types} empty="No sets yet." />
+          <AccuracyList title="By question type" rows={types} empty="No sets yet." link={mistakesLink(state.errors, sec)} />
           {varc && <RcKinds />}
           {varc && <AccuracyList title="RC, by genre" rows={genres} empty="Answer an RC set in Practice and its genre appears here." />}
           {varc && <AccuracyList title="RC, by difficulty" rows={levels} empty="Answer an RC set in Practice and its difficulty appears here." />}
