@@ -10,6 +10,7 @@ import { sectionByLabel } from "../../sections";
 import { analyseLink } from "./MockReviews";
 
 export const KINDS = ["Past paper", "Full mock", "Sectional", "Official IIM mock"];
+const RECENT = 10;
 const sortDesc = <T extends { d: string }>(a: T, b: T) => (a.d < b.d ? 1 : a.d > b.d ? -1 : 0);
 
 export function Log({ sec }: { sec: string }) {
@@ -44,7 +45,10 @@ export function Log({ sec }: { sec: string }) {
   };
 
   const reviewOf = (mock: string) => state.mockReviews.find((r) => r.mock === mock)?.id;
-  const practice = state.practice.filter((p) => p.sec === sec).sort(sortDesc).slice(0, 30);
+  // The last 10, with all of them a tap away: this list is the only place to delete or fix a set typed in by hand.
+  const [all, setAll] = useState(false);
+  const allPractice = state.practice.filter((p) => p.sec === sec).sort(sortDesc);
+  const practice = all ? allPractice : allPractice.slice(0, RECENT);
   const mocksAsc = state.mocks.map((x, i) => ({ x, i })).filter((o) => o.x.sec === sec)
     .sort((a, b) => (a.x.d < b.x.d ? -1 : a.x.d > b.x.d ? 1 : a.i - b.i)).map((o) => o.x);
 
@@ -74,7 +78,7 @@ export function Log({ sec }: { sec: string }) {
       </div>
 
       <div className="grid gap-10 lg:grid-cols-2 lg:gap-8">
-        <Section title="Recent practice">
+        <Section title="Recent practice" description={all ? "Every set, newest first. Every day, with what you did in the app, is in History." : `Your last ${RECENT} sets. Every day, with what you did in the app, is in History.`} action={<TextLink to="/history">See every day in History</TextLink>}>
           <LogList empty="Practice sets you log from the timetable or the form above show here.">
             {practice.map((p) => (
               <LogRow key={p.id} label="Delete this set" onDelete={() => remove("practice", p.id, "Practice set")}>
@@ -84,6 +88,11 @@ export function Log({ sec }: { sec: string }) {
               </LogRow>
             ))}
           </LogList>
+          {allPractice.length > RECENT && (
+            <Button variant="outline" className="self-start" onClick={() => setAll((a) => !a)}>
+              {all ? `Show the last ${RECENT}` : `Show all ${allPractice.length} sets`}
+            </Button>
+          )}
         </Section>
         <Section title="Papers and mocks">
           <LogList empty="Timed papers you log from the timetable or the form above show here.">

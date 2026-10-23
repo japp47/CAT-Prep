@@ -38,6 +38,7 @@ const Words = lazy(() => import("./pages/Words"));
 const Journal = lazy(() => import("./pages/Journal"));
 const MockReview = lazy(() => import("./pages/tracker/MockReview"));
 const Review = lazy(() => import("./pages/Review"));
+const History = lazy(() => import("./pages/History"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 // Only in builds with the API on: where a scanned link code lands (B4).
 const LinkPage = API_ENABLED ? lazy(() => import("./pages/Link")) : null;
@@ -99,6 +100,7 @@ export const router = createBrowserRouter(createRoutesFromElements(
       <Route path="progress/mock-review/:id" element={<MockReview />} />
       <Route path="review" element={<Review />} />
       <Route path="review/:monday" element={<Review />} />
+      <Route path="history" element={<History />} />
       <Route path="errors" element={<Errors />} />
       <Route path="words" element={<Words />} />
       <Route path="journal" element={<Journal />} />

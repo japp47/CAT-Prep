@@ -9,6 +9,7 @@ import { SECTION_BY_ID, SECTIONS } from "../sections";
 import { API_ENABLED } from "../lib/api";
 import type { Resource } from "../sections/types";
 import { loadResources } from "../sections/useResources";
+import { historyItems } from "../practice/history";
 
 interface SearchResult {
   id: string;
@@ -42,8 +43,16 @@ const PAGES = [
   { title: "Settings and backup", href: "/settings", keywords: "install export restore data" },
   { title: "About 99ile", href: "/#about", keywords: "about mission" },
   { title: "Privacy", href: "/privacy", keywords: "privacy data delete export contact grievance cookies stored" },
-  // Only in builds with sync (B4); found by the words people use for it.
-  ...(API_ENABLED ? [{ title: "Sync between devices", href: "/settings#sync", keywords: "sync link code qr scan devices phone laptop recovery move transfer progress another device" }] : []),
+  { title: "History", href: "/history", keywords: "history past days calendar did done yesterday week log timeline what i did passages attempts" },
+  // Only in builds with sync (B4); found by the words people use for it, and each action by its own name.
+  ...(API_ENABLED ? [
+    { title: "Sync between devices", href: "/settings#sync", keywords: "sync link code qr scan devices phone laptop recovery move transfer progress another device cloud backup online account" },
+    { title: "Link a device", href: "/settings#sync", keywords: "sync add phone laptop tablet qr code scan join connect another device" },
+    { title: "Recovery code", href: "/settings#sync", keywords: "sync lost phone new device get progress back restore recover code" },
+    { title: "Your devices", href: "/settings#sync", keywords: "sync remove device list phone laptop signed in" },
+    { title: "Download what the server has", href: "/settings#sync", keywords: "sync export data copy server backup file privacy" },
+    { title: "Turn off sync or delete synced data", href: "/settings#sync", keywords: "sync stop disable delete erase remove data everywhere privacy" },
+  ] : []),
 ];
 
 function Highlight({ text, query }: { text: string; query: string }) {
@@ -78,11 +87,17 @@ function excerpt(text: string, query: string, max = 110) {
   return (start ? "…" : "") + clean.slice(start, end) + (end < clean.length ? "…" : "");
 }
 
-function rankSearch(query: string, title: string, ...values: string[]) {
+/** A word's simple form, so "syncing" finds "sync" and "devices" finds "device". Short words are kept as typed. */
+function stem(term: string) {
+  for (const end of ["ing", "ed", "es", "s"]) if (term.length - end.length >= 3 && term.endsWith(end)) return term.slice(0, -end.length);
+  return term;
+}
+
+export function rankSearch(query: string, title: string, ...values: string[]) {
   const normalizedQuery = query.trim().toLocaleLowerCase();
   const normalizedTitle = title.toLocaleLowerCase();
   const haystack = [title, ...values].join(" ").toLocaleLowerCase();
-  if (!normalizedQuery.split(/\s+/).every((term) => haystack.includes(term))) return 0;
+  if (!normalizedQuery.split(/\s+/).every((term) => haystack.includes(term) || haystack.includes(stem(term)))) return 0;
   if (normalizedTitle === normalizedQuery) return 4;
   if (normalizedTitle.startsWith(normalizedQuery)) return 3;
   if (normalizedTitle.includes(normalizedQuery)) return 2;
@@ -178,6 +193,8 @@ export default function SearchPalette({ open, onOpenChange, onNavigate }: Search
 
   useEffect(() => { if (open) { setQuery(""); setActive(0); setTourStep(0); requestAnimationFrame(() => input.current?.focus()); } }, [open]);
 
+  // Newest first, so a passage done twice is found on its latest day. Mistakes and redo rows have no title to find.
+  const practiceItems = useMemo(() => historyItems(state).filter((x) => x.kind !== "mistakes" && x.icon !== "redo").sort((a, b) => (a.d < b.d ? 1 : a.d > b.d ? -1 : 0)), [state]);
   const groups = useMemo<SearchGroup[]>(() => {
     const q = query.trim().toLocaleLowerCase();
     if (!q) return [];
@@ -215,8 +232,13 @@ export default function SearchPalette({ open, onOpenChange, onNavigate }: Search
       detail: `${shortDate(error.d)} · ${excerpt([error.src, error.why, error.fix].filter(Boolean).join(". "), query.trim())}`,
       href: "/errors",
     }));
+    // Your own practice, by title (F51): the newest time each one was done, opened on its day in History.
+    const seen = new Set<string>();
+    const practiced = sortMatches(practiceItems, (x) => rankSearch(query, x.title, x.detail)).filter((x) => !seen.has(x.title) && !!seen.add(x.title)).map<SearchResult>((x) => ({
+      id: `history-${x.id}`, title: x.title, detail: `${shortDate(x.d)} · ${x.detail}`, href: `/history?d=${x.d}`,
+    }));
     const pages = sortMatches(PAGES, (page) => rankSearch(query, page.title, page.keywords)).map<SearchResult>((page) => ({
-      id: `page-${page.href}`, title: page.title, detail: "Open page", href: page.href,
+      id: `page-${page.href}-${page.title}`, title: page.title, detail: "Open page", href: page.href,
     }));
     const make = (title: string, results: SearchResult[], more?: SearchGroup["more"]) => results.length ? [{ title, results: results.slice(0, 5), ...(results.length > 5 && more ? { more } : {}) }] : [];
     return [
@@ -224,10 +246,11 @@ export default function SearchPalette({ open, onOpenChange, onNavigate }: Search
       ...make("Study resources", resourceRows.map(toResource), { label: "Browse VARC resources", href: "/varc" }),
       ...make("Saved words", words, { label: "Open your word list", href: "/words" }),
       ...make("Reading journal", notes, { label: "Open your journal", href: "/journal" }),
+      ...make("Your practice", practiced, { label: "See all in History", href: `/history?q=${encodeURIComponent(query.trim())}` }),
       ...make("Error log", mistakes, { label: "Open your error log", href: "/errors" }),
       ...make("Pages", pages),
     ];
-  }, [query, resourceData, state.errors, state.summaries, state.vocab]);
+  }, [query, resourceData, state.errors, state.summaries, state.vocab, practiceItems]);
 
   const flatResults = groups.flatMap((group) => group.results);
   const selected = flatResults[active];

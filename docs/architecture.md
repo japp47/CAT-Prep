@@ -377,6 +377,9 @@ Additions for anonymous identity:
 | 21 Oct 2026 | Link devices by a QR scanned inside 99ile (the camera app opens Safari on iPhone); typed code as the other way | Decided |
 | 23 Oct 2026 | Owner's proposals adopted as F56 to F78 in the order of D18; community needs accounts (D19); reminders through the inbox first (D23) | Proposed, owner to confirm |
 
+## 13a. Search and History stay in the browser (D26, 24 Oct 2026)
+The ⌘K palette and History (F51) read the student's own state in the browser. Sync already puts the same state on every linked device, so neither needs an endpoint, and both work offline. Per-student data is bounded by the sync limits (20,000 records, 8 MB), so in-browser search stays fast as students grow; the number of students does not matter because each browser searches only its own data. Server search arrives with shared content: community posts (F67, F68) get a Postgres `tsvector` column and a GIN index in the `community` schema.
+
 ## 14. Later services (planned 23 Oct 2026; details decided when each step starts)
 
 **Solver (F57, F61; TypeScript, browser).** A small constraint solver for scheduling, grouping, tournaments and grid puzzles: counts the arrangements left after each clue, proves one answer, drives Replay and generates daily puzzles from a seed. Pure functions with property tests; loaded only on DILR and Arcade pages. No server.
