@@ -1,6 +1,7 @@
 import { CAUSES, OPTION_TRAPS } from "../data/traps";
 import { addDays } from "../lib/date";
-import type { CrAttempt, ErrorEntry, PracticeSet, RcAttempt, SpeedRun } from "../lib/state";
+import { filterHref } from "./errorfilter";
+import type { Cause, CrAttempt, ErrorEntry, PracticeSet, RcAttempt, SpeedRun } from "../lib/state";
 import { rcStale } from "./versions";
 import { CR_TYPE, CR_TYPES, GENRES, RC_QTYPE, type CrMeta, type Difficulty, type RcMeta, type RcSet } from "./types";
 
@@ -155,7 +156,8 @@ export function drillForType(t: string): string {
   return va[t] ? `/practice/va?type=${va[t]}&n=6` : t === "Critical reasoning" ? "/practice/cr?n=6" : t === "RC" ? "/practice/library" : "/practice";
 }
 
-export interface Pattern { key: string; text: string; n: number; of: number; to: string }
+/** to drills the pattern; list opens its entries in the Error log. */
+export interface Pattern { key: string; text: string; n: number; of: number; to: string; list: string }
 /** Errors in one pair before it is a pattern, and questions of the type practised (docs/research/step-2g.md). */
 export const PATTERN_MIN = 4;
 
@@ -190,7 +192,8 @@ export function patterns(errors: ErrorEntry[], practice: PracticeSet[], today: s
       const text = p.kind === "trap"
         ? `${p.n} of your last ${of} ${name(p.t)} misses fell for “${p.what.toLowerCase()}”.`
         : `${p.n} of your last ${of} ${name(p.t)} misses: you marked “${CAUSES[p.what as keyof typeof CAUSES].toLowerCase()}”.`;
-      return { key, text, n: p.n, of, to: drillForType(practiceTypeOf(p.t)) };
+      const list = filterHref(p.kind === "trap" ? { sec, t: p.t, trap: p.what } : { sec, t: p.t, cause: p.what as Cause });
+      return { key, text, n: p.n, of, to: drillForType(practiceTypeOf(p.t)), list };
     });
 }
 
