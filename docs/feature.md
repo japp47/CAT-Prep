@@ -10,8 +10,8 @@ This is the first of four documents. Read them in this order:
 | Analyze | `docs/analyze.md` | Do the spec, the plan and the code agree? What is missing or risky? |
 | Implement | `docs/implement.md` | Branch by branch: files, data changes, tasks, tests, commit message |
 
-Feature numbers match the numbered list in `docs/plan.md` Part 1 (1 to 40). Features added on 21 Oct 2026 from the research review are 41 to 49; F50 came from the step 3 research.
-Last updated 21 Oct 2026.
+Feature numbers match the numbered list in `docs/plan.md` Part 1 (1 to 40). Features added on 21 Oct 2026 from the research review are 41 to 49; F50 came from the step 3 research. F56 to F78 (thinking practice, reminders, community, the manager track) came from the owner's proposals of 23 Oct 2026, reviewed in `docs/research/beyond-cat.md`.
+Last updated 23 Oct 2026.
 
 ---
 
@@ -42,6 +42,17 @@ Every feature either feeds this loop or makes it easier to start the day.
 5. **Original content, checked by tests.** Every answer key is tested before it ships. Real CAT papers are linked, never copied.
 6. **Fast on a cheap phone on 4G.** Budgets in `npm run size`; see `docs/wiki/Performance.md`.
 7. **Free to run.** ₹0 hosting at launch (see `docs/architecture.md`, hosting).
+8. **Practise decisions, not only answers.** Which set to attempt, which method to use, when to move on: the exam rewards these as much as solving, so 99ile trains and measures them (F56, F60).
+9. **Learn together, solve independently.** Other students help after you have tried, never before: a question's discussion opens only once you attempt it (F67).
+10. **Reminders help, never guilt.** At most one study reminder a day, at the time the student chose, saying what to do next; a missed day is never red (F65, F66).
+
+**How 99ile grows (decided 23 Oct 2026).** One learning engine, in this order:
+- **CAT Coach** is the product: VARC, DILR and Quant with the mistake loop. DILR and Quant come first, before anything below.
+- **Habit**: the restart plan, the inbox and reminders (F64 to F66), and one daily puzzle (F61).
+- **Community**, built around our own questions: discussions under each question, the doubt forum, private study groups (F67 to F70).
+- **Beyond CAT, the manager track**: WAT, GD, PI and case practice in the interview season (Dec 2027 to Mar 2028), then MBA-ready basics, daily dilemmas and a founder simulator before B-school starts (F72 to F78).
+
+**North-star metric.** Mistakes re-solved correctly on a later try, per active student per week. It measures the loop, not visits.
 
 **Status words used below:** Live, Building, Next (the step after the one being built), Planned, Later.
 
@@ -348,6 +359,156 @@ Learn tab with topic weightage, a formula sheet per topic, plan blocks, topic dr
 #### F55. Passage recap before a retry — Planned (after F54)
 Before re-solving an RC question from the Error log or the redo queue, a three-line reminder of the passage (what the author claims and how strongly), so the student answers the question, not a half-remembered passage. The student's own summary is used when they wrote one; otherwise the set's model summary, folded until asked for.
 
+---
+
+### Thinking practice in DILR and Quant (23 Oct 2026; built with steps 4 and 5)
+These are what make the DILR and Quant sections ours rather than another question bank. Review and reasons: `docs/research/beyond-cat.md`.
+
+#### F56. Set Selection Arena (DILR) — Planned (step 4)
+**Problem.** Students who solve sets well still lose marks by picking the wrong ones: a set that looks easy turns into casework, a doable one is skipped. Nothing trains or measures this choice.
+**What the student gets.**
+- A round shows four unseen sets. Two minutes to look, then rank them and guess each one's time and marks.
+- They solve under the clock (40 minutes for the round, as in the exam's DILR section) and may switch sets at any time.
+- Afterwards, guess against reality: "Set C looked easy and took 19 minutes", "you skipped B, which most students finish in 9", "switching at minute 12 would have earned 6 more marks".
+- **Selection accuracy**, a score for how well their ranking matched what happened, tracked over rounds on Progress (F44) and used by the mock wizard (F12) for DILR.
+**Data.** Each DILR set carries `estMinutes` and `difficulty` from the author; once synced attempts exist, both are recalibrated from students' median times (aggregates only). A round is a record (`arenaRounds`) with the ranking, guesses, times per set and switches.
+**Needs.** About 40 DILR sets, so rounds do not repeat too soon (step 4 starts with 20; the Arena opens at 32).
+**Done when** a round can be played on a phone, the debrief names the set that cost the most time with its numbers, and selection accuracy moves across three rounds.
+
+#### F57. DILR Replay: see the deduction happen — Planned (step 4, three formats)
+**Problem.** A written DILR solution shows the final grid, not how anyone got there. Students learn answers, not how to represent the problem.
+**What the student gets.**
+- An interactive board for three formats first: **scheduling** (people × slots), **grouping** (people into teams) and **tournaments** (results table). Tap to place, cross out, or mark "must be".
+- Clues reveal one by one in "learn" mode, each with why it matters and how many arrangements remain ("8 → 2").
+- After solving, **Replay** plays the chain of deductions in order; the step that cut the most is highlighted.
+**How.** Each set in these formats is stored as constraints; a small solver (TypeScript, tested) computes the remaining arrangements after each clue, proves the set has one answer, and drives the replay. The same solver powers the Arcade's puzzles (F61).
+**Done when** every set in the three formats has a solver test proving a unique answer, and the replay shows the arrangement count after each clue.
+
+#### F58. Quant Debugger — Planned (step 5)
+**Problem.** Quant practice starts from "get the answer". Students who get it wrong rarely find where their reasoning broke, so the same slip comes back.
+**What the student gets.**
+- **Find the first wrong step**: a worked solution with one subtle mistake; tap the first wrong line and say why (from a short list). Then the correct line.
+- After a wrong Quant answer, "What went wrong?" with Quant causes alongside F42's: concept misunderstood, words turned into the wrong equation, algebra or calculation slip, wrong method, right method but too slow.
+- Three short follow-ups aimed at that exact cause, then the cause joins the pattern view (F42) like any other.
+**Data.** Debugger items are content (`content/quant/debug.json`): steps, the wrong step's index, the reason, the fix. Causes extend the existing cause list.
+**Done when** 30 Debugger items ship with tests that each has exactly one marked wrong step, and a Quant cause appears in the patterns on Progress.
+
+#### F59. Estimate first — Planned (step 5)
+Before working a Quant question, an optional 10-second step: pick a range or cross out impossible options ("a price up 20% then down 20%: above, at or below where it started?"). Afterwards the student sees whether the estimate alone would have found the answer. A short drill of estimate-only rounds (percentages, ratios, fractions, orders of magnitude) works as a 3-minute warm-up on Today.
+**Done when** the estimate step can be switched off, and Progress shows how often estimation alone was enough.
+
+#### F60. Why this method? — Planned (step 5)
+After every Quant question: the method used in our solution, the faster one when it exists (substitution, options, approximation), and **when the shortcut fails**. The student says which method they used; Progress tracks accuracy and time by method. A **Same maths, different world** mode asks the same idea (say, successive percentages) in five settings (a discount, revenue growth, a margin, a survey, a CAT word problem) to show whether the student sees the structure or only a familiar story.
+**Done when** every Quant question has a method note and the same-maths drill exists for five topics.
+
+#### F62. Data Detective — Planned (step 8)
+A chart or table with a claim beside it ("revenue up 25%, so the business is doing better"). The student sorts statements into: follows from the data, does not follow, needs more information. Joins DI with critical reasoning (step 2d) and trains the habit of questioning a conclusion. Written content, no AI; 20 items to start.
+
+#### F63. Reality to DILR — Planned (step 7, with F53)
+The Chrome extension (F53) grows from articles to tables: a points table, a results table or a chart on a page becomes a small DI caselet. Numbers are copied from the page and every answer is **computed by code** from them, never by the model; the model only words the questions. Questions that cannot be checked are not shown.
+
+### Habit: the inbox, reminders and the restart plan
+Review: `docs/research/beyond-cat.md` §2. Practice counts only when a set, drill, timed session or mistake review is finished; opening the app is not studying.
+
+#### F61. Thinking Arcade: one daily puzzle — Planned (step 4b, four kinds; more in step 8)
+**Problem.** Students want a light way to start the day; generic brain games do not train CAT skills and are everywhere already.
+**What the student gets.**
+- **One daily puzzle**, the same for everyone, 3 to 5 minutes, from four kinds that are DILR formats: **tournament table** (rebuild results from clues), **schedule shuffle** (place events under rules), **Queens** (one per row, column and region), and a **number grid** (KenKen-style sums and products).
+- Each puzzle names its skill ("casework on a results table") and ends with "Now try a real set of this kind" (F57).
+- A small practice pool of past daily puzzles; no infinite play, no punishing timers. A share card with the time and no spoilers (F18).
+**How.** Puzzles are generated by code from a daily seed and checked by the F57 solver for exactly one answer, so they cost nothing to write and are tested like content. Works offline.
+**Measured, not claimed.** We compare unseen DILR set scores of students who play with those who do not before saying the puzzles help. Sudoku and chess are not built: off-skill and available everywhere.
+**Done when** 365 seeds each produce a puzzle with one answer (a test), and the daily puzzle is the same on two devices.
+
+#### F66. Restart plan — Planned (step 4b; no backend)
+**Problem.** After a few missed days, Today still shows the full plan plus catch-up, and the student closes the tab.
+**What the student gets.** After three or more days without practice, Today opens with "Welcome back. 15 minutes today": one short passage, three redo questions and one mistake review, then the normal plan from tomorrow. The streak is forgiving: one free day a week, shown as "rest", never red.
+**Done when** a student who comes back after a week sees one short plan, not a backlog.
+
+#### F64. Inbox — Planned (step 4b)
+A bell in the header with an unread count. Holds reminders, replies and accepted answers (once F67 and F68 exist), group invites, and the weekly review. Each item opens what it is about. Works with sync on (the server keeps the inbox); with sync off it shows only what this device produced.
+**Done when** each item opens its target, read state syncs across linked devices, and the bell costs nothing on pages that never open it (loaded idle).
+
+#### F65. Study reminders and streak protection — Planned (step 4b)
+**What the student gets** (all off until turned on in Settings):
+- **Daily reminder** at a chosen time, only if today's practice is not done, naming the next step (F41) and opening it.
+- **Streak at risk**: one reminder at most, two hours before the day ends, only with an active streak.
+- **Weekly review ready** (F13) on Sunday.
+- Quiet hours (default 23:00 to 07:00), pause for a week, and at most **one** study reminder a day across all kinds.
+**Channels.** The inbox for everyone with sync on; **web push** for students who allow it (on iPhone only after 99ile is added to the Home Screen, iOS 16.4+, so the screen says so); the existing calendar reminder (`.ics`) as the no-account fallback. Email only after accounts (B7), and only for the weekly review.
+**How.** The server knows practice is done from synced records with today's date. A scheduled job (every 15 minutes) finds students whose reminder time has passed, checks preferences, quiet hours and what was already sent (an idempotency key per student, kind and day), then writes the inbox item and sends the push.
+**Done when** a student who practised gets no reminder, one who did not gets exactly one at their time (checked across two devices), and turning reminders off stops them within 15 minutes.
+
+### Community: learn together, solve independently
+Review: `docs/research/beyond-cat.md` §2. Needs accounts (B7, Google sign-in): posting is tied to an account, never to an anonymous sync identity. 18 and over, as sync. Text and maths (KaTeX) first; images later.
+
+#### F70. Safety and moderation — Planned (step 6b; before anything is public)
+Community rules shown before the first post; report on every post and answer (spam, wrong, rude, off-topic); block a user; new accounts limited (3 posts a day for the first week); links from new accounts held; the owner's review queue (a list, as for F39); hide on three independent reports until reviewed. A published grievance contact that acknowledges within 24 hours and resolves within 15 days (IT Rules 2021; check the current text before launch). No direct messages.
+**Done when** a reported post can be hidden and restored from the review queue, and every rule above has a server test.
+
+#### F67. Discuss this question — Planned (step 6b)
+**Problem.** A student who disagrees with our explanation, or found a faster way, has nowhere to say it; the next student with the same doubt cannot see it.
+**What the student gets.**
+- Under every question in a review: **Discussion**, which opens only after the student has attempted that question (the spoiler gate).
+- Posts are a doubt ("why not B?") or **another way** (a different method). Votes; the best other way shows under our solution.
+- "Our explanation is wrong" goes to F39 as well, so a real error gets fixed in the content.
+**Why first.** Every question already has a page and traffic, so there is no empty forum to fill, and every thread is about something specific.
+**Done when** a discussion is invisible before an attempt and visible after, on every section's questions.
+
+#### F68. Doubt forum — Planned (step 6b)
+**What the student gets.**
+- **Ask from a mistake**: from the Error log, one tap turns an entry into a doubt carrying the question link, the chosen and right options, and the student's own reasoning and cause (F42), so helpers see the thinking.
+- Ask any doubt (section, topic, text and maths). Answers, votes, the asker accepts one; disputed answers can be flagged.
+- Filters: section, topic, unanswered, solved. **Unanswered first** on the forum's home, so helping is the default action.
+- **Teach-back**: an accepted answer counts as a review of that question in the helper's redo queue.
+- A solved doubt links back to practice: "Try a similar question".
+**Done when** a doubt can be asked from an Error log entry in two taps and an accepted answer reaches the asker's inbox (F64).
+
+#### F69. Study groups — Planned (step 6b, after F67 and F68)
+Private, invite-only groups of 2 to 30 (friends, classmates, a study partner). Join by an invite link that expires, optional approval by the owner, membership checked by the server on every read (a secret link alone is not privacy). A shared weekly goal, the group's doubts, and a **group streak** kept if most members practised that day. A leaderboard **inside the group only** replaces the global daily leaderboard (37) and the accountability partner link (38): a partner is a group of two.
+**Done when** a non-member cannot read anything in a group even with its id, and leaving a group removes access at once.
+
+#### F71. Public communities — Later (only if moderation keeps up)
+Open groups such as "CAT 2027 Quant". Built only once F70's queue is handled within a day for two months running; public spaces need moderators, and spam is what killed old CAT forums.
+
+### Beyond CAT: the manager track (after CAT 2027)
+For CAT students after the exam, then for anyone who wants to think like a manager. It follows the student's real calendar: results and shortlists in January, WAT, GD and PI from January to March, admits by May, B-school starts in June or July. Replaces "WAT and PI" in Planned later.
+These are ideas, not specs yet. **Each is researched when it moves into the next two steps** (what B-schools test, what toppers and interviewers say, what exists free), then written up in full here. The question to answer in that research is under each one.
+
+**Season 1: getting in (Dec 2027 to Mar 2028)**
+
+#### F72. The 60-second brief — Later (step 10)
+A chart, a short business problem or an article; the student gives the main finding, the evidence and one recommendation, in 60 seconds spoken or 120 words written. Feedback against a fixed rubric (clarity, structure, evidence, assumptions, length): by self-check first, by AI later (principle 3). Doubles as WAT practice with topics from the reading journal.
+*Research:* which WAT formats the IIMs and other schools use now, and how they are marked.
+
+#### F76. PI prep from your own story — Later (step 10)
+The questions a panel asks come from the student's own form: "Why MBA?", "Why leave your job?", their degree, hometown, hobbies, work. The student fills a short profile; 99ile builds a question bank from it, with a method for each kind (a structure for "tell me about yourself", how to handle "I don't know"). Practice by recording an answer on the phone, then a self-check against a rubric; AI feedback later. The recording never leaves the device.
+*Research:* PI transcripts shared by students (question kinds by school), what makes an answer land.
+
+#### F77. GD practice — Later (step 10)
+A topic (often from the news), two minutes to build points on both sides, then a structure: open, add a new point, bring in data, summarise. Reuses critical reasoning (step 2d): find the assumption in the other side's point. A study group (F69) can run a live GD on a call, with 99ile giving the topic, the timer and a rubric for peer marks.
+*Research:* which schools still run GDs or replaced them (some use group tasks or case discussions), how they are marked.
+
+#### F74. Mini case interview — Later (step 10)
+A business question ("a café's sales are up but profits are down: why?"). The student structures it first (a tree of possible causes), asks for data, which arrives step by step as in a real interview, reads the numbers and ends with a recommendation. Scored on the reasoning (structure complete, the right data asked for, the numbers read correctly, a clear call), not on matching one answer. Uses Quant (F60) and DI skills.
+*Research:* how consulting firms and B-school panels run cases for freshers; open case books we may learn from (never copy).
+
+**Season 2: ready for the MBA (Apr to Jun 2028)**
+
+#### F78. MBA-ready basics — Later
+The gap between an admit and day one: reading a balance sheet and an income statement, unit economics, basic statistics, spreadsheets (formulas, a pivot table, a chart), writing a one-page memo. Short lessons, each with a task on real-looking data, in the same practice-and-mistake loop.
+*Research:* what B-schools send admits as pre-MBA work, and where first-year students say they struggled.
+
+#### F73. Manager's daily dilemma — Later
+A five-minute scenario with a budget, competing priorities and partial data: launch A or B, which complaint to fix first, quality against delivery time. The decision's consequences are shown and the trade-off explained. Some cases have a stronger answer by the numbers; others reward a clear justification within the limits. A daily habit for the track, like the daily puzzle (F61) is for CAT.
+*Research:* business-school simulations (for example Wharton's short simulations) and what makes a decision game teach, not just reward guessing.
+
+#### F75. Founder simulator — Later (last)
+From a raw idea to a small experiment: pick a customer, name the problem, design a test, set a price, estimate costs, decide what to build first. Each choice has consequences (good margins but weak demand; a survey that does not test the real assumption). Teaches hypothesis testing, unit economics and priorities, not guessing the most profitable option.
+*Research:* lean start-up teaching tools and whether students finish long simulations; built only if F72 to F74 are used.
+
+**Rule for the track.** It shares the engine (the mistake loop, the inbox, groups) and never moves into CAT practice pages. A season starts only if the CAT Coach is in good shape and the season before it was used.
+
 ## 4. Planned later
 Short; each gets a full entry here when it moves into the next two steps.
 
@@ -360,15 +521,20 @@ Short; each gets a full entry here when it moves into the next two steps.
 | 8, 9 | Past-paper catalogue, library filters by question type | 8 |
 | 10 | SEO: pre-rendered routes, sitemap | 8 |
 | 18 | Share card | 8 |
-| 37, 38 | Daily leaderboard, accountability partner link | 9 |
+| 37, 38 | Daily leaderboard, accountability partner link: **folded into study groups (F69)**, a leaderboard inside the group only | 6b |
 | 40 | "Practice this article" bookmarklet (becomes the Chrome extension, F53) | 7 |
 | 49 | Privacy-friendly usage counts (which pages are used; no per-student data) | open decision |
 | 31, 32 | B-school calculator, exam calendar | 10 |
 | 20 | Hindi explanations | when there is help |
-| — | WAT and PI, community, story submissions | later |
+| — | Story submissions | later |
+| — | WAT and PI: now the manager track (F72 to F78); community: now F67 to F71 | 6b, 10 |
 
 ## 5. Not doing
 - A general chatbot. AI has a job tied to the student's own practice, or it is not built.
 - Copying real CAT questions or coaching material into the site.
 - Mandatory sign-up, ads, or selling data.
 - Counting hours studied as progress on its own.
+- Direct messages between students, a general social feed, follower counts.
+- Paid tutors, coaching institutes or ads in the community.
+- Generic brain games (Sudoku, chess) or claims that puzzles raise CAT scores before we have measured it.
+- More than one study reminder a day, reminders in quiet hours, or streak countdowns meant to cause worry.

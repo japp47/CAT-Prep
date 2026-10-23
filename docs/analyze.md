@@ -66,6 +66,9 @@ The research is a product review (sections 1 to 8), a backend plan, and a note o
 
 ---
 
+### 2.5 Owner's proposals, 23 Oct 2026 (`docs/research/beyond-cat.md`)
+Thinking practice (Arcade, Manager Lab, DILR and Quant ideas), community, and reminders. **Adopted** as F56 to F78 with these changes: CAT Coach first, nothing moves DILR or Quant; the Arcade is one daily puzzle in four DILR-like kinds, generated and proved unique by code; Manager Lab becomes the manager track after CAT 2027, in two seasons (getting in, then ready for the MBA), with PI, GD and MBA-ready basics added; community starts from discussions under our own questions with a spoiler gate, then the doubt forum, then private groups, public communities last; reminders go to the inbox first and web push only where it works. **Not adopted:** Sudoku and chess, direct messages, a social feed, image uploads at first, public communities at launch, more than one reminder a day.
+
 ## 3. Consistency check: spec vs plan vs code
 
 ### 21 Oct 2026, step 3 (backend v1)
@@ -120,6 +123,12 @@ The research is a product review (sections 1 to 8), a backend plan, and a note o
 | R2. A sync bug deletes or duplicates progress | low | Trust and data lost | Compare-and-set, tombstones only from real deletes, merge on restore, the two-device property test (S5), end-to-end tests (B3), backups still downloadable |
 | R3. The free database fills (500 MB) or its terms change | low | Sync stops | Size check in the weekly backup job; Neon or a paid plan as fallback; the site works without sync |
 | R4. Students lose recovery codes | medium | Lost progress on a lost device | Plain words on the code screen, download as a file, backup offered, Google sign-in in B7 |
+| R5. The new ideas pull time from DILR and Quant | high | The sections students come for arrive late | Arena and Replay are part of step 4, Debugger and methods part of step 5; habit (4b) is two weeks; community waits for step 6b; Manager Lab for after the exam |
+| R6. An empty or spammy community | medium | Looks dead or cheap; trust lost | Start with discussions under questions that already have traffic; unanswered first; new-account limits; hide on reports; public groups only when moderation keeps up (F70, F71) |
+| R7. Legal duties of a forum (IT Rules 2021 grievance officer, takedowns; DPDP for minors) | medium | Notices, forced shutdown | 18 and over; published rules and grievance contact; 24-hour acknowledgement, 15-day resolution; legal check before 6b |
+| R8. Reminders annoy, or push silently fails on iPhone | medium | Students turn everything off, or never get it | Off by default; one a day at most; quiet hours; inbox and calendar reminder as fallbacks; say plainly that iPhone needs the Home Screen app |
+| R9. Arena needs more DILR sets than step 4 plans (rounds repeat) | medium | Arena feels stale | Opens at 32 sets; `cmd/author` drafts; difficulty recalibrated from real times |
+| R10. Free-tier limits with community content and a reminder job | low | Database grows, job misses runs | Text only; size check in the weekly backup; job every 15 minutes is idempotent so a missed run is caught by the next |
 
 ---
 
@@ -138,6 +147,13 @@ The research is a product review (sections 1 to 8), a backend plan, and a note o
 | D10 | Database: Supabase free Postgres instead of Neon? | **Accepted 21 Oct 2026, Neon as fallback. Region changed to Singapore (`ap-southeast-1`) on 21 Oct 2026** with D11: the server runs in Singapore, and every request makes several database round trips, so the database sits next to it (about 1 ms each instead of 60 ms to Mumbai). Neon stops for the month after about 400 hours; Supabase has no hour cap. Only `DATABASE_URL` changes |
 | D11 | Cloud Run needs a card on the Google billing account (stays free with max 2 instances and a ₹100 alert). OK, or Render (no card, about a minute to wake)? | **Changed 21 Oct 2026 (owner): Render free web service in Singapore** (Render has no India region), no card. The one-minute wake is avoided with a keep-awake ping every 5 minutes (`docs/implement.md` B1); one service awake all month is about 744 of the 750 free hours, so only one free service |
 | D12–D17 | Database design: roles and permissions as tables, admin only for signed-in accounts, no one reads students' data, profiles per identity, hashed IPs in audit, schema `app` with the Supabase Data API off | Proposed 21 Oct 2026 in `docs/database.md` §10; owner to confirm before B2 |
+| D18 | Order of the new work: Arena and Replay inside step 4, habit as step 4b (Jan 2027), Quant ideas inside step 5, community as step 6b (Apr 2027), Manager Lab after CAT 2027 | Recommended 23 Oct 2026; owner to confirm |
+| D19 | Community needs a Google account (B7), not an anonymous sync identity; 18 and over | Recommended: yes. Posts need someone accountable, and DPDP needs parental consent for under-18s |
+| D20 | Discussion under a question opens only after an attempt (spoiler gate) | Recommended: yes; it is principle 9 |
+| D21 | Global daily leaderboard (37) replaced by a leaderboard inside study groups | Recommended: yes |
+| D22 | Arcade: four DILR-like kinds generated by code; no Sudoku or chess | Recommended: yes |
+| D23 | Reminders: off by default, inbox first, web push opt-in, email only for the weekly review after accounts | Recommended: yes |
+| D24 | Scheduled reminders run where? A GitHub Actions cron every 15 minutes calling a protected endpoint, or a goroutine ticker in the API (Render free stays awake with the ping) | Recommended: a ticker in the API with a Postgres advisory lock, idempotent; GitHub cron as a backup trigger. Decide in 4b |
 | Older | Cloud Run needs a card; AI limits; who checks DILR and Quant keys; leaderboard nicknames | As in `docs/plan.md` |
 
 ---

@@ -98,9 +98,23 @@ Product line: **a free CAT coach that learns from every mistake and tells you wh
 50. **Keep my progress safe on this device** (from the step 3 research): ask the browser to keep the data, tell iPhone Safari students to add 99ile to the Home Screen (Safari clears a site's data after a week without a visit), warn before storage fills.
 
 ### 1I. Later
-- WAT and PI prep (essay prompts, current affairs digest, interview bank).
-- Community features (study groups, doubt forum).
+- WAT and PI prep: now F72 and F73 in 1J (after the exam).
+- Community: now F67 to F71 in 1J.
 - A no-code updates editor (Decap CMS on git, no server).
+
+### 1J. Beyond practice (owner's proposals, 23 Oct 2026)
+Review in `docs/research/beyond-cat.md`; specs in `docs/feature.md`. CAT Coach stays the product: nothing here moves DILR or Quant.
+56. **Set Selection Arena** (DILR): rank four sets before solving, compare with what happened; selection accuracy on Progress.
+57. **DILR Replay**: an interactive board for scheduling, grouping and tournaments; a tested solver replays the deductions.
+58. **Quant Debugger**: find the first wrong step; Quant error causes join the patterns (42).
+59. **Estimate first**: a range or eliminated options before working; a 3-minute warm-up.
+60. **Why this method?**: method, the faster way and when it fails; "same maths, different world".
+61. **Thinking Arcade**: one daily puzzle in four DILR-like kinds, generated and proved unique by the 57 solver.
+62. **Data Detective**: what a chart does and does not support.
+63. **Reality to DILR**: tables on a web page become caselets in the extension (53); answers computed by code.
+64. **Inbox**; 65. **study reminders and streak protection** (web push, one a day at most); 66. **restart plan** after missed days.
+67. **Discuss this question** (opens after an attempt); 68. **doubt forum** with "ask from a mistake"; 69. **study groups** (absorb 37 and 38); 70. **safety and moderation**; 71. public communities, later.
+72 to 78. **The manager track**, after CAT 2027. Season 1, getting in (Dec 2027 to Mar 2028): the 60-second brief (72), PI prep from your own story (76), GD practice (77), mini case interview (74). Season 2, ready for the MBA (Apr to Jun 2028): MBA-ready basics (78), manager's daily dilemma (73), founder simulator (75). Each is researched when it comes up.
 
 ---
 
@@ -257,13 +271,15 @@ Total running cost: ₹0 at launch. A custom domain (about ₹800 a year) is opt
 | D | Oct–Nov 2026 | **Redesign on Tailwind CSS v4 + shadcn/ui, before the rest of step 2.** Plan and phases D0–D5 in `docs/design/redesign-plan.md` |
 | 3 | 22 Oct–18 Dec 2026 | **Backend v1, re-planned 21 Oct 2026** (research `docs/research/step-3.md`; branches in `docs/implement.md`): **S5** sync ledger and keep-data-safe (50), no server, **built 21 Oct 2026** (hybrid clock, two-device property tests, iPhone Home Screen note with backup); **B1** foundation and deploy (Go 1.27, Render and Supabase in Singapore), **done 22 Oct 2026**; **B2** RC attempts synced end to end, to 14 Nov; **B3** all records, restore merges, delete asks where, to 22 Nov; **B4** recovery code and device linking (47), to 29 Nov; **B5** export, delete and the privacy page, then **sync switched on for students**, to 4 Dec; **B6** feedback inbox (39), to 7 Dec; **B7** Google sign-in with "save this device's progress" (D1, D9), to 18 Dec, or after DILR if step 3 runs late |
 | 3b | Dec 2026 | **AI v1:** summary feedback (36) and "explain my mistake" (35) on the Groq 8B model, Ollama in dev |
-| 4 | Dec 2026–Jan 2027 | DILR (21–23). Use `cmd/author` + Ollama for set drafts. **One daily budget (27) moves here** from step 6, because this is when two sections are first live |
-| 5 | Jan–Mar 2027 | Quant (24–26) |
+| 4 | Dec 2026–Jan 2027 | DILR (21–23). Use `cmd/author` + Ollama for set drafts. **One daily budget (27) moves here** from step 6, because this is when two sections are first live. **Set Selection Arena (56)** once 32 sets exist, and **DILR Replay (57)** for scheduling, grouping and tournaments, with the solver as its core |
+| 4b | Jan 2027 | **Habit, as students arrive:** restart plan (66, no backend), inbox (64), study reminders and web push (65), the daily puzzle in four kinds (61, reuses the 57 solver). About two weeks; may run beside Quant content writing |
+| 5 | Jan–Mar 2027 | Quant (24–26), with **Quant Debugger (58)**, **estimate first (59)** and **why this method (60)** built into the player |
 | 6 | Mar 2027 | Mock upgrade (28), calendar export (30), flashcards (17), professional mode (16) |
-| 7 | Apr 2027 | **AI v2:** article → RC set (34), and the AI coach and weekly narrator (48) reading the computed review |
-| 8 | Apr–May 2027 | Catalogue (8), filters (9), SEO (10), share card (18) |
-| 9 | Jun–Jul 2027 | Leaderboard (37), partner link (38), feedback (39), bookmarklet (40), burnout check (19) |
-| 10 | Oct 2027 → | B-school calculator (31), exam calendar (32), WAT/PI. Hindi when there is help |
+| 6b | Apr–May 2027 | **Community, needs B7 accounts:** safety and moderation first (70), then discuss this question (67), the doubt forum (68), then study groups (69), which replace the global leaderboard (37) and partner link (38). A legal check of the IT Rules duties before launch |
+| 7 | Apr 2027 | **Reality to DILR (63)** in the extension after article → RC. **AI v2:** article → RC set (34), and the AI coach and weekly narrator (48) reading the computed review |
+| 8 | May–Jun 2027 | Catalogue (8), filters (9), SEO (10), share card (18), more Arcade kinds (61), Data Detective (62) |
+| 9 | Jun–Jul 2027 | Burnout check (19). Leaderboard and partner link moved into study groups (69); feedback (39) is in step 3; the bookmarklet (40) became the extension (53) |
+| 10 | Oct 2027 → | B-school calculator (31), exam calendar (32). **Manager track, season 1 (Dec 2027–Mar 2028):** brief (72), PI prep (76), GD (77), mini case (74). **Season 2 (Apr–Jun 2028):** MBA-ready basics (78), daily dilemma (73), founder simulator (75), each only if the season before was used. Public communities (71) only if moderation keeps up. Hindi when there is help |
 
 Each step ships as its own branch with a Conventional commit message. The user commits and pushes.
 

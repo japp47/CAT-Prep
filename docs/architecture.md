@@ -306,7 +306,9 @@ type Coach interface {
 | B6 feedback | `feedback` |
 | 3b AI | `ai_cache`, `ai_runs`, `ai_usage`, `ai_budget` |
 | B7 accounts | `users`, `oauth_identities` (Google first); `password_credentials`, `email_tokens` when email sign-in comes (D9) |
-| Step 9 | `daily_scores` |
+| 4b habit (F64, F65) | schema `notify`: `inbox`, `prefs`, `push_subscriptions`, `sends` (unique key per identity, kind and day) |
+| 6b community (F67 to F70) | schema `community`: `threads`, `posts`, `votes`, `groups`, `members`, `invites`, `reports`, `blocks` |
+| Step 9 | `daily_scores` (now per study group, inside `community`) |
 
 ```sql
 -- Sketch; the real definition, with created_at/updated_at and grants, is in docs/database.md §5.
@@ -372,3 +374,19 @@ Additions for anonymous identity:
 | 21 Oct 2026 | Render free in Singapore instead of Cloud Run (D11, no card); Supabase moved to Singapore beside it; keep-awake ping; deploy = migrate, then Render deploy hook for the exact commit | Decided, live |
 | 21 Oct 2026 | Go 1.27 in `go.mod` and the builder | Decided (support policy) |
 | 21 Oct 2026 | Link devices by a QR scanned inside 99ile (the camera app opens Safari on iPhone); typed code as the other way | Decided |
+| 23 Oct 2026 | Owner's proposals adopted as F56 to F78 in the order of D18; community needs accounts (D19); reminders through the inbox first (D23) | Proposed, owner to confirm |
+
+## 14. Later services (planned 23 Oct 2026; details decided when each step starts)
+
+**Solver (F57, F61; TypeScript, browser).** A small constraint solver for scheduling, grouping, tournaments and grid puzzles: counts the arrangements left after each clue, proves one answer, drives Replay and generates daily puzzles from a seed. Pure functions with property tests; loaded only on DILR and Arcade pages. No server.
+
+**Notifications (F64, F65; Go module `notify`).**
+- Inbox and preferences through `/v1/notify/*`, behind the same `/v1` gate and device cookie as sync.
+- A scheduler (D24) every 15 minutes: students whose reminder time passed in their time zone, sync records show no finished practice today, not in quiet hours, nothing sent yet today (insert into `sends` with a unique key; a conflict means skip). Then write the inbox item and send web push (VAPID keys in Render env, never in the repo). A failed push leaves the inbox item; subscriptions that return 404 or 410 are removed.
+- Frontend: push subscription in the existing service worker; the bell loads idle.
+
+**Community (F67 to F70; Go module `community`).**
+- Accounts only (B7); every read of a group checks membership in SQL, not by a secret id.
+- The spoiler gate is checked on the server: a thread's posts are returned only if the identity has a synced attempt of that question (or the student says they did it on another device without sync, which unlocks it locally only).
+- Text and KaTeX source stored; rendered in the browser with HTML escaped. Rate limits per account, link holding for new accounts, hide on three reports.
+- Size: text only, about 1 KB a post; 100,000 posts is about 100 MB, inside the free database with sync.
