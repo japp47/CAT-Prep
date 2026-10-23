@@ -3,7 +3,7 @@ import { Page, PageHeader, Section } from "@/components/kit";
 import { CONTACT_EMAIL } from "@/data/site";
 
 /** When this notice last changed. Update it with any change below. */
-const UPDATED = "22 October 2026";
+const UPDATED = "23 October 2026";
 
 const P = ({ children }: { children: React.ReactNode }) => <p className="max-w-prose text-base leading-relaxed">{children}</p>;
 const List = ({ items }: { items: React.ReactNode[] }) => (
@@ -46,11 +46,23 @@ export default function Privacy() {
         <P>The servers that host 99ile see your network address with each request, as every website does, and keep it in their logs for 7 days.</P>
       </Section>
 
+      <Section title="Problem reports">
+        <P>When you use &ldquo;Report a problem with this question&rdquo;, with or without sync, we receive:</P>
+        <List items={[
+          "Which question, the page it was on, and what is wrong (wrong answer key, unclear, typo or something else).",
+          "Your note, if you write one. Please do not put your name, email or phone number in it.",
+          "With sync on, the random id of your progress, so the report is not separate from it. Never your name.",
+        ]} />
+        <P>The 99ile team reads reports in a daily email. A public list on GitHub shows which questions were reported and why, never your note. Reports help us fix questions and nothing else.</P>
+      </Section>
+
       <Section title="Where it is kept">
         <List items={[
           "Render runs the 99ile server, in Singapore.",
           "Supabase hosts the database, in Singapore.",
           "Cloudflare serves the website and runs a quick bot check (Turnstile) when you turn sync on.",
+          "Google (Gmail) holds the team's daily email of problem reports, with any notes.",
+          "GitHub holds the public list of reported questions, without notes.",
         ]} />
         <P>Singapore was chosen because it is the closest region these services offer to India.</P>
       </Section>
@@ -62,6 +74,7 @@ export default function Privacy() {
           "Link codes: they work for 10 minutes and are deleted a day after that.",
           "The security log: 400 days.",
           "Server request logs with network addresses: 7 days.",
+          "Problem reports: until the question is dealt with, then one more year. The daily emails are deleted from the team's inbox within a year too.",
         ]} />
       </Section>
 
@@ -70,7 +83,7 @@ export default function Privacy() {
           <>See it: &ldquo;Download what the server has&rdquo; in <Link className="underline underline-offset-4" to="/settings#sync">Settings</Link> gives you everything the server keeps about your progress.</>,
           "Correct it: change or delete anything in the app; the change syncs.",
           "Stop it: “Turn off sync on this device” stops that device; your progress stays on it.",
-          "Delete it: “Delete all my data”, then “Everywhere”, removes your progress from the server at once. Your other devices stop syncing and keep what they had until you delete it there too.",
+          "Delete it: “Delete all my data”, then “Everywhere”, removes your progress from the server at once. Your other devices stop syncing and keep what they had until you delete it there too. Problem reports you sent stay, no longer linked to you; write to us to have them removed.",
         ]} />
       </Section>
 

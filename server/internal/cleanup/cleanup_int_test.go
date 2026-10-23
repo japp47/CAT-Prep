@@ -44,6 +44,10 @@ func TestOldRowsGoAndRecentOnesStay(t *testing.T) {
 	exec(`insert into audit.events (action, actor_type, subject_identity_id, created_at) values
 		('test.old', 'system', $1, now() - interval '401 days'), ('test.new', 'system', $1, now() - interval '399 days')`, identity)
 
+	item := "rc:cleanup-" + identity[24:] + ":0"
+	exec(`insert into support.feedback (page, item_id, kind, status, handled_at) values
+		('/p', $1, 'typo', 'fixed', now() - interval '366 days'), ('/p', $1, 'typo', 'wont_fix', now() - interval '364 days'),
+		('/p', $1, 'typo', 'seen', null)`, item)
 	if _, err := Run(ctx, db); err != nil {
 		t.Fatal(err)
 	}
@@ -53,6 +57,11 @@ func TestOldRowsGoAndRecentOnesStay(t *testing.T) {
 	_ = db.QueryRow(ctx, `select count(*) from audit.events where subject_identity_id = $1`, identity).Scan(&events)
 	if devs != 1 || links != 1 || events != 1 {
 		t.Fatalf("left: %d devices, %d codes, %d events; want 1 of each", devs, links, events)
+	}
+	var reports int
+	_ = db.QueryRow(ctx, `select count(*) from support.feedback where item_id = $1`, item).Scan(&reports)
+	if reports != 2 {
+		t.Fatalf("left %d problem reports, want the recent closed one and the open one", reports)
 	}
 	exec(`delete from account.identities where id = $1`, identity)
 }

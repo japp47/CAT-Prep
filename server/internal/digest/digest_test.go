@@ -153,8 +153,14 @@ func TestLoadAndMarkSeenKeepNotesOut(t *testing.T) {
 	if len(mine) != 2 || mine[0].Kind != "answer_key" || mine[0].Count != 2 || mine[1].Count != 1 {
 		t.Fatalf("groups %+v", mine)
 	}
+	if len(mine[0].Notes) != 1 || !strings.HasPrefix(mine[0].Notes[0].Text, "SECRET-NOTE") || mine[0].Notes[0].Page != "/p" {
+		t.Fatalf("notes %+v", mine[0].Notes)
+	}
 	if strings.Contains(Markdown(p, ist), "SECRET-NOTE") {
 		t.Fatal("a note reached the public digest")
+	}
+	if _, body := Email(p, ist, ""); !strings.Contains(body, "SECRET-NOTE") {
+		t.Fatal("the private email lost the note")
 	}
 	n, err := MarkSeen(ctx, db, p.IDs())
 	if err != nil || n < 3 {

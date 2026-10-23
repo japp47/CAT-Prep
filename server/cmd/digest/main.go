@@ -1,6 +1,8 @@
-// Command digest posts new problem reports to the GitHub issue the owner watches, then marks them seen
-// (internal/digest). Run daily by .github/workflows/digest.yml as the owner (MIGRATE_DATABASE_URL), with
-// GITHUB_TOKEN and GITHUB_REPOSITORY. -dry prints the digest without posting or marking: make digest-prod.
+// Command digest sends new problem reports to the team, then marks them seen (internal/digest): an email with the
+// students' notes (DIGEST_SMTP_USER, DIGEST_SMTP_PASSWORD, optional DIGEST_TO, through Gmail) and a comment
+// without notes on the public GitHub issue (GITHUB_TOKEN, GITHUB_REPOSITORY). Either channel may be missing; at
+// least one is needed. Run daily by .github/workflows/digest.yml as the owner (MIGRATE_DATABASE_URL).
+// -dry prints both texts without sending or marking: make digest-prod.
 package main
 
 import (
@@ -33,8 +35,16 @@ func run(log *slog.Logger, dry bool) error {
 		return errors.New("MIGRATE_DATABASE_URL is required: the owner's connection")
 	}
 	gh := digest.GitHub{API: "https://api.github.com", Repo: os.Getenv("GITHUB_REPOSITORY"), Token: os.Getenv("GITHUB_TOKEN"), HTTP: &http.Client{Timeout: 30 * time.Second}}
-	if !dry && (gh.Repo == "" || gh.Token == "") {
-		return errors.New("GITHUB_REPOSITORY and GITHUB_TOKEN are required (or use -dry)")
+	mail := digest.SMTP{Addr: "smtp.gmail.com:587", User: os.Getenv("DIGEST_SMTP_USER"), Password: os.Getenv("DIGEST_SMTP_PASSWORD"), To: os.Getenv("DIGEST_TO")}
+	if mail.To == "" {
+		mail.To = mail.User
+	}
+	useGitHub, useMail := gh.Repo != "" && gh.Token != "", mail.User != "" && mail.Password != ""
+	if !dry && !useGitHub && !useMail {
+		return errors.New("nowhere to send: set GITHUB_TOKEN and GITHUB_REPOSITORY, or DIGEST_SMTP_USER and DIGEST_SMTP_PASSWORD (or use -dry)")
+	}
+	if !dry && !useMail {
+		log.Warn("no email: DIGEST_SMTP_USER or DIGEST_SMTP_PASSWORD is not set; posting to GitHub only")
 	}
 	ist, err := time.LoadLocation("Asia/Kolkata")
 	if err != nil {
@@ -56,18 +66,28 @@ func run(log *slog.Logger, dry bool) error {
 	}
 	body := digest.Markdown(p, ist)
 	if dry {
-		fmt.Println(body)
+		subject, text := digest.Email(p, ist, "")
+		fmt.Printf("GitHub comment:\n\n%s\nEmail: %s\n\n%s", body, subject, text)
 		return nil
 	}
-	// Post first, then mark: if marking fails, tomorrow repeats these reports instead of losing them.
-	at, err := gh.Post(ctx, body)
-	if err != nil {
-		return err
+	var post func() (string, error)
+	var send func(string) error
+	if useGitHub {
+		post = func() (string, error) { return gh.Post(ctx, body) }
+	}
+	if useMail {
+		send = func(issue string) error { return mail.Send(digest.Email(p, ist, issue)) }
+	}
+	// Send first, then mark: if marking fails, tomorrow repeats these reports instead of losing them. If one channel
+	// failed and the other worked, the reports are still marked, and the job fails so the owner sees it.
+	sent, sendErr := digest.Deliver(post, send)
+	if !sent {
+		return sendErr
 	}
 	n, err := digest.MarkSeen(ctx, db, p.IDs())
 	if err != nil {
-		return fmt.Errorf("posted to %s but could not mark reports seen: %w", at, err)
+		return errors.Join(sendErr, fmt.Errorf("sent but could not mark reports seen: %w", err))
 	}
-	log.Info("digest posted", "issue", at, "reports", n)
-	return nil
+	log.Info("digest sent", "reports", n, "github", useGitHub, "email", useMail)
+	return sendErr
 }
