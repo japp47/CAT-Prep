@@ -321,7 +321,7 @@ The signed-in email and name are kept with the device's sync state, so the heade
 - **Granting staff.** `make grant-prod EMAIL=you@gmail.com` (`cmd/grant`, owner login, after the person has signed in once), audited as `system`. `-revoke` takes it back.
 
 #### Privacy page — Live (22 Oct 2026)
-A plain page at `/privacy`: what is stored on this device, what sync sends (progress only, no name, no email until an account), what the server logs and for how long (IP addresses kept 7 days), how to export and delete, and who to contact. Linked from the footer and the Sync section.
+A responsive page at `/privacy` with a quick summary and grouped sections: what is stored on this device, what sync sends (progress only, no name, no email until an account), what the server logs and for how long (IP addresses kept 7 days), how to export and delete, and who to contact. Uses readable typography and a two-column layout on wide screens, then one column on phones. Linked from the footer and the Sync section.
 
 ### AI (step 3b and step 7)
 All AI features follow principle 3. They need the backend (the API key stays on the server) and they all have a fallback that does not need AI.
@@ -493,6 +493,7 @@ Review: `docs/research/beyond-cat.md` §2. Practice counts only when a set, dril
 - **Account**: devices, recovery code, sign out, download or delete data (moved from Settings, which keeps a link).
 **Part 1 as designed (24 Oct 2026).**
 - `/you` works for everyone. Signed in: your initial, name, email and "Member since October 2026". Synced with a code: "Not signed in" and Sign in with Google. Sync off: "Your progress is on this device only" and Continue with Google.
+- The account is a clear responsive hero with an account/sync status and one sign-in action when needed. CAT preferences and study stats sit side by side on wide screens and stack on phones; stats are grouped into easy-to-scan tiles.
 - **Your CAT**: "Preparing for CAT 2027" with the expected date, then three choices: target percentile in VARC (the same setting as Progress, Target), **first attempt or taken before**, and **studying or working**. The last two start unset. Kept in the `profile` sync record (`about`), so they sync and work offline. **The exam year is not a choice yet** (D34): every plan, phase and countdown is built for CAT 2027.
 - **Your study so far**: streak, days studied, questions answered and minutes logged, with links to History and Progress.
 - **Account and sync**: the sync card moves here from Settings (D35). Settings keeps one line linking to it, and old `/settings#sync` links open `/you#sync`.
