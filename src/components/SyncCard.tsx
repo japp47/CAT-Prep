@@ -2,13 +2,14 @@ import { lazy, Suspense, useEffect, useRef, useState, useSyncExternalStore } fro
 import { Link, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Section } from "@/components/kit";
-import { refreshAccount, disable, enable, exportServer, getStatus, makeRecoveryCode, startSignIn, subscribe, syncNow } from "@/lib/sync/runner";
+import { refreshAccount, enable, exportServer, getStatus, makeRecoveryCode, startSignIn, subscribe, syncNow } from "@/lib/sync/runner";
 import type { Account } from "@/lib/sync/client";
 import { SIGNIN_ENABLED } from "@/lib/api";
 import { SIGNIN_WORDS } from "@/lib/sync/words";
 import { botToken } from "@/lib/turnstile";
 import { Confirm } from "@/pages/practice/common";
 import { ago } from "./sync/ago";
+import TurnOff from "./sync/TurnOff";
 
 const JoinForm = lazy(() => import("./sync/JoinForm"));
 const LinkPanel = lazy(() => import("./sync/LinkPanel"));
@@ -54,6 +55,15 @@ export default function SyncCard({ onChange }: { onChange?: () => void }) {
     void refreshAccount().then((a) => { if (live) setAcct(a); });
     return () => { live = false; };
   }, [on, refresh, s.identityId]);
+  // From the account menu: ?sync=link opens the QR code, ?sync=join the code form.
+  const want = sp.get("sync");
+  useEffect(() => {
+    if (want !== "link" && want !== "join") return;
+    if (want === "link" ? on : !on) setView(want);
+    const next = new URLSearchParams(sp);
+    next.delete("sync");
+    setSp(next, { replace: true });
+  }, [want, on, sp, setSp]);
   useEffect(() => { onChange?.(); }, [on, onChange]);
   // Opened from search (/settings#sync): this card loads after the page, so it scrolls itself into view.
   useEffect(() => { if (location.hash === "#sync") document.getElementById("sync")?.scrollIntoView(); }, []);
@@ -146,19 +156,5 @@ export default function SyncCard({ onChange }: { onChange?: () => void }) {
       </Confirm>
       <TurnOff open={ask === "off"} signedIn={!!acct} onClose={() => setAsk(null)} onDone={(text) => { setNote(text); setView("none"); }} />
     </Section>
-  );
-}
-
-/** Turning sync off here: keep this device's copy (the usual choice) or clear it. Other devices keep everything. */
-function TurnOff({ open, signedIn, onClose, onDone }: { open: boolean; signedIn: boolean; onClose: () => void; onDone: (note: string) => void }) {
-  const [clear, setClear] = useState(false);
-  return (
-    <Confirm open={open} onOpenChange={(o) => !o && onClose()} title={signedIn ? "Sign out of this device?" : "Turn off sync on this device?"} action={signedIn ? "Sign out" : "Turn off"} cancel="Cancel" danger={clear}
-      onAction={async () => { onClose(); await disable(clear); onDone(clear ? (signedIn ? "Signed out, and this device is cleared. Your account keeps everything." : "Sync is off and this device is cleared. Your other devices keep everything.") : (signedIn ? "Signed out of this device. Your progress is still here." : "Sync is off on this device. Your progress is still here.")); }}>
-      <span className="flex flex-col gap-3">
-        <span>{signedIn ? "Your account and your other devices keep everything. Sign in again any time." : "Your other devices keep syncing and keep everything."}</span>
-        <label className="flex items-center gap-3"><input type="checkbox" checked={clear} onChange={(e) => setClear(e.target.checked)} className="size-4 accent-primary" /> Also clear the progress on this device</label>
-      </span>
-    </Confirm>
   );
 }

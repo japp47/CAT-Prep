@@ -308,7 +308,7 @@ One trigger function that sets `updated_at = now()` before an update, attached t
 | B7 | `account.oauth_accounts` | PK (`provider`, `subject`), `user_id` (FK cascade), `email`, `created_at` | Google first; more providers need no change |
 | B7 | `account.signin_tickets` | `token_hash` PK (SHA-256), `provider`, `subject`, `email`, `name`, `created_at`, `expires_at` (10 min), `used_at` | One-time hand-over from the Google callback to "save this device's progress?"; deleted a day after expiry by the clean-up job |
 | B8 | `access.*` | §4 | Grants belong to accounts. **Moved from B7 to B8 (D28):** created with the admin page, the first code that reads them |
-| later | `account.profiles` | `identity_id` PK (FK cascade), `nickname` (unique, case-insensitive), `display_name`, `exam_year`, `target_percentile`, `city`, `visibility` (`private`, `friends`, `public`), `created_at`, `updated_at` | Per **identity** (D15), so a student without an account can still pick a leaderboard nickname. Study settings stay in `sync.records` (they work offline) |
+| later (F81 part 2, step 6b) | `account.profiles` | `identity_id` PK (FK cascade), `nickname` (unique, case-insensitive), `display_name`, `exam_year`, `target_percentile`, `city`, `visibility` (`private`, `friends`, `public`), `created_at`, `updated_at` | Per **identity** (D15), so a student without an account can still pick a leaderboard nickname. Study settings stay in `sync.records` (they work offline) |
 | 3b | `ai.cache`, `ai.runs`, `ai.usage`, `ai.budget` | As in `docs/architecture.md` §8 | |
 | 9 | `game.daily_scores` | `date`, `identity_id` (FK cascade), `marks`, `secs`; unique (`date`, `identity_id`) | Re-scored by the server |
 

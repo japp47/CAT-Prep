@@ -21,7 +21,7 @@ function FooterColumn({ title, items }: { title: string; items: SiteNavItem[] })
 
 export default function SiteFooter() {
   return (
-    <footer className="mt-6 border-t border-border/70 pt-4 lg:mt-10 lg:pt-7">
+    <footer className="mt-6 rounded-lg bg-accent px-5 py-5 lg:mt-10 lg:px-7 lg:py-7">
       <div className="hidden gap-x-8 gap-y-10 lg:grid lg:grid-cols-3 xl:grid-cols-[1.35fr_repeat(5,minmax(0,1fr))]">
         <div className="flex max-w-64 flex-col items-start gap-4">
           <Brand />
@@ -38,7 +38,7 @@ export default function SiteFooter() {
           <a href={"mailto:" + CONTACT_EMAIL} className="inline-flex min-h-8 items-center rounded-sm text-sm font-medium text-foreground/75 transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">{CONTACT_EMAIL}</a>
         </div>
       </div>
-      <div className="flex flex-col items-start gap-1 text-left text-sm leading-relaxed text-muted-foreground lg:mt-6 lg:flex-row lg:justify-between lg:gap-2 lg:border-t lg:border-border/70 lg:py-4">
+      <div className="flex flex-col items-start gap-1 text-left text-sm leading-relaxed text-muted-foreground lg:mt-6 lg:flex-row lg:justify-between lg:gap-2 lg:py-4">
         <p>© {new Date().getFullYear()} 99ile</p>
         <p>Free CAT preparation. <Link to="/privacy" className="underline underline-offset-4 hover:text-primary">Privacy</Link></p>
       </div>
