@@ -476,6 +476,22 @@ Review: `docs/research/beyond-cat.md` §2. Practice counts only when a set, dril
 **Part 2, public and off by default (with community, F67 to F70, step 6b).** A nickname and a short bio; who can see the profile (only me, my study groups, everyone); accepted answers and helpful votes. Never public: email, scores, mistakes or answers (D14). Stored in `account.profiles` (per identity, `docs/database.md` §6).
 **Done when** part 1 replaces the scattered settings with one page that works on a phone, and a change of target there shows at once in the plan and the report card.
 
+#### F82. A plan that fits you — Planned (part 1 step 4b, Jan 2027; part 2 step 6, Mar 2027). Research when it starts
+**Problem.** Every student gets the same plan: CAT 2027, 45 minutes on a weekday, 90 at the weekend, the same split of work. A final-year student with four free hours, a working professional with 40 minutes on the metro, and a repeater aiming for the 99th percentile need different days. The You page (F81) already asks two of the questions, but nothing reads the answers yet.
+**What the student gets.**
+- **A one-minute setup**, on the first visit (skippable) and always editable on You: which CAT (year), studying, working or both, time on a weekday and at the weekend, target percentile (overall, and per section once DILR and Quant are live), first attempt or a repeat, and where they stand now (just starting, some prep, or taking mocks, with the last mock score).
+- **The plan follows the answers.**
+  - Time: daily minutes start from the answers instead of 45 and 90; working students get short blocks (20 to 30 minutes) and a "commute set", one RC on the phone (absorbs plan item 16).
+  - Split: the one daily budget (F27) gives more time to the weaker section and to the target's gap (from the report card and mock scores), and says why in one line.
+  - Pace: phases are worked out from the chosen exam's date, so a CAT 2028 student gets a long foundation and a CAT 2027 repeater moves to mocks sooner. A first attempt starts with method and type guides; a repeater starts with a diagnostic sectional.
+  - Reality check: after each mock (F12), the target is compared with what the scores reach (percentile estimator, item 7): "On track", or "At this pace, about the 92nd; here is what closes the gap".
+- **No AI needed**: rules first, written down and tested. The AI coach (F48, step 7) later explains the plan in words; it never makes it.
+**Part 1 (step 4b, Jan 2027, with the personal home F80 and after the daily budget F27 in step 4):** the setup, time and split from the answers, short blocks for working students, and the first-visit flow. This is when most CAT 2027 students arrive.
+**Part 2 (step 6, Mar 2027):** the exam year as a real choice (phases from any exam date; replaces D34), the commute set, the diagnostic for repeaters, and the reality check after mocks.
+**Data.** The `profile` sync record grows (`about`: exam year, work, time, target per section, level); no new server tables. Works offline and without an account.
+**Research to do first** (`docs/research/personal-plan.md`): how coaching institutes and toppers split time by profile; how many hours working candidates really have; how other apps onboard without losing people (question count, skip rates); the percentile tables per section for DILR and Quant.
+**Done when** two students with different answers get different, explained plans; changing an answer on You changes tomorrow's plan; skipping the setup gives today's plan unchanged; and every rule has a test.
+
 #### F80. Personal home for a returning student — Planned (step 4b)
 **Problem.** The home page is written for a first visit: what 99ile is, the countdown, the passage of the day. A student who comes back every day scrolls past the pitch to reach their work.
 **What the student gets.** When this device has progress (signed in or not): "Good evening, Jappreet" (the name only when signed in), then the next step (F41) with its button, what is due (redo, focus of the week), yesterday in one line from History (F51), and the streak. The pitch, the about section and the updates move below, one tap away. A first visit sees today's home page, unchanged.
