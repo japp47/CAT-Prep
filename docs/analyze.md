@@ -2,7 +2,7 @@
 
 Checks that the spec (`docs/feature.md`), the plan (`docs/plan.md`, `docs/architecture.md`) and the code agree, before the next step is built.
 Redo this check at the start of each step; add findings at the top of section 3 with the date.
-Last updated 21 Oct 2026 (step 3 analysis).
+Last updated 24 Oct 2026 (content and sidebar navigation updates; step 3 analysis remains below).
 
 ---
 
@@ -16,7 +16,7 @@ Last updated 21 Oct 2026 (step 3 analysis).
 
 **Step 3** is re-planned in this pass: research in `docs/research/step-3.md`, spec in `docs/feature.md` (F50, F33/F47, F39, privacy page), design in `docs/architecture.md` §5, §6, §9, §10, branches S5 and B1–B7 in `docs/implement.md`.
 
-**Content today:** 45 RC sets, 80 VA paragraphs, 30 CR items, 39 real paper PDFs.
+**Content today:** 50 RC sets, 80 VA paragraphs, 30 CR items, 39 real paper PDFs.
 
 ---
 
@@ -70,6 +70,13 @@ The research is a product review (sections 1 to 8), a backend plan, and a note o
 Thinking practice (Arcade, Manager Lab, DILR and Quant ideas), community, and reminders. **Adopted** as F56 to F78 with these changes: CAT Coach first, nothing moves DILR or Quant; the Arcade is one daily puzzle in four DILR-like kinds, generated and proved unique by code; Manager Lab becomes the manager track after CAT 2027, in two seasons (getting in, then ready for the MBA), with PI, GD and MBA-ready basics added; community starts from discussions under our own questions with a spoiler gate, then the doubt forum, then private groups, public communities last; reminders go to the inbox first and web push only where it works. **Not adopted:** Sudoku and chess, direct messages, a social feed, image uploads at first, public communities at launch, more than one reminder a day.
 
 ## 3. Consistency check: spec vs plan vs code
+
+### 24 Oct 2026, RC content addition and category
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A29 | `content/rc/ai&technology.json` was discovered by the lazy loader but not included in the RC catalog source | Its five sets were missing from the library dropdown and daily rotation | Include the file in `practice/rc/index.ts`; regenerate the catalog and leads (`npm run catalog`) |
+| A30 | The new AI and technology passages were categorized as society | Students could not filter them under a dedicated topic | Add the `technology` genre with the label "AI and technology"; categorize all five sets under it |
+| A31 | The desktop sidebar had a sync/account row near Search and a separate disabled user icon at the bottom | Sign-in and profile navigation appeared in two places, while the bottom icon did nothing | Remove the upper row and make the bottom account icon use the existing sign-in/profile destination logic |
 
 ### 21 Oct 2026, step 3 (backend v1)
 | # | Finding | Impact | Fix (where) |
@@ -167,6 +174,8 @@ Thinking practice (Arcade, Manager Lab, DILR and Quant ideas), community, and re
 | D34 | Exam year on the You page: a choice? | **Decided 24 Oct 2026, until F82 part 2 (D36):** not yet. Phases, the plan and the countdown are built for CAT 2027 only; a year picker that changes nothing would mislead. It becomes a choice when the plan can follow another year |
 | D35 | Sync and devices: Settings or You? | **Decided 24 Oct 2026:** You (`/you#sync`), as F81 says. Settings keeps a link, and `/settings#sync` forwards so old links and bookmarks work |
 | D36 | Personalization: when, and by rules or AI? | **Decided 24 Oct 2026 (owner asked; research later):** F82, rules written down and tested, never the model. Part 1 in step 4b (Jan 2027), after the daily budget (F27, step 4) exists to split, and as CAT 2027 students arrive; part 2 in step 6 (Mar 2027) makes the exam year a choice, replacing D34 |
+| D37 | DILR: LR and DI together, or LR first? | **Decided 24 Oct 2026 (owner):** LR first, from November (step 4a). The owner has LR sets ready, and LR or numbers-driven LR made up four of five sets in CAT 2025 slot 1. DI joins in December. Research `docs/research/lr.md` |
+| D38 | Whose sets can go on the site? | **Decided 24 Oct 2026:** only original sets or sets used with the writer's permission (`source` in every set). CAT papers and coaching sets are linked, never copied, as for RC and VA |
 | Older | Cloud Run needs a card; AI limits; who checks DILR and Quant keys; leaderboard nicknames | As in `docs/plan.md` |
 
 ---

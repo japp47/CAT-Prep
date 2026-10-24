@@ -68,7 +68,7 @@ Short on purpose: the code and its tests are the spec for these.
 | Start | Site search | Command palette over pages, guides, RC sets and updates, with a short tour; Back closes it first |
 | Plan | Today | Blocks per section from the phase template and minutes, catch-up of a missed core task, focus timer (15), must-do links, article summary sheet |
 | Plan | Plan and time | Minutes per weekday and weekend, per-day overrides, phase view, VARC target percentile, calendar reminder (`.ics`) |
-| Practice | RC player | 45 original sets (8 genres), every option explained with a trap label, RC of the day with a stable rotation, summary step after the set |
+| Practice | RC player | 50 original sets (9 genres), including AI and technology, every option explained with a trap label, RC of the day with a stable rotation, summary step after the set |
 | Practice | VA drill | 80 paragraphs: para summary (1), sentence insertion, odd sentence out, para jumbles. Daily mix or one type |
 | Practice | Critical reasoning drill | 30 items, six types |
 | Practice | Timed VARC sectional (5) | 40 minutes, 4 RCs and 8 VA, CAT-style palette, mark for review, draft survives reload |
@@ -101,7 +101,7 @@ Short on purpose: the code and its tests are the spec for these.
 | Sync | Sync between devices (F33) | No sign-up: every kind of progress syncs through the server; merges by kind, never overwrites; works offline and catches up |
 | Sync | Link a device (F47) | QR code or 8-character code (10 minutes, once), scanned inside 99ile or with the phone camera (`/link`); "add this device's progress" or "start fresh" |
 | Sync | Recovery code and device list (F47) | 16-character code shown once, can be replaced; device list with remove; turn off with keep or clear |
-| Sync | Status and prompts | "Sync devices" with its status in the sidebar and menu; one invite on an empty device, one nudge after real practice; search finds sync |
+| Sync | Status and prompts | "Sync devices" with its status in the bottom sidebar account icon and phone menu; one invite on an empty device, one nudge after real practice; search finds sync |
 | Data | Export and delete everywhere | Download what the server has (also a backup); delete from the server and this device |
 | Data | Privacy page | `/privacy`: what is stored, where, how long, rights, grievance contact; sync for 18 and over |
 | Loop | From a mistake back to its question (F52) | "See the question" opens the old attempt at that question; "Try it again" with the answer hidden; "Last time" shows the old reasoning after a retry |
@@ -256,7 +256,7 @@ Research: `docs/research/step-3.md`. How it is built: `docs/architecture.md` §5
 **Where students meet sign-in (decided 24 Oct 2026).** Signing in is an offer, never a gate (principle 2), and is always one tap away:
 - **`/signin`**, the one page every "Sign in" leads to. Split layout adapted from 21st.dev's SignInPage: on the left, a laptop and a phone showing the same study days, drawn in code in the brand blue; on the right, the form. Google's own "Continue with Google" button (white or near-black with the colour G, the one outlined control on the site, as Google's branding asks). Content: "Keep your progress safe", three reasons (every device, a new or wiped phone loses nothing, only email and name), **Continue with Google** as the page's one filled button, then "Use a code from another device" and "Continue without signing in". Google returns here; the question about this device's progress is asked here; then the student goes back to the page they came from (`?then=`). Signed in, it says so and offers Continue.
 - **Header**: on a phone, a person icon (signed out) or your initial in a circle (signed in) beside search and the menu; on the desktop home header, "Sign in". A green dot shows sync is on. It opens the **account menu** (a popover on wide screens, a bottom sheet on a phone): signed in, your name, email and last sync, then Sync now, Link a device, Your devices and Sign out; syncing with a code, the same plus "Sign in with Google"; signed out, Continue with Google, "I use 99ile on another device" (the code form) and "Sync without an account". The menu links open Settings at the right step (`/settings?sync=link` or `?sync=join`).
-- **Sidebar and phone menu**: the sync row reads "Sign in / Save progress everywhere" when signed out, your name and "Synced 2 minutes ago" when signed in.
+- **Sidebar and phone menu**: the bottom account icon opens `/signin` when signed out or `/you` when signed in; the phone menu's sync row reads "Sign in / Save progress everywhere" when signed out, your name and "Synced 2 minutes ago" when signed in.
 - **One nudge**: after five practice sessions, once, on Today: "Keep your progress safe. Sign in with Google so a new or wiped phone loses nothing."
 - **Settings → Sync** stays the full control: devices, recovery code, sign out, delete.
 The signed-in email and name are kept with the device's sync state, so the header shows them on the first paint without asking the server.
@@ -371,11 +371,35 @@ All AI features follow principle 3. They need the backend (the API key stays on 
 **Recent practice on Progress → Log** shows the last 10 sets with their percentage, a "Show all" button for the rest, and a link to History. Log stays the place to add outside practice and delete wrong entries, so every set must stay reachable there (History cannot delete).
 **No backend needed, now or at scale (decided 24 Oct 2026).** History and search read this device's own data, which sync already copies to every device; nothing new is stored or sent. A student's data is capped by sync (20,000 records, 8 MB), so building the list in the browser stays fast: a year of heavy use (1,800 attempts) builds in about 10 ms; the test allows 150 ms for slow CI machines. Server search is needed only for what is shared between students: community posts (F67, F68) will use Postgres full-text search then.
 
-#### F21 to F23. DILR — Planned (step 4, Dec 2026 to Jan 2027)
-- Learn: set types (arrangement, games and tournaments, DI charts, Venn, networks, scheduling) and how to pick sets to attempt.
-- Plan blocks and resources, with the existing default minutes (45 weekday, 90 weekend).
-- Set player: one data set with 4 to 6 questions, MCQ and TITA, on the RC player's shell (palette, timer, review, redo, Error log). 20 original sets to start.
-- **Acceptance.** Every set's answers are checked by tests, TITA answers compare as numbers, and the redo queue, report card, mock wizard and weekly review include DILR without new code paths beyond the section's types.
+#### F21 to F23. DILR, logical reasoning first — Planned (step 4a LR from Nov 2026; DI in step 4, Dec 2026 to Jan 2027)
+Research: `docs/research/lr.md`. Set format: `docs/content/lr-format.md`. **LR comes first (D37):** the owner has LR sets ready, and four of five sets in CAT 2025 slot 1 were LR or numbers-driven LR. The DILR page goes live with LR; DI is marked "December".
+- **F23, LR set player (first).** One set per screen: the story, numbered clues and any table on one side (on a phone, a tab), the questions on the other; MCQ and TITA; a timer against the set's target minutes; a scratch grid the student can fill (line, circle or matrix, from the set's type). Review shows the solution steps, the final grid, and the clues each question used. Wrong answers go to the redo queue and Error log with LR causes (misread condition, missed case, wrong assumption, calculation, time sink), as RC does.
+- **F21, LR Learn tab.** One guide per type (arrangement, selection, distribution, ranking, tournament, scheduling, binary logic, Venn, routes, quant-based LR), on the VARC guide pattern: what it looks like, the representation to draw, where to start, traps, one worked example from our own sets, three links. Plus eight short concept pages that cut across types: reading conditions, drawing first, where to start, case splitting, question stems, counting invariants, max and min, set selection.
+- **F22, resources and plan blocks.** The free resources in the research note (past papers, topic banks, logic grids, videos, two books), and daily LR blocks with the existing default minutes; templates and grid puzzles in Foundation, CAT-level sets from Build, timed past papers from the Mock phase.
+- **Acceptance.** Every set's answers are checked by tests (and by a solver where the set allows), TITA answers compare as numbers, and the redo queue, report card, History, weekly review and search include LR without new code paths beyond the section's types. 20 sets at launch, 40 by January.
+
+#### F83. Clue translator — Planned (step 4a, after the player)
+**Problem.** Misreading a condition is the most common LR error, and "only if", "unless" and "not both" trip even strong students; no CAT site drills reading clues on its own.
+**What the student gets.** Three minutes a day: an English clue, and the student marks what it means on a small grid or picks the rule ("A only if B": if A then B). Wrong readings are named (reversed, negated, "immediately" read as "somewhere", left and right swapped when facing the centre). Clues come from our sets, so a translated clue later meets the student in a real set.
+**Done when** every clue kind in the research note has at least ten items with checked meanings, and a student's misreadings show as a pattern in Progress.
+
+#### F84. Must, could, cannot — Planned (step 4a)
+Two or three finished cases of a set shown side by side; the student sorts six statements into must be true, could be true, cannot be true. Trains the question stems that lose solved sets.
+**Done when** each statement's bin is computed from the cases by code, never typed by hand.
+
+#### F85. First move — Planned (step 4a, once 20 sets exist)
+A set opens on an empty grid; the student picks the clue to start with, or the cell that is now certain. The answer shows how many cases each choice would open (from the solver), so "start with the most restrictive clue" becomes something they see.
+**Done when** the cases per clue come from the set's solver and the best choice is never a guess.
+
+#### F86. Set post-mortem — Planned (step 4a, with the player)
+After every LR set, two minutes, prompted (self-explanation, `docs/research/lr.md` §4): the first key deduction, where the time went, and the clue misread or case missed (one tap each where possible). Saved with the attempt; feeds the Error log, the redo queue and set selection (F56). Skippable, never a gate.
+**Done when** the prompts take under two minutes on a phone, and History shows the deduction next to the attempt.
+
+#### F87. What if one clue changes — Planned (step 4b or later, once 30 sets exist)
+The same solved set with one clue changed or dropped; the student says what moves. CAT's "if additionally…" questions are this skill. Each variant's answers come from the set's solver.
+
+#### F88. Draw it first — Planned (step 4b or later)
+60 seconds: choose the right skeleton (line, circle, matrix, points table, timeline, Venn, graph) for a set before solving; the chosen skeleton opens as the scratch grid. Trains representation, the step toppers do first.
 
 #### F27. One daily budget — moved to step 4 (was step 6)
 Once two sections are live, "I have 90 minutes today" must split itself: by phase, by the weakest section (from the report), and by what is due (redo, focus drill). The student can still set minutes per section.
@@ -462,7 +486,7 @@ Review: `docs/research/beyond-cat.md` §2. Practice counts only when a set, dril
 
 #### F81. "You": a profile page — Part 1 built 24 Oct 2026 (B8); part 2 planned with community, step 6b
 **Problem.** What describes a student is spread over four pages: the account and devices in Settings, the target in Plan or Progress, daily minutes in Plan, the streak and totals on Today, Progress and History. A signed-in student taps their initial in the header and expects one page about them.
-**Part 1, private (with B8 or straight after it).** `/you`, opened from the avatar in the header and the sidebar row:
+**Part 1, private (with B8 or straight after it).** `/you`, opened from the avatar in the header and the bottom sidebar account icon:
 - At the top: name, email, member since (from the account), or "Not signed in" with Sign in.
 - **Your CAT**: exam year, target percentile, attempt (first or repeat), student or working. One place to change them; the plan, the report card and the personal home (F80) read them. Kept as synced records, so they work offline and without an account.
 - **Your study so far**: streak, days studied, questions done, with links to History and Progress.
@@ -472,7 +496,7 @@ Review: `docs/research/beyond-cat.md` §2. Practice counts only when a set, dril
 - **Your CAT**: "Preparing for CAT 2027" with the expected date, then three choices: target percentile in VARC (the same setting as Progress, Target), **first attempt or taken before**, and **studying or working**. The last two start unset. Kept in the `profile` sync record (`about`), so they sync and work offline. **The exam year is not a choice yet** (D34): every plan, phase and countdown is built for CAT 2027.
 - **Your study so far**: streak, days studied, questions answered and minutes logged, with links to History and Progress.
 - **Account and sync**: the sync card moves here from Settings (D35). Settings keeps one line linking to it, and old `/settings#sync` links open `/you#sync`.
-- Opened from the account menu (the name at the top, and "You") and from the sidebar row.
+- Opened from the account menu (the name at the top, and "You") and from the bottom sidebar account icon.
 **Part 2, public and off by default (with community, F67 to F70, step 6b).** A nickname and a short bio; who can see the profile (only me, my study groups, everyone); accepted answers and helpful votes. Never public: email, scores, mistakes or answers (D14). Stored in `account.profiles` (per identity, `docs/database.md` §6).
 **Done when** part 1 replaces the scattered settings with one page that works on a phone, and a change of target there shows at once in the plan and the report card.
 

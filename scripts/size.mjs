@@ -15,8 +15,8 @@ const html = readFileSync("dist/index.html", "utf8");
 const first = (re) => html.match(re)?.[1];
 const gz = (path) => gzipSync(readFileSync("dist" + path)).length;
 
-// Content chunks are named after their source file: content/rc/<genre>.json and va/paragraphs.ts.
-const contentNames = new Set([...readdirSync("content/rc").map((f) => f.replace(/\.json$/, "")), "paragraphs"]);
+// Vite replaces non-filename characters (such as `&`) with underscores in chunk names.
+const contentNames = new Set([...readdirSync("content/rc").map((f) => f.replace(/\.json$/, "").replace(/[^a-zA-Z0-9_-]/g, "_")), "paragraphs"]);
 const content = readdirSync("dist/assets")
   .filter((f) => f.endsWith(".js") && contentNames.has(f.replace(/-[\w-]{8}\.js$/, "")))
   .map((f) => ({ f, size: gz("/assets/" + f) }))

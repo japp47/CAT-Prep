@@ -2,7 +2,7 @@
 
 Branch-by-branch work for the features in `docs/feature.md`, in the order of `docs/plan.md`.
 Each entry is small enough for one pull request. The owner commits and pushes; each entry gives the branch and the commit message.
-Last updated 21 Oct 2026 (step 3 re-planned).
+Last updated 24 Oct 2026 (content and sidebar navigation updates; step 3 re-planned).
 
 **Every branch, before it is called done:**
 - `npm run typecheck`, `npm test`, `npm run build`, `npm run size` (and `npm run catalog` after content changes).
@@ -313,6 +313,8 @@ Decisions this plan assumes (owner to confirm, `docs/analyze.md` §5): **D8** se
 
 **Sync UX polish, 22 Oct 2026** (`feat/sync-ux`). Sync comes up where students look and when it helps, never as a popup: a "Sync devices" row with its status ("Not set up", "Synced 2 minutes ago", a green or amber dot) under Search in the sidebar and at the top of the phone menu (`components/SyncNav.tsx`, reading `lib/sync/status.ts`, a tiny store in the main script that reads the ledger at start, so the row is right before the sync code loads); on Today and Home, an empty device is asked once "Already studying on another device?" (→ `/link`), and a device with 5 or more attempts that does not sync is asked once "Study on a phone and a laptop?" (→ `/settings#sync`), each with "Not now" remembered (`components/SyncPrompt.tsx`, `promptKind` tested); the iPhone install guide and Settings' iOS steps point to linking instead of a backup when sync is on; the sidebar's last line says progress syncs when it does. No permanent header icon: the phone header is full at 390 px, a chain icon reads as "copy link", and most students use one device. Main script with sync on: 135.9 KB.
 
+**Sidebar account navigation, 24 Oct 2026.** Keep one account entry in the desktop sidebar: remove the sync row beneath Search and use the bottom user icon for the existing `SyncNavRow` destination logic (`/signin` when sign-in is available and sync is off; `/you` when signed in; otherwise `/you#sync`). The icon stays at the bottom beside theme and install controls, with the existing sync status dot and accessible title.
+
 ### Next, after sync (planned 22 Oct 2026): F52, then F51
 | Branch | Builds | Notes |
 |---|---|---|
@@ -366,3 +368,14 @@ Branch `feat/admin-and-you` also carries F81 part 1. Message: `feat: an admin pa
 
 ## Later steps
 Full entries are written here when a step comes within two steps of being built: AI v1 (3b: F35, F36), DILR with the one daily budget (4: F21–F23, F27), Quant (5: F24–F26), step 6 items, AI v2 and the coach (7: F34, F48).
+
+### 4a. Logical reasoning first (D37)
+**4a.1 LR set format and content, built 24 Oct 2026** on `feat/lr-sets`: `LrSet` and `LR_TYPE` in `practice/types.ts`; `content/lr/<type>.json` (one file per type) joined in `practice/lr/index.ts`; `loadLrFile` in `bank.ts`; `Need.lr` and `Content.lrSets` in `content.ts`; `LR_CATALOG` and `LR_FILE` from `npm run catalog`; `titaMatches` and `lrRight` in `practice/lrcheck.ts`. Tests: every set's shape and answers (`content.test.ts`), file and catalog agreement, the import guard, typed-answer matching. One original example set (`arr-round-table`).
+
+### 2x. AI and technology RC content, built 24 Oct 2026
+`feat/rc-ai-technology` · `feat: add five AI and technology RC sets`
+- Add five original sets to `content/rc/ai&technology.json`; join them in `practice/rc/index.ts` so the catalog and RC dropdown include all 50 sets. Add a dedicated `technology` genre, displayed as "AI and technology". Teach `scripts/size.mjs` to count the Vite-sanitized `ai_technology` chunk.
+- Set `since` to 25 Oct 2026; each set joins the daily rotation in its first cycle starting on or after that date.
+- Run `npm run catalog`; tests check set shape, answer keys, content-file mapping and generated catalog consistency.
+
+**Next, 4a.2:** the LR set player with the post-mortem (F23, F86), then the Learn tab and resources (F21, F22), then F83 to F85.

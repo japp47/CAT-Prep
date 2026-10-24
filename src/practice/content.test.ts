@@ -2,13 +2,20 @@ import { describe, expect, it } from "vitest";
 import { OPTION_TRAPS } from "../data/traps";
 import { VARC } from "../sections/varc";
 import { CR_ITEMS } from "./cr";
+import { LR_SETS } from "./lr";
 import { RC_SETS } from "./rc";
-import { CR_TYPE, CR_TYPES, RC_QTYPE, setWords, SUMMARY_MAX_WORDS, TONES, words } from "./types";
+import { CR_TYPE, CR_TYPES, GENRES, LR_TYPE, RC_QTYPE, setWords, SUMMARY_MAX_WORDS, TONES, words } from "./types";
 import { VA_PARAS } from "./va/paragraphs";
 
 describe("RC library", () => {
   it("has unique ids", () => {
     expect(new Set(RC_SETS.map((s) => s.id)).size).toBe(RC_SETS.length);
+  });
+  it("keeps the AI and technology passages in their own genre", () => {
+    const technologySets = RC_SETS.filter((s) => s.id.startsWith("tech-"));
+    expect(technologySets).toHaveLength(5);
+    expect(technologySets.every((s) => s.genre === "technology")).toBe(true);
+    expect(GENRES.technology).toBe("AI and technology");
   });
   for (const s of RC_SETS) {
     it(`${s.id} is a well-formed CAT set`, () => {
@@ -163,4 +170,52 @@ describe("critical reasoning items", () => {
     const longest = CR_ITEMS.filter((c) => c.options.every((o, i) => i === c.answer || o.t.length < c.options[c.answer].t.length)).length;
     expect(longest / CR_ITEMS.length).toBeLessThan(0.4);
   });
+});
+
+describe("LR sets (docs/content/lr-format.md)", () => {
+  it("has unique ids", () => {
+    expect(new Set(LR_SETS.map((s) => s.id)).size).toBe(LR_SETS.length);
+  });
+  for (const s of LR_SETS) {
+    it(`${s.id} follows the format`, () => {
+      expect(s.id).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
+      expect(s.title.trim()).not.toBe("");
+      expect(Object.keys(LR_TYPE)).toContain(s.type);
+      expect(["easy", "medium", "hard"]).toContain(s.difficulty);
+      expect(s.minutes).toBeGreaterThanOrEqual(4);
+      expect(s.minutes).toBeLessThanOrEqual(25);
+      // Original, or used with permission (D38).
+      expect(s.source).toMatch(/^(original|with permission: .+)$/);
+      expect(s.since).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(s.intro.length).toBeGreaterThan(0);
+      [...s.intro, ...s.clues].forEach((t) => expect(t.trim(), s.id).not.toBe(""));
+      for (const t of [...(s.tables ?? []), ...(s.solution.grid ? [s.solution.grid] : [])]) {
+        t.rows.forEach((r) => expect(r.length, s.id + " table row").toBe(t.head.length));
+      }
+      expect(s.questions.length).toBeGreaterThanOrEqual(4);
+      expect(s.questions.length).toBeLessThanOrEqual(6);
+      expect(s.solution.steps.length).toBeGreaterThan(0);
+    });
+    it(`${s.id} has answers that can be right`, () => {
+      s.questions.forEach((q, i) => {
+        const at = `${s.id} Q${i + 1}`;
+        expect(q.stem.trim(), at).not.toBe("");
+        expect(q.why.length, at).toBeGreaterThan(0);
+        q.uses.forEach((c) => { expect(Number.isInteger(c), at).toBe(true); expect(c, at).toBeGreaterThanOrEqual(1); expect(c, at).toBeLessThanOrEqual(s.clues.length); });
+        if (q.kind === "mcq") {
+          expect(q.options, at).toHaveLength(4);
+          expect(new Set(q.options).size, at).toBe(4);
+          expect(typeof q.answer, at).toBe("number");
+          expect(q.answer, at).toBeGreaterThanOrEqual(0);
+          expect(q.answer, at).toBeLessThan(4);
+        } else {
+          expect(q.kind, at).toBe("tita");
+          expect(q.options, at).toBeUndefined();
+          expect(typeof q.answer, at).toBe("string");
+          // A typed answer is a number or a short code such as BDAC, never a sentence.
+          expect(String(q.answer), at).toMatch(/^(-?\d+(\.\d+)?|[A-Za-z0-9]{1,12})$/);
+        }
+      });
+    });
+  }
 });
