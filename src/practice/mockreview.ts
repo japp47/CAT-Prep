@@ -136,7 +136,7 @@ export const CAUSE_TIP: Record<Cause, string> = {
 
 /** Where to practise a type. */
 export function drillFor(type: string): string {
-  return type === "rc" ? "/practice/library" : VA_KIND[type as VaKind] ? `/practice/va?type=${type}&n=6` : "/practice";
+  return type === "rc" ? "/practice/library" : VA_KIND[type as VaKind] ? `/practice/va?type=${type}&n=6` : "/varc/practice";
 }
 
 /** Right answers out of attempted on one practice type, across everything logged so far. */

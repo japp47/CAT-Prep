@@ -40,12 +40,23 @@ Send them in any form (typed text, a document, a photo of handwritten notes). Cl
   "solution": {                     // shown in review
     "steps": ["First deduction: …", "…"],
     "grid": { "head": ["…"], "rows": [["…"]] }, // optional final table
-    "cases": 1                      // how many arrangements fit all clues (0 = left open on purpose)
+    "cases": 1,                     // how many arrangements fit all clues (0 = left open on purpose)
+    "diagram": {                    // optional picture: the review fills it in step by step, the attempt uses it blank as a scratch pad
+      "layout": "row",              // row | circle
+      "seats": ["1", "2", "3"],     // labels; a circle runs round to the left (clockwise seen from above) from the bottom seat
+      "rows": ["Monday morning"],   // optional, row layout only: several rows (one per day, say)
+      "note": "…",                  // shown under the picture; its first sentence also under the scratch pad
+      "frames": [                   // one per solution step: frames[step][row][seat]
+        [[["Asha"], [], null]]      // a seat lists lines, person first ("" if only an attribute is known);
+      ]                             // [] = not known yet, null = known to be empty; a line ending in "?" is a possibility
+    }
   }
 }
 ```
 
-**Rules the tests enforce:** 4 to 6 questions; MCQ answers within the options; TITA answers that parse when they are numbers; `uses` only names clues that exist; ids unique across all LR files; `source` present; `since` a date.
+**Rules the tests enforce:** 4 to 6 questions; MCQ answers within the options; TITA answers that parse when they are numbers; `uses` only names clues that exist; ids unique across all LR files; `source` present; `since` a date; a diagram has one frame per solution step and every frame has the right number of rows and seats.
+
+**Checking a set before it ships.** Solve it by brute force (every arrangement of every attribute, filtered by the clues), then check each answer, each "must be true" option against every arrangement left, the `cases` count, and the last frame of the picture. The owner's first 25 arrangement questions were checked this way on 24 Oct 2026 (1, 2, 6, 3 and 2 arrangements, every key right).
 
 ## Example (original, checked by brute force)
 

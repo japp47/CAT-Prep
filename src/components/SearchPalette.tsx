@@ -25,6 +25,8 @@ const PAGES = [
   { title: "Home", href: "/", keywords: "landing start" },
   { title: "Today", href: "/today", keywords: "plan timetable daily schedule" },
   { title: "Practice", href: "/practice", keywords: "rc verbal ability redo drill" },
+  { title: "VARC practice", href: "/varc/practice", keywords: "rc of the day va drill sectional critical reasoning speed test" },
+  { title: "DILR practice", href: "/dilr/practice", keywords: "logical reasoning lr sets arrangement seating puzzle" },
   { title: "Plan and time", href: "/plan", keywords: "schedule minutes timetable" },
   { title: "VARC", href: "/varc", keywords: "verbal ability reading comprehension" },
   { title: "DILR", href: "/dilr", keywords: "data interpretation logical reasoning" },

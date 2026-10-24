@@ -196,6 +196,23 @@ describe("LR sets (docs/content/lr-format.md)", () => {
       expect(s.questions.length).toBeLessThanOrEqual(6);
       expect(s.solution.steps.length).toBeGreaterThan(0);
     });
+    if (s.solution.diagram) it(`${s.id} has a picture for every solution step`, () => {
+      const g = s.solution.diagram!;
+      expect(["row", "circle"]).toContain(g.layout);
+      expect(g.seats.length).toBeGreaterThanOrEqual(3);
+      if (g.layout === "circle") expect(g.rows, "a circle has one ring").toBeUndefined();
+      expect(g.frames, "one frame per step").toHaveLength(s.solution.steps.length);
+      g.frames.forEach((f, i) => {
+        expect(f, `frame ${i + 1} rows`).toHaveLength(g.rows?.length ?? 1);
+        f.forEach((r) => {
+          expect(r, `frame ${i + 1} seats`).toHaveLength(g.seats.length);
+          r.forEach((cell) => { if (cell) cell.forEach((t) => expect(typeof t).toBe("string")); });
+        });
+      });
+      // The last picture names everyone the intro names, at least as a possibility.
+      const last = g.frames[g.frames.length - 1].flat().flatMap((c) => c ?? []).join(" ");
+      expect(last.trim().length).toBeGreaterThan(0);
+    });
     it(`${s.id} has answers that can be right`, () => {
       s.questions.forEach((q, i) => {
         const at = `${s.id} Q${i + 1}`;

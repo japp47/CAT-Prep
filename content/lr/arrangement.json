@@ -114,7 +114,2222 @@
           ]
         ]
       },
-      "cases": 1
+      "cases": 1,
+      "diagram": {
+        "layout": "circle",
+        "seats": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "note": "Everyone faces the centre. Seats are numbered going round to each person's left (clockwise seen from above).",
+        "frames": [
+          [
+            [
+              [],
+              [],
+              [],
+              [],
+              [],
+              []
+            ]
+          ],
+          [
+            [
+              [
+                "Asha"
+              ],
+              [],
+              [
+                "Bilal"
+              ],
+              [
+                "Chitra"
+              ],
+              [
+                "Esha"
+              ],
+              []
+            ]
+          ],
+          [
+            [
+              [
+                "Asha"
+              ],
+              [
+                "Farhan"
+              ],
+              [
+                "Bilal"
+              ],
+              [
+                "Chitra"
+              ],
+              [
+                "Esha"
+              ],
+              [
+                "Dev"
+              ]
+            ]
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "arr-six-colleagues",
+    "title": "Six colleagues in a row",
+    "type": "arrangement",
+    "sub": "linear, two attributes",
+    "difficulty": "easy",
+    "minutes": 8,
+    "source": "original",
+    "since": "2026-10-25",
+    "intro": [
+      "Six colleagues, Aarav, Bhavna, Chirag, Divya, Eshan and Farah, sit in a row of six chairs numbered 1 to 6 from left to right, all facing the same direction. Each is from a different city (Delhi, Pune, Chennai, Kochi, Indore and Surat) and has a different profession (doctor, lawyer, pilot, chef, architect and teacher)."
+    ],
+    "clues": [
+      "The teacher sits immediately next to the person from Chennai.",
+      "The person from Pune sits immediately next to Divya.",
+      "The doctor sits immediately to the left of the person from Surat.",
+      "The doctor does not sit at either end.",
+      "The chef does not sit at either end.",
+      "Exactly one person sits between Eshan and Chirag.",
+      "The person from Indore sits immediately next to the lawyer.",
+      "The lawyer sits immediately next to Farah.",
+      "Exactly one person sits between Farah and the teacher.",
+      "The person from Pune sits somewhere to the left of the person from Chennai.",
+      "The person from Pune sits immediately to the left of the person from Delhi.",
+      "The architect sits in seat 6.",
+      "Exactly three people sit between the architect and Aarav.",
+      "Aarav sits immediately to the left of Chirag."
+    ],
+    "questions": [
+      {
+        "stem": "Which of the following gives the cities of Divya, Bhavna and Farah, in that order?",
+        "kind": "mcq",
+        "options": [
+          "Kochi, Surat, Chennai",
+          "Surat, Kochi, Indore",
+          "Kochi, Surat, Indore",
+          "Kochi, Indore, Surat"
+        ],
+        "answer": 2,
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "why": [
+          "In the final arrangement Divya (seat 1) is from Kochi, Bhavna (seat 4) from Surat and Farah (seat 6) from Indore."
+        ]
+      },
+      {
+        "stem": "Which of the following statements is true?",
+        "kind": "mcq",
+        "options": [
+          "The lawyer sits immediately to the left of the architect.",
+          "The person from Pune sits immediately next to the person from Surat.",
+          "The pilot is from Delhi.",
+          "The chef sits immediately next to the teacher."
+        ],
+        "answer": 0,
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "why": [
+          "The lawyer (Eshan) is in seat 5 and the architect (Farah) in seat 6, so A is true.",
+          "The pilot (Divya) is from Kochi, not Delhi. The chef (seat 2) and the teacher (seat 4) have Chirag between them. The Pune person (seat 2) and the Surat person (seat 4) are two seats apart."
+        ]
+      },
+      {
+        "stem": "Who sits between the pilot and the doctor?",
+        "kind": "mcq",
+        "options": [
+          "Eshan",
+          "Farah",
+          "Aarav",
+          "Bhavna"
+        ],
+        "answer": 2,
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "why": [
+          "The pilot (Divya) is in seat 1 and the doctor (Chirag) in seat 3; seat 2 is Aarav."
+        ]
+      },
+      {
+        "stem": "What is the sum of the seat numbers of the chef, the lawyer and the person from Indore?",
+        "kind": "tita",
+        "answer": "13",
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "why": [
+          "Chef: Aarav, seat 2. Lawyer: Eshan, seat 5. Indore: Farah, seat 6.",
+          "2 + 5 + 6 = 13."
+        ]
+      },
+      {
+        "stem": "How many people sit between the pilot and the person from Chennai?",
+        "kind": "tita",
+        "answer": "3",
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "why": [
+          "The pilot is in seat 1 and the Chennai person (Eshan) in seat 5, so seats 2, 3 and 4 lie between them: 3 people."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Clues 12 and 13 put the architect in seat 6 and Aarav in seat 2. Clue 14 puts Chirag in seat 3, and clue 6 leaves Eshan seat 1 or seat 5.",
+        "Clue 11 puts Pune immediately left of Delhi and clue 10 puts Chennai further right, so Pune is in seat 4 at the latest, with Divya beside the Pune person (clue 2). Four cases survive: Eshan in 1 with Divya in 4 or 5, and Eshan in 5 with Divya in 4 or 1.",
+        "Placing Farah breaks three cases: clues 8 and 9 then fix the lawyer and the teacher, and clue 1, or clues 3 and 4, cannot be met. Only Eshan 5, Divya 1 survives, with Aarav from Pune and Chirag from Delhi. Farah in seat 4 would make Aarav the teacher and push Chennai left of Pune, so Farah takes seat 6 and Bhavna seat 4.",
+        "Clue 9 makes Bhavna the teacher; clue 1 makes Eshan from Chennai; clue 8 makes Eshan the lawyer; clues 3 and 4 make Chirag the doctor and Bhavna from Surat; clue 7 makes Farah from Indore, so Divya is from Kochi. Clue 5 makes Aarav the chef, leaving Divya the pilot."
+      ],
+      "grid": {
+        "head": [
+          "Seat",
+          "Person",
+          "City",
+          "Profession"
+        ],
+        "rows": [
+          [
+            "1",
+            "Divya",
+            "Kochi",
+            "pilot"
+          ],
+          [
+            "2",
+            "Aarav",
+            "Pune",
+            "chef"
+          ],
+          [
+            "3",
+            "Chirag",
+            "Delhi",
+            "doctor"
+          ],
+          [
+            "4",
+            "Bhavna",
+            "Surat",
+            "teacher"
+          ],
+          [
+            "5",
+            "Eshan",
+            "Chennai",
+            "lawyer"
+          ],
+          [
+            "6",
+            "Farah",
+            "Indore",
+            "architect"
+          ]
+        ]
+      },
+      "cases": 1,
+      "diagram": {
+        "layout": "row",
+        "seats": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "note": "Seats are numbered from left to right; everyone faces the same way.",
+        "frames": [
+          [
+            [
+              [
+                "Eshan?"
+              ],
+              [
+                "Aarav"
+              ],
+              [
+                "Chirag"
+              ],
+              [],
+              [
+                "Eshan?"
+              ],
+              [
+                "",
+                "architect"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "Eshan?"
+              ],
+              [
+                "Aarav"
+              ],
+              [
+                "Chirag"
+              ],
+              [],
+              [
+                "Eshan?"
+              ],
+              [
+                "",
+                "architect"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "Divya"
+              ],
+              [
+                "Aarav",
+                "Pune"
+              ],
+              [
+                "Chirag",
+                "Delhi"
+              ],
+              [
+                "Bhavna"
+              ],
+              [
+                "Eshan"
+              ],
+              [
+                "Farah",
+                "architect"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "Divya",
+                "Kochi",
+                "pilot"
+              ],
+              [
+                "Aarav",
+                "Pune",
+                "chef"
+              ],
+              [
+                "Chirag",
+                "Delhi",
+                "doctor"
+              ],
+              [
+                "Bhavna",
+                "Surat",
+                "teacher"
+              ],
+              [
+                "Eshan",
+                "Chennai",
+                "lawyer"
+              ],
+              [
+                "Farah",
+                "Indore",
+                "architect"
+              ]
+            ]
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "arr-seven-consultants",
+    "title": "Seven consultants at a round table",
+    "type": "arrangement",
+    "sub": "circular, two attributes",
+    "difficulty": "medium",
+    "minutes": 10,
+    "source": "original",
+    "since": "2026-10-25",
+    "intro": [
+      "Seven consultants, Ishaan, Jaya, Kabir, Leela, Mohan, Nisha and Omkar, sit at a round table at equal distances, all facing the centre. Each has a different specialisation (Auditing, Branding, Cybersecurity, Derivatives, Ergonomics, Forecasting and Genomics) and comes from a different country (Brazil, Canada, Denmark, Egypt, Finland, Ghana and Hungary).",
+      "Left and right are from the point of view of the person sitting. \"Second to the left of X\" means exactly one person sits between X and that person, on X's left. Two seatings that are rotations of each other count as the same arrangement."
+    ],
+    "clues": [
+      "The Cybersecurity specialist sits second to the left of Nisha.",
+      "The person from Ghana sits immediately next to Ishaan.",
+      "The person from Brazil sits immediately next to Omkar.",
+      "The Derivatives specialist sits immediately next to the person from Brazil.",
+      "Leela does not sit immediately next to Kabir.",
+      "The Auditing specialist sits immediately to the left of Kabir.",
+      "The Branding specialist sits second to the left of Ishaan.",
+      "The person from Egypt sits second to the left of the person from Canada.",
+      "The Branding specialist sits immediately next to the Ergonomics specialist.",
+      "Mohan sits second to the left of the Ergonomics specialist.",
+      "The person from Denmark does not sit immediately next to the Cybersecurity specialist.",
+      "The person from Finland sits immediately to the left of the person from Canada.",
+      "Jaya sits immediately to the left of Kabir.",
+      "The Auditing specialist sits immediately next to the Ergonomics specialist."
+    ],
+    "questions": [
+      {
+        "stem": "Who sits immediately to the left of the Branding specialist?",
+        "kind": "mcq",
+        "options": [
+          "Kabir",
+          "Mohan",
+          "Nisha",
+          "Jaya"
+        ],
+        "answer": 0,
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "why": [
+          "The Branding specialist is Omkar, in seat 7. Going round to Omkar's left comes back to seat 1, Kabir."
+        ]
+      },
+      {
+        "stem": "Which of the following statements must be true?",
+        "kind": "mcq",
+        "options": [
+          "The person from Ghana sits immediately to the left of the Derivatives specialist.",
+          "The person from Egypt is the Auditing specialist.",
+          "The person from Hungary sits second to the right of Mohan.",
+          "Leela sits immediately to the left of Omkar."
+        ],
+        "answer": 1,
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "why": [
+          "Clues 6 and 13 both name the person on Kabir's left, so Jaya is the Auditing specialist, and Jaya is from Egypt in both arrangements.",
+          "The others fail: Omkar sits on Leela's left, not the other way round; the Derivatives specialist (Ishaan) sits on the Ghana person's left; Hungary (Ishaan) sits second to the left of Mohan, not the right."
+        ]
+      },
+      {
+        "stem": "Number the seats 1 to 7 going round to the left, starting with Kabir as seat 1. What is the sum of the seat numbers of the person from Ghana, the person from Hungary and the Branding specialist?",
+        "kind": "tita",
+        "answer": "16",
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "why": [
+          "Ghana is Nisha (4), Hungary is Ishaan (5) and Branding is Omkar (7).",
+          "4 + 5 + 7 = 16."
+        ]
+      },
+      {
+        "stem": "Which of the following statements is NOT necessarily true?",
+        "kind": "mcq",
+        "options": [
+          "The person from Denmark sits immediately to the left of Jaya.",
+          "The Forecasting specialist sits next to the Genomics specialist.",
+          "The Cybersecurity specialist is from Brazil.",
+          "Mohan is the Forecasting specialist."
+        ],
+        "answer": 3,
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "why": [
+          "Mohan and Nisha hold Forecasting and Genomics, and no clue decides which is which. So \"Mohan is the Forecasting specialist\" need not hold.",
+          "The other three are true in both arrangements."
+        ]
+      },
+      {
+        "stem": "If Nisha is the Forecasting specialist, how many people sit between the Genomics specialist and the person from Canada, counted along the shorter way round the table?",
+        "kind": "tita",
+        "answer": "2",
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "why": [
+          "Then Mohan (seat 3) is the Genomics specialist, and the Canada person (Omkar) is in seat 7.",
+          "One way round passes Nisha, Ishaan and Leela (3 people); the other passes Jaya and Kabir (2). The shorter way: 2."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Number the seats 1 to 7 going round to the left, with Kabir in seat 1 (only a reference, since the table can turn). Clues 6 and 13 both name the person on Kabir's left, so Jaya, in seat 2, is the Auditing specialist.",
+        "Ergonomics sits next to Jaya (clue 14). In seat 3 it would put Branding in seat 4 and Ishaan in Jaya's seat (clues 9 and 7), so Kabir is the Ergonomics specialist. Branding is then in seat 7, Ishaan in seat 5 (clue 7) and Mohan in seat 3 (clue 10).",
+        "Clue 1 puts the Cybersecurity specialist two seats to Nisha's left; only Nisha in seat 4 works, with Cybersecurity in seat 6. Clue 5 keeps Leela out of seat 7, so Leela is the Cybersecurity specialist and Omkar, in seat 7, the Branding specialist.",
+        "Brazil sits next to Omkar and Derivatives next to Brazil (clues 3 and 4). Brazil in seat 1 would leave no seat for Derivatives, so Leela is from Brazil and Ishaan is the Derivatives specialist. Ghana sits next to Ishaan (clue 2): Nisha.",
+        "Clues 12 and 8 make Canada, Finland and Egypt three seats in a row going left. Seats 1, 2, 3 would leave Denmark next to the Cybersecurity specialist (clue 11), so Omkar is from Canada, Kabir from Finland and Jaya from Egypt; then Mohan is from Denmark and Ishaan from Hungary.",
+        "Nothing separates the Forecasting and Genomics specialists, Mohan and Nisha, so two arrangements fit. Each question is worded so that this does not matter, or it says which."
+      ],
+      "grid": {
+        "head": [
+          "Seat (Kabir = 1, going left)",
+          "Person",
+          "Specialisation",
+          "Country"
+        ],
+        "rows": [
+          [
+            "1",
+            "Kabir",
+            "Ergonomics",
+            "Finland"
+          ],
+          [
+            "2",
+            "Jaya",
+            "Auditing",
+            "Egypt"
+          ],
+          [
+            "3",
+            "Mohan",
+            "Forecasting or Genomics",
+            "Denmark"
+          ],
+          [
+            "4",
+            "Nisha",
+            "Genomics or Forecasting",
+            "Ghana"
+          ],
+          [
+            "5",
+            "Ishaan",
+            "Derivatives",
+            "Hungary"
+          ],
+          [
+            "6",
+            "Leela",
+            "Cybersecurity",
+            "Brazil"
+          ],
+          [
+            "7",
+            "Omkar",
+            "Branding",
+            "Canada"
+          ]
+        ]
+      },
+      "cases": 2,
+      "diagram": {
+        "layout": "circle",
+        "seats": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7"
+        ],
+        "note": "Everyone faces the centre. Seats are numbered going round to each person's left (clockwise seen from above).",
+        "frames": [
+          [
+            [
+              [
+                "Kabir"
+              ],
+              [
+                "Jaya",
+                "Auditing"
+              ],
+              [],
+              [],
+              [],
+              [],
+              []
+            ]
+          ],
+          [
+            [
+              [
+                "Kabir",
+                "Ergonomics"
+              ],
+              [
+                "Jaya",
+                "Auditing"
+              ],
+              [
+                "Mohan"
+              ],
+              [],
+              [
+                "Ishaan"
+              ],
+              [],
+              [
+                "",
+                "Branding"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "Kabir",
+                "Ergonomics"
+              ],
+              [
+                "Jaya",
+                "Auditing"
+              ],
+              [
+                "Mohan"
+              ],
+              [
+                "Nisha"
+              ],
+              [
+                "Ishaan"
+              ],
+              [
+                "Leela",
+                "Cybersecurity"
+              ],
+              [
+                "Omkar",
+                "Branding"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "Kabir",
+                "Ergonomics"
+              ],
+              [
+                "Jaya",
+                "Auditing"
+              ],
+              [
+                "Mohan"
+              ],
+              [
+                "Nisha",
+                "Ghana"
+              ],
+              [
+                "Ishaan",
+                "Derivatives"
+              ],
+              [
+                "Leela",
+                "Cybersecurity",
+                "Brazil"
+              ],
+              [
+                "Omkar",
+                "Branding"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "Kabir",
+                "Ergonomics",
+                "Finland"
+              ],
+              [
+                "Jaya",
+                "Auditing",
+                "Egypt"
+              ],
+              [
+                "Mohan",
+                "Denmark"
+              ],
+              [
+                "Nisha",
+                "Ghana"
+              ],
+              [
+                "Ishaan",
+                "Derivatives",
+                "Hungary"
+              ],
+              [
+                "Leela",
+                "Cybersecurity",
+                "Brazil"
+              ],
+              [
+                "Omkar",
+                "Branding",
+                "Canada"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "Kabir",
+                "Ergonomics",
+                "Finland"
+              ],
+              [
+                "Jaya",
+                "Auditing",
+                "Egypt"
+              ],
+              [
+                "Mohan",
+                "Forecasting or Genomics",
+                "Denmark"
+              ],
+              [
+                "Nisha",
+                "Genomics or Forecasting",
+                "Ghana"
+              ],
+              [
+                "Ishaan",
+                "Derivatives",
+                "Hungary"
+              ],
+              [
+                "Leela",
+                "Cybersecurity",
+                "Brazil"
+              ],
+              [
+                "Omkar",
+                "Branding",
+                "Canada"
+              ]
+            ]
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "arr-desk-shuffle",
+    "title": "The desk shuffle",
+    "type": "arrangement",
+    "sub": "movement over three evenings",
+    "difficulty": "medium",
+    "minutes": 10,
+    "source": "original",
+    "since": "2026-10-25",
+    "intro": [
+      "Five employees, Asha, Bilal, Chandra, Dev and Esha, work in an open-plan office with seven desks in a row, numbered 1 to 7 from left to right. Each has a desk of their own, so five desks are occupied and two are vacant.",
+      "On each of three evenings, Monday, Tuesday and Wednesday, exactly one employee moves from their desk to a vacant desk (not necessarily the next one); nobody else moves. The seating plan is recorded each morning from Monday to Thursday, so there are four plans."
+    ],
+    "clues": [
+      "On Monday morning, no desk lies between the desks of Bilal and Esha.",
+      "On Wednesday morning, Asha is at a lower-numbered desk than Bilal.",
+      "Esha never moved.",
+      "On Monday morning, exactly one desk lies between the desks of Dev and Chandra.",
+      "On Monday morning, Bilal is at desk 6.",
+      "Dev moved exactly once.",
+      "On Wednesday evening, the employee who moved did not end up at an end desk.",
+      "On Thursday morning, Dev is at desk 7.",
+      "Asha is not the employee who moved on Monday evening.",
+      "On Monday morning, Chandra is at desk 1.",
+      "On Thursday morning, exactly two desks lie between the desks of Chandra and Asha."
+    ],
+    "questions": [
+      {
+        "stem": "Who moved on Monday evening?",
+        "kind": "mcq",
+        "options": [
+          "Asha",
+          "Dev",
+          "Chandra",
+          "Bilal"
+        ],
+        "answer": 1,
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "why": [
+          "Dev's one move is from desk 3 to desk 7, and it cannot be on Wednesday (desk 7 is an end desk).",
+          "If Dev moved on Tuesday, Asha and Chandra could never end exactly three desks apart on Thursday. So Dev moved on Monday evening."
+        ]
+      },
+      {
+        "stem": "How many different seating plans are possible for Thursday morning?",
+        "kind": "tita",
+        "answer": "3",
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "why": [
+          "In all six possible histories Asha ends at desk 4, Chandra at 1, Dev at 7 and Esha at 5.",
+          "Only Bilal's desk varies: 6, 3 or 2. That is 3 plans."
+        ]
+      },
+      {
+        "stem": "On Wednesday morning, which of the following must be true?",
+        "kind": "mcq",
+        "options": [
+          "Bilal is at desk 6.",
+          "Desk 2 is vacant.",
+          "Asha is at desk 4.",
+          "Dev is at desk 7."
+        ],
+        "answer": 3,
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "why": [
+          "Dev moved on Monday evening and never again, so he is at desk 7 on Wednesday morning in every history.",
+          "Bilal is at desk 3 in one history; Asha is at desk 2 or 3 in four of them, and desk 2 is Asha's in two."
+        ]
+      },
+      {
+        "stem": "If Asha moved on exactly two evenings, which of the following must be true?",
+        "kind": "mcq",
+        "options": [
+          "Bilal is at desk 3 on Thursday morning.",
+          "Asha was at desk 2 on Monday morning.",
+          "Bilal did not move at all.",
+          "Asha was at desk 3 on Wednesday morning."
+        ],
+        "answer": 2,
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "why": [
+          "Asha moves twice only when Dev moves on Monday and Asha on Tuesday and Wednesday, so Bilal stays at desk 6 all week.",
+          "Asha may have started at desk 2 or 4, and on Wednesday morning she may be at desk 2 or 3, so B and D can fail; A fails because Bilal is at desk 6."
+        ]
+      },
+      {
+        "stem": "If Bilal moved on Wednesday evening, what is the sum of the desk numbers of Asha and Bilal on Wednesday morning?",
+        "kind": "tita",
+        "answer": "10",
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "why": [
+          "Bilal moves on Wednesday only when Asha moved on Tuesday, from desk 2 to desk 4, and Bilal is still at desk 6 on Wednesday morning.",
+          "4 + 6 = 10."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Monday: Chandra at desk 1 and Bilal at 6 (clues 10 and 5), so Dev is at 3 (clue 4) and Esha beside Bilal (clue 1). Esha never moves and Dev ends at 7 (clues 3 and 8), so Esha is at desk 5 all week.",
+        "Dev moves once, from 3 to 7 (clues 6 and 8). Not on Wednesday evening, because desk 7 is an end desk (clue 7).",
+        "If Dev moved on Tuesday, every way of filling the other evenings leaves Asha and Chandra 1 or 2 desks apart on Thursday, never 3 (clue 11). So Dev moved on Monday evening, and Asha (who cannot move on Monday, clue 9) starts at desk 2 or 4.",
+        "On Thursday clue 11 leaves only Chandra at 1 with Asha at 4: the other pairs need a Wednesday move onto an end desk, or three moves in two evenings. Chandra never moves, so only Asha and Bilal move on Tuesday and Wednesday.",
+        "Asha must end at desk 4; Bilal may step aside on Tuesday or Wednesday as long as Asha stays left of him on Wednesday morning (clue 2). That gives six histories, and on Thursday only Bilal's desk (2, 3 or 6) differs."
+      ],
+      "grid": {
+        "head": [
+          "History",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Movers"
+        ],
+        "rows": [
+          [
+            "1",
+            "As2 Bi6 Ch1 De3 Es5",
+            "As2 Bi6 Ch1 De7 Es5",
+            "As2 Bi3 Ch1 De7 Es5",
+            "As4 Bi3 Ch1 De7 Es5",
+            "Dev, Bilal, Asha"
+          ],
+          [
+            "2",
+            "As2 Bi6 Ch1 De3 Es5",
+            "As2 Bi6 Ch1 De7 Es5",
+            "As3 Bi6 Ch1 De7 Es5",
+            "As4 Bi6 Ch1 De7 Es5",
+            "Dev, Asha, Asha"
+          ],
+          [
+            "3",
+            "As4 Bi6 Ch1 De3 Es5",
+            "As4 Bi6 Ch1 De7 Es5",
+            "As2 Bi6 Ch1 De7 Es5",
+            "As4 Bi6 Ch1 De7 Es5",
+            "Dev, Asha, Asha"
+          ],
+          [
+            "4",
+            "As4 Bi6 Ch1 De3 Es5",
+            "As4 Bi6 Ch1 De7 Es5",
+            "As3 Bi6 Ch1 De7 Es5",
+            "As4 Bi6 Ch1 De7 Es5",
+            "Dev, Asha, Asha"
+          ],
+          [
+            "5",
+            "As2 Bi6 Ch1 De3 Es5",
+            "As2 Bi6 Ch1 De7 Es5",
+            "As4 Bi6 Ch1 De7 Es5",
+            "As4 Bi2 Ch1 De7 Es5",
+            "Dev, Asha, Bilal"
+          ],
+          [
+            "6",
+            "As2 Bi6 Ch1 De3 Es5",
+            "As2 Bi6 Ch1 De7 Es5",
+            "As4 Bi6 Ch1 De7 Es5",
+            "As4 Bi3 Ch1 De7 Es5",
+            "Dev, Asha, Bilal"
+          ]
+        ],
+        "caption": "As2 means Asha is at desk 2; Bi is Bilal, Ch Chandra, De Dev, Es Esha. Movers are for Monday, Tuesday and Wednesday evening."
+      },
+      "cases": 6,
+      "diagram": {
+        "layout": "row",
+        "seats": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7"
+        ],
+        "rows": [
+          "Monday morning",
+          "Tuesday morning",
+          "Wednesday morning",
+          "Thursday morning"
+        ],
+        "note": "Each row is one morning's plan, desks numbered from left to right. A name with a question mark is one of the places that person can be. A crossed desk is certainly vacant.",
+        "frames": [
+          [
+            [
+              [
+                "Chandra"
+              ],
+              [],
+              [
+                "Dev"
+              ],
+              [],
+              [
+                "Esha"
+              ],
+              [
+                "Bilal"
+              ],
+              []
+            ],
+            [
+              [],
+              [],
+              [],
+              [],
+              [
+                "Esha"
+              ],
+              [],
+              []
+            ],
+            [
+              [],
+              [],
+              [],
+              [],
+              [
+                "Esha"
+              ],
+              [],
+              []
+            ],
+            [
+              [],
+              [],
+              [],
+              [],
+              [
+                "Esha"
+              ],
+              [],
+              []
+            ]
+          ],
+          [
+            [
+              [
+                "Chandra"
+              ],
+              [],
+              [
+                "Dev"
+              ],
+              [],
+              [
+                "Esha"
+              ],
+              [
+                "Bilal"
+              ],
+              []
+            ],
+            [
+              [],
+              [],
+              [],
+              [],
+              [
+                "Esha"
+              ],
+              [],
+              []
+            ],
+            [
+              [],
+              [],
+              [],
+              [],
+              [
+                "Esha"
+              ],
+              [],
+              []
+            ],
+            [
+              [],
+              [],
+              [],
+              [],
+              [
+                "Esha"
+              ],
+              [],
+              [
+                "Dev"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "Chandra"
+              ],
+              [
+                "Asha?"
+              ],
+              [
+                "Dev"
+              ],
+              [
+                "Asha?"
+              ],
+              [
+                "Esha"
+              ],
+              [
+                "Bilal"
+              ],
+              null
+            ],
+            [
+              [
+                "Chandra"
+              ],
+              [
+                "Asha?"
+              ],
+              null,
+              [
+                "Asha?"
+              ],
+              [
+                "Esha"
+              ],
+              [
+                "Bilal"
+              ],
+              [
+                "Dev"
+              ]
+            ],
+            [
+              [],
+              [],
+              [],
+              [],
+              [
+                "Esha"
+              ],
+              [],
+              [
+                "Dev"
+              ]
+            ],
+            [
+              [],
+              [],
+              [],
+              [],
+              [
+                "Esha"
+              ],
+              [],
+              [
+                "Dev"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "Chandra"
+              ],
+              [
+                "Asha?"
+              ],
+              [
+                "Dev"
+              ],
+              [
+                "Asha?"
+              ],
+              [
+                "Esha"
+              ],
+              [
+                "Bilal"
+              ],
+              null
+            ],
+            [
+              [
+                "Chandra"
+              ],
+              [
+                "Asha?"
+              ],
+              null,
+              [
+                "Asha?"
+              ],
+              [
+                "Esha"
+              ],
+              [
+                "Bilal"
+              ],
+              [
+                "Dev"
+              ]
+            ],
+            [
+              [
+                "Chandra"
+              ],
+              [],
+              [],
+              [],
+              [
+                "Esha"
+              ],
+              [],
+              [
+                "Dev"
+              ]
+            ],
+            [
+              [
+                "Chandra"
+              ],
+              [],
+              [],
+              [
+                "Asha"
+              ],
+              [
+                "Esha"
+              ],
+              [],
+              [
+                "Dev"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "Chandra"
+              ],
+              [
+                "Asha?"
+              ],
+              [
+                "Dev"
+              ],
+              [
+                "Asha?"
+              ],
+              [
+                "Esha"
+              ],
+              [
+                "Bilal"
+              ],
+              null
+            ],
+            [
+              [
+                "Chandra"
+              ],
+              [
+                "Asha?"
+              ],
+              null,
+              [
+                "Asha?"
+              ],
+              [
+                "Esha"
+              ],
+              [
+                "Bilal"
+              ],
+              [
+                "Dev"
+              ]
+            ],
+            [
+              [
+                "Chandra"
+              ],
+              [
+                "Asha?"
+              ],
+              [
+                "Asha?",
+                "Bilal?"
+              ],
+              [
+                "Asha?"
+              ],
+              [
+                "Esha"
+              ],
+              [
+                "Bilal?"
+              ],
+              [
+                "Dev"
+              ]
+            ],
+            [
+              [
+                "Chandra"
+              ],
+              [
+                "Bilal?"
+              ],
+              [
+                "Bilal?"
+              ],
+              [
+                "Asha"
+              ],
+              [
+                "Esha"
+              ],
+              [
+                "Bilal?"
+              ],
+              [
+                "Dev"
+              ]
+            ]
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "arr-friends-drinks",
+    "title": "Six friends: cities, professions and drinks",
+    "type": "arrangement",
+    "sub": "linear, three attributes",
+    "difficulty": "hard",
+    "minutes": 15,
+    "source": "original",
+    "since": "2026-10-25",
+    "intro": [
+      "Six friends, Aditi, Bharat, Charu, Dhruv, Esha and Farhan, sit in a row of six seats numbered 1 to 6 from left to right, all facing the same direction. Each is from a different city (Jaipur, Kolkata, Lucknow, Mysuru, Nagpur and Patna), has a different profession (analyst, banker, curator, dentist, editor and farmer) and is drinking a different beverage (coffee, juice, milk, soda, tea and water).",
+      "\"Either P or Q, but not both\" means exactly one of P and Q is true. \"If P, then Q\" is broken only when P is true and Q is false."
+    ],
+    "clues": [
+      "Exactly one person sits between the farmer and the person from Jaipur.",
+      "Exactly two people sit between the person from Nagpur and the curator.",
+      "Exactly three people sit between the person from Nagpur and the milk drinker.",
+      "The person from Patna sits in seat 4.",
+      "Exactly four people sit between Aditi and the person from Mysuru.",
+      "Exactly four people sit to the left of Esha.",
+      "If the person from Lucknow sits immediately next to the tea drinker, then the dentist sits at one of the two ends.",
+      "Exactly two people sit between Esha and Bharat.",
+      "Exactly one person sits between the tea drinker and the milk drinker.",
+      "The water drinker sits in seat 4.",
+      "Either Aditi sits immediately next to the banker or the dentist sits immediately to the left of the tea drinker, but not both.",
+      "Either Dhruv sits immediately next to the curator or the farmer sits in an even-numbered seat, but not both.",
+      "The person from Kolkata sits in seat 3.",
+      "Exactly two people sit between the juice drinker and the soda drinker.",
+      "Exactly one person sits between the soda drinker and Charu.",
+      "Either the editor sits somewhere to the left of Farhan or Esha sits somewhere to the left of the editor, but not both."
+    ],
+    "questions": [
+      {
+        "stem": "Which of the following gives the professions of Esha, Dhruv and Aditi, in that order?",
+        "kind": "mcq",
+        "options": [
+          "banker, farmer, editor",
+          "banker, analyst, editor",
+          "banker, farmer, dentist",
+          "curator, farmer, editor"
+        ],
+        "answer": 0,
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "why": [
+          "In every arrangement that fits, Esha (seat 5) is the banker, Dhruv (seat 4) the farmer and Aditi (seat 6) the editor."
+        ]
+      },
+      {
+        "stem": "Which of the following statements must be true?",
+        "kind": "mcq",
+        "options": [
+          "The analyst drinks tea.",
+          "The dentist sits in seat 1.",
+          "The farmer drinks water.",
+          "The person from Jaipur is the curator."
+        ],
+        "answer": 2,
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "why": [
+          "Dhruv, in seat 4, is the farmer and drinks water in every arrangement.",
+          "The dentist is in seat 1 only when Farhan is the dentist; Jaipur is the curator only when Bharat is from Jaipur; the analyst drinks tea only when Charu is the analyst."
+        ]
+      },
+      {
+        "stem": "How many different complete arrangements (a city, profession and beverage for every seat) fit all sixteen statements?",
+        "kind": "tita",
+        "answer": "3",
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "why": [
+          "Everything is fixed except Bharat's and Aditi's cities (Jaipur or Lucknow) and Farhan's and Charu's professions (dentist or analyst): four combinations.",
+          "Statement 7 rules out Bharat from Lucknow with Charu as dentist, because Bharat would sit next to the tea drinker with the dentist away from the ends. Three remain."
+        ]
+      },
+      {
+        "stem": "If Bharat is from Jaipur, which of the following must be true?",
+        "kind": "mcq",
+        "options": [
+          "The analyst sits next to the farmer.",
+          "Charu is the dentist.",
+          "Farhan is the dentist.",
+          "Aditi is from Lucknow."
+        ],
+        "answer": 3,
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "why": [
+          "Jaipur and Lucknow belong to Bharat and Aditi, so Aditi is from Lucknow.",
+          "Statement 7 is not triggered (Lucknow, seat 6, is not next to the tea drinker in seat 3), so either Farhan or Charu may be the dentist."
+        ]
+      },
+      {
+        "stem": "If the analyst drinks milk, what is the sum of the seat numbers of the dentist and the person from Lucknow?",
+        "kind": "tita",
+        "answer": "9",
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "why": [
+          "Milk is Farhan's (seat 1), so Farhan is the analyst and Charu (seat 3) the dentist, not at an end.",
+          "Statement 7 then keeps Lucknow away from the tea drinker (seat 3), so Lucknow is Aditi in seat 6, not Bharat in seat 2. 3 + 6 = 9."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Seat 4 is Patna and water, seat 3 is Kolkata (statements 4, 10, 13). Esha is in seat 5 (6) and Bharat in seat 2 (8). Aditi and the Mysuru person take the two ends (5).",
+        "Nagpur sits four seats from the milk drinker and three from the curator (3, 2). Nagpur in seat 1, 2 or 6 forces tea onto seat 4 or clashes with juice and soda (9, 14), so Esha is from Nagpur: milk in seat 1, Bharat the curator, tea in seat 3, coffee in seat 6, and juice and soda in seats 2 and 5.",
+        "Statement 11's second half needs the dentist in seat 2, the curator's seat, so Aditi sits next to the banker. Aditi in seat 1 would make the curator the banker, so Aditi is in seat 6, Esha is the banker and seat 1 is Mysuru.",
+        "Jaipur and Lucknow are seats 2 and 6, which puts the farmer in seat 4 either way (1). With the farmer in an even seat, Dhruv is not next to the curator (12), so Dhruv is in seat 4. Charu must be two seats from the soda drinker (15): Charu in seat 3, soda in 5, juice in 2, and Farhan in seat 1.",
+        "Nobody sits left of Farhan, so the editor sits right of Esha (16): Aditi is the editor. Farhan and Charu are the analyst and the dentist. If Bharat is from Lucknow he sits next to the tea drinker, so the dentist must be at an end: Farhan (7). Three arrangements remain."
+      ],
+      "grid": {
+        "head": [
+          "Seat",
+          "Person",
+          "City",
+          "Profession",
+          "Beverage"
+        ],
+        "rows": [
+          [
+            "1",
+            "Farhan",
+            "Mysuru",
+            "dentist or analyst",
+            "milk"
+          ],
+          [
+            "2",
+            "Bharat",
+            "Lucknow or Jaipur",
+            "curator",
+            "juice"
+          ],
+          [
+            "3",
+            "Charu",
+            "Kolkata",
+            "analyst or dentist",
+            "tea"
+          ],
+          [
+            "4",
+            "Dhruv",
+            "Patna",
+            "farmer",
+            "water"
+          ],
+          [
+            "5",
+            "Esha",
+            "Nagpur",
+            "banker",
+            "soda"
+          ],
+          [
+            "6",
+            "Aditi",
+            "Jaipur or Lucknow",
+            "editor",
+            "coffee"
+          ]
+        ],
+        "caption": "Bharat from Lucknow forces Farhan to be the dentist (statement 7), so that one combination is out."
+      },
+      "cases": 3,
+      "diagram": {
+        "layout": "row",
+        "seats": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "note": "Each seat shows the person, city, profession and drink, as far as they are known.",
+        "frames": [
+          [
+            [
+              [],
+              [
+                "Bharat"
+              ],
+              [
+                "",
+                "Kolkata"
+              ],
+              [
+                "",
+                "Patna",
+                "water"
+              ],
+              [
+                "Esha"
+              ],
+              []
+            ]
+          ],
+          [
+            [
+              [
+                "",
+                "milk"
+              ],
+              [
+                "Bharat",
+                "curator"
+              ],
+              [
+                "",
+                "Kolkata",
+                "tea"
+              ],
+              [
+                "",
+                "Patna",
+                "water"
+              ],
+              [
+                "Esha",
+                "Nagpur"
+              ],
+              [
+                "",
+                "coffee"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "",
+                "Mysuru",
+                "milk"
+              ],
+              [
+                "Bharat",
+                "curator"
+              ],
+              [
+                "",
+                "Kolkata",
+                "tea"
+              ],
+              [
+                "",
+                "Patna",
+                "water"
+              ],
+              [
+                "Esha",
+                "Nagpur",
+                "banker"
+              ],
+              [
+                "Aditi",
+                "coffee"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "Farhan",
+                "Mysuru",
+                "milk"
+              ],
+              [
+                "Bharat",
+                "Lucknow or Jaipur",
+                "curator",
+                "juice"
+              ],
+              [
+                "Charu",
+                "Kolkata",
+                "tea"
+              ],
+              [
+                "Dhruv",
+                "Patna",
+                "farmer",
+                "water"
+              ],
+              [
+                "Esha",
+                "Nagpur",
+                "banker",
+                "soda"
+              ],
+              [
+                "Aditi",
+                "Jaipur or Lucknow",
+                "coffee"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "Farhan",
+                "Mysuru",
+                "dentist or analyst",
+                "milk"
+              ],
+              [
+                "Bharat",
+                "Lucknow or Jaipur",
+                "curator",
+                "juice"
+              ],
+              [
+                "Charu",
+                "Kolkata",
+                "analyst or dentist",
+                "tea"
+              ],
+              [
+                "Dhruv",
+                "Patna",
+                "farmer",
+                "water"
+              ],
+              [
+                "Esha",
+                "Nagpur",
+                "banker",
+                "soda"
+              ],
+              [
+                "Aditi",
+                "Jaipur or Lucknow",
+                "editor",
+                "coffee"
+              ]
+            ]
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "arr-panel-empty-chair",
+    "title": "A selection panel with an empty chair",
+    "type": "arrangement",
+    "sub": "circular, empty chair, ratings",
+    "difficulty": "hard",
+    "minutes": 20,
+    "source": "original",
+    "since": "2026-10-25",
+    "intro": [
+      "Six members of a selection panel, Anand, Bela, Chetan, Deepa, Eklavya and Fiza, sit around a round table with seven equally spaced chairs, all facing the centre. Exactly one chair is empty. Each member belongs to a different team (Atlas, Borealis, Corvus, Draco, Eos and Fornax) and has a different whole-number rating from 1 to 6 (higher is better).",
+      "Left and right are from the point of view of the person sitting. \"Immediately to the left\" means the very next chair, and \"second to the left\" the chair after that (the chair in between may be occupied or empty). A statement about \"the two people sitting next to\" someone assumes both neighbouring chairs are occupied. Seatings that are rotations of each other count as the same arrangement."
+    ],
+    "clues": [
+      "The ratings of the two people sitting next to the Atlas member add up to 7.",
+      "The Atlas member has a lower rating than Chetan.",
+      "Deepa sits second to the left of Bela.",
+      "Anand sits second to the left of Eklavya.",
+      "The ratings of the two people sitting next to Chetan add up to 8.",
+      "The Draco member sits immediately next to Chetan.",
+      "Eklavya has a higher rating than the Atlas member.",
+      "Eklavya has a lower rating than Chetan.",
+      "The ratings of the two people sitting next to Deepa add up to 9.",
+      "Deepa has a higher rating than Eklavya.",
+      "Anand sits next to the empty chair.",
+      "Deepa's rating is exactly 2 more than the Corvus member's.",
+      "Fiza sits immediately next to the Eos member.",
+      "The Corvus member sits immediately to the left of the Draco member."
+    ],
+    "questions": [
+      {
+        "stem": "Which of the following gives the ratings of Anand, Bela and Eklavya, in that order?",
+        "kind": "mcq",
+        "options": [
+          "3, 2, 4",
+          "3, 4, 2",
+          "2, 3, 4",
+          "3, 2, 5"
+        ],
+        "answer": 0,
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "why": [
+          "The ratings are Fiza 1, Bela 2, Anand 3, Eklavya 4, Chetan 5, Deepa 6."
+        ]
+      },
+      {
+        "stem": "What is the sum of the ratings of the four people in the two chairs on each side of the empty chair?",
+        "kind": "tita",
+        "answer": "11",
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "why": [
+          "The empty chair has Anand (3) and Bela (2) beside it, and Fiza (1) and Chetan (5) one chair further out.",
+          "3 + 2 + 1 + 5 = 11."
+        ]
+      },
+      {
+        "stem": "Which of the following statements must be true?",
+        "kind": "mcq",
+        "options": [
+          "Bela is the Fornax member.",
+          "Fiza is the Atlas member.",
+          "The Draco member is rated 5.",
+          "The Borealis member is rated 5."
+        ],
+        "answer": 1,
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "why": [
+          "Fiza (rated 1, between Eklavya and Anand, whose ratings add to 7) is the Atlas member in both arrangements.",
+          "Bela's and Chetan's teams (Borealis and Fornax) can swap, so A and D hold in only one arrangement; the Draco member is Deepa, rated 6."
+        ]
+      },
+      {
+        "stem": "If Chetan is the Fornax member, which of the following must be true?",
+        "kind": "mcq",
+        "options": [
+          "The Fornax member has a lower rating than Eklavya.",
+          "The Borealis member is rated 2.",
+          "The Borealis member sits next to the Eos member.",
+          "The Borealis member sits next to the Atlas member."
+        ],
+        "answer": 1,
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "why": [
+          "Then Bela is the Borealis member, rated 2.",
+          "Bela sits between the empty chair and Chetan, so she is next to neither Anand (Eos) nor Fiza (Atlas), and Chetan (5) is rated above Eklavya (4)."
+        ]
+      },
+      {
+        "stem": "Renumber the chairs 1 to 7 going round to the left, starting with the empty chair as chair 1. What is the sum of the chair numbers of the Atlas, Corvus and Draco members?",
+        "kind": "tita",
+        "answer": "15",
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "why": [
+          "From the empty chair going left: Bela 2, Chetan 3, Deepa 4, Eklavya 5, Fiza 6, Anand 7.",
+          "Atlas is Fiza (6), Corvus is Eklavya (5), Draco is Deepa (4): 6 + 5 + 4 = 15."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Ratings first. Clues 2, 7, 8 and 10 give Atlas < Eklavya < Chetan and Eklavya < Deepa, so Eklavya is rated 2, 3 or 4 and the Atlas member is not Eklavya, Chetan or Deepa. Clues 1, 5 and 9 need both neighbours of the Atlas member, Chetan and Deepa, so none of them sits by the empty chair; Anand does (clue 11), so the Atlas member is Bela or Fiza.",
+        "Seating. Put Eklavya in chair 1 and number the chairs going left. Anand is in chair 3 (clue 4) and the empty chair is 2 or 4 (clue 11). Clue 3 then allows four places for Bela and Deepa, and Chetan and Fiza fill the rest either way: eight layouts.",
+        "Testing the layouts against the neighbour sums (clues 1, 5, 9) and the rating order rules out seven of them; one also fails at once because it puts Chetan beside the empty chair. Only one remains: Fiza in chair 2, the empty chair 4, Bela 5, Chetan 6 and Deepa 7.",
+        "Bela sits by the empty chair, so the Atlas member is Fiza, and Eklavya + Anand = 7 (clue 1). Chetan + Eklavya = 9 (clue 9) and Bela + Deepa = 8 (clue 5) leave one set of ratings: Fiza 1, Bela 2, Anand 3, Eklavya 4, Chetan 5, Deepa 6.",
+        "Deepa (6) is 2 more than the Corvus member (clue 12): Eklavya. The Draco member sits on Corvus's right (clue 14): Deepa. Fiza sits next to the Eos member (clue 13): Anand. Bela and Chetan are Borealis and Fornax in some order, so two arrangements fit."
+      ],
+      "grid": {
+        "head": [
+          "Chair (Eklavya = 1, going left)",
+          "Person",
+          "Team",
+          "Rating"
+        ],
+        "rows": [
+          [
+            "1",
+            "Eklavya",
+            "Corvus",
+            "4"
+          ],
+          [
+            "2",
+            "Fiza",
+            "Atlas",
+            "1"
+          ],
+          [
+            "3",
+            "Anand",
+            "Eos",
+            "3"
+          ],
+          [
+            "4",
+            "empty",
+            "",
+            ""
+          ],
+          [
+            "5",
+            "Bela",
+            "Fornax or Borealis",
+            "2"
+          ],
+          [
+            "6",
+            "Chetan",
+            "Borealis or Fornax",
+            "5"
+          ],
+          [
+            "7",
+            "Deepa",
+            "Draco",
+            "6"
+          ]
+        ]
+      },
+      "cases": 2,
+      "diagram": {
+        "layout": "circle",
+        "seats": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7"
+        ],
+        "note": "Everyone faces the centre. Seats are numbered going round to each person's left (clockwise seen from above). A crossed chair is the empty one.",
+        "frames": [
+          [
+            [
+              [],
+              [],
+              [],
+              [],
+              [],
+              [],
+              []
+            ]
+          ],
+          [
+            [
+              [
+                "Eklavya"
+              ],
+              [],
+              [
+                "Anand"
+              ],
+              [],
+              [],
+              [],
+              []
+            ]
+          ],
+          [
+            [
+              [
+                "Eklavya"
+              ],
+              [
+                "Fiza"
+              ],
+              [
+                "Anand"
+              ],
+              null,
+              [
+                "Bela"
+              ],
+              [
+                "Chetan"
+              ],
+              [
+                "Deepa"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "Eklavya",
+                "rated 4"
+              ],
+              [
+                "Fiza",
+                "Atlas",
+                "rated 1"
+              ],
+              [
+                "Anand",
+                "rated 3"
+              ],
+              null,
+              [
+                "Bela",
+                "rated 2"
+              ],
+              [
+                "Chetan",
+                "rated 5"
+              ],
+              [
+                "Deepa",
+                "rated 6"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "Eklavya",
+                "Corvus",
+                "rated 4"
+              ],
+              [
+                "Fiza",
+                "Atlas",
+                "rated 1"
+              ],
+              [
+                "Anand",
+                "Eos",
+                "rated 3"
+              ],
+              null,
+              [
+                "Bela",
+                "Fornax or Borealis",
+                "rated 2"
+              ],
+              [
+                "Chetan",
+                "Borealis or Fornax",
+                "rated 5"
+              ],
+              [
+                "Deepa",
+                "Draco",
+                "rated 6"
+              ]
+            ]
+          ]
+        ]
+      }
     }
   }
 ]

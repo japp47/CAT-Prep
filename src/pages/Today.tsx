@@ -331,7 +331,7 @@ export default function Today() {
 
       {isToday && <PracticeToday today={today} />}
 
-      {soon.length > 0 && <p className="measure text-base text-muted-foreground">{soon.map((s) => s.short).join(" and ")} timetables are coming soon.{soon.filter((s) => s.status === "open").map((s) => <span key={s.id}> The <TextLink to={"/" + s.id}>{s.short} page</TextLink> already has guides and resources.</span>)} You can already log their mock scores in <TextLink to="/progress">Progress</TextLink> and mistakes in the <TextLink to="/errors">Error log</TextLink>.</p>}
+      {soon.length > 0 && <p className="measure text-base text-muted-foreground">{soon.map((s) => s.short).join(" and ")} timetables are coming soon.{soon.filter((s) => s.status === "open").map((s) => <span key={s.id}> The <TextLink to={"/" + s.id}>{s.short} page</TextLink> already has guides, resources and the first practice sets.</span>)} You can already log their mock scores in <TextLink to="/progress">Progress</TextLink> and mistakes in the <TextLink to="/errors">Error log</TextLink>.</p>}
 
       <div className="grid gap-10 lg:grid-cols-2 lg:gap-8">
         <Week d={d} today={today} onPick={setD} />

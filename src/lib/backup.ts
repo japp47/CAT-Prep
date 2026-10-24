@@ -13,4 +13,4 @@ export function downloadBackup(state: AppState) {
 
 /** True once there is anything worth keeping. */
 export const hasProgress = (s: AppState) =>
-  s.rcAttempts.length + s.vaAttempts.length + s.crAttempts.length + s.sectionals.length + s.speedRuns.length + s.practice.length + s.mocks.length + s.errors.length + s.vocab.length > 0 || Object.keys(s.days).length > 0;
+  s.rcAttempts.length + s.vaAttempts.length + s.crAttempts.length + s.lrAttempts.length + s.sectionals.length + s.speedRuns.length + s.practice.length + s.mocks.length + s.errors.length + s.vocab.length > 0 || Object.keys(s.days).length > 0;

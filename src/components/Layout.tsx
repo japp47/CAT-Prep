@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from "react";
-import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Menu, PanelLeftClose, PanelLeftOpen, Search } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
@@ -14,13 +14,13 @@ import { IconChart, IconHome, IconPen, IconToday } from "./Icons";
 import Brand from "./Brand";
 import SiteFooter from "./SiteFooter";
 import { DataNote, SyncNavRow } from "./SyncNav";
-import SiteHeader, { type SiteNavGroup } from "./SiteHeader";
+import SiteHeader, { PRACTICE_PATH, SiteNavLink, type SiteNavGroup } from "./SiteHeader";
 import ThemeToggle, { type Theme as ThemeValue } from "./ThemeToggle";
 const SearchPalette = lazy(() => import("./SearchPalette"));
 
 const GROUPS: SiteNavGroup[] = [
-  { title: "Study", items: [{ to: "/", label: "Home", end: true }, { to: "/today", label: "Today" }, { to: "/practice", label: "Practice" }, { to: "/plan", label: "Plan and time" }] },
-  { title: "Sections", items: SECTIONS.map((s) => ({ to: "/" + s.id, label: s.short, soon: s.status === "soon" })) },
+  { title: "Study", items: [{ to: "/", label: "Home", end: true }, { to: "/today", label: "Today" }, { to: "/practice", label: "Practice", match: PRACTICE_PATH }, { to: "/plan", label: "Plan and time" }] },
+  { title: "Sections", items: SECTIONS.map((s) => ({ to: "/" + s.id, label: s.short, soon: s.status === "soon", end: true })) },
   { title: "Progress", items: [{ to: "/progress", label: "Overview" }, { to: "/history", label: "History" }, { to: "/review", label: "Weekly review" }, { to: "/errors", label: "Error log" }, { to: "/words", label: "Words" }, { to: "/journal", label: "Reading journal" }] },
   { title: "Explore", items: [{ to: "/updates", label: "Updates" }, { to: "/exams", label: "CAT and other exams" }, { to: "/guides", label: "Guides" }, { to: "/stories", label: "Topper stories" }, { to: "/roadmap", label: "What's coming" }, { to: "/settings", label: "Settings and backup" }] },
 ];
@@ -32,11 +32,11 @@ function Nav({ onPick }: { onPick?: () => void }) {
         <div key={g.title} className="flex flex-col gap-0.5">
           <span className="mb-1 border-b border-border/70 px-3 pb-2 text-xs font-semibold tracking-[0.1em] text-muted-foreground uppercase">{g.title}</span>
           {g.items.map((it) => (
-            <NavLink key={it.to} to={it.to} end={it.end} onClick={onPick}
-              className={({ isActive }) => cn("flex h-9 items-center justify-between gap-2 rounded-md px-3 text-base font-medium text-foreground/80 transition-colors hover:bg-card/70 hover:text-foreground", isActive && "bg-card font-semibold text-foreground")}>
+            <SiteNavLink key={it.to} item={it} onClick={onPick}
+              className={(isActive) => cn("flex h-9 items-center justify-between gap-2 rounded-md px-3 text-base font-medium text-foreground/80 transition-colors hover:bg-card/70 hover:text-foreground", isActive && "bg-card font-semibold text-foreground")}>
               <span>{it.label}</span>
               {it.soon && <span className="text-sm font-normal text-muted-foreground">Soon</span>}
-            </NavLink>
+            </SiteNavLink>
           ))}
         </div>
       ))}
@@ -82,7 +82,7 @@ const Toaster = lazy(() => import("@/components/ui/sonner").then((m) => ({ defau
 const TABS = [
   { to: "/", label: "Home", Icon: IconHome, end: true },
   { to: "/today", label: "Today", Icon: IconToday },
-  { to: "/practice", label: "Practice", Icon: IconPen },
+  { to: "/practice", label: "Practice", Icon: IconPen, match: PRACTICE_PATH },
   { to: "/progress", label: "Progress", Icon: IconChart },
 ];
 
@@ -192,10 +192,10 @@ export default function Layout() {
       {idle && <Suspense fallback={null}><Toaster /></Suspense>}
 
       <nav aria-label="Quick" className={BOTTOM_BAR}>
-        {TABS.map(({ to, label, Icon, end }) => (
-          <NavLink key={to} to={to} end={end} className={({ isActive }) => cn("flex h-16 flex-col items-center justify-center gap-1 text-sm font-medium text-muted-foreground [&_svg]:size-6", isActive && "text-primary")}>
+        {TABS.map(({ label, Icon, ...it }) => (
+          <SiteNavLink key={it.to} item={it} className={(isActive) => cn("flex h-16 flex-col items-center justify-center gap-1 text-sm font-medium text-muted-foreground [&_svg]:size-6", isActive && "text-primary")}>
             <Icon />{label}
-          </NavLink>
+          </SiteNavLink>
         ))}
         <button type="button" aria-expanded={open} onPointerDown={loadMenu} onClick={openMenu} className="flex h-16 flex-col items-center justify-center gap-1 text-sm font-medium text-muted-foreground"><Menu className="size-6" />Menu</button>
       </nav>

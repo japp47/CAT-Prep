@@ -125,7 +125,7 @@ export function focusLines(i: { types: Row[]; genres: Row[]; traps: [string, num
   const out: FocusLine[] = [];
 
   const t = weakest(i.types);
-  if (t && accuracy(t)! < 80) out.push({ text: `${t.label} is your weakest type: ${t.correct} of ${t.attempted} right, ${accuracy(t)}%.`, to: "/practice", cta: "Drill it in Practice" });
+  if (t && accuracy(t)! < 80) out.push({ text: `${t.label} is your weakest type: ${t.correct} of ${t.attempted} right, ${accuracy(t)}%.`, to: "/varc/practice", cta: "Drill it in Practice" });
 
   const rc = i.genres.reduce((s, r) => ({ attempted: s.attempted + r.attempted, correct: s.correct + r.correct }), { attempted: 0, correct: 0 });
   const g = weakest(i.genres, 8);
@@ -153,7 +153,7 @@ export const practiceTypeOf = (t: string) => (t.startsWith("RC") ? "RC" : t);
 /** Where to drill a practice type ("Para jumble", "RC", "Critical reasoning"). */
 export function drillForType(t: string): string {
   const va: Record<string, string> = { "Para summary": "ps", "Para jumble": "pj", "Odd sentence out": "oso", "Sentence insertion": "si" };
-  return va[t] ? `/practice/va?type=${va[t]}&n=6` : t === "Critical reasoning" ? "/practice/cr?n=6" : t === "RC" ? "/practice/library" : "/practice";
+  return va[t] ? `/practice/va?type=${va[t]}&n=6` : t === "Critical reasoning" ? "/practice/cr?n=6" : t === "RC" ? "/practice/library" : "/varc/practice";
 }
 
 /** to drills the pattern; list opens its entries in the Error log. */

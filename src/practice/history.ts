@@ -1,6 +1,6 @@
 import { addDays, dow as weekday } from "../lib/date";
 import type { AppState } from "../lib/state";
-import { CR_CATALOG, RC_CATALOG, VA_CATALOG } from "./catalog.gen";
+import { CR_CATALOG, LR_CATALOG, RC_CATALOG, VA_CATALOG } from "./catalog.gen";
 import { REDO_SRC } from "./record";
 import { SECTIONAL_SRC } from "./sectional";
 import { CR_TYPE } from "./types";
@@ -17,7 +17,7 @@ export const KIND_LABEL: Record<HistoryKind, string> = { practice: "Practice", t
 export const HISTORY_KINDS = Object.keys(KIND_LABEL) as HistoryKind[];
 
 /** What the row shows as its icon; the page maps it to a picture. */
-export type HistoryIcon = "rc" | "va" | "cr" | "speed" | "redo" | "own" | "sectional" | "mock" | "analysis" | "week" | "summary" | "mistake";
+export type HistoryIcon = "rc" | "va" | "cr" | "lr" | "speed" | "redo" | "own" | "sectional" | "mock" | "analysis" | "week" | "summary" | "mistake";
 
 export interface HistoryItem {
   id: string;
@@ -38,6 +38,7 @@ export interface HistoryDay { d: string; items: HistoryItem[]; minutes: number }
 const rcTitle = new Map(RC_CATALOG.map((s) => [s.id, s.title]));
 const vaTopic = new Map(VA_CATALOG.map((p) => [p.id, p.topic]));
 const crMeta = new Map(CR_CATALOG.map((c) => [c.id, c]));
+const lrTitle = new Map(LR_CATALOG.map((s) => [s.id, s.title]));
 const AUTO_SRC = new Set([REDO_SRC, SECTIONAL_SRC, "Daily VA drill", "Custom VA drill", "Critical reasoning drill"]);
 const isAuto = (src: string) => AUTO_SRC.has(src) || src.startsWith("Practice: ") || src.startsWith("Mock: ");
 
@@ -73,6 +74,14 @@ export function historyItems(st: AppState): HistoryItem[] {
     const kinds = list(a.items.map((i) => { const m = crMeta.get(i.k.replace(/^cr:/, "")); return m ? CR_TYPE[m.type].label : ""; }).filter(Boolean));
     add({ id: "cr-" + a.id, d: a.d, kind: "practice", icon: "cr", title: "Critical reasoning" + (kinds ? ": " + kinds : ""), secs: a.secs,
       detail: `${right(a.items.filter((i) => i.ok).length, a.items.length)}, ${mins(a.secs)}`, href: `/practice/cr?review=${a.id}` });
+  });
+  st.lrAttempts.forEach((a) => {
+    const n = a.ans.length, skipped = a.ans.filter((x) => x === null || x === "").length;
+    // The post-mortem's key deduction sits next to the attempt (F86).
+    const key = a.pm?.key ? `. Opened with clue ${a.pm.key}` : "";
+    add({ id: "lr-" + a.id, d: a.d, kind: "practice", icon: "lr", title: lrTitle.get(a.set) ?? "LR set", secs: a.secs,
+      detail: `LR set, ${right(a.c, n)}${skipped ? `, ${skipped} skipped` : ""}, ${mins(a.secs)}${key}`,
+      href: `/practice/lr/${a.set}?review=${a.id}` });
   });
   st.speedRuns.forEach((r) => add({ id: "speed-" + r.id, d: r.d, kind: "practice", icon: "speed", title: "Reading speed: " + (rcTitle.get(r.set) ?? "a passage"), secs: r.secs,
     detail: `${r.wpm} words a minute, recall ${r.recall} of 2`, href: "/practice/speed" }));

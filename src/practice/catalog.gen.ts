@@ -172,6 +172,11 @@ export const CR_CATALOG: CrMeta[] = [
 
 export const LR_CATALOG: LrMeta[] = [
   {"id":"arr-round-table","title":"Six friends at a round table","type":"arrangement","difficulty":"easy","minutes":8,"questions":4,"since":"2026-11-02","v":"7246fcc0","sub":"circular"},
+  {"id":"arr-six-colleagues","title":"Six colleagues in a row","type":"arrangement","difficulty":"easy","minutes":8,"questions":5,"since":"2026-10-25","v":"603a0881","sub":"linear, two attributes"},
+  {"id":"arr-seven-consultants","title":"Seven consultants at a round table","type":"arrangement","difficulty":"medium","minutes":10,"questions":5,"since":"2026-10-25","v":"862a027f","sub":"circular, two attributes"},
+  {"id":"arr-desk-shuffle","title":"The desk shuffle","type":"arrangement","difficulty":"medium","minutes":10,"questions":5,"since":"2026-10-25","v":"64e82132","sub":"movement over three evenings"},
+  {"id":"arr-friends-drinks","title":"Six friends: cities, professions and drinks","type":"arrangement","difficulty":"hard","minutes":15,"questions":5,"since":"2026-10-25","v":"d990be5e","sub":"linear, three attributes"},
+  {"id":"arr-panel-empty-chair","title":"A selection panel with an empty chair","type":"arrangement","difficulty":"hard","minutes":20,"questions":5,"since":"2026-10-25","v":"1a157cf9","sub":"circular, empty chair, ratings"},
 ];
 
 /** The content/rc file that holds each set, so a page loads only that file. */
@@ -231,4 +236,9 @@ export const RC_FILE: Record<string, string> = {
 /** The content/lr file that holds each set. */
 export const LR_FILE: Record<string, string> = {
   "arr-round-table": "arrangement",
+  "arr-six-colleagues": "arrangement",
+  "arr-seven-consultants": "arrangement",
+  "arr-desk-shuffle": "arrangement",
+  "arr-friends-drinks": "arrangement",
+  "arr-panel-empty-chair": "arrangement",
 };

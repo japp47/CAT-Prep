@@ -84,7 +84,7 @@ describe("focusLines", () => {
   it("names the weakest type, with a way to drill it", () => {
     const lines = focusLines({ ...base, types: [row("RC", 20, 16), row("Para jumbles", 8, 2)] });
     expect(lines[0].text).toBe("Para jumbles is your weakest type: 2 of 8 right, 25%.");
-    expect(lines[0].to).toBe("/practice");
+    expect(lines[0].to).toBe("/varc/practice");
   });
   it("does not call a type weak when every type is at 80% or better", () => {
     expect(focusLines({ ...base, types: [row("RC", 20, 17), row("Para jumbles", 8, 7)] })).toEqual([]);

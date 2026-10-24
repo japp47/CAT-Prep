@@ -21,6 +21,7 @@ const Plan = lazy(() => import("./pages/Plan"));
 const PracticeHub = lazy(load.practice);
 const Library = lazy(() => import("./pages/practice/Library"));
 const RcPlayer = lazy(() => import("./pages/practice/RcPlayer"));
+const LrPlayer = lazy(() => import("./pages/practice/LrPlayer"));
 const Redo = lazy(() => import("./pages/practice/Redo"));
 const Sectional = lazy(() => import("./pages/practice/Sectional"));
 const SectionalReview = lazy(() => import("./pages/practice/Sectional").then((m) => ({ default: m.SectionalReview })));
@@ -47,7 +48,7 @@ const Privacy = lazy(() => import("./pages/Privacy"));
 const LinkPage = API_ENABLED ? lazy(() => import("./pages/Link")) : null;
 
 const TITLES: Record<string, string> = {
-  "/": "99ile: free CAT prep", "/today": "Today", "/plan": "Plan and time", "/practice": "Practice", "/practice/library": "RC library", "/practice/sectional": "VARC sectional", "/practice/va": "VA drill", "/practice/cr": "Critical reasoning drill", "/practice/speed": "Reading speed test", "/practice/redo": "Redo queue", "/varc": "VARC", "/dilr": "DILR", "/quant": "Quant",
+  "/": "99ile: free CAT prep", "/today": "Today", "/plan": "Plan and time", "/practice": "Practice", "/varc/practice": "VARC practice", "/dilr/practice": "DILR practice", "/quant/practice": "Quant practice", "/practice/library": "RC library", "/practice/sectional": "VARC sectional", "/practice/va": "VA drill", "/practice/cr": "Critical reasoning drill", "/practice/speed": "Reading speed test", "/practice/redo": "Redo queue", "/varc": "VARC", "/dilr": "DILR", "/quant": "Quant",
   "/progress": "Progress", "/progress/mock-review": "Analyse a mock", "/review": "Weekly review", "/errors": "Error log", "/words": "Words", "/journal": "Reading journal", "/updates": "Important updates", "/exams": "CAT and other exams",
   "/guides": "Guides", "/stories": "Topper stories", "/roadmap": "What's coming", "/settings": "Settings", "/link": "Link this device", "/privacy": "Privacy",
 };
@@ -55,7 +56,7 @@ const TITLES: Record<string, string> = {
 function Title() {
   const { pathname } = useLocation();
   useEffect(() => {
-    const t = TITLES[pathname] ?? (pathname.startsWith("/guides/") ? "Guide" : pathname.startsWith("/practice/rc/") ? "RC practice" : pathname.startsWith("/progress/mock-review/") ? "Mock review" : pathname.startsWith("/review/") ? "Weekly review" : "");
+    const t = TITLES[pathname] ?? (pathname.startsWith("/guides/") ? "Guide" : pathname.startsWith("/practice/rc/") ? "RC practice" : pathname.startsWith("/practice/lr/") ? "LR practice" : pathname.startsWith("/progress/mock-review/") ? "Mock review" : pathname.startsWith("/review/") ? "Weekly review" : "");
     document.title = t && pathname !== "/" ? t + " · 99ile" : TITLES["/"];
   }, [pathname]);
   return null;
@@ -90,8 +91,10 @@ export const router = createBrowserRouter(createRoutesFromElements(
       <Route path="today" element={<Today />} />
       <Route path="plan" element={<Plan />} />
       <Route path="practice" element={<PracticeHub />} />
+      <Route path=":sec/practice" element={<PracticeHub />} />
       <Route path="practice/library" element={<Library />} />
       <Route path="practice/rc/:id" element={<RcPlayer />} />
+      <Route path="practice/lr/:id" element={<LrPlayer />} />
       <Route path="practice/va" element={<VaPlayer />} />
       <Route path="practice/cr" element={<CrPlayer />} />
       <Route path="practice/speed" element={<SpeedTest />} />
