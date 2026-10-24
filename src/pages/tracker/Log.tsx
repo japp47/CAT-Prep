@@ -9,7 +9,8 @@ import { useStore } from "../../lib/store";
 import { sectionByLabel } from "../../sections";
 import { analyseLink } from "./MockReviews";
 
-export const KINDS = ["Past paper", "Full mock", "Sectional", "Official IIM mock"];
+export const KINDS = ["VARC sectional", "DILR sectional", "Quant sectional", "Past paper", "Full mock", "Official IIM mock"];
+const LOG_KINDS = ["Past paper", "Full mock", "Official IIM mock"];
 const RECENT = 10;
 const sortDesc = <T extends { d: string }>(a: T, b: T) => (a.d < b.d ? 1 : a.d > b.d ? -1 : 0);
 
@@ -68,7 +69,7 @@ export function Log({ sec }: { sec: string }) {
         <Section title={`Log a timed ${sec} paper or mock`}>
           <form className="grid grid-cols-2 items-end gap-4 rounded-lg bg-card p-5 sm:p-6" onSubmit={addMock} autoComplete="off">
             <Field label="Date"><Input name="d" type="date" defaultValue={todayIso()} required /></Field>
-            <Field label="Type"><NativeSelect name="k">{KINDS.map((k) => <option key={k}>{k}</option>)}</NativeSelect></Field>
+            <Field label="Type"><NativeSelect name="k"><option>{`${sec} sectional`}</option>{LOG_KINDS.map((k) => <option key={k}>{k}</option>)}</NativeSelect></Field>
             <Field label="Name" className="col-span-2"><Input name="n" placeholder="CAT 2017 Slot 1" /></Field>
             <Field label="Correct"><Input name="c" type="number" inputMode="numeric" min={0} max={def.maxQ} required placeholder="14" /></Field>
             <Field label="Wrong MCQ"><Input name="w" type="number" inputMode="numeric" min={0} max={def.maxQ} required placeholder="3" /></Field>

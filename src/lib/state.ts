@@ -98,7 +98,7 @@ export const CAUSE_IDS: Cause[] = ["misread", "qualifier", "beyond", "trap", "me
  * Right answers can be slow; wrong ones carry a cause; skipped or unreached ones say whether they were doable (could),
  * and, for doable ones re-tried untimed after the mock, whether they were solved.
  */
-export interface MockQ { st: "right" | "wrong" | "skip" | "unseen"; type: string; slow?: boolean; cause?: Cause; could?: boolean; solved?: boolean; secs?: number }
+export interface MockQ { st: "unmarked" | "right" | "wrong" | "skip" | "unseen"; type: string; format?: "mcq" | "tita"; slow?: boolean; cause?: Cause; could?: boolean; solved?: boolean; secs?: number }
 /**
  * A guided review of one mock or sectional (docs/feature.md, F12). mock is the Mock row it explains; att the sectional
  * when it came from this site. layout gives the questions per RC passage, then the VA questions by kind, in grid order.
@@ -106,7 +106,7 @@ export interface MockQ { st: "right" | "wrong" | "skip" | "unseen"; type: string
  */
 export interface MockReview {
   id: string; d: string; updatedAt: number; mock: string; sec: string; from: "manual" | "sectional"; att?: string; name: string;
-  layout: { rc: number[]; va: string[] }; planned?: number; qs: MockQ[]; recs: string[];
+  layout: { rc: number[]; va: string[]; sets?: { type: string; n: number }[]; topics?: { type: string; n: number }[] }; planned?: number; qs: MockQ[]; recs: string[];
 }
 /**
  * A suggestion made to the student, with its evidence, kept so we can later tell whether it helped (F43).
@@ -279,9 +279,16 @@ export function normalize(raw: unknown): AppState {
     const r: MockReview = {
       id: str(x.id), d: str(x.d), updatedAt: num(x.updatedAt), mock: str(x.mock), sec: str(x.sec) || "VARC",
       from: x.from === "sectional" ? "sectional" : "manual", name: str(x.name),
-      layout: { rc: Array.isArray(layout.rc) ? layout.rc.map((n: unknown) => clamp(Math.round(num(n)), 1, 10)) : [], va: Array.isArray(layout.va) ? layout.va.map(str) : [] },
+      layout: {
+        rc: Array.isArray(layout.rc) ? layout.rc.map((n: unknown) => clamp(Math.round(num(n)), 1, 10)) : [],
+        va: Array.isArray(layout.va) ? layout.va.map(str) : [],
+        ...(Array.isArray(layout.sets) ? { sets: layout.sets.map((s: unknown) => { const x = isObj(s) ? s : {}; return { type: str(x.type) || "unsorted", n: clamp(Math.round(num(x.n)), 1, 10) }; }) } : {}),
+        ...(Array.isArray(layout.topics) ? { topics: layout.topics.map((s: unknown) => { const x = isObj(s) ? s : {}; return { type: str(x.type) || "other", n: clamp(Math.round(num(x.n)), 0, 22) }; }) } : {}),
+      },
       qs: list(x.qs, (q) => {
-        const o: MockQ = { st: q.st === "wrong" || q.st === "skip" || q.st === "unseen" ? q.st : "right", type: str(q.type) };
+        const status: MockQ["st"] = q.st === "unmarked" || q.st === "wrong" || q.st === "skip" || q.st === "unseen" || q.st === "right" ? q.st : "unmarked";
+        const o: MockQ = { st: status, type: str(q.type) };
+        if (q.format === "mcq" || q.format === "tita") o.format = q.format;
         if (q.slow === true) o.slow = true;
         if ((CAUSE_IDS as unknown[]).includes(q.cause)) o.cause = q.cause as Cause;
         if (typeof q.could === "boolean") o.could = q.could;

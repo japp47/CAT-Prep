@@ -22,7 +22,7 @@ export function MockReviews({ sec }: { sec: string }) {
 
   return (
     <Section title="Mock reviews" action={<LinkButton to="/progress/mock-review" variant="secondary" size="sm">Analyse a mock</LinkButton>}
-      description="After each mock, a 15-minute review of its VARC section shows where the marks went and gives you at most three things to fix before the next one. DILR and Quant reviews come with those sections.">
+      description={`After each mock, review its ${sec} section to see where the marks went and choose up to three things to fix before the next one. Log the result in the same section to keep its score history together.`}>
       {todo.length > 0 && (
         <div className="flex flex-col gap-2">
           <h3 className="text-base font-semibold">Not analysed yet</h3>

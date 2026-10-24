@@ -10,20 +10,42 @@ import { VA_KIND, type VaKind } from "./va/build";
  * and at most three actions. Everything here is pure, so the wizard and its tests share it.
  */
 
-/** CAT 2024 and 2025 VARC: 4 passages of 4 questions, then 2 of each VA type. Odd sentence out and para jumbles are TITA. */
+/** CAT 2025 VARC starting layout: 4 passages of 4 questions, then 8 VA questions. */
 export const DEFAULT_LAYOUT: MockReview["layout"] = { rc: [4, 4, 4, 4], va: ["ps", "ps", "si", "si", "oso", "oso", "pj", "pj"] };
 export const VA_ORDER: VaKind[] = ["ps", "si", "oso", "pj"];
+export const DILR_SET_TYPES = ["unsorted", "arrangements", "games", "distribution", "scheduling", "tables", "graphs", "caselets", "routes", "venn", "mixed"] as const;
+export const DILR_SET_LABEL: Record<(typeof DILR_SET_TYPES)[number], string> = {
+  unsorted: "Not tagged yet", arrangements: "Arrangements", games: "Games and tournaments", distribution: "Distribution and grouping",
+  scheduling: "Scheduling", tables: "Tables", graphs: "Graphs and charts", caselets: "Caselets", routes: "Routes and networks", venn: "Venn diagrams", mixed: "Mixed / other",
+};
+export const QUANT_TOPICS = ["arithmetic", "algebra", "geometry", "number", "modern", "other"] as const;
+export const QUANT_LABEL: Record<(typeof QUANT_TOPICS)[number], string> = {
+  arithmetic: "Arithmetic", algebra: "Algebra", geometry: "Geometry and mensuration", number: "Number systems", modern: "Modern mathematics", other: "Other / mixed",
+};
+export const DEFAULT_DILR_LAYOUT: MockReview["layout"] = { rc: [], va: [], sets: [5, 5, 4, 4, 4].map((n) => ({ type: "unsorted", n })) };
+export const DEFAULT_QUANT_LAYOUT: MockReview["layout"] = { rc: [], va: [], topics: [{ type: "arithmetic", n: 9 }, { type: "algebra", n: 7 }, { type: "geometry", n: 3 }, { type: "number", n: 2 }, { type: "modern", n: 1 }, { type: "other", n: 0 }] };
 
-export const isTita = (type: string) => !!VA_KIND[type as VaKind]?.tita;
+export const layoutFor = (sec: string): MockReview["layout"] => sec === "DILR"
+  ? { rc: [], va: [], sets: DEFAULT_DILR_LAYOUT.sets?.map((s) => ({ ...s })) }
+  : sec === "Quant" ? { rc: [], va: [], topics: DEFAULT_QUANT_LAYOUT.topics?.map((t) => ({ ...t })) }
+    : { rc: [...DEFAULT_LAYOUT.rc], va: [...DEFAULT_LAYOUT.va] };
+
+export const isTita = (type: string, format?: MockQ["format"]) => format ? format === "tita" : !!VA_KIND[type as VaKind]?.tita;
 /** The practice-row label of a type ("RC", "Para jumble"…), the one the report card groups by. */
-export const typeLabel = (type: string) => (type === "rc" ? "RC" : VA_KIND[type as VaKind]?.practice ?? type);
+export const typeLabel = (type: string, sec = "VARC") => {
+  if (sec === "DILR") return DILR_SET_LABEL[type as (typeof DILR_SET_TYPES)[number]] ?? type;
+  return sec === "Quant" ? QUANT_LABEL[type as (typeof QUANT_TOPICS)[number]] ?? type : (type === "rc" ? "RC" : VA_KIND[type as VaKind]?.practice ?? type);
+};
 
 /** The type of each question, in grid order: the passages, then the VA questions. */
-export const typesOf = (l: MockReview["layout"]) => [...l.rc.flatMap((n) => Array<string>(n).fill("rc")), ...l.va];
+export const typesOf = (l: MockReview["layout"], sec = "VARC") => sec === "DILR"
+  ? (l.sets ?? []).flatMap((s) => Array<string>(s.n).fill(s.type))
+  : sec === "Quant" ? (l.topics ?? []).flatMap((t) => Array<string>(t.n).fill(t.type))
+    : [...l.rc.flatMap((n) => Array<string>(n).fill("rc")), ...l.va];
 
-/** Questions for a layout, all right by default. Answers already given carry over where the type at that place is the same. */
-export function questionsFor(l: MockReview["layout"], prev: MockQ[] = []): MockQ[] {
-  return typesOf(l).map((type, i) => (prev[i]?.type === type ? prev[i] : { st: "right", type }));
+/** Questions start unmarked; answers already given carry over where the type at that place is the same. */
+export function questionsFor(l: MockReview["layout"], prev: MockQ[] = [], sec = "VARC"): MockQ[] {
+  return typesOf(l, sec).map((type, i) => (prev[i]?.type === type ? prev[i] : { st: "unmarked", type }));
 }
 
 /** A question is slow when it took this long. CAT gives 100 seconds a question on average. */
@@ -51,8 +73,8 @@ export function fromSectional(att: SectionalAttempt, rows: Scored[]): Pick<MockR
   return { layout: { rc, va }, qs };
 }
 
-/** Marks a question cost: a wrong MCQ costs its 3 and a penalty mark; a wrong TITA, a skip or an unreached question costs 3. */
-export const lost = (q: MockQ) => (q.st === "right" ? 0 : q.st === "wrong" && !isTita(q.type) ? 4 : 3);
+/** Marks a question cost: an unmarked question counts as skipped; a wrong MCQ costs its 3 and a penalty mark. */
+export const lost = (q: MockQ) => (q.st === "right" ? 0 : q.st === "wrong" && !isTita(q.type, q.format) ? 4 : 3);
 
 /** Groups of lost marks, in the order the student reads them. */
 export const GROUPS = [
@@ -66,6 +88,7 @@ export type GroupKey = (typeof GROUPS)[number]["key"] | "doable" | "unsorted";
 
 function groupOf(q: MockQ): GroupKey | null {
   if (q.st === "right") return null;
+  if (q.st === "unmarked") return "unsorted";
   if (q.st === "unseen") return "time";
   if (q.st === "skip") return q.could === true ? "doable" : q.could === false ? null : "unsorted";
   return GROUPS.find((g) => (g.causes as readonly string[]).includes(q.cause ?? ""))?.key ?? "unsorted";
@@ -76,7 +99,7 @@ export const GROUP_LABEL: Record<GroupKey, string> = {
   doable: "Doable skips", unsorted: "Not sorted yet",
 };
 
-export interface TypeRow { type: string; label: string; n: number; right: number; wrong: number; skipped: number; marks: number }
+export interface TypeRow { type: string; label: string; n: number; right: number; wrong: number; skipped: number; tita: number; marks: number }
 export interface Findings {
   n: number; right: number; wrong: number; skipped: number; attempted: number; score: number; max: number;
   groups: { key: GroupKey; label: string; n: number; marks: number }[];
@@ -88,11 +111,12 @@ export interface Findings {
   time?: { right: number; wrong: number; gaveUp: number };
 }
 
-export function findings(r: Pick<MockReview, "qs">): Findings {
+export function findings(r: Pick<MockReview, "qs"> & Partial<Pick<MockReview, "sec">>): Findings {
   const qs = r.qs;
+  const sec = r.sec ?? "VARC";
   const right = qs.filter((q) => q.st === "right").length;
   const wrong = qs.filter((q) => q.st === "wrong").length;
-  const penalty = qs.filter((q) => q.st === "wrong" && !isTita(q.type)).length;
+  const penalty = qs.filter((q) => q.st === "wrong" && !isTita(q.type, q.format)).length;
   const score = 3 * right - penalty;
   const order: GroupKey[] = [...GROUPS.map((g) => g.key), "doable", "unsorted"];
   const groups = order.map((key) => {
@@ -107,7 +131,7 @@ export function findings(r: Pick<MockReview, "qs">): Findings {
   const byType = types.map((type): TypeRow => {
     const t = qs.filter((q) => q.type === type);
     const rt = t.filter((q) => q.st === "right").length, wr = t.filter((q) => q.st === "wrong");
-    return { type, label: typeLabel(type), n: t.length, right: rt, wrong: wr.length, skipped: t.length - rt - wr.length, marks: 3 * rt - wr.filter((q) => !isTita(q.type)).length };
+    return { type, label: typeLabel(type, sec), n: t.length, right: rt, wrong: wr.length, skipped: t.length - rt - wr.length, tita: t.filter((q) => isTita(q.type, q.format)).length, marks: 3 * rt - wr.filter((q) => !isTita(q.type, q.format)).length };
   });
   const timed = qs.some((q) => q.secs != null);
   const sum = (f: (q: MockQ) => boolean) => qs.filter(f).reduce((s, q) => s + (q.secs ?? 0), 0);
@@ -117,7 +141,7 @@ export function findings(r: Pick<MockReview, "qs">): Findings {
     slow: qs.filter((q) => q.st === "right" && q.slow).length, doable: doableQs.length, solved: doableQs.filter((q) => q.solved === true).length,
     potential: score + careless + 3 * solvedQs.length,
     byType,
-    time: timed ? { right: sum((q) => q.st === "right"), wrong: sum((q) => q.st === "wrong"), gaveUp: sum((q) => q.st === "skip" || q.st === "unseen") } : undefined,
+    time: timed ? { right: sum((q) => q.st === "right"), wrong: sum((q) => q.st === "wrong"), gaveUp: sum((q) => q.st === "skip" || q.st === "unseen" || q.st === "unmarked") } : undefined,
   };
 }
 
@@ -135,8 +159,8 @@ export const CAUSE_TIP: Record<Cause, string> = {
 };
 
 /** Where to practise a type. */
-export function drillFor(type: string): string {
-  return type === "rc" ? "/practice/library" : VA_KIND[type as VaKind] ? `/practice/va?type=${type}&n=6` : "/varc/practice";
+export function drillFor(type: string, sec = "VARC"): string {
+  return sec === "DILR" ? "/dilr/practice" : sec === "Quant" ? "/quant/practice" : type === "rc" ? "/practice/library" : VA_KIND[type as VaKind] ? `/practice/va?type=${type}&n=6` : "/varc/practice";
 }
 
 /** Right answers out of attempted on one practice type, across everything logged so far. */
@@ -169,21 +193,24 @@ export function proposeActions(r: Pick<MockReview, "qs" | "sec">, practice: Prac
     const acc = t.right + t.wrong ? t.right / (t.right + t.wrong) : 1;
     if (missed.length < 2 || (acc >= 0.6 && method < 2)) return;
     const m = missed.reduce((s, q) => s + lost(q), 0);
-    const text = t.type === "rc"
-      ? "Do two RC sets from the library this week, untimed, and check why every wrong option is wrong."
-      : `Drill six ${t.label.toLowerCase()} questions this week and read the method first.`;
+    const text = r.sec === "DILR"
+      ? `Practise two ${t.label.toLowerCase()} sets this week and write down the clue that opened each one.`
+      : t.type === "rc"
+        ? "Do two RC sets from the library this week, untimed, and check why every wrong option is wrong."
+        : `Drill six ${t.label.toLowerCase()} questions this week and read the method first.`;
     const why = `${t.label}: ${t.right} of ${t.n} right${method ? `, ${plural(method, "miss", "misses")} from not knowing the method` : ""}, ${m} marks lost.`;
-    out.push({ skill: { kind: "type", key: t.label }, text, why, to: drillFor(t.type), before: accuracyOf(practice, r.sec, t.label), lost: m });
+    out.push({ skill: { kind: "type", key: t.label }, text, why, to: drillFor(t.type, r.sec), before: accuracyOf(practice, r.sec, t.label), lost: m });
   });
   if (f.doable >= 2) {
     out.push({
-      skill: { kind: "skips", key: "doable" }, to: "/practice/sectional", lost: 3 * f.doable,
+      skill: { kind: "skips", key: "doable" }, to: r.sec === "DILR" ? "/dilr/practice" : r.sec === "Quant" ? "/quant/practice" : "/varc/practice", lost: 3 * f.doable,
       text: `Attempt more. Next time, plan for ${f.attempted + f.doable} attempts.`,
       why: `${plural(f.doable, "skipped question was", "skipped questions were")} doable${f.solved ? `, and you solved ${f.solved} untimed` : ""}.`,
     });
   }
   if (f.slow >= 3) {
-    out.push({ skill: { kind: "pace", key: "slow" }, to: "/practice/speed", lost: f.slow, text: "Work on pace: one timed RC passage a day this week, 8 minutes for the passage and its questions.", why: `${f.slow} right answers were slow.` });
+    const text = r.sec === "DILR" ? "Work on pace: set a time limit for each DILR set and move on when it is up." : r.sec === "Quant" ? "Work on pace: use a short timer for a small Quant set, then review each calculation." : "Work on pace: one timed RC passage a day this week, 8 minutes for the passage and its questions.";
+    out.push({ skill: { kind: "pace", key: "slow" }, to: r.sec === "DILR" ? "/dilr/practice" : r.sec === "Quant" ? "/quant/practice" : "/practice/speed", lost: f.slow, text, why: `${f.slow} right answers were slow.` });
   }
   return out.sort((a, b) => b.lost - a.lost).slice(0, max);
 }
@@ -199,7 +226,7 @@ const CAUSE_TRAP: Partial<Record<Cause, string>> = { misread: "Misread the passa
 /** Error log entries for the wrong answers. There is no question text for a mock taken elsewhere, so the cause is the record. */
 export function toErrors(r: MockReview): ErrorEntry[] {
   return r.qs.flatMap((q, i) => q.st !== "wrong" ? [] : [{
-    id: uid(), d: r.d, sec: r.sec, t: typeLabel(q.type), trap: (q.cause && CAUSE_TRAP[q.cause]) ?? "",
+    id: uid(), d: r.d, sec: r.sec, t: typeLabel(q.type, r.sec), trap: (q.cause && CAUSE_TRAP[q.cause]) ?? "",
     src: `Mock: ${r.name || "unnamed"}, Q${i + 1}`, why: q.cause ? CAUSES[q.cause] + "." : "", fix: "",
   }]);
 }

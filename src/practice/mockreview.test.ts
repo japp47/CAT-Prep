@@ -10,8 +10,8 @@ import { buildPaper, marksOf, scorePaper } from "./sectional";
 const review = (qs: MockQ[], extra: Partial<MockReview> = {}): MockReview => ({
   id: "r1", d: "2026-10-20", updatedAt: 1, mock: "m1", sec: "VARC", from: "manual", name: "SimCAT 3", layout: DEFAULT_LAYOUT, qs, recs: [], ...extra,
 });
-/** The default layout, all right, with some questions changed by grid number (1-based). */
-const grid = (changes: Record<number, Partial<MockQ>>) => questionsFor(DEFAULT_LAYOUT).map((q, i) => ({ ...q, ...changes[i + 1] }));
+/** A fully marked paper with some questions changed by grid number (1-based). */
+const grid = (changes: Record<number, Partial<MockQ>>): MockQ[] => questionsFor(DEFAULT_LAYOUT).map((q, i): MockQ => ({ ...q, st: "right", ...changes[i + 1] }));
 
 describe("mock review layout", () => {
   it("defaults to CAT's VARC: 16 RC questions, then 2 of each VA type", () => {
@@ -20,11 +20,18 @@ describe("mock review layout", () => {
     expect(t.slice(0, 16).every((x) => x === "rc")).toBe(true);
     expect(t.slice(16)).toEqual(["ps", "ps", "si", "si", "oso", "oso", "pj", "pj"]);
   });
+  it("leaves manual question outcomes unmarked until the student chooses", () => {
+    const qs = questionsFor(DEFAULT_LAYOUT);
+    expect(qs.every((q) => q.st === "unmarked")).toBe(true);
+    const f = findings(review(qs));
+    expect(f).toMatchObject({ right: 0, wrong: 0, skipped: qs.length, score: 0 });
+    expect(f.groups).toContainEqual({ key: "unsorted", label: "Not sorted yet", n: qs.length, marks: qs.length * 3 });
+  });
   it("keeps answers where the type at that place stays the same", () => {
     const qs = grid({ 2: { st: "wrong", cause: "trap" }, 17: { st: "skip", could: true } });
     const next = questionsFor({ rc: [4, 4, 4, 4, 2], va: DEFAULT_LAYOUT.va }, qs);
     expect(next[1]).toEqual(qs[1]);
-    expect(next[16]).toEqual({ st: "right", type: "rc" });
+    expect(next[16]).toEqual({ st: "unmarked", type: "rc" });
   });
 });
 
@@ -141,7 +148,7 @@ describe("state", () => {
     expect(back.mockReviews).toEqual(s.mockReviews);
     expect(back.recs).toEqual(s.recs);
     const bad = normalize({ mockReviews: [{ id: "z", d: "2026-10-20", qs: [{ st: "maybe", type: "rc", cause: "aliens" }] }], recs: [{ id: "y", d: "2026-10-20", text: "x", to: "https://evil.example" }] });
-    expect(bad.mockReviews[0].qs[0]).toEqual({ st: "right", type: "rc" });
+    expect(bad.mockReviews[0].qs[0]).toEqual({ st: "unmarked", type: "rc" });
     expect(bad.recs[0].to).toBeUndefined();
   });
 });

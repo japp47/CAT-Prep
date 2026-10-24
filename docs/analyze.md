@@ -2,7 +2,7 @@
 
 Checks that the spec (`docs/feature.md`), the plan (`docs/plan.md`, `docs/architecture.md`) and the code agree, before the next step is built.
 Redo this check at the start of each step; add findings at the top of section 3 with the date.
-Last updated 24 Oct 2026 (content, sidebar navigation and You page updates; step 3 analysis remains below).
+Last updated 24 Oct 2026 (F12 mock-analysis follow-up; step 3 analysis remains below).
 
 ---
 
@@ -78,6 +78,7 @@ Thinking practice (Arcade, Manager Lab, DILR and Quant ideas), community, and re
 | A30 | The new AI and technology passages were categorized as society | Students could not filter them under a dedicated topic | Add the `technology` genre with the label "AI and technology"; categorize all five sets under it |
 | A31 | The desktop sidebar had a sync/account row near Search and a separate disabled user icon at the bottom | Sign-in and profile navigation appeared in two places, while the bottom icon did nothing | Remove the upper row and make the bottom account icon use the existing sign-in/profile destination logic |
 | A32 | The You page put account, CAT preferences and study totals in one narrow vertical column | On wide screens, the profile felt sparse and made key information harder to scan | Use a responsive account hero, a two-column CAT/study layout on wide screens, and grouped stat tiles that stack naturally on small screens |
+| A33 | Manual mock questions start as right, and sectional analysis opens its cause grid without the saved question or answer | Outside scores are silently assumed; sectional students cannot recall the exact question and option while diagnosing a miss | Start manual questions unmarked (counted as skipped unless changed); link each sectional question to its existing full review at the matching question, with a return path that restores the analysis draft |
 
 ### 21 Oct 2026, step 3 (backend v1)
 | # | Finding | Impact | Fix (where) |
