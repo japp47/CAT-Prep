@@ -144,16 +144,24 @@ Closed reports (`fixed`, `wont_fix`) are deleted a year after they were closed b
 privacy page promises the same for the emails: once a month, search the 99ile.team inbox for
 `from:me subject:"99ile:" older_than:1y` and delete what it finds.
 
-**Reading and closing them.** There is no admin page until B8 (after Google sign-in). Use the Supabase SQL editor
-(it runs as the owner):
+**Reading and closing them: the admin page (B8).** Open `/admin` on the site, or tap your initial, then Admin.
+Reports are grouped by question; Fixed, Won't fix, Mark seen and Reopen act on the whole group, and each change is
+in the audit log (`feedback.resolved`). Only staff see it; everyone else gets "Page not found".
+
+**Making someone staff.** They sign in with Google once, then, as the owner:
+
+```sh
+make grant-prod EMAIL=99ile.team@gmail.com            # admin (reports, counts, and later accounts and roles)
+make grant-prod EMAIL=helper@gmail.com ROLE=moderator # reports and counts only
+make grant-prod EMAIL=helper@gmail.com REVOKE=1       # take it back
+```
+
+Locally: `make grant EMAIL=…`. Grants are never deleted, only revoked, and both are audited as `system`.
+
+The SQL editor still works as a fallback (it runs as the owner):
 
 ```sql
--- Open reports, newest first, with how many times each question was reported.
-select id, created_at, item_id, kind, note, page, count(*) over (partition by item_id) as reports_on_item
-from support.feedback where status in ('new', 'seen') order by id desc limit 50;
-
--- Mark one seen, fixed, or not to be fixed (fixed and wont_fix need handled_at).
-update support.feedback set status = 'seen', updated_at = now() where id = 123;
+select id, created_at, item_id, kind, note, page from support.feedback where status in ('new', 'seen') order by id desc limit 50;
 update support.feedback set status = 'fixed', handled_at = now(), updated_at = now() where id = 123;
 ```
 

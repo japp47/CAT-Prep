@@ -13,6 +13,7 @@ import (
 // Actor types.
 const (
 	Device = "device"
+	Admin  = "admin"
 	System = "system"
 )
 

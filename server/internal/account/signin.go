@@ -50,8 +50,9 @@ func (s *Service) WithSignIn(si SignIn) *Service {
 
 // Account is the signed-in account of an identity, shown as "Signed in as".
 type Account struct {
-	Email string `json:"email"`
-	Name  string `json:"name"`
+	Email     string    `json:"email"`
+	Name      string    `json:"name"`
+	CreatedAt time.Time `json:"createdAt"` // first sign-in, for "Member since" (F81)
 }
 
 func random(n int) string {
@@ -498,7 +499,7 @@ var errKeepOther = errors.New("keep on another account's device")
 // accountOf returns the account that owns an identity, or nil.
 func (s *Service) accountOf(ctx context.Context, identityID string) (*Account, error) {
 	var a Account
-	err := s.db.QueryRow(ctx, `select email, display_name from account.users where identity_id = $1`, identityID).Scan(&a.Email, &a.Name)
+	err := s.db.QueryRow(ctx, `select email, display_name, created_at from account.users where identity_id = $1`, identityID).Scan(&a.Email, &a.Name, &a.CreatedAt)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil, nil
 	}

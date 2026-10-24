@@ -1,4 +1,5 @@
-import { lazy, Suspense, useCallback, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -20,16 +21,14 @@ import { loadLedger, saveLedger, timeOf } from "../lib/sync/ledger";
 import { mergeBackup } from "../lib/sync/records";
 import { deleteAll, disable } from "../lib/sync/runner";
 
-// Sync is only in builds with the API on; the card and its code are never loaded otherwise, and every use of the
-// ledger below sits behind API_ENABLED, so production builds drop it.
-const SyncCard = API_ENABLED ? lazy(() => import("../components/SyncCard")) : null;
 
 const Panel = ({ children }: { children: React.ReactNode }) => <div className="flex flex-col gap-4 rounded-lg bg-card p-5 sm:p-6">{children}</div>;
 
 export default function Settings() {
   const { state, replace, transform, saved } = useStore();
-  const [, rerender] = useState(0);
-  const refresh = useCallback(() => rerender((n) => n + 1), []);
+  // Sync moved to the You page (D35). Old links, bookmarks and sign-ins that return here (?signin=) go on there.
+  const loc = useLocation(), nav = useNavigate();
+  useEffect(() => { if (API_ENABLED && loc.hash === "#sync") nav("/you" + loc.search + "#sync", { replace: true }); }, [loc, nav]);
   // While sync is on, restoring merges and deleting stays on this device (docs/architecture.md §6.3a).
   const syncOn = API_ENABLED && loadLedger().on;
   const [theme, setTheme] = useTheme();
@@ -92,7 +91,11 @@ export default function Settings() {
         <KeepHint />
       </Section>
 
-      {SyncCard && <Suspense fallback={null}><SyncCard onChange={refresh} /></Suspense>}
+      {API_ENABLED && (
+        <Section id="sync" title="Sync and your account">
+          <p className="text-base">Signing in, sync between devices and your devices are on the <Link to="/you#sync" className="font-medium text-primary underline underline-offset-4">You page</Link>.</p>
+        </Section>
+      )}
 
       <Section title="Start over" description="Deletes your time settings, ticks, logs and words from this browser. Download a backup first if you might want them back.">
         <div><Button variant="destructive" onClick={() => setAsk("wipe")}>Delete all my data</Button></div>

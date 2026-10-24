@@ -115,7 +115,7 @@ support.feedback  (B6; points at identities with set null)
 
 ---
 
-## 4. Roles and permissions (`access`, created in B7)
+## 4. Roles and permissions (`access`, created in B8, migration 00011)
 
 Students need no role: by default an identity can only read and write its own records. Roles are for staff (you now, a moderator later).
 
@@ -181,6 +181,11 @@ Students need no role: by default an identity can only read and write its own re
 | | | | | `check (revoked_by is null or revoked_at is not null)`: only a revoked grant has a revoker |
 
 Code keeps the permission keys as Go constants; a test fails if code uses a key the seed does not have.
+
+**Migration 00011 (B8, 24 Oct 2026)** creates the four tables above with their seed, and changes `support.feedback`:
+- `handled_by uuid null` → `account.users` on delete set null: who last changed the status. The check on `handled_at` is unchanged (set only for fixed and won't fix).
+- `cat_app` may read every column of `support.feedback` (the admin page shows notes) and update `status`, `handled_by`, `handled_at`, `updated_at`. It still cannot delete.
+- `cat_app` may read `access.*`; grants are written only by the owner's `cmd/grant`, so the API cannot make anyone staff. `cat_readonly` reads `access.*`.
 
 ---
 

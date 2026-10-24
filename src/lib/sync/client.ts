@@ -209,7 +209,7 @@ export async function link(io: SyncIO, kind: "link" | "recover", code: string, a
 }
 
 /** The account that owns this progress (B7), or null for sync without an account. */
-export interface Account { email: string; name: string }
+export interface Account { email: string; name: string; createdAt?: string }
 export const whoAmI = (io: SyncIO) => io.call<Who & { account: Account | null }>("/identity");
 
 /** What the page must ask after Google sends the student back with a ticket (docs/architecture.md §5.2). */

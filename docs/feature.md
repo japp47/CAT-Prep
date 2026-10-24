@@ -305,7 +305,7 @@ The signed-in email and name are kept with the device's sync state, so the heade
 **How the owner hears about reports: a daily digest (B6b and B6c, built 23 Oct 2026).** Once a day a GitHub Actions job reads new reports and sends them two ways: **an email to 99ile.team@gmail.com with the students' notes** (Gmail with an app password, B6c), and **a comment on one public GitHub issue**, "Problem reports from students" (label `problem-reports`), with only the question id, the kind of problem, how many and when, **never a note**, because the repository is public. Reports in a digest move from `new` to `seen`; the digest also says how many seen reports are still not closed. No new reports, no message. Closed reports are deleted a year after closing (clean-up job), and the privacy page says what a report holds, who reads it and for how long.
 **Acceptance.** A new report appears in the next morning's email and issue exactly once; if both fail it stays `new` for the next day; if one fails the run shows red; the issue text never contains a note; the email always does.
 
-#### F79. Admin page — Planned (after B7)
+#### F79. Admin page — Built 24 Oct 2026 (B8)
 **Problem.** Reading and closing reports with SQL works for one owner but is slow, and no one else can help.
 **What the owner gets.** `/admin`, only for signed-in staff (B7 accounts with the `feedback.read` and `feedback.resolve` permissions, `docs/database.md` §4):
 - **Reports**: open reports grouped by question, newest first, with the note, the page and a link that opens the question in review; mark seen, fixed or won't fix (writes `handled_by`, `handled_at`, and an audit event `feedback.resolved`).
@@ -313,6 +313,12 @@ The signed-in email and name are kept with the device's sync state, so the heade
 - Later, when needed: suspend an identity (abuse), the community review queue (F70).
 **Data.** `support.feedback.handled_by` (FK to `account.users`), the `access` schema with roles and permissions (`docs/database.md` §4). No student's answers are ever shown (D14).
 **Done when** a staff account can close a report from a phone, a non-staff account gets 404 on `/admin` and its API, and every change is in the audit log.
+**Design (24 Oct 2026).**
+- **Who sees it.** `/admin` loads only when opened and is not in the menus. The account menu shows **Admin** to staff only (`GET /v1/admin/me` answers with their permissions; everyone else gets 404). A non-staff visitor sees the normal "Page not found".
+- **Reports tab.** Open (new and seen) or Closed. Reports are **grouped by question**: the question's name (RC set title and question number, VA kind and topic, or the CR id), how many reports of each kind, and every note with its page and date. One set of buttons acts on the whole group (D32): **Open the question** (the redo page with only that question), **Mark seen**, **Fixed**, **Won't fix**; a closed group has **Reopen**. Groups with more reports come first, then the newest. On a phone it is one column and the buttons wrap.
+- **Overview tab.** Counts only (D14): students with sync, active this week, accounts, devices, synced records, new this week, sync refusals this week, reports open and closed this week, and the database size against the free 500 MB.
+- **Every change** writes `handled_by`, `handled_at` and one `feedback.resolved` audit event per report (`actor_type = 'admin'`, the new status in `meta`).
+- **Granting staff.** `make grant-prod EMAIL=you@gmail.com` (`cmd/grant`, owner login, after the person has signed in once), audited as `system`. `-revoke` takes it back.
 
 #### Privacy page — Live (22 Oct 2026)
 A plain page at `/privacy`: what is stored on this device, what sync sends (progress only, no name, no email until an account), what the server logs and for how long (IP addresses kept 7 days), how to export and delete, and who to contact. Linked from the footer and the Sync section.
@@ -454,13 +460,19 @@ Review: `docs/research/beyond-cat.md` §2. Practice counts only when a set, dril
 **Measured, not claimed.** We compare unseen DILR set scores of students who play with those who do not before saying the puzzles help. Sudoku and chess are not built: off-skill and available everywhere.
 **Done when** 365 seeds each produce a puzzle with one answer (a test), and the daily puzzle is the same on two devices.
 
-#### F81. "You": a profile page — Planned (part 1 with B8; part 2 with community, step 6b)
+#### F81. "You": a profile page — Part 1 built 24 Oct 2026 (B8); part 2 planned with community, step 6b
 **Problem.** What describes a student is spread over four pages: the account and devices in Settings, the target in Plan or Progress, daily minutes in Plan, the streak and totals on Today, Progress and History. A signed-in student taps their initial in the header and expects one page about them.
 **Part 1, private (with B8 or straight after it).** `/you`, opened from the avatar in the header and the sidebar row:
 - At the top: name, email, member since (from the account), or "Not signed in" with Sign in.
 - **Your CAT**: exam year, target percentile, attempt (first or repeat), student or working. One place to change them; the plan, the report card and the personal home (F80) read them. Kept as synced records, so they work offline and without an account.
 - **Your study so far**: streak, days studied, questions done, with links to History and Progress.
 - **Account**: devices, recovery code, sign out, download or delete data (moved from Settings, which keeps a link).
+**Part 1 as designed (24 Oct 2026).**
+- `/you` works for everyone. Signed in: your initial, name, email and "Member since October 2026". Synced with a code: "Not signed in" and Sign in with Google. Sync off: "Your progress is on this device only" and Continue with Google.
+- **Your CAT**: "Preparing for CAT 2027" with the expected date, then three choices: target percentile in VARC (the same setting as Progress, Target), **first attempt or taken before**, and **studying or working**. The last two start unset. Kept in the `profile` sync record (`about`), so they sync and work offline. **The exam year is not a choice yet** (D34): every plan, phase and countdown is built for CAT 2027.
+- **Your study so far**: streak, days studied, questions answered and minutes logged, with links to History and Progress.
+- **Account and sync**: the sync card moves here from Settings (D35). Settings keeps one line linking to it, and old `/settings#sync` links open `/you#sync`.
+- Opened from the account menu (the name at the top, and "You") and from the sidebar row.
 **Part 2, public and off by default (with community, F67 to F70, step 6b).** A nickname and a short bio; who can see the profile (only me, my study groups, everyone); accepted answers and helpful votes. Never public: email, scores, mistakes or answers (D14). Stored in `account.profiles` (per identity, `docs/database.md` §6).
 **Done when** part 1 replaces the scattered settings with one page that works on a phone, and a change of target there shows at once in the plan and the report card.
 

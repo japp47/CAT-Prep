@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { addDays, dow } from "../lib/date";
 import { blankState, type AppState } from "../lib/state";
 import { CONTENT } from "./full";
-import { daySummary, filterDays, historyDays, historyItems, level, stripWeeks } from "./history";
+import { daySummary, filterDays, historyDays, historyItems, level, stripWeeks, studySoFar } from "./history";
 import { recordCr, recordRc, recordRedoAnswer, recordVa } from "./record";
 import { parseKey } from "./va/build";
 
@@ -93,5 +93,16 @@ describe("History", () => {
     filterDays(days, { q: "the" });
     expect(days).toHaveLength(365);
     expect(performance.now() - t0).toBeLessThan(150);
+  });
+});
+
+describe("Your study so far", () => {
+  it("counts study days, answered questions (blanks left out) and minutes", () => {
+    const st = sample();
+    const s = studySoFar(st);
+    expect(s.days).toBe(historyDays(st).length);
+    expect(s.questions).toBe(set.questions.length + 0 + 1 + 0);
+    expect(s.minutes).toBe(historyDays(st).reduce((m, d) => m + d.minutes, 0));
+    expect(studySoFar(blankState())).toEqual({ days: 0, questions: 0, minutes: 0 });
   });
 });

@@ -133,6 +133,19 @@ describe("records", () => {
     const y: SyncRecord = { kind: "profile", id: "me", data: { since: "2026-10-01", targets: { varc: 99 } }, updatedAt: 2, deleted: false };
     expect(mergeRecord(x, y).data).toEqual({ since: "2026-09-01", targets: { varc: 99 } });
   });
+  it("the profile's about comes from the newer copy, whichever side merges", () => {
+    const x: SyncRecord = { kind: "profile", id: "me", data: { since: "2026-09-01", targets: { varc: 95 }, about: { attempt: "repeat" } }, updatedAt: 3, deleted: false };
+    const y: SyncRecord = { kind: "profile", id: "me", data: { since: "2026-08-01", targets: { varc: 99 }, about: { work: "working" } }, updatedAt: 2, deleted: false };
+    const want = { since: "2026-08-01", targets: { varc: 95 }, about: { attempt: "repeat" } };
+    expect(mergeRecord(x, y).data).toEqual(want);
+    expect(mergeRecord(y, x).data).toEqual(want);
+  });
+  it("about survives records and a save, and bad values are dropped", () => {
+    const s = blankState();
+    s.about = { attempt: "first", work: "studying" };
+    expect(fromRecords(toRecords(s)).about).toEqual({ attempt: "first", work: "studying" });
+    expect(normalize({ ...s, about: { attempt: "third", work: 1 } }).about).toEqual({});
+  });
 });
 
 describe("the ledger", () => {
