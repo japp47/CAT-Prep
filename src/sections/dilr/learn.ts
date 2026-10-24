@@ -60,12 +60,15 @@ export const TOPICS: Topic[] = [
       "Write every fixed fact first. Then start with the clue that allows the fewest placements; in a circle, fix one person.",
       "When a clue allows two or three placements, draw each as its own case side by side and let the next clues remove cases.",
       "Stop solving when the question needs only what every remaining case agrees on.",
+      "When the table is done, read every clue once more against it. If nothing contradicts it, the answers that follow are almost always right.",
+      "Practise in pen on a few sheets. The CAT 2022 exam-day guide lists one pen and one scribble pad, so draw cases small and side by side instead of erasing.",
     ] },
   { h: "Read the question as carefully as the set",
     ul: [
       "Must be true: true in every case. Could be true: true in at least one. Cannot be true: false in every case.",
       "\"If additionally…\" adds a clue for that question only. Solve it on a copy, then go back to your cases.",
       "\"How many arrangements are possible\" counts cases: list them, do not guess.",
+      "In an MCQ, the options can cut cases: test each against your table instead of finishing every branch.",
     ] },
   { h: "Counting rules worth knowing",
     ul: [
@@ -77,6 +80,7 @@ export const TOPICS: Topic[] = [
   { h: "Choosing sets in the exam",
     ul: [
       "Read all five sets first. Prefer sets whose clues are direct facts over clues that need several layers of inference, and familiar shapes over new ones.",
+      "Glance at each set's questions too. Many \"if…\" questions mean several cases to track; rank the sets 1 to 3 before starting.",
       "Length is not difficulty: a long set with plain clues is often the easiest.",
       "Set a limit: no clear first deduction in 5 to 7 minutes, move on and come back if time remains.",
       "Minutes already spent are not a reason to stay. Ask \"do I have a way in?\", not \"how long have I been here?\"",
@@ -88,7 +92,8 @@ export const TOPICS: Topic[] = [
       "What was the first deduction that opened the set, and which clue gave it?",
       "Where did the time go: reading, drawing, a case you did not need, or calculation?",
       "Which clue did you misread or which case did you miss? Add it to your Error log.",
-    ] },
+    ],
+    ul: ["If the solution's table looked nothing like yours, close the solution and redraw its table from the clues. Knowing what goes in the rows and columns is learned by copying good tables."] },
   { h: "Data interpretation (from December)",
     p: ["DI guides and practice arrive in December. Until then, build calculation speed for 10 minutes a day."],
     ul: [

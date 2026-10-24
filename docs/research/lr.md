@@ -143,6 +143,14 @@ Checked and left out: handakafunda.com (the domain now serves a gambling site), 
 - **Finish, don't collect:** one basics source, one PYQ bank, one mock series ("the 3-source rule").
 - **Mentor view:** basics under 5% of the time; 4 to 5 sets a day once comfortable; 40+ sectionals.
 
+### From the comments (22 of 42 threads, 666 comments)
+- Re-read every clue against the finished table; no contradiction means the answers are almost always right (added to Learn).
+- In the first scan, look at the questions too; many "if" questions mean many cases; rank the sets 1 to 3 (added to Learn).
+- Pen only: a student worried about solving without a pencil. The CAT 2022 exam-day guide lists one pen and one scribble pad ([Collegedunia](https://collegedunia.com/news/cat-2022-exam-day-guide-and-video-published-alertid-81997)); another source mentions pencils, so check the admit card each year (added to Learn).
+- 3 to 5 minutes at the start to skim all sets; 2 sets a day untimed for two months.
+- Second pass (39 threads, 843 comments): copy the solution's table to learn what goes in rows and columns; use the options to cut cases (both added to Learn). A realistic cut-off goal for weak students is one set fully right (12 to 15 marks). Cracku's daily DILR tests and the Aptitude Jab channel (5 sets a day) come up again. No new links worth adding.
+- New links in comments, checked and left out: a Brain Teasers With Ease newsletter (lateral-thinking teasers, not CAT sets), preparoo.app (nothing readable without JavaScript), a "must-solve LR" series by a 99+ DILR scorer (a few videos), a vercel mock site, WhatsApp and Discord invites, a referral link. The subreddit itself is linked under Toppers.
+
 ### Threads worth keeping
 - [How I scored 99 in DILR](https://www.reddit.com/r/CATpreparation/comments/1jqb4ej/how_i_scored_99_in_dilr/): 13 to 99.24, 600 sets (on the page)
 - [How to crack DILR, 99.38](https://www.reddit.com/r/CATpreparation/comments/1d0iakz/how_to_crack_dilr_in_cat_a_guide_based_on/): break clues down, list every case, 4-minute rule (on the page)
