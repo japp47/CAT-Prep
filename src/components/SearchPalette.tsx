@@ -46,7 +46,8 @@ const PAGES = [
   { title: "History", href: "/history", keywords: "history past days calendar did done yesterday week log timeline what i did passages attempts" },
   // Only in builds with sync (B4); found by the words people use for it, and each action by its own name.
   ...(API_ENABLED ? [
-    { title: "Sync between devices", href: "/settings#sync", keywords: "sync link code qr scan devices phone laptop recovery move transfer progress another device cloud backup online account" },
+    { title: "Sync between devices", href: "/settings#sync", keywords: "sync link code qr scan devices phone laptop recovery move transfer progress another device cloud backup online account sign in login google gmail" },
+    { title: "Sign in", href: "/signin", keywords: "sign in login log in google gmail account email sync save progress sign out logout" },
     { title: "Link a device", href: "/settings#sync", keywords: "sync add phone laptop tablet qr code scan join connect another device" },
     { title: "Recovery code", href: "/settings#sync", keywords: "sync lost phone new device get progress back restore recover code" },
     { title: "Your devices", href: "/settings#sync", keywords: "sync remove device list phone laptop signed in" },

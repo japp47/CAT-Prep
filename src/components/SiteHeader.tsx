@@ -3,6 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import { ChevronDown, Menu, Search as SearchIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Brand from "./Brand";
+import AccountButton from "./AccountButton";
 import InstallButton from "./InstallButton";
 import ThemeToggle from "./ThemeToggle";
 
@@ -55,6 +56,7 @@ export default function SiteHeader({ landing, groups, open, onOpenChange, onLoad
             className="grid size-11 place-items-center rounded-md text-foreground/75 transition-colors hover:bg-card hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"><SearchIcon className="size-5" aria-hidden /></button>
           <ThemeToggle />
           <InstallButton hideWhenInstalled />
+          <AccountButton withLabel />
           <button type="button" aria-expanded={open} aria-controls="all-pages" onClick={() => onOpenChange(!open)}
             className={cn("inline-flex h-11 items-center gap-2 rounded-md px-3 text-base font-medium text-foreground/80 transition-colors hover:bg-card hover:text-foreground", open && "bg-card text-foreground")}>
             All pages<ChevronDown className={cn("size-4 transition-transform motion-reduce:transition-none", open && "rotate-180")} aria-hidden />
@@ -84,6 +86,7 @@ export default function SiteHeader({ landing, groups, open, onOpenChange, onLoad
         <button type="button" onClick={onOpenSearch} aria-label="Search" title="Search" aria-keyshortcuts="Meta+K Control+K"
           className="grid size-11 place-items-center rounded-md text-foreground/75 transition-colors hover:bg-card hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"><SearchIcon className="size-5" aria-hidden /></button>
         <InstallButton />
+        <AccountButton />
         <button type="button" className="grid size-11 place-items-center rounded-md hover:bg-card" aria-label="Open menu" aria-expanded={open} onPointerDown={() => { void onLoadMenu(); }} onClick={onOpenMenu}><Menu className="size-6" /></button>
       </div>
     </header>

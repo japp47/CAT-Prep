@@ -85,6 +85,7 @@ query strings, cookies or headers.
 | `LOG_LEVEL` | `info` | `debug`, `info`, `warn`, `error` |
 | `PROXY_SECRET` | none | Shared with the Pages Function (`functions/api`); 32+ characters. Required in prod for `/v1` |
 | `TURNSTILE_SECRET` | none (no bot check in dev) | Cloudflare Turnstile secret key, checked on `POST /v1/identity`. Required in prod for `/v1` |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | none (sign-in off) | "Sign in with Google" (B7). An OAuth client of type Web application; its redirect URI is `ALLOWED_ORIGIN` + `/api/v1/auth/google/callback`. Both or neither. The site shows the button only when Pages also has `VITE_GOOGLE_SIGNIN=1` |
 | `IP_HASH_KEY`, `IP_HASH_KEY_ID` | random per run in dev | Hex key (32+ bytes) for `audit.events.ip_hash`, and which yearly key it is (default 1). Required in prod for `/v1` |
 | `TEST_DATABASE_URL` | none | Integration tests only. Never point it at real data |
 

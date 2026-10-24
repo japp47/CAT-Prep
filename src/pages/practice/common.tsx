@@ -28,6 +28,47 @@ export function useElapsed(running: boolean, startAt: number) {
   return Math.max(0, Math.floor((now - startAt) / 1000));
 }
 
+/** Seconds of warning before a practice set submits itself, and the hard stop as a multiple of its target. */
+export const GRACE_SECS = 60;
+export const HARD_STOP = 3;
+
+/**
+ * When a practice set (RC, VA, CR) submits itself (docs/feature.md, "Practice clock"): at the target a bar gives
+ * 60 seconds to choose Keep going; without an answer it submits, so a page left open never counts for hours. After
+ * Keep going (or on a set reopened past its target) the hard stop is three times the target, again with 60
+ * seconds of warning. Pure, so the rule is tested without a clock.
+ */
+export function timeUpState(secs: number, target: number, kept: boolean): { stopAt: number; warn: boolean; left: number; over: boolean } {
+  const stopAt = kept ? HARD_STOP * target : target + GRACE_SECS;
+  return { stopAt, warn: secs >= stopAt - GRACE_SECS, left: Math.max(0, stopAt - secs), over: secs >= stopAt };
+}
+
+/** The time-up bar for a practice set; it calls onSubmit once when time runs out. */
+export function TimeUp({ startAt, target, onSubmit }: { startAt: number; target: number; onSubmit: () => void }) {
+  const secs = useElapsed(true, startAt);
+  // A set reopened past its target was already past the first warning: only the hard stop applies.
+  const [kept, setKept] = useState(() => (Date.now() - startAt) / 1000 > target);
+  const fired = useRef(false);
+  const t = timeUpState(secs, target, kept);
+  useEffect(() => {
+    if (t.over && !fired.current) { fired.current = true; onSubmit(); }
+  });
+  if (!t.warn || t.over) return null;
+  return (
+    <div role="alert" className="fixed inset-x-4 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-40 mx-auto flex max-w-xl flex-col gap-3 rounded-xl bg-foreground p-4 text-background shadow-lg sm:flex-row sm:items-center sm:justify-between lg:bottom-6">
+      <p className="text-base">
+        {kept
+          ? <>This set has been open for {fmtSecs(secs)}. It will be submitted in <b className="font-semibold">{t.left} s</b> so your time stays honest.</>
+          : <><b className="font-semibold">Time is up</b> ({fmtSecs(target)} target). Submitting in <b className="font-semibold">{t.left} s</b>.</>}
+      </p>
+      <div className="flex shrink-0 gap-2">
+        {!kept && <Button size="sm" variant="secondary" onClick={() => setKept(true)}>Keep going</Button>}
+        <Button size="sm" variant="ghost" className="text-background hover:bg-background/10 hover:text-background" onClick={() => { fired.current = true; onSubmit(); }}>Submit now</Button>
+      </div>
+    </div>
+  );
+}
+
 /** Keep an in-progress practice session from being left accidentally. */
 export function useLeaveConfirmation(active: boolean) {
   const allowNextNavigation = useRef(false);

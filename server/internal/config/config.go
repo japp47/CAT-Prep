@@ -36,10 +36,17 @@ type Config struct {
 	// TurnstileSecret checks the bot test before sync is turned on (Cloudflare Turnstile). Required in prod for
 	// /v1; in dev, unset means no check.
 	TurnstileSecret string
+	// GoogleClientID and GoogleClientSecret turn on "Sign in with Google" (B7): an OAuth client of type "Web
+	// application" whose redirect URI is ALLOWED_ORIGIN + /api/v1/auth/google/callback. Both or neither.
+	GoogleClientID     string
+	GoogleClientSecret string
 	// Commit is the Git commit this build came from. Render sets RENDER_GIT_COMMIT; "dev" elsewhere.
 	// /healthz reports it, so the deploy workflow can tell when the new version is live.
 	Commit string
 }
+
+// SignInRedirect is the address Google sends the browser back to, through the site's own /api proxy.
+func (c Config) SignInRedirect() string { return c.AllowedOrigin + "/api/v1/auth/google/callback" }
 
 // Prod reports whether this is the live server.
 func (c Config) Prod() bool { return c.Env == "prod" }
@@ -104,6 +111,13 @@ func load(get func(string) string) (Config, error) {
 	}
 
 	c.TurnstileSecret = get("TURNSTILE_SECRET")
+
+	c.GoogleClientID, c.GoogleClientSecret = get("GOOGLE_CLIENT_ID"), get("GOOGLE_CLIENT_SECRET")
+	if (c.GoogleClientID == "") != (c.GoogleClientSecret == "") {
+		errs = append(errs, errors.New("GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET go together: set both, or neither to keep sign-in off"))
+	} else if c.GoogleClientID != "" && !strings.HasSuffix(c.GoogleClientID, ".apps.googleusercontent.com") {
+		errs = append(errs, errors.New("GOOGLE_CLIENT_ID should end in .apps.googleusercontent.com (Google Cloud → Credentials → OAuth client)"))
+	}
 
 	c.Commit = or(get("RENDER_GIT_COMMIT"), "dev")
 	return c, errors.Join(errs...)

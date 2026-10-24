@@ -306,7 +306,8 @@ One trigger function that sets `updated_at = now()` before an update, attached t
 | B6 | `support.feedback` | `id` identity, `created_at`, `updated_at`, `identity_id` null (FK set null), `page`, `item_id`, `kind`, `note` (≤ 1,000), `status` (`new`, `seen`, `fixed`, `wont_fix`), `handled_by` (FK → `account.users` set null; **added with B7**, since users do not exist yet), `handled_at` | Survives identity deletion with the link removed. **Built 23 Oct 2026** in `00009_feedback.sql`: cat_app may only insert; `note` hidden from cat_readonly. `seen` means it went out in a daily digest (B6b, B6c); closed reports are deleted a year after `handled_at` by the clean-up job |
 | B7 | `account.users` | `id` v7, `identity_id` unique (FK restrict: delete the user first), `email`, `email_verified`, `display_name`, `last_sign_in_at`, `created_at`, `updated_at`; unique index on `lower(email)` | **An account owns exactly one identity** |
 | B7 | `account.oauth_accounts` | PK (`provider`, `subject`), `user_id` (FK cascade), `email`, `created_at` | Google first; more providers need no change |
-| B7 | `access.*` | §4 | Grants belong to accounts |
+| B7 | `account.signin_tickets` | `token_hash` PK (SHA-256), `provider`, `subject`, `email`, `name`, `created_at`, `expires_at` (10 min), `used_at` | One-time hand-over from the Google callback to "save this device's progress?"; deleted a day after expiry by the clean-up job |
+| B8 | `access.*` | §4 | Grants belong to accounts. **Moved from B7 to B8 (D28):** created with the admin page, the first code that reads them |
 | later | `account.profiles` | `identity_id` PK (FK cascade), `nickname` (unique, case-insensitive), `display_name`, `exam_year`, `target_percentile`, `city`, `visibility` (`private`, `friends`, `public`), `created_at`, `updated_at` | Per **identity** (D15), so a student without an account can still pick a leaderboard nickname. Study settings stay in `sync.records` (they work offline) |
 | 3b | `ai.cache`, `ai.runs`, `ai.usage`, `ai.budget` | As in `docs/architecture.md` §8 | |
 | 9 | `game.daily_scores` | `date`, `identity_id` (FK cascade), `marks`, `secs`; unique (`date`, `identity_id`) | Re-scored by the server |
@@ -321,6 +322,8 @@ One trigger function that sets `updated_at = now()` before an update, attached t
 | Tombstones | With the records | Same |
 | Revoked devices | 90 days after revocation | Monthly job |
 | Link codes | 1 day after expiry | Daily job |
+| Sign-in tickets | 1 day after expiry | Daily job |
+| Anonymous identities with no account and no active device | 30 days after the last device left | Daily job (D29) |
 | Audit events | 400 days | Monthly job |
 | Problem reports | Until closed, then 1 year after `handled_at` | Daily clean-up job (`internal/cleanup`) |
 | Digest emails with notes | Up to 1 year in the 99ile.team inbox | The owner, monthly (`server/README.md`, Problem reports) |

@@ -48,6 +48,11 @@ func TestOldRowsGoAndRecentOnesStay(t *testing.T) {
 	exec(`insert into support.feedback (page, item_id, kind, status, handled_at) values
 		('/p', $1, 'typo', 'fixed', now() - interval '366 days'), ('/p', $1, 'typo', 'wont_fix', now() - interval '364 days'),
 		('/p', $1, 'typo', 'seen', null)`, item)
+	// D29: three identities with no device left. Only the anonymous one quiet for 30 days goes.
+	gone, recent, owned := ids.New(), ids.New(), ids.New()
+	exec(`insert into account.identities (id, last_seen_at) values ($1, now() - interval '31 days'), ($2, now() - interval '29 days'), ($3, now() - interval '31 days')`, gone, recent, owned)
+	exec(`insert into account.users (id, identity_id, email, email_verified) values ($1, $2, 'a@example.com', true)`, ids.New(), owned)
+	exec(`insert into account.signin_tickets (token_hash, provider, subject, email, created_at, expires_at) values ($1, 'google', 's', 'a@example.com', now() - interval '3 days', now() - interval '2 days')`, codes.Hash(codes.New(16)))
 	if _, err := Run(ctx, db); err != nil {
 		t.Fatal(err)
 	}
@@ -58,6 +63,17 @@ func TestOldRowsGoAndRecentOnesStay(t *testing.T) {
 	if devs != 1 || links != 1 || events != 1 {
 		t.Fatalf("left: %d devices, %d codes, %d events; want 1 of each", devs, links, events)
 	}
+	var left int
+	_ = db.QueryRow(ctx, `select count(*) from account.identities where id = any($1)`, []string{gone, recent, owned}).Scan(&left)
+	if left != 2 {
+		t.Fatalf("%d of the three identities left, want the recent and the owned one", left)
+	}
+	var stale int
+	_ = db.QueryRow(ctx, `select count(*) from account.signin_tickets where expires_at < now() - interval '1 day'`).Scan(&stale)
+	if stale != 0 {
+		t.Fatalf("%d old tickets left", stale)
+	}
+	exec(`delete from account.identities where id = any($1)`, []string{recent, owned})
 	var reports int
 	_ = db.QueryRow(ctx, `select count(*) from support.feedback where item_id = $1`, item).Scan(&reports)
 	if reports != 2 {

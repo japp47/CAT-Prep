@@ -6,6 +6,8 @@
 
 /** Sync and the API are visible only in builds with VITE_API_ENABLED=1 (on for `npm run dev`, off in production until B5). */
 export const API_ENABLED = import.meta.env.VITE_API_ENABLED === "1";
+/** "Sign in with Google" (B7) is shown only when the server has a Google client: VITE_GOOGLE_SIGNIN=1 as well. */
+export const SIGNIN_ENABLED = API_ENABLED && import.meta.env.VITE_GOOGLE_SIGNIN === "1";
 
 export type ApiResult<T> = { ok: true; status: number; data: T } | { ok: false; status: number; code: string; message: string };
 

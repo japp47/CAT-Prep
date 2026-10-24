@@ -202,6 +202,15 @@ What happens to the device's progress on sign-in:
 
 The merge runs in the browser, with the same code as everyday sync (D2), so there is one set of merge rules. Signing out asks "Keep a copy on this device, or clear it?"
 
+**How it is built (B7, decided 24 Oct 2026, D27 to D30).**
+- **No new session.** The device cookie (`__Host-dev`) stays the only login. Signing in decides which identity this device's row points at; every sync endpoint stays as it is (D27).
+- **Code flow through the site's own origin.** "Sign in with Google" opens `/api/v1/auth/google/start`, which sets a short `__Host-oauth` cookie (state, PKCE verifier, nonce, return page; 10 minutes, `SameSite=Lax` so it comes back on Google's redirect) and sends the browser to Google. Google returns to `{ALLOWED_ORIGIN}/api/v1/auth/google/callback`, through the Pages proxy, so cookies stay first-party. The server exchanges the code with the verifier and the client secret, and checks the ID token (issuer, audience, expiry, nonce, `email_verified`) with `go-oidc`.
+- **What the callback decides.** If no question is needed it finishes at once: a new account on a device with anonymous sync **adopts** that identity; a device already on the account's identity is simply signed in. Otherwise it saves a one-time **sign-in ticket** (hash only, 10 minutes, single use, like link codes) and returns to Settings with it; the page asks "Save this device's progress to your account?" and posts `POST /v1/auth/complete {ticket, keep}`. The server points this device at the account's identity (making it for a new account) and sets a fresh device cookie; the browser then runs the same steps as linking a device (B4): with `keep` it merges and pushes everything, without it clears first, after offering a backup.
+- **Another account on a shared device.** If the device is already signed in to a different account, keeping its progress is not offered: two people's progress is never merged.
+- **The old anonymous identity** is not deleted at sign-in (its other devices may still be using it). The clean-up job deletes anonymous identities with no account and no active device for 30 days (D29); its recovery code works until then.
+- **Signing out** is "turn off sync on this device": the device row is revoked and the cookie cleared, keep or clear here. **Delete everything** deletes the account, then its identity.
+- **Staff roles** (`access` schema) move to B8, where the admin page first reads them (D28).
+
 ---
 
 ## 6. Sync

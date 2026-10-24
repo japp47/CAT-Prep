@@ -1,7 +1,7 @@
 import { describe as group, expect, it } from "vitest";
 import type { ApiResult } from "../api";
 import { blankState, normalize, type AppState } from "../state";
-import { canon, deleteEverywhere, describe, link, round, turnOn, type SyncIO, type WireRecord } from "./client";
+import { canon, completeSignIn, deleteEverywhere, describe, link, round, turnOn, type SyncIO, type WireRecord } from "./client";
 import { exportToBackup } from "./exportFile";
 import { blankLedger, dirty, track, type Ledger } from "./ledger";
 
@@ -22,6 +22,8 @@ class FakeServer {
   failDelete = false;
   /** Link and recovery codes and the identity each brings: link codes work once. */
   codes = new Map<string, string>();
+  /** Google sign-in tickets and the account identity each brings; a ticket works once. */
+  tickets = new Map<string, string>();
   /** Another device writes this record just before every push: the worst case for stale answers. */
   storm?: string;
 
@@ -49,6 +51,12 @@ class FakeServer {
       if (!who) return { ok: false, status: 404, code: "bad_code", message: "That code did not work." };
       if (path === "/identity/link") this.codes.delete((body as { code: string }).code);
       return { ok: true, status: 201, data: { identityId: who, deviceId: "dev-" + ++this.ids } };
+    }
+    if (path === "/auth/complete") {
+      const t = (body as { ticket: string }).ticket, who = this.tickets.get(t);
+      if (!who) return { ok: false, status: 404, code: "bad_ticket", message: "That sign-in has expired." };
+      this.tickets.delete(t);
+      return ok({ identityId: who, deviceId: "dev-" + ++this.ids, account: { email: "a@example.com", name: "A" } });
     }
     if (path === "/sync/pull") {
       const cursor = (body as { cursor: number }).cursor;
@@ -475,5 +483,47 @@ group("canon", () => {
   it("ignores key order", () => {
     expect(canon({ b: 1, a: [{ y: 2, x: 1 }] })).toBe(canon({ a: [{ x: 1, y: 2 }], b: 1 }));
     expect(canon({ a: 1 })).not.toBe(canon({ a: 2 }));
+  });
+});
+
+group("Google sign-in on a device (B7)", () => {
+  async function accountWithA() {
+    const server = new FakeServer();
+    const a = new Browser(server);
+    a.attempt("a1");
+    await turnOn(a.io, about);
+    server.tickets.set("TICKET", a.L.who!.identityId);
+    return { server, a };
+  }
+
+  it("keeping this device's progress merges both, nothing overwritten", async () => {
+    const { server, a } = await accountWithA();
+    const b = new Browser(server);
+    b.attempt("b1");
+    expect((await completeSignIn(b.io, "TICKET", about, true)).ok).toBe(true);
+    expect(b.L.who?.identityId).toBe(a.L.who!.identityId);
+    expect(b.ids()).toEqual(["a1", "b1"]);
+    expect(rcRows(server)).toBe(2);
+    expect(dirty(b.L)).toEqual([]);
+  });
+
+  it("starting fresh clears this device without deleting anything on the account", async () => {
+    const { server } = await accountWithA();
+    const b = new Browser(server);
+    b.attempt("b1");
+    expect((await completeSignIn(b.io, "TICKET", about, false)).ok).toBe(true);
+    expect(b.ids()).toEqual(["a1"]);
+    expect(rcRows(server)).toBe(1);
+    expect([...server.rows.values()].every((r) => !r.deleted)).toBe(true);
+  });
+
+  it("an expired ticket changes nothing here", async () => {
+    const { server } = await accountWithA();
+    const b = new Browser(server);
+    b.attempt("b1");
+    const out = await completeSignIn(b.io, "OLD", about, false);
+    expect(out.ok).toBe(false);
+    expect(b.ids()).toEqual(["b1"]);
+    expect(b.L.on).toBe(false);
   });
 });

@@ -4,7 +4,7 @@
  * loads when the browser is idle and keeps this up to date).
  */
 export type Phase = "off" | "idle" | "syncing" | "error";
-export interface Status { phase: Phase; last?: number; message?: string; identityId?: string }
+export interface Status { phase: Phase; last?: number; message?: string; identityId?: string; account?: { email: string; name: string } }
 
 const LEDGER_KEY = "cat-prep-sync"; // lib/sync/ledger.ts
 
@@ -12,7 +12,7 @@ const LEDGER_KEY = "cat-prep-sync"; // lib/sync/ledger.ts
 function fromStorage(): Status {
   try {
     const L = JSON.parse(localStorage.getItem(LEDGER_KEY) ?? "null");
-    if (L && L.on === true) return { phase: "idle", last: typeof L.last === "number" ? L.last : undefined, identityId: L.who?.identityId };
+    if (L && L.on === true) return { phase: "idle", last: typeof L.last === "number" ? L.last : undefined, identityId: L.who?.identityId, account: typeof L.who?.account?.email === "string" ? L.who.account : undefined };
   } catch { /* blocked or corrupt: off */ }
   return { phase: "off" };
 }

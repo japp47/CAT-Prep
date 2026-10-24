@@ -1,4 +1,5 @@
-import { deleteEverywhere, describe, leave, link, listDevices, newLinkCode, newRecoveryCode, removeDevice, round, serverExport, turnOn, type Outcome, type SyncIO } from "./client";
+import type { Account } from "./client";
+import { completeSignIn, deleteEverywhere, describe, leave, link, listDevices, newLinkCode, newRecoveryCode, removeDevice, round, serverExport, ticketInfo, turnOn, whoAmI, type Outcome, type SyncIO } from "./client";
 
 /**
  * When sync runs (docs/architecture.md §6.2): on load, 30 s after the last change, when the connection returns,
@@ -27,7 +28,7 @@ const set = (next: Status) => setStatus(next);
 
 function fromLedger(extra: Partial<Status> = {}): Status {
   const L = io!.load();
-  return { phase: L.on ? "idle" : "off", last: L.last, identityId: L.who?.identityId, ...extra };
+  return { phase: L.on ? "idle" : "off", last: L.last, identityId: L.who?.identityId, account: L.who?.account, ...extra };
 }
 
 
@@ -119,6 +120,9 @@ export const enable = (turnstileToken = "") => begin((x) => turnOn(x, about(), t
 /** Joins this device to other progress with a link or recovery code; `keep` adds this device's progress to it. */
 export const joinWith = (kind: "link" | "recover", code: string, keep: boolean) => begin((x) => link(x, kind, code, about(), keep));
 
+/** Finishes Google sign-in for a ticket; `keep` adds this device's progress to the account's. */
+export const signInComplete = (ticket: string, keep: boolean) => begin((x) => completeSignIn(x, ticket, about(), keep));
+
 /** Calls that need the runner but are not sync rounds: link codes, recovery codes, the device list. */
 async function call<T>(f: (io: SyncIO) => Promise<T>): Promise<T | Outcome> {
   const x = await whenReady();
@@ -129,6 +133,29 @@ export const makeRecoveryCode = () => call(newRecoveryCode);
 export const devices = () => call(listDevices);
 export const removeOne = (id: string) => call((x) => removeDevice(x, id));
 export const exportServer = () => call(serverExport);
+/** Asks the server which account owns this progress and keeps the answer with the ledger, for the header. */
+export async function refreshAccount(): Promise<Account | null> {
+  const x = await whenReady();
+  if (!x) return getStatus().account ?? null;
+  const res = await whoAmI(x);
+  if (!res.ok) return getStatus().account ?? null;
+  const L = x.load();
+  if (L.who) {
+    const a = res.data.account ?? undefined;
+    x.save({ ...L, who: { identityId: L.who.identityId, deviceId: L.who.deviceId, ...(a ? { account: { email: a.email, name: a.name } } : {}) } });
+    set(fromLedger());
+  }
+  return res.data.account;
+}
+export const signInTicket = (ticket: string) => call((x) => ticketInfo(x, ticket));
+
+/**
+ * Sends the browser to Google. It comes back to `back` (this page by default) with ?signin= (docs/architecture.md
+ * §5.2); the /signin page passes itself, with the page to return to after.
+ */
+export function startSignIn(back = location.pathname) {
+  location.assign(import.meta.env.BASE_URL + "api/v1/auth/google/start?next=" + encodeURIComponent(back));
+}
 
 /** Deletes this progress from the server and clears this device; on success sync is off here. */
 export async function deleteAll(): Promise<Outcome> {
