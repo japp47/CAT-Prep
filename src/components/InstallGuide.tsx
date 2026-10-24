@@ -62,7 +62,7 @@ export default function InstallGuide({ open, onOpenChange }: { open: boolean; on
           {progress && (API_ENABLED ? (
             <div className="flex flex-col gap-3 rounded-lg bg-warning-soft px-4 py-4">
               <p className="text-base">On {device} the Home Screen app keeps its own data, so it starts empty. To bring your progress, turn on sync here first, then in the app tap <b className="font-semibold">Link this device</b> on Today and use the code from here.</p>
-              <LinkButton to="/settings#sync" variant="secondary" size="sm" className="self-start">Turn on sync</LinkButton>
+              <LinkButton to="/you#sync" variant="secondary" size="sm" className="self-start">Turn on sync</LinkButton>
             </div>
           ) : (
             <div className="flex flex-col gap-3 rounded-lg bg-warning-soft px-4 py-4">

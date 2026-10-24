@@ -162,6 +162,10 @@ Thinking practice (Arcade, Manager Lab, DILR and Quant ideas), community, and re
 | D29 | What happens to the anonymous identity a device leaves at sign-in? | **Decided 24 Oct 2026:** kept while any device uses it; deleted 30 days after it has no account and no active device |
 | D30 | Google flow: redirect code flow, or the Google Identity Services button? | **Decided 24 Oct 2026:** code flow with PKCE through our own origin. No Google script on our pages (CSP and privacy), works in every browser and in the installed app |
 | D31 | Practice sets past their target time: keep counting, or submit? | **Decided 24 Oct 2026 (owner):** submit. 60 seconds of warning at the target with Keep going; a hard stop at three times the target |
+| D32 | Admin page: close reports one by one, or a question at a time? | **Decided 24 Oct 2026:** a question at a time. `POST /v1/admin/reports/status` takes up to 100 report ids and one status; each report still gets its own audit event. A typo reported by six students is one fix |
+| D33 | How does staff reach `/admin`? | **Decided 24 Oct 2026:** an "Admin" row in the account menu, shown only when `GET /v1/admin/me` answers 200. Everyone else gets 404 from every admin route, and the page shows "Page not found" |
+| D34 | Exam year on the You page: a choice? | **Decided 24 Oct 2026:** not yet. Phases, the plan and the countdown are built for CAT 2027 only; a year picker that changes nothing would mislead. It becomes a choice when the plan can follow another year |
+| D35 | Sync and devices: Settings or You? | **Decided 24 Oct 2026:** You (`/you#sync`), as F81 says. Settings keeps a link, and `/settings#sync` forwards so old links and bookmarks work |
 | Older | Cloud Run needs a card; AI limits; who checks DILR and Quant keys; leaderboard nicknames | As in `docs/plan.md` |
 
 ---

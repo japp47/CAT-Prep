@@ -136,14 +136,21 @@ export interface AppState {
   redoSeeded: boolean;
   /** The percentile the student is aiming for in each section. Only VARC has percentile tables so far. */
   targets: { varc: number };
+  /** About the student, from the You page (F81): unset until they answer. */
+  about: About;
 }
+
+/** First CAT or taken before; studying or working. Each is absent until the student picks it. */
+export interface About { attempt?: "first" | "repeat"; work?: "studying" | "working" }
+export const ATTEMPTS = ["first", "repeat"] as const;
+export const WORKS = ["studying", "working"] as const;
 
 const emptyDow = () => [null, null, null, null, null, null, null] as (number | null)[];
 
 export function blankState(): AppState {
   const settings = {} as Record<SectionId, TimeSettings>;
   SECTION_IDS.forEach((id) => (settings[id] = { ...DEFAULT_TIME[id], dow: emptyDow() }));
-  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], crAttempts: [], speedRuns: [], redo: [], sectionals: [], summaries: [], mockReviews: [], recs: [], weekReviews: [], redoSeeded: true, targets: { varc: DEFAULT_TARGET } };
+  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], crAttempts: [], speedRuns: [], redo: [], sectionals: [], summaries: [], mockReviews: [], recs: [], weekReviews: [], redoSeeded: true, targets: { varc: DEFAULT_TARGET }, about: {} };
 }
 
 type Obj = Record<string, unknown>;
@@ -289,6 +296,11 @@ export function normalize(raw: unknown): AppState {
     }).filter((r) => r.k && isIsoDate(r.due));
   }
   if (isObj(raw.targets) && (TARGET_CHOICES as readonly number[]).includes(Number(raw.targets.varc))) b.targets.varc = Number(raw.targets.varc);
+  if (isObj(raw.about)) {
+    const { attempt, work } = raw.about;
+    if ((ATTEMPTS as readonly unknown[]).includes(attempt)) b.about.attempt = attempt as About["attempt"];
+    if ((WORKS as readonly unknown[]).includes(work)) b.about.work = work as About["work"];
+  }
   // Saves from before the redo queue have none; it is built from their attempts once the content loads.
   b.redoSeeded = Array.isArray(raw.redo) && raw.redoSeeded !== false;
   return b;

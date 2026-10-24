@@ -1,11 +1,12 @@
 import { useEffect, useState, type ReactNode, type RefObject } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { toast } from "sonner";
-import { ChevronRight, LogOut, MonitorSmartphone, QrCode, RefreshCw, Smartphone, UserRound } from "lucide-react";
+import { ChevronRight, LogOut, MonitorSmartphone, QrCode, RefreshCw, ShieldCheck, Smartphone, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { SIGNIN_ENABLED } from "@/lib/api";
+import { isStaff } from "@/lib/admin";
 import { startSignIn, syncNow } from "@/lib/sync/runner";
 import type { Status } from "@/lib/sync/status";
 import GoogleButton from "./GoogleButton";
@@ -15,7 +16,7 @@ import TurnOff from "./sync/TurnOff";
 
 /**
  * The account menu under the header's account button (B7). Three states, each with what a student can do next:
- * signed in (name, email, sync, devices, sign out); syncing with a code (sign in with Google to keep it safe);
+ * signed in (name, email, You, Admin for staff, sync, devices, sign out); syncing with a code (sign in with Google to keep it safe);
  * off (continue with Google, or join another device with a code). A popover on wide screens, a bottom sheet on a
  * phone, after 21st.dev's User Menu (kuratlielia). Loaded only when first opened.
  */
@@ -60,25 +61,38 @@ function Intro({ icon, title, children }: { icon: ReactNode; title: string; chil
 
 function Body({ s, close, signOut }: { s: Status; close: () => void; signOut: () => void }) {
   const loc = useLocation();
+  // Google comes back to /signin, which asks about this device's progress if it must, then returns here.
   const here = loc.pathname + loc.search;
+  const google = () => startSignIn(here === "/" ? "/signin" : "/signin?then=" + encodeURIComponent(here));
+  // Staff see Admin (D33). Asked once a session, and only when signed in: no one else can be staff.
+  const [staff, setStaff] = useState(false);
+  useEffect(() => {
+    if (!s.account) return;
+    let live = true;
+    void isStaff().then((m) => { if (live) setStaff(!!m); });
+    return () => { live = false; };
+  }, [s.account]);
+  const you = <Row icon={<UserRound />} to="/you" onClick={close}>You</Row>;
   const on = s.phase !== "off";
   const busy = s.phase === "syncing";
   const syncRow = <Row icon={<RefreshCw className={cn(busy && "animate-spin motion-reduce:animate-none")} />} disabled={busy} onClick={() => { void syncNow(true); }}>{busy ? "Syncing…" : "Sync now"}</Row>;
 
   if (s.account) return (
     <>
-      <div className="flex items-center gap-3 rounded-xl bg-accent p-4">
+      <Link to="/you" onClick={close} className="flex items-center gap-3 rounded-xl bg-accent p-4 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
         <span className="grid size-11 shrink-0 place-items-center rounded-full bg-primary text-lg font-semibold text-primary-foreground" aria-hidden>{initial(s.account)}</span>
         <div className="flex min-w-0 flex-col">
           <span className="truncate text-base font-semibold text-accent-foreground">{s.account.name || s.account.email}</span>
           {s.account.name && <span className="truncate text-sm text-foreground/70">{s.account.email}</span>}
           <span className="mt-1 inline-flex w-fit items-center gap-2 rounded-full bg-background/70 px-2.5 py-1 text-sm text-foreground/75" role="status"><Dot s={s} />{statusLine(s)}</span>
         </div>
-      </div>
+      </Link>
       <div className="mt-3 flex flex-col gap-1 rounded-xl bg-muted/70 p-1.5">
+        {you}
+        {staff && <Row icon={<ShieldCheck />} to="/admin" onClick={close}>Admin</Row>}
         {syncRow}
-        <Row icon={<QrCode />} to="/settings?sync=link#sync" onClick={close}>Link a device</Row>
-        <Row icon={<MonitorSmartphone />} to="/settings#sync" onClick={close}>Your devices</Row>
+        <Row icon={<QrCode />} to="/you?sync=link#sync" onClick={close}>Link a device</Row>
+        <Row icon={<MonitorSmartphone />} to="/you#sync" onClick={close}>Your devices</Row>
       </div>
       <div className="mt-2 rounded-xl bg-muted/70 p-1.5">
         <Row icon={<LogOut />} onClick={signOut} danger>Sign out</Row>
@@ -94,13 +108,14 @@ function Body({ s, close, signOut }: { s: Status; close: () => void; signOut: ()
       {SIGNIN_ENABLED && (
         <div className="mt-3 flex flex-col gap-3 rounded-xl bg-muted/70 p-3">
           <p className="text-sm leading-relaxed text-muted-foreground">Add an account so a lost phone never means lost progress.</p>
-          <GoogleButton onClick={() => startSignIn(here)}>Sign in with Google</GoogleButton>
+          <GoogleButton onClick={google}>Sign in with Google</GoogleButton>
         </div>
       )}
       <div className="mt-3 flex flex-col gap-1 rounded-xl bg-muted/70 p-1.5">
+        {you}
         {syncRow}
-        <Row icon={<QrCode />} to="/settings?sync=link#sync" onClick={close}>Link a device</Row>
-        <Row icon={<MonitorSmartphone />} to="/settings#sync" onClick={close}>Your devices</Row>
+        <Row icon={<QrCode />} to="/you?sync=link#sync" onClick={close}>Link a device</Row>
+        <Row icon={<MonitorSmartphone />} to="/you#sync" onClick={close}>Your devices</Row>
       </div>
       <div className="mt-2 rounded-xl bg-muted/70 p-1.5">
         <Row icon={<LogOut />} onClick={signOut} danger>Turn off sync on this device</Row>
@@ -113,10 +128,11 @@ function Body({ s, close, signOut }: { s: Status; close: () => void; signOut: ()
       <Intro icon={<UserRound />} title="Save your progress everywhere">
         Right now it stays in this browser only.
       </Intro>
-      {SIGNIN_ENABLED && <div className="mt-3 rounded-xl bg-muted/70 p-3"><GoogleButton onClick={() => startSignIn(here)} /></div>}
+      {SIGNIN_ENABLED && <div className="mt-3 rounded-xl bg-muted/70 p-3"><GoogleButton onClick={google} /></div>}
       <div className="mt-3 flex flex-col gap-1 rounded-xl bg-muted/70 p-1.5">
-        <Row icon={<Smartphone />} to="/settings?sync=join#sync" onClick={close}>I use 99ile on another device</Row>
-        <Row icon={<UserRound />} to="/settings#sync" onClick={close}>Sync without an account</Row>
+        {you}
+        <Row icon={<Smartphone />} to="/you?sync=join#sync" onClick={close}>I use 99ile on another device</Row>
+        <Row icon={<MonitorSmartphone />} to="/you#sync" onClick={close}>Sync without an account</Row>
       </div>
       <p className="px-2 pt-2 text-sm leading-relaxed text-muted-foreground">For people 18 and over. <Link to="/privacy" onClick={close} className="font-medium text-foreground underline underline-offset-4 decoration-border hover:decoration-foreground">What we keep</Link></p>
     </>

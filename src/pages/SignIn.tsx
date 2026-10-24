@@ -96,7 +96,7 @@ export default function SignIn() {
               </div>
               <div className="flex flex-col gap-2">
                 <LinkButton to={then} size="lg" className="w-full">Continue</LinkButton>
-                <LinkButton to="/settings#sync" variant="ghost" className="w-full">Devices and sign out</LinkButton>
+                <LinkButton to="/you#sync" variant="ghost" className="w-full">Devices and sign out</LinkButton>
               </div>
             </>
           ) : (

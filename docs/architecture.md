@@ -228,7 +228,7 @@ Every syncable thing in `AppState` becomes a record `{ kind, id, data, updatedAt
 | `day` | date | field by field: `done` and `spent` take the larger minutes per block; `min`, `carried`, `dismiss` newest wins |
 | `tick` | link id | newest wins; unticking is a tombstone |
 | `setting` | section id | newest wins |
-| `profile` | `"me"` | `since`, `targets`; newest wins |
+| `profile` | `"me"` | `since`, `targets`, `about` (attempt, studying or working; F81); `since` keeps the earlier date, the rest newest wins |
 
 ### 6.2 Protocol (**Decided 21 Oct 2026, D8**: server order, not device clocks)
 Device clocks can be hours or days wrong. Following Replicache's design (`docs/research/step-3.md`, finding 6), the server's `rev` decides order and every write says which version it was based on.

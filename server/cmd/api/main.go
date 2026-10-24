@@ -21,6 +21,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/japp47/CAT-Prep/server/internal/account"
+	"github.com/japp47/CAT-Prep/server/internal/admin"
 	"github.com/japp47/CAT-Prep/server/internal/auth"
 	"github.com/japp47/CAT-Prep/server/internal/config"
 	"github.com/japp47/CAT-Prep/server/internal/feedback"
@@ -218,5 +219,11 @@ func v1Routes(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger, opt synca
 	rt.Handle("GET /v1/auth/google/callback", acc.CallbackHandler())
 	rt.Handle("POST /v1/auth/ticket", acc.TicketHandler())
 	rt.Handle("POST /v1/auth/complete", acc.CompleteHandler())
+
+	adm := admin.New(pool, hash, log)
+	rt.Handle("GET /v1/admin/me", acc.Optional(adm.MeHandler()))
+	rt.Handle("GET /v1/admin/reports", acc.Optional(adm.Require(admin.FeedbackRead, adm.ReportsHandler())))
+	rt.Handle("POST /v1/admin/reports/status", acc.Optional(adm.Require(admin.FeedbackResolve, adm.StatusHandler())))
+	rt.Handle("GET /v1/admin/overview", acc.Optional(adm.Require(admin.StatsRead, adm.OverviewHandler())))
 	return reqinfo.Gate(cfg)(rt)
 }

@@ -65,7 +65,7 @@ export default function SyncCard({ onChange }: { onChange?: () => void }) {
     setSp(next, { replace: true });
   }, [want, on, sp, setSp]);
   useEffect(() => { onChange?.(); }, [on, onChange]);
-  // Opened from search (/settings#sync): this card loads after the page, so it scrolls itself into view.
+  // Opened from search or the account menu (/you#sync): this card loads after the page, so it scrolls itself into view.
   useEffect(() => { if (location.hash === "#sync") document.getElementById("sync")?.scrollIntoView(); }, []);
 
   const bot = useRef<HTMLDivElement>(null);

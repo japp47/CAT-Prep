@@ -2,7 +2,7 @@
 -include .env
 export
 
-.PHONY: db-up db-down db-reset db-psql dev-passwords run migrate migrate-status migrate-prod migrate-prod-status cleanup-prod digest-prod test test-int vet image check
+.PHONY: db-up db-down db-reset db-psql dev-passwords run migrate migrate-status migrate-prod migrate-prod-status cleanup-prod digest-prod grant grant-prod test test-int vet image check
 
 db-up:            ## start Postgres in Docker and wait until it answers
 	docker compose up -d --wait postgres
@@ -45,6 +45,15 @@ cleanup-prod:     ## delete expired link codes, old removed devices and old audi
 digest-prod:      ## print today's problem report digest from the live database (dry run: nothing posted or marked)
 	@test -f .env.prod || { echo "No .env.prod. See 'Live database' in README.md."; exit 1; }
 	@$(PROD) go run ./cmd/digest -dry
+
+grant:            ## make a local account staff: make grant EMAIL=you@gmail.com [ROLE=moderator] [REVOKE=1]
+	@test -n "$(EMAIL)" || { echo "Usage: make grant EMAIL=you@gmail.com"; exit 1; }
+	MIGRATE_DATABASE_URL="$(MIGRATE_DATABASE_URL)" go run ./cmd/grant -email "$(EMAIL)" -role "$(or $(ROLE),admin)" $(if $(REVOKE),-revoke)
+
+grant-prod:       ## make a live account staff (it must have signed in once): make grant-prod EMAIL=you@gmail.com
+	@test -f .env.prod || { echo "No .env.prod. See 'Live database' in README.md."; exit 1; }
+	@test -n "$(EMAIL)" || { echo "Usage: make grant-prod EMAIL=you@gmail.com"; exit 1; }
+	@$(PROD) go run ./cmd/grant -email "$(EMAIL)" -role "$(or $(ROLE),admin)" $(if $(REVOKE),-revoke)
 
 # Local only: the roles are created by migration 00002 without a password. Live passwords are set by hand.
 dev-passwords:

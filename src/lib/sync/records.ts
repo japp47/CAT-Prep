@@ -34,7 +34,7 @@ export function toRecords(st: AppState): Rec[] {
   Object.entries(st.days).forEach(([d, rec]) => out.push({ kind: "day", id: d, data: rec }));
   Object.keys(st.ticks).forEach((k) => out.push({ kind: "tick", id: k, data: 1 }));
   Object.entries(st.settings).forEach(([sec, s]) => out.push({ kind: "setting", id: sec, data: s }));
-  out.push({ kind: "profile", id: "me", data: { since: st.since, targets: st.targets } });
+  out.push({ kind: "profile", id: "me", data: { since: st.since, targets: st.targets, about: st.about } });
   return out;
 }
 
@@ -87,9 +87,11 @@ export function mergeRecord(a: SyncRecord, b: SyncRecord): SyncRecord {
   }
   if (a.kind === "day") return { ...a, data: mergeDay(a, b), updatedAt };
   if (a.kind === "profile") {
-    const x = a.data as Pick<AppState, "since" | "targets">, y = b.data as Pick<AppState, "since" | "targets">;
+    type P = Pick<AppState, "since" | "targets" | "about">;
+    const x = a.data as P, y = b.data as P;
     const since = x.since && y.since ? (x.since < y.since ? x.since : y.since) : x.since || y.since;
-    return { ...a, data: { since, targets: (newer(a, b).data as typeof x).targets }, updatedAt };
+    // Everything but since comes from the newer copy, whole: fields added later (about) are kept, never dropped.
+    return { ...a, data: { ...(newer(a, b).data as P), since }, updatedAt };
   }
   return newer(a, b);
 }

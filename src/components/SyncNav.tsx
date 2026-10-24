@@ -29,7 +29,7 @@ export function SyncNavRow({ collapsed, onPick }: { collapsed?: boolean; onPick?
   const signIn = SIGNIN_ENABLED && s.phase === "off";
   const title = s.account ? s.account.name || s.account.email : signIn ? "Sign in" : "Sync devices";
   const line = signIn ? "Save progress everywhere" : statusLine(s);
-  const to = signIn ? "/signin?then=" + encodeURIComponent(loc.pathname) : "/settings#sync";
+  const to = signIn ? "/signin?then=" + encodeURIComponent(loc.pathname) : s.account ? "/you" : "/you#sync";
   return (
     <NavLink to={to} onClick={onPick} title={collapsed ? title + ": " + line : undefined} aria-label={title + ", " + line}
       className={cn("flex items-center gap-3 rounded-md text-foreground/80 transition-colors hover:bg-card/70 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",

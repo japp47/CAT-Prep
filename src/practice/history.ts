@@ -174,3 +174,15 @@ export function daySummary(day: HistoryDay | undefined): string {
   if (day.minutes) shown.push(day.minutes < 60 ? `${day.minutes} min` : `${Math.floor(day.minutes / 60)} h ${day.minutes % 60} min`.replace(" 0 min", ""));
   return shown.join(", ");
 }
+
+/** The You page's numbers (F81): days with any study, questions answered in 99ile's practice, and minutes. */
+export interface StudySoFar { days: number; questions: number; minutes: number }
+
+export function studySoFar(st: AppState, days = historyDays(st)): StudySoFar {
+  const questions =
+    st.rcAttempts.reduce((s, a) => s + a.ans.filter((x) => x !== null).length, 0) +
+    st.vaAttempts.reduce((s, a) => s + a.items.filter((x) => x.a !== "").length, 0) +
+    st.crAttempts.reduce((s, a) => s + a.items.filter((x) => x.a !== null).length, 0) +
+    st.sectionals.reduce((s, a) => s + a.a.filter((x) => x !== "").length, 0);
+  return { days: days.length, questions, minutes: days.reduce((s, d) => s + d.minutes, 0) };
+}

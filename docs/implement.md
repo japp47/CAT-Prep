@@ -354,10 +354,13 @@ Decisions this plan assumes (owner to confirm, `docs/analyze.md` §5): **D8** se
 
 ### B8. Admin page (F79), after B7
 `feat/admin` · `feat: add an admin page to read and close problem reports`
-- Migration: schema `access` (roles, permissions, grants as in `docs/database.md` §4) seeded with `owner`; `support.feedback.handled_by` FK to `account.users`; cat_app gets `select` and `update (status, handled_by, handled_at, updated_at)` on `support.feedback`.
-- API: `GET /v1/admin/reports`, `POST /v1/admin/reports/{id}` (status), `GET /v1/admin/overview` (counts only); every handler checks a permission, never a role name; non-staff get 404; every change writes an audit event.
-- Browser: `/admin` (lazy, not in the menu), reports grouped by question with "Open the question", and the overview.
-**Tests.** Non-staff 404 on every admin route; a resolve writes `handled_by` and an audit event; the overview has no student data.
+Branch `feat/admin-and-you` also carries F81 part 1. Message: `feat: an admin page for problem reports, and a You page`.
+- Migration `00011_access.sql`: schema `access` (roles, permissions, role_permissions, grants as in `docs/database.md` §4) seeded with `admin` and `moderator`; `support.feedback.handled_by` FK to `account.users`; cat_app gets `select` on `access.*` and on all of `support.feedback`, and `update (status, handled_by, handled_at, updated_at)`.
+- `internal/admin`: permission keys as constants (a test checks them against the seed); `Staff` middleware (device cookie, then account, then active grants; anything missing is 404); `GET /v1/admin/me`, `GET /v1/admin/reports?state=open|closed`, `POST /v1/admin/reports/status` (ids and status, D32), `GET /v1/admin/overview`.
+- `cmd/grant` and `make grant-prod EMAIL=… [ROLE=admin] [REVOKE=1]`.
+- `GET /v1/identity` adds the account's `createdAt` for "Member since".
+- Browser: `/admin` (lazy), reports grouped by question, the overview; "Admin" in the account menu for staff (D33). `/you` (F81 part 1) with the sync card moved from Settings (D35); `about` in the profile record.
+**Tests.** Non-staff (no sync, sync without an account, an account without a grant, a revoked grant) get 404 on every admin route; a status change writes `handled_by`, `handled_at` and one audit event per report; the overview has no student data; profile `about` merges and survives a round trip.
 
 ---
 

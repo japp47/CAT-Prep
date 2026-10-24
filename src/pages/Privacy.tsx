@@ -27,7 +27,7 @@ export default function Privacy() {
           "If you turn sync on, your progress is copied to the 99ile server so your devices show the same thing. Without an account we do not know your name, email or phone number, and there is no password.",
           "If you sign in with Google, we keep your email and the name Google gives, to show who is signed in and to bring your progress to a new device. Nothing else from Google.",
           "No ads, no selling of data, no tracking across sites.",
-          <>You can download what the server has, and delete it, at any time in <Link className="underline underline-offset-4" to="/settings#sync">Settings</Link>.</>,
+          <>You can download what the server has, and delete it, at any time on the <Link className="underline underline-offset-4" to="/you#sync">You page</Link>.</>,
         ]} />
       </Section>
 
@@ -89,7 +89,7 @@ export default function Privacy() {
 
       <Section title="Your choices and rights">
         <List items={[
-          <>See it: &ldquo;Download what the server has&rdquo; in <Link className="underline underline-offset-4" to="/settings#sync">Settings</Link> gives you everything the server keeps about your progress.</>,
+          <>See it: &ldquo;Download what the server has&rdquo; on the <Link className="underline underline-offset-4" to="/you#sync">You page</Link> gives you everything the server keeps about your progress.</>,
           "Correct it: change or delete anything in the app; the change syncs.",
           "Stop it: “Turn off sync on this device” stops that device; your progress stays on it.",
           "Delete it: “Delete all my data”, then “Everywhere”, removes your progress from the server at once. Your other devices stop syncing and keep what they had until you delete it there too. Problem reports you sent stay, no longer linked to you; write to us to have them removed.",
