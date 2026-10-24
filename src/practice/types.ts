@@ -168,6 +168,20 @@ export interface LrTable { caption?: string; head: string[]; rows: string[][] }
  * it, highlighted in review. if is an extra condition for this question only ("if additionally…").
  */
 export interface LrQuestion { stem: string; kind: "mcq" | "tita"; options?: string[]; answer: number | string; uses: number[]; why: string[]; if?: string }
+/**
+ * The solution as a picture that fills in step by step (F23 review), and the blank layout of the scratch pad.
+ * frames[i] is the picture after solution step i: frames[i][row][seat] holds the lines written in that seat, the
+ * person first ("" when only an attribute is known); [] while nothing is known, null for a seat known to be empty.
+ * A line ending in "?" is one possible place, not a fact. A row picture may have several rows (one per morning, say).
+ * Seats run left to right, or for a circle round to the left (clockwise seen from above) from the bottom.
+ */
+export interface LrDiagram {
+  layout: "row" | "circle";
+  seats: string[];
+  rows?: string[];
+  note?: string;
+  frames: (string[] | null)[][][];
+}
 /** A logical reasoning set (docs/content/lr-format.md). source says it is original or used with permission (D38). */
 export interface LrSet {
   id: string;
@@ -184,7 +198,7 @@ export interface LrSet {
   clues: string[];
   tables?: LrTable[];
   questions: LrQuestion[];
-  solution: { steps: string[]; grid?: LrTable; cases?: number };
+  solution: { steps: string[]; grid?: LrTable; cases?: number; diagram?: LrDiagram };
 }
 export interface LrMeta { id: string; title: string; type: LrType; sub?: string; difficulty: Difficulty; minutes: number; questions: number; since: string; v: string }
 

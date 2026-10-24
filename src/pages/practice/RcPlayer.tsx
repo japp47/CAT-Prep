@@ -48,10 +48,10 @@ function RcRoute({ set }: { set: RcSet | undefined }) {
 }
 
 /** Passage or question, for phones, where the two cannot sit side by side. */
-export function PaneSwitch({ pane, setPane, q }: { pane: "p" | "q"; setPane: (p: "p" | "q") => void; q: string }) {
+export function PaneSwitch({ pane, setPane, q, p = "Passage" }: { pane: "p" | "q"; setPane: (p: "p" | "q") => void; q: string; p?: string }) {
   return (
     <ToggleGroup type="single" value={pane} onValueChange={(v) => v && setPane(v as "p" | "q")} className="w-full rounded-lg bg-secondary p-1 lg:hidden" aria-label="Show">
-      <ToggleGroupItem value="p" className="h-10 flex-1 rounded-md text-base data-[state=on]:bg-card data-[state=on]:font-semibold">Passage</ToggleGroupItem>
+      <ToggleGroupItem value="p" className="h-10 flex-1 rounded-md text-base data-[state=on]:bg-card data-[state=on]:font-semibold">{p}</ToggleGroupItem>
       <ToggleGroupItem value="q" className="h-10 flex-1 rounded-md text-base data-[state=on]:bg-card data-[state=on]:font-semibold">{q}</ToggleGroupItem>
     </ToggleGroup>
   );
@@ -513,7 +513,7 @@ function Summary({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
       <p className="text-base text-muted-foreground">Attempted {mediumDate(attempt.d)}. Logged in Progress as an RC practice set. Each wrong option shows its trap: the reason it looked right.</p>
       <div className="flex flex-wrap gap-3">
         {missing.length > 0 && <Button onClick={() => { update((st) => { missing.forEach((i) => st.errors.push(rcError(set, i, attempt.ans[i], todayIso(), !!attempt.unsure?.includes(i), attempt.id))); }); toast(`Added ${missing.length} to your Error log.`); }}>Add {missing.length} to Error log</Button>}
-        <Button asChild variant="secondary"><Link to={`/practice/rc/${next.id}`}>Next set: {next.title}</Link></Button>
+        <Button asChild variant="secondary" className="h-auto min-h-10 max-w-full shrink whitespace-normal py-2 text-left"><Link to={`/practice/rc/${next.id}`}>Next set: {next.title}</Link></Button>
         <Button asChild variant="ghost"><Link to={`/practice/rc/${set.id}?n=${seed}`}>Retake</Link></Button>
       </div>
     </ScoreCard>

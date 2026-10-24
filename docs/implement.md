@@ -380,6 +380,16 @@ Full entries are written here when a step comes within two steps of being built:
 - Set `since` to 25 Oct 2026; each set joins the daily rotation in its first cycle starting on or after that date.
 - Run `npm run catalog`; tests check set shape, answer keys, content-file mapping and generated catalog consistency.
 
-**Next, 4a.2:** the LR set player with the post-mortem (F23, F86), then the Learn tab and resources (F21, F22), then F83 to F85.
+**4a.2 LR set player and post-mortem, built 24 Oct 2026** (arrangement sets first; owner asked to do one category at a time):
+- Content: five owner sets in `content/lr/arrangement.json` (row of 6, circle of 7, desk movement over three evenings, row of 6 with three attributes, circle with an empty chair and ratings) plus the example; every answer, "must be true" option, case count and final picture checked by a brute-force solver.
+- `LrDiagram` in `practice/types.ts` (`solution.diagram`: row or circle, frames per step); test: one frame per step, right shape.
+- `LrAttempt` and `LrPostMortem` in `lib/state.ts`; sync kind `lr` (browser `KINDS`, server `SyncKinds`), merged newest-wins because the post-mortem is written later. `practice/lrattempt.ts`: `scoreLr`, `recordLr` (also a DILR practice row), `saveLrPostMortem`, `lrError`. History rows with the key clue.
+- UI: `pages/practice/LrPlayer.tsx` (attempt, review, post-mortem), `components/LrDiagram.tsx` (walkthrough and scratch pad; a one-row picture becomes a list on a phone), `components/LrSetList.tsx` on the DILR Practice tab.
+- Tests: `practice/lrattempt.test.ts`, the LR checks in `content.test.ts`, the Go kinds test.
+- **Ship in two steps:** the server change (`lr` in `SyncKinds`) first, then the rest once Render has deployed it.
+
+**Practice by section (D39), built 24 Oct 2026:** `pages/practice/Hub.tsx` is one page for `/:sec/practice` with section dividers (what is waiting in each; the highlighter on the current one when something is due) and `/practice` opening the last section used (pref `practiceSec`). Sections: `VarcPractice.tsx` (the old hub), `DilrPractice.tsx` (next untried set, sets by type, papers), Quant "from January". Shared `rows.tsx` (`Rows`, `Row`, `PaperRow`). Navigation: `SiteNavLink` with `match` (`PRACTICE_PATH`) keeps Practice current on every practice address, and section items are exact. Section-specific links now go to `/varc/practice` or `/dilr/practice`. Test: `components/nav.test.ts`.
+
+**Next, 4a.3:** the next category of owner sets (games and tournaments, reasoning DI, routes, set theory, Venn and syllogism, sent 24 Oct 2026), each with its own picture where it helps (points table, network, Venn regions); LR questions in the redo queue; then the Learn type guides (F21) and F83 to F85.
 **4a.1b DILR page opened, 24 Oct 2026** on `feat/dilr-resources`: section status `open` (`sections/types.ts`), `sections/dilr/learn.ts` (format, set types, topic share, concept guides, tabs and notes) and `sections/dilr/resources.ts` (34 links, ids prefixed `d-`, all opened on 24 Oct 2026); `pages/Section.tsx` reads per-section page data; the header, footer and Today stop calling DILR "soon". Test: `sections/dilr/resources.test.ts`.
 

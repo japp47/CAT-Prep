@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
-import { Link, NavLink } from "react-router-dom";
+import type { ReactNode } from "react";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { ChevronDown, Menu, Search as SearchIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Brand from "./Brand";
@@ -7,7 +8,17 @@ import AccountButton from "./AccountButton";
 import InstallButton from "./InstallButton";
 import ThemeToggle from "./ThemeToggle";
 
-export interface SiteNavItem { to: string; label: string; soon?: boolean; end?: boolean }
+/** match: other addresses where this item is the current page (Practice is current on /varc/practice too). */
+export interface SiteNavItem { to: string; label: string; soon?: boolean; end?: boolean; match?: RegExp }
+/** Practice and every section's practice page (D39), and the players under /practice. */
+export const PRACTICE_PATH = /^\/((varc|dilr|quant)\/)?practice(\/|$)/;
+
+/** A nav link that is also current on the item's `match` addresses, with aria-current set either way. */
+export function SiteNavLink({ item, className, onClick, title, children }: { item: Pick<SiteNavItem, "to" | "end" | "match">; className: (active: boolean) => string; onClick?: () => void; title?: string; children: ReactNode }) {
+  const { pathname } = useLocation();
+  if (item.match?.test(pathname)) return <Link to={item.to} aria-current="page" className={className(true)} onClick={onClick} title={title}>{children}</Link>;
+  return <NavLink to={item.to} end={item.end} className={({ isActive }) => className(isActive)} onClick={onClick} title={title}>{children}</NavLink>;
+}
 export interface SiteNavGroup { title: string; items: SiteNavItem[] }
 
 interface SiteHeaderProps {
@@ -69,10 +80,10 @@ export default function SiteHeader({ landing, groups, open, onOpenChange, onLoad
             {groups.map((group) => <div key={group.title} className="flex min-w-0 flex-col">
               <span className="mb-1 border-b border-border/70 px-3 pb-2 text-xs font-semibold tracking-[0.1em] text-muted-foreground uppercase">{group.title}</span>
               <div className="flex flex-col gap-0.5">
-                {group.items.map((item) => <NavLink key={item.to} to={item.to} end={item.end} onClick={() => onOpenChange(false)} title={item.label}
-                  className={({ isActive }) => cn("flex min-h-10 items-center justify-between gap-2 rounded-md px-3 py-2 text-base font-medium text-foreground/80 transition-colors hover:bg-muted/70 hover:text-foreground", isActive && "bg-muted text-foreground")}>
+                {group.items.map((item) => <SiteNavLink key={item.to} item={item} onClick={() => onOpenChange(false)} title={item.label}
+                  className={(isActive) => cn("flex min-h-10 items-center justify-between gap-2 rounded-md px-3 py-2 text-base font-medium text-foreground/80 transition-colors hover:bg-muted/70 hover:text-foreground", isActive && "bg-muted text-foreground")}>
                   <span className="truncate">{item.label}</span>{item.soon && <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">Soon</span>}
-                </NavLink>)}
+                </SiteNavLink>)}
               </div>
             </div>)}
           </nav>

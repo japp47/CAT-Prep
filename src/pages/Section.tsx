@@ -14,7 +14,7 @@ import { TypeGuide, TypeIndex } from "../components/TypeGuide";
 import { BENCHMARKS, PASSAGE_SOURCES, TOPPERS } from "../data/stories";
 import { dow, todayIso } from "../lib/date";
 import { usePref } from "../lib/prefs";
-import { RC_CATALOG } from "../practice/catalog.gen";
+import { LR_CATALOG, RC_CATALOG } from "../practice/catalog.gen";
 import { useStore } from "../lib/store";
 import { SECTION_BY_ID } from "../sections";
 import type { SectionDef, SectionId } from "../sections/types";
@@ -186,15 +186,15 @@ function Live({ sec, page }: { sec: SectionDef; page: PageData }) {
       {id === "practice" && sec.id === "dilr" && (
         <div className="flex flex-col gap-3 rounded-lg bg-card p-5 sm:p-6">
           <h3 className="text-heading font-semibold">Practice on this site</h3>
-          <p className="measure text-base text-foreground/85">Original logical reasoning sets with a timer, a scratch grid and a full solution arrive in November, followed by short drills on reading clues and choosing where to start. Until then, use the sets below and log your DILR mistakes in the Error log.</p>
-          <div className="flex flex-wrap gap-3"><LinkButton to="/errors" variant="secondary">Open the Error log</LinkButton></div>
+          <p className="measure text-base text-foreground/85">{LR_CATALOG.length} original logical reasoning sets, each with a timer, a scratch pad, a step-by-step solution drawn as you go, and a two-minute post-mortem. More set types follow, then short drills on reading clues and choosing where to start.</p>
+          <div className="flex flex-wrap gap-3"><LinkButton to="/dilr/practice">Open DILR practice</LinkButton></div>
         </div>
       )}
       {id === "practice" && sec.id === "varc" && (
         <div className="flex flex-col gap-3 rounded-lg bg-card p-5 sm:p-6">
           <h3 className="text-heading font-semibold">Practice on this site</h3>
           <p className="measure text-base text-foreground/85">{RC_CATALOG.length} original RC sets with an explanation for every option, a daily VA drill, custom drills by type, a timed sectional, a redo queue for mistakes and a reading speed test. Your scores go straight into Progress.</p>
-          <div className="flex flex-wrap gap-3"><LinkButton to="/practice">Open Practice</LinkButton><LinkButton to="/practice/va" variant="secondary">Today's VA drill</LinkButton></div>
+          <div className="flex flex-wrap gap-3"><LinkButton to="/varc/practice">Open VARC practice</LinkButton><LinkButton to="/practice/va" variant="secondary">Today's VA drill</LinkButton></div>
         </div>
       )}
       {id === "read" && <Rotation />}
@@ -212,7 +212,7 @@ function Live({ sec, page }: { sec: SectionDef; page: PageData }) {
     <Page>
       <PageHeader title={sec.short}>{sec.name}. You have done {doneAll} of {all.length} resources, and {mustDone} of {mustAll.length} must-dos.</PageHeader>
       {sec.status === "open" && (
-        <p className="measure rounded-lg bg-card px-5 py-4 text-base">{sec.tagline} Practice sets on this site start in November; until then {sec.short} is not in your timetable.</p>
+        <p className="measure rounded-lg bg-card px-5 py-4 text-base">{sec.tagline} The first logical reasoning sets are under Practice; {sec.short} joins your timetable once there are enough of them.</p>
       )}
 
       <div className="flex flex-wrap items-center gap-x-5 gap-y-3">

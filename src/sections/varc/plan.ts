@@ -56,7 +56,7 @@ function analysisBlock(m: number, mm: number, pri: number, ord: number): Block {
 /** Blocks that drill from the Cracku banks also link to the same kind of practice on this site. */
 function practice(id: string, name: string, m: number, mm: number, pri: number, ord: number, ptype: string, desc: string, links: Link[]): Block {
   const here: Link[] = [];
-  if (links.some(([, u]) => u === L.crRC)) here.push(["Practice RC here", "/practice"]);
+  if (links.some(([, u]) => u === L.crRC)) here.push(["Practice RC here", "/varc/practice"]);
   if (links.some(([, u]) => u === L.crVA)) here.push(["VA drill here", "/practice/va"]);
   return B(id, name, m, mm, pri, ord, desc, [...here, ...links], { kind: "practice", ptype });
 }

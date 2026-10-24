@@ -1,149 +1,103 @@
-import { useState, type ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, Navigate, useParams } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { PAPER_PDFS, PAPERS_PAGE } from "../../data/papers";
-import { todayIso, uid } from "../../lib/date";
+import { todayIso } from "../../lib/date";
+import { usePref } from "../../lib/prefs";
+import type { LrAttempt, RcAttempt, VaAttempt } from "../../lib/state";
 import { useStore } from "../../lib/store";
-import { LinkButton, Page, PageHeader, Section, TextLink } from "../../components/kit";
-import { NativeSelect } from "../../components/Select";
-import { RC_CATALOG } from "../../practice/catalog.gen";
-import { dayNumber, rcOfDay } from "../../practice/daily";
-import { dueRedo } from "../../practice/redo";
-import { loadDraft } from "../../practice/sectional";
-import { CR_TYPE, CR_TYPES, GENRES, type CrType } from "../../practice/types";
-import { DAILY_MIX, VA_KIND, type VaKind } from "../../practice/va/build";
+import { LinkButton, Page, PageHeader } from "../../components/kit";
 import { StreakBadge } from "../../components/StreakBadge";
+import { rcOfDay } from "../../practice/daily";
+import { dueRedo } from "../../practice/redo";
+import type { RcMeta } from "../../practice/types";
+import { SECTION_BY_ID, SECTIONS } from "../../sections";
+import type { SectionDef, SectionId } from "../../sections/types";
+import NotFound from "../NotFound";
+import DilrPractice, { LR_ORDER } from "./DilrPractice";
+import VarcPractice from "./VarcPractice";
 
-/** Rows on one sheet, set apart by a hairline of the page's own tone rather than as separate cards. */
-function Rows({ children }: { children: ReactNode }) {
-  return <ul className="flex flex-col gap-px overflow-hidden rounded-xl bg-background">{children}</ul>;
-}
+/**
+ * Practice, one page for every section (D39): /varc/practice, /dilr/practice, /quant/practice. Dividers on top say
+ * what is waiting in each section; the section's own practice sits below. /practice opens the section used last.
+ */
 
-/** One way to practice: what it is on the left, its action on the right. `next` marks the one thing to do now.
- *  On a phone the action drops below the text, except in `side` rows, whose text is short and whose action is one small button. */
-function Row({ title, children, action, next, side }: { title: ReactNode; children?: ReactNode; action: ReactNode; next?: boolean; side?: boolean }) {
-  return (
-    <li className={cn("relative grid gap-y-3 bg-card px-5 py-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-x-8 sm:px-6", side && "grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4", next && "before:absolute before:inset-y-0 before:left-0 before:w-1.5 before:bg-highlight")}>
-      <div className="flex min-w-0 flex-col gap-1">
-        <h3 className="text-heading font-semibold">{title}</h3>
-        {children && <div className="measure flex flex-col gap-1 text-base text-muted-foreground">{children}</div>}
-      </div>
-      <div className="flex flex-wrap items-center gap-2">{action}</div>
-    </li>
-  );
-}
+/** What VARC has for today, worked out once for its divider and its page. */
+export interface VarcToday { today: string; daily: RcMeta; dailyTry?: RcAttempt; vaToday?: VaAttempt; redoDue: number; next: "rc" | "va" | "redo" | null }
 
-export default function PracticeHub() {
-  const { state } = useStore();
+function varcToday(st: { rcAttempts: RcAttempt[]; vaAttempts: VaAttempt[]; redo: Parameters<typeof dueRedo>[0] }): VarcToday {
   const today = todayIso();
   const daily = rcOfDay(today);
-  const dailyTry = state.rcAttempts.filter((a) => a.set === daily.id && a.d === today).pop();
-  const vaToday = state.vaAttempts.filter((a) => a.mode === "daily" && a.d === today).pop();
-  const best = state.speedRuns.filter((r) => r.recall === 2).reduce((m, r) => Math.max(m, r.wpm), 0);
-  const redoDue = dueRedo(state.redo, today).length;
-  const redoOpen = state.redo.filter((r) => !r.cleared).length;
-  const lastSec = state.sectionals[state.sectionals.length - 1];
-  const [hasDraft] = useState(() => !!loadDraft());
-  const [kind, setKind] = useState<VaKind | "mix">("mix");
-  const [count, setCount] = useState(6);
-  const [crKind, setCrKind] = useState<CrType | "mix">("mix");
-  const [seed] = useState(uid);
-  const [paper, setPaper] = useState(PAPER_PDFS[0][1]);
-  const tried = new Set(state.rcAttempts.map((a) => a.set));
-  const untried = RC_CATALOG.filter((s) => !tried.has(s.id) && s.id !== daily.id).slice(0, 3);
+  const dailyTry = st.rcAttempts.filter((a) => a.set === daily.id && a.d === today).pop();
+  const vaToday = st.vaAttempts.filter((a) => a.mode === "daily" && a.d === today).pop();
+  const redoDue = dueRedo(st.redo, today).length;
   // The first daily task not yet done gets the highlighter and the one filled button.
   const next = !dailyTry ? "rc" : !vaToday ? "va" : redoDue ? "redo" : null;
+  return { today, daily, dailyTry, vaToday, redoDue, next };
+}
+
+const nextLr = (lr: LrAttempt[]) => { const tried = new Set(lr.map((a) => a.set)); return LR_ORDER.find((s) => !tried.has(s.id)); };
+
+const isSection = (x: string | undefined): x is SectionId => !!x && x in SECTION_BY_ID;
+
+export default function PracticeHub() {
+  const { sec } = useParams();
+  const [last, setLast] = usePref<SectionId>("practiceSec", "varc");
+  const known = isSection(sec);
+  useEffect(() => { if (known && sec !== last) setLast(sec); }, [known, sec, last, setLast]);
+  if (sec === undefined) return <Navigate to={`/${isSection(last) ? last : "varc"}/practice`} replace />;
+  if (!known) return <NotFound />;
+  return <Hub sec={SECTION_BY_ID[sec]} />;
+}
+
+function Hub({ sec }: { sec: SectionDef }) {
+  const { state } = useStore();
+  const varc = varcToday(state);
+  const lrNext = nextLr(state.lrAttempts);
+  const tried = new Set(state.lrAttempts.map((a) => a.set)).size;
+  const left = [!varc.dailyTry, !varc.vaToday, varc.redoDue > 0].filter(Boolean).length;
+  const status: Record<SectionId, { text: string; due: boolean }> = {
+    varc: { text: left ? `${left} left today` : "Done for today", due: left > 0 },
+    dilr: { text: `${LR_ORDER.length} sets${tried ? `, ${tried} tried` : ""}`, due: !!lrNext },
+    quant: { text: "From January", due: false },
+  };
 
   return (
     <Page>
       <PageHeader title="Practice" aside={<StreakBadge />}>
-        Exam-style questions written for this site. Every answer is explained, scores go to Progress, and the questions you miss come back in your redo queue.
+        Exam-style questions written for this site. Every answer is explained, scores go to Progress, and the questions you miss come back to you.
       </PageHeader>
 
-      <Section title="Every day">
-        <Rows>
-          <Row next={next === "rc"} title={<Link to={`/practice/rc/${daily.id}`} className="hover:text-primary">{daily.title}</Link>}
-            action={dailyTry
-              ? <><LinkButton to={`/practice/rc/${daily.id}?review=${dailyTry.id}`} variant="secondary">Review your answers</LinkButton><LinkButton to={`/practice/rc/${daily.id}`} variant="ghost">Retake</LinkButton></>
-              : <LinkButton to={`/practice/rc/${daily.id}`}>Start the passage</LinkButton>}>
-            <p>RC of the day, day {dayNumber(today)}: {GENRES[daily.genre].toLowerCase()}, {daily.difficulty}, {daily.words} words and {daily.questions} questions, about 7 minutes.</p>
-            {dailyTry && <p className="text-success">Done today: {dailyTry.c} of {daily.questions} correct.</p>}
-          </Row>
-          <Row next={next === "va"} title="Daily VA drill"
-            action={<LinkButton to="/practice/va" variant={next === "va" ? "default" : "secondary"}>{vaToday ? "Review your answers" : "Start the drill"}</LinkButton>}>
-            <p>{DAILY_MIX.length} questions in about 12 minutes: 2 each of para summary, sentence insertion, odd sentence out and para jumbles.</p>
-            {vaToday && <p className="text-success">Done today: {vaToday.items.filter((i) => i.ok).length} of {vaToday.items.length} correct.</p>}
-          </Row>
-          <Row next={next === "redo"} title={redoDue ? `Redo queue, ${redoDue} due today` : "Redo queue"}
-            action={redoDue > 0 || redoOpen > 0
-              ? <LinkButton to="/practice/redo" variant={next === "redo" ? "default" : "secondary"}>{redoDue ? "Start" : "See the queue"}</LinkButton>
-              : <span className="text-base text-muted-foreground">Nothing to redo yet</span>}>
-            <p>Missed questions come back after 1, 3 and 7 days, until you get them right three times in a row.</p>
-          </Row>
-        </Rows>
-      </Section>
+      {/* Dividers, like the tabs of a ring binder: each says what is waiting behind it. */}
+      <nav aria-label="Practice by section" className="grid grid-cols-3 gap-1.5 rounded-xl bg-secondary p-1.5">
+        {SECTIONS.map((s) => {
+          const on = s.id === sec.id, st = status[s.id];
+          return (
+            <Link key={s.id} to={`/${s.id}/practice`} aria-current={on ? "page" : undefined}
+              className={cn(
+                "relative flex min-h-16 flex-col justify-center gap-0.5 overflow-hidden rounded-lg px-3 py-2.5 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:px-5 sm:py-3",
+                on ? "bg-card" : "hover:bg-card/50",
+              )}>
+              {/* The highlighter marks the section you are on when something is waiting in it. */}
+              {on && st.due && <span className="absolute inset-x-0 bottom-0 h-1 bg-highlight" aria-hidden />}
+              <span className={cn("text-base font-semibold sm:text-heading", on ? "text-foreground" : "text-foreground/75")}>{s.short}</span>
+              <span className={cn("text-sm", on ? "text-foreground/80" : "text-muted-foreground")}>{st.text}</span>
+            </Link>
+          );
+        })}
+      </nav>
 
-      <Section title="When you have more time">
-        <Rows>
-          <Row title="Timed VARC sectional"
-            action={<>
-              <LinkButton to="/practice/sectional" variant="secondary">{hasDraft ? "Resume" : state.sectionals.length ? "Start another" : "Start a sectional"}</LinkButton>
-              {lastSec && <LinkButton to={`/practice/sectional/${lastSec.id}`} variant="ghost">Last: {3 * lastSec.c - lastSec.w > 0 ? "+" : ""}{3 * lastSec.c - lastSec.w} of 72</LinkButton>}
-            </>}>
-            <p>{hasDraft ? "A sectional is in progress, and its clock is running." : "40 minutes, 24 questions, marked the way CAT marks them, on a CAT-style screen."}</p>
-          </Row>
-          <Row title="Drill one type"
-            action={<>
-              <NativeSelect aria-label="Question type" value={kind} onChange={(e) => setKind(e.target.value as VaKind | "mix")} className="w-auto">
-                <option value="mix">Mixed types</option>
-                {(Object.keys(VA_KIND) as VaKind[]).map((k) => <option key={k} value={k}>{VA_KIND[k].label}</option>)}
-              </NativeSelect>
-              <NativeSelect aria-label="Number of questions" value={count} onChange={(e) => setCount(+e.target.value)} className="w-auto">
-                {[4, 6, 8, 10].map((n) => <option key={n} value={n}>{n} questions</option>)}
-              </NativeSelect>
-              <LinkButton to={`/practice/va?type=${kind}&n=${count}&seed=${seed}`} variant="secondary">Start drill</LinkButton>
-            </>}>
-            <p>Practice the VA type that costs you most marks.</p>
-          </Row>
-          <Row title="Critical reasoning drill"
-            action={<>
-              <NativeSelect aria-label="Critical reasoning question type" value={crKind} onChange={(e) => setCrKind(e.target.value as CrType | "mix")} className="w-auto">
-                <option value="mix">Mixed types</option>
-                {CR_TYPES.map((t) => <option key={t} value={t}>{CR_TYPE[t].label}</option>)}
-              </NativeSelect>
-              <LinkButton to={`/practice/cr?type=${crKind}&n=6&seed=${seed}`} variant="secondary">Start drill</LinkButton>
-            </>}>
-            <p>Six short arguments, one question each: assumption, strengthen, weaken, inference, flaw and paradox. CAT does not ask them, but XAT does, and they sharpen how you judge RC options.</p>
-          </Row>
-          <Row title="Real CAT papers"
-            action={<>
-              <NativeSelect aria-label="Past paper" value={paper} onChange={(e) => setPaper(e.target.value)} className="w-auto">
-                {PAPER_PDFS.map(([n, u]) => <option key={u} value={u}>{n}</option>)}
-              </NativeSelect>
-              <LinkButton to={paper} variant="secondary" arrow>Download PDF</LinkButton>
-            </>}>
-            <p>Full past papers with all three sections: {PAPER_PDFS.length} PDFs, 2017 to 2024 by slot and 1991 to 2008. Sit one whole as a mock, or one section in 40 minutes. Papers up to 2020 come with solutions, later ones with answer keys. From <TextLink to={PAPERS_PAGE}>Bodhee Prep</TextLink>.</p>
-          </Row>
-          <Row title="Reading speed test" action={<LinkButton to="/practice/speed" variant="secondary">Take the test</LinkButton>}>
-            <p>One timed passage, then two recall questions. CAT needs about 200 words a minute. Your best: <b className="font-semibold text-foreground">{best ? best + " wpm" : "not tested yet"}</b>.</p>
-          </Row>
-        </Rows>
-      </Section>
-
-      <Section title="RC library" action={<TextLink to="/practice/library">All {RC_CATALOG.length} sets</TextLink>}
-        description={`You have tried ${tried.size} of ${RC_CATALOG.length}.${untried.length ? " Here are the next ones you have not tried." : ""} The library has filters for genre and level, and the past RCs of the day.`}>
-        {untried.length > 0 && (
-          <Rows>
-            {untried.map((s) => (
-              <Row key={s.id} side title={<Link to={`/practice/rc/${s.id}`} className="hover:text-primary">{s.title}</Link>} action={<LinkButton to={`/practice/rc/${s.id}`} variant="secondary">Start</LinkButton>}>
-                <p>{GENRES[s.genre]}, {s.difficulty}, {s.words} words</p>
-              </Row>
-            ))}
-          </Rows>
-        )}
-      </Section>
-
-      <p className="measure text-sm text-muted-foreground">All passages, questions and VA paragraphs here are original practice material written for this site, not real CAT questions. Real past papers are under "Real CAT papers" above, with more sources on the Practice tab of the <TextLink to="/varc">VARC page</TextLink>.</p>
+      {sec.id === "varc" ? <VarcPractice t={varc} /> : sec.id === "dilr" ? <DilrPractice next={lrNext} /> : <Later sec={sec} />}
     </Page>
+  );
+}
+
+/** A section whose practice is not built yet. */
+function Later({ sec }: { sec: SectionDef }) {
+  return (
+    <div className="flex flex-col gap-4 rounded-xl bg-card p-5 sm:p-6">
+      <h2 className="text-heading font-semibold">{sec.name} practice starts in January 2027</h2>
+      <p className="measure text-base text-muted-foreground">{sec.tagline} Until then, its page lists what is coming, and you can log Quant mocks in Progress and Quant mistakes in the Error log.</p>
+      <div className="flex flex-wrap gap-3"><LinkButton to={"/" + sec.id} variant="secondary">Open the {sec.short} page</LinkButton></div>
+    </div>
   );
 }

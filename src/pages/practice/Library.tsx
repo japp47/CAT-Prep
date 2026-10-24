@@ -67,7 +67,7 @@ export default function Library() {
 
   return (
     <Page>
-      <PageHeader title="RC library" back={{ to: "/practice", label: "Practice" }}>
+      <PageHeader title="RC library" back={{ to: "/varc/practice", label: "VARC practice" }}>
         {RC_CATALOG.length} original passages, {qRange} questions each, with every option explained. You have tried {tried.size}.
       </PageHeader>
       <Tabs value={tab} onValueChange={(v) => setTab(v as "all" | "daily")} className="gap-6">

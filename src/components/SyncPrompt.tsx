@@ -14,7 +14,7 @@ const NUDGE_AFTER = 5;
 export function promptKind(st: AppState, syncOn: boolean, seen: { invite: boolean; nudge: boolean }): "invite" | "nudge" | null {
   if (syncOn) return null;
   if (!hasProgress(st)) return seen.invite ? null : "invite";
-  const attempts = st.rcAttempts.length + st.vaAttempts.length + st.crAttempts.length + st.sectionals.length;
+  const attempts = st.rcAttempts.length + st.vaAttempts.length + st.crAttempts.length + st.lrAttempts.length + st.sectionals.length;
   return attempts >= NUDGE_AFTER && !seen.nudge ? "nudge" : null;
 }
 

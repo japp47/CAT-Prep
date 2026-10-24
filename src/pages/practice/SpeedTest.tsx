@@ -69,7 +69,7 @@ function SpeedPage({ c }: { c: Content }) {
 
   return (
     <Page width="read">
-      <PageHeader title="Reading speed test" back={{ to: "/practice", label: "Practice" }}>
+      <PageHeader title="Reading speed test" back={{ to: "/varc/practice", label: "VARC practice" }}>
         Read one passage at your natural pace, then answer two recall questions. Speed only counts when you remember what you read.
       </PageHeader>
 

@@ -63,6 +63,7 @@ All in `AppState` (`src/lib/state.ts`, version 4), saved as one JSON value in lo
 |---|---|---|---|---|
 | `rcAttempts`, `vaAttempts`, `crAttempts`, `speedRuns` | list | yes | no | no (append only) |
 | `sectionals`, `summaries` | list | yes | yes | summaries: yes |
+| `lrAttempts` | list | yes | yes | yes: the post-mortem (F86) is added after the review opens |
 | `mocks`, `errors`, `vocab`, `practice` | list | yes | no | errors, vocab: yes |
 | `redo` | list | key `k` | no | yes (box, due, tries) |
 | `days` | map by date | date | no | yes |
@@ -224,6 +225,7 @@ Every syncable thing in `AppState` becomes a record `{ kind, id, data, updatedAt
 |---|---|---|
 | `rc`, `va`, `cr`, `speed`, `sectional`, `mockReview` | attempt id | none needed: written once |
 | `summary`, `error`, `word`, `mock`, `practice`, `recommendation`, `weekReview` | row id | newest `updatedAt` wins |
+| `lr` | attempt id | newest `updatedAt` wins (only the post-mortem changes). **Deploy order:** the server must list `lr` in `SyncKinds` before the browser pushes it; a refused write is not retried until the row changes |
 | `redo` | question key | the copy with more `tries` wins; equal tries → newest `updatedAt` |
 | `day` | date | field by field: `done` and `spent` take the larger minutes per block; `min`, `carried`, `dismiss` newest wins |
 | `tick` | link id | newest wins; unticking is a tombstone |
