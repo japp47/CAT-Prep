@@ -8,6 +8,45 @@ export function registerServiceWorker() {
   });
 }
 
+/**
+ * True when a touch phone lays the page out at desktop width (about 980 px) although the viewport tag asks for the
+ * device width. Seen in the installed app after Google sign-in: the app leaves its window for Google and, coming
+ * back, the browser sometimes ignores the viewport tag until a reload. Tablets are never matched: their screens are
+ * as wide as the desktop layout.
+ */
+export function wrongViewport(width: number, screenW: number, screenH: number, coarse: boolean): boolean {
+  return coarse && width >= 960 && width > Math.max(screenW, screenH) + 1;
+}
+
+const REPAIRED = "99ile-viewport-reload";
+
+/**
+ * Puts a phone back in the mobile layout when wrongViewport says it is not: first by setting the viewport tag again,
+ * which makes the browser read it; if that is not enough, by one reload (never twice within a minute, so it cannot loop).
+ */
+export function repairViewport() {
+  if (typeof window === "undefined" || typeof matchMedia !== "function") return;
+  const wrong = () => wrongViewport(document.documentElement.clientWidth, screen.width, screen.height, matchMedia("(pointer: coarse)").matches);
+  const check = () => {
+    if (!wrong()) return;
+    const tag = document.querySelector('meta[name="viewport"]');
+    const content = tag?.getAttribute("content");
+    if (tag && content) { tag.setAttribute("content", content + ", minimum-scale=1"); tag.setAttribute("content", content); }
+    setTimeout(() => {
+      if (!wrong()) return;
+      try {
+        // Not twice within a minute: a page that stays wide after a reload is not this bug, so it must never loop.
+        if (Date.now() - Number(sessionStorage.getItem(REPAIRED) ?? 0) < 60_000) return;
+        sessionStorage.setItem(REPAIRED, String(Date.now()));
+      } catch { return; }
+      location.reload();
+    }, 300);
+  };
+  check();
+  // Coming back to a page kept in memory (back, or returning to the app) runs no scripts again.
+  window.addEventListener("pageshow", (e) => { if (e.persisted) check(); });
+}
+
 /** Chrome and Edge fire this when the site can be installed. Not in the DOM types yet. */
 interface InstallPrompt extends Event {
   prompt: () => Promise<void>;
