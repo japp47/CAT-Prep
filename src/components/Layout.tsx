@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Menu, PanelLeftClose, PanelLeftOpen, Search, UserRound } from "lucide-react";
+import { Menu, PanelLeftClose, PanelLeftOpen, Search } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { SECTIONS } from "../sections";
@@ -167,17 +167,13 @@ export default function Layout() {
           <span className="flex items-center gap-3"><Search className="size-5" aria-hidden />{!sidebarCollapsed && <span className="text-sm font-medium">Search</span>}</span>
           {!sidebarCollapsed && <kbd className="rounded border border-border px-1.5 py-0.5 text-xs text-muted-foreground">⌘ K</kbd>}
         </button>
-        <SyncNavRow collapsed={sidebarCollapsed} />
         {!sidebarCollapsed && <>
           <Nav />
         </>}
         <div className={cn("mt-auto flex", sidebarCollapsed ? "flex-col gap-2" : "items-center gap-2 px-1")}>
           <ThemeToggle />
           <InstallButton hideWhenInstalled />
-          <button type="button" disabled aria-label="Profile page coming soon" title="Profile page coming soon"
-            className="grid size-11 shrink-0 cursor-not-allowed place-items-center rounded-md text-muted-foreground/60 opacity-70" >
-            <UserRound className="size-5" aria-hidden />
-          </button>
+          <SyncNavRow collapsed />
         </div>
         {!sidebarCollapsed && <p className="px-3 text-sm text-muted-foreground"><DataNote /></p>}
       </aside>

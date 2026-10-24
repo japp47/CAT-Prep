@@ -1,0 +1,875 @@
+[
+  {
+    "id": "tech-opacity",
+    "title": "Reasons without reasoning",
+    "genre": "technology",
+    "difficulty": "hard",
+    "since": "2026-10-25",
+    "paras": [
+      "As machine-learning systems have come to influence who is hired, who is granted credit and who is judged likely to reoffend, a demand has gathered force that no consequential decision about a person should be left to a system unable to explain itself. The intuition behind the demand is respectable. A person refused a mortgage is ordinarily owed reasons, since reasons permit her to correct an error in the record, to contest a criterion she considers unjust, or at least to learn what she might alter in future. A model whose internal workings are too intricate for even its designers to narrate appears to withhold precisely this courtesy, and legislators in several jurisdictions have accordingly proposed that individuals should enjoy a right to an explanation of any automated verdict that affects them.",
+      "Yet the demand is harder to satisfy than its advocates concede. The explanations that engineers can presently supply are, for the most part, retrospective approximations: one procedure identifies which features of an applicant's file weighed most heavily in the outcome, while another trains a simpler model to imitate the behaviour of the complex one. Neither discloses how the original system actually arrived at its verdict, and the two may diverge in exactly the cases that matter. An account that is fluent and plausible but unfaithful to the process it purports to describe is arguably worse than silence, because it confers the reassurance of reasons without their substance, and so invites people to trust a system at the very moment when scrutiny is most needed.",
+      "A familiar rejoinder is that human decision-makers are scarcely more transparent. Psychologists have repeatedly shown that people offer confident and coherent reasons for choices which experiments reveal to have been governed by factors of which they were wholly unaware, such as the position of an item on a table or the order in which candidates were presented. If we are content to accept such narratives from a loan officer, the rejoinder runs, it is a double standard to refuse them from a machine, and the insistence upon interpretability merely expresses a prejudice in favour of the human mind, whose opacity is more comfortable because it is more familiar. The argument has a certain bracing force, for it exposes how much of what passes for human reasoning is reconstruction after the event.",
+      "The rejoinder, however, mistakes what explanations are for. We do not prize a judge's written reasons because they furnish a faithful transcript of her mental processes, which they may well not; we prize them because they are public, because they commit her to a principle that later cases can test, and because a higher court may overturn them. Their worth lies in rendering a decision contestable and its author answerable. Seen in this light, what ought to be demanded of automated systems is less a view of their interior than a framework of accountability: records of what was decided, systematic testing of outcomes for accuracy and fairness, and a genuine route of appeal. A system that is opaque yet accountable in these ways may deserve more confidence than one that is interpretable and answerable to nobody."
+    ],
+    "questions": [
+      {
+        "type": "main",
+        "stem": "Which one of the following best expresses the main point of the passage?",
+        "proof": [
+          1,
+          2,
+          3
+        ],
+        "options": [
+          {
+            "t": "Automated decisions should be used only when each affected person can receive a faithful account of the factors that determined the outcome.",
+            "why": "This makes a faithful explanation a precondition for using automated decisions; the author instead argues for accountability mechanisms even when systems remain opaque.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "Because human judgments can also arise from influences people cannot fully explain, automated decisions should be assessed by their outcomes rather than by accounts of how they were reached.",
+            "why": "The author does not dismiss explanations or reduce accountability to outcome testing; she stresses public reasons, review and a route of appeal.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Faithful explanations of automated decisions are hard to supply and human reasoning is opaque too, so accountability, not interpretability, should be demanded.",
+            "why": "Paragraphs 2 and 3 undermine the demand for interpretability and the comparison with humans; paragraph 4 proposes accountability instead."
+          },
+          {
+            "t": "The explanations that engineers now offer for automated decisions are only approximate and so cannot give people the reasons that they are owed.",
+            "why": "True of paragraph 2, but it is only one step; the passage goes on to propose what should be demanded instead.",
+            "trap": "Too narrow or too broad"
+          }
+        ],
+        "answer": 2
+      },
+      {
+        "type": "inference",
+        "stem": "The author would most probably agree that an explanation which sounds plausible but misdescribes how a model reached its verdict:",
+        "proof": [
+          1
+        ],
+        "options": [
+          {
+            "t": "may do harm, because it encourages people to trust a system just when scrutiny is most needed.",
+            "why": "Paragraph 2: such an account is 'arguably worse than silence' because it invites trust when scrutiny is most needed."
+          },
+          {
+            "t": "may still be preferable to silence if it identifies the features most strongly associated with the outcome, even without reproducing the model's internal process.",
+            "why": "The author warns that a plausible but unfaithful account may be worse than silence because it can invite trust when scrutiny is needed.",
+            "trap": "Wrong direction"
+          },
+          {
+            "t": "is harmless provided the features it identifies are genuinely associated with the verdict, even if the account does not faithfully describe how the model reached it.",
+            "why": "The passage treats faithfulness as important: highlighting relevant features does not remove the risk of lending false reassurance.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "becomes acceptable once a simpler model has been trained to imitate the behaviour of the more complex one.",
+            "why": "Training an imitative model is itself one of the methods that yields unfaithful accounts.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 0
+      },
+      {
+        "type": "structure",
+        "stem": "The author refers to experiments on the position of an item on a table in order to:",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "demonstrate that human judgments can be shaped by unconscious influences that are absent from automated decisions.",
+            "why": "The experiments illustrate that human explanations may be reconstructed after the event; the passage does not claim that automated decisions are free of comparable opacity.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "illustrate a method for uncovering the hidden factors that govern both human and automated decisions.",
+            "why": "The examples concern the limits of people's own accounts of their choices, not a method for interpreting automated models.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "suggest that explanations matter only when they reproduce the decision-maker's actual mental process.",
+            "why": "The author argues that written reasons matter because they make decisions contestable and their authors answerable, even if they are not a faithful transcript of mental processes.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "support a rejoinder which the author goes on to argue misjudges the purpose of explanations.",
+            "why": "The experiments back the claim that human reasons are reconstructed after the event; paragraph 4 then answers that claim."
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "type": "strengthen",
+        "stem": "Which one of the following, if true, would most strengthen the author's closing suggestion?",
+        "proof": [
+          3
+        ],
+        "options": [
+          {
+            "t": "Bodies that can examine the records and outcomes of automated systems overturn flawed decisions more reliably than those relying on the systems' explanations.",
+            "why": "It shows that accountability mechanisms, not interpretability, are what make flawed decisions correctable."
+          },
+          {
+            "t": "Applicants who are refused credit by an automated system report greater satisfaction when it supplies a list of the features that influenced its verdict.",
+            "why": "Satisfaction with an explanation does not show that the explanation is faithful or that decisions are correctable.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "Several judges' written reasons are known to have given an inaccurate picture of the considerations that actually moved them.",
+            "why": "The author already allows this; it does not bear on whether accountability works for machines.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "Engineers have devised a technique which makes simplified models imitate complex ones far more closely than any previous method managed to do.",
+            "why": "Better imitation improves approximations but does not show that accountability suffices without interpretability.",
+            "trap": "Out of scope"
+          }
+        ],
+        "answer": 0
+      }
+    ],
+    "recall": [
+      {
+        "q": "Why, according to the passage, may the explanations that engineers presently supply be a cause for concern?",
+        "options": [
+          "They are produced too slowly to be of any use to the person affected.",
+          "They reveal the personal data on which the model was originally trained.",
+          "They are couched in technical language that ordinary readers cannot follow.",
+          "They can describe a model's behaviour plausibly without being faithful to how it reached its verdict."
+        ],
+        "answer": 3
+      },
+      {
+        "q": "According to the author, what gives a judge's written reasons their value?",
+        "options": [
+          "They make the decision open to challenge and hold the judge answerable.",
+          "They record accurately what passed through the judge's mind.",
+          "They show that the judge is free from unconscious influences.",
+          "They protect the judge's ruling from being overturned on appeal."
+        ],
+        "answer": 0
+      }
+    ],
+    "recallLabel": "Passage Recall",
+    "recallScored": false,
+    "summary": {
+      "model": "Opaque automated decisions may be acceptable when public records, fairness testing and appeal make them accountable.",
+      "tone": "analytical",
+      "claim": "public records, fairness testing and appeal make them accountable",
+      "qualifier": "may"
+    }
+  },
+  {
+    "id": "tech-training",
+    "title": "Learning from everyone",
+    "genre": "technology",
+    "difficulty": "medium",
+    "since": "2026-10-25",
+    "paras": [
+      "Generative systems that compose prose, images and music are built by exposing a model to vast quantities of existing work, much of it protected by copyright and made by people who were neither consulted nor paid. Many creators regard this as appropriation on an industrial scale. Developers and their defenders reply by analogy. No writer has composed a sentence without having read thousands of others, and no painter has acquired a manner without studying the masters; creative practice is, on this view, a process of absorption and recombination, in which the notion of a wholly original work is a romantic fiction. To permit a person to learn from the accumulated stock of culture, but to forbid a machine to do likewise, seems an arbitrary discrimination, one that rests more on sentiment about what machines are than on any principle about what learning is.",
+      "The analogy deserves more respect than its critics allow. Culture is cumulative, and the law has long recognised as much: copyright protects a particular expression, not a style, a genre or an idea, so that a novelist may freely write in the manner of a predecessor and a band may borrow a sound without seeking a licence. A regime that treated every act of learning as a licensable use would be unworkable, and would probably entrench the largest rights-holders at the expense of newcomers, who depend most heavily on the freedom to imitate. Those who dismiss the training of models as plain theft therefore owe an account of why the same activity should be innocent in a student and culpable in a program, and slogans about stolen labour do not supply one.",
+      "Such an account is available, though it rests on differences of degree rather than of kind. A human apprentice absorbs a few thousand works in a lifetime and produces new ones slowly, at a cost to herself in time and effort; the market for creative work has always tolerated imitation in part because skilled imitators are scarce. A model assimilates a corpus that no person could read in many lifetimes, and can then generate unlimited output at negligible cost, in the very markets in which the authors of its training material earn their living. Moral permissibility can alter with scale: to photograph a stranger in a public street is unremarkable, whereas to catalogue every stranger on every street by means of such photographs is a different act altogether, though it consists of nothing but photographs of the permitted kind.",
+      "None of this settles what ought to be done. Rather, it suggests that the dispute is less about whether the machine may learn than about who should capture the value created from a common inheritance. Proposals abound: licensing arrangements, compulsory levies, rights to opt out of training. Each founders on a practical difficulty, since the contribution of any single work to a particular output is, as a matter of technique, almost impossible to trace, so that compensation would probably have to be collective rather than individual. It may even be that copyright, an instrument designed to prevent the copying of particular works, is simply the wrong tool for a problem of aggregate dependence upon the work of many, in which no individual taking is large enough to be seen and the whole is nonetheless considerable."
+    ],
+    "questions": [
+      {
+        "type": "main",
+        "stem": "Which one of the following best summarises the passage?",
+        "proof": [
+          1,
+          2,
+          3
+        ],
+        "options": [
+          {
+            "t": "Using copyrighted work for model training is unjustified unless creators have consented to that use or received compensation.",
+            "why": "This presents the critics' conclusion as the author's, but the author asks for a principled account and later emphasizes scale and the distribution of value.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "The analogy with human learning has force, but scale suggests the real issue is how value drawn from shared culture is to be distributed.",
+            "why": "Paragraphs 1-2 grant the analogy force, paragraph 3 qualifies it by scale, and paragraph 4 recasts the dispute as distributive."
+          },
+          {
+            "t": "Because people and models both learn by recombination, model training should ordinarily be treated like human learning unless a particular output copies a protected expression.",
+            "why": "This gives the analogy a decisive legal consequence, whereas paragraph 3 argues that differences of scale, speed and cost can matter as well.",
+            "trap": "Too narrow or too broad"
+          },
+          {
+            "t": "Since copyright protects expression rather than style, disputes about model training should be resolved mainly through compulsory payments to creators.",
+            "why": "The author presents compulsory levies as one proposal with practical difficulties, not as the preferred or sufficient solution.",
+            "trap": "Extreme wording"
+          }
+        ],
+        "answer": 1
+      },
+      {
+        "type": "structure",
+        "stem": "The author contrasts photographing a stranger with cataloguing every stranger in order to suggest that:",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "a photographer who takes a picture of a stranger in a public place, compared with one who digitally alters that picture before publication.",
+            "why": "The contrast changes the kind of act being performed; the author's analogy concerns the scale of an otherwise permitted activity.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "a model that learns from a great many works is morally equivalent to a person who learns from only a few.",
+            "why": "The author uses the example to deny precisely this equivalence.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "an act which is unobjectionable when performed once may become objectionable when performed on a vast scale.",
+            "why": "Paragraph 3: 'Moral permissibility can alter with scale'."
+          },
+          {
+            "t": "the training of models resembles ordinary imitation because, in both cases, a source work need not be reproduced verbatim in the final output.",
+            "why": "The passage does not base the analogy on verbatim reproduction; the comparison in paragraph 3 turns on scale, speed, cost and competition.",
+            "trap": "Out of scope"
+          }
+        ],
+        "answer": 2
+      },
+      {
+        "type": "except",
+        "stem": "The passage offers each of the following as a reason for taking the defenders' analogy seriously EXCEPT that:",
+        "proof": [
+          1
+        ],
+        "options": [
+          {
+            "t": "generative models seldom produce output resembling any particular work they were trained on.",
+            "why": "Nothing in the passage says this; the author's argument does not depend on how similar outputs are to inputs."
+          },
+          {
+            "t": "copyright protects a particular expression and not a style, a genre or an idea.",
+            "why": "Stated in paragraph 2.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "culture is cumulative, so that each creator draws upon the work of predecessors.",
+            "why": "Stated in paragraph 2.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "treating every act of learning as licensable would favour the largest rights-holders over newcomers.",
+            "why": "Stated in paragraph 2.",
+            "trap": "True but not the answer"
+          }
+        ],
+        "answer": 0
+      },
+      {
+        "type": "tone",
+        "stem": "The author's attitude to the defenders' analogy is best described as:",
+        "proof": [
+          1,
+          2
+        ],
+        "options": [
+          {
+            "t": "full endorsement, because the analogy establishes that model training is simply another form of ordinary cultural learning.",
+            "why": "The author grants the analogy force but qualifies it in paragraph 3 by emphasizing the difference in scale and market effects.",
+            "trap": "Half right, half wrong"
+          },
+          {
+            "t": "reservations from the outset, because the analogy overlooks the fact that copyright protects styles and genres as well as particular expressions.",
+            "why": "The author does not dismiss the analogy, and the passage explicitly says copyright protects expression rather than style or genre.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "even-handed neutrality, because the author presents competing positions without favouring any interpretation of the problem or direction for policy.",
+            "why": "The author takes positions: scale matters, the dispute concerns distribution of value, and current compensation proposals face practical difficulties.",
+            "trap": "Too narrow or too broad"
+          },
+          {
+            "t": "qualified respect: it is allowed real force, yet argued not to settle the matter.",
+            "why": "Paragraph 2 says it 'deserves more respect'; paragraph 3 shows scale as the limiting difference."
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "type": "application",
+        "stem": "Which one of the following most closely parallels the contrast the author draws in the third paragraph between the apprentice and the model?",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "A singer who learns songs by listening to records at home, compared with a singer who learns them by attending concerts in person.",
+            "why": "These differ in manner of learning, not in scale or competition with the sources.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "An amateur who occasionally copies a dish from a restaurant, compared with a chain that reproduces every local restaurant's dishes and undercuts them.",
+            "why": "Both pairs differ in scale, speed and cost, and the copier competes in the same market as the sources."
+          },
+          {
+            "t": "An amateur who adapts a single restaurant recipe at home, compared with a nearby café that adapts one rival dish for its menu.",
+            "why": "Both examples involve learning from a source, but they do not establish the sharp gap in scale, speed, cost and competitive output that the author draws between an apprentice and a model.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "A chef who studies a rival's recipe and improves upon it, compared with one who ignores rivals and relies wholly on his own invention.",
+            "why": "The contrast is between imitating and inventing, not between small and vast scale.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 1
+      }
+    ],
+    "recall": [
+      {
+        "q": "According to the passage, why has the market for creative work traditionally tolerated imitation?",
+        "options": [
+          "Imitators have normally paid the authors whom they copied.",
+          "Skilled imitators have been few and have worked slowly.",
+          "Imitation has never competed with the work of the original authors.",
+          "Copyright has always forbidden the copying of ideas and styles."
+        ],
+        "answer": 1
+      },
+      {
+        "q": "Why does the author doubt that schemes to compensate creators can operate on an individual basis?",
+        "options": [
+          "Creators have generally refused to take part in licensing arrangements.",
+          "Developers cannot afford the compulsory levies that have been proposed.",
+          "The part played by any single work in a given output can hardly be traced.",
+          "Copyright forbids any payment for the mere learning of a style."
+        ],
+        "answer": 2
+      }
+    ],
+    "recallLabel": "Passage Recall",
+    "recallScored": false,
+    "summary": {
+      "model": "Human and machine learning differ chiefly in scale; the dispute concerns who should share the value created from cultural inheritance.",
+      "tone": "analytical",
+      "claim": "the dispute concerns who should share the value created from cultural inheritance",
+      "qualifier": "chiefly"
+    }
+  },
+  {
+    "id": "tech-automation",
+    "title": "The irony of the autopilot",
+    "genre": "technology",
+    "difficulty": "medium",
+    "since": "2026-10-25",
+    "paras": [
+      "Aviation offers an instructive history of automation. As autopilots grew capable of handling the greater part of a flight, the pilot's role was redefined from controlling the aircraft to monitoring the machine that controlled it. The change brought undoubted gains in safety, and accidents attributable to pilot error became markedly less frequent. Yet investigators began to notice an uncomfortable pattern in the accidents that remained: when the automation failed, or met conditions beyond those for which it had been designed, it handed control back to the crew at the moment of greatest difficulty, and the crew, deprived of routine practice, proved less able to cope than their predecessors would have been. The more dependable the system, the argument runs, the more rarely do its human supervisors exercise the very skills which they will occasionally need most urgently.",
+      "This paradox has since been found well beyond the cockpit. Radiologists who rely on software to flag suspicious shadows may grow less alert to those that the software overlooks; drivers guided by navigation applications frequently cannot find their way without them; and programmers who accept the suggestions of coding assistants may lose the habit of reasoning through the structure of a program. Sceptics point out, however, that every tool in history has displaced some competence. Few of us can now perform long division on paper or navigate by the stars, and hardly anyone seriously laments it. Socrates, after all, feared that writing would implant forgetfulness in the soul, yet literate societies have scarcely been the poorer for having ceased to rely upon memory alone.",
+      "The sceptics' point is sound as far as it goes, but it passes over a distinction. A skill may be safely surrendered when the tool that replaces it is dependable and always at hand, and when nobody is obliged to judge whether the tool has erred. Arithmetic by calculator satisfies both conditions. Supervisory skills do not, since to judge whether a machine is mistaken a person must retain some capacity to do what the machine does: the radiologist must still be able to read the scan, and the pilot to fly the aircraft. Where automation is imperfect and its errors are costly, the competence it displaces is precisely the competence required to oversee it, so that the loss, far from being harmless, erodes the very safeguard on which the whole arrangement depends.",
+      "Remedies do not lie in refusing automation, whose benefits are real. Nor do they lie in the common expedient of asking the human to watch attentively, since experiments have repeatedly shown that sustained vigilance over a system which rarely errs is a task that people perform poorly. A more promising course is to design systems that keep the human actively engaged: requiring her to form her own judgement before the machine's is displayed, for example, or returning control to her at intervals so that practice is not lost. Such arrangements sacrifice some efficiency, and organisations under pressure to reduce costs will be tempted to dispense with them. That temptation, rather than any technical obstacle, is the chief threat to the safe use of automation."
+    ],
+    "questions": [
+      {
+        "type": "main",
+        "stem": "The primary purpose of the passage is to:",
+        "proof": [
+          1,
+          2,
+          3
+        ],
+        "options": [
+          {
+            "t": "show that the decline in operators' skills has erased the overall safety gains made by automation.",
+            "why": "The author acknowledges that automation brought real safety gains and does not claim that the later risks cancel them out.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "defend the view that the loss of a human skill is generally harmless whenever a tool has become dependable.",
+            "why": "The author accepts that some skills can be surrendered, but distinguishes them from supervisory skills needed when an imperfect tool fails.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "argue that skill lost to automation is not always harmless, and to suggest how the risks might be reduced.",
+            "why": "Paragraphs 1-2 introduce the paradox, 3 separates harmless from harmful loss, and 4 proposes remedies."
+          },
+          {
+            "t": "describe the history of the autopilot and the changes that it has made to the role of the airline pilot.",
+            "why": "This covers only the opening paragraph; the passage generalises well beyond aviation.",
+            "trap": "Too narrow or too broad"
+          }
+        ],
+        "answer": 2
+      },
+      {
+        "type": "inference",
+        "stem": "Which of the following skills would the author be most willing to see surrendered?",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "A ship's officer's ability to fix the vessel's position by the stars, when the satellite signals that normally guide it can occasionally be jammed.",
+            "why": "Here the tool is imperfect and its failure costly, so the skill is needed for oversight.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "A technician's ability to check by hand the output of a machine that sets patients' drug doses and sometimes errs.",
+            "why": "A supervisory skill, needed because the machine is imperfect and errors are costly.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "A pilot's ability to fly the aircraft herself when the autopilot meets conditions for which it was not designed.",
+            "why": "This is the author's central example of a skill that must be kept.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "The ability to total a restaurant bill by hand, when calculators are always available and are almost never wrong.",
+            "why": "Paragraph 3: a skill may be surrendered when the tool is dependable and at hand and no one need judge its error."
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "type": "except",
+        "stem": "The passage mentions each of the following as an instance of the paradox described in the second paragraph EXCEPT:",
+        "proof": [
+          1
+        ],
+        "options": [
+          {
+            "t": "radiologists who become less alert to what diagnostic software fails to flag.",
+            "why": "Named in paragraph 2.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "factory workers whose jobs vanished when machines took over their tasks.",
+            "why": "The passage discusses lost skill, not lost employment, and mentions no factory workers."
+          },
+          {
+            "t": "motorists who cannot find their way without a navigation application to guide them.",
+            "why": "Named in paragraph 2.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "programmers who grow unaccustomed to reasoning through the structure of a program.",
+            "why": "Named in paragraph 2.",
+            "trap": "True but not the answer"
+          }
+        ],
+        "answer": 1
+      },
+      {
+        "type": "strengthen",
+        "stem": "Which one of the following, if true, would most strengthen the author's claim that asking humans to watch an automated system attentively is an unsatisfactory remedy?",
+        "proof": [
+          3
+        ],
+        "options": [
+          {
+            "t": "In trials, trained monitors of a very reliable system missed most rare faults arising after their first hour of watching.",
+            "why": "It supports the claim that sustained vigilance over a rarely erring system is poorly performed."
+          },
+          {
+            "t": "Pilots who spend long periods monitoring autopilots commonly report that they find the task tedious and unrewarding after the first few hours.",
+            "why": "Tedium does not show that attention fails, so the claim is not strengthened.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "Airlines that oblige pilots to fly manually at intervals report slightly higher training costs than airlines that do not require it.",
+            "why": "This bears on the cost of engagement, not on the weakness of monitoring.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "Diagnostic software that flags suspicious shadows has grown more accurate in each of the last several years of its use.",
+            "why": "Improved accuracy says nothing about whether human monitors remain attentive.",
+            "trap": "Out of scope"
+          }
+        ],
+        "answer": 0
+      }
+    ],
+    "recall": [
+      {
+        "q": "Why, according to the author, is the loss of supervisory skills not harmless?",
+        "options": [
+          "Machines that replace such skills are never dependable or readily at hand.",
+          "People who lose these skills become unable to use any machine at all.",
+          "Supervisors have no other duties than to take over when machines fail.",
+          "To judge whether a machine is wrong, a person must keep some ability to do what it does."
+        ],
+        "answer": 3
+      },
+      {
+        "q": "What does the author identify as the chief threat to the safe use of automation?",
+        "options": [
+          "The refusal of organisations to adopt automation, whose benefits are real.",
+          "The technical difficulty of returning control to a human operator.",
+          "The temptation of organisations to drop arrangements that keep people engaged, in order to reduce costs.",
+          "The growing number of faults in systems that once rarely erred."
+        ],
+        "answer": 2
+      }
+    ],
+    "recallLabel": "Passage Recall",
+    "recallScored": false,
+    "summary": {
+      "model": "Automation can erode the human skills needed to supervise fallible systems, so design should keep people actively engaged.",
+      "tone": "cautionary",
+      "claim": "design should keep people actively engaged",
+      "qualifier": "can"
+    }
+  },
+  {
+    "id": "tech-pacing",
+    "title": "Regulating what cannot yet be seen",
+    "genre": "technology",
+    "difficulty": "hard",
+    "since": "2026-10-25",
+    "paras": [
+      "In 1980 the technology theorist David Collingridge formulated a dilemma that has acquired fresh urgency with the arrival of general-purpose artificial intelligence. When a technology is young, he observed, it is still easy to shape, but its consequences are unknown, so that there is nothing definite to regulate against; when its harms have at last become plain, it has become so woven into economic and social life that control is expensive, slow and fiercely resisted. Regulators thus appear condemned either to act blindly or to act too late. The predicament is sharpened by the speed of development, which has led some commentators to speak of a 'pacing problem': technology, they say, advances geometrically while law proceeds by committee, and the distance between the two widens with every year.",
+      "Two broad responses have emerged. The precautionary view holds that a technology whose risks are poorly understood should be withheld until its proponents demonstrate that it is safe. Its opposite, sometimes called permissionless innovation, holds that novel technologies should be presumed acceptable and restricted only once concrete harm has been shown, on the ground that prohibition forfeits benefits which cannot be known in advance. Each has an air of common sense, and each rests upon an assumption seldom examined. The precautionary stance treats the status quo as a safe baseline, as though declining to adopt a technology carried no cost, whereas delay in, say, medical diagnosis may kill as surely as a faulty device. The permissive stance assumes that harms, once they appear, can be undone, though some, such as the erosion of public trust in information, are not readily reversed.",
+      "A third approach, often termed adaptive regulation, tries to avoid both assumptions. It would license new systems for limited uses, widen the permission as evidence accumulates, build in sunset clauses that compel periodic review, and require developers to report incidents. In this way the dilemma is not dissolved but softened: knowledge is gathered while intervention remains cheap. The scheme has an evident vulnerability, however. Everything depends on information, and the information is held chiefly by the firms that are to be regulated. An agency obliged to rely upon the developers' own reports and tests will find itself in the position of a student marking her own examination, and will be liable, over time, to what economists call capture, in which the regulator comes to share the outlook of the regulated.",
+      "It follows that the quality of oversight depends less on the particular rule adopted than on the institutional capacity that stands behind it. Auditors possessed of the technical competence and the legal right to examine systems independently, funding that does not derive from those audited, and protection for employees who disclose danger would together do more to ease the dilemma than any single prohibition. Such capacity is expensive to build, and its benefits are diffuse and delayed, qualities which make it politically unrewarding. Yet without it, even the most cleverly drafted statute will amount to little more than a declaration of intention, admired at its passing and forgotten in its application."
+    ],
+    "questions": [
+      {
+        "type": "main",
+        "stem": "Which one of the following best states the central argument of the passage?",
+        "proof": [
+          2,
+          3
+        ],
+        "options": [
+          {
+            "t": "Adaptive regulation resolves the timing problem by allowing regulators to gather evidence before imposing broad restrictions.",
+            "why": "The author says adaptive regulation softens the dilemma rather than resolving it, and stresses that it depends on independent access to reliable information.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "Because legal rules lag behind technical change, regulators should focus on disclosure and monitoring rather than restricting new systems.",
+            "why": "The author supports incident reporting as one element of adaptive regulation, but warns that reliance on developers' information is inadequate without independent oversight.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "Independent regulatory capacity is useful, but the wording of particular rules remains the decisive factor in controlling emerging technologies.",
+            "why": "The closing paragraph argues that institutional capacity matters more than any particular rule when effective oversight is at issue.",
+            "trap": "Wrong direction"
+          },
+          {
+            "t": "Adaptive regulation can soften the control dilemma, but only if regulators have independent capacity to obtain and assess information.",
+            "why": "Paragraph 3 presents adaptive regulation and its weakness; paragraph 4 names independent capacity as the condition."
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "type": "inference",
+        "stem": "According to the passage, the precautionary stance is flawed because it:",
+        "proof": [
+          1
+        ],
+        "options": [
+          {
+            "t": "treats uncertainty about a technology as sufficient reason to presume that its adoption will cause harm.",
+            "why": "The passage does not say the precautionary stance treats uncertainty as proof that adoption will cause harm; it criticises the assumption that declining to adopt a technology carries no cost.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "forfeits benefits of a technology which cannot be known before it has been adopted.",
+            "why": "This is the permissive camp's complaint against prohibition, not the author's criticism of precaution.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "allows firms to decide for themselves whether the systems that they sell are safe.",
+            "why": "That describes the reliance on developers' reports criticised in paragraph 3, not precaution.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "overlooks that declining to adopt a technology may itself carry real costs.",
+            "why": "Paragraph 2: it 'treats the status quo as a safe baseline'."
+          }
+        ],
+        "answer": 3
+      },
+      {
+        "type": "structure",
+        "stem": "The comparison of the regulator to a student marking her own examination suggests that:",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "regulators generally lack the technical training that is needed to set examinations for developers.",
+            "why": "The point is about independence of the source, not the regulator's training.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "appraisals founded upon the developers' own reports are unlikely to be sufficiently critical.",
+            "why": "Paragraph 3: the agency would rely upon the regulated firms' reports and tests."
+          },
+          {
+            "t": "developers present test results in ways that systematically understate uncertainty about how their products will behave.",
+            "why": "The author warns that regulators may rely too heavily on developers and may come to share their outlook; she does not assert systematic misrepresentation of test results.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "sunset-clause reviews are bound to be biased towards the technology that is reviewed.",
+            "why": "The concern is about where information comes from; sunset clauses are not criticised.",
+            "trap": "Out of scope"
+          }
+        ],
+        "answer": 1
+      },
+      {
+        "type": "except",
+        "stem": "The passage mentions each of the following as an element of adaptive regulation EXCEPT:",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "permission for new systems to be used in limited ways, widened as evidence accumulates.",
+            "why": "Stated in paragraph 3.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "sunset clauses which oblige regulators to review each licence at regular intervals of time.",
+            "why": "Stated in paragraph 3.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "a prohibition on every system until its developers have demonstrated that it is safe.",
+            "why": "That is the precautionary view, which adaptive regulation seeks to avoid."
+          },
+          {
+            "t": "a duty upon developers to report incidents that occur when their systems are used.",
+            "why": "Stated in paragraph 3.",
+            "trap": "True but not the answer"
+          }
+        ],
+        "answer": 2
+      },
+      {
+        "type": "application",
+        "stem": "Which one of the following is the best example of the 'capture' described in the third paragraph?",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "A food inspector is deceived by a factory that submits falsified records of its cleaning schedules and storage temperatures.",
+            "why": "This is deception, not a shared outlook developed over time.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "A transport agency lacks the funds to employ enough inspectors to visit every depot in the country each year.",
+            "why": "A shortage of resources is not capture.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "A banking supervisor, hired from the banks she oversees and hoping to return, adopts their view of risks.",
+            "why": "The regulator comes to share the outlook of the regulated."
+          },
+          {
+            "t": "A minister directs a regulator to relax requirements after major firms warn that strict rules will cost jobs.",
+            "why": "This is political pressure on a regulator, whereas capture as described in the passage occurs when the regulator comes to share the outlook of the organisations it oversees.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 2
+      }
+    ],
+    "recall": [
+      {
+        "q": "According to the passage, why can a young technology not easily be regulated?",
+        "options": [
+          "Its developers are too few for regulators to supervise effectively.",
+          "Its consequences are not yet known, so there is no definite harm to regulate against.",
+          "It is by then so woven into social life that control is costly.",
+          "Law proceeds so slowly that rules are outdated before they apply."
+        ],
+        "answer": 1
+      },
+      {
+        "q": "What does the author identify as the chief weakness of adaptive regulation?",
+        "options": [
+          "It depends on information that is held mainly by the firms to be regulated.",
+          "It compels periodic reviews that are too costly for agencies to carry out.",
+          "It permits harms to appear which cannot afterwards be undone.",
+          "It treats the status quo as a safe baseline against which to measure risk."
+        ],
+        "answer": 0
+      }
+    ],
+    "recallLabel": "Passage Recall",
+    "recallScored": false,
+    "summary": {
+      "model": "Adaptive regulation may soften the timing dilemma, but effective oversight depends more on independent institutional capacity than on any particular rule.",
+      "tone": "analytical",
+      "claim": "effective oversight depends more on independent institutional capacity than on any particular rule",
+      "qualifier": "may"
+    }
+  },
+  {
+    "id": "tech-evidence",
+    "title": "The liar's dividend",
+    "genre": "technology",
+    "difficulty": "medium",
+    "since": "2026-10-25",
+    "paras": [
+      "Public alarm about synthetic media has centred on a simple fear: that convincing forgeries of speech and footage, produced cheaply by anyone, will lead people to believe things that never happened. The fear is not groundless, but it may direct attention to the lesser danger. A forgery that is believed can be exposed, and often is, once it has been examined with care. The subtler harm lies in the reverse effect. When it is widely known that any recording can be fabricated, a person caught on genuine footage acquires a ready defence: that it is a fake. Legal scholars have called the resulting advantage the liar's dividend. It accrues to the guilty, and it is paid in the currency of the public's weakened confidence in everything that it sees and hears. Where fakery is easy and denial costless, the burden of proof quietly shifts to whoever offers the truth.",
+      "The history of the photograph suggests why this matters. We tend to suppose that photographs were trusted because the camera records what stands in front of it. Yet the image has been manipulated since the earliest days of the medium, and authoritarian regimes have famously removed disgraced officials from official portraits. Photographs came to function as evidence not because they could not lie but because of institutions that stood behind them: newspapers whose reputations depended on accuracy, archives that preserved original negatives, and courts that developed rules for establishing where, when and by whom an image had been made. Trust attached, in other words, to provenance, to knowledge of an image's origin and custody, and only derivatively to the medium itself.",
+      "If that is right, the contest between forgers and detection software, to which so much effort is presently devoted, is badly chosen. Detection is an arms race in which defenders must be right every time and forgers only once, and each improvement in the detector supplies the forger with his next lesson. A sounder strategy would rebuild provenance for the new conditions: cameras and editing tools that attach cryptographic signatures recording when, where and how a file was made, so that authenticity can be verified rather than guessed at. Several news organisations and equipment manufacturers have begun to adopt standards of this kind, and the approach has the advantage of not depending upon the detection of any particular technique of forgery.",
+      "Provenance is not a panacea, however. A system that certifies the signed may, by implication, discredit the unsigned, and the people most likely to hold crucial unsigned evidence, such as a bystander in a distant town with an inexpensive handset, are those least able to obtain approved equipment. Signatures can also expose the identity or the location of whoever made a recording, a hazard for the dissident or the whistleblower whose safety depends upon anonymity. Any scheme of authentication will therefore need to protect the privacy of the sources it vouches for, or it will protect truth at the expense of those who tell it, and the liar's dividend will merely have been replaced by a different and no less unjust tax."
+    ],
+    "questions": [
+      {
+        "type": "main",
+        "stem": "Which one of the following best summarises the passage?",
+        "proof": [
+          0,
+          2,
+          3
+        ],
+        "options": [
+          {
+            "t": "The graver risk of synthetic media may be that genuine evidence is dismissed as fake; provenance could answer it, though not without difficulties.",
+            "why": "Paragraph 1 names the reverse harm, 2-3 argue for provenance, and 4 qualifies it."
+          },
+          {
+            "t": "The chief risk of synthetic media is that viewers will accept convincing fabrications as genuine before they can be checked.",
+            "why": "The author acknowledges this danger but argues that the subtler harm may be the dismissal of genuine evidence as fake.",
+            "trap": "Too narrow or too broad"
+          },
+          {
+            "t": "The arms race makes detection tools a weak long-term foundation for trust, so recorded media should be treated as presumptively unreliable.",
+            "why": "The author favours provenance over a detection arms race, but does not recommend treating recordings as presumptively unreliable.",
+            "trap": "Too narrow or too broad"
+          },
+          {
+            "t": "The evidentiary value of photographs has always depended mainly on the camera's ability to preserve an unaltered record of a scene.",
+            "why": "The author argues that trust attached primarily to institutions and provenance, not to an assumption that photographs could not be manipulated.",
+            "trap": "Wrong direction"
+          }
+        ],
+        "answer": 0
+      },
+      {
+        "type": "structure",
+        "stem": "The author mentions the removal of disgraced officials from official portraits in order to:",
+        "proof": [
+          1
+        ],
+        "options": [
+          {
+            "t": "show that image manipulation originated in authoritarian settings where the reputations of public figures were at stake.",
+            "why": "The example illustrates that manipulation is longstanding; it does not establish where the practice originated.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "show that manipulation of images is old and cannot explain why photographs were once trusted.",
+            "why": "Paragraph 2: the image has been manipulated since early days, yet trust attached to institutions."
+          },
+          {
+            "t": "reinforce the view that photographs were trusted because they ordinarily preserve a direct record of what stood before the camera.",
+            "why": "The author presents that view only to challenge it, arguing that institutions and provenance—not an inability to manipulate images—made photographs useful as evidence.",
+            "trap": "Wrong direction"
+          },
+          {
+            "t": "argue that courts relied mainly on original negatives when deciding whether a photograph should be admitted as evidence.",
+            "why": "Preserved negatives are one example of institutional safeguards, not the sole or principal basis for the evidentiary status of photographs.",
+            "trap": "Too narrow or too broad"
+          }
+        ],
+        "answer": 1
+      },
+      {
+        "type": "inference",
+        "stem": "The author would most probably regard which of the following as a serious weakness of a provenance scheme?",
+        "proof": [
+          3
+        ],
+        "options": [
+          {
+            "t": "A news agency declines to publish a signed photograph because it doubts the competence of the photographer.",
+            "why": "This concerns editorial judgement and has nothing to do with the scheme's design.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "A genuine video of misconduct filmed on an unsigned phone is disregarded because it lacks a certificate.",
+            "why": "Paragraph 4: a system that certifies the signed may discredit the unsigned."
+          },
+          {
+            "t": "A forger succeeds in signing a fabricated recording with equipment that he has stolen.",
+            "why": "The passage raises no such risk.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "An archive delays publishing signed recordings because the verification metadata is difficult for ordinary users to interpret.",
+            "why": "This is a usability problem not raised in the passage; the author's concerns are exclusion of unsigned evidence and risks to sources' privacy.",
+            "trap": "Out of scope"
+          }
+        ],
+        "answer": 1
+      },
+      {
+        "type": "tone",
+        "stem": "Which one of the following best describes the author's view of efforts to build ever better detection software?",
+        "proof": [
+          2
+        ],
+        "options": [
+          {
+            "t": "They are misdirected, because defenders must win every time while forgers need to win only once.",
+            "why": "Paragraph 3: 'badly chosen' since 'defenders must be right every time'."
+          },
+          {
+            "t": "They are pointless, because detection software can seldom tell whether a recording has been altered.",
+            "why": "The author does not claim detection is useless, only that the contest is a poor strategy.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "They are sensible but expensive, and ought to be supported by public funds as well as private ones.",
+            "why": "The author does not call them sensible and says nothing of public funding.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "They are largely successful, since each improvement in the detector teaches forgers what not to attempt.",
+            "why": "The author says each improvement supplies the forger with his next lesson, which makes the effort self-defeating.",
+            "trap": "Distorts the passage"
+          }
+        ],
+        "answer": 0
+      }
+    ],
+    "recall": [
+      {
+        "q": "What is meant by the 'liar's dividend'?",
+        "options": [
+          "The profit made by those who sell convincing forgeries.",
+          "The advantage gained by those who can dismiss genuine evidence as fabricated.",
+          "The fall in the price of tools for producing synthetic media.",
+          "The gain to journalists who expose forged recordings."
+        ],
+        "answer": 1
+      },
+      {
+        "q": "Why, according to the author, might signatures endanger some of the people who make recordings?",
+        "options": [
+          "They may reveal who made a recording and where it was made.",
+          "They require cameras which only wealthy people can afford.",
+          "They make genuine recordings look as if they were forged.",
+          "They allow forgers to imitate the signatures of others."
+        ],
+        "answer": 0
+      }
+    ],
+    "recallLabel": "Passage Recall",
+    "recallScored": false,
+    "summary": {
+      "model": "Synthetic media's deeper harm may be that genuine evidence is denied; provenance can help, but must protect source privacy.",
+      "tone": "cautionary",
+      "claim": "provenance can help, but must protect source privacy",
+      "qualifier": "may"
+    }
+  }
+]

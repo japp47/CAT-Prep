@@ -1,16 +1,18 @@
 import { describe, expect, it } from "vitest";
 import { CONTENT } from "./full";
-import { RC_FILES } from "./bank";
-import { CR_CATALOG, RC_CATALOG, RC_FILE, VA_CATALOG } from "./catalog.gen";
+import { LR_FILES, RC_FILES } from "./bank";
+import { CR_CATALOG, LR_CATALOG, LR_FILE, RC_CATALOG, RC_FILE, VA_CATALOG } from "./catalog.gen";
+import { LR_BY_FILE } from "./lr";
 import { RC_BY_FILE } from "./rc";
 import { RC_LEADS } from "./leads.gen";
-import { crMeta, rcLead, rcMeta, vaMeta } from "./types";
+import { crMeta, lrMeta, rcLead, rcMeta, vaMeta } from "./types";
 
 describe("content catalog", () => {
   it("matches the content files (run `npm run catalog` if this fails)", () => {
     expect(RC_CATALOG).toEqual(CONTENT.rcSets.map(rcMeta));
     expect(VA_CATALOG).toEqual(CONTENT.vaParas.map(vaMeta));
     expect(CR_CATALOG).toEqual(CONTENT.crItems.map(crMeta));
+    expect(LR_CATALOG).toEqual(CONTENT.lrSets.map(lrMeta));
     expect(RC_LEADS).toEqual(Object.fromEntries(CONTENT.rcSets.map((s) => [s.id, rcLead(s)])));
   });
 
@@ -25,8 +27,8 @@ describe("content catalog", () => {
   it("keeps the full content out of the main bundle", () => {
     // The content files are reached only through the loaders in bank.ts, which content.ts calls; everything else uses the catalog.
     // full.ts loads everything at once and is for tests and the catalog script only.
-    const files = import.meta.glob<string>(["/src/**/*.{ts,tsx}", "!/src/**/*.test.ts", "!/src/practice/rc/**", "!/src/practice/cr/**", "!/src/practice/full.ts"], { query: "?raw", import: "default", eager: true });
-    const content = Object.keys(files).filter((f) => /from "[./]*(?:practice\/)?(?:rc|cr|va\/paragraphs|full)"|from "[./]*content\/(?:rc|cr)\//.test(files[f]));
+    const files = import.meta.glob<string>(["/src/**/*.{ts,tsx}", "!/src/**/*.test.ts", "!/src/practice/rc/**", "!/src/practice/cr/**", "!/src/practice/lr/**", "!/src/practice/full.ts"], { query: "?raw", import: "default", eager: true });
+    const content = Object.keys(files).filter((f) => /from "[./]*(?:practice\/)?(?:rc|cr|lr|va\/paragraphs|full)"|from "[./]*content\/(?:rc|cr|lr)\//.test(files[f]));
     const bank = Object.keys(files).filter((f) => /from "[./]*(?:practice\/)?bank"/.test(files[f]));
     expect(Object.keys(files).length).toBeGreaterThan(30);
     expect(content).toEqual([]);
@@ -38,5 +40,12 @@ describe("content catalog", () => {
     expect([...RC_FILES].sort()).toEqual(Object.keys(RC_BY_FILE).sort());
     expect(Object.keys(RC_FILE).sort()).toEqual(CONTENT.rcSets.map((s) => s.id).sort());
     for (const [file, sets] of Object.entries(RC_BY_FILE)) sets.forEach((s) => expect(RC_FILE[s.id], s.id).toBe(file));
+  });
+
+  it("can load every LR file, and knows which file holds each set", () => {
+    // A file added to content/lr/ but not to lr/index.ts (or the other way round) fails here.
+    expect([...LR_FILES].sort()).toEqual(Object.keys(LR_BY_FILE).sort());
+    expect(Object.keys(LR_FILE).sort()).toEqual(CONTENT.lrSets.map((s) => s.id).sort());
+    for (const [file, sets] of Object.entries(LR_BY_FILE)) sets.forEach((s) => { expect(LR_FILE[s.id], s.id).toBe(file); expect(s.type, s.id).toBe(file); });
   });
 });

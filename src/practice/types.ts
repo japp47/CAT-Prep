@@ -1,12 +1,13 @@
 import type { OptionTrap } from "../data/traps";
 
-export type Genre = "economics" | "philosophy" | "psychology" | "science" | "society" | "literature" | "history" | "arts";
+export type Genre = "economics" | "philosophy" | "psychology" | "science" | "society" | "technology" | "literature" | "history" | "arts";
 export const GENRES: Record<Genre, string> = {
   economics: "Economics and business",
   philosophy: "Philosophy",
   psychology: "Psychology",
   science: "Science and ecology",
-  society: "Society and technology",
+  society: "Society",
+  technology: "AI and technology",
   literature: "Literature",
   history: "History",
   arts: "Arts",
@@ -142,6 +143,51 @@ export interface RcMeta { id: string; title: string; genre: Genre; difficulty: D
 export interface VaMeta { id: string; topic: string; difficulty: Difficulty; v: string; since?: string }
 export interface CrMeta { id: string; type: CrType; difficulty: Difficulty; topic: string; v: string }
 
+/** Logical reasoning set types (docs/research/lr.md §2). One content/lr/<type>.json file each. */
+export type LrType = "arrangement" | "selection" | "distribution" | "ranking" | "tournament" | "scheduling" | "binary" | "venn" | "routes" | "quant-lr" | "cubes" | "mixed";
+export const LR_TYPE: Record<LrType, { label: string }> = {
+  arrangement: { label: "Arrangement" },
+  selection: { label: "Grouping and selection" },
+  distribution: { label: "Distribution and matching" },
+  ranking: { label: "Ranking and ordering" },
+  tournament: { label: "Games and tournaments" },
+  scheduling: { label: "Scheduling" },
+  binary: { label: "Binary logic" },
+  venn: { label: "Venn and counting" },
+  routes: { label: "Routes and networks" },
+  "quant-lr": { label: "Quant-based LR" },
+  cubes: { label: "Cubes and dice" },
+  mixed: { label: "Mixed" },
+};
+export const LR_TYPES = Object.keys(LR_TYPE) as LrType[];
+
+/** A table shown with a set, or the final grid in its solution. */
+export interface LrTable { caption?: string; head: string[]; rows: string[][] }
+/**
+ * One question. answer is an option index (MCQ) or the text to type (TITA). uses names the clues (from 1) that settle
+ * it, highlighted in review. if is an extra condition for this question only ("if additionally…").
+ */
+export interface LrQuestion { stem: string; kind: "mcq" | "tita"; options?: string[]; answer: number | string; uses: number[]; why: string[]; if?: string }
+/** A logical reasoning set (docs/content/lr-format.md). source says it is original or used with permission (D38). */
+export interface LrSet {
+  id: string;
+  title: string;
+  type: LrType;
+  sub?: string;
+  difficulty: Difficulty;
+  /** Target time in minutes */
+  minutes: number;
+  source: string;
+  /** The day the set may join a daily rotation, as for RC */
+  since: string;
+  intro: string[];
+  clues: string[];
+  tables?: LrTable[];
+  questions: LrQuestion[];
+  solution: { steps: string[]; grid?: LrTable; cases?: number };
+}
+export interface LrMeta { id: string; title: string; type: LrType; sub?: string; difficulty: Difficulty; minutes: number; questions: number; since: string; v: string }
+
 /**
  * A short fingerprint (32-bit FNV-1a, 8 hex digits) of what decides an answer. Not for security; it only has to change
  * when the content does. RC sets hash their questions, options and answers but not the passage, so fixing a typo in a
@@ -170,6 +216,13 @@ export function rcLead(s: RcSet): [string, string] {
   if (!sents || sents.length < 2) return [p, ""];
   const at = p.lastIndexOf(sents[sents.length - 1].trim());
   return [p.slice(0, at).trimEnd(), p.slice(at).trim()];
+}
+/** An LR set's content version: what decides its answers (the story, clues, tables and questions), not explanations or dates. */
+export const lrVersion = (s: LrSet) => contentHash([s.intro, s.clues, s.tables ?? [], s.questions.map((q) => [q.stem, q.kind, q.options ?? [], q.answer, q.if ?? ""])]);
+export function lrMeta(s: LrSet): LrMeta {
+  const m: LrMeta = { id: s.id, title: s.title, type: s.type, difficulty: s.difficulty, minutes: s.minutes, questions: s.questions.length, since: s.since, v: lrVersion(s) };
+  if (s.sub) m.sub = s.sub;
+  return m;
 }
 export const crMeta = (c: CrItem): CrMeta => ({ id: c.id, type: c.type, difficulty: c.difficulty, topic: c.topic, v: contentHash(c) });
 /** A VA paragraph's content version; its publishing date does not count. */

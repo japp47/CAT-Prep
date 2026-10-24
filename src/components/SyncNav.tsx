@@ -26,7 +26,7 @@ export function SyncNavRow({ collapsed, onPick }: { collapsed?: boolean; onPick?
   const s = useSyncStatus();
   const loc = useLocation();
   if (!API_ENABLED) return null;
-  const signIn = SIGNIN_ENABLED && s.phase === "off";
+  const signIn = SIGNIN_ENABLED && !s.account && s.phase === "off";
   const title = s.account ? s.account.name || s.account.email : signIn ? "Sign in" : "Sync devices";
   const line = signIn ? "Save progress everywhere" : statusLine(s);
   const to = signIn ? "/signin?then=" + encodeURIComponent(loc.pathname) : s.account ? "/you" : "/you#sync";

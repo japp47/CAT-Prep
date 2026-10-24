@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { addDays, shortDate, todayIso } from "../../lib/date";
@@ -56,10 +55,14 @@ export default function Library() {
   const [tab, setTab] = usePref<"all" | "daily">("libTab", "all");
   const [genre, setGenre] = usePref<Genre | "all">("libGenre", "all");
   const [diff, setDiff] = usePref<"all" | "easy" | "medium" | "hard">("libDiff", "all");
-  const [hideDone, setHideDone] = usePref("libHideDone", false);
+  const [attempted, setAttempted] = usePref<"all" | "tried" | "untried">("libAttempted", "all");
   const bests = useBest();
   const tried = new Set(bests.keys());
-  const lib = RC_CATALOG.filter((s) => (genre === "all" || s.genre === genre) && (diff === "all" || s.difficulty === diff) && !(hideDone && tried.has(s.id)));
+  const lib = RC_CATALOG.filter((s) =>
+    (genre === "all" || s.genre === genre) &&
+    (diff === "all" || s.difficulty === diff) &&
+    (attempted === "all" || (attempted === "tried" ? tried.has(s.id) : !tried.has(s.id)))
+  );
   const archiveDays = Array.from({ length: 14 }, (_, i) => addDays(today, -i - 1)).filter((d) => d >= DAILY_EPOCH);
 
   return (
@@ -78,10 +81,14 @@ export default function Library() {
               <option value="all">All genres</option>
               {(Object.keys(GENRES) as Genre[]).map((g) => <option key={g} value={g}>{GENRES[g]}</option>)}
             </NativeSelect>
+            <NativeSelect aria-label="Practice status" value={attempted} onChange={(e) => setAttempted(e.target.value as typeof attempted)} className="w-auto min-w-44">
+              <option value="all">All passages</option>
+              <option value="tried">Practised</option>
+              <option value="untried">Not practised</option>
+            </NativeSelect>
             <ToggleGroup type="single" value={diff} onValueChange={(v) => v && setDiff(v as typeof diff)} className="rounded-lg bg-secondary p-1" aria-label="Difficulty">
               {(["all", "easy", "medium", "hard"] as const).map((d) => <ToggleGroupItem key={d} value={d} className="h-9 rounded-md px-3.5 text-base data-[state=on]:bg-card data-[state=on]:font-semibold">{d === "all" ? "Any level" : d[0].toUpperCase() + d.slice(1)}</ToggleGroupItem>)}
             </ToggleGroup>
-            <label className="inline-flex items-center gap-2.5 text-base"><Checkbox checked={hideDone} onCheckedChange={(v) => setHideDone(v === true)} />Hide sets I have tried</label>
           </div>
           {lib.length
             ? <ul className="flex flex-col rounded-lg bg-card p-1.5">{lib.map((s) => <Row key={s.id} set={s} best={bests.get(s.id)} />)}</ul>
