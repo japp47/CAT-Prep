@@ -17,7 +17,8 @@ import { CAUSE_IDS, type AppState, type Cause, type MockQ, type MockReview, type
 import { useStore } from "../../lib/store";
 import type { Content } from "../../practice/content";
 import {
-  DEFAULT_LAYOUT, findings, isTita, fromSectional, proposeActions, questionsFor, toErrors, toPractice, VA_ORDER, type ActionDraft, type Findings,
+  DEFAULT_QUANT_LAYOUT, DILR_SET_LABEL, DILR_SET_TYPES, QUANT_LABEL,
+  findings, isTita, fromSectional, layoutFor, proposeActions, questionsFor, toErrors, toPractice, VA_ORDER, type ActionDraft, type Findings,
 } from "../../practice/mockreview";
 import { fmtSecs } from "../../practice/record";
 import { scorePaper } from "../../practice/sectional";
@@ -31,9 +32,10 @@ const BACK = { to: "/progress", label: "Progress" };
 
 /** Everything the wizard has so far. Kept as a draft, so a reload or a closed tab loses nothing. */
 interface Wiz {
-  step: number; name: string; d: string; kind: string; planned: string;
+  step: number; name: string; d: string; kind: string; sec: string; planned: string;
   layout: MockReview["layout"]; qs: MockQ[]; cur: number;
   actions: { a: ActionDraft; keep: boolean; text: string }[] | null; own: string; errors: boolean;
+  version?: 2; migrated?: boolean;
 }
 
 /** Chips for one choice, at least 44px tall, in the style of the summary tone chips. */
@@ -51,23 +53,48 @@ function Chips<T extends string>({ label, value, onChange, options, className, i
 
 /** How a question shows in the grid. Questions still waiting for an answer (a cause, or "could you have got it?") stand out. */
 function cellOf(q: MockQ): Cell {
+  if (q.st === "unmarked") return "marked";
   if (q.st === "right") return q.slow ? "doneMarked" : "done";
   if (q.st === "wrong") return q.cause ? "wrong" : "marked";
   if (q.st === "skip") return q.could === undefined ? "marked" : "blank";
   return "unseen";
 }
-const STATUS: Record<MockQ["st"], string> = { right: "right", wrong: "wrong", skip: "skipped", unseen: "not reached" };
+const STATUS: Record<MockQ["st"], string> = { unmarked: "not entered, counted as skipped", right: "right", wrong: "wrong", skip: "skipped", unseen: "not reached" };
 
-/** Where a question sits: its passage, or its VA type. */
-function placeOf(layout: MockReview["layout"], i: number) {
+/** Where a question sits within the selected section. */
+function placeOf(layout: MockReview["layout"], i: number, sec: string) {
+  if (sec === "DILR") {
+    let n = i;
+    for (let s = 0; s < (layout.sets ?? []).length; s++) {
+      const set = layout.sets![s];
+      if (n < set.n) return `Set ${s + 1}, ${DILR_SET_LABEL[set.type as keyof typeof DILR_SET_LABEL] ?? set.type}`;
+      n -= set.n;
+    }
+    return "DILR set";
+  }
+  if (sec === "Quant") {
+    let n = i;
+    for (const topic of layout.topics ?? []) { if (n < topic.n) return QUANT_LABEL[topic.type as keyof typeof QUANT_LABEL] ?? topic.type; n -= topic.n; }
+    return "Quant topic";
+  }
   let n = i;
   for (let p = 0; p < layout.rc.length; p++) { if (n < layout.rc[p]) return `passage ${p + 1}`; n -= layout.rc[p]; }
   const k = layout.va[n] as VaKind;
   return `${VA_KIND[k]?.label.toLowerCase() ?? k}${isTita(k) ? ", TITA" : ""}`;
 }
 
-function grouped(layout: MockReview["layout"]) {
+function grouped(layout: MockReview["layout"], sec: string) {
   const out: { title: string; from: number; n: number }[] = [];
+  if (sec === "DILR") {
+    let from = 0;
+    (layout.sets ?? []).forEach((s, i) => { out.push({ title: `Set ${i + 1} · ${DILR_SET_LABEL[s.type as keyof typeof DILR_SET_LABEL] ?? s.type}`, from, n: s.n }); from += s.n; });
+    return out;
+  }
+  if (sec === "Quant") {
+    let from = 0;
+    (layout.topics ?? []).forEach((t) => { if (t.n) { out.push({ title: QUANT_LABEL[t.type as keyof typeof QUANT_LABEL] ?? t.type, from, n: t.n }); from += t.n; } });
+    return out;
+  }
   let i = 0;
   layout.rc.forEach((n, p) => { out.push({ title: `Passage ${p + 1}`, from: i, n }); i += n; });
   VA_ORDER.forEach((k) => {
@@ -84,23 +111,29 @@ const vaFrom = (c: Record<VaKind, number>) => VA_ORDER.flatMap((k) => Array<stri
 // Step 1: basics and layout
 
 function Basics({ w, set, fixed }: { w: Wiz; set: (p: Partial<Wiz>) => void; fixed: boolean }) {
-  const setLayout = (layout: MockReview["layout"]) => set({ layout, qs: questionsFor(layout, w.qs), cur: 0 });
+  const setLayout = (layout: MockReview["layout"]) => set({ layout, qs: questionsFor(layout, w.qs, w.sec), cur: 0 });
   const counts = vaCounts(w.layout.va);
+  const changeKind = (kind: string) => {
+    const sec = kind === "DILR sectional" ? "DILR" : kind === "Quant sectional" ? "Quant" : kind === "VARC sectional" ? "VARC" : w.sec;
+    const layout = sec === w.sec ? w.layout : layoutFor(sec);
+    set({ kind, sec, layout, qs: questionsFor(layout, w.qs, sec), cur: 0 });
+  };
   return (
     <div className="flex flex-col gap-8">
-      {!fixed && <p className="measure text-base text-muted-foreground">This review covers VARC. For a full mock, enter its VARC section; DILR and Quant reviews will follow when those sections launch.</p>}
+      {!fixed && <p className="measure text-base text-muted-foreground">Choose one section to analyse. The starting counts follow CAT 2025; DILR set styles and Quant topic counts vary, so change them to match your paper.</p>}
       <div className="flex flex-col gap-7 rounded-lg bg-card p-4 sm:gap-8 sm:p-6">
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Mock name" className="sm:col-span-2"><Input value={w.name} onChange={(e) => set({ name: e.target.value })} placeholder="SimCAT 4, or CAT 2023 Slot 2" /></Field>
           <Field label="Date taken"><Input type="date" value={w.d} max={todayIso()} onChange={(e) => set({ d: e.target.value })} /></Field>
-          {!fixed && <Field label="Test type"><NativeSelect value={w.kind} onChange={(e) => set({ kind: e.target.value })}>{KINDS.map((k) => <option key={k}>{k}</option>)}</NativeSelect></Field>}
+          {!fixed && <Field label="Test type"><NativeSelect value={w.kind} onChange={(e) => changeKind(e.target.value)}>{KINDS.map((k) => <option key={k}>{k}</option>)}</NativeSelect></Field>}
+          {!fixed && !w.kind.endsWith("sectional") && <Field label="Section"><NativeSelect value={w.sec} onChange={(e) => { const sec = e.target.value; const layout = layoutFor(sec); set({ sec, layout, qs: questionsFor(layout, w.qs, sec), cur: 0 }); }}><option>VARC</option><option>DILR</option><option>Quant</option></NativeSelect></Field>}
           <Field label="Planned attempts" hint="Optional. Compare your plan with what you attempted.">
             <Input type="number" inputMode="numeric" min={0} max={w.qs.length} value={w.planned} onChange={(e) => set({ planned: e.target.value })} placeholder="18" />
           </Field>
         </div>
         {fixed ? (
           <p className="text-sm text-muted-foreground">Questions are filled from your sectional: {w.layout.rc.length} passages and {w.layout.va.length} VA questions.</p>
-        ) : (
+        ) : w.sec === "VARC" ? (
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-3">
               <div className="flex flex-wrap items-center gap-3">
@@ -135,6 +168,34 @@ function Basics({ w, set, fixed }: { w: Wiz; set: (p: Partial<Wiz>) => void; fix
             </div>
             <Meta>{w.qs.length} questions total. The next step numbers passages first, then VA by type.</Meta>
           </div>
+        ) : w.sec === "DILR" ? (
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="text-base font-semibold">DILR sets</h3>
+              <div className="flex items-center gap-2">
+                <Button variant="secondary" size="icon-sm" aria-label="Remove a set" disabled={(w.layout.sets?.length ?? 0) <= 1} onClick={() => setLayout({ ...w.layout, sets: w.layout.sets?.slice(0, -1) })}>−</Button>
+                <span className="min-w-6 text-center text-base font-semibold tabular-nums">{w.layout.sets?.length ?? 0}</span>
+                <Button variant="secondary" size="icon-sm" aria-label="Add a set" disabled={(w.layout.sets?.length ?? 0) >= 8} onClick={() => setLayout({ ...w.layout, sets: [...(w.layout.sets ?? []), { type: "unsorted", n: 4 }] })}>+</Button>
+              </div>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {(w.layout.sets ?? []).map((s, i) => <div key={i} className="grid grid-cols-2 gap-3 rounded-lg bg-background p-3">
+                <Field label={`Set ${i + 1} type`}><NativeSelect value={s.type} onChange={(e) => setLayout({ ...w.layout, sets: w.layout.sets?.map((x, j) => j === i ? { ...x, type: e.target.value } : x) })}>{DILR_SET_TYPES.map((type) => <option key={type} value={type}>{DILR_SET_LABEL[type]}</option>)}</NativeSelect></Field>
+                <Field label="Questions"><NativeSelect value={s.n} onChange={(e) => setLayout({ ...w.layout, sets: w.layout.sets?.map((x, j) => j === i ? { ...x, n: +e.target.value } : x) })}>{[3, 4, 5, 6].map((n) => <option key={n} value={n}>{n}</option>)}</NativeSelect></Field>
+              </div>)}
+            </div>
+            <Meta>{w.qs.length} questions across {w.layout.sets?.length ?? 0} sets. CAT set styles vary; tag each one to match your paper.</Meta>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4">
+            <h3 className="text-base font-semibold">Quant topics</h3>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {(w.layout.topics ?? DEFAULT_QUANT_LAYOUT.topics ?? []).map((t) => <Field key={t.type} label={QUANT_LABEL[t.type as keyof typeof QUANT_LABEL] ?? t.type}>
+                <NativeSelect value={t.n} onChange={(e) => setLayout({ ...w.layout, topics: w.layout.topics?.map((x) => x.type === t.type ? { ...x, n: +e.target.value } : x) })}>{Array.from({ length: 23 }, (_, n) => <option key={n} value={n}>{n} questions</option>)}</NativeSelect>
+              </Field>)}
+            </div>
+            <Meta>{w.qs.length} questions total. The CAT 2025 topic counts are a starting estimate; edit them to match your paper.</Meta>
+          </div>
         )}
       </div>
     </div>
@@ -144,7 +205,7 @@ function Basics({ w, set, fixed }: { w: Wiz; set: (p: Partial<Wiz>) => void; fix
 // ---------------------------------------------------------------------------------------------
 // Step 2: the question grid
 
-function Grid({ w, set }: { w: Wiz; set: (p: Partial<Wiz>) => void }) {
+function Grid({ w, set, sectionalId }: { w: Wiz; set: (p: Partial<Wiz>) => void; sectionalId?: string }) {
   const q = w.qs[w.cur];
   const edit = (p: Partial<MockQ>) => set({ qs: w.qs.map((x, i) => (i === w.cur ? clean({ ...x, ...p }) : x)) });
   const open = w.qs.filter((x) => cellOf(x) === "marked").length;
@@ -156,7 +217,7 @@ function Grid({ w, set }: { w: Wiz; set: (p: Partial<Wiz>) => void }) {
         <Meta>{w.qs.length} in all</Meta>
       </div>
       <div className="flex flex-wrap gap-x-8 gap-y-4">
-      {grouped(w.layout).map((g) => (
+      {grouped(w.layout, w.sec).map((g) => (
         <div key={g.title} className="flex flex-col gap-2">
           <span className="text-sm font-medium text-muted-foreground">{g.title}</span>
           <div className="flex gap-2" role="group" aria-label={g.title}>
@@ -181,23 +242,24 @@ function Grid({ w, set }: { w: Wiz; set: (p: Partial<Wiz>) => void }) {
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-        <p className="text-base">Mark answers, misses and skips before reading solutions.</p>
+        <p className="text-base">{sectionalId ? "Your sectional results are filled in. Review a question and your answer before deciding why it went wrong." : "Enter each result before reading solutions. A question left unmarked counts as skipped."}</p>
         <div className="text-sm text-muted-foreground" aria-live="polite">
           {open > 0
-            ? <span><strong className="font-semibold text-mark">{open}</strong> {open === 1 ? "question needs" : "questions need"} a follow-up</span>
-            : <span>No follow-ups yet</span>}
+            ? <span><strong className="font-semibold text-mark">{open}</strong> {open === 1 ? "question needs" : "questions need"} more detail</span>
+            : <span>All questions have their details</span>}
         </div>
       </div>
+      {w.migrated && <Meta>Any questions that were previously marked right by default are now unmarked. They count as skipped until you choose a result.</Meta>}
       <div className="flex flex-col gap-5">
         <div className="hidden rounded-xl bg-muted/40 p-5 lg:order-1 lg:block">
           {navigator}
         </div>
         {q && (
-          <div className="order-1 flex flex-col gap-5 rounded-xl bg-card p-5 sm:p-6 lg:order-2" aria-live="polite">
+          <div id="mock-review-question" className="order-1 scroll-mt-4 flex flex-col gap-5 rounded-xl bg-card p-5 sm:p-6 lg:order-2" aria-live="polite">
             <div className="flex items-center justify-between gap-3">
               <div className="flex flex-col gap-1">
                 <h3 className="text-heading font-semibold">Question {w.cur + 1}</h3>
-                <Meta className="first-letter:uppercase">{placeOf(w.layout, w.cur)}</Meta>
+                <Meta className="first-letter:uppercase">{placeOf(w.layout, w.cur, w.sec)}</Meta>
               </div>
               <div className="flex items-center gap-1">
                 <Button variant="ghost" size="icon" aria-label="Previous question" disabled={w.cur === 0} onClick={() => set({ cur: w.cur - 1 })}><ChevronLeft aria-hidden /></Button>
@@ -207,8 +269,15 @@ function Grid({ w, set }: { w: Wiz; set: (p: Partial<Wiz>) => void }) {
             </div>
             <div className="flex flex-col gap-2">
               <span className="text-base font-semibold">What happened?</span>
-              <Chips label="What happened" value={q.st} onChange={(st) => edit({ st })} options={[["right", "Right"], ["wrong", "Wrong"], ["skip", "Skipped"], ["unseen", "Not reached"]]} className="grid w-full grid-cols-2 sm:grid-cols-4" itemClassName="w-full justify-center text-center" />
+              <Chips label="What happened" value={q.st === "unmarked" ? "" : q.st} onChange={(st) => edit({ st })} options={[["right", "Right"], ["wrong", "Wrong"], ["skip", "Skipped"], ["unseen", "Not reached"]]} className="grid w-full grid-cols-2 sm:grid-cols-4" itemClassName="w-full justify-center text-center" />
             </div>
+            {w.sec !== "VARC" && <Field label="Answer format"><NativeSelect value={q.format ?? "mcq"} onChange={(e) => edit({ format: e.target.value as "mcq" | "tita" })}><option value="mcq">MCQ</option><option value="tita">TITA (no negative mark)</option></NativeSelect></Field>}
+            {q.st === "unmarked" && <Meta>No result selected. This question is counted as skipped.</Meta>}
+            {sectionalId && (
+              <LinkButton to={`/practice/sectional/${sectionalId}?q=${w.cur + 1}&from=mock-review`} variant="secondary" className="w-fit">
+                Review this question and your answer
+              </LinkButton>
+            )}
             {q.st === "right" && (
               <label className="flex min-h-12 items-center gap-3 rounded-lg bg-muted/60 px-4 text-base">
                 <Checkbox checked={!!q.slow} onCheckedChange={(v) => edit({ slow: v === true })} />
@@ -242,6 +311,7 @@ function Grid({ w, set }: { w: Wiz; set: (p: Partial<Wiz>) => void }) {
 /** Drops the answers that no longer apply when a question's status changes. */
 function clean(q: MockQ): MockQ {
   const o: MockQ = { st: q.st, type: q.type };
+  if (q.format) o.format = q.format;
   if (q.secs != null) o.secs = q.secs;
   if (q.st === "right" && q.slow) o.slow = true;
   if (q.st === "wrong" && q.cause) o.cause = q.cause;
@@ -262,7 +332,7 @@ function Resolve({ w, set }: { w: Wiz; set: (p: Partial<Wiz>) => void }) {
           <li key={i}>
             <label className="flex min-h-12 items-center gap-3 rounded-md px-3.5 py-2 text-base hover:bg-muted/60">
               <Checkbox checked={q.solved === true} onCheckedChange={(v) => set({ qs: w.qs.map((x, k) => (k === i ? { ...x, solved: v === true } : x)) })} />
-              <span>Question {i + 1}<span className="text-muted-foreground">, {placeOf(w.layout, i)}</span></span>
+              <span>Question {i + 1}<span className="text-muted-foreground">, {placeOf(w.layout, i, w.sec)}</span></span>
             </label>
           </li>
         ))}
@@ -275,7 +345,7 @@ function Resolve({ w, set }: { w: Wiz; set: (p: Partial<Wiz>) => void }) {
 // ---------------------------------------------------------------------------------------------
 // Step 4 (and the saved view): where the marks went
 
-export function Findings({ f, layout, planned, before }: { f: Findings; layout: MockReview["layout"]; planned?: number; before?: number | null }) {
+export function Findings({ f, layout, sec, planned, before }: { f: Findings; layout: MockReview["layout"]; sec: string; planned?: number; before?: number | null }) {
   const lostAll = f.groups.reduce((s, g) => s + g.marks, 0) || 1;
   const acc = f.attempted ? Math.round((f.right / f.attempted) * 100) : 0;
   return (
@@ -319,7 +389,7 @@ export function Findings({ f, layout, planned, before }: { f: Findings; layout: 
             <tbody>
               {f.byType.map((t) => (
                 <tr key={t.type} className="border-t align-top">{/* taste-skill-ignore: rows of a real table */}
-                  <td className="py-2.5 pr-4">{t.label}{isTita(t.type) ? <span className="text-muted-foreground">, TITA</span> : null}</td>
+                  <td className="py-2.5 pr-4">{t.label}{t.tita > 0 ? <span className="text-muted-foreground">, {t.tita} TITA</span> : null}</td>
                   <td className="whitespace-nowrap py-2.5 pr-4 text-right">{t.right} of {t.n}</td><td className="py-2.5 pr-4 text-right">{t.wrong}</td><td className="py-2.5 pr-4 text-right">{t.skipped}</td>
                   <td className="py-2.5 text-right font-semibold">{t.marks > 0 ? "+" : ""}{t.marks}</td>
                 </tr>
@@ -327,7 +397,9 @@ export function Findings({ f, layout, planned, before }: { f: Findings; layout: 
             </tbody>
           </table>
         </div>
-        {layout.rc.length > 0 && <Meta>{layout.rc.length} passages, {layout.va.length} VA questions.</Meta>}
+        {sec === "VARC" && <Meta>{layout.rc.length} passages, {layout.va.length} VA questions.</Meta>}
+        {sec === "DILR" && <Meta>{layout.sets?.length ?? 0} sets, {f.n} questions.</Meta>}
+        {sec === "Quant" && <Meta>{f.n} questions across {(layout.topics ?? []).filter((t) => t.n > 0).length} topics.</Meta>}
       </Section>
 
       {f.time && (
@@ -366,7 +438,7 @@ function Actions({ w, set, wrong }: { w: Wiz; set: (p: Partial<Wiz>) => void; wr
         ))}
       </ul>
       <Field label="Your own action" hint="Optional, one line.">
-        <Input value={w.own} onChange={(e) => set({ own: e.target.value })} placeholder="Read the questions before each passage" />
+        <Input value={w.own} onChange={(e) => set({ own: e.target.value })} placeholder={w.sec === "VARC" ? "Read the questions before each passage" : w.sec === "DILR" ? "Choose a set by its easiest first deduction" : "Check the calculation before moving on"} />
       </Field>
       {wrong > 0 && (
         <label className="flex min-h-11 items-center gap-3 text-base">
@@ -404,23 +476,51 @@ function StepProgress({ steps, at }: { steps: { s: string; i: number }[]; at: nu
 function Wizard({ src }: { src: Source }) {
   const { state, update } = useStore();
   const nav = useNavigate();
+  const [search] = useSearchParams();
+  const queryQuestion = Number(search.get("q"));
+  const requestedQuestion = Number.isSafeInteger(queryQuestion) && queryQuestion >= 1 ? queryQuestion - 1 : undefined;
   const mockRow = src.from === "manual" && src.mock ? state.mocks.find((m) => m.id === src.mock) : undefined;
   const key = "mockreview:" + (src.from === "sectional" ? src.att.id : src.mock ?? "new");
   const [w, setW] = useState<Wiz>(() => {
     const saved = readDraft<Wiz>(key);
-    if (saved && Array.isArray(saved.qs)) return saved;
+    if (saved && Array.isArray(saved.qs)) {
+      if (src.from === "manual" && saved.version !== 2) {
+        const sec = saved.sec ?? mockRow?.sec ?? "VARC";
+        return {
+          ...saved,
+          version: 2,
+          sec,
+          kind: saved.kind === "Sectional" ? `${sec} sectional` : saved.kind,
+          cur: requestedQuestion === undefined ? saved.cur : Math.min(requestedQuestion, Math.max(0, saved.qs.length - 1)),
+          migrated: true,
+          qs: saved.qs.map((q) => clean(q.st === "right" ? { ...q, st: "unmarked" } : q)),
+        };
+      }
+      const sec = saved.sec ?? (src.from === "manual" ? mockRow?.sec : undefined) ?? "VARC";
+      return { ...saved, sec, version: 2, cur: requestedQuestion === undefined ? saved.cur : Math.min(requestedQuestion, Math.max(0, saved.qs.length - 1)) };
+    }
     if (src.from === "sectional") {
       const { layout, qs } = fromSectional(src.att, scorePaper(src.att.qs, src.att.a, src.c));
-      return { step: 1, name: "VARC sectional on this site", d: src.att.d, kind: "Sectional", planned: "", layout, qs, cur: Math.max(0, qs.findIndex((q) => q.st === "wrong")), actions: null, own: "", errors: false };
+      const firstWrong = Math.max(0, qs.findIndex((q) => q.st === "wrong"));
+      const cur = requestedQuestion === undefined ? firstWrong : Math.min(requestedQuestion, Math.max(0, qs.length - 1));
+      return { version: 2, step: 1, name: "VARC sectional on this site", d: src.att.d, kind: "VARC sectional", sec: "VARC", planned: "", layout, qs, cur, actions: null, own: "", errors: false };
     }
-    return { step: 0, name: mockRow?.n ?? "", d: mockRow?.d ?? todayIso(), kind: mockRow?.k ?? "Full mock", planned: "", layout: DEFAULT_LAYOUT, qs: questionsFor(DEFAULT_LAYOUT), cur: 0, actions: null, own: "", errors: false };
+    const sec = mockRow?.sec ?? "VARC";
+    const kind = mockRow?.k === "Sectional" ? `${sec} sectional` : mockRow?.k ?? "Full mock";
+    const layout = layoutFor(sec);
+    return { version: 2, step: 0, name: mockRow?.n ?? "", d: mockRow?.d ?? todayIso(), kind, sec, planned: "", layout, qs: questionsFor(layout, [], sec), cur: 0, actions: null, own: "", errors: false };
   });
   const set = (p: Partial<Wiz>) => setW((o) => ({ ...o, ...p }));
   useEffect(() => { writeDraft(key, w); }, [key, w]);
   useEffect(() => { window.scrollTo(0, 0); }, [w.step]);
+  useEffect(() => {
+    if (requestedQuestion === undefined || w.step !== 1) return;
+    const timer = window.setTimeout(() => document.getElementById("mock-review-question")?.scrollIntoView({ block: "start", behavior: "smooth" }), 80);
+    return () => window.clearTimeout(timer);
+  }, [requestedQuestion, w.step]);
 
-  const sec = "VARC";
-  const f = useMemo(() => findings({ qs: w.qs }), [w.qs]);
+  const sec = w.sec;
+  const f = useMemo(() => findings({ qs: w.qs, sec }), [w.qs, sec]);
   const hasDoable = w.qs.some((q) => q.st === "skip" && q.could);
   const steps = STEPS.map((s, i) => ({ s, i })).filter((x) => x.s !== "Re-solve" || hasDoable);
   const at = steps.findIndex((x) => x.i === w.step);
@@ -442,7 +542,7 @@ function Wizard({ src }: { src: Source }) {
 
   const save = () => {
     const id = uid(), now = Date.now(), d = w.d || todayIso();
-    const right = f.right, penalty = w.qs.filter((q) => q.st === "wrong" && !isTita(q.type)).length;
+    const right = f.right, penalty = w.qs.filter((q) => q.st === "wrong" && !isTita(q.type, q.format)).length;
     const mockId = src.from === "sectional" ? src.att.id + "m" : src.mock ?? id + "m";
     const kept = (w.actions ?? []).filter((x) => x.keep && x.text.trim());
     const recs: Recommendation[] = kept.map((x) => ({
@@ -458,7 +558,7 @@ function Wizard({ src }: { src: Source }) {
       if (st.mockReviews.some((r) => r.mock === mockId)) return;
       if (src.from === "manual") {
         const m = st.mocks.find((x) => x.id === mockId);
-        if (m) { m.c = right; m.w = penalty; m.n = review.name || m.n; m.d = d; }
+        if (m) { m.c = right; m.w = penalty; m.n = review.name || m.n; m.d = d; m.sec = sec; m.k = w.kind; }
         else st.mocks.push({ id: mockId, d, sec, n: review.name, k: w.kind, c: right, w: penalty });
         st.practice.push(...toPractice(review));
       }
@@ -475,7 +575,7 @@ function Wizard({ src }: { src: Source }) {
   return (
     <Page className="gap-6 pb-24 sm:gap-8 sm:pb-0">
       <PageHeader title="Analyse a mock" back={BACK}>
-        Review your VARC, see where marks went, and choose what to work on next.
+        Review your {sec}, see where marks went, and choose what to work on next.
       </PageHeader>
       <StepProgress steps={steps} at={at} />
       <div className="flex flex-col gap-4">
@@ -483,9 +583,9 @@ function Wizard({ src }: { src: Source }) {
         {mockRow && w.step === 0 && <Meta>Analysing {mockRow.n || mockRow.k} from {mediumDate(mockRow.d)}. Saving updates its logged result to match the questions you mark.</Meta>}
 
         {stepName === "Basics" && <Basics w={w} set={set} fixed={src.from === "sectional"} />}
-        {stepName === "Questions" && <Grid w={w} set={set} />}
+        {stepName === "Questions" && <Grid w={w} set={set} sectionalId={src.from === "sectional" ? src.att.id : undefined} />}
         {stepName === "Re-solve" && <Resolve w={w} set={set} />}
-        {stepName === "Where the marks went" && <Findings f={f} layout={w.layout} planned={planned} before={avgBefore(state, sec, src.from === "sectional" ? src.att.id + "m" : src.mock)} />}
+        {stepName === "Where the marks went" && <Findings f={f} layout={w.layout} sec={sec} planned={planned} before={avgBefore(state, sec, src.from === "sectional" ? src.att.id + "m" : src.mock)} />}
         {stepName === "Actions" && <Actions w={w} set={set} wrong={f.wrong} />}
       </div>
 
@@ -546,7 +646,7 @@ function Saved({ id }: { id: string }) {
           </ul>
         ) : <Meta>No actions were kept for this mock.</Meta>}
       </Section>
-      <Findings f={f} layout={r.layout} planned={r.planned} />
+      <Findings f={f} layout={r.layout} sec={r.sec} planned={r.planned} />
       <div className="flex flex-wrap gap-3">
         <LinkButton to="/progress" variant="secondary">Back to Progress</LinkButton>
         <Button variant="ghost" className="text-muted-foreground hover:text-danger" onClick={() => setAsking(true)}>Delete this review</Button>

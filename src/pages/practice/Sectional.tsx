@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -19,7 +19,7 @@ import {
 import { VA_KIND } from "../../practice/va/build";
 import { sectionalStale } from "../../practice/versions";
 import NotFound from "../NotFound";
-import { Choice, ChoiceGroup, Confirm, PaletteCell, PlayerBar, ScoreCard, Timer, useLeaveConfirmation } from "./common";
+import { Choice, ChoiceGroup, Confirm, PaletteCell, PlayerBar, ScoreCard, Timer, useLeaveConfirmation, useStartQuestion } from "./common";
 import { PaneJump, Passage, PaneSwitch, ReviewQuestion, showQuestion, Split } from "./RcPlayer";
 import { ItemInput, ItemReview } from "./VaPlayer";
 
@@ -251,14 +251,17 @@ export function SectionalReview() {
 
 function Review({ c }: { c: Content }) {
   const { id } = useParams();
+  const [search] = useSearchParams();
   const { state } = useStore();
-  const [cur, setCur] = useState(0);
-  const [pane, setPane] = useState<"p" | "q">("q");
   const s = state.sectionals.find((x) => x.id === id);
+  const fromAnalysis = search.get("from") === "mock-review";
   const review = state.mockReviews.find((r) => r.att === id);
   const stale = s ? sectionalStale(s) : [];
   const rows = useMemo(() => (s ? scorePaper(s.qs, s.a, c) : []), [s, c]);
-  useEffect(() => { window.scrollTo(0, 0); }, [cur]);
+  const { start, el } = useStartQuestion(rows.length);
+  const [cur, setCur] = useState(start);
+  const [pane, setPane] = useState<"p" | "q">("q");
+  useEffect(() => { if (rows.length && cur >= rows.length) setCur(rows.length - 1); }, [cur, rows.length]);
   if (!s) return <NotFound />;
 
   // With rewritten questions, the stored score is the true one; re-scoring would mark old answers against new questions.
@@ -272,6 +275,7 @@ function Review({ c }: { c: Content }) {
   return (
     <Page className="gap-6 lg:gap-8">
       <PlayerBar kicker={`Sectional review, ${mediumDate(s.d)}`} title={`Score ${marks > 0 ? "+" : ""}${marks} of ${MAX}`}>
+        {fromAnalysis && <LinkButton to={`/progress/mock-review?sectional=${s.id}&q=${cur + 1}`} variant="secondary" size="sm">Back to mock analysis · Q{cur + 1}</LinkButton>}
         <LinkButton to="/practice/sectional" variant="secondary" size="sm">All sectionals</LinkButton>
       </PlayerBar>
 
@@ -304,21 +308,23 @@ function Review({ c }: { c: Content }) {
         {rows.map((r, k) => <PaletteCell key={r.i} n={r.i + 1} state={r.blank ? "blank" : r.ok ? "right" : "wrong"} current={k === cur} onClick={() => setCur(k)} label={`Question ${r.i + 1}, ${r.blank ? "blank" : r.ok ? "correct" : "wrong"}`} />)}
       </div>
 
-      {row && <p className="text-sm text-muted-foreground">Question {row.i + 1}, {row.type}, {fmtSecs(s.t[row.i] ?? 0)} spent on it</p>}
-      {row?.ref.kind === "rc" && (
-        <>
-          <PaneSwitch pane={pane} setPane={setPane} q={`Question ${row.i + 1}`} />
-          <Split pane={pane}>
-            <Passage set={row.ref.set} highlight={row.ref.set.questions[row.ref.qi].proof} wordMode />
-            <ReviewQuestion set={row.ref.set} qi={row.ref.qi} chosen={s.a[row.i] === "" ? null : Number(s.a[row.i])} />
-          </Split>
-          {pane === "p" && <PaneJump onClick={() => showQuestion(setPane)}>Question {row.i + 1}</PaneJump>}
-        </>
-      )}
-      {row?.ref.kind === "va" && <div className="mx-auto flex w-full max-w-[760px] flex-col gap-5"><ItemReview item={row.ref.item} answer={s.a[row.i]} /></div>}
-      <div className="flex justify-between gap-2">
-        <Button variant="secondary" size="sm" disabled={cur === 0} onClick={() => setCur(cur - 1)}>Previous question</Button>
-        <Button variant="secondary" size="sm" disabled={cur >= rows.length - 1} onClick={() => setCur(cur + 1)}>Next question</Button>
+      <div id="sectional-question-detail" ref={el} className="scroll-mt-4">
+        {row && <p className="text-sm text-muted-foreground">Question {row.i + 1}, {row.type}, {fmtSecs(s.t[row.i] ?? 0)} spent on it</p>}
+        {row?.ref.kind === "rc" && (
+          <>
+            <PaneSwitch pane={pane} setPane={setPane} q={`Question ${row.i + 1}`} />
+            <Split pane={pane}>
+              <Passage set={row.ref.set} highlight={row.ref.set.questions[row.ref.qi].proof} wordMode />
+              <ReviewQuestion set={row.ref.set} qi={row.ref.qi} chosen={s.a[row.i] === "" ? null : Number(s.a[row.i])} />
+            </Split>
+            {pane === "p" && <PaneJump onClick={() => showQuestion(setPane)}>Question {row.i + 1}</PaneJump>}
+          </>
+        )}
+        {row?.ref.kind === "va" && <div className="mx-auto flex w-full max-w-[760px] flex-col gap-5"><ItemReview item={row.ref.item} answer={s.a[row.i]} /></div>}
+        <div className="flex justify-between gap-2">
+          <Button variant="secondary" size="sm" disabled={cur === 0} onClick={() => setCur(cur - 1)}>Previous question</Button>
+          <Button variant="secondary" size="sm" disabled={cur >= rows.length - 1} onClick={() => setCur(cur + 1)}>Next question</Button>
+        </div>
       </div>
     </Page>
   );

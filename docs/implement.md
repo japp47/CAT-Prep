@@ -38,7 +38,7 @@ Done when: …
 /** What happened to the student on a question they missed. Shared by the mock review and, from 2g, the Error log. */
 export type Cause = "misread" | "qualifier" | "beyond" | "trap" | "method" | "slip" | "guess" | "select" | "time";
 export interface MockQ {
-  st: "right" | "wrong" | "skip" | "unseen";
+  st: "unmarked" | "right" | "wrong" | "skip" | "unseen";
   type: string;                 // "rc" or a VA kind ("ps", "pj", "oso", "si"); DILR and Quant add theirs
   slow?: boolean;               // right, but too slow
   cause?: Cause;                // wrong answers
@@ -103,6 +103,8 @@ misread the passage, missed a qualifier, read too much into it, fell for the tra
 **Built 21 Oct 2026** on `feat/mock-review`: `practice/mockreview.ts` (13 tests), `pages/tracker/MockReview.tsx` (wizard and saved view), `pages/tracker/MockReviews.tsx` (Mocks tab section), links from Log and the sectional review. Playwright: the full flow at 412 and 1440 in both themes, and from an in-app sectional. Differences from the plan: step 3 "Re-solve" added from research; the grid uses an editor card under the palette, not a sheet; a manual review also writes practice rows by type; unreached questions count as time, without "could you have got it?".
 
 **Done when** a VARC mock with 6 wrong and 3 skipped can be reviewed on a phone in under 3 minutes of tapping, the actions show their evidence, and the review appears under the mocks chart.
+
+**Follow-up (24 Oct 2026).** Manual questions start as `unmarked`, with no outcome chip selected; an unmarked question counts as skipped in findings and scoring. Sectional analysis links the current question to its full saved review, preselects that question there, and offers a return link to the analysis draft.
 
 ### 2f-2. Weekly review (F13, with the light-week check F19)
 `feat/weekly-review` · `feat: weekly review with one focus for next week`
@@ -392,4 +394,3 @@ Full entries are written here when a step comes within two steps of being built:
 
 **Next, 4a.3:** the next category of owner sets (games and tournaments, reasoning DI, routes, set theory, Venn and syllogism, sent 24 Oct 2026), each with its own picture where it helps (points table, network, Venn regions); LR questions in the redo queue; then the Learn type guides (F21) and F83 to F85.
 **4a.1b DILR page opened, 24 Oct 2026** on `feat/dilr-resources`: section status `open` (`sections/types.ts`), `sections/dilr/learn.ts` (format, set types, topic share, concept guides, tabs and notes) and `sections/dilr/resources.ts` (34 links, ids prefixed `d-`, all opened on 24 Oct 2026); `pages/Section.tsx` reads per-section page data; the header, footer and Today stop calling DILR "soon". Test: `sections/dilr/resources.test.ts`.
-

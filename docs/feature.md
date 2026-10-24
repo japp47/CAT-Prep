@@ -115,18 +115,18 @@ Steps 2f and 2g below are live; their entries stay as the spec the code was buil
 
 ### Step 2f: mock analysis and the weekly review
 
-#### F12. Mock analysis wizard — Live (21 Oct 2026)
+#### F12. Mock analysis wizard — VARC live; section layouts in progress
 **Problem.** Students take a coaching mock, look at the score, and move on. The marks they could have saved (silly errors, skips they could do, time sinks) are never counted, so the next mock repeats them.
 
 **Story.** As a student who just finished a mock, I want a 15 to 20 minute guided review that shows where my marks went and gives me at most three things to change, so the next mock is better.
 
 **Scope.**
 - Works for: a coaching mock or real past paper taken outside 99ile (entered by hand), and an in-app timed sectional (filled in from its record).
-- VARC only at launch; the record allows DILR and Quant so they plug in when those sections ship.
+- Sectional test kinds are VARC, DILR and Quant. A full mock, past paper or official IIM mock is analysed one section at a time, selected in Basics.
 - Steps:
-  (Researched 21 Oct 2026, `docs/research/step-2f.md`.)
-  1. **Basics.** Name, date, kind, and the layout (passages and questions in each; VA questions by type). Default: CAT 2024–25 VARC, 4 passages × 4 questions, then 2 para summary, 2 sentence insertion, 2 odd sentence out, 2 para jumbles; odd sentence out and para jumbles are TITA (no negative mark). Optional: the attempts you planned before the mock.
-  2. **Question grid.** One cell per question, all "right" by default. Tap a cell to set right, wrong, skipped or not reached. A right answer can be marked **slow**. A wrong answer gets one cause: misread the question, missed a qualifier, read too much into it, fell for a trap option, did not know the method, careless slip, guessed, should have skipped it, ran out of time. A skipped or unreached question gets "Could you have got it?" yes or no; "no" is a **good skip**.
+  (Original VARC method: `docs/research/step-2f.md`; section counts and editable layouts: `docs/research/mock-review-sections.md`.)
+  1. **Basics.** Name, date, test kind and section, then an editable section layout. VARC starts at 24 questions: 4 passages × 4 and 8 VA questions by type. DILR starts at 22 questions across 5 sets (5, 5, 4, 4, 4), with an editable set style. Quant starts at 22 with an editable recent-paper topic estimate: Arithmetic 9, Algebra 7, Geometry and mensuration 3, Number systems 2, Modern mathematics 1. DILR set styles and Quant topics vary; these are starting layouts, not fixed CAT rules. Optional: the attempts planned before the mock.
+  2. **Question grid.** One cell per question, grouped by passage/VA type, DILR set style, or Quant topic. For a mock taken elsewhere, no result is selected by default; a question left unmarked counts as skipped. Tap a cell to set right, wrong, skipped or not reached. DILR and Quant questions also let the student mark MCQ or TITA, since wrong TITA answers do not lose a mark. A right answer can be marked **slow**. A wrong answer gets one cause: misread the question, missed a qualifier, read too much into it, fell for a trap option, did not know the method, careless slip, guessed, should have skipped it, ran out of time. A skipped or unreached question gets "Could you have got it?" yes or no; "no" is a **good skip**. For an in-app sectional, show a link from the current question to its full review (question, chosen answer, correct answer and time), then return to the saved analysis.
   3. **Re-solve.** The doable skips are listed; the student tries them now, untimed, before reading solutions, and ticks the ones solved. This step can be skipped.
   4. **Where the marks went.** Computed: the score; marks lost by group (careless, reading the options, method, choices, time, doable skips), good skips, slow right answers; by type; attempts against the plan; for in-app sectionals, time on right, wrong and given-up questions; this mock against the last three; and "with no careless slips and the doable skips solved, you would have scored X".
   5. **Three actions at most.** Proposed from the findings, each with its reason and evidence (e.g. "Para jumbles: 3 wrong of 4, two marked careless. Drill 6 para jumbles this week."). The student keeps, edits or removes each. Kept actions become recommendations (F43), and one can become the focus of the week (F13).
@@ -135,14 +135,15 @@ Steps 2f and 2g below are live; their entries stay as the spec the code was buil
 - The Mocks tab lists logged mocks not yet analysed ("Analyse it"), and once there are two or more reviews, marks lost by group across the last five.
 
 **Acceptance.**
-- A full VARC review with 6 wrong and 3 skipped takes under 3 minutes of tapping on a phone (grid plus causes), not counting reflection.
+- VARC, DILR and Quant each render their own question categories and default counts; changing a layout regenerates the grid without losing unchanged answers.
+- A full review with 6 wrong and 3 skipped takes under 3 minutes of tapping on a phone (grid plus causes), not counting reflection.
 - "Where the marks went" adds up: right × 3 − wrong MCQ = the score shown; careless + time + did not know + not reached covers every lost question.
-- From an in-app sectional, the grid is filled (status and seconds per question, question type) and only the causes are asked.
+- From an in-app sectional, the grid is filled (status and seconds per question, question type) and only the causes are asked; each question can be opened in its full review at the exact question, both pages scroll to that question below the summary, and returning restores that question in the analysis draft.
 - No actions are proposed from fewer than 2 questions of a kind; the student can always write their own.
 - Works offline, survives a reload mid-way (draft), and is in backup and restore. Old backups load with no reviews.
 - One filled button per step; 44px tap targets; no text under 14px; both themes; 412 and 1440 wide.
 
-**Not in scope.** Importing mock PDFs or scraping coaching portals; DILR and Quant question types (the record allows them).
+**Not in scope.** Importing mock PDFs or scraping coaching portals.
 
 #### F13. Weekly review (Sunday review) — Live (21 Oct 2026)
 **Problem.** Daily practice hides the trend. Students do not notice that one type keeps slipping, or that last week's plan was never followed.
