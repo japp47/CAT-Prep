@@ -61,30 +61,32 @@ export default function You() {
 
   return (
     <Page width="wide">
-      <header className="grid gap-5 rounded-xl bg-accent p-5 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-center sm:gap-6 sm:p-7 lg:grid-cols-[auto_minmax(0,1fr)_auto]">
+      <header className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-4 rounded-xl bg-accent p-5 sm:gap-6 sm:p-7 lg:grid-cols-[auto_minmax(0,1fr)_auto]">
         <span className="grid size-16 place-items-center rounded-full bg-primary text-2xl font-semibold text-primary-foreground sm:size-20 sm:text-3xl" aria-hidden>
           {s.account ? initial(s.account) : <UserRound className="size-8" />}
         </span>
-        <div className="flex min-w-0 flex-col items-start gap-1">
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="contents sm:flex sm:min-w-0 sm:flex-col sm:items-start sm:gap-1">
+          <div className="min-w-0">
             <h1 className="max-w-full truncate text-title font-semibold">{s.account ? s.account.name || "You" : "Your 99ile"}</h1>
-            <Badge variant={accountStatus.variant}>{accountStatus.label}</Badge>
           </div>
-          {s.account
-            ? <><p className="max-w-full truncate text-base text-muted-foreground">{s.account.email}</p>{since && <p className="text-sm text-muted-foreground">Member since {since}</p>}</>
-            : <p className="text-base text-muted-foreground">
-                {s.phase !== "off" ? `Not signed in · ${statusLine(s)}.` : "Your progress is saved on this device."}
-              </p>}
+          <div className="col-span-2 flex min-w-0 flex-col items-start gap-1 sm:col-span-1">
+            <Badge variant={accountStatus.variant}>{accountStatus.label}</Badge>
+            {s.account
+              ? <><p className="max-w-full truncate text-base text-muted-foreground">{s.account.email}</p>{since && <p className="text-sm text-muted-foreground">Member since {since}</p>}</>
+              : <p className="text-base text-muted-foreground">
+                  {s.phase !== "off" ? `Not signed in · ${statusLine(s)}.` : "Your progress is saved on this device."}
+                </p>}
+          </div>
         </div>
         {!s.account && API_ENABLED && (
-          <LinkButton to={SIGNIN_ENABLED ? "/signin?then=%2Fyou" : "/you#sync"} variant="secondary" className="w-full sm:w-fit">
+          <LinkButton to={SIGNIN_ENABLED ? "/signin?then=%2Fyou" : "/you#sync"} variant="secondary" className="col-span-2 w-fit justify-self-start sm:col-span-1 lg:col-span-1">
             {SIGNIN_ENABLED ? "Sign in" : "Set up sync"} <ArrowRight data-icon="inline-end" />
           </LinkButton>
         )}
       </header>
 
       <div className="grid items-start gap-8 lg:grid-cols-2">
-        <Section title="Your CAT" description={<>{EXAM_NAME}, {EXAM_CONFIRMED ? "on" : "expected on"} {longDate(EXAM_ISO)}{left > 0 && <>, {left} days to go</>}. Your plan is built around this exam.</>}>
+        <Section title="Your CAT" description={<>{EXAM_NAME}, {EXAM_CONFIRMED ? "on" : "expected on"} {longDate(EXAM_ISO)}{left > 0 && <>, {left} days to go</>}.</>}>
           <Panel>
             <Choice label="Target percentile in VARC" hint="Used in your plan, Progress and mock chart.">
               <TargetPicker />
@@ -100,7 +102,7 @@ export default function You() {
           </Panel>
         </Section>
 
-        <Section title="Your study so far" action={<span className="flex flex-wrap gap-x-4 gap-y-2 text-base"><Link to="/history" className="font-medium text-primary underline-offset-4 hover:underline">History</Link><Link to="/progress" className="font-medium text-primary underline-offset-4 hover:underline">Progress</Link></span>}>
+        <Section title="Your study so far" description="A snapshot of your study time, questions and consistency." action={<span className="flex flex-wrap gap-x-4 gap-y-2 text-base"><Link to="/history" className="font-medium text-primary underline-offset-4 hover:underline">History</Link><Link to="/progress" className="font-medium text-primary underline-offset-4 hover:underline">Progress</Link></span>}>
           <div className="grid grid-cols-2 gap-3 rounded-lg bg-card p-3 sm:gap-4 sm:p-4">
             <Stat className="min-h-24 justify-center rounded-md bg-muted/60 p-4" value={streak.days ? `${streak.days} day${streak.days === 1 ? "" : "s"}` : "None yet"} label="Current streak" />
             <Stat className="min-h-24 justify-center rounded-md bg-muted/60 p-4" value={study.days} label="Days studied" />
