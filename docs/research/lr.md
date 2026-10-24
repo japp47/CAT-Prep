@@ -93,3 +93,59 @@ Existing plans that fit: Set Selection Arena (F56) and DILR Replay (F57).
 
 - Every set is checked by tests before it ships: answers in range, TITA answers parse, clue references valid, 4–6 questions. Format: `docs/content/lr-format.md`.
 - **Only original or permitted sets go on the site.** CAT papers belong to the IIMs, and coaching sets to their authors; linking is fine, copying is not (as for RC and VA). Sets written from scratch, or with the writer's permission, are fine. The format has a `source` field for this.
+
+## 8. Added 24 Oct 2026: toppers, channels, and what could not be read
+
+- **Dipak Agrawal, 99.83 in CAT 2023:** 3 of 60 in DILR on his first mock; one DILR sectional a day for about three months (some 360 sets), analysed and re-solved; "two sets solved fully should guarantee a 99" ([Substack](https://dipakagrawal.substack.com/p/how-i-scored-9983-in-cat-2023-and)).
+- **Ankan Chakraborty, 99.93 in CAT 2021 (DILR 99.37):** three or four YouTube sets on non-mock days, 74 mocks; on the day he left a stuck set after 20 minutes and solved three others in 13 ([InsideIIM](https://insideiim.com/cat-prepare-without-coaching-cat-tips)).
+- **Free channels with many solved sets:** Aptitude Jab (300+), Anastasis Academy (about 200), Elite's Grid for DI ([InsideIIM free resources](https://insideiim.com/free-resources-to-begin-cat-2024-preparation)).
+- Reddit was first thought unreadable; see §9.
+- Links dropped because they did not open: a Collegedunia sample-paper page (403) and an IMS strategy post (410).
+
+## 9. Reddit, r/CATpreparation (read 24 Oct 2026)
+
+How it was read, so nobody has to redo it: Reddit returns 403 to plain requests (JSON, api.reddit.com, old.reddit.com), but the RSS feeds answer: `https://www.reddit.com/r/CATpreparation/search.rss?q=DILR&restrict_sr=1&sort=top&t=all&limit=100` and `<post url>.rss?limit=500` for comments. The limit is about one request a minute (`x-ratelimit-remaining`, `x-ratelimit-reset` headers). We searched 17 DILR queries (top and relevance), kept 543 posts, and read the comments of the 42 most useful threads.
+
+### What students name most (mentions across posts and comments)
+| Resource | What people say | On the page |
+|---|---|---|
+| Rodha (Ravi Prakash), YouTube | The free basics course named most; "Rodha or Elite's Grid for basics, pick one" | Yes, [Complete LRDI for CAT 2027](https://www.youtube.com/playlist?list=PLG4bwc5fquzhDp8eqRym2Ma1ut10YF0Ea) (85 videos) |
+| Anastasis Academy (Arvind Shankar) | "Daily DILR" 200 sets, easy first; the default practice list for self-studiers | Yes, [200 sets](https://www.youtube.com/playlist?list=PLgdxDqtv4Gt-4vXeT_OuiwJ7-jBujAEru) and [154 most expected](https://www.youtube.com/playlist?list=PLgdxDqtv4Gt9hpZOteOrSIU5mKzXtpghA) |
+| Aptitude Jab | "conquered my apprehension toward DILR"; 475 videos, too many to finish | Yes, [playlist](https://www.youtube.com/playlist?list=PLxht4dVcisIIGMmxx0bTZv9F68dtuD9hY) |
+| Elite's Grid (Gaurav Kapoor) | Paid course; free 4.5-hour DILR revision marathon; strong for DI | Channel already linked |
+| IMS Prayagraj / Uttar Pradesh "100 days DILR" | One LR set a day | Yes, [CAT 25 run](https://www.youtube.com/playlist?list=PLmIyr1osvn8MVAuqC5aiZWt_EL8ldX8Pg) (75) |
+| 2IIM YouTube | PYQs grouped by type, not year | Channel already linked |
+| GOAT CAT | Every CAT DILR set 2017 to 2024 solved | Yes, [114 videos](https://www.youtube.com/playlist?list=PLXv0hNMDm8iQE7VHb7UvrwhKL_pF9C35T) |
+| MBA Pathshala (Vijay) | Free basics, a third teacher | Yes, [59 videos](https://www.youtube.com/playlist?list=PLLtQdEJkug7v5-Yrwq09aMnOZz3d313qB) |
+| ACE CAT (Arpit Soni) | "difficult sets, good for levelling up" | Not added: the playlist has 24 videos |
+| Arun Sharma LR and DI | Cited for L1/L2 practice; one 99.83 found its types dated | Already linked |
+| Nishit Sinha | "80% of it is PYQs" | Already linked |
+| CL DILR1000, TIME and IMS sectionals, SimCAT, AIMCAT | Paid; "take mocks from two institutes" | Not linked (paid) |
+| Takshzila, LRDI Master, Unacademy | Paid courses, few mentions | Not linked |
+| Shakuntala Devi puzzles, Sudoku | "did not help me understand CAT sets" | Not linked: supports keeping warm-up puzzles short |
+| TGJ community sheet | A shared Google Sheet of free resources; DILR tab unfinished, mostly Rodha topic videos | Not linked |
+| CATguruji table of set types per slot, 2020 to 2023 (image) | Scheduling, tables with missing data and caselets come most | Matches the topic table |
+
+No GitHub repository for DILR came up.
+
+### Practice tab, reworked the same day
+The owner found Practice thin next to VARC (16 links against 46, warm-up puzzles first). It now has 28 links in seven groups, CAT sets first and puzzles last: CAT sets by topic; **sets with video solutions** (the Anastasis, Aptitude Jab and IMS playlists moved here from Watch, since students solve them, not just watch); CAT past papers; **timed sections** ([Cracku free LRDI sectional](https://cracku.in/lrdi-sectional-tests-2025/lrdi-free-sectional-test), [InsideIIM DILR mini mocks](https://insideiim.com/free-cat-tests-to-ace-cat-2023)); **harder practice** ([IIFT papers on Cracku](https://cracku.in/iift-previous-papers), [iQuanta 10-set PDF](https://www.iquanta.in/blog/cat-lrdi-practice-sets-part-2-download-free-pdf/), [ACE CAT 100 sets](https://www.youtube.com/playlist?list=PL0NRRcddIX2etlya_Mrowxe0knBAwWofh)); mocks (added [Quantifiers TruCAT](https://quantifiers.in/cat-test-series/), [2IIM's 3 free mocks](https://online.2iim.com/free-cat-study-material.shtml), [Hitbullseye](https://mba.hitbullseye.com/CAT/CAT-mock-test.php)); warm-up puzzles.
+
+Checked and left out: handakafunda.com (the domain now serves a gambling site), Bodhee Prep topic pages (404), IMS free SimCAT page (404), IndiaBix logical reasoning (series and analogies, not CAT sets), SNAP and NMAT papers (short, easier LR), paid sectionals (Quantifiers, IMS, TIME, CL).
+
+### Advice that repeats (used in the Learn guides)
+- **Identify the type, then draw.** Name the set (arrangement, routes, games, Venn, distribution) before solving; tabulate, use variables, two or three tables are fine.
+- **Read the set two or three times**; partial information starts to connect on the second read.
+- **Speed comes later.** 30 to 45 minutes a set at first, 15 to 20 after about 100 sets. Two sets a day untimed for two months, then timed (the 13 to 99.24 story, about 600 sets).
+- **Set selection beats speed.** Give a set 2 to 4 minutes: "do I have a way in?" Sunk time is the trap; but do not skip every set either.
+- **Re-solve every mock set** in analysis, especially the skipped ones; note the misread clue or wrong table.
+- **Watch how the teacher starts a set**, not only the answer.
+- **Finish, don't collect:** one basics source, one PYQ bank, one mock series ("the 3-source rule").
+- **Mentor view:** basics under 5% of the time; 4 to 5 sets a day once comfortable; 40+ sectionals.
+
+### Threads worth keeping
+- [How I scored 99 in DILR](https://www.reddit.com/r/CATpreparation/comments/1jqb4ej/how_i_scored_99_in_dilr/): 13 to 99.24, 600 sets (on the page)
+- [How to crack DILR, 99.38](https://www.reddit.com/r/CATpreparation/comments/1d0iakz/how_to_crack_dilr_in_cat_a_guide_based_on/): break clues down, list every case, 4-minute rule (on the page)
+- [Set selection, not speed](https://www.reddit.com/r/CATpreparation/comments/1x7lh5j/i_thought_my_dilr_problem_was_speed_turns_out_it/) (on the page)
+- [To the folks struggling with DILR](https://www.reddit.com/r/CATpreparation/comments/1vkgqbe/to_the_folks_who_are_struggling_with_dilr/), [The exact method to crack any set](https://www.reddit.com/r/CATpreparation/comments/1lktbas/the_exact_method_to_crack_any_dilr_set/), [AMA, 99.93 in DILR](https://www.reddit.com/r/CATpreparation/comments/1ly3rn7/ama_9993ilr_in_dilr/), [My CAT journey, 99.02](https://www.reddit.com/r/CATpreparation/comments/1i4tc16/my_cat_journey_tips_and_resources/), [Finishing beats collecting](https://www.reddit.com/r/CATpreparation/comments/1w40in0/most_cat_aspirants_dont_have_a_resource_problem/)
+

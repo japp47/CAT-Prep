@@ -22,7 +22,7 @@ interface SiteHeaderProps {
 
 const LANDING_LINKS: SiteNavItem[] = [
   { to: "/varc", label: "VARC" },
-  { to: "/dilr", label: "DILR", soon: true },
+  { to: "/dilr", label: "DILR" },
   { to: "/quant", label: "Quant", soon: true },
   { to: "/practice", label: "Practice" },
 ];

@@ -69,7 +69,8 @@ export interface SectionDef {
   id: SectionId;
   short: string;
   name: string;
-  status: "live" | "soon";
+  /** live: page and timetable. open: the page, learn guides and resources, not yet in the timetable. soon: a placeholder. */
+  status: "live" | "open" | "soon";
   tagline: string;
   /** Default minutes on a weekday and on Saturday or Sunday */
   defaults: { wd: number; we: number };
