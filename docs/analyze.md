@@ -157,6 +157,11 @@ Thinking practice (Arcade, Manager Lab, DILR and Quant ideas), community, and re
 | D24 | Scheduled reminders run where? A GitHub Actions cron every 15 minutes calling a protected endpoint, or a goroutine ticker in the API (Render free stays awake with the ping) | Recommended: a ticker in the API with a Postgres advisory lock, idempotent; GitHub cron as a backup trigger. Decide in 4b |
 | D25 | How does the owner hear about reports? | **Decided 23 Oct 2026 (owner):** a daily digest emailed to 99ile.team@gmail.com with notes (B6c) and posted to one GitHub issue without notes (B6b), an admin page after B7 (B8, F79) |
 | D26 | Does History or search need the server? | **Decided 24 Oct 2026:** no. Both read the device's own synced data; Postgres full-text search comes only with community posts (F67, F68) |
+| D27 | Sign-in session: a new session cookie, or the device cookie? | **Decided 24 Oct 2026:** the device cookie. An account owns one identity; signing in only points this device at it, so sync needs no change |
+| D28 | `access` roles in B7 or with the admin page? | **Decided 24 Oct 2026:** B8, where they are first read (`docs/database.md` §4 rule 5: no tables without code) |
+| D29 | What happens to the anonymous identity a device leaves at sign-in? | **Decided 24 Oct 2026:** kept while any device uses it; deleted 30 days after it has no account and no active device |
+| D30 | Google flow: redirect code flow, or the Google Identity Services button? | **Decided 24 Oct 2026:** code flow with PKCE through our own origin. No Google script on our pages (CSP and privacy), works in every browser and in the installed app |
+| D31 | Practice sets past their target time: keep counting, or submit? | **Decided 24 Oct 2026 (owner):** submit. 60 seconds of warning at the target with Keep going; a hard stop at three times the target |
 | Older | Cloud Run needs a card; AI limits; who checks DILR and Quant keys; leaderboard nicknames | As in `docs/plan.md` |
 
 ---

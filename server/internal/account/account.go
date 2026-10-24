@@ -65,6 +65,7 @@ type Service struct {
 	newIdent *limit.Limiter
 	tries    *limit.Limiter
 	wrong    *limit.Limiter
+	signIn   *SignIn // nil until Google sign-in is configured
 }
 
 // New returns the service.
@@ -158,11 +159,20 @@ type created struct {
 	RecoveryCode string `json:"recoveryCode"`
 }
 
-// ShowHandler is GET /v1/identity: which identity and device this browser is.
+// ShowHandler is GET /v1/identity: which identity and device this browser is, and the account that owns the
+// identity, if any (B7).
 func (s *Service) ShowHandler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		d, _ := FromContext(r.Context())
-		httpx.WriteJSON(w, http.StatusOK, d)
+		a, err := s.accountOf(r.Context(), d.IdentityID)
+		if err != nil {
+			s.fail(w, r, err)
+			return
+		}
+		httpx.WriteJSON(w, http.StatusOK, struct {
+			Device
+			Account *Account `json:"account"`
+		}{d, a})
 	})
 }
 

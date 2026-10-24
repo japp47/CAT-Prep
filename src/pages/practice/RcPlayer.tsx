@@ -25,7 +25,7 @@ import { recordRcSummary, summaryFor, summaryScore } from "../../practice/summar
 import { rcStale } from "../../practice/versions";
 import { GENRES, RC_QTYPE, setWords, SUMMARY_MAX_WORDS, words, type RcSet, type RcSummary } from "../../practice/types";
 import NotFound from "../NotFound";
-import { Choice, ChoiceGroup, Confirm, ElapsedTimer, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
+import { Choice, ChoiceGroup, Confirm, ElapsedTimer, TimeUp, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
 
 /** Words too common to be worth saving to flashcards. */
 const COMMON = new Set("the and for are but not you all any can had her was one our out has him his how its may new now old see two way who did get let put say she too use that with have this will your from they know want been good much some time very when come here just like long make many more only over such take than them well were what which their there these those would could should about after other where while being because through between does into also each most even then upon whose".split(" "));
@@ -280,6 +280,7 @@ function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) 
           : <ElapsedTimer startAt={startAt} target={TARGET_SECS} onClick={() => setHideTimer(true)} title="Target 7 minutes. Tap to hide." />}
         <Button size="sm" variant="secondary" onClick={() => setConfirming(true)}>Submit set</Button>
       </PlayerBar>
+      <TimeUp key={startAt} startAt={startAt} target={TARGET_SECS} onSubmit={submit} />
       {resumed && saved && <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-card px-4 py-3">
         <p className="text-sm text-muted-foreground">Your saved answers are back. The timer paused while you were away ({fmtSecs(saved.secs)} elapsed).</p>
         <Button variant="ghost" size="sm" onClick={() => setConfirmRestart(true)}>Start over</Button>

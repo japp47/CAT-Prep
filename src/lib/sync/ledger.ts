@@ -14,7 +14,9 @@ export type Row = [string, number, number, string];
  * `hi` is the highest stamp this device has made or seen: the hybrid clock below never goes behind it.
  * `last` is when a sync round last finished (ms) and `who` the identity and device this browser syncs as.
  */
-export interface Ledger { v: 1; on: boolean; cursor: number; hi: number; rows: Record<string, Row>; last?: number; who?: { identityId: string; deviceId: string } }
+/** The account that owns this browser's progress (B7): shown in the header and menu without asking the server. */
+export interface AccountName { email: string; name: string }
+export interface Ledger { v: 1; on: boolean; cursor: number; hi: number; rows: Record<string, Row>; last?: number; who?: { identityId: string; deviceId: string; account?: AccountName } }
 
 export const blankLedger = (): Ledger => ({ v: 1, on: false, cursor: 0, hi: 0, rows: {} });
 
@@ -96,7 +98,11 @@ export function loadLedger(): Ledger {
     if (raw && raw.v === 1 && raw.rows && typeof raw.rows === "object") {
       const L: Ledger = { v: 1, on: raw.on === true, cursor: Number(raw.cursor) || 0, hi: Number(raw.hi) || 0, rows: raw.rows };
       if (typeof raw.last === "number") L.last = raw.last;
-      if (raw.who && typeof raw.who.identityId === "string" && typeof raw.who.deviceId === "string") L.who = { identityId: raw.who.identityId, deviceId: raw.who.deviceId };
+      if (raw.who && typeof raw.who.identityId === "string" && typeof raw.who.deviceId === "string") {
+        L.who = { identityId: raw.who.identityId, deviceId: raw.who.deviceId };
+        const a = raw.who.account;
+        if (a && typeof a.email === "string" && typeof a.name === "string") L.who.account = { email: a.email, name: a.name };
+      }
       return L;
     }
   } catch { /* corrupt or blocked: start again; the next sync pulls and pushes everything */ }

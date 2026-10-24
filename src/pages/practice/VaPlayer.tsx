@@ -15,7 +15,7 @@ import { vaKeysOfDay } from "../../practice/daily";
 import { fmtSecs, LETTERS, recordVa, vaError, vaErrorSrc } from "../../practice/record";
 import { answerLabel, cleanAnswer, customDrill, parseKey, scoreItem, sentenceAt, sumAt, VA_KIND, type VaItem, type VaKind } from "../../practice/va/build";
 import { paraText, type VaPara } from "../../practice/types";
-import { Choice, ChoiceGroup, Confirm, ElapsedTimer, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
+import { Choice, ChoiceGroup, Confirm, ElapsedTimer, TimeUp, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
 
 const SECS_PER_ITEM = 90;
 
@@ -126,6 +126,7 @@ function DrillAttempt({ items, mode, draftKey, onDone }: { items: VaItem[]; mode
         <ElapsedTimer startAt={startAt} target={items.length * SECS_PER_ITEM} />
         <Button size="sm" variant="secondary" onClick={() => setConfirming(true)}>Submit drill</Button>
       </PlayerBar>
+      <TimeUp key={startAt} startAt={startAt} target={items.length * SECS_PER_ITEM} onSubmit={submit} />
       {resumed && saved && <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-card px-4 py-3">
         <p className="text-sm text-muted-foreground">Your saved answers are back. The timer paused while you were away ({fmtSecs(saved.secs)} elapsed).</p>
         <Button variant="ghost" size="sm" onClick={() => setConfirmRestart(true)}>Start over</Button>

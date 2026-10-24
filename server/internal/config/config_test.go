@@ -96,3 +96,16 @@ func TestShortSecretsAreRefused(t *testing.T) {
 		}
 	}
 }
+
+func TestGoogleSignInNeedsBothSettings(t *testing.T) {
+	if _, err := load(env(map[string]string{"GOOGLE_CLIENT_ID": "x.apps.googleusercontent.com"})); err == nil {
+		t.Fatal("a client id without its secret was accepted")
+	}
+	if _, err := load(env(map[string]string{"GOOGLE_CLIENT_ID": "not-a-client-id", "GOOGLE_CLIENT_SECRET": "s"})); err == nil {
+		t.Fatal("a malformed client id was accepted")
+	}
+	c, err := load(env(map[string]string{"DATABASE_URL": "postgres://u:p@localhost:5433/cat", "GOOGLE_CLIENT_ID": "x.apps.googleusercontent.com", "GOOGLE_CLIENT_SECRET": "s"}))
+	if err != nil || c.SignInRedirect() != "http://localhost:5173/api/v1/auth/google/callback" {
+		t.Fatalf("%v %q", err, c.SignInRedirect())
+	}
+}

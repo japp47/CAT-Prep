@@ -29,7 +29,7 @@ export interface SyncIO {
 export interface WireRecord { kind: Kind; id: string; data: unknown; deleted: boolean; stamp: number; rev: number }
 interface PullAnswer { cursor: number; records: WireRecord[]; more: boolean }
 interface PushAnswer { applied: { kind: Kind; id: string; rev: number }[]; stale: WireRecord[]; rejected?: { kind: Kind; id: string; code: string }[] }
-export interface Who { identityId: string; deviceId: string }
+export interface Who { identityId: string; deviceId: string; account?: { email: string; name: string } }
 
 export type Outcome = { ok: true } | { ok: false; code: string; message: string; status: number };
 
@@ -205,6 +205,30 @@ export async function link(io: SyncIO, kind: "link" | "recover", code: string, a
     await io.apply(() => blankState());
   }
   begin(io, res.data);
+  return round(io);
+}
+
+/** The account that owns this progress (B7), or null for sync without an account. */
+export interface Account { email: string; name: string }
+export const whoAmI = (io: SyncIO) => io.call<Who & { account: Account | null }>("/identity");
+
+/** What the page must ask after Google sends the student back with a ticket (docs/architecture.md §5.2). */
+export interface TicketInfo { email: string; name: string; account: "new" | "existing"; accountHasProgress: boolean; device: "guest" | "anonymous" | "other_account" }
+export const ticketInfo = (io: SyncIO, ticket: string) => io.call<TicketInfo>("/auth/ticket", { ticket });
+
+/**
+ * Finishes signing in: the server points this browser at the account's progress, then the same steps as linking a
+ * device run here. `keep` adds this device's progress (merged, nothing overwritten); otherwise this device starts
+ * from the account's progress, cleared only after the server said yes.
+ */
+export async function completeSignIn(io: SyncIO, ticket: string, about: { label: string; platform: string }, keep: boolean): Promise<Outcome> {
+  const res = await io.call<Who & { account: Account }>("/auth/complete", { ticket, keep, ...about });
+  if (!res.ok) return res;
+  if (!keep) {
+    io.save({ ...io.load(), on: false, rows: {} });
+    await io.apply(() => blankState());
+  }
+  begin(io, { identityId: res.data.identityId, deviceId: res.data.deviceId, account: { email: res.data.account.email, name: res.data.account.name } });
   return round(io);
 }
 

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { LinkButton } from "./kit";
-import { API_ENABLED } from "../lib/api";
+import { API_ENABLED, SIGNIN_ENABLED } from "../lib/api";
 import { hasProgress } from "../lib/backup";
 import { usePref } from "../lib/prefs";
 import { useStore } from "../lib/store";
@@ -42,6 +42,7 @@ export default function SyncPrompt({ className }: { className?: string }) {
     </div>
   );
   if (kind === "invite") return card("Already studying on another device?", "Link this one to bring your progress here. No sign-up.", "/link", "Link this device", () => setInviteSeen(true));
+  if (kind === "nudge" && SIGNIN_ENABLED) return card("Keep your progress safe.", "Sign in with Google so a new or wiped phone loses nothing, and your laptop shows the same.", "/signin?then=%2Ftoday", "Sign in", () => setNudgeSeen(true));
   if (kind === "nudge") return card("Study on a phone and a laptop?", "Turn on sync to keep your progress the same on both. No sign-up.", "/settings#sync", "Set up sync", () => setNudgeSeen(true));
   return null;
 }

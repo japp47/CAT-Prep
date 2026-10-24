@@ -21,9 +21,11 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/japp47/CAT-Prep/server/internal/account"
+	"github.com/japp47/CAT-Prep/server/internal/auth"
 	"github.com/japp47/CAT-Prep/server/internal/config"
 	"github.com/japp47/CAT-Prep/server/internal/feedback"
 	"github.com/japp47/CAT-Prep/server/internal/httpx"
+	"github.com/japp47/CAT-Prep/server/internal/limit"
 	"github.com/japp47/CAT-Prep/server/internal/reqinfo"
 	"github.com/japp47/CAT-Prep/server/internal/store"
 	"github.com/japp47/CAT-Prep/server/internal/syncapi"
@@ -166,6 +168,14 @@ func newV1(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger) http.Handler
 	return v1Routes(cfg, pool, log, syncapi.Options{Kinds: SyncKinds, MaxRecords: 20_000, MaxBytes: 8 << 20, PerMinute: 120})
 }
 
+// signInProvider is Google when it is configured; tests replace it with a fake provider.
+var signInProvider = func(cfg config.Config) auth.Provider {
+	if cfg.GoogleClientID == "" {
+		return nil
+	}
+	return &auth.OIDC{Issuer: auth.GoogleIssuer, ClientID: cfg.GoogleClientID, ClientSecret: cfg.GoogleClientSecret, RedirectURL: cfg.SignInRedirect()}
+}
+
 func v1Routes(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger, opt syncapi.Options) http.Handler {
 	hash := reqinfo.NewHasher(cfg)
 	lim := account.Limits{NewIdentities: 5, CodeTries: 10, WrongInARow: 5}
@@ -180,6 +190,10 @@ func v1Routes(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger, opt synca
 	}
 	acc := account.New(pool, hash, log, lim, bot)
 	sy := syncapi.New(pool, hash, log, opt)
+	if p := signInProvider(cfg); p != nil {
+		acc.WithSignIn(account.SignIn{Provider: p, Starts: limit.New(30, time.Hour)})
+	}
+
 	fbPerHour := 10
 	if !cfg.Prod() {
 		fbPerHour = 100
@@ -200,5 +214,9 @@ func v1Routes(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger, opt synca
 	rt.Handle("GET /v1/me/export", acc.Require(sy.ExportHandler()))
 	rt.Handle("DELETE /v1/me", acc.Require(acc.DeleteHandler()))
 	rt.Handle("POST /v1/feedback", acc.Optional(fb.Handler()))
+	rt.Handle("GET /v1/auth/google/start", acc.StartHandler())
+	rt.Handle("GET /v1/auth/google/callback", acc.CallbackHandler())
+	rt.Handle("POST /v1/auth/ticket", acc.TicketHandler())
+	rt.Handle("POST /v1/auth/complete", acc.CompleteHandler())
 	return reqinfo.Gate(cfg)(rt)
 }

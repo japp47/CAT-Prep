@@ -3,7 +3,7 @@ import { Page, PageHeader, Section } from "@/components/kit";
 import { CONTACT_EMAIL } from "@/data/site";
 
 /** When this notice last changed. Update it with any change below. */
-const UPDATED = "23 October 2026";
+const UPDATED = "24 October 2026";
 
 const P = ({ children }: { children: React.ReactNode }) => <p className="max-w-prose text-base leading-relaxed">{children}</p>;
 const List = ({ items }: { items: React.ReactNode[] }) => (
@@ -24,7 +24,8 @@ export default function Privacy() {
       <Section title="The short version">
         <List items={[
           "Without sync, everything you do stays in this browser. We never see it.",
-          "If you turn sync on, your progress is copied to the 99ile server so your devices show the same thing. We do not ask for your name, email, phone number or a password.",
+          "If you turn sync on, your progress is copied to the 99ile server so your devices show the same thing. Without an account we do not know your name, email or phone number, and there is no password.",
+          "If you sign in with Google, we keep your email and the name Google gives, to show who is signed in and to bring your progress to a new device. Nothing else from Google.",
           "No ads, no selling of data, no tracking across sites.",
           <>You can download what the server has, and delete it, at any time in <Link className="underline underline-offset-4" to="/settings#sync">Settings</Link>.</>,
         ]} />
@@ -46,6 +47,11 @@ export default function Privacy() {
         <P>The servers that host 99ile see your network address with each request, as every website does, and keep it in their logs for 7 days.</P>
       </Section>
 
+      <Section title="Signing in with Google">
+        <P>Only if you choose to. Google tells us your email address, your name and a number that stays the same for your Google account; we keep these with your progress. We do not get your password, contacts or anything else in your Google account, and we do not post anything to it.</P>
+        <P>You can sign out of a device at any time. &ldquo;Delete all my data&rdquo;, then &ldquo;Everywhere&rdquo;, deletes your account together with your progress.</P>
+      </Section>
+
       <Section title="Problem reports">
         <P>When you use &ldquo;Report a problem with this question&rdquo;, with or without sync, we receive:</P>
         <List items={[
@@ -60,6 +66,7 @@ export default function Privacy() {
         <List items={[
           "Render runs the 99ile server, in Singapore.",
           "Supabase hosts the database, in Singapore.",
+          "Google signs you in, if you choose Sign in with Google.",
           "Cloudflare serves the website and runs a quick bot check (Turnstile) when you turn sync on.",
           "Google (Gmail) holds the team's daily email of problem reports, with any notes.",
           "GitHub holds the public list of reported questions, without notes.",
@@ -69,7 +76,9 @@ export default function Privacy() {
 
       <Section title="How long">
         <List items={[
-          "Your progress: until you delete it.",
+          "Your progress: until you delete it. Without an account, if no device has synced it for 30 days (every device signed out or removed), it is deleted from the server; your devices keep their copy.",
+          "Your account (email and name): until you delete it.",
+          "A sign-in in progress: 10 minutes, then it is deleted a day later.",
           "A device you removed: its entry is deleted 90 days later.",
           "Link codes: they work for 10 minutes and are deleted a day after that.",
           "The security log: 400 days.",
