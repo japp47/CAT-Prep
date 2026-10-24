@@ -54,6 +54,19 @@ export interface RcAttempt { id: string; d: string; set: string; mode: "daily" |
 export interface VaAttempt { id: string; d: string; mode: "daily" | "custom"; items: { k: string; a: string; ok: boolean; pts: number; v?: string; unsure?: true }[]; secs: number }
 /** One critical reasoning drill. a is the option index chosen for each item, or null when it was left blank. */
 export interface CrAttempt { id: string; d: string; items: { k: string; a: number | null; ok: boolean; v?: string; unsure?: true }[]; secs: number }
+/**
+ * One attempt at a logical reasoning set (F23). ans[i] is the chosen option (MCQ) or the typed answer (TITA), null when
+ * blank. c counts right answers and w wrong MCQs only (TITA has no negative marking), so 3c - w is the score. pm is the
+ * post-mortem (F86), written after the review opens; that is why this kind syncs by updatedAt instead of write-once.
+ */
+export interface LrAttempt { id: string; d: string; set: string; ans: (number | string | null)[]; c: number; w: number; secs: number; updatedAt: number; v?: string; unsure?: number[]; pm?: LrPostMortem }
+/** Where the time went in an LR set, and the slip that cost an answer (F86). */
+export const LR_TIME_SINKS = ["reading", "drawing", "cases", "calculation", "stuck"] as const;
+export const LR_SLIPS = ["misread", "missed-case", "assumption", "calculation", "none"] as const;
+export type LrTimeSink = (typeof LR_TIME_SINKS)[number];
+export type LrSlip = (typeof LR_SLIPS)[number];
+/** The set post-mortem (F86): the clue that opened the set, where the time went, and the slip with its clue. Each part is optional. */
+export interface LrPostMortem { key?: number; time?: LrTimeSink; slip?: LrSlip; slipClue?: number }
 /** One reading speed test. recall is the number of recall questions answered correctly, out of 2. */
 export interface SpeedRun { id: string; d: string; set: string; words: number; secs: number; wpm: number; recall: number }
 /**
@@ -125,6 +138,7 @@ export interface AppState {
   rcAttempts: RcAttempt[];
   vaAttempts: VaAttempt[];
   crAttempts: CrAttempt[];
+  lrAttempts: LrAttempt[];
   speedRuns: SpeedRun[];
   redo: RedoItem[];
   sectionals: SectionalAttempt[];
@@ -150,7 +164,7 @@ const emptyDow = () => [null, null, null, null, null, null, null] as (number | n
 export function blankState(): AppState {
   const settings = {} as Record<SectionId, TimeSettings>;
   SECTION_IDS.forEach((id) => (settings[id] = { ...DEFAULT_TIME[id], dow: emptyDow() }));
-  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], crAttempts: [], speedRuns: [], redo: [], sectionals: [], summaries: [], mockReviews: [], recs: [], weekReviews: [], redoSeeded: true, targets: { varc: DEFAULT_TARGET }, about: {} };
+  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], crAttempts: [], lrAttempts: [], speedRuns: [], redo: [], sectionals: [], summaries: [], mockReviews: [], recs: [], weekReviews: [], redoSeeded: true, targets: { varc: DEFAULT_TARGET }, about: {} };
 }
 
 type Obj = Record<string, unknown>;
@@ -229,6 +243,23 @@ export function normalize(raw: unknown): AppState {
     id: str(x.id), d: str(x.d), secs: num(x.secs),
     items: list(x.items, (i) => ({ k: str(i.k), a: typeof i.a === "number" ? i.a : null, ok: !!i.ok, ...extra(i) })),
   }));
+  b.lrAttempts = list(raw.lrAttempts, (x) => {
+    const a: LrAttempt = {
+      id: str(x.id), d: str(x.d), set: str(x.set), c: num(x.c), w: num(x.w), secs: num(x.secs), updatedAt: num(x.updatedAt),
+      ans: Array.isArray(x.ans) ? x.ans.map((v: unknown) => (typeof v === "number" || typeof v === "string" ? v : null)) : [],
+    };
+    if (typeof x.v === "string" && x.v) a.v = x.v;
+    if (Array.isArray(x.unsure)) a.unsure = x.unsure.filter((n: unknown) => Number.isInteger(n)) as number[];
+    if (isObj(x.pm)) {
+      const p = x.pm, pm: LrPostMortem = {};
+      if (Number.isInteger(p.key) && (p.key as number) > 0) pm.key = p.key as number;
+      if ((LR_TIME_SINKS as readonly unknown[]).includes(p.time)) pm.time = p.time as LrTimeSink;
+      if ((LR_SLIPS as readonly unknown[]).includes(p.slip)) pm.slip = p.slip as LrSlip;
+      if (Number.isInteger(p.slipClue) && (p.slipClue as number) > 0) pm.slipClue = p.slipClue as number;
+      a.pm = pm;
+    }
+    return a;
+  }).filter((a) => a.id && a.set);
   b.speedRuns = list(raw.speedRuns, (x) => ({ id: str(x.id), d: str(x.d), set: str(x.set), words: num(x.words), secs: num(x.secs), wpm: num(x.wpm), recall: clamp(num(x.recall), 0, 2) }));
   b.sectionals = list(raw.sectionals, (x) => ({
     id: str(x.id), d: str(x.d), secs: num(x.secs), c: num(x.c), w: num(x.w), updatedAt: num(x.updatedAt),
