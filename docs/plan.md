@@ -50,7 +50,7 @@ Ground rule kept: **local-first.** The site works fully with no account and no i
 13. **Sunday review.** A weekly report (what improved, weakest area, next focus), after which the plan updates itself.
 14. **Reason before reveal.** Optionally type why you chose an option, then compare it with the explanation. This trains the thinking, not only the answer.
 15. **Focus timer.** A Pomodoro tied to Today's blocks that logs real minutes against planned minutes.
-16. **Working-professional mode.** A 30-minute weekday plan and a "commute set" (one RC on the phone).
+16. **Working-professional mode.** A 30-minute weekday plan and a "commute set" (one RC on the phone). **Now part of 82.**
 17. **Flashcards from mistakes.** Every error-log entry and saved word becomes a card. Cards are shown again on a schedule: the more often you get one right, the longer the gap before it comes back.
 18. **Share card.** A streak or score image for WhatsApp and Instagram. Free growth.
 19. **Rest-day and burnout check.** If streaks drop or accuracy falls for three days, suggest a light day instead of guilt.
@@ -116,6 +116,7 @@ Review in `docs/research/beyond-cat.md`; specs in `docs/feature.md`. CAT Coach s
 67. **Discuss this question** (opens after an attempt); 68. **doubt forum** with "ask from a mistake"; 69. **study groups** (absorb 37 and 38); 70. **safety and moderation**; 71. public communities, later.
 81. **"You", a profile page**: account, your CAT basics (exam year, target, attempt, student or working), your study so far, devices and data in one place (with B8); a public side, off by default, with community (6b).
 80. **Personal home** for a returning student: greeting, next step, what is due, yesterday, streak; the pitch below (step 4b).
+82. **A plan that fits you**: a one-minute setup (exam year, studying or working, time, target per section, attempt, level) that sets daily time, the section split and the pace; part 1 in step 4b, part 2 (exam year, commute set, reality check after mocks) in step 6. Absorbs 16.
 72 to 78. **The manager track**, after CAT 2027. Season 1, getting in (Dec 2027 to Mar 2028): the 60-second brief (72), PI prep from your own story (76), GD practice (77), mini case interview (74). Season 2, ready for the MBA (Apr to Jun 2028): MBA-ready basics (78), manager's daily dilemma (73), founder simulator (75). Each is researched when it comes up.
 
 ---
@@ -274,9 +275,9 @@ Total running cost: ₹0 at launch. A custom domain (about ₹800 a year) is opt
 | 3 | 22 Oct–18 Dec 2026 | **Backend v1, re-planned 21 Oct 2026** (research `docs/research/step-3.md`; branches in `docs/implement.md`): **S5** sync ledger and keep-data-safe (50), no server, **built 21 Oct 2026** (hybrid clock, two-device property tests, iPhone Home Screen note with backup); **B1** foundation and deploy (Go 1.27, Render and Supabase in Singapore), **done 22 Oct 2026**; **B2** RC attempts synced end to end, to 14 Nov; **B3** all records, restore merges, delete asks where, to 22 Nov; **B4** recovery code and device linking (47), to 29 Nov; **B5** export, delete and the privacy page, then **sync switched on for students**, to 4 Dec; **B6** feedback inbox (39) and **B6b** and **B6c** a daily digest of reports, emailed to the team with notes and posted to a GitHub issue without them, **built 23 Oct 2026**; **B7** Google sign-in with "save this device's progress" (D1, D9), to 18 Dec, or after DILR if step 3 runs late; then **B8** admin page (79), reports and counts for staff, and the private part of **You** (81), **built 24 Oct 2026** |
 | 3b | Dec 2026 | **AI v1:** summary feedback (36) and "explain my mistake" (35) on the Groq 8B model, Ollama in dev |
 | 4 | Dec 2026–Jan 2027 | DILR (21–23). Use `cmd/author` + Ollama for set drafts. **One daily budget (27) moves here** from step 6, because this is when two sections are first live. **Set Selection Arena (56)** once 32 sets exist, and **DILR Replay (57)** for scheduling, grouping and tournaments, with the solver as its core |
-| 4b | Jan 2027 | **Habit, as students arrive:** a personal home for returning students (80), restart plan (66, no backend), inbox (64), study reminders and web push (65), the daily puzzle in four kinds (61, reuses the 57 solver). About two weeks; may run beside Quant content writing |
+| 4b | Jan 2027 | **Habit, as students arrive:** a plan that fits you, part 1 (82: setup, time and section split from the answers), a personal home for returning students (80), restart plan (66, no backend), inbox (64), study reminders and web push (65), the daily puzzle in four kinds (61, reuses the 57 solver). About two weeks; may run beside Quant content writing |
 | 5 | Jan–Mar 2027 | Quant (24–26), with **Quant Debugger (58)**, **estimate first (59)** and **why this method (60)** built into the player |
-| 6 | Mar 2027 | Mock upgrade (28), calendar export (30), flashcards (17), professional mode (16) |
+| 6 | Mar 2027 | Mock upgrade (28), calendar export (30), flashcards (17), a plan that fits you, part 2 (82: exam year as a choice, commute set, diagnostic for repeaters, reality check after mocks; absorbs professional mode 16) |
 | 6b | Apr–May 2027 | **Community, needs B7 accounts:** safety and moderation first (70), the public side of profiles (81), then discuss this question (67), the doubt forum (68), then study groups (69), which replace the global leaderboard (37) and partner link (38). A legal check of the IT Rules duties before launch |
 | 7 | Apr 2027 | **Reality to DILR (63)** in the extension after article → RC. **AI v2:** article → RC set (34), and the AI coach and weekly narrator (48) reading the computed review |
 | 8 | May–Jun 2027 | Catalogue (8), filters (9), SEO (10), share card (18), more Arcade kinds (61), Data Detective (62) |
