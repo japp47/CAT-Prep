@@ -381,3 +381,5 @@ Full entries are written here when a step comes within two steps of being built:
 - Run `npm run catalog`; tests check set shape, answer keys, content-file mapping and generated catalog consistency.
 
 **Next, 4a.2:** the LR set player with the post-mortem (F23, F86), then the Learn tab and resources (F21, F22), then F83 to F85.
+**4a.1b DILR page opened, 24 Oct 2026** on `feat/dilr-resources`: section status `open` (`sections/types.ts`), `sections/dilr/learn.ts` (format, set types, topic share, concept guides, tabs and notes) and `sections/dilr/resources.ts` (34 links, ids prefixed `d-`, all opened on 24 Oct 2026); `pages/Section.tsx` reads per-section page data; the header, footer and Today stop calling DILR "soon". Test: `sections/dilr/resources.test.ts`.
+

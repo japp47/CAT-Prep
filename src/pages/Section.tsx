@@ -19,12 +19,21 @@ import { useStore } from "../lib/store";
 import { SECTION_BY_ID } from "../sections";
 import type { SectionDef, SectionId } from "../sections/types";
 import { TYPE_GUIDES } from "../sections/varc/guides";
-import { FORMAT, TAB_NOTES, TOPICS, VA_MIX, VTABS } from "../sections/varc/learn";
+import * as VARC_LEARN from "../sections/varc/learn";
+import { VA_MIX, type Topic as TopicData } from "../sections/varc/learn";
+import * as DILR_LEARN from "../sections/dilr/learn";
 import { useResources } from "../sections/useResources";
 import { ROTATION } from "../sections/varc/links";
 import NotFound from "./NotFound";
 
 const TR = "border-t align-top"; // taste-skill-ignore: rows of a real table
+
+/** What each section's page shows besides its resource list: tabs, notes under them, the format and the guides. */
+interface PageData { tabs: { id: string; label: string }[]; notes: Record<string, string[]>; format: [string, string][]; topics: TopicData[] }
+const PAGES: Partial<Record<SectionId, PageData>> = {
+  varc: { tabs: VARC_LEARN.VTABS, notes: VARC_LEARN.TAB_NOTES, format: VARC_LEARN.FORMAT, topics: VARC_LEARN.TOPICS },
+  dilr: { tabs: DILR_LEARN.TABS, notes: DILR_LEARN.TAB_NOTES, format: DILR_LEARN.FORMAT, topics: DILR_LEARN.TOPICS },
+};
 
 function Soon({ sec }: { sec: SectionDef }) {
   return (
@@ -51,7 +60,7 @@ function Table({ head, rows, num = [] }: { head: string[]; rows: ReactNode[][]; 
   );
 }
 
-function Topic({ t }: { t: (typeof TOPICS)[number] }) {
+function Topic({ t }: { t: TopicData }) {
   const [open, setOpen] = useState(!!t.open);
   return (
     <Collapsible open={open} onOpenChange={setOpen} className="rounded-lg bg-card">
@@ -70,26 +79,38 @@ function Topic({ t }: { t: (typeof TOPICS)[number] }) {
   );
 }
 
-function Learn() {
+function Learn({ id, page }: { id: SectionId; page: PageData }) {
   const [open, setOpen] = useState<Record<string, boolean>>({});
   return (
     <div className="flex flex-col gap-12">
       <Block title="The section">
         <dl className="grid gap-x-8 gap-y-5 rounded-lg bg-card p-5 sm:grid-cols-[9rem_minmax(0,1fr)] sm:p-6">
-          {FORMAT.map(([k, v]) => <div key={k} className="contents"><dt className="text-base font-semibold">{k}</dt><dd className="measure text-base text-foreground/85">{v}</dd></div>)}
+          {page.format.map(([k, v]) => <div key={k} className="contents"><dt className="text-base font-semibold">{k}</dt><dd className="measure text-base text-foreground/85">{v}</dd></div>)}
         </dl>
       </Block>
-      <Block title="VA questions per slot, by year" description="From IMS, Cracku and Careers360 slot analyses. A few slot reports differ by one question.">
-        <Table head={["Year", "Para summary", "Sentence insertion", "Odd sentence out", "Para jumble", "Note"]} num={[1, 2, 3, 4]}
-          rows={VA_MIX.map((r) => [r.year, r.ps || "–", r.si || "–", r.oso || "–", r.pj || "–", <span key="n" className="whitespace-nowrap text-muted-foreground">{r.note ?? ""}</span>])} />
-      </Block>
-      <div className="flex flex-col gap-3">{TOPICS.map((t) => <Topic key={t.h} t={t} />)}</div>
-      <Block title="A guide for each question type" description="Method, common traps, a worked example to try, and three links: a written guide, a video and a free question bank.">
-        <TypeIndex guides={TYPE_GUIDES} onOpen={(id) => setOpen((o) => ({ ...o, [id]: true }))} />
-        <div className="flex flex-col gap-3">
-          {TYPE_GUIDES.map((g) => <TypeGuide key={g.id} g={g} open={!!open[g.id]} onOpenChange={(v) => setOpen((o) => ({ ...o, [g.id]: v }))} />)}
-        </div>
-      </Block>
+      {id === "varc" && (
+        <Block title="VA questions per slot, by year" description="From IMS, Cracku and Careers360 slot analyses. A few slot reports differ by one question.">
+          <Table head={["Year", "Para summary", "Sentence insertion", "Odd sentence out", "Para jumble", "Note"]} num={[1, 2, 3, 4]}
+            rows={VA_MIX.map((r) => [r.year, r.ps || "–", r.si || "–", r.oso || "–", r.pj || "–", <span key="n" className="whitespace-nowrap text-muted-foreground">{r.note ?? ""}</span>])} />
+        </Block>
+      )}
+      {id === "dilr" && <>
+        <Block title="Logical reasoning set types" description="What each type looks like, and what to draw before you solve. CAT dresses the same types in new stories: trains, ratings, trade, chairs.">
+          <Table head={["Type", "Looks like", "Draw"]} rows={DILR_LEARN.SET_TYPES.map(([t, l, d]) => [<b key="t" className="font-semibold">{t}</b>, l, d])} />
+        </Block>
+        <Block title="How often each topic came, 2017 to 2022" description="Percent of DILR topics per year, from InsideIIM's mix of coaching analyses. Pure DI is shrinking; mixed and number-based LR sets are growing.">
+          <Table head={["Topic", ...DILR_LEARN.TOPIC_YEARS]} num={[1, 2, 3, 4, 5, 6]} rows={DILR_LEARN.TOPIC_SHARE.map((r) => [r.topic, ...r.y.map((v) => (v ? v + "%" : "–"))])} />
+        </Block>
+      </>}
+      <div className="flex flex-col gap-3">{page.topics.map((t) => <Topic key={t.h} t={t} />)}</div>
+      {id === "varc" && (
+        <Block title="A guide for each question type" description="Method, common traps, a worked example to try, and three links: a written guide, a video and a free question bank.">
+          <TypeIndex guides={TYPE_GUIDES} onOpen={(id) => setOpen((o) => ({ ...o, [id]: true }))} />
+          <div className="flex flex-col gap-3">
+            {TYPE_GUIDES.map((g) => <TypeGuide key={g.id} g={g} open={!!open[g.id]} onOpenChange={(v) => setOpen((o) => ({ ...o, [g.id]: v }))} />)}
+          </div>
+        </Block>
+      )}
     </div>
   );
 }
@@ -136,7 +157,7 @@ function Toppers() {
   );
 }
 
-function Live({ sec }: { sec: SectionDef }) {
+function Live({ sec, page }: { sec: SectionDef; page: PageData }) {
   const { state } = useStore();
   const [vtab, setVtab] = usePref("vtab", "learn");
   const [pri, setPri] = usePref<"all" | "must">("pri", "all");
@@ -158,11 +179,18 @@ function Live({ sec }: { sec: SectionDef }) {
     const blocks = cats.filter((c) => tab === null || c.tab === tab).map((c) => ({ c, items: filter(c.id, tab === null) })).filter((x) => x.items.length);
     return blocks.length ? blocks.map(({ c, items }) => <CategoryBlock key={c.id} cat={c} items={items} all={all} />) : <Empty>{emptyMsg}</Empty>;
   };
-  const tabValid = VTABS.some((t) => t.id === vtab) ? vtab : "learn";
+  const tabValid = page.tabs.some((t) => t.id === vtab) ? vtab : "learn";
 
   const extra = (id: string) => (
     <>
-      {id === "practice" && (
+      {id === "practice" && sec.id === "dilr" && (
+        <div className="flex flex-col gap-3 rounded-lg bg-card p-5 sm:p-6">
+          <h3 className="text-heading font-semibold">Practice on this site</h3>
+          <p className="measure text-base text-foreground/85">Original logical reasoning sets with a timer, a scratch grid and a full solution arrive in November, followed by short drills on reading clues and choosing where to start. Until then, use the sets below and log your DILR mistakes in the Error log.</p>
+          <div className="flex flex-wrap gap-3"><LinkButton to="/errors" variant="secondary">Open the Error log</LinkButton></div>
+        </div>
+      )}
+      {id === "practice" && sec.id === "varc" && (
         <div className="flex flex-col gap-3 rounded-lg bg-card p-5 sm:p-6">
           <h3 className="text-heading font-semibold">Practice on this site</h3>
           <p className="measure text-base text-foreground/85">{RC_CATALOG.length} original RC sets with an explanation for every option, a daily VA drill, custom drills by type, a timed sectional, a redo queue for mistakes and a reading speed test. Your scores go straight into Progress.</p>
@@ -170,10 +198,10 @@ function Live({ sec }: { sec: SectionDef }) {
         </div>
       )}
       {id === "read" && <Rotation />}
-      {id === "toppers" && <Toppers />}
-      {TAB_NOTES[id] && (
+      {id === "toppers" && sec.id === "varc" && <Toppers />}
+      {page.notes[id] && (
         <div className="measure flex flex-col gap-3 text-base text-foreground/85">
-          {TAB_NOTES[id].map((p, i) => <p key={i}>{p}</p>)}
+          {page.notes[id].map((p, i) => <p key={i}>{p}</p>)}
           {id === "vocab" && <p><TextLink to="/words">Open your flashcards</TextLink></p>}
         </div>
       )}
@@ -183,6 +211,9 @@ function Live({ sec }: { sec: SectionDef }) {
   return (
     <Page>
       <PageHeader title={sec.short}>{sec.name}. You have done {doneAll} of {all.length} resources, and {mustDone} of {mustAll.length} must-dos.</PageHeader>
+      {sec.status === "open" && (
+        <p className="measure rounded-lg bg-card px-5 py-4 text-base">{sec.tagline} Practice sets on this site start in November; until then {sec.short} is not in your timetable.</p>
+      )}
 
       <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
         <div className="relative min-w-60 flex-1">
@@ -201,11 +232,11 @@ function Live({ sec }: { sec: SectionDef }) {
       ) : (
         <Tabs value={tabValid} onValueChange={setVtab} className="gap-8">
           <div className="bleed-gutter overflow-x-auto px-gutter sm:mx-0 sm:px-0">
-            <TabsList className="bg-secondary">{VTABS.map((t) => <TabsTrigger key={t.id} value={t.id} className="px-3.5">{t.label}</TabsTrigger>)}</TabsList>
+            <TabsList className="bg-secondary">{page.tabs.map((t) => <TabsTrigger key={t.id} value={t.id} className="px-3.5">{t.label}</TabsTrigger>)}</TabsList>
           </div>
-          {VTABS.map((t) => (
+          {page.tabs.map((t) => (
             <TabsContent key={t.id} value={t.id} className="flex flex-col gap-12">
-              {t.id === "learn" && <Learn />}
+              {t.id === "learn" && <Learn id={sec.id} page={page} />}
               {extra(t.id)}
               <div className="flex flex-col gap-10">{list(t.id, "Everything here is ticked or filtered out. Switch off Hide done or Must-do only.")}</div>
             </TabsContent>
@@ -220,5 +251,6 @@ export default function Section() {
   const { id } = useParams();
   const sec = SECTION_BY_ID[id as SectionId];
   if (!sec) return <NotFound />;
-  return sec.status === "live" ? <Live sec={sec} /> : <Soon sec={sec} />;
+  const page = PAGES[sec.id];
+  return sec.status !== "soon" && page ? <Live sec={sec} page={page} /> : <Soon sec={sec} />;
 }
