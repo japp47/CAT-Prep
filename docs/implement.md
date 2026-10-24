@@ -2,7 +2,7 @@
 
 Branch-by-branch work for the features in `docs/feature.md`, in the order of `docs/plan.md`.
 Each entry is small enough for one pull request. The owner commits and pushes; each entry gives the branch and the commit message.
-Last updated 24 Oct 2026 (content and sidebar navigation updates; step 3 re-planned).
+Last updated 24 Oct 2026 (content, sidebar navigation and You page updates; step 3 re-planned).
 
 **Every branch, before it is called done:**
 - `npm run typecheck`, `npm test`, `npm run build`, `npm run size` (and `npm run catalog` after content changes).
@@ -314,6 +314,8 @@ Decisions this plan assumes (owner to confirm, `docs/analyze.md` §5): **D8** se
 **Sync UX polish, 22 Oct 2026** (`feat/sync-ux`). Sync comes up where students look and when it helps, never as a popup: a "Sync devices" row with its status ("Not set up", "Synced 2 minutes ago", a green or amber dot) under Search in the sidebar and at the top of the phone menu (`components/SyncNav.tsx`, reading `lib/sync/status.ts`, a tiny store in the main script that reads the ledger at start, so the row is right before the sync code loads); on Today and Home, an empty device is asked once "Already studying on another device?" (→ `/link`), and a device with 5 or more attempts that does not sync is asked once "Study on a phone and a laptop?" (→ `/settings#sync`), each with "Not now" remembered (`components/SyncPrompt.tsx`, `promptKind` tested); the iPhone install guide and Settings' iOS steps point to linking instead of a backup when sync is on; the sidebar's last line says progress syncs when it does. No permanent header icon: the phone header is full at 390 px, a chain icon reads as "copy link", and most students use one device. Main script with sync on: 135.9 KB.
 
 **Sidebar account navigation, 24 Oct 2026.** Keep one account entry in the desktop sidebar: remove the sync row beneath Search and use the bottom user icon for the existing `SyncNavRow` destination logic (`/signin` when sign-in is available and sync is off; `/you` when signed in; otherwise `/you#sync`). The icon stays at the bottom beside theme and install controls, with the existing sync status dot and accessible title.
+
+**You page responsive redesign, 24 Oct 2026.** `pages/You.tsx`: a responsive account hero with clear sign-in/sync status and a direct sign-in action; CAT settings and study totals side by side on wide screens and stacked on phones; study totals grouped into readable tiles. Keep all existing profile fields, sync state, and links.
 
 ### Next, after sync (planned 22 Oct 2026): F52, then F51
 | Branch | Builds | Notes |
