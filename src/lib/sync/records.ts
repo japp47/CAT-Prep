@@ -5,7 +5,7 @@ import { normalize, type AppState, type DayRec } from "../state";
  * one per row, each with a kind and an id. Merging two copies of a record follows the kind's rule, and every rule
  * gives the same answer whichever copy is "ours", so two devices that exchange records end up equal.
  */
-export const KINDS = ["rc", "va", "cr", "speed", "sectional", "mockReview", "summary", "error", "word", "mock", "practice", "recommendation", "weekReview", "redo", "day", "tick", "setting", "profile"] as const;
+export const KINDS = ["rc", "va", "cr", "lr", "speed", "sectional", "mockReview", "summary", "error", "word", "mock", "practice", "recommendation", "weekReview", "redo", "day", "tick", "setting", "profile"] as const;
 export type Kind = (typeof KINDS)[number];
 
 export interface Rec { kind: Kind; id: string; data: unknown }
@@ -18,7 +18,7 @@ export const parseKey = (key: string) => { const i = key.indexOf(":"); return { 
 
 /** List fields of AppState and the kind each becomes. All rows have an `id`. */
 const LISTS = {
-  rcAttempts: "rc", vaAttempts: "va", crAttempts: "cr", speedRuns: "speed", sectionals: "sectional", mockReviews: "mockReview",
+  rcAttempts: "rc", vaAttempts: "va", crAttempts: "cr", lrAttempts: "lr", speedRuns: "speed", sectionals: "sectional", mockReviews: "mockReview",
   summaries: "summary", errors: "error", vocab: "word", mocks: "mock", practice: "practice", recs: "recommendation", weekReviews: "weekReview",
 } as const satisfies Partial<Record<keyof AppState, Kind>>;
 type ListField = keyof typeof LISTS;
