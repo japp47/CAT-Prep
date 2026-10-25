@@ -118,6 +118,7 @@ export default function Layout() {
   useTheme();
   const [sidebarCollapsed, setSidebarCollapsed] = usePref<boolean>("sidebar-collapsed", false);
   const landing = loc.pathname === "/";
+  const showFooter = landing || loc.pathname.replace(/\/+$/, "") === "/privacy";
   useEffect(() => {
     const onShortcut = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
@@ -181,10 +182,10 @@ export default function Layout() {
       {/* At least a screen tall, with main taking the spare height, so on a short page the footer sits at the bottom
           (just above the phone's bottom bar) instead of floating mid-screen. 3.5rem is the phone header. */}
       <div className={cn("flex min-h-[calc(100dvh-3.5rem)] min-w-0 flex-col px-gutter pb-[calc(4.5rem+env(safe-area-inset-bottom))] lg:pb-0", !landing && "lg:min-h-dvh")}>
-        <main id="main" className={cn("min-w-0 flex-1 pt-6 pb-6 lg:pt-12 lg:pb-0.5", landing && "lg:pt-8", run && "pb-44 lg:pb-36")}>
+        <main id="main" className={cn("min-w-0 flex-1 pt-6 pb-8 lg:pt-12 lg:pb-8", landing && "lg:pt-8", run && "pb-44 lg:pb-36")}>
           <Suspense fallback={<PageSkeleton />}><Outlet /></Suspense>
         </main>
-        <SiteFooter />
+        {showFooter && <SiteFooter />}
       </div>
 
       <FocusBar />
