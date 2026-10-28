@@ -107,6 +107,8 @@ export interface MockQ { st: "unmarked" | "right" | "wrong" | "skip" | "unseen";
 export interface MockReview {
   id: string; d: string; updatedAt: number; mock: string; sec: string; from: "manual" | "sectional"; att?: string; name: string;
   layout: { rc: number[]; va: string[]; sets?: { type: string; n: number }[]; topics?: { type: string; n: number }[] }; planned?: number; qs: MockQ[]; recs: string[];
+  /** Shared by the section analyses of one mock analysed whole (D45), so they show together. */
+  group?: string;
 }
 /**
  * A suggestion made to the student, with its evidence, kept so we can later tell whether it helped (F43).
@@ -299,6 +301,7 @@ export function normalize(raw: unknown): AppState {
       recs: Array.isArray(x.recs) ? x.recs.map(str) : [],
     };
     if (typeof x.att === "string" && x.att) r.att = x.att;
+    if (typeof x.group === "string" && x.group) r.group = x.group;
     if (isFinite(Number(x.planned)) && x.planned != null) r.planned = Math.round(num(x.planned));
     return r;
   }).filter((r) => r.id && isIsoDate(r.d) && r.qs.length);

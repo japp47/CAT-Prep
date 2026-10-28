@@ -4,7 +4,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
-import { Check } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { reportUrl } from "../../data/site";
 import { API_ENABLED } from "../../lib/api";
@@ -240,6 +240,20 @@ export function ReviewChoice({ mark, state, children, why, tags }: { mark: React
 
 export type Cell = "unseen" | "open" | "done" | "marked" | "doneMarked" | "right" | "wrong" | "blank";
 /** A question number in a palette, coloured like the CAT exam screen. */
+/**
+ * Previous and next for a review, under the question it moves through: both buttons in the question's own column, with
+ * where you are between them, so neither ends up under the passage.
+ */
+export function QuestionNav({ cur, n, onGo }: { cur: number; n: number; onGo: (i: number) => void }) {
+  return (
+    <nav aria-label="Questions" className="flex items-center justify-between gap-3 border-t border-border/70 pt-4">
+      <Button variant="secondary" size="sm" disabled={cur === 0} onClick={() => onGo(cur - 1)}><ChevronLeft data-icon="inline-start" />Previous</Button>
+      <span className="text-sm text-muted-foreground tabular-nums" aria-live="polite">Question {cur + 1} of {n}</span>
+      <Button variant="secondary" size="sm" disabled={cur >= n - 1} onClick={() => onGo(cur + 1)}>Next<ChevronRight data-icon="inline-end" /></Button>
+    </nav>
+  );
+}
+
 export function PaletteCell({ n, state, current, onClick, label, className }: { n: number; state: Cell; current?: boolean; onClick: () => void; label: string; className?: string }) {
   return (
     <button type="button" onClick={onClick} aria-label={label} aria-current={current || undefined}

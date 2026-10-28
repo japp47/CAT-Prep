@@ -23,7 +23,7 @@ import { LR_SLIP_LABEL, LR_TIME_LABEL, lrError, lrErrorSrc, recordLr, saveLrPost
 import { fmtSecs, LETTERS } from "../../practice/record";
 import { LR_TYPE, lrVersion, type LrDiagram, type LrSet, type LrTable } from "../../practice/types";
 import NotFound from "../NotFound";
-import { Choice, ChoiceGroup, Confirm, ElapsedTimer, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, TimeUp, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
+import { Choice, ChoiceGroup, QuestionNav, Confirm, ElapsedTimer, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, TimeUp, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
 import { PaneJump, PaneSwitch, showQuestion, Split } from "./RcPlayer";
 
 /**
@@ -284,10 +284,7 @@ function FullReview({ set, attempt }: { set: LrSet; attempt: LrAttempt }) {
             })}
           </div>
           <ReviewQuestion set={set} qi={cur} given={attempt.ans[cur]} att={attempt.id} whole={whole} />
-          <div className="flex justify-between gap-2">
-            <Button variant="secondary" size="sm" disabled={cur === 0} onClick={() => setCur(cur - 1)}>Previous question</Button>
-            <Button variant="secondary" size="sm" disabled={cur === n - 1} onClick={() => setCur(cur + 1)}>Next question</Button>
-          </div>
+          <QuestionNav cur={cur} n={n} onGo={setCur} />
         </>
       </Split>
       {pane === "p" && <PaneJump onClick={() => showQuestion(setPane)}>Question {cur + 1} of {n}</PaneJump>}
