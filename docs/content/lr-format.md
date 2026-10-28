@@ -14,7 +14,7 @@ Send them in any form (typed text, a document, a photo of handwritten notes). Cl
 {
   "id": "arr-round-table",          // unique, lowercase, a-z 0-9 and -
   "title": "Six friends at a round table",
-  "type": "arrangement",            // arrangement | selection | distribution | ranking | tournament |
+  "type": "arrangement",            // arrangement | selection | distribution | ranking | tournament | caselet | setmax |
                                     // scheduling | binary | venn | routes | quant-lr | cubes | mixed
   "sub": "circular",                // optional finer kind, shown in the Library
   "difficulty": "easy",             // easy | medium | hard
@@ -42,7 +42,7 @@ Send them in any form (typed text, a document, a photo of handwritten notes). Cl
     "grid": { "head": ["…"], "rows": [["…"]] }, // optional final table
     "cases": 1,                     // how many arrangements fit all clues (0 = left open on purpose)
     "diagram": {                    // optional picture: the review fills it in step by step, the attempt uses it blank as a scratch pad
-      "layout": "row",              // row | circle | grid | bracket (see below)
+      "layout": "row",              // row | circle | grid | bracket | network | venn (see below)
       "seats": ["1", "2", "3"],     // labels; a circle runs round to the left (clockwise seen from above) from the bottom seat
       "rows": ["Monday morning"],   // optional, row layout only: several rows (one per day, say)
       "note": "…",                  // shown under the picture; its first sentence also under the scratch pad
@@ -56,11 +56,17 @@ Send them in any form (typed text, a document, a photo of handwritten notes). Cl
 
 **Grids and brackets.** A `grid` is a table: `rows` are the row heads, `seats` the column heads, and `null` a cell that cannot hold anything (a team against itself), drawn crossed out. For a results grid whose first columns are the row teams in the same order, `"mirror": {"W": "L", "L": "W", "D": "D"}` makes the scratch pad write the other team's result by itself, and on a phone the rows take the short column names. A `bracket` has one row per round and one seat per match slot (as many as the first round has matches), `null` for slots a later round does not have; a match is `["4", "13", "13", "upset"]`: both players, then the winner when known, then notes. `[]` is a match not known yet. Every set gets a notes box under the scratch pad, and a set with no picture gets the notes box alone.
 
+**Networks.** One seat per town, `at` its place as [x, y] from 0 to 100 across and down, `links` the roads as [from seat, to seat, label], and `lit[step]` the links drawn bold at each step (the route found; a newly lit road draws itself in). A town's lines are what is known about it, such as its distance. Place towns so that no road passes through a town.
+
+**Venn pictures.** `sets` names two or three circles; the seats are the regions in a fixed order: A only, B only, AB, None (two circles) or A only, B only, C only, AB only, AC only, BC only, ABC, None (three). A region whose first line is `"empty"` is shaded; any other lines are written in it (a count, `some`). For syllogism sets, where every question names its own groups, `padSets` gives the scratch pad neutral circle names (A, B, C).
+
+**Questions with their own statements** (syllogisms) put them in the stem with line breaks (`\n`), and the set has no clues; the review then says the question's own statements settle it.
+
 **A question that needs no clue** (one read off the given table) has `"uses": []`; the review says the table settles it.
 
 **Rules the tests enforce:** 4 to 6 questions; MCQ answers within the options; TITA answers that parse when they are numbers; `uses` only names clues that exist; ids unique across all LR files; `source` present; `since` a date; a diagram has one frame per solution step and every frame has the right number of rows and seats; a grid or bracket keeps the same closed cells in every frame, a bracket winner is one of the two players, and a `mirror` maps both ways.
 
-**Checking a set before it ships.** Solve it by brute force (every arrangement of every attribute, filtered by the clues), then check each answer, each "must be true" option against every arrangement left, the `cases` count, and the last frame of the picture. The owner's first 25 arrangement questions were checked this way on 24 Oct 2026 (1, 2, 6, 3 and 2 arrangements, every key right), and the 25 games and tournaments questions on 28 Oct 2026 (sets 2 to 5 have one solution each; set 1's questions are separate scenarios, each simulated; every key right).
+**Checking a set before it ships.** Solve it by brute force (every arrangement of every attribute, filtered by the clues), then check each answer, each "must be true" option against every arrangement left, the `cases` count, and the last frame of the picture. The owner's first 25 arrangement questions were checked this way on 24 Oct 2026 (1, 2, 6, 3 and 2 arrangements, every key right), the 25 games and tournaments questions on 28 Oct 2026 (sets 2 to 5 have one solution each; set 1's questions are separate scenarios, each simulated; every key right), the 25 reasoning DI and caselet questions the same day (11 tables, 2 crate cases, 1 survey size, 6 loss orders; every key and explanation right), and the 75 routes, set theory and Venn questions on 28 Oct 2026: routes by enumerating every route and tree, set theory as exact integer programs (SciPy's milp, in a scratch environment, not a project dependency), syllogisms by the fullest picture the 'All' and 'No' statements allow (a conclusion follows when its opposite has no fitting picture), and the picture counts by listing every picture. Every key and explanation was right.
 
 ## Example (original, checked by brute force)
 

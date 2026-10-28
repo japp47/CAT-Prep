@@ -198,8 +198,26 @@ describe("LR sets (docs/content/lr-format.md)", () => {
     });
     if (s.solution.diagram) it(`${s.id} has a picture for every solution step`, () => {
       const g = s.solution.diagram!;
-      expect(["row", "circle", "grid", "bracket"]).toContain(g.layout);
-      expect(g.seats.length).toBeGreaterThanOrEqual(g.layout === "bracket" ? 1 : 3);
+      expect(["row", "circle", "grid", "bracket", "network", "venn"]).toContain(g.layout);
+      if (g.layout === "venn") {
+        expect([2, 3], "two or three circles").toContain(g.sets?.length);
+        expect(g.seats, "one seat per region and one outside").toHaveLength(g.sets!.length === 2 ? 4 : 8);
+        expect(g.rows, "a venn is one picture").toBeUndefined();
+        if (g.padSets) expect(g.padSets, "the pad has as many circles").toHaveLength(g.sets!.length);
+      }
+      if (g.layout !== "venn") expect(g.padSets, "padSets is for venn pictures").toBeUndefined();
+      if (g.layout === "network") {
+        expect(g.rows, "a network is one picture").toBeUndefined();
+        expect(g.at, "every town has a place").toHaveLength(g.seats.length);
+        g.at!.forEach(([x, y]) => { expect(x).toBeGreaterThanOrEqual(0); expect(x).toBeLessThanOrEqual(100); expect(y).toBeGreaterThanOrEqual(0); expect(y).toBeLessThanOrEqual(100); });
+        expect(g.links?.length, "a network has links").toBeGreaterThan(0);
+        g.links!.forEach(([a, b]) => { expect(a).toBeLessThan(g.seats.length); expect(b).toBeLessThan(g.seats.length); expect(a).not.toBe(b); });
+        if (g.lit) {
+          expect(g.lit, "one lit list per step").toHaveLength(g.frames.length);
+          g.lit.flat().forEach((i) => expect(i).toBeLessThan(g.links!.length));
+        }
+      }
+      expect(g.seats.length).toBeGreaterThanOrEqual(g.layout === "bracket" ? 1 : g.layout === "grid" ? 2 : 3);
       if (g.layout === "circle") expect(g.rows, "a circle has one ring").toBeUndefined();
       if (g.layout === "grid" || g.layout === "bracket") expect(g.rows?.length, "a grid or bracket names its rows").toBeGreaterThan(0);
       if (g.mirror) {
