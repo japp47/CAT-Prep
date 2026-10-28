@@ -1,0 +1,2248 @@
+[
+  {
+    "id": "tour-knockout-byes",
+    "title": "A seeded knockout with byes and upsets",
+    "type": "tournament",
+    "sub": "knockout, byes and a re-made draw",
+    "difficulty": "medium",
+    "minutes": 10,
+    "source": "original",
+    "since": "2026-10-29",
+    "intro": [
+      "Forty-five players, seeded 1 (strongest) to 45 (weakest), play a single-elimination (knockout) tournament under the three rules below.",
+      "Treat each question separately: the conditions in one question do not carry over to another."
+    ],
+    "clues": [
+      "Round 1 trims the field to 32. Only as many of the weakest-seeded players as are needed play in Round 1; the strongest seeds get a bye and go straight into Round 2.",
+      "The draw is remade in every round. In each round the strongest remaining player plays the weakest remaining player, the second-strongest plays the second-weakest, and so on. (In Round 1 this applies only to the players who are playing in it.)",
+      "The player with the lower seed number wins a match unless a question says otherwise. A win by the player with the higher seed number is called an upset."
+    ],
+    "questions": [
+      {
+        "stem": "If there are no upsets in Round 1, who plays seed 9 in Round 2?",
+        "kind": "mcq",
+        "options": [
+          "Seed 26",
+          "Seed 25",
+          "Seed 23",
+          "Seed 24"
+        ],
+        "answer": 3,
+        "uses": [
+          1,
+          2,
+          3
+        ],
+        "why": [
+          "Only seeds 20 to 45 play in Round 1: 13 matches, 20 v 45, 21 v 44, and so on to 32 v 33, each pair adding up to 65.",
+          "With no upsets the winners are seeds 20 to 32, so Round 2 has seeds 1 to 32. Best plays worst, so the two seeds in every Round 2 match add up to 33, and seed 9 plays seed 24."
+        ]
+      },
+      {
+        "stem": "How many matches are played in Rounds 1 and 2 together?",
+        "kind": "tita",
+        "answer": "29",
+        "uses": [
+          1
+        ],
+        "why": [
+          "45 players must come down to 32 for Round 2, so 13 players go out in Round 1: 13 matches.",
+          "Round 2 starts with 32 players: 16 matches. 13 + 16 = 29."
+        ]
+      },
+      {
+        "stem": "Suppose the only upset in Round 1 is seed 39 beating seed 26. Who plays seed 7 in Round 2?",
+        "kind": "mcq",
+        "options": [
+          "Seed 28",
+          "Seed 26",
+          "Seed 27",
+          "Seed 25"
+        ],
+        "answer": 2,
+        "uses": [
+          1,
+          2,
+          3
+        ],
+        "why": [
+          "Seed 26 is out and seed 39 takes its place, so the Round 2 field is seeds 1 to 25, 27 to 32, and 39.",
+          "Ranked best to worst, seeds 1 to 25 hold positions 1 to 25, seeds 27 to 32 hold positions 26 to 31, and seed 39 is position 32. Position p plays position 33 − p.",
+          "Seed 7 is position 7 and plays position 26, which is now seed 27 (it would have been seed 26 without the upset)."
+        ]
+      },
+      {
+        "stem": "Suppose the only upsets in Round 1 are wins by seeds 36, 38 and 40, and the only upset in Round 2 is a win by seed 36. Who plays seed 6 in Round 3?",
+        "kind": "mcq",
+        "options": [
+          "Seed 13",
+          "Seed 12",
+          "Seed 14",
+          "Seed 11"
+        ],
+        "answer": 0,
+        "uses": [
+          1,
+          2,
+          3
+        ],
+        "why": [
+          "The Round 1 matches of those seeds are 29 v 36, 27 v 38 and 25 v 40, so seeds 29, 27 and 25 go out. Round 2 has seeds 1 to 24, 26, 28, 30, 31, 32, 36, 38 and 40.",
+          "The three weakest, seeds 40, 38 and 36, meet seeds 1, 2 and 3. Seed 36 beats seed 3; every other match goes to the stronger seed.",
+          "Round 3 has seeds 1, 2, 4 to 16, and 36. Seed 6 is position 5 of 16 and plays position 12, which is seed 13."
+        ]
+      },
+      {
+        "stem": "Exactly three upsets occur in the whole tournament up to and including Round 3, and seed 45 is among the eight players who reach the quarter-finals (the last 8). What is the sum of the seeds of those eight quarter-finalists?",
+        "kind": "tita",
+        "answer": "87",
+        "uses": [
+          1,
+          2,
+          3
+        ],
+        "why": [
+          "Seed 45 is the weakest player, so each of its wins in Rounds 1, 2 and 3 is an upset. Those are the three upsets; every other match goes to the stronger seed.",
+          "Round 1: 45 beats 20. Round 2: 45, the weakest, plays seed 1 and wins, while 2 beats 32, and so on to 16 beats 17. Round 3: 45 plays seed 2 and wins, while 3 beats 16, and so on to 9 beats 10.",
+          "The last eight are seeds 3 to 9 and 45: 42 + 45 = 87."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Count first. 45 players must come down to 32, so 13 go out in Round 1: 13 matches among the 26 weakest seeds (20 to 45), while seeds 1 to 19 get byes. After that the field halves each round, 32, 16, 8, 4, 2, 1: 44 matches in all, one for each player knocked out.",
+        "Pairing arithmetic. With seeds 1 to 2n and no upsets, best plays worst, so the two seeds in every match add up to 2n + 1: 33 in Round 2, 17 in Round 3, 9 in Round 4. After an upset, take out the beaten player, put the winner in, re-rank, and pair position p with position (size + 1 − p).",
+        "Every question is solved by that one procedure: rebuild the field after each upset it states, re-rank, and read off the pairings."
+      ]
+    }
+  },
+  {
+    "id": "tour-damaged-table",
+    "title": "A round-robin with a damaged points table",
+    "type": "tournament",
+    "sub": "round robin, points table",
+    "difficulty": "medium",
+    "minutes": 10,
+    "source": "original",
+    "since": "2026-10-29",
+    "intro": [
+      "Five teams, Aces, Bulls, Chargers, Dynamos and Eagles, play a league in which every team plays every other team exactly once. A win earns 3 points, a draw 1 point and a loss 0 points.",
+      "At the end of the league the points table was partly erased. The entries that survive are below (a dash means the entry is unreadable; every team played 4 matches). The two results in the clues are also known."
+    ],
+    "tables": [
+      {
+        "caption": "The points table as it survives",
+        "head": [
+          "Team",
+          "Won",
+          "Drawn",
+          "Lost",
+          "Points"
+        ],
+        "rows": [
+          [
+            "Aces",
+            "–",
+            "2",
+            "1",
+            "–"
+          ],
+          [
+            "Bulls",
+            "1",
+            "–",
+            "–",
+            "–"
+          ],
+          [
+            "Chargers",
+            "2",
+            "–",
+            "0",
+            "–"
+          ],
+          [
+            "Dynamos",
+            "–",
+            "–",
+            "–",
+            "4"
+          ],
+          [
+            "Eagles",
+            "–",
+            "1",
+            "1",
+            "–"
+          ]
+        ]
+      }
+    ],
+    "clues": [
+      "Dynamos beat Bulls.",
+      "Chargers beat Eagles."
+    ],
+    "questions": [
+      {
+        "stem": "How many points did Aces score?",
+        "kind": "mcq",
+        "options": [
+          "6",
+          "7",
+          "4",
+          "5"
+        ],
+        "answer": 3,
+        "uses": [],
+        "why": [
+          "Aces played 4 matches: 2 draws and 1 loss, so they won the other 1. Points = 3 × 1 + 2 = 5. The table alone settles it."
+        ]
+      },
+      {
+        "stem": "How many of the ten matches in the league ended in a draw?",
+        "kind": "tita",
+        "answer": "3",
+        "uses": [
+          1,
+          2
+        ],
+        "why": [
+          "The drawn matches are Aces v Chargers, Aces v Eagles and Chargers v Dynamos (see the walkthrough).",
+          "Check: each draw is counted by both teams, and the drawn column adds up to 2 + 0 + 2 + 1 + 1 = 6, that is 3 drawn matches."
+        ]
+      },
+      {
+        "stem": "Against which team did Bulls record their only win?",
+        "kind": "mcq",
+        "options": [
+          "Dynamos",
+          "Aces",
+          "Eagles",
+          "Chargers"
+        ],
+        "answer": 1,
+        "uses": [
+          1,
+          2
+        ],
+        "why": [
+          "Bulls lost to Dynamos (clue 1), to Chargers (Chargers were unbeaten and Bulls had no draws) and to Eagles (Eagles' last result had to be a win over Bulls).",
+          "That leaves Aces as the only team Bulls can have beaten."
+        ]
+      },
+      {
+        "stem": "Which of the following statements is true?",
+        "kind": "mcq",
+        "options": [
+          "Eagles beat Dynamos.",
+          "Aces drew with Dynamos.",
+          "Aces beat Bulls.",
+          "Chargers lost to Dynamos."
+        ],
+        "answer": 0,
+        "uses": [
+          1,
+          2
+        ],
+        "why": [
+          "Dynamos' win and draw went on Bulls (win) and Chargers (draw), so their two losses were to Aces and Eagles. Eagles beat Dynamos.",
+          "The others fail: Aces beat Dynamos, Bulls beat Aces, and Chargers drew with Dynamos."
+        ]
+      },
+      {
+        "stem": "The teams are ranked by points. In how many matches did the lower-ranked team beat the higher-ranked team?",
+        "kind": "tita",
+        "answer": "1",
+        "uses": [
+          1,
+          2
+        ],
+        "why": [
+          "Final points: Chargers 8, Eagles 7, Aces 5, Dynamos 4, Bulls 3, all different, so the ranking is clear.",
+          "Of the seven matches with a winner, only Bulls (5th) beating Aces (3rd) went to the lower-ranked team. The other three matches were draws."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Complete each record from won + drawn + lost = 4. Aces: 2 draws and 1 loss, so 1 win and 5 points. Chargers: 2 wins and no loss, so 2 draws and 8 points. Eagles: 1 draw and 1 loss, so 2 wins and 7 points. The two known results go in the grid.",
+        "Dynamos have 4 points from 4 matches: 1 win, 1 draw and 2 losses, or 4 draws. They beat Bulls, so it is 1 win, 1 draw and 2 losses.",
+        "Total wins equal total losses. Wins: 1 + 1 + 2 + 1 + 2 = 7. Known losses: Aces 1, Chargers 0, Dynamos 2, Eagles 1 = 4. So Bulls lost 3, and with 1 win they had no draws.",
+        "Chargers did not lose, and Bulls never drew, so Chargers beat Bulls. Their two wins are Eagles and Bulls, so their two draws are with Aces and Dynamos.",
+        "Dynamos' win (Bulls) and draw (Chargers) are placed, so they lost to Aces and Eagles. Eagles still need one win and one draw from Aces and Bulls; Bulls never drew, so Eagles beat Bulls and drew with Aces.",
+        "Bulls lost to Dynamos, Chargers and Eagles, so their one win was over Aces. Aces: beat Dynamos, drew Chargers and Eagles, lost to Bulls. All ten results are fixed."
+      ],
+      "grid": {
+        "head": [
+          "Team",
+          "Won",
+          "Drawn",
+          "Lost",
+          "Points"
+        ],
+        "rows": [
+          [
+            "Aces",
+            "1",
+            "2",
+            "1",
+            "5"
+          ],
+          [
+            "Bulls",
+            "1",
+            "0",
+            "3",
+            "3"
+          ],
+          [
+            "Chargers",
+            "2",
+            "2",
+            "0",
+            "8"
+          ],
+          [
+            "Dynamos",
+            "1",
+            "1",
+            "2",
+            "4"
+          ],
+          [
+            "Eagles",
+            "2",
+            "1",
+            "1",
+            "7"
+          ]
+        ]
+      },
+      "cases": 1,
+      "diagram": {
+        "layout": "grid",
+        "seats": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "Record"
+        ],
+        "rows": [
+          "Aces",
+          "Bulls",
+          "Chargers",
+          "Dynamos",
+          "Eagles"
+        ],
+        "mirror": {
+          "W": "L",
+          "L": "W",
+          "D": "D"
+        },
+        "note": "Read across: W means the team on the left won that match. Record is won-drawn-lost, then points.",
+        "frames": [
+          [
+            [
+              null,
+              [],
+              [],
+              [],
+              [],
+              [
+                "1-2-1",
+                "5 pts"
+              ]
+            ],
+            [
+              [],
+              null,
+              [],
+              [
+                "L"
+              ],
+              [],
+              []
+            ],
+            [
+              [],
+              [],
+              null,
+              [],
+              [
+                "W"
+              ],
+              [
+                "2-2-0",
+                "8 pts"
+              ]
+            ],
+            [
+              [],
+              [
+                "W"
+              ],
+              [],
+              null,
+              [],
+              []
+            ],
+            [
+              [],
+              [],
+              [
+                "L"
+              ],
+              [],
+              null,
+              [
+                "2-1-1",
+                "7 pts"
+              ]
+            ]
+          ],
+          [
+            [
+              null,
+              [],
+              [],
+              [],
+              [],
+              [
+                "1-2-1",
+                "5 pts"
+              ]
+            ],
+            [
+              [],
+              null,
+              [],
+              [
+                "L"
+              ],
+              [],
+              []
+            ],
+            [
+              [],
+              [],
+              null,
+              [],
+              [
+                "W"
+              ],
+              [
+                "2-2-0",
+                "8 pts"
+              ]
+            ],
+            [
+              [],
+              [
+                "W"
+              ],
+              [],
+              null,
+              [],
+              [
+                "1-1-2",
+                "4 pts"
+              ]
+            ],
+            [
+              [],
+              [],
+              [
+                "L"
+              ],
+              [],
+              null,
+              [
+                "2-1-1",
+                "7 pts"
+              ]
+            ]
+          ],
+          [
+            [
+              null,
+              [],
+              [],
+              [],
+              [],
+              [
+                "1-2-1",
+                "5 pts"
+              ]
+            ],
+            [
+              [],
+              null,
+              [],
+              [
+                "L"
+              ],
+              [],
+              [
+                "1-0-3",
+                "3 pts"
+              ]
+            ],
+            [
+              [],
+              [],
+              null,
+              [],
+              [
+                "W"
+              ],
+              [
+                "2-2-0",
+                "8 pts"
+              ]
+            ],
+            [
+              [],
+              [
+                "W"
+              ],
+              [],
+              null,
+              [],
+              [
+                "1-1-2",
+                "4 pts"
+              ]
+            ],
+            [
+              [],
+              [],
+              [
+                "L"
+              ],
+              [],
+              null,
+              [
+                "2-1-1",
+                "7 pts"
+              ]
+            ]
+          ],
+          [
+            [
+              null,
+              [],
+              [
+                "D"
+              ],
+              [],
+              [],
+              [
+                "1-2-1",
+                "5 pts"
+              ]
+            ],
+            [
+              [],
+              null,
+              [
+                "L"
+              ],
+              [
+                "L"
+              ],
+              [],
+              [
+                "1-0-3",
+                "3 pts"
+              ]
+            ],
+            [
+              [
+                "D"
+              ],
+              [
+                "W"
+              ],
+              null,
+              [
+                "D"
+              ],
+              [
+                "W"
+              ],
+              [
+                "2-2-0",
+                "8 pts"
+              ]
+            ],
+            [
+              [],
+              [
+                "W"
+              ],
+              [
+                "D"
+              ],
+              null,
+              [],
+              [
+                "1-1-2",
+                "4 pts"
+              ]
+            ],
+            [
+              [],
+              [],
+              [
+                "L"
+              ],
+              [],
+              null,
+              [
+                "2-1-1",
+                "7 pts"
+              ]
+            ]
+          ],
+          [
+            [
+              null,
+              [],
+              [
+                "D"
+              ],
+              [
+                "W"
+              ],
+              [
+                "D"
+              ],
+              [
+                "1-2-1",
+                "5 pts"
+              ]
+            ],
+            [
+              [],
+              null,
+              [
+                "L"
+              ],
+              [
+                "L"
+              ],
+              [
+                "L"
+              ],
+              [
+                "1-0-3",
+                "3 pts"
+              ]
+            ],
+            [
+              [
+                "D"
+              ],
+              [
+                "W"
+              ],
+              null,
+              [
+                "D"
+              ],
+              [
+                "W"
+              ],
+              [
+                "2-2-0",
+                "8 pts"
+              ]
+            ],
+            [
+              [
+                "L"
+              ],
+              [
+                "W"
+              ],
+              [
+                "D"
+              ],
+              null,
+              [
+                "L"
+              ],
+              [
+                "1-1-2",
+                "4 pts"
+              ]
+            ],
+            [
+              [
+                "D"
+              ],
+              [
+                "W"
+              ],
+              [
+                "L"
+              ],
+              [
+                "W"
+              ],
+              null,
+              [
+                "2-1-1",
+                "7 pts"
+              ]
+            ]
+          ],
+          [
+            [
+              null,
+              [
+                "L"
+              ],
+              [
+                "D"
+              ],
+              [
+                "W"
+              ],
+              [
+                "D"
+              ],
+              [
+                "1-2-1",
+                "5 pts"
+              ]
+            ],
+            [
+              [
+                "W"
+              ],
+              null,
+              [
+                "L"
+              ],
+              [
+                "L"
+              ],
+              [
+                "L"
+              ],
+              [
+                "1-0-3",
+                "3 pts"
+              ]
+            ],
+            [
+              [
+                "D"
+              ],
+              [
+                "W"
+              ],
+              null,
+              [
+                "D"
+              ],
+              [
+                "W"
+              ],
+              [
+                "2-2-0",
+                "8 pts"
+              ]
+            ],
+            [
+              [
+                "L"
+              ],
+              [
+                "W"
+              ],
+              [
+                "D"
+              ],
+              null,
+              [
+                "L"
+              ],
+              [
+                "1-1-2",
+                "4 pts"
+              ]
+            ],
+            [
+              [
+                "D"
+              ],
+              [
+                "W"
+              ],
+              [
+                "L"
+              ],
+              [
+                "W"
+              ],
+              null,
+              [
+                "2-1-1",
+                "7 pts"
+              ]
+            ]
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "tour-qualification",
+    "title": "Qualification scenarios in a five-team league",
+    "type": "tournament",
+    "sub": "round robin, who can qualify",
+    "difficulty": "hard",
+    "minutes": 15,
+    "source": "original",
+    "since": "2026-10-29",
+    "intro": [
+      "Five teams, Aces, Bulls, Chargers, Dynamos and Eagles, are playing a league in which every team plays every other team once. A win earns 3 points, a draw 1 point and a loss 0 points. The two teams with the most points qualify for the final. If teams are level on points for second place, the qualifier is chosen by a draw of lots, so such a team cannot be sure of qualifying.",
+      "Six of the ten matches have been played; their results are the clues. The four matches still to be played are Aces v Chargers, Aces v Eagles, Bulls v Chargers and Dynamos v Eagles. The current points are Bulls 6, Chargers 4, Eagles 3, Dynamos 2, Aces 1.",
+      "A team is certain to qualify if it qualifies whatever the other results are, even if every tie for second place goes against it (at most one other team can finish level with it or ahead of it). A team can qualify if there is some set of remaining results in which it qualifies, even if it has to win a draw of lots for second place (at most one other team finishes strictly ahead of it)."
+    ],
+    "clues": [
+      "Bulls beat Dynamos.",
+      "Bulls beat Aces.",
+      "Eagles beat Bulls.",
+      "Chargers beat Eagles.",
+      "Aces drew with Dynamos.",
+      "Chargers drew with Dynamos."
+    ],
+    "questions": [
+      {
+        "stem": "Which of the following pairs of teams can finish as the two qualifiers with both strictly ahead of the other three teams (so no draw of lots is needed)?",
+        "kind": "mcq",
+        "options": [
+          "Aces and Eagles",
+          "Dynamos and Eagles",
+          "Bulls and Dynamos",
+          "Aces and Chargers"
+        ],
+        "answer": 3,
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "why": [
+          "Bulls cannot finish below 6, and Dynamos can reach at most 5 (by beating Eagles), so any pair with Dynamos is out.",
+          "Aces and Eagles would each need at least 7 to pass Bulls. Aces reach 7 only by beating both Chargers and Eagles, which holds Eagles to 3 + 3 = 6. Impossible.",
+          "Aces and Chargers works: Aces beat Chargers and Eagles (7), Chargers beat Bulls (4 + 3 = 7), Eagles beat Dynamos (6). Bulls and Eagles finish on 6, Dynamos on 2."
+        ]
+      },
+      {
+        "stem": "Chargers will be certain to qualify if they finish on at least N points, whatever the other results are. What is the smallest such N?",
+        "kind": "tita",
+        "answer": "8",
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "why": [
+          "Chargers have 4 points and play Aces and Bulls, so they can finish on 4, 5, 6, 7, 8 or 10.",
+          "7 is not enough: Chargers beat Aces and lose to Bulls (7), Bulls reach 9, and Eagles beat Aces and Dynamos to reach 9. Chargers finish third.",
+          "8 means a win and a draw. Then Bulls have at most 7, Aces at most 5 and Dynamos at most 5, so only Eagles (9) can be level or ahead. At most one team, so Chargers always qualify: N = 8."
+        ]
+      },
+      {
+        "stem": "Each of the four remaining matches can end in a win for either team or a draw, giving 81 combinations of results. In how many of these combinations can Dynamos qualify?",
+        "kind": "tita",
+        "answer": "4",
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "why": [
+          "Without a win over Eagles, Dynamos finish on 3 at most, behind both Bulls (6 or more) and Chargers (4 or more). So Dynamos beat Eagles and finish on 5.",
+          "Bulls are always ahead, so nobody else may finish above 5. Eagles, having lost to Dynamos, can at most draw with Aces. Chargers may take at most 1 point from Aces and Bulls. Aces must stay on 5 or less.",
+          "Listing Aces v Chargers, Bulls v Chargers, Aces v Eagles: (Aces win, Bulls win, draw), (Aces win, draw, draw), (draw, Bulls win, Aces win), (draw, Bulls win, draw). Every other combination puts someone above 5: 4 combinations."
+        ]
+      },
+      {
+        "stem": "If Bulls beat Chargers in their remaining match, which of the following must be true?",
+        "kind": "mcq",
+        "options": [
+          "Bulls are certain to qualify.",
+          "Chargers are certain to qualify.",
+          "Aces cannot qualify.",
+          "Eagles cannot qualify."
+        ],
+        "answer": 0,
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "why": [
+          "Bulls are on 9. Chargers (beaten by Bulls) reach 7 at most, Aces 7, Dynamos 5; only Eagles can also reach 9. At most one team is level or ahead, so Bulls are certain.",
+          "The others fail: Chargers miss out if they draw Aces (5) while Eagles reach 9; Eagles on 9 can qualify; Aces can qualify by beating Chargers and Eagles (7) while Eagles stay on 6 at most."
+        ]
+      },
+      {
+        "stem": "What is the highest total with which a team can finish yet not be certain to qualify?",
+        "kind": "tita",
+        "answer": "7",
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "why": [
+          "A team is uncertain only if two other teams can finish level with it or ahead. Aces (7 at most) and Dynamos (5 at most) never reach 8. Bulls reach 9 only by beating Chargers, which caps Chargers at 7, so Bulls and Chargers are never both on 8 or more.",
+          "So at most two teams (one of Bulls and Chargers, plus Eagles) can be on 8 or more, and a team on 8 or more is always certain.",
+          "7 can be uncertain: Chargers beat Aces and lose to Bulls (7), Eagles draw Aces and beat Dynamos (7), Bulls lead on 9, and Chargers and Eagles are level for second. Answer 7."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Fill in the six results. Points now: Bulls 6, Chargers 4, Eagles 3, Dynamos 2, Aces 1. The four matches still to play are marked with a question mark.",
+        "Most each team can reach by winning every match left: Aces 1 + 3 + 3 = 7, Bulls 6 + 3 = 9, Chargers 4 + 3 + 3 = 10, Dynamos 2 + 3 = 5, Eagles 3 + 3 + 3 = 9. Bulls have one match left, so they never fall below 6.",
+        "Two facts settle almost every question. Bulls are always on 6 or more, so Dynamos (5 at most) can never pass them. Bulls reach 9 only by beating Chargers, which caps Chargers at 7. Read 'can qualify' as at most one team strictly ahead, and 'certain' as at most one team level or ahead."
+      ],
+      "diagram": {
+        "layout": "grid",
+        "seats": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "Now",
+          "Most"
+        ],
+        "rows": [
+          "Aces",
+          "Bulls",
+          "Chargers",
+          "Dynamos",
+          "Eagles"
+        ],
+        "mirror": {
+          "W": "L",
+          "L": "W",
+          "D": "D"
+        },
+        "note": "Read across: W means the team on the left won that match; a question mark is a match still to play. Now is the points so far, Most the highest each team can reach.",
+        "frames": [
+          [
+            [
+              null,
+              [
+                "L"
+              ],
+              [
+                "?"
+              ],
+              [
+                "D"
+              ],
+              [
+                "?"
+              ],
+              [
+                "1"
+              ],
+              []
+            ],
+            [
+              [
+                "W"
+              ],
+              null,
+              [
+                "?"
+              ],
+              [
+                "W"
+              ],
+              [
+                "L"
+              ],
+              [
+                "6"
+              ],
+              []
+            ],
+            [
+              [
+                "?"
+              ],
+              [
+                "?"
+              ],
+              null,
+              [
+                "D"
+              ],
+              [
+                "W"
+              ],
+              [
+                "4"
+              ],
+              []
+            ],
+            [
+              [
+                "D"
+              ],
+              [
+                "L"
+              ],
+              [
+                "D"
+              ],
+              null,
+              [
+                "?"
+              ],
+              [
+                "2"
+              ],
+              []
+            ],
+            [
+              [
+                "?"
+              ],
+              [
+                "W"
+              ],
+              [
+                "L"
+              ],
+              [
+                "?"
+              ],
+              null,
+              [
+                "3"
+              ],
+              []
+            ]
+          ],
+          [
+            [
+              null,
+              [
+                "L"
+              ],
+              [
+                "?"
+              ],
+              [
+                "D"
+              ],
+              [
+                "?"
+              ],
+              [
+                "1"
+              ],
+              [
+                "7"
+              ]
+            ],
+            [
+              [
+                "W"
+              ],
+              null,
+              [
+                "?"
+              ],
+              [
+                "W"
+              ],
+              [
+                "L"
+              ],
+              [
+                "6"
+              ],
+              [
+                "9"
+              ]
+            ],
+            [
+              [
+                "?"
+              ],
+              [
+                "?"
+              ],
+              null,
+              [
+                "D"
+              ],
+              [
+                "W"
+              ],
+              [
+                "4"
+              ],
+              [
+                "10"
+              ]
+            ],
+            [
+              [
+                "D"
+              ],
+              [
+                "L"
+              ],
+              [
+                "D"
+              ],
+              null,
+              [
+                "?"
+              ],
+              [
+                "2"
+              ],
+              [
+                "5"
+              ]
+            ],
+            [
+              [
+                "?"
+              ],
+              [
+                "W"
+              ],
+              [
+                "L"
+              ],
+              [
+                "?"
+              ],
+              null,
+              [
+                "3"
+              ],
+              [
+                "9"
+              ]
+            ]
+          ],
+          [
+            [
+              null,
+              [
+                "L"
+              ],
+              [
+                "?"
+              ],
+              [
+                "D"
+              ],
+              [
+                "?"
+              ],
+              [
+                "1"
+              ],
+              [
+                "7"
+              ]
+            ],
+            [
+              [
+                "W"
+              ],
+              null,
+              [
+                "?"
+              ],
+              [
+                "W"
+              ],
+              [
+                "L"
+              ],
+              [
+                "6"
+              ],
+              [
+                "9"
+              ]
+            ],
+            [
+              [
+                "?"
+              ],
+              [
+                "?"
+              ],
+              null,
+              [
+                "D"
+              ],
+              [
+                "W"
+              ],
+              [
+                "4"
+              ],
+              [
+                "10"
+              ]
+            ],
+            [
+              [
+                "D"
+              ],
+              [
+                "L"
+              ],
+              [
+                "D"
+              ],
+              null,
+              [
+                "?"
+              ],
+              [
+                "2"
+              ],
+              [
+                "5"
+              ]
+            ],
+            [
+              [
+                "?"
+              ],
+              [
+                "W"
+              ],
+              [
+                "L"
+              ],
+              [
+                "?"
+              ],
+              null,
+              [
+                "3"
+              ],
+              [
+                "9"
+              ]
+            ]
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "tour-archery-rounds",
+    "title": "A three-round archery tournament",
+    "type": "tournament",
+    "sub": "rounds and ranking points",
+    "difficulty": "hard",
+    "minutes": 15,
+    "source": "original",
+    "since": "2026-10-29",
+    "intro": [
+      "Five archers, Rohan, Sana, Tara, Uday and Veer, compete in a tournament of three rounds. In every round all five shoot and are ranked 1st to 5th with no ties. Ranking points are awarded in every round: 1st 7, 2nd 4, 3rd 2, 4th 1 and 5th 0. An archer's total is the sum of the points from the three rounds.",
+      "Nothing else is known about the order of finishing except the clues, all of which are true."
+    ],
+    "clues": [
+      "Rohan scored 12 points in total.",
+      "Tara scored 2 points in total.",
+      "Uday scored 10 points in total.",
+      "In Round 2, Uday finished 4th.",
+      "In Round 1, Sana finished 3rd.",
+      "In Round 2, Veer finished 1st.",
+      "In Round 3, Sana finished ahead of Rohan.",
+      "In Round 1, Veer finished ahead of Tara."
+    ],
+    "questions": [
+      {
+        "stem": "Who won Round 1?",
+        "kind": "mcq",
+        "options": [
+          "Veer",
+          "Uday",
+          "Rohan",
+          "Sana"
+        ],
+        "answer": 1,
+        "uses": [
+          3,
+          4,
+          5
+        ],
+        "why": [
+          "Uday has 10 points with only 1 from Round 2 (4th), so Rounds 1 and 3 gave 9, which can only be 7 + 2.",
+          "The 2-point place in Round 1 (3rd) is Sana's, so Uday's 2 came in Round 3 and his 7 in Round 1: Uday won Round 1."
+        ]
+      },
+      {
+        "stem": "What is Veer's total score in the tournament?",
+        "kind": "tita",
+        "answer": "9",
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "why": [
+          "Veer was 4th in Round 1 (1), 1st in Round 2 (7) and 4th in Round 3 (1): 1 + 7 + 1 = 9.",
+          "Quicker check: each round hands out 7 + 4 + 2 + 1 + 0 = 14, so 42 in all. Rohan, Tara and Uday have 24, leaving 18 for Sana and Veer, who are level on 9 each."
+        ]
+      },
+      {
+        "stem": "Which of the following statements is true?",
+        "kind": "mcq",
+        "options": [
+          "Sana and Veer finished with the same total.",
+          "Tara finished last in exactly one round.",
+          "Rohan won at least one round.",
+          "Uday finished last in at least one round."
+        ],
+        "answer": 0,
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "why": [
+          "Totals: Rohan 12, Uday 10, Sana 9, Veer 9, Tara 2. Sana and Veer are level, so A is true.",
+          "Rohan was 2nd in every round and never won. Uday was 1st, 4th and 3rd, never last. Tara was last in Rounds 1 and 3, twice, not once."
+        ]
+      },
+      {
+        "stem": "Number the positions 1st = 1, 2nd = 2, and so on to 5th = 5. What is the product of Sana's positions in the three rounds?",
+        "kind": "tita",
+        "answer": "15",
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "why": [
+          "Sana was 3rd in Round 1. In Round 2, Veer, Rohan, Tara and Uday took 1st to 4th, leaving 5th for Sana. In Round 3 Sana was ahead of Rohan, who was 2nd, so Sana won.",
+          "3 × 5 × 1 = 15."
+        ]
+      },
+      {
+        "stem": "Suppose the points in Round 2 had been doubled (14, 8, 4, 2 and 0), with the other rounds unchanged. How many archers would then have a higher total than Uday?",
+        "kind": "tita",
+        "answer": "2",
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "why": [
+          "New totals: Rohan 4 + 8 + 4 = 16, Sana 2 + 0 + 7 = 9, Tara 0 + 4 + 0 = 4, Uday 7 + 2 + 2 = 11, Veer 1 + 14 + 1 = 16.",
+          "Rohan and Veer (16 each) are above Uday (11): 2 archers."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Uday: 10 points with only 1 from Round 2 (4th), so Rounds 1 and 3 gave 7 + 2. Round 1's 3rd place is Sana's, so Uday won Round 1 and was 3rd in Round 3. Sana is 3rd in Round 1 and Veer 1st in Round 2 (clues 5 and 6).",
+        "Rohan: 12 points is 4 + 4 + 4 or 7 + 4 + 1. A 7 needs a round win, but Uday won Round 1, Veer Round 2, and Sana beat Rohan in Round 3. So Rohan was 2nd in all three rounds.",
+        "Round 1: Veer is ahead of Tara, so Veer is 4th and Tara 5th. Round 3: Sana is ahead of Rohan (2nd), so Sana won; Veer and Tara share 4th and 5th.",
+        "Round 2 leaves 3rd and 5th for Sana and Tara. Tara has 0 from Round 1 and 2 in all. As 5th in Round 2 she could get at most 1 more in Round 3, so she was 3rd in Round 2 and 5th in Round 3. Sana was 5th in Round 2 and Veer 4th in Round 3.",
+        "Totals: Rohan 4 + 4 + 4 = 12, Uday 7 + 1 + 2 = 10, Sana 2 + 0 + 7 = 9, Veer 1 + 7 + 1 = 9, Tara 0 + 2 + 0 = 2."
+      ],
+      "grid": {
+        "head": [
+          "Archer",
+          "Round 1",
+          "Round 2",
+          "Round 3",
+          "Total"
+        ],
+        "rows": [
+          [
+            "Rohan",
+            "2nd",
+            "2nd",
+            "2nd",
+            "12"
+          ],
+          [
+            "Sana",
+            "3rd",
+            "5th",
+            "1st",
+            "9"
+          ],
+          [
+            "Tara",
+            "5th",
+            "3rd",
+            "5th",
+            "2"
+          ],
+          [
+            "Uday",
+            "1st",
+            "4th",
+            "3rd",
+            "10"
+          ],
+          [
+            "Veer",
+            "4th",
+            "1st",
+            "4th",
+            "9"
+          ]
+        ]
+      },
+      "cases": 1,
+      "diagram": {
+        "layout": "row",
+        "seats": [
+          "1st (7)",
+          "2nd (4)",
+          "3rd (2)",
+          "4th (1)",
+          "5th (0)"
+        ],
+        "rows": [
+          "Round 1",
+          "Round 2",
+          "Round 3"
+        ],
+        "note": "One row per round, places 1st to 5th with their points.",
+        "frames": [
+          [
+            [
+              [
+                "Uday"
+              ],
+              [],
+              [
+                "Sana"
+              ],
+              [],
+              []
+            ],
+            [
+              [
+                "Veer"
+              ],
+              [],
+              [],
+              [
+                "Uday"
+              ],
+              []
+            ],
+            [
+              [],
+              [],
+              [
+                "Uday"
+              ],
+              [],
+              []
+            ]
+          ],
+          [
+            [
+              [
+                "Uday"
+              ],
+              [
+                "Rohan"
+              ],
+              [
+                "Sana"
+              ],
+              [],
+              []
+            ],
+            [
+              [
+                "Veer"
+              ],
+              [
+                "Rohan"
+              ],
+              [],
+              [
+                "Uday"
+              ],
+              []
+            ],
+            [
+              [],
+              [
+                "Rohan"
+              ],
+              [
+                "Uday"
+              ],
+              [],
+              []
+            ]
+          ],
+          [
+            [
+              [
+                "Uday"
+              ],
+              [
+                "Rohan"
+              ],
+              [
+                "Sana"
+              ],
+              [
+                "Veer"
+              ],
+              [
+                "Tara"
+              ]
+            ],
+            [
+              [
+                "Veer"
+              ],
+              [
+                "Rohan"
+              ],
+              [],
+              [
+                "Uday"
+              ],
+              []
+            ],
+            [
+              [
+                "Sana"
+              ],
+              [
+                "Rohan"
+              ],
+              [
+                "Uday"
+              ],
+              [
+                "Veer?",
+                "Tara?"
+              ],
+              [
+                "Veer?",
+                "Tara?"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "Uday"
+              ],
+              [
+                "Rohan"
+              ],
+              [
+                "Sana"
+              ],
+              [
+                "Veer"
+              ],
+              [
+                "Tara"
+              ]
+            ],
+            [
+              [
+                "Veer"
+              ],
+              [
+                "Rohan"
+              ],
+              [
+                "Tara"
+              ],
+              [
+                "Uday"
+              ],
+              [
+                "Sana"
+              ]
+            ],
+            [
+              [
+                "Sana"
+              ],
+              [
+                "Rohan"
+              ],
+              [
+                "Uday"
+              ],
+              [
+                "Veer"
+              ],
+              [
+                "Tara"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "Uday"
+              ],
+              [
+                "Rohan"
+              ],
+              [
+                "Sana"
+              ],
+              [
+                "Veer"
+              ],
+              [
+                "Tara"
+              ]
+            ],
+            [
+              [
+                "Veer"
+              ],
+              [
+                "Rohan"
+              ],
+              [
+                "Tara"
+              ],
+              [
+                "Uday"
+              ],
+              [
+                "Sana"
+              ]
+            ],
+            [
+              [
+                "Sana"
+              ],
+              [
+                "Rohan"
+              ],
+              [
+                "Uday"
+              ],
+              [
+                "Veer"
+              ],
+              [
+                "Tara"
+              ]
+            ]
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "tour-redrawn-knockout",
+    "title": "Reconstructing a 16-player knockout",
+    "type": "tournament",
+    "sub": "knockout, draw re-made every round",
+    "difficulty": "hard",
+    "minutes": 18,
+    "source": "original",
+    "since": "2026-10-29",
+    "intro": [
+      "Sixteen players, seeded 1 (strongest) to 16 (weakest), play a four-round knockout: Round 1 (the round of 16), Round 2 (quarter-finals), Round 3 (semi-finals) and Round 4 (the final).",
+      "The draw is re-made before every round: the best-seeded remaining player plays the worst-seeded remaining player, the second best plays the second worst, and so on. A match won by the player with the higher seed number (the weaker seed) is an upset. There are no draws or byes. The clues are all true."
+    ],
+    "clues": [
+      "There was no upset in Round 3 (the semi-finals).",
+      "There were exactly 8 upsets in the whole tournament.",
+      "In Round 2, seed 10 beat seed 8.",
+      "In Round 2, seed 2 beat seed 13.",
+      "In Round 2, seed 5 played seed 11."
+    ],
+    "questions": [
+      {
+        "stem": "Which seed knocked out the top seed (seed 1)?",
+        "kind": "mcq",
+        "options": [
+          "Seed 11",
+          "Seed 16",
+          "Seed 14",
+          "Seed 13"
+        ],
+        "answer": 2,
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "why": [
+          "Seed 1 beat seed 16 in Round 1 and met the weakest of the eight quarter-finalists, seed 14, in Round 2.",
+          "Seed 14 won: it is one of the three Round 2 upsets the count of 8 forces."
+        ]
+      },
+      {
+        "stem": "What is the sum of the seeds of the four semi-finalists?",
+        "kind": "tita",
+        "answer": "37",
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "why": [
+          "The quarter-finals were 1 v 14, 2 v 13, 5 v 11 and 8 v 10, won by 14, 2, 11 and 10.",
+          "2 + 10 + 11 + 14 = 37."
+        ]
+      },
+      {
+        "stem": "Which seed did the champion defeat in the semi-finals?",
+        "kind": "mcq",
+        "options": [
+          "Seed 5",
+          "Seed 2",
+          "Seed 11",
+          "Seed 14"
+        ],
+        "answer": 2,
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "why": [
+          "The semi-finals pair the best with the worst: 2 v 14 and 10 v 11. With no upset in Round 3, seeds 2 and 10 win.",
+          "The last upset must be the final, so seed 10 beat seed 2 and is champion. In the semi-final, seed 10 beat seed 11."
+        ]
+      },
+      {
+        "stem": "What is the sum of the seeds of the eight players knocked out in Round 1?",
+        "kind": "tita",
+        "answer": "72",
+        "uses": [
+          3,
+          4,
+          5
+        ],
+        "why": [
+          "The Round 1 winners are seeds 1, 2, 5, 8, 10, 11, 13 and 14, adding up to 64.",
+          "All sixteen seeds add up to 136, so the losers (3, 4, 6, 7, 9, 12, 15 and 16) add up to 136 − 64 = 72."
+        ]
+      },
+      {
+        "stem": "Which of the following matches took place?",
+        "kind": "mcq",
+        "options": [
+          "Seed 5 v seed 10 in the semi-finals.",
+          "Seed 14 v seed 2 in the semi-finals.",
+          "Seed 8 v seed 14 in the quarter-finals.",
+          "Seed 11 v seed 13 in the quarter-finals."
+        ],
+        "answer": 1,
+        "uses": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "why": [
+          "The quarter-finals were 1 v 14, 2 v 13, 5 v 11 and 8 v 10, and the semi-finals 2 v 14 and 10 v 11. So 14 v 2 in the semi-finals took place.",
+          "Seed 5 lost to seed 11 in the quarter-finals, so it never met seed 10, and neither 8 v 14 nor 11 v 13 is a quarter-final."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Round 1 is 1 v 16, 2 v 15, and so on to 8 v 9, and each match sends one player on. Clues 3 to 5 put seeds 2, 13, 5, 11, 8 and 10 in Round 2, which settles six Round 1 matches: 13 over 4, 11 over 6 and 10 over 7 are upsets.",
+        "The last two quarter-finalists come from 1 v 16 and 3 v 14. If 16 were in, seed 2 would face 16, not 13. If 1 and 3 were both in, seed 1 would face 13, not seed 2. Only seeds 1 and 14 fit, so 14 beat 3 (a fourth upset) and Round 2 is 1 v 14, 2 v 13, 5 v 11, 8 v 10.",
+        "Upsets so far: 4 in Round 1 and 10 over 8 in Round 2, which makes 5 of 8. Round 3 has none, so the other 3 come from 1 v 14, 5 v 11 and the final, all three upsets: 14 beat 1 and 11 beat 5. The semi-finals are 2 v 14 and 10 v 11.",
+        "No upset in the semi-finals, so 2 and 10 win. The final, 2 v 10, is the eighth upset: seed 10 is champion."
+      ],
+      "cases": 1,
+      "diagram": {
+        "layout": "bracket",
+        "seats": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8"
+        ],
+        "rows": [
+          "Round 1",
+          "Quarter-finals",
+          "Semi-finals",
+          "Final"
+        ],
+        "note": "The draw is re-made every round, so a match does not feed a fixed place in the next round. The winner of each match is in bold.",
+        "frames": [
+          [
+            [
+              [
+                "1",
+                "16"
+              ],
+              [
+                "2",
+                "15",
+                "2"
+              ],
+              [
+                "3",
+                "14"
+              ],
+              [
+                "4",
+                "13",
+                "13",
+                "upset"
+              ],
+              [
+                "5",
+                "12",
+                "5"
+              ],
+              [
+                "6",
+                "11",
+                "11",
+                "upset"
+              ],
+              [
+                "7",
+                "10",
+                "10",
+                "upset"
+              ],
+              [
+                "8",
+                "9",
+                "8"
+              ]
+            ],
+            [
+              [],
+              [
+                "2",
+                "13",
+                "2"
+              ],
+              [
+                "5",
+                "11"
+              ],
+              [
+                "8",
+                "10",
+                "10",
+                "upset"
+              ],
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              [],
+              [],
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              [],
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ]
+          ],
+          [
+            [
+              [
+                "1",
+                "16",
+                "1"
+              ],
+              [
+                "2",
+                "15",
+                "2"
+              ],
+              [
+                "3",
+                "14",
+                "14",
+                "upset"
+              ],
+              [
+                "4",
+                "13",
+                "13",
+                "upset"
+              ],
+              [
+                "5",
+                "12",
+                "5"
+              ],
+              [
+                "6",
+                "11",
+                "11",
+                "upset"
+              ],
+              [
+                "7",
+                "10",
+                "10",
+                "upset"
+              ],
+              [
+                "8",
+                "9",
+                "8"
+              ]
+            ],
+            [
+              [
+                "1",
+                "14"
+              ],
+              [
+                "2",
+                "13",
+                "2"
+              ],
+              [
+                "5",
+                "11"
+              ],
+              [
+                "8",
+                "10",
+                "10",
+                "upset"
+              ],
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              [],
+              [],
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              [],
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ]
+          ],
+          [
+            [
+              [
+                "1",
+                "16",
+                "1"
+              ],
+              [
+                "2",
+                "15",
+                "2"
+              ],
+              [
+                "3",
+                "14",
+                "14",
+                "upset"
+              ],
+              [
+                "4",
+                "13",
+                "13",
+                "upset"
+              ],
+              [
+                "5",
+                "12",
+                "5"
+              ],
+              [
+                "6",
+                "11",
+                "11",
+                "upset"
+              ],
+              [
+                "7",
+                "10",
+                "10",
+                "upset"
+              ],
+              [
+                "8",
+                "9",
+                "8"
+              ]
+            ],
+            [
+              [
+                "1",
+                "14",
+                "14",
+                "upset"
+              ],
+              [
+                "2",
+                "13",
+                "2"
+              ],
+              [
+                "5",
+                "11",
+                "11",
+                "upset"
+              ],
+              [
+                "8",
+                "10",
+                "10",
+                "upset"
+              ],
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              [
+                "2",
+                "14"
+              ],
+              [
+                "10",
+                "11"
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              [],
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ]
+          ],
+          [
+            [
+              [
+                "1",
+                "16",
+                "1"
+              ],
+              [
+                "2",
+                "15",
+                "2"
+              ],
+              [
+                "3",
+                "14",
+                "14",
+                "upset"
+              ],
+              [
+                "4",
+                "13",
+                "13",
+                "upset"
+              ],
+              [
+                "5",
+                "12",
+                "5"
+              ],
+              [
+                "6",
+                "11",
+                "11",
+                "upset"
+              ],
+              [
+                "7",
+                "10",
+                "10",
+                "upset"
+              ],
+              [
+                "8",
+                "9",
+                "8"
+              ]
+            ],
+            [
+              [
+                "1",
+                "14",
+                "14",
+                "upset"
+              ],
+              [
+                "2",
+                "13",
+                "2"
+              ],
+              [
+                "5",
+                "11",
+                "11",
+                "upset"
+              ],
+              [
+                "8",
+                "10",
+                "10",
+                "upset"
+              ],
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              [
+                "2",
+                "14",
+                "2"
+              ],
+              [
+                "10",
+                "11",
+                "10"
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              [
+                "2",
+                "10",
+                "10",
+                "upset"
+              ],
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ]
+          ]
+        ]
+      }
+    }
+  }
+]

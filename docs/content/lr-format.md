@@ -42,7 +42,7 @@ Send them in any form (typed text, a document, a photo of handwritten notes). Cl
     "grid": { "head": ["…"], "rows": [["…"]] }, // optional final table
     "cases": 1,                     // how many arrangements fit all clues (0 = left open on purpose)
     "diagram": {                    // optional picture: the review fills it in step by step, the attempt uses it blank as a scratch pad
-      "layout": "row",              // row | circle
+      "layout": "row",              // row | circle | grid | bracket (see below)
       "seats": ["1", "2", "3"],     // labels; a circle runs round to the left (clockwise seen from above) from the bottom seat
       "rows": ["Monday morning"],   // optional, row layout only: several rows (one per day, say)
       "note": "…",                  // shown under the picture; its first sentence also under the scratch pad
@@ -54,9 +54,13 @@ Send them in any form (typed text, a document, a photo of handwritten notes). Cl
 }
 ```
 
-**Rules the tests enforce:** 4 to 6 questions; MCQ answers within the options; TITA answers that parse when they are numbers; `uses` only names clues that exist; ids unique across all LR files; `source` present; `since` a date; a diagram has one frame per solution step and every frame has the right number of rows and seats.
+**Grids and brackets.** A `grid` is a table: `rows` are the row heads, `seats` the column heads, and `null` a cell that cannot hold anything (a team against itself), drawn crossed out. For a results grid whose first columns are the row teams in the same order, `"mirror": {"W": "L", "L": "W", "D": "D"}` makes the scratch pad write the other team's result by itself, and on a phone the rows take the short column names. A `bracket` has one row per round and one seat per match slot (as many as the first round has matches), `null` for slots a later round does not have; a match is `["4", "13", "13", "upset"]`: both players, then the winner when known, then notes. `[]` is a match not known yet. Every set gets a notes box under the scratch pad, and a set with no picture gets the notes box alone.
 
-**Checking a set before it ships.** Solve it by brute force (every arrangement of every attribute, filtered by the clues), then check each answer, each "must be true" option against every arrangement left, the `cases` count, and the last frame of the picture. The owner's first 25 arrangement questions were checked this way on 24 Oct 2026 (1, 2, 6, 3 and 2 arrangements, every key right).
+**A question that needs no clue** (one read off the given table) has `"uses": []`; the review says the table settles it.
+
+**Rules the tests enforce:** 4 to 6 questions; MCQ answers within the options; TITA answers that parse when they are numbers; `uses` only names clues that exist; ids unique across all LR files; `source` present; `since` a date; a diagram has one frame per solution step and every frame has the right number of rows and seats; a grid or bracket keeps the same closed cells in every frame, a bracket winner is one of the two players, and a `mirror` maps both ways.
+
+**Checking a set before it ships.** Solve it by brute force (every arrangement of every attribute, filtered by the clues), then check each answer, each "must be true" option against every arrangement left, the `cases` count, and the last frame of the picture. The owner's first 25 arrangement questions were checked this way on 24 Oct 2026 (1, 2, 6, 3 and 2 arrangements, every key right), and the 25 games and tournaments questions on 28 Oct 2026 (sets 2 to 5 have one solution each; set 1's questions are separate scenarios, each simulated; every key right).
 
 ## Example (original, checked by brute force)
 

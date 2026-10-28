@@ -10,6 +10,7 @@ import { reportUrl } from "../../data/site";
 import { API_ENABLED } from "../../lib/api";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { CAUSES } from "../../data/traps";
+import { useGsap } from "../../lib/motion";
 import { usePref } from "../../lib/prefs";
 import { CAUSE_IDS, type Cause } from "../../lib/state";
 import { useStore } from "../../lib/store";
@@ -257,18 +258,34 @@ export function PaletteCell({ n, state, current, onClick, label, className }: { 
   );
 }
 
-/** A score with its parts, shown after a set or a test. */
+/**
+ * A score with its parts, shown after a set or a test. On arrival the score counts up from 0 and the parts follow one
+ * by one (D41); the final text is in the page from the start, so a screen reader and a slow phone read it as is.
+ */
 export function ScoreCard({ score, of, unit, parts, children }: { score: ReactNode; of?: ReactNode; unit?: string; parts: [string, ReactNode][]; children?: ReactNode }) {
+  const card = useRef<HTMLDivElement>(null);
+  const num = typeof score === "string" || typeof score === "number" ? /^([+−-]?)(\d+)$/.exec(String(score)) : null;
+  useGsap(card, (gsap, el) => {
+    gsap.from(el.querySelectorAll("[data-part]"), { opacity: 0, y: 8, duration: 0.4, stagger: 0.08, delay: 0.15, ease: "power2.out" });
+    const out = el.querySelector<HTMLElement>("[data-score]");
+    if (!num || !out || +num[2] === 0) return;
+    const n = +num[2], o = { v: 0 };
+    gsap.to(o, {
+      v: n, duration: Math.min(1.1, 0.4 + n / 50), ease: "power2.out",
+      onUpdate: () => { const v = Math.round(o.v); out.textContent = (v ? num[1] : "") + v; },
+      onComplete: () => { out.textContent = num[0]; },
+    });
+  }, [String(score)]);
   return (
-    <div className="flex flex-col gap-5 rounded-lg bg-card p-5 sm:p-6">
+    <div ref={card} className="flex flex-col gap-5 rounded-lg bg-card p-5 sm:p-6">
       <div className="flex flex-wrap items-end gap-x-10 gap-y-4">
         <p className="flex items-baseline gap-1.5">
-          <span className="text-[3rem] leading-none font-bold tracking-tight tabular-nums">{score}</span>
+          <span data-score className="text-[3rem] leading-none font-bold tracking-tight tabular-nums">{score}</span>
           {of != null && <span className="text-heading text-muted-foreground">/ {of}</span>}
           {unit && <span className="text-heading text-muted-foreground">{unit}</span>}
         </p>
         <dl className="flex flex-wrap gap-x-8 gap-y-2">
-          {parts.map(([k, v]) => <div key={k} className="flex flex-col"><dt className="text-sm text-muted-foreground">{k}</dt><dd className="text-heading font-semibold">{typeof v === "string" || typeof v === "number" ? <Tnum>{String(v)}</Tnum> : v}</dd></div>)}
+          {parts.map(([k, v]) => <div key={k} data-part className="flex flex-col"><dt className="text-sm text-muted-foreground">{k}</dt><dd className="text-heading font-semibold">{typeof v === "string" || typeof v === "number" ? <Tnum>{String(v)}</Tnum> : v}</dd></div>)}
         </dl>
       </div>
       {children}
