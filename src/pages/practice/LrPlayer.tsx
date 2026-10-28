@@ -57,10 +57,12 @@ function padHint(g: LrDiagram | undefined): string {
   if (!g) return "Write down your working as you go.";
   if (g.layout === "grid") return g.mirror ? "Type W, D or L for the team on the left; the other team's result fills itself in." : "Type into any cell.";
   if (g.layout === "bracket") return "Type each match as you work it out, such as 4 v 13.";
+  if (g.layout === "venn") return g.padSets ? "Name the circles A, B and C for the question, then type a count, 'some' or an x into any region." : "Type a count into any region, or x for an empty one.";
+  if (g.layout === "network") return "Write each town's best distance as you find it.";
   return "Type a name or a note into any seat.";
 }
 
-const kicker = (set: LrSet, what: string) => `${what}, ${LR_TYPE[set.type].label.toLowerCase()}, ${set.difficulty}`;
+const kicker = (set: LrSet, what: string) => `${what}, ${LR_TYPE[set.type].label.charAt(0).toLowerCase() + LR_TYPE[set.type].label.slice(1)}, ${set.difficulty}`;
 
 function DataTable({ t }: { t: LrTable }) {
   return (
@@ -190,7 +192,7 @@ function Attempt({ set, onDone }: { set: LrSet; onDone: (id: string) => void }) 
           </div>
           <div className="flex flex-col gap-4">
             <p className="text-sm text-muted-foreground">Question {cur + 1} of {n}, {q.kind === "mcq" ? "choose one" : "type your answer (no negative marking)"}</p>
-            <p className="text-lg leading-snug font-semibold">{q.stem}</p>
+            <p className="text-lg leading-snug font-semibold whitespace-pre-line">{q.stem}</p>
             {q.kind === "mcq" ? (
               <ChoiceGroup label={"Options for question " + (cur + 1)}>
                 {q.options!.map((o, i) => <Choice key={i} mark={LETTERS[i]} checked={ans[cur] === i} onClick={() => setAt(setAns, i)}>{o}</Choice>)}
@@ -308,7 +310,7 @@ function ReviewQuestion({ set, qi, given, att, whole }: { set: LrSet; qi: number
         <span className="text-sm text-muted-foreground">Question {qi + 1}, {q.kind === "mcq" ? "multiple choice" : "typed answer"}</span>
         <Badge variant={ok ? "success" : blank ? "secondary" : "danger"}>{badge}</Badge>
       </div>
-      <p className="text-lg leading-snug font-semibold">{q.stem}</p>
+      <p className="text-lg leading-snug font-semibold whitespace-pre-line">{q.stem}</p>
       {q.kind === "mcq" ? (
         <ul className="flex flex-col gap-2.5">
           {q.options!.map((o, i) => (
@@ -327,7 +329,7 @@ function ReviewQuestion({ set, qi, given, att, whole }: { set: LrSet; qi: number
       <div className="flex flex-col gap-2 rounded-lg bg-card p-4">
         {q.why.map((w, i) => <p key={i} className="text-base">{w}</p>)}
       </div>
-      <p className="text-sm text-muted-foreground">{q.uses.length === 0 ? (set.tables ? "The table alone settles it; no clue is needed." : "The rules in the story settle it; no clue is needed.") : whole ? "This question needs the whole set solved." : `The highlighted clue${q.uses.length > 1 ? "s settle" : " settles"} it.`}</p>
+      <p className="text-sm text-muted-foreground">{q.uses.length === 0 ? (set.clues.length === 0 ? "The question's own statements settle it." : set.tables ? "The table alone settles it; no clue is needed." : "The rules in the story settle it; no clue is needed.") : whole ? "This question needs the whole set solved." : `The highlighted clue${q.uses.length > 1 ? "s settle" : " settles"} it.`}</p>
       {!ok && (inLog
         ? <ErrorCause src={src} />
         : <Button variant="secondary" size="sm" className="self-start" onClick={() => { update((st) => { st.errors.push(lrError(set, qi, given, todayIso(), false, att)); }); toast("Added to your Error log."); }}>Add to Error log</Button>)}

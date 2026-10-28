@@ -1,0 +1,877 @@
+[
+  {
+    "id": "venn-syllogisms",
+    "title": "Two- and three-statement syllogisms",
+    "type": "venn",
+    "sub": "what follows",
+    "difficulty": "medium",
+    "minutes": 12,
+    "source": "original",
+    "since": "2026-10-29",
+    "intro": [
+      "Treat every statement as true even if it clashes with known facts. 'Some' means at least one. Every group named has at least one member. 'All X are Y' means every X is a Y. 'No X is a Y' means no X is a Y and no Y is an X. A conclusion follows only if it is true in every picture that fits the statements; a conclusion that is merely possible does not follow. 'Only X are Y' means every Y is an X.",
+      "Each question lists its own statements, then conclusions. Choose the option that names the conclusions that definitely follow."
+    ],
+    "clues": [],
+    "questions": [
+      {
+        "stem": "Statements:\n1. All poets are singers.\n2. All singers are dancers.\nConclusions:\nI. All poets are dancers.\nII. Some dancers are poets.\nIII. Some singers are not poets.\nIV. No dancer is a poet.\nWhich of the conclusions definitely follow?",
+        "kind": "mcq",
+        "options": [
+          "Only II follows",
+          "Only I, II and III follow",
+          "Only I and II follow",
+          "Only I, II and IV follow"
+        ],
+        "answer": 2,
+        "uses": [],
+        "why": [
+          "I follows: every poet is a singer and every singer a dancer. II follows: there is at least one poet, and every poet is a dancer.",
+          "III fails when the singers are exactly the poets. IV is false, because II holds."
+        ]
+      },
+      {
+        "stem": "Statements:\n1. Some nurses are cooks.\n2. All cooks are editors.\nConclusions:\nI. Some nurses are editors.\nII. Some editors are nurses.\nIII. All nurses are editors.\nIV. Some cooks are not nurses.\nWhich of the conclusions definitely follow?",
+        "kind": "mcq",
+        "options": [
+          "Only II follows",
+          "Only I, II and IV follow",
+          "Only I, II and III follow",
+          "Only I and II follow"
+        ],
+        "answer": 3,
+        "uses": [],
+        "why": [
+          "I and II follow: the nurses who are cooks are editors.",
+          "III fails with a nurse who is neither cook nor editor; IV fails when every cook is a nurse."
+        ]
+      },
+      {
+        "stem": "Statements:\n1. No tablet is a phone.\n2. All phones are gadgets.\nConclusions:\nI. No gadget is a tablet.\nII. Some gadgets are not tablets.\nIII. Some tablets are not phones.\nIV. No phone is a tablet.\nWhich of the conclusions definitely follow?",
+        "kind": "mcq",
+        "options": [
+          "All of them follow",
+          "Only II and IV follow",
+          "Only II, III and IV follow",
+          "Only II and III follow"
+        ],
+        "answer": 2,
+        "uses": [],
+        "why": [
+          "II follows: the phones are gadgets and none is a tablet. III follows: there is a tablet and it is not a phone. IV is statement 1 read the other way round.",
+          "I fails when some tablets are gadgets that are not phones."
+        ]
+      },
+      {
+        "stem": "Statements:\n1. All reds are blues.\n2. No blue is a green.\nConclusions:\nI. No red is a green.\nII. Some greens are not reds.\nIII. Some blues are reds.\nIV. All greens are blues.\nWhich of the conclusions definitely follow?",
+        "kind": "mcq",
+        "options": [
+          "Only II and III follow",
+          "Only I and II follow",
+          "All of them follow",
+          "Only I, II and III follow"
+        ],
+        "answer": 3,
+        "uses": [],
+        "why": [
+          "I follows: reds are blues and no blue is green. II follows: there is a green and it is not red. III follows: there is a red and it is blue.",
+          "IV is false: no blue is green, and greens exist."
+        ]
+      },
+      {
+        "stem": "Statements:\n1. Some cooks are bakers.\n2. All bakers are chefs.\n3. No chef is a driver.\nHow many of these eight definitely follow?\n(1) Some cooks are chefs.\n(2) No baker is a driver.\n(3) Some cooks are not drivers.\n(4) All cooks are chefs.\n(5) Some drivers are cooks.\n(6) Some chefs are not bakers.\n(7) No cook is a driver.\n(8) Some drivers are not chefs.",
+        "kind": "tita",
+        "answer": "4",
+        "uses": [],
+        "why": [
+          "Four follow: (1) the cook-bakers are chefs; (2) bakers are chefs and no chef drives; (3) those cook-bakers are not drivers; (8) there is a driver and no chef drives.",
+          "(4), (5), (6) and (7) each fail in some picture: a cook who is not a chef, no driver who cooks, every chef a baker, a cook who drives (and is not a chef)."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Take question 1. Draw a circle for each group. 'All poets are singers' empties every part of Poets outside Singers.",
+        "'All singers are dancers' empties every part of Singers outside Dancers. Poets exist, so the one part of Poets left must hold someone.",
+        "Read conclusions off the picture: one that holds in every picture follows; to reject one, find a single picture where the statements hold and it fails."
+      ],
+      "diagram": {
+        "layout": "venn",
+        "sets": [
+          "Poets",
+          "Singers",
+          "Dancers"
+        ],
+        "seats": [
+          "Poets only",
+          "Singers only",
+          "Dancers only",
+          "Poets and Singers only",
+          "Poets and Dancers only",
+          "Singers and Dancers only",
+          "All three",
+          "None"
+        ],
+        "note": "Shaded regions are empty; 'some' marks a region that must hold someone. This is question 1.",
+        "frames": [
+          [
+            [
+              [],
+              [],
+              [],
+              [],
+              [],
+              [],
+              [],
+              []
+            ]
+          ],
+          [
+            [
+              [
+                "empty"
+              ],
+              [],
+              [],
+              [],
+              [
+                "empty"
+              ],
+              [],
+              [],
+              []
+            ]
+          ],
+          [
+            [
+              [
+                "empty"
+              ],
+              [
+                "empty"
+              ],
+              [],
+              [
+                "empty"
+              ],
+              [
+                "empty"
+              ],
+              [],
+              [
+                "some"
+              ],
+              []
+            ]
+          ]
+        ],
+        "padSets": [
+          "A",
+          "B",
+          "C"
+        ]
+      }
+    }
+  },
+  {
+    "id": "venn-either-or",
+    "title": "Chains, either-or and possibility",
+    "type": "venn",
+    "sub": "either-or, can be true",
+    "difficulty": "medium",
+    "minutes": 14,
+    "source": "original",
+    "since": "2026-10-29",
+    "intro": [
+      "Treat every statement as true even if it clashes with known facts. 'Some' means at least one. Every group named has at least one member. 'All X are Y' means every X is a Y. 'No X is a Y' means no X is a Y and no Y is an X. A conclusion follows only if it is true in every picture that fits the statements; a conclusion that is merely possible does not follow. 'Only X are Y' means every Y is an X.",
+      "One more rule: if neither of two conclusions follows on its own, but they are opposites so that one of them is true in every picture, choose 'Either I or II follows'."
+    ],
+    "clues": [],
+    "questions": [
+      {
+        "stem": "Statements:\n1. Some judges are lawyers.\n2. No lawyer is a writer.\n3. All pilots are writers.\nConclusions:\nI. Some judges are not writers.\nII. No pilot is a lawyer.\nIII. Some writers are not lawyers.\nIV. Some judges are pilots.\nWhich of the conclusions definitely follow?",
+        "kind": "mcq",
+        "options": [
+          "Only II and III follow",
+          "Only I, II and III follow",
+          "Only I and III follow",
+          "All of them follow"
+        ],
+        "answer": 1,
+        "uses": [],
+        "why": [
+          "I: a judge who is a lawyer is not a writer. II: pilots are writers, and no writer is a lawyer. III: there is a pilot, so a writer, who is not a lawyer.",
+          "IV fails when the judges are lawyers only and the pilots are writers only."
+        ]
+      },
+      {
+        "stem": "Statements:\n1. Some judges are lawyers.\n2. No lawyer is a writer.\nConclusions:\nI. Some judges are writers.\nII. No judge is a writer.\nChoose the correct option.",
+        "kind": "mcq",
+        "options": [
+          "Neither I nor II follows",
+          "Either I or II follows",
+          "Only II follows",
+          "Only I follows"
+        ],
+        "answer": 1,
+        "uses": [],
+        "why": [
+          "Neither follows alone: if the only judges are lawyers, I fails; if another judge is a writer, II fails.",
+          "But they are opposites about the same two groups, so one is true in every picture: either I or II follows."
+        ]
+      },
+      {
+        "stem": "Statements:\n1. All actors are dancers.\n2. Some dancers are not singers.\n3. No singer is a chef.\nExactly one of these can be true (it is a possibility). Which one?",
+        "kind": "mcq",
+        "options": [
+          "All singers are dancers",
+          "All dancers are singers",
+          "No actor is a dancer",
+          "Some singers are chefs"
+        ],
+        "answer": 0,
+        "uses": [],
+        "why": [
+          "B contradicts statement 2, D contradicts statement 3, and C contradicts statement 1 (actors exist and are dancers).",
+          "A can be true: actors who are dancers and singers, other dancers who are not singers, and chefs apart from everyone."
+        ]
+      },
+      {
+        "stem": "Statements:\n1. All poets are authors.\n2. No author is a critic.\n3. Some critics are editors.\nExactly one of these is definitely false. Which one?",
+        "kind": "mcq",
+        "options": [
+          "No editor is an author",
+          "Some poets are critics",
+          "Some editors are not authors",
+          "All critics are editors"
+        ],
+        "answer": 1,
+        "uses": [],
+        "why": [
+          "Every poet is an author and no author is a critic, so no poet is a critic: B is definitely false.",
+          "C is definitely true (the critic-editors are not authors); A and D are each true in some pictures and false in others."
+        ]
+      },
+      {
+        "stem": "Statements:\n1. Some teachers are doctors.\n2. Some doctors are painters.\n3. No painter is a farmer.\nHow many of these eight definitely follow?\n(1) Some painters are doctors.\n(2) Some doctors are not farmers.\n(3) Some teachers are painters.\n(4) No farmer is a painter.\n(5) Some teachers are not farmers.\n(6) Some farmers are not painters.\n(7) All doctors are painters.\n(8) Some painters are not farmers.",
+        "kind": "tita",
+        "answer": "5",
+        "uses": [],
+        "why": [
+          "Five follow: (1) and (4) are statements read the other way round; (2) the doctor-painters are not farmers; (6) and (8) because farmers and painters both exist and never meet.",
+          "(3) fails when teachers and painters meet only through different doctors; (5) fails when every teacher is a farmer; (7) fails with a doctor who is not a painter."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Take question 2. Start with the 'No' statement, which empties the most: no lawyer is a writer, so every part of Lawyers inside Writers is empty.",
+        "Then place the 'Some': some judges are lawyers, in the one part of Judges and Lawyers left.",
+        "Judges and writers can meet in their own region or not; the statements leave it open. Since 'Some judges are writers' and 'No judge is a writer' are opposites, one of them holds in every picture: either-or."
+      ],
+      "diagram": {
+        "layout": "venn",
+        "sets": [
+          "Judges",
+          "Lawyers",
+          "Writers"
+        ],
+        "seats": [
+          "Judges only",
+          "Lawyers only",
+          "Writers only",
+          "Judges and Lawyers only",
+          "Judges and Writers only",
+          "Lawyers and Writers only",
+          "All three",
+          "None"
+        ],
+        "note": "Shaded regions are empty; 'some' must hold someone; 'open' may or may not. This is question 2.",
+        "frames": [
+          [
+            [
+              [],
+              [],
+              [],
+              [],
+              [],
+              [],
+              [],
+              []
+            ]
+          ],
+          [
+            [
+              [],
+              [],
+              [],
+              [],
+              [],
+              [
+                "empty"
+              ],
+              [
+                "empty"
+              ],
+              []
+            ]
+          ],
+          [
+            [
+              [],
+              [],
+              [],
+              [
+                "some"
+              ],
+              [
+                "open"
+              ],
+              [
+                "empty"
+              ],
+              [
+                "empty"
+              ],
+              []
+            ]
+          ]
+        ],
+        "padSets": [
+          "A",
+          "B",
+          "C"
+        ]
+      }
+    }
+  },
+  {
+    "id": "venn-only-possibility",
+    "title": "'Only' statements, possibilities and five groups",
+    "type": "venn",
+    "sub": "only, possibility",
+    "difficulty": "hard",
+    "minutes": 16,
+    "source": "original",
+    "since": "2026-10-29",
+    "intro": [
+      "Treat every statement as true even if it clashes with known facts. 'Some' means at least one. Every group named has at least one member. 'All X are Y' means every X is a Y. 'No X is a Y' means no X is a Y and no Y is an X. A conclusion follows only if it is true in every picture that fits the statements; a conclusion that is merely possible does not follow. 'Only X are Y' means every Y is an X.",
+      "Two reading rules for this set. 'Only X are Y' means every Y is an X (it does not mean every X is a Y). A conclusion worded 'X is a possibility' is correct if it is true in at least one picture that fits the statements."
+    ],
+    "clues": [],
+    "questions": [
+      {
+        "stem": "Statements:\n1. Only musicians are singers.\n2. All singers are dancers.\n3. Some dancers are not painters.\nConclusions:\nI. All musicians are singers.\nII. Some singers are musicians.\nIII. All dancers are musicians.\nIV. Some musicians are dancers.\nWhich of the conclusions definitely follow?",
+        "kind": "mcq",
+        "options": [
+          "Only II, III and IV follow",
+          "Only I, II and IV follow",
+          "Only II and IV follow",
+          "Only IV follows"
+        ],
+        "answer": 2,
+        "uses": [],
+        "why": [
+          "'Only musicians are singers' means every singer is a musician. II follows: a singer exists and is a musician. IV follows: that singer is a musician and a dancer.",
+          "I fails with a musician who is not a singer; III fails with a dancer who is neither."
+        ]
+      },
+      {
+        "stem": "Statements:\n1. Only poets are authors.\n2. No author is a critic.\n3. Some critics are editors.\nConclusions:\nI. All poets being authors is a possibility.\nII. All editors being authors is a possibility.\nIII. All critics being authors is a possibility.\nIV. Some critics not being editors is a possibility.\nWhich of the conclusions are possibilities?",
+        "kind": "mcq",
+        "options": [
+          "Only I, III and IV are possibilities",
+          "Only I is a possibility",
+          "Only I, II and IV are possibilities",
+          "Only I and IV are possibilities"
+        ],
+        "answer": 3,
+        "uses": [],
+        "why": [
+          "I: poets who are authors (nobody else an author) and critics who are editors fit everything. IV: add a critic who is not an editor.",
+          "II is impossible: some editors are critics, and no critic is an author. III is impossible: no critic is an author."
+        ]
+      },
+      {
+        "stem": "Statements:\n1. All surgeons are doctors.\n2. Some doctors are poets.\n3. No poet is a pilot.\n4. Only pilots are sailors.\nHow many of these ten definitely follow?\n(1) No poet is a sailor.\n(2) Some doctors are not sailors.\n(3) All surgeons are pilots.\n(4) Some sailors are not poets.\n(5) Some surgeons are poets.\n(6) Some pilots are sailors.\n(7) All pilots are sailors.\n(8) Some pilots are not poets.\n(9) Some sailors are doctors.\n(10) Some poets are not pilots.",
+        "kind": "tita",
+        "answer": "6",
+        "uses": [],
+        "why": [
+          "Every sailor is a pilot. Then (1), (2), (4), (6), (8) and (10) follow: no poet is a pilot, so none is a sailor, and sailors, pilots and poets all exist.",
+          "(3), (5), (7) and (9) all fail in one picture: surgeons are doctors only, some doctors are poets, and the pilots, none of them doctors, include sailors and non-sailors."
+        ]
+      },
+      {
+        "stem": "Statements:\n1. Some artists are bankers.\n2. Only artists are chefs.\n3. No chef is a driver.\n4. Some drivers are engineers.\nWhich of the conclusions definitely follow?",
+        "kind": "mcq",
+        "options": [
+          "Only III follows",
+          "Only I and III follow",
+          "Only I, III and IV follow",
+          "Only I, II and III follow"
+        ],
+        "answer": 1,
+        "uses": [],
+        "why": [
+          "I: every chef is an artist and chefs exist. III: the driver-engineers cannot be chefs.",
+          "II fails when every driver is also an artist; IV fails when the chefs are artists but not bankers."
+        ]
+      },
+      {
+        "stem": "Statements:\n1. All owls are birds.\n2. No bird is a fish.\n3. Some fish are pets.\nConsider the twelve statements 'All X are Y' where X and Y are two different groups among owls, birds, fish and pets. How many are definitely false?",
+        "kind": "tita",
+        "answer": "6",
+        "uses": [],
+        "why": [
+          "No owl is a fish, so 'All owls are fish', 'All fish are owls', 'All birds are fish' and 'All fish are birds' are false. The fish who are pets are neither birds nor owls, so 'All pets are owls' and 'All pets are birds' are false.",
+          "The other six are each true in some picture. 6 are definitely false."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Take question 1. Turn 'Only musicians are singers' into 'All singers are musicians' first, and empty every part of Singers outside Musicians.",
+        "'All singers are dancers' empties the part of Singers outside Dancers. Singers exist, so the one part left, in all three circles, must hold someone.",
+        "With five groups, do not draw all five: chain the 'All' and 'No' statements to see which groups cannot meet, then place the 'Some'. A possibility needs just one picture where it holds."
+      ],
+      "diagram": {
+        "layout": "venn",
+        "sets": [
+          "Musicians",
+          "Singers",
+          "Dancers"
+        ],
+        "seats": [
+          "Musicians only",
+          "Singers only",
+          "Dancers only",
+          "Musicians and Singers only",
+          "Musicians and Dancers only",
+          "Singers and Dancers only",
+          "All three",
+          "None"
+        ],
+        "note": "Shaded regions are empty; 'some' must hold someone. Painters are left out. This is question 1.",
+        "frames": [
+          [
+            [
+              [],
+              [],
+              [],
+              [],
+              [],
+              [],
+              [],
+              []
+            ]
+          ],
+          [
+            [
+              [],
+              [
+                "empty"
+              ],
+              [],
+              [],
+              [],
+              [
+                "empty"
+              ],
+              [],
+              []
+            ]
+          ],
+          [
+            [
+              [],
+              [
+                "empty"
+              ],
+              [],
+              [
+                "empty"
+              ],
+              [],
+              [
+                "empty"
+              ],
+              [
+                "some"
+              ],
+              []
+            ]
+          ]
+        ],
+        "padSets": [
+          "A",
+          "B",
+          "C"
+        ]
+      }
+    }
+  },
+  {
+    "id": "venn-regions",
+    "title": "Pictures, regions and missing statements",
+    "type": "venn",
+    "sub": "counting pictures",
+    "difficulty": "hard",
+    "minutes": 18,
+    "source": "original",
+    "since": "2026-10-29",
+    "intro": [
+      "Treat every statement as true even if it clashes with known facts. 'Some' means at least one. Every group named has at least one member. 'All X are Y' means every X is a Y. 'No X is a Y' means no X is a Y and no Y is an X. A conclusion follows only if it is true in every picture that fits the statements; a conclusion that is merely possible does not follow. 'Only X are Y' means every Y is an X.",
+      "This set asks what the statements leave open. A picture records which regions of the Venn diagram contain at least one member. 'Fits the statements' means every statement is true in the picture and every group has at least one member."
+    ],
+    "clues": [],
+    "questions": [
+      {
+        "stem": "Statements:\n1. Some doctors are poets.\n2. Some poets are chefs.\nConclusion: Some doctors are chefs. It does not follow from the two statements. Exactly one of these, if added, makes it follow. Which one?",
+        "kind": "mcq",
+        "options": [
+          "All poets are chefs",
+          "All chefs are poets",
+          "Some doctors are not chefs",
+          "All doctors are poets"
+        ],
+        "answer": 0,
+        "uses": [],
+        "why": [
+          "With 'All poets are chefs', the doctors who are poets are chefs.",
+          "For the others, take doctors-who-are-poets, separate poets-who-are-chefs, and nobody else: each extra statement holds, yet no doctor is a chef."
+        ]
+      },
+      {
+        "stem": "Artists, bankers and chefs: a picture records which of the seven regions of the three-circle diagram hold at least one person. Every group has at least one member.\nStatements:\n1. All artists are bankers.\n2. Some chefs are not bankers.\nWhat is the least number of regions that can be non-empty in a picture that fits both statements?",
+        "kind": "tita",
+        "answer": "2",
+        "uses": [],
+        "why": [
+          "Statement 1 empties the artist regions outside Bankers. Statement 2 then needs the 'chef only' region.",
+          "Artists exist inside Bankers, in 'artist and banker' or 'all three'. So at least 2 regions, and 'chef only' with 'artist and banker' is enough."
+        ]
+      },
+      {
+        "stem": "Same three groups and statements as the last question:\n1. All artists are bankers.\n2. Some chefs are not bankers.\nTwo pictures differ if some region is non-empty in one and empty in the other. How many different pictures fit both statements?",
+        "kind": "tita",
+        "answer": "12",
+        "uses": [],
+        "why": [
+          "'Artist only' and 'artist and chef' are empty; 'chef only' must be non-empty. Four regions are free: 'banker only', 'artist and banker', 'banker and chef', 'all three': 16 ways.",
+          "Artists must exist, so 'artist and banker' and 'all three' cannot both be empty: 16 − 4 = 12."
+        ]
+      },
+      {
+        "stem": "Statements:\n1. Some doctors are poets.\n2. Some poets are chefs.\nConclusion: Some doctors are not chefs. It does not follow from the two statements. Exactly one of these, if added, makes it follow. Which one?",
+        "kind": "mcq",
+        "options": [
+          "No chef is a doctor",
+          "All doctors are poets",
+          "All chefs are poets",
+          "Some chefs are not doctors"
+        ],
+        "answer": 0,
+        "uses": [],
+        "why": [
+          "With 'No chef is a doctor', the doctors who are poets are not chefs.",
+          "For the others, start from a picture where everyone is a doctor, poet and chef (and for D add a chef-poet who is not a doctor): every doctor is a chef, so the conclusion fails."
+        ]
+      },
+      {
+        "stem": "Hikers, bikers, swimmers and runners: a picture records which of the fifteen regions of the four-circle diagram hold at least one person. Every group has at least one member.\nStatements:\n1. Some hikers are bikers.\n2. Some swimmers are runners.\n3. No hiker is a swimmer.\n4. No biker is a runner.\nHow many different pictures fit all four statements?",
+        "kind": "tita",
+        "answer": "64",
+        "uses": [],
+        "why": [
+          "Allowed regions avoid hiker-and-swimmer and biker-and-runner: 8 of them. 'Hiker and biker' and 'swimmer and runner' are the only places for statements 1 and 2, so both are non-empty.",
+          "The other 6 allowed regions are free, and every group already has a member: 2^6 = 64."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Take questions 2 and 3. 'All artists are bankers' empties the artist regions outside Bankers.",
+        "'Some chefs are not bankers' now has one place left, 'chef only', which must hold someone. Artists must exist, so 'artist and banker' or 'all three' holds someone.",
+        "Count: the four free regions give 2 × 2 × 2 × 2 = 16 pictures, less the 4 with no artist: 12. When k regions can meet a 'some', they give 2^k − 1 choices, not 2^k."
+      ],
+      "diagram": {
+        "layout": "venn",
+        "sets": [
+          "Artists",
+          "Bankers",
+          "Chefs"
+        ],
+        "seats": [
+          "Artists only",
+          "Bankers only",
+          "Chefs only",
+          "Artists and Bankers only",
+          "Artists and Chefs only",
+          "Bankers and Chefs only",
+          "All three",
+          "None"
+        ],
+        "note": "Shaded regions are empty; 'some' must hold someone; 'free' regions can go either way, but artists need one of their two.",
+        "frames": [
+          [
+            [
+              [],
+              [],
+              [],
+              [],
+              [],
+              [],
+              [],
+              []
+            ]
+          ],
+          [
+            [
+              [
+                "empty"
+              ],
+              [],
+              [],
+              [],
+              [
+                "empty"
+              ],
+              [],
+              [],
+              []
+            ]
+          ],
+          [
+            [
+              [
+                "empty"
+              ],
+              [
+                "free"
+              ],
+              [
+                "some"
+              ],
+              [
+                "free"
+              ],
+              [
+                "empty"
+              ],
+              [
+                "free"
+              ],
+              [
+                "free"
+              ],
+              []
+            ]
+          ]
+        ],
+        "padSets": [
+          "A",
+          "B",
+          "C"
+        ]
+      }
+    }
+  },
+  {
+    "id": "venn-three-games",
+    "title": "Three games, 200 students",
+    "type": "venn",
+    "sub": "three-circle counting",
+    "difficulty": "hard",
+    "minutes": 16,
+    "source": "original",
+    "since": "2026-10-29",
+    "intro": [
+      "A school has 200 students. Each student plays any number of three games, Cricket, Football and Hockey, or none of them. The facts in the clues are known."
+    ],
+    "clues": [
+      "20 students play none of the three games.",
+      "100 students play Cricket, 90 play Football and 80 play Hockey.",
+      "Exactly 60 students play exactly two of the games.",
+      "The number who play both Cricket and Football is 5 more than the number who play both Football and Hockey, and 10 more than the number who play both Cricket and Hockey. ('Play both' includes those who also play the third game.)"
+    ],
+    "questions": [
+      {
+        "stem": "How many students play all three games?",
+        "kind": "tita",
+        "answer": "15",
+        "uses": [
+          1,
+          2,
+          3
+        ],
+        "why": [
+          "180 play at least one. With S the sum of the three 'play both' counts and t all three: 270 = 180 + S − t, so S − t = 90.",
+          "Exactly two games is S − 3t = 60. Subtracting, 2t = 30, t = 15."
+        ]
+      },
+      {
+        "stem": "How many students play only Cricket?",
+        "kind": "mcq",
+        "options": [
+          "50",
+          "40",
+          "45",
+          "55"
+        ],
+        "answer": 2,
+        "uses": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "why": [
+          "S = 105. With Cricket and Football x, the others are x − 5 and x − 10: 3x − 15 = 105, x = 40, so Football and Hockey 35, Cricket and Hockey 30.",
+          "Only Cricket = 100 − 40 − 30 + 15 = 45."
+        ]
+      },
+      {
+        "stem": "How many students play Football or Hockey (or both) but do not play Cricket?",
+        "kind": "tita",
+        "answer": "80",
+        "uses": [
+          1,
+          2
+        ],
+        "why": [
+          "180 play at least one game and 100 of them play Cricket: 180 − 100 = 80."
+        ]
+      },
+      {
+        "stem": "The school bans Hockey for any student who plays exactly two games, one of which is Hockey. These students carry on with their other game. How many students play Hockey now?",
+        "kind": "mcq",
+        "options": [
+          "45",
+          "35",
+          "50",
+          "55"
+        ],
+        "answer": 0,
+        "uses": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "why": [
+          "Exactly Football and Hockey: 35 − 15 = 20. Exactly Cricket and Hockey: 30 − 15 = 15. Together 35.",
+          "Hockey falls from 80 to 45; the 15 who play all three keep it."
+        ]
+      },
+      {
+        "stem": "Suppose fact 4 were not known (facts 1, 2 and 3 only). What is the greatest possible number of students who play both Cricket and Football?",
+        "kind": "tita",
+        "answer": "75",
+        "uses": [
+          1,
+          2,
+          3
+        ],
+        "why": [
+          "t = 15 still (it did not use fact 4). Both Cricket and Football is t plus those playing exactly those two, at most all 60 two-game players: 75.",
+          "75 works: 60 exactly Cricket and Football, 25 only Cricket, 15 only Football, 65 only Hockey, 15 all three."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Inclusion and exclusion on the totals: 180 play something, S − t = 90 and S − 3t = 60, so t = 15 play all three. 20 play nothing.",
+        "S = 105, and fact 4 makes the 'both' counts 40, 35 and 30. Take away the 15 in the middle: exactly Cricket and Football 25, Football and Hockey 20, Cricket and Hockey 15.",
+        "The 'only' counts follow by subtraction: Cricket 45, Football 30, Hockey 30. Check: 100, 90, 80, 60 on exactly two, 200 in all."
+      ],
+      "diagram": {
+        "layout": "venn",
+        "sets": [
+          "Cricket",
+          "Football",
+          "Hockey"
+        ],
+        "seats": [
+          "Cricket only",
+          "Football only",
+          "Hockey only",
+          "Cricket and Football only",
+          "Cricket and Hockey only",
+          "Football and Hockey only",
+          "All three",
+          "None"
+        ],
+        "note": "Counts of students in each region.",
+        "frames": [
+          [
+            [
+              [],
+              [],
+              [],
+              [],
+              [],
+              [],
+              [
+                "15"
+              ],
+              [
+                "20"
+              ]
+            ]
+          ],
+          [
+            [
+              [],
+              [],
+              [],
+              [
+                "25"
+              ],
+              [
+                "15"
+              ],
+              [
+                "20"
+              ],
+              [
+                "15"
+              ],
+              [
+                "20"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "45"
+              ],
+              [
+                "30"
+              ],
+              [
+                "30"
+              ],
+              [
+                "25"
+              ],
+              [
+                "15"
+              ],
+              [
+                "20"
+              ],
+              [
+                "15"
+              ],
+              [
+                "20"
+              ]
+            ]
+          ]
+        ]
+      }
+    }
+  }
+]

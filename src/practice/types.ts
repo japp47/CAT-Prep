@@ -144,16 +144,18 @@ export interface VaMeta { id: string; topic: string; difficulty: Difficulty; v: 
 export interface CrMeta { id: string; type: CrType; difficulty: Difficulty; topic: string; v: string }
 
 /** Logical reasoning set types (docs/research/lr.md §2). One content/lr/<type>.json file each. */
-export type LrType = "arrangement" | "selection" | "distribution" | "ranking" | "tournament" | "scheduling" | "binary" | "venn" | "routes" | "quant-lr" | "cubes" | "mixed";
+export type LrType = "arrangement" | "selection" | "distribution" | "ranking" | "tournament" | "caselet" | "scheduling" | "binary" | "setmax" | "venn" | "routes" | "quant-lr" | "cubes" | "mixed";
 export const LR_TYPE: Record<LrType, { label: string }> = {
   arrangement: { label: "Arrangement" },
   selection: { label: "Grouping and selection" },
   distribution: { label: "Distribution and matching" },
   ranking: { label: "Ranking and ordering" },
   tournament: { label: "Games and tournaments" },
+  caselet: { label: "Reasoning DI and caselets" },
   scheduling: { label: "Scheduling" },
   binary: { label: "Binary logic" },
-  venn: { label: "Venn and counting" },
+  setmax: { label: "Set theory: maximum and minimum" },
+  venn: { label: "Venn diagrams and syllogisms" },
   routes: { label: "Routes and networks" },
   "quant-lr": { label: "Quant-based LR" },
   cubes: { label: "Cubes and dice" },
@@ -178,13 +180,23 @@ export interface LrQuestion { stem: string; kind: "mcq" | "tita"; options?: stri
  * against itself). mirror, for a results grid whose first columns are the row teams in the same order, fills in the
  * other team's result on the scratch pad (W in Aces v Bulls writes L in Bulls v Aces). A bracket has one row per round
  * and one seat per match slot, null for slots a round does not have; a match lists both players, then the winner if
- * known, then any notes ("upset").
+ * known, then any notes ("upset"). A network has one seat per town, placed at `at` ([x, y], 0 to 100 across and down),
+ * joined by `links` ([from seat, to seat, label]); a seat's lines are what is known about the town (its distance);
+ * `lit[step]` lists the links drawn bold at that step (the route found). A venn has two or three circles named in
+ * `sets` and one seat per region, in the order A only, B only, AB (two circles) or A only, B only, C only, AB only,
+ * AC only, BC only, ABC (three), then None (outside every circle); a region whose first line is "empty" is shaded.
  */
 export interface LrDiagram {
-  layout: "row" | "circle" | "grid" | "bracket";
+  layout: "row" | "circle" | "grid" | "bracket" | "network" | "venn";
   seats: string[];
   rows?: string[];
   mirror?: Record<string, string>;
+  at?: [number, number][];
+  links?: [number, number, string][];
+  lit?: number[][];
+  sets?: string[];
+  /** venn only: the scratch pad's circle names, when each question has its own groups (syllogisms) */
+  padSets?: string[];
   note?: string;
   frames: (string[] | null)[][][];
 }

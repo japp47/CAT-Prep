@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, useId, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { Box, Check, Pause, Play, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -21,9 +21,84 @@ type Cell = string[] | null;
 /** A grid cell or bracket slot that cannot hold anything: null in the first picture. */
 const closed = (g: LrDiagram, r: number, k: number) => (g.layout === "grid" || g.layout === "bracket") && g.frames[0]?.[r]?.[k] === null;
 
-/** Lays out one picture and asks `cell` for what goes in each seat. `small` is the scratch pad's tighter circle. */
-function Layout({ g, cell, col = "5.5rem", stack, small }: { g: LrDiagram; cell: (row: number, seat: number) => ReactNode; col?: string; stack?: boolean; small?: boolean }) {
+/**
+ * A network's roads, drawn in the box's own pixels (measured), so every line has the same width at any size and a
+ * road the step adds can draw itself in along its length (pathLength 100, animated in the walkthrough).
+ */
+function Roads({ g, lit, drawn }: { g: LrDiagram; lit: number[]; drawn: number[] }) {
+  const box = useRef<SVGSVGElement>(null);
+  const [size, setSize] = useState({ w: 0, h: 0 });
+  useEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([e]) => setSize({ w: e.contentRect.width, h: e.contentRect.height }));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const at = g.at ?? [], x = (k: number) => (at[k][0] * size.w) / 100, y = (k: number) => (at[k][1] * size.h) / 100;
+  return (
+    <svg ref={box} className="absolute inset-0 size-full overflow-visible" aria-hidden>
+      {size.w > 0 && g.links?.map(([a, b], i) => {
+        const on = lit.includes(i);
+        return (
+          <line key={`${i}-${on}`} x1={x(a)} y1={y(a)} x2={x(b)} y2={y(b)} pathLength={100} data-draw={drawn.includes(i) || undefined}
+            strokeLinecap="round" className={on ? "stroke-primary [stroke-width:3.5px]" : "stroke-muted-foreground/35 [stroke-width:1.5px]"} />
+        );
+      })}
+    </svg>
+  );
+}
+
+/**
+ * Lays out one picture and asks `cell` for what goes in each seat. `small` is the scratch pad's tighter version. For a
+ * network, `lit` and `drawn` say which links are bold at this step and which of those the step has just added.
+ */
+function Layout({ g, cell, col = "5.5rem", stack, small, lit = [], drawn = [], venn }: { g: LrDiagram; cell: (row: number, seat: number) => ReactNode; col?: string; stack?: boolean; small?: boolean; lit?: number[]; drawn?: number[]; venn?: ReactNode }) {
   const rows = g.rows ?? [""];
+  if (g.layout === "venn") {
+    const n = (g.sets?.length === 2 ? 2 : 3) as 2 | 3, v = VENN[n];
+    return (
+      <div className={cn("relative mx-auto aspect-[40/33] w-full", small ? "max-w-[26rem]" : "max-w-[36rem]")}>
+        {venn ?? <VennShapes n={n} empty={[]} fresh={[]} />}
+        {g.sets?.map((name, i) => (
+          <span key={i} className={cn("absolute -translate-y-1/2 text-sm font-semibold", i === 2 ? "-translate-x-1/2" : i === 0 ? "" : "-translate-x-full")}
+            style={{ left: `${(v.names[i][0] / 400) * 100}%`, top: `${(v.names[i][1] / 330) * 100}%` }}>{name}</span>
+        ))}
+        <ol className="contents" aria-label="Regions">
+          {g.seats.map((label, k) => (
+            <li key={k} className="absolute -translate-x-1/2 -translate-y-1/2" style={{ left: `${(v.at[k][0] / 400) * 100}%`, top: `${(v.at[k][1] / 330) * 100}%` }}>
+              {cell(0, k)}
+              <span className="sr-only">{label}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    );
+  }
+  if (g.layout === "network") {
+    const at = g.at ?? [];
+    return (
+      // Towns at their places, roads as lines under them; labels are HTML, so they stay 14px and readable. Taller than
+      // wide on a phone, so labels have room.
+      <div className={cn("relative mx-auto w-full", small ? "aspect-[4/3] max-w-[30rem]" : "aspect-[4/5] max-w-[46rem] sm:aspect-[16/10]")}>
+        <div className="absolute inset-x-7 inset-y-8">
+          <Roads g={g} lit={lit} drawn={drawn} />
+          {g.links?.map(([a, b, label], i) => label && (
+            <span key={i} className={cn("absolute -translate-x-1/2 -translate-y-1/2 rounded-md bg-card px-1 text-sm whitespace-nowrap tabular-nums", lit.includes(i) ? "font-semibold text-foreground" : "text-muted-foreground")}
+              style={{ left: `${(at[a][0] + at[b][0]) / 2}%`, top: `${(at[a][1] + at[b][1]) / 2}%` }} aria-hidden>{label}</span>
+          ))}
+          <ol className="contents" aria-label="Towns">
+            {g.seats.map((label, k) => (
+              <li key={k} className="absolute z-10 -translate-x-1/2 -translate-y-1/2" style={{ left: `${at[k][0]}%`, top: `${at[k][1]}%` }}>
+                {cell(0, k)}
+                <span className="sr-only">Town {label}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    );
+  }
   if (g.layout === "circle") {
     const n = g.seats.length;
     return (
@@ -168,6 +243,68 @@ function Match({ c, fresh }: { c: Cell; fresh: boolean }) {
   );
 }
 
+/** A town in a network: its name on a disc, and below it what is known about it (its distance so far). */
+function Town({ label, c, fresh }: { label: string; c: Cell; fresh: boolean }) {
+  const lines = c ?? [];
+  return (
+    <div className="relative flex flex-col items-center">
+      <span className={cn("flex size-10 items-center justify-center rounded-full text-base font-bold", fresh ? "bg-highlight text-highlight-foreground" : lines.length ? "bg-primary text-primary-foreground" : "bg-secondary")}>{label}</span>
+      {lines.length > 0 && (
+        <span data-fresh={fresh || undefined} className={cn("absolute top-full mt-1 rounded-md px-1.5 text-sm font-semibold whitespace-nowrap tabular-nums", fresh ? "bg-highlight-soft" : "bg-card")}>{lines.join(", ")}</span>
+      )}
+    </div>
+  );
+}
+
+/**
+ * The geometry of a two- or three-circle Venn picture, in a 400 by 330 box: circle centres, the radius, where each
+ * region's label sits (in the seat order of LrDiagram) and where each circle's name goes.
+ */
+const VENN = {
+  2: { c: [[150, 160], [250, 160]], r: 108, at: [[95, 160], [305, 160], [200, 160], [36, 310]], names: [[64, 26], [336, 26]] },
+  3: { c: [[152, 128], [248, 128], [200, 206]], r: 94, at: [[108, 104], [292, 104], [200, 266], [200, 92], [140, 190], [260, 190], [200, 154], [36, 310]], names: [[56, 20], [344, 20], [200, 320]] },
+} as const;
+
+/** Which circles a region lies in (by seat index), for the region shapes. The last seat is outside every circle. */
+const MEMBERS: Record<2 | 3, number[][]> = { 2: [[0], [1], [0, 1], []], 3: [[0], [1], [2], [0, 1], [0, 2], [1, 2], [0, 1, 2], []] };
+
+/**
+ * The circles, each region's shape (shaded when the statements empty it, highlighted when a step changes it), and the
+ * circle names. Region shapes are a circle clipped by the other circles it lies in and masked by those it does not.
+ */
+function VennShapes({ n, empty, fresh }: { n: 2 | 3; empty: boolean[]; fresh: boolean[] }) {
+  const id = useId().replace(/[^a-zA-Z0-9]/g, "");
+  const v = VENN[n];
+  const circle = (i: number, props: object = {}) => <circle cx={v.c[i][0]} cy={v.c[i][1]} r={v.r} {...props} />;
+  return (
+    <svg viewBox="0 0 400 330" className="absolute inset-0 size-full" aria-hidden>
+      <defs>
+        {v.c.map((_, i) => <clipPath key={i} id={`${id}c${i}`}>{circle(i)}</clipPath>)}
+        {MEMBERS[n].map((inside, k) => {
+          const out = v.c.map((_, i) => i).filter((i) => !inside.includes(i));
+          return (
+            <mask key={k} id={`${id}m${k}`}>
+              <rect width="400" height="330" fill="#fff" />
+              {out.map((i) => <g key={i}>{circle(i, { fill: "#000" })}</g>)}
+            </mask>
+          );
+        })}
+      </defs>
+      {MEMBERS[n].map((inside, k) => {
+        if (!empty[k] && !fresh[k]) return null;
+        const shape = inside.length
+          ? inside.slice(1).reduce<ReactNode>((el, i) => <g clipPath={`url(#${id}c${i})`}>{el}</g>, circle(inside[0]))
+          : <rect width="400" height="330" />;
+        return (
+          <g key={`${k}-${empty[k]}-${fresh[k]}`} mask={`url(#${id}m${k})`} data-shade={fresh[k] || undefined}
+            className={empty[k] ? "fill-muted-foreground/30" : "fill-highlight-soft"}>{shape}</g>
+        );
+      })}
+      {v.c.map((_, i) => <g key={i}>{circle(i, { className: "fill-none stroke-foreground/55", strokeWidth: 2 })}</g>)}
+    </svg>
+  );
+}
+
 const same = (a: Cell | undefined, b: Cell | undefined) => JSON.stringify(a ?? []) === JSON.stringify(b ?? []);
 
 /** A seat's label on the 3D table: its number and person, then what is known about them, in one small tag. */
@@ -208,14 +345,21 @@ export function LrWalkthrough({ steps, g }: { steps: string[]; g?: LrDiagram }) 
     if (i === 0) return;
     gsap.from(el.querySelector("[data-step]"), { opacity: 0, y: 6, duration: 0.35, ease: "power2.out" });
     gsap.from(el.querySelectorAll("[data-fresh]"), { opacity: 0, scale: 0.82, y: 10, duration: 0.5, stagger: 0.07, ease: "back.out(1.8)", clearProps: "transform,opacity" });
+    gsap.from(el.querySelectorAll("[data-shade]"), { opacity: 0, duration: 0.6, stagger: 0.1, ease: "power1.out" });
+    gsap.fromTo(el.querySelectorAll("[data-draw]"), { strokeDasharray: 100, strokeDashoffset: 100 }, { strokeDashoffset: 0, duration: 0.7, stagger: 0.15, ease: "power2.inOut", clearProps: "strokeDasharray,strokeDashoffset" });
     gsap.from(el.querySelectorAll("[data-fresh] [data-tick]"), { scale: 0, rotation: -90, duration: 0.4, delay: 0.3, stagger: 0.07, ease: "back.out(2.5)", transformOrigin: "50% 50%" });
   }, [i]);
   const frame = g?.frames[i], prev = i > 0 ? g?.frames[i - 1] : undefined;
   const ring = g?.layout === "circle";
   const fresh = useMemo(() => (frame && ring ? frame[0].map((c, k) => i > 0 && !same(c, prev?.[0]?.[k])) : []), [frame, prev, ring, i]);
+  const lit = g?.lit?.[i] ?? [], before = i > 0 ? (g?.lit?.[i - 1] ?? []) : [];
   const flatPicture = g && frame && (
-    <Layout g={g} stack={g.layout === "row" && !g.rows} cell={(r, k) => {
+    <Layout g={g} stack={g.layout === "row" && !g.rows} lit={lit} drawn={lit.filter((x) => !before.includes(x))}
+      venn={g.layout === "venn" && <VennShapes n={g.sets?.length === 2 ? 2 : 3} empty={frame[0].map((c) => c?.[0] === "empty")} fresh={frame[0].map((c, k) => i > 0 && !same(c, prev?.[0]?.[k]))} />}
+      cell={(r, k) => {
       const c = frame[r][k], f = i > 0 && !same(c, prev?.[r]?.[k]), key = JSON.stringify(c);
+      if (g.layout === "venn") return c && c.length && c[0] !== "empty" ? <span key={key} data-fresh={f || undefined} className={cn("rounded-md px-1.5 text-base font-semibold whitespace-nowrap tabular-nums", f && "bg-highlight-soft")}>{c.join(", ")}</span> : null;
+      if (g.layout === "network") return <Town key={key} label={g.seats[k]} c={c} fresh={f} />;
       if (g.layout === "grid") return <Mark key={key} c={c} fresh={f} />;
       if (g.layout === "bracket") return <Match key={key} c={c} fresh={f} />;
       return <Seat key={key} label={g.seats[k]} c={c} fresh={f} stack={!g.rows} />;
@@ -274,13 +418,34 @@ export function writeScratch(g: LrDiagram, value: string[][], r: number, k: numb
 const input = "w-full min-w-0 bg-transparent text-center text-base font-semibold outline-none placeholder:font-normal placeholder:text-muted-foreground/70";
 
 /** A blank copy of the set's layout to note placements while solving. Kept with the attempt's draft. */
-export function LrScratch({ g, value, onChange }: { g: LrDiagram; value: string[][]; onChange: (v: string[][]) => void }) {
+export function LrScratch({ g: given, value, onChange }: { g: LrDiagram; value: string[][]; onChange: (v: string[][]) => void }) {
+  // Syllogism sets name their own groups in each question, so the pad's circles are neutral.
+  const g = given.padSets ? { ...given, sets: given.padSets } : given;
   const set = (r: number, k: number, t: string) => onChange(writeScratch(g, value, r, k, t));
   const v = (r: number, k: number) => value[r]?.[k] ?? "";
   const rowName = (r: number) => (g.rows ? g.rows[r] : "");
   return (
     <div className="flex flex-col gap-3">
       <Layout g={g} col="2.5rem" small cell={(r, k) => {
+        if (g.layout === "venn") {
+          return (
+            <input
+              value={v(r, k)} onChange={(e) => set(r, k, e.target.value)} maxLength={8} autoComplete="off" spellCheck={false} size={1}
+              aria-label={g.seats[k]} placeholder="…" className={cn(input, "h-8 w-12 rounded-md bg-card text-sm ring-1 ring-border focus:ring-2 focus:ring-ring")}
+            />
+          );
+        }
+        if (g.layout === "network") {
+          return (
+            <label className="flex flex-col items-center gap-1">
+              <span className="flex size-9 items-center justify-center rounded-full bg-secondary text-base font-bold">{g.seats[k]}</span>
+              <input
+                value={v(r, k)} onChange={(e) => set(r, k, e.target.value)} maxLength={10} autoComplete="off" spellCheck={false} size={1}
+                aria-label={`Town ${g.seats[k]}`} placeholder="…" className={cn(input, "h-8 w-14 rounded-md bg-card text-sm ring-1 ring-border focus:ring-2 focus:ring-ring")}
+              />
+            </label>
+          );
+        }
         if (g.layout === "grid") {
           return (
             <input
@@ -308,7 +473,7 @@ export function LrScratch({ g, value, onChange }: { g: LrDiagram; value: string[
         );
       }} />
       {/* The note's first part describes the layout; the rest explains walkthrough marks the scratch pad does not use. */}
-      {g.note && <p className="text-sm text-muted-foreground">{g.note.split(/ (?=A crossed|A name with|The winner of)/)[0]}</p>}
+      {g.note && g.layout !== "venn" && g.layout !== "network" && <p className="text-sm text-muted-foreground">{g.note.split(/ (?=A crossed|A name with|The winner of)/)[0]}</p>}
     </div>
   );
 }

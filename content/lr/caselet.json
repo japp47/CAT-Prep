@@ -1,0 +1,1507 @@
+[
+  {
+    "id": "case-parcel-table",
+    "title": "Reconstructing a parcel table",
+    "type": "caselet",
+    "sub": "table from totals",
+    "difficulty": "medium",
+    "minutes": 10,
+    "source": "original",
+    "since": "2026-10-29",
+    "intro": [
+      "A courier depot sorts 40 parcels into three weight classes, Light, Medium and Heavy, and sends them to three zones, North, South and East. A partly erased summary shows only the totals.",
+      "Every cell of the table is a whole number, and the facts in the clues are known."
+    ],
+    "tables": [
+      {
+        "caption": "The summary as it survives",
+        "head": [
+          "Zone",
+          "Light",
+          "Medium",
+          "Heavy",
+          "Total"
+        ],
+        "rows": [
+          [
+            "North",
+            "",
+            "",
+            "",
+            "14"
+          ],
+          [
+            "South",
+            "",
+            "",
+            "",
+            "16"
+          ],
+          [
+            "East",
+            "",
+            "",
+            "",
+            "10"
+          ],
+          [
+            "Total",
+            "15",
+            "14",
+            "11",
+            "40"
+          ]
+        ]
+      }
+    ],
+    "clues": [
+      "Every zone received at least 2 parcels of every weight class.",
+      "North received more Light parcels than Medium parcels, and more Medium parcels than Heavy parcels.",
+      "South received more Heavy parcels than East did.",
+      "East received as many Medium parcels as Heavy parcels."
+    ],
+    "questions": [
+      {
+        "stem": "What is the greatest number of Light parcels that North can have received?",
+        "kind": "mcq",
+        "options": [
+          "9",
+          "7",
+          "10",
+          "8"
+        ],
+        "answer": 0,
+        "uses": [
+          1,
+          2
+        ],
+        "why": [
+          "North's row has 14 parcels with Light > Medium > Heavy, and Heavy at least 2.",
+          "Heavy = 2 allows (Light, Medium) = (9, 3), (8, 4) or (7, 5); Heavy = 3 allows only (7, 4) or (6, 5). So North's Light is at most 9, and 9 occurs in two of the eleven valid tables."
+        ]
+      },
+      {
+        "stem": "How many different complete tables are consistent with all the facts?",
+        "kind": "tita",
+        "answer": "11",
+        "uses": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "why": [
+          "North's row has five options: (9, 3, 2), (8, 4, 2), (7, 5, 2), (7, 4, 3) and (6, 5, 3). East's row is (10 − 2e, e, e) with e = 2, 3 or 4. South's row is then forced by the column totals: 15 combinations.",
+          "Four fail. (9, 3, 2) and (8, 4, 2) with e = 2 leave South 0 or 1 Light parcel. (7, 4, 3) and (6, 5, 3) with e = 4 give South 4 Heavy, equal to East's 4. 15 − 4 = 11."
+        ]
+      },
+      {
+        "stem": "Which of the following statements is true in every valid table?",
+        "kind": "mcq",
+        "options": [
+          "South received more Heavy parcels than Light parcels.",
+          "North received more Light parcels than South and East received together.",
+          "South received more Heavy parcels than North and East received together.",
+          "South received more Medium parcels than East received Light parcels."
+        ],
+        "answer": 3,
+        "uses": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "why": [
+          "South's Medium is 14 − (North's Medium) − e, with North's Medium 3 to 5, and East's Light is 10 − 2e. For e = 2, 3, 4, East's Light is 6, 4, 2 while South's Medium is at least 7, 6, 5. So D always holds.",
+          "The others fail somewhere (rows as Light, Medium, Heavy for North / South / East): B fails in (6, 5, 3) / (3, 7, 6) / (6, 2, 2); C fails in (6, 5, 3) / (5, 6, 5) / (4, 3, 3); A fails in (7, 5, 2) / (6, 5, 5) / (2, 4, 4)."
+        ]
+      },
+      {
+        "stem": "If South received exactly 5 Light parcels, how many Heavy parcels did South receive?",
+        "kind": "tita",
+        "answer": "5",
+        "uses": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "why": [
+          "South has 5 Light parcels in exactly two valid tables: North (6, 5, 3) with East (4, 3, 3), and North (8, 4, 2) with East (2, 4, 4).",
+          "Both leave South with (5, 6, 5), so South received 5 Heavy parcels."
+        ]
+      },
+      {
+        "stem": "If East received exactly 2 Light parcels, how many Heavy parcels did North and South receive together?",
+        "kind": "tita",
+        "answer": "7",
+        "uses": [
+          4
+        ],
+        "why": [
+          "East's row is (10 − 2e, e, e). East with 2 Light parcels means e = 4, so East has 4 Heavy parcels.",
+          "The Heavy column totals 11, so North and South together received 11 − 4 = 7."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "North first. Its 14 parcels need Light > Medium > Heavy ≥ 2. Heavy = 2 allows (9, 3, 2), (8, 4, 2) or (7, 5, 2); Heavy = 3 allows (7, 4, 3) or (6, 5, 3). Heavy = 4 would need at least 6 + 5 + 4 = 15.",
+        "East has equal Medium and Heavy counts, e each, so its Light is 10 − 2e. Light must stay at least 2, so e is 2, 3 or 4.",
+        "South is forced by the column totals. That gives 5 × 3 = 15 candidate tables; four break 'at least 2' or 'South Heavy > East Heavy', leaving 11."
+      ],
+      "cases": 11,
+      "diagram": {
+        "layout": "grid",
+        "seats": [
+          "Light",
+          "Medium",
+          "Heavy",
+          "Total"
+        ],
+        "rows": [
+          "North",
+          "South",
+          "East",
+          "Total"
+        ],
+        "note": "Fill in the table as the facts allow. A range or a formula in a cell is what is known so far.",
+        "frames": [
+          [
+            [
+              [
+                "6 to 9?"
+              ],
+              [
+                "3 to 5?"
+              ],
+              [
+                "2 or 3?"
+              ],
+              [
+                "14"
+              ]
+            ],
+            [
+              [],
+              [],
+              [],
+              [
+                "16"
+              ]
+            ],
+            [
+              [],
+              [],
+              [],
+              [
+                "10"
+              ]
+            ],
+            [
+              [
+                "15"
+              ],
+              [
+                "14"
+              ],
+              [
+                "11"
+              ],
+              [
+                "40"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "6 to 9?"
+              ],
+              [
+                "3 to 5?"
+              ],
+              [
+                "2 or 3?"
+              ],
+              [
+                "14"
+              ]
+            ],
+            [
+              [],
+              [],
+              [],
+              [
+                "16"
+              ]
+            ],
+            [
+              [
+                "10 − 2e"
+              ],
+              [
+                "e"
+              ],
+              [
+                "e"
+              ],
+              [
+                "10"
+              ]
+            ],
+            [
+              [
+                "15"
+              ],
+              [
+                "14"
+              ],
+              [
+                "11"
+              ],
+              [
+                "40"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "6 to 9?"
+              ],
+              [
+                "3 to 5?"
+              ],
+              [
+                "2 or 3?"
+              ],
+              [
+                "14"
+              ]
+            ],
+            [
+              [
+                "15 − N − E"
+              ],
+              [
+                "14 − N − e"
+              ],
+              [
+                "11 − N − e"
+              ],
+              [
+                "16"
+              ]
+            ],
+            [
+              [
+                "10 − 2e"
+              ],
+              [
+                "e"
+              ],
+              [
+                "e"
+              ],
+              [
+                "10"
+              ]
+            ],
+            [
+              [
+                "15"
+              ],
+              [
+                "14"
+              ],
+              [
+                "11"
+              ],
+              [
+                "40"
+              ]
+            ]
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "case-mango-crates",
+    "title": "Mangoes sold crate by crate",
+    "type": "caselet",
+    "sub": "hidden quantities, cost per day",
+    "difficulty": "medium",
+    "minutes": 12,
+    "source": "original",
+    "since": "2026-10-29",
+    "intro": [
+      "Meera, a fruit seller, buys five crates of mangoes, Crate 1 to Crate 5, for a total of 240 mangoes. She sells exactly 40 mangoes every day for 6 days at Rs 40 per mango, taking mangoes in crate order: she empties Crate 1 first, then Crate 2, and so on. On a day when a crate runs out, the rest of that day's 40 mangoes come from the next crate.",
+      "Within a crate every mango costs the same: the price paid for the crate divided by the number of mangoes in it. The profit on a day is her revenue for that day minus the cost of the mangoes she sold that day. The numbers of mangoes in the crates are not known, but the clues are."
+    ],
+    "tables": [
+      {
+        "caption": "What Meera paid for each crate",
+        "head": [
+          "Crate",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+        ],
+        "rows": [
+          [
+            "Price paid (Rs)",
+            "1,000",
+            "1,500",
+            "600",
+            "1,000",
+            "300"
+          ]
+        ]
+      }
+    ],
+    "clues": [
+      "The five crates contain different numbers of mangoes; each number is a multiple of 10 between 20 and 90, both included.",
+      "The mangoes she sold on Day 1 cost her Rs 500 in all.",
+      "The mangoes she sold on Day 3 cost her Rs 1,000 in all.",
+      "The mangoes she sold on Day 4 cost her Rs 1,100 in all."
+    ],
+    "questions": [
+      {
+        "stem": "On which day did Meera sell the last mango of Crate 2?",
+        "kind": "mcq",
+        "options": [
+          "Day 5",
+          "Day 4",
+          "Day 6",
+          "Day 3"
+        ],
+        "answer": 1,
+        "uses": [
+          1,
+          2,
+          3
+        ],
+        "why": [
+          "Day 1's 40 mangoes cost Rs 500. A Crate 1 of 20 or 30 would cost Rs 1,000 in full on Day 1, so Crate 1 holds at least 40, and 40 × 1,000 / size = 500 gives 80.",
+          "Day 3 (mangoes 81 to 120) starts Crate 2. Its first 40 cost 60,000 / size = Rs 1,000, so Crate 2 holds 60 and ends at mango 140, which is on Day 4 (mangoes 121 to 160)."
+        ]
+      },
+      {
+        "stem": "Which of the following statements is definitely true?",
+        "kind": "mcq",
+        "options": [
+          "Crate 3 contained fewer mangoes than every other crate.",
+          "Crate 4 was sold out on Day 5.",
+          "Crate 5 contained more than 40 mangoes.",
+          "Crate 4 contained more mangoes than Crate 5."
+        ],
+        "answer": 0,
+        "uses": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "why": [
+          "Crates 1 and 2 hold 80 and 60, so Crates 3 to 5 share 100 in sizes from 20, 30 and 50 (40, 70 and 90 cannot fit with distinct sizes). On Day 4, 20 mangoes of Crate 2 cost Rs 500, so the other 20 cost Rs 600: all of Crate 3, which is 20, the smallest.",
+          "Crates 4 and 5 are 30 and 50 in either order, so B, C and D each fail in one of the two cases."
+        ]
+      },
+      {
+        "stem": "If Crate 5 contained fewer than 40 mangoes, what was Meera's profit in rupees on Day 5?",
+        "kind": "tita",
+        "answer": "800",
+        "uses": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "why": [
+          "Crate 5 under 40 means Crate 5 = 30 and Crate 4 = 50. Day 5 sells mangoes 161 to 200, all inside Crate 4 (mangoes 161 to 210).",
+          "Cost = 40 × 1,000 / 50 = Rs 800. Profit = 40 × 40 − 800 = Rs 800."
+        ]
+      },
+      {
+        "stem": "What was Meera's total profit in rupees on Day 5 and Day 6 together?",
+        "kind": "tita",
+        "answer": "1900",
+        "uses": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "why": [
+          "Days 5 and 6 sell the last 80 mangoes, which are exactly Crates 4 and 5, whatever their order. Their cost is 1,000 + 300 = Rs 1,300.",
+          "Revenue = 80 × 40 = Rs 3,200. Profit = 3,200 − 1,300 = Rs 1,900."
+        ]
+      },
+      {
+        "stem": "Suppose Meera had instead sold at Rs 35 per mango. What is the least possible profit, in rupees, she could have made on Day 5?",
+        "kind": "tita",
+        "answer": "340",
+        "uses": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "why": [
+          "Crate 4 = 30, Crate 5 = 50: Day 5 sells all of Crate 4 (Rs 1,000) and 10 of Crate 5 (10 × 300 / 50 = Rs 60). Cost Rs 1,060, profit 1,400 − 1,060 = Rs 340.",
+          "Crate 4 = 50, Crate 5 = 30: Day 5 sells 40 of Crate 4 for Rs 800, profit Rs 600. The least is Rs 340."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Crate 1: Day 1's 40 mangoes cost Rs 500. A crate of 20 or 30 would already cost Rs 1,000, so 40 × 1,000 / size = 500 and Crate 1 holds 80, at Rs 12.50 each. It runs out at the end of Day 2.",
+        "Crate 2: Day 3 starts at mango 81, the first of Crate 2. Its first 40 cost 60,000 / size = 1,000, so Crate 2 holds 60, at Rs 25 each, and runs out on Day 4.",
+        "Crates 3 to 5 share 100 mangoes, so their sizes are 20, 30 and 50. Day 4 takes 20 from Crate 2 (Rs 500) and 20 more for Rs 600, which is all of Crate 3: Crate 3 holds 20.",
+        "Crates 4 and 5 are 30 and 50 in some order. Each question either has the same answer both ways or names the case it needs."
+      ],
+      "cases": 2,
+      "diagram": {
+        "layout": "grid",
+        "seats": [
+          "Crate 1",
+          "Crate 2",
+          "Crate 3",
+          "Crate 4",
+          "Crate 5"
+        ],
+        "rows": [
+          "Mangoes",
+          "Cost each (Rs)",
+          "Runs out"
+        ],
+        "note": "Day k sells mangoes 40(k − 1) + 1 to 40k, in crate order.",
+        "frames": [
+          [
+            [
+              [
+                "80"
+              ],
+              [],
+              [],
+              [],
+              []
+            ],
+            [
+              [
+                "12.50"
+              ],
+              [],
+              [],
+              [],
+              []
+            ],
+            [
+              [
+                "Day 2"
+              ],
+              [],
+              [],
+              [],
+              []
+            ]
+          ],
+          [
+            [
+              [
+                "80"
+              ],
+              [
+                "60"
+              ],
+              [],
+              [],
+              []
+            ],
+            [
+              [
+                "12.50"
+              ],
+              [
+                "25"
+              ],
+              [],
+              [],
+              []
+            ],
+            [
+              [
+                "Day 2"
+              ],
+              [
+                "Day 4"
+              ],
+              [],
+              [],
+              []
+            ]
+          ],
+          [
+            [
+              [
+                "80"
+              ],
+              [
+                "60"
+              ],
+              [
+                "20"
+              ],
+              [],
+              []
+            ],
+            [
+              [
+                "12.50"
+              ],
+              [
+                "25"
+              ],
+              [
+                "30"
+              ],
+              [],
+              []
+            ],
+            [
+              [
+                "Day 2"
+              ],
+              [
+                "Day 4"
+              ],
+              [
+                "Day 4"
+              ],
+              [],
+              []
+            ]
+          ],
+          [
+            [
+              [
+                "80"
+              ],
+              [
+                "60"
+              ],
+              [
+                "20"
+              ],
+              [
+                "30 or 50?"
+              ],
+              [
+                "50 or 30?"
+              ]
+            ],
+            [
+              [
+                "12.50"
+              ],
+              [
+                "25"
+              ],
+              [
+                "30"
+              ],
+              [
+                "33.33 or 20?"
+              ],
+              [
+                "6 or 10?"
+              ]
+            ],
+            [
+              [
+                "Day 2"
+              ],
+              [
+                "Day 4"
+              ],
+              [
+                "Day 4"
+              ],
+              [
+                "Day 5 or 6?"
+              ],
+              [
+                "Day 6"
+              ]
+            ]
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "case-test-or-ship",
+    "title": "Test or ship? A quality-control decision",
+    "type": "caselet",
+    "sub": "cost decision",
+    "difficulty": "medium",
+    "minutes": 12,
+    "source": "original",
+    "since": "2026-10-29",
+    "intro": [
+      "A phone-case maker ships its output in lots of 500 cases. A defective case that reaches a customer costs the firm Rs 30 (replacement plus shipping). Before shipping a lot the firm can take one of the three actions in the clues.",
+      "The firm wants the lowest total cost for a lot: testing cost plus repair cost plus the cost of defective cases that reach customers. Use the averages as exact (for example, 70% of 150 defective cases is 105). Let d be the number of defective cases in a lot."
+    ],
+    "clues": [
+      "Ship without testing.",
+      "Quick test: costs Rs 1.50 for each of the 500 cases and finds 70% of the defective cases in the lot. Every defective case found is repaired for Rs 10 before shipping; the 30% that are missed are shipped.",
+      "Full test: costs Rs 4 for each of the 500 cases and finds every defective case, each of which is repaired for Rs 10."
+    ],
+    "questions": [
+      {
+        "stem": "A lot has 40 defective cases. Which action gives the lowest cost, and what is that cost?",
+        "kind": "mcq",
+        "options": [
+          "Full test; Rs 2,400",
+          "Quick test; Rs 1,200",
+          "Quick test; Rs 1,390",
+          "Ship without testing; Rs 1,200"
+        ],
+        "answer": 3,
+        "uses": [
+          1,
+          2,
+          3
+        ],
+        "why": [
+          "Untested: 30 × 40 = Rs 1,200. Quick test: 750 + 16 × 40 = Rs 1,390. Full test: 2,000 + 10 × 40 = Rs 2,400.",
+          "Shipping untested is cheapest, at Rs 1,200."
+        ]
+      },
+      {
+        "stem": "What is the smallest number of defective cases in a lot for which the quick test is cheaper than shipping without testing?",
+        "kind": "tita",
+        "answer": "54",
+        "uses": [
+          1,
+          2
+        ],
+        "why": [
+          "The quick test is cheaper when 750 + 16d < 30d, that is 14d > 750, d > 53.57.",
+          "So d = 54: at 53 the quick test costs Rs 1,598 against Rs 1,590 untested; at 54 it costs Rs 1,614 against Rs 1,620."
+        ]
+      },
+      {
+        "stem": "Past records show that a lot always has between 40 and 120 defective cases, both included. Which action has the lowest highest-possible cost over this range?",
+        "kind": "mcq",
+        "options": [
+          "Quick test",
+          "All three have the same highest cost",
+          "Ship without testing",
+          "Full test"
+        ],
+        "answer": 0,
+        "uses": [
+          1,
+          2,
+          3
+        ],
+        "why": [
+          "Every cost rises with d, so the highest is at d = 120: untested Rs 3,600, quick test Rs 2,670, full test Rs 3,200.",
+          "The quick test has the lowest worst case."
+        ]
+      },
+      {
+        "stem": "The firm is negotiating a lower price per case for the full test (now Rs 4). For a lot with 150 defective cases, what is the highest whole-rupee price per case at which the full test would be cheaper than both other actions?",
+        "kind": "tita",
+        "answer": "3",
+        "uses": [
+          1,
+          2,
+          3
+        ],
+        "why": [
+          "At d = 150, untested costs Rs 4,500 and the quick test Rs 3,150. The full test costs 500p + 1,500, which must be below 3,150: p < 3.3.",
+          "The highest whole-rupee price is Rs 3 (Rs 3,000 against Rs 3,150)."
+        ]
+      },
+      {
+        "stem": "Suppose the quick test found 80% of defective cases instead of 70% (same price and repair cost). What is the smallest number of defective cases in a lot for which the quick test is then cheaper than shipping without testing?",
+        "kind": "tita",
+        "answer": "47",
+        "uses": [
+          1,
+          2
+        ],
+        "why": [
+          "The quick test now costs 750 + 0.8d × 10 + 0.2d × 30 = 750 + 14d.",
+          "It beats 30d when 16d > 750, that is d > 46.875, so d = 47."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Write each action's cost as a line in d. Untested: 30d. Quick test: 750 for testing, 0.7d repaired at Rs 10 (7d) and 0.3d shipped at Rs 30 (9d): 750 + 16d. Full test: 2,000 + 10d.",
+        "Compare in pairs. Untested beats the quick test while 30d < 750 + 16d (d up to 53); the quick test beats the full test while 6d < 1,250 (d up to 208). So the cheapest is untested to 53, the quick test from 54 to 208, the full test from 209.",
+        "Each question reads off these lines. When a question changes a figure, recompute only the line it touches."
+      ],
+      "diagram": {
+        "layout": "grid",
+        "seats": [
+          "Cost (Rs)",
+          "Cheapest when",
+          "At d = 40",
+          "At d = 120"
+        ],
+        "rows": [
+          "Ship untested",
+          "Quick test",
+          "Full test"
+        ],
+        "note": "d is the number of defective cases in the lot of 500.",
+        "frames": [
+          [
+            [
+              [
+                "30d"
+              ],
+              [],
+              [],
+              []
+            ],
+            [
+              [
+                "750 + 16d"
+              ],
+              [],
+              [],
+              []
+            ],
+            [
+              [
+                "2,000 + 10d"
+              ],
+              [],
+              [],
+              []
+            ]
+          ],
+          [
+            [
+              [
+                "30d"
+              ],
+              [
+                "d ≤ 53"
+              ],
+              [],
+              []
+            ],
+            [
+              [
+                "750 + 16d"
+              ],
+              [
+                "54 ≤ d ≤ 208"
+              ],
+              [],
+              []
+            ],
+            [
+              [
+                "2,000 + 10d"
+              ],
+              [
+                "d ≥ 209"
+              ],
+              [],
+              []
+            ]
+          ],
+          [
+            [
+              [
+                "30d"
+              ],
+              [
+                "d ≤ 53"
+              ],
+              [
+                "1,200"
+              ],
+              [
+                "3,600"
+              ]
+            ],
+            [
+              [
+                "750 + 16d"
+              ],
+              [
+                "54 ≤ d ≤ 208"
+              ],
+              [
+                "1,390"
+              ],
+              [
+                "2,670"
+              ]
+            ],
+            [
+              [
+                "2,000 + 10d"
+              ],
+              [
+                "d ≥ 209"
+              ],
+              [
+                "2,400"
+              ],
+              [
+                "3,200"
+              ]
+            ]
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "case-rounded-survey",
+    "title": "Rounded shares in a two-stage survey",
+    "type": "caselet",
+    "sub": "rounded percentages",
+    "difficulty": "hard",
+    "minutes": 15,
+    "source": "original",
+    "since": "2026-10-29",
+    "intro": [
+      "A streaming company asked a group of students which of four apps, Alpha, Beta, Gamma and Delta, they use most. Each student named exactly one app. The first report gave each app's share, rounded to the nearest whole percent (a share of exactly x.5 is rounded up).",
+      "Later, exactly 8 more students were surveyed, and an updated report was made the same way. Both reports are below."
+    ],
+    "tables": [
+      {
+        "caption": "First report (N students)",
+        "head": [
+          "App",
+          "Alpha",
+          "Beta",
+          "Gamma",
+          "Delta"
+        ],
+        "rows": [
+          [
+            "Share",
+            "23%",
+            "32%",
+            "9%",
+            "36%"
+          ]
+        ]
+      },
+      {
+        "caption": "Updated report (N + 8 students)",
+        "head": [
+          "App",
+          "Alpha",
+          "Beta",
+          "Gamma",
+          "Delta"
+        ],
+        "rows": [
+          [
+            "Share",
+            "22%",
+            "27%",
+            "7%",
+            "44%"
+          ]
+        ]
+      }
+    ],
+    "clues": [
+      "The number of students in the first survey, N, is at least 15 and at most 60.",
+      "Each of the 8 later students named either Alpha or Delta."
+    ],
+    "questions": [
+      {
+        "stem": "How many students were in the first survey?",
+        "kind": "mcq",
+        "options": [
+          "44",
+          "47",
+          "53",
+          "46"
+        ],
+        "answer": 1,
+        "uses": [
+          1,
+          2
+        ],
+        "why": [
+          "Gamma's count c is the same in both reports and must round to 9% of N and 7% of N + 8. Over N from 15 to 60 that leaves N = 22 (c = 2), 33, 34, 35 (c = 3), 46 and 47 (c = 4).",
+          "Beta's count b is unchanged too, and must round to 32% of N and 27% of N + 8. Only N = 47 has such a b: 15 (31.9%, then 27.3%)."
+        ]
+      },
+      {
+        "stem": "Of the 8 students surveyed later, how many named Delta?",
+        "kind": "tita",
+        "answer": "7",
+        "uses": [
+          1,
+          2
+        ],
+        "why": [
+          "With N = 47 the first counts are Alpha 11, Beta 15, Gamma 4, Delta 17. With 55 students, Alpha's 22% can only be 12 (21.8%; 11 is 20% and 13 is 23.6%).",
+          "Alpha gained 1, so the other 7 later students named Delta (24 of 55, 43.6%, rounds to 44%)."
+        ]
+      },
+      {
+        "stem": "After the later students were added, how many more students in the whole group named Delta than Alpha?",
+        "kind": "tita",
+        "answer": "12",
+        "uses": [
+          1,
+          2
+        ],
+        "why": [
+          "Final counts: Alpha 12, Beta 15, Gamma 4, Delta 24, which add to 55.",
+          "24 − 12 = 12."
+        ]
+      },
+      {
+        "stem": "Suppose all 8 later students had named Beta instead. After rounding to the nearest whole percent, what would Beta's share of all the students surveyed (both rounds together) be?",
+        "kind": "mcq",
+        "options": [
+          "27%",
+          "47%",
+          "42%",
+          "36%"
+        ],
+        "answer": 2,
+        "uses": [
+          1,
+          2
+        ],
+        "why": [
+          "Beta would have 15 + 8 = 23 of 55 students.",
+          "23 / 55 = 41.8%, which rounds to 42%."
+        ]
+      },
+      {
+        "stem": "Ignoring the later students, if only the first report is used (and N is between 15 and 60), what is the sum of all possible values of N?",
+        "kind": "tita",
+        "answer": "222",
+        "uses": [
+          1
+        ],
+        "why": [
+          "The first report fits N = 22 (counts 5, 7, 2, 8), 44 (10, 14, 4, 16), 47 (11, 15, 4, 17), 53 (12, 17, 5, 19) and 56 (13, 18, 5, 20), and no other N in range.",
+          "22 + 44 + 47 + 53 + 56 = 222."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Gamma first: nobody later named Gamma, so its count c is the same in both reports and must round to 9% of N and to 7% of N + 8. c is 2 to 5; testing them leaves N = 22, 33, 34, 35, 46 or 47.",
+        "Beta is unchanged too. Out of the survivors, only N = 47 has a Beta count that rounds to 32% first and 27% after: 15.",
+        "With 47 students, Beta 15 and Gamma 4, Alpha's 23% is 11 and Delta's 36% is 17.",
+        "With 55 students Alpha shows 22%, which only 12 gives. So 1 of the 8 named Alpha and 7 named Delta, who end on 24."
+      ],
+      "cases": 1,
+      "diagram": {
+        "layout": "grid",
+        "seats": [
+          "First share",
+          "Count of N",
+          "Later 8",
+          "Count of N + 8",
+          "Updated share"
+        ],
+        "rows": [
+          "Alpha",
+          "Beta",
+          "Gamma",
+          "Delta"
+        ],
+        "note": "A count must round to the share beside it.",
+        "frames": [
+          [
+            [
+              [
+                "23%"
+              ],
+              [],
+              [],
+              [],
+              [
+                "22%"
+              ]
+            ],
+            [
+              [
+                "32%"
+              ],
+              [],
+              [],
+              [],
+              [
+                "27%"
+              ]
+            ],
+            [
+              [
+                "9%"
+              ],
+              [
+                "2 to 5?"
+              ],
+              [],
+              [],
+              [
+                "7%"
+              ]
+            ],
+            [
+              [
+                "36%"
+              ],
+              [],
+              [],
+              [],
+              [
+                "44%"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "23%"
+              ],
+              [],
+              [],
+              [],
+              [
+                "22%"
+              ]
+            ],
+            [
+              [
+                "32%"
+              ],
+              [],
+              [],
+              [],
+              [
+                "27%"
+              ]
+            ],
+            [
+              [
+                "9%"
+              ],
+              [
+                "4"
+              ],
+              [],
+              [
+                "4"
+              ],
+              [
+                "7%"
+              ]
+            ],
+            [
+              [
+                "36%"
+              ],
+              [],
+              [],
+              [],
+              [
+                "44%"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "23%"
+              ],
+              [],
+              [],
+              [],
+              [
+                "22%"
+              ]
+            ],
+            [
+              [
+                "32%"
+              ],
+              [
+                "15"
+              ],
+              [],
+              [
+                "15"
+              ],
+              [
+                "27%"
+              ]
+            ],
+            [
+              [
+                "9%"
+              ],
+              [
+                "4"
+              ],
+              [],
+              [
+                "4"
+              ],
+              [
+                "7%"
+              ]
+            ],
+            [
+              [
+                "36%"
+              ],
+              [],
+              [],
+              [],
+              [
+                "44%"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "23%"
+              ],
+              [
+                "11"
+              ],
+              [
+                "1"
+              ],
+              [
+                "12"
+              ],
+              [
+                "22%"
+              ]
+            ],
+            [
+              [
+                "32%"
+              ],
+              [
+                "15"
+              ],
+              [
+                "0"
+              ],
+              [
+                "15"
+              ],
+              [
+                "27%"
+              ]
+            ],
+            [
+              [
+                "9%"
+              ],
+              [
+                "4"
+              ],
+              [
+                "0"
+              ],
+              [
+                "4"
+              ],
+              [
+                "7%"
+              ]
+            ],
+            [
+              [
+                "36%"
+              ],
+              [
+                "17"
+              ],
+              [
+                "7"
+              ],
+              [
+                "24"
+              ],
+              [
+                "44%"
+              ]
+            ]
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "case-chip-game",
+    "title": "A chip game where the loser doubles everyone else",
+    "type": "caselet",
+    "sub": "reverse reasoning",
+    "difficulty": "hard",
+    "minutes": 18,
+    "source": "original",
+    "since": "2026-10-29",
+    "intro": [
+      "Four friends, Asha, Bala, Chitra and Dev, play four rounds of a chip game. In every round exactly one player loses, and the loser pays each of the other three as many chips as that player holds at that moment: everyone except the loser doubles, and the loser's chips fall by the total paid out."
+    ],
+    "clues": [
+      "Each player started with at least 1 chip.",
+      "Each of the four players lost exactly one round.",
+      "After the fourth round Asha had 24 chips, Bala 48, Chitra 32 and Dev 16.",
+      "Nobody ever ran out of chips while paying, and no chips entered or left the game."
+    ],
+    "questions": [
+      {
+        "stem": "Who lost the fourth round?",
+        "kind": "mcq",
+        "options": [
+          "Dev",
+          "Bala",
+          "Asha",
+          "Chitra"
+        ],
+        "answer": 2,
+        "uses": [
+          2,
+          3,
+          4
+        ],
+        "why": [
+          "There are 120 chips in all. A player who loses round k and ends on F started with (F + 120 × 2^(4 − k)) / 16 (see the walkthrough).",
+          "For k = 4 that is (F + 120) / 16, a whole number only when F leaves remainder 8 on division by 16. Only Asha's 24 does, so Asha lost round 4."
+        ]
+      },
+      {
+        "stem": "How many chips did Asha have at the start?",
+        "kind": "tita",
+        "answer": "9",
+        "uses": [
+          2,
+          3,
+          4
+        ],
+        "why": [
+          "Asha lost round 4, so she started with (24 + 120) / 16 = 144 / 16 = 9 chips."
+        ]
+      },
+      {
+        "stem": "In how many different orders could the four players have lost the four rounds?",
+        "kind": "tita",
+        "answer": "6",
+        "uses": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "why": [
+          "Asha lost last. For rounds 1 to 3 the formula needs F + 960, F + 480 or F + 240 to be a multiple of 16, which holds when F is: 48, 32 and 16 all are.",
+          "Right after paying in round k a player holds F / 2^(4 − k), which is positive, so nobody runs short. Bala, Chitra and Dev take rounds 1 to 3 in any order: 3! = 6."
+        ]
+      },
+      {
+        "stem": "Which of the following could be the starting chips of (Asha, Bala, Chitra, Dev)?",
+        "kind": "mcq",
+        "options": [
+          "(10, 63, 31, 16)",
+          "(9, 33, 62, 16)",
+          "(9, 33, 32, 46)",
+          "(9, 18, 17, 76)"
+        ],
+        "answer": 1,
+        "uses": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "why": [
+          "Asha must start with 9, which rules out the first. Starts depend only on the round lost: Bala 63, 33, 18; Chitra 62, 32, 17; Dev 61, 31, 16 for rounds 1, 2, 3. No two players can share a round.",
+          "(9, 33, 32, 46) puts Bala and Chitra both in round 2; (9, 18, 17, 76) puts both in round 3. (9, 33, 62, 16) works: Chitra loses round 1, Bala round 2, Dev round 3, Asha round 4."
+        ]
+      },
+      {
+        "stem": "Bala and Dev together started with more than 90 chips. How many chips did Chitra start with?",
+        "kind": "tita",
+        "answer": "17",
+        "uses": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "why": [
+          "Bala starts with 63, 33 or 18 and Dev with 61, 31 or 16, in different rounds. Their sum tops 90 only for 63 + 31 or 33 + 61, both 94.",
+          "Either way Bala and Dev take rounds 1 and 2, so Chitra lost round 3 and started with 17."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "The total never changes: 24 + 48 + 32 + 16 = 120 chips. Work backwards from the end.",
+        "A player who loses round k has s × 2^(k − 1) before it, keeps s × 2^k − 120 after paying, and doubles in each later round, so F = 16s − 120 × 2^(4 − k), that is s = (F + 120 × 2^(4 − k)) / 16. For round 4 this is whole only for Asha (24 + 120 = 144): Asha lost last and started with 9.",
+        "For rounds 1 to 3 the formula is whole for Bala, Chitra and Dev in any order. A start depends only on the round lost: Bala 63, 33, 18; Chitra 62, 32, 17; Dev 61, 31, 16. All 3! = 6 orders are valid."
+      ],
+      "diagram": {
+        "layout": "grid",
+        "seats": [
+          "Lost round 1",
+          "Lost round 2",
+          "Lost round 3",
+          "Lost round 4"
+        ],
+        "rows": [
+          "Asha",
+          "Bala",
+          "Chitra",
+          "Dev"
+        ],
+        "note": "Each cell is the player's starting chips if they lost that round; 'not whole' rules the round out.",
+        "frames": [
+          [
+            [
+              [],
+              [],
+              [],
+              []
+            ],
+            [
+              [],
+              [],
+              [],
+              []
+            ],
+            [
+              [],
+              [],
+              [],
+              []
+            ],
+            [
+              [],
+              [],
+              [],
+              []
+            ]
+          ],
+          [
+            [
+              [],
+              [],
+              [],
+              [
+                "9"
+              ]
+            ],
+            [
+              [],
+              [],
+              [],
+              [
+                "not whole"
+              ]
+            ],
+            [
+              [],
+              [],
+              [],
+              [
+                "not whole"
+              ]
+            ],
+            [
+              [],
+              [],
+              [],
+              [
+                "not whole"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "not whole"
+              ],
+              [
+                "not whole"
+              ],
+              [
+                "not whole"
+              ],
+              [
+                "9"
+              ]
+            ],
+            [
+              [
+                "63"
+              ],
+              [
+                "33"
+              ],
+              [
+                "18"
+              ],
+              [
+                "not whole"
+              ]
+            ],
+            [
+              [
+                "62"
+              ],
+              [
+                "32"
+              ],
+              [
+                "17"
+              ],
+              [
+                "not whole"
+              ]
+            ],
+            [
+              [
+                "61"
+              ],
+              [
+                "31"
+              ],
+              [
+                "16"
+              ],
+              [
+                "not whole"
+              ]
+            ]
+          ]
+        ]
+      }
+    }
+  }
+]

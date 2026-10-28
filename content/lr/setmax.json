@@ -1,0 +1,1001 @@
+[
+  {
+    "id": "set-newspapers",
+    "title": "Three newspapers and 90 readers",
+    "type": "setmax",
+    "sub": "three sets, most and least",
+    "difficulty": "medium",
+    "minutes": 10,
+    "source": "original",
+    "since": "2026-10-29",
+    "intro": [
+      "A survey of 90 residents of a housing society asked which of three newspapers, Daily, Weekly and Monthly, they read. 58 residents read the Daily, 51 read the Weekly and 47 read the Monthly."
+    ],
+    "clues": [
+      "Every resident reads at least one of the three newspapers."
+    ],
+    "questions": [
+      {
+        "stem": "What is the greatest possible number of residents who read all three newspapers?",
+        "kind": "mcq",
+        "options": [
+          "35",
+          "47",
+          "31",
+          "33"
+        ],
+        "answer": 3,
+        "uses": [
+          1
+        ],
+        "why": [
+          "With n1, n2 and t reading exactly one, two and three papers: n1 + n2 + t = 90 and n1 + 2n2 + 3t = 58 + 51 + 47 = 156. Subtracting, n2 + 2t = 66, so t is at most 33.",
+          "33 works: 25 only Daily, 18 only Weekly, 14 only Monthly and 33 all three."
+        ]
+      },
+      {
+        "stem": "What is the least possible number of residents who read exactly one newspaper?",
+        "kind": "tita",
+        "answer": "24",
+        "uses": [
+          1
+        ],
+        "why": [
+          "From the two equations, n1 = 90 − t − (66 − 2t) = 24 + t, which is least when t = 0.",
+          "24 works: 24 only Weekly, 19 Daily and Weekly, 39 Daily and Monthly, 8 Weekly and Monthly."
+        ]
+      },
+      {
+        "stem": "If exactly 25 residents read exactly one newspaper, how many read exactly two?",
+        "kind": "mcq",
+        "options": [
+          "64",
+          "60",
+          "25",
+          "66"
+        ],
+        "answer": 0,
+        "uses": [
+          1
+        ],
+        "why": [
+          "n1 = 24 + t = 25 gives t = 1, and then n2 = 66 − 2 = 64."
+        ]
+      },
+      {
+        "stem": "If every resident who reads the Monthly also reads at least one other newspaper, what is the greatest possible number of residents who read exactly one newspaper?",
+        "kind": "tita",
+        "answer": "43",
+        "uses": [
+          1
+        ],
+        "why": [
+          "Nobody reads only the Monthly, so all 90 read the Daily or the Weekly, and 58 + 51 − 90 = 19 read both. Anyone reading all three reads both, so t is at most 19.",
+          "Then n1 = 24 + t is at most 43, reached with 11 only Daily, 32 only Weekly, 28 Daily and Monthly, and 19 all three."
+        ]
+      },
+      {
+        "stem": "What is the least possible number of residents who read both the Daily and the Weekly?",
+        "kind": "tita",
+        "answer": "19",
+        "uses": [
+          1
+        ],
+        "why": [
+          "At most 90 read the Daily or the Weekly, so at least 58 + 51 − 90 = 19 read both.",
+          "19 works: 39 only Daily, 4 Daily and Weekly only, 32 Weekly and Monthly only, 15 all three."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Let n1, n2 and t be the numbers reading exactly one, exactly two and all three. Everyone reads at least one, so nobody is outside the circles: n1 + n2 + t = 90.",
+        "Adding the three readerships counts each resident once per paper read: n1 + 2n2 + 3t = 156. Subtracting, n2 + 2t = 66, so n1 = 24 + t.",
+        "So t is at most 33 (when n2 = 0) and n1 at least 24. The picture shows the case with the most readers of all three; each question adds one more equation or bound."
+      ],
+      "diagram": {
+        "layout": "venn",
+        "sets": [
+          "Daily",
+          "Weekly",
+          "Monthly"
+        ],
+        "seats": [
+          "Daily only",
+          "Weekly only",
+          "Monthly only",
+          "Daily and Weekly only",
+          "Daily and Monthly only",
+          "Weekly and Monthly only",
+          "All three",
+          "None"
+        ],
+        "note": "Counts of residents in each region; t is the number reading all three.",
+        "frames": [
+          [
+            [
+              [],
+              [],
+              [],
+              [],
+              [],
+              [],
+              [
+                "t"
+              ],
+              [
+                "0"
+              ]
+            ]
+          ],
+          [
+            [
+              [],
+              [],
+              [],
+              [],
+              [],
+              [],
+              [
+                "t"
+              ],
+              [
+                "0"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "25"
+              ],
+              [
+                "18"
+              ],
+              [
+                "14"
+              ],
+              [
+                "0"
+              ],
+              [
+                "0"
+              ],
+              [
+                "0"
+              ],
+              [
+                "33"
+              ],
+              [
+                "0"
+              ]
+            ]
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "set-four-games",
+    "title": "Four games and 120 members",
+    "type": "setmax",
+    "sub": "four sets, exactly and at least",
+    "difficulty": "medium",
+    "minutes": 12,
+    "source": "original",
+    "since": "2026-10-29",
+    "intro": [
+      "A club has 120 members. 80 members play Chess, 70 play Carrom, 60 play Ludo and 50 play Cards."
+    ],
+    "clues": [
+      "Each member plays at least two of the four games."
+    ],
+    "questions": [
+      {
+        "stem": "What is the greatest possible number of members who play all four games?",
+        "kind": "mcq",
+        "options": [
+          "50",
+          "20",
+          "30",
+          "10"
+        ],
+        "answer": 3,
+        "uses": [
+          1
+        ],
+        "why": [
+          "With n2, n3, n4 playing exactly two, three and four games: n2 + n3 + n4 = 120 and 2n2 + 3n3 + 4n4 = 260, so n3 + 2n4 = 20 and n4 is at most 10.",
+          "10 works: 10 play all four, and 20 Chess and Carrom, 20 Chess and Ludo, 30 Chess and Cards, 30 Carrom and Ludo, 10 Carrom and Cards play just those two."
+        ]
+      },
+      {
+        "stem": "What is the greatest possible number of members who play exactly three games?",
+        "kind": "tita",
+        "answer": "20",
+        "uses": [
+          1
+        ],
+        "why": [
+          "From n3 + 2n4 = 20, n3 is largest when n4 = 0: 20.",
+          "For example 20 Chess and Carrom, 40 Chess and Ludo, 40 Carrom and Cards, 10 Chess, Carrom and Ludo, and 10 Chess, Ludo and Cards."
+        ]
+      },
+      {
+        "stem": "What is the least possible number of members who play at least three games?",
+        "kind": "mcq",
+        "options": [
+          "10",
+          "0",
+          "20",
+          "40"
+        ],
+        "answer": 0,
+        "uses": [
+          1
+        ],
+        "why": [
+          "n3 + n4 = 20 − n4, least when n4 is largest, 10. So 10."
+        ]
+      },
+      {
+        "stem": "What is the least possible number of members who play both Chess and Carrom?",
+        "kind": "tita",
+        "answer": "30",
+        "uses": [
+          1
+        ],
+        "why": [
+          "Let m members play neither Chess nor Carrom; they play exactly Ludo and Cards. Those playing Chess or Carrom number 120 − m, so both: 80 + 70 − (120 − m) = 30 + m.",
+          "Least at m = 0: 30."
+        ]
+      },
+      {
+        "stem": "If no member plays both Ludo and Cards, how many members play exactly two games?",
+        "kind": "tita",
+        "answer": "100",
+        "uses": [
+          1
+        ],
+        "why": [
+          "Anyone playing all four plays Ludo and Cards, so n4 = 0. Then n3 = 20 and n2 = 120 − 20 = 100."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Nobody plays fewer than two games. Let n2, n3, n4 play exactly two, three and four: n2 + n3 + n4 = 120.",
+        "Counting each member once per game played: 2n2 + 3n3 + 4n4 = 80 + 70 + 60 + 50 = 260. Subtract twice the first: n3 + 2n4 = 20.",
+        "Every 'exactly' and 'at least' question follows from n3 + 2n4 = 20; a question about two particular games uses the members outside both."
+      ],
+      "diagram": {
+        "layout": "grid",
+        "rows": [
+          "Exactly two",
+          "Exactly three",
+          "All four",
+          "Total"
+        ],
+        "seats": [
+          "Members",
+          "Counted in game totals"
+        ],
+        "note": "Each member is counted once per game played in the game totals.",
+        "frames": [
+          [
+            [
+              [
+                "n2"
+              ],
+              []
+            ],
+            [
+              [
+                "n3"
+              ],
+              []
+            ],
+            [
+              [
+                "n4"
+              ],
+              []
+            ],
+            [
+              [
+                "120"
+              ],
+              []
+            ]
+          ],
+          [
+            [
+              [
+                "n2"
+              ],
+              [
+                "2 × n2"
+              ]
+            ],
+            [
+              [
+                "n3"
+              ],
+              [
+                "3 × n3"
+              ]
+            ],
+            [
+              [
+                "n4"
+              ],
+              [
+                "4 × n4"
+              ]
+            ],
+            [
+              [
+                "120"
+              ],
+              [
+                "260"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "n2"
+              ],
+              [
+                "2 × n2"
+              ]
+            ],
+            [
+              [
+                "n3"
+              ],
+              [
+                "3 × n3"
+              ]
+            ],
+            [
+              [
+                "n4"
+              ],
+              [
+                "4 × n4"
+              ]
+            ],
+            [
+              [
+                "120"
+              ],
+              [
+                "260"
+              ]
+            ]
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "set-judges-picks",
+    "title": "Five judges pick favourites",
+    "type": "setmax",
+    "sub": "counting from totals",
+    "difficulty": "hard",
+    "minutes": 12,
+    "source": "original",
+    "since": "2026-10-29",
+    "intro": [
+      "Five judges each secretly picked exactly three of six contestants, P, Q, R, S, T and U, as their favourites. The number of judges who picked each contestant (the votes) is in the table. Nothing else is known."
+    ],
+    "tables": [
+      {
+        "caption": "Votes",
+        "head": [
+          "Contestant",
+          "P",
+          "Q",
+          "R",
+          "S",
+          "T",
+          "U"
+        ],
+        "rows": [
+          [
+            "Votes",
+            "5",
+            "4",
+            "3",
+            "2",
+            "1",
+            "0"
+          ]
+        ]
+      }
+    ],
+    "clues": [
+      "A judge's pick is a set of three different contestants.",
+      "Two judges may have made the same pick."
+    ],
+    "questions": [
+      {
+        "stem": "What is the greatest possible number of judges who picked exactly the trio P, Q and R?",
+        "kind": "mcq",
+        "options": [
+          "2",
+          "5",
+          "3",
+          "4"
+        ],
+        "answer": 2,
+        "uses": [
+          1,
+          2
+        ],
+        "why": [
+          "Every judge picked P and nobody picked U. R has 3 votes, so at most 3 judges have P, Q and R.",
+          "3 is reached in the collection PQR, PQR, PQR, PQS, PST."
+        ]
+      },
+      {
+        "stem": "Ignoring which judge made which pick, how many different collections of five picks are consistent with the votes?",
+        "kind": "tita",
+        "answer": "3",
+        "uses": [
+          1,
+          2
+        ],
+        "why": [
+          "Exactly one judge skipped Q and picked two of R, S, T; the other four picked Q and one of R, S, T.",
+          "If the non-Q judge picked S and T: PQR ×3, PQS, PST. R and T: PQR ×2, PQS ×2, PRT. R and S: PQR ×2, PQS, PQT, PRS. Three collections."
+        ]
+      },
+      {
+        "stem": "Which of the following must be true?",
+        "kind": "mcq",
+        "options": [
+          "Some judge picked both R and S.",
+          "At least two judges picked exactly P, Q and R.",
+          "Some judge picked both Q and T.",
+          "At least two judges picked both Q and S."
+        ],
+        "answer": 1,
+        "uses": [
+          1,
+          2
+        ],
+        "why": [
+          "P, Q, R appears 3, 2 and 2 times in the three collections, so at least twice always.",
+          "R with S, and Q with T, appear only in the third collection; two picks with Q and S appear only in the second."
+        ]
+      },
+      {
+        "stem": "If some judge picked both R and S, how many judges picked both Q and R?",
+        "kind": "tita",
+        "answer": "2",
+        "uses": [
+          1,
+          2
+        ],
+        "why": [
+          "Only the collection PQR, PQR, PQS, PQT, PRS has a pick with R and S. In it, Q and R appear together in the two copies of PQR."
+        ]
+      },
+      {
+        "stem": "What is the greatest possible number of different picks (distinct sets of three contestants) among the five judges?",
+        "kind": "tita",
+        "answer": "4",
+        "uses": [
+          1,
+          2
+        ],
+        "why": [
+          "The first two collections have 3 distinct picks each; PQR, PQR, PQS, PQT, PRS has 4. The greatest is 4."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "P has 5 votes, so every judge picked P; U has 0, so nobody did. Each judge picked two more from Q, R, S and T, and those 10 places give Q 4, R 3, S 2, T 1.",
+        "Q has 4 votes, so exactly one judge left Q out and picked two of R, S, T; the other four picked Q and one of R, S, T.",
+        "Try each pair for the non-Q judge. S and T, R and T, or R and S each leave exactly one way to fill the rest: three collections, and every question reads off them."
+      ],
+      "diagram": {
+        "layout": "grid",
+        "rows": [
+          "Non-Q judge picked S and T",
+          "Non-Q judge picked R and T",
+          "Non-Q judge picked R and S"
+        ],
+        "seats": [
+          "The five picks",
+          "Different picks"
+        ],
+        "note": "One row for each choice of the judge who left Q out.",
+        "frames": [
+          [
+            [
+              [
+                "P + two of Q, R, S, T"
+              ],
+              []
+            ],
+            [
+              [
+                "P + two of Q, R, S, T"
+              ],
+              []
+            ],
+            [
+              [
+                "P + two of Q, R, S, T"
+              ],
+              []
+            ]
+          ],
+          [
+            [
+              [
+                "4 picks with Q, 1 without"
+              ],
+              []
+            ],
+            [
+              [
+                "4 picks with Q, 1 without"
+              ],
+              []
+            ],
+            [
+              [
+                "4 picks with Q, 1 without"
+              ],
+              []
+            ]
+          ],
+          [
+            [
+              [
+                "PQR, PQR, PQR, PQS, PST"
+              ],
+              [
+                "3"
+              ]
+            ],
+            [
+              [
+                "PQR, PQR, PQS, PQS, PRT"
+              ],
+              [
+                "3"
+              ]
+            ],
+            [
+              [
+                "PQR, PQR, PQS, PQT, PRS"
+              ],
+              [
+                "4"
+              ]
+            ]
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "set-four-languages",
+    "title": "A four-language school",
+    "type": "setmax",
+    "sub": "four sets with a subset",
+    "difficulty": "hard",
+    "minutes": 14,
+    "source": "original",
+    "since": "2026-10-29",
+    "intro": [
+      "A school has 100 students. 60 study English, 50 study Hindi, 40 study French and 25 study German."
+    ],
+    "clues": [
+      "Every student studies at least one of the four languages.",
+      "Every student who studies German also studies French.",
+      "Exactly 30 students study only one language."
+    ],
+    "questions": [
+      {
+        "stem": "What is the greatest possible number of students who study exactly three languages?",
+        "kind": "mcq",
+        "options": [
+          "25",
+          "5",
+          "2",
+          "10"
+        ],
+        "answer": 1,
+        "uses": [
+          1,
+          3
+        ],
+        "why": [
+          "n2 + n3 + n4 = 70 and 30 + 2n2 + 3n3 + 4n4 = 175, so n3 + 2n4 = 5: n3 is at most 5.",
+          "5 works: 25 only English, 5 only Hindi, 30 English and Hindi, 10 Hindi and French, 5 English, Hindi and French, 25 French and German."
+        ]
+      },
+      {
+        "stem": "What is the least possible number of students who study exactly two languages?",
+        "kind": "tita",
+        "answer": "65",
+        "uses": [
+          1,
+          3
+        ],
+        "why": [
+          "n2 = 70 − n3 − n4 = 70 − (5 − 2n4) − n4 = 65 + n4, least at n4 = 0: 65."
+        ]
+      },
+      {
+        "stem": "What is the least possible number of students who study only English?",
+        "kind": "tita",
+        "answer": "10",
+        "uses": [
+          1,
+          2,
+          3
+        ],
+        "why": [
+          "The 60 students without French cannot study German, so each studies only English (a), only Hindi (b) or exactly English and Hindi (c): a + b + c = 60. With a + b + f = 30 (f only French), c = 30 + f.",
+          "Hindi needs b + c ≤ 50, so b + f ≤ 20 and a = 30 − (b + f) ≥ 10. 10 is reached."
+        ]
+      },
+      {
+        "stem": "If exactly 2 students study all four languages, what is the greatest possible number of students who study only Hindi?",
+        "kind": "mcq",
+        "options": [
+          "25",
+          "20",
+          "18",
+          "22"
+        ],
+        "answer": 2,
+        "uses": [
+          1,
+          2,
+          3
+        ],
+        "why": [
+          "The 2 who study all four also study Hindi, so b + c + 2 ≤ 50. With c = 30 + f, b + f ≤ 18, so b ≤ 18.",
+          "18 is reached: 12 only English, 18 only Hindi, 30 English and Hindi, 15 English and French, 22 French and German, 1 English, French and German, 2 all four."
+        ]
+      },
+      {
+        "stem": "If no student studies both English and German, how many students study exactly three languages?",
+        "kind": "tita",
+        "answer": "5",
+        "uses": [
+          1,
+          3
+        ],
+        "why": [
+          "A student of all four would study English and German, so n4 = 0, and n3 + 2n4 = 5 gives n3 = 5."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Nobody studies German without French, so nobody studies only German, and the 60 students without French cannot study German either: each of them studies only English, only Hindi, or exactly English and Hindi.",
+        "With 30 on one language: n2 + n3 + n4 = 70, and counting each student once per language, 2n2 + 3n3 + 4n4 = 175 − 30 = 145. Subtract twice the first: n3 + 2n4 = 5.",
+        "Let a, b, f study only English, only Hindi, only French, and c exactly English and Hindi. Then a + b + f = 30 and a + b + c = 60, so c = 30 + f, which ties the English and Hindi counts to the rest."
+      ],
+      "diagram": {
+        "layout": "grid",
+        "rows": [
+          "Only one",
+          "Exactly two",
+          "Exactly three",
+          "All four",
+          "Total"
+        ],
+        "seats": [
+          "Students",
+          "Counted in language totals"
+        ],
+        "note": "Each student is counted once per language studied in the language totals.",
+        "frames": [
+          [
+            [
+              [
+                "30"
+              ],
+              [
+                "30"
+              ]
+            ],
+            [
+              [
+                "n2"
+              ],
+              []
+            ],
+            [
+              [
+                "n3"
+              ],
+              []
+            ],
+            [
+              [
+                "n4"
+              ],
+              []
+            ],
+            [
+              [
+                "100"
+              ],
+              [
+                "175"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "30"
+              ],
+              [
+                "30"
+              ]
+            ],
+            [
+              [
+                "n2"
+              ],
+              [
+                "2 × n2"
+              ]
+            ],
+            [
+              [
+                "n3"
+              ],
+              [
+                "3 × n3"
+              ]
+            ],
+            [
+              [
+                "n4"
+              ],
+              [
+                "4 × n4"
+              ]
+            ],
+            [
+              [
+                "100"
+              ],
+              [
+                "175"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "30"
+              ],
+              [
+                "30"
+              ]
+            ],
+            [
+              [
+                "n2"
+              ],
+              [
+                "2 × n2"
+              ]
+            ],
+            [
+              [
+                "n3"
+              ],
+              [
+                "3 × n3"
+              ]
+            ],
+            [
+              [
+                "n4"
+              ],
+              [
+                "4 × n4"
+              ]
+            ],
+            [
+              [
+                "100"
+              ],
+              [
+                "175"
+              ]
+            ]
+          ]
+        ]
+      }
+    }
+  },
+  {
+    "id": "set-sports-group",
+    "title": "The sports group",
+    "type": "setmax",
+    "sub": "whole-number clues",
+    "difficulty": "hard",
+    "minutes": 14,
+    "source": "original",
+    "since": "2026-10-29",
+    "intro": [
+      "A group has between 41 and 79 people. Exactly half of them watch Cricket, two-fifths watch Football and one-third watch Tennis. One-tenth of the group watch none of these three sports."
+    ],
+    "clues": [
+      "Every count is a whole number of people."
+    ],
+    "questions": [
+      {
+        "stem": "How many people are there in the group?",
+        "kind": "tita",
+        "answer": "60",
+        "uses": [
+          1
+        ],
+        "why": [
+          "Half, two-fifths, one-third and one-tenth must all be whole, so the size is a multiple of 2, 5, 3 and 10, that is of 30. From 41 to 79 that is 60."
+        ]
+      },
+      {
+        "stem": "What is the greatest possible number of people who watch all three sports?",
+        "kind": "mcq",
+        "options": [
+          "6",
+          "10",
+          "20",
+          "12"
+        ],
+        "answer": 1,
+        "uses": [
+          1
+        ],
+        "why": [
+          "With 60: Cricket 30, Football 24, Tennis 20, none 6, so 54 watch at least one. n1 + n2 + n3 = 54 and n1 + 2n2 + 3n3 = 74 give n2 + 2n3 = 20: n3 is at most 10.",
+          "10 works: 10 all three, 20 only Cricket, 14 only Football, 10 only Tennis, 6 none."
+        ]
+      },
+      {
+        "stem": "What is the least possible number of people who watch exactly one of the three sports?",
+        "kind": "tita",
+        "answer": "34",
+        "uses": [
+          1
+        ],
+        "why": [
+          "n1 = 54 − n2 − n3 = 34 + n3, least at n3 = 0: 34 (30 only Cricket, 4 only Football, 20 Football and Tennis, 6 none)."
+        ]
+      },
+      {
+        "stem": "If nobody watches both Cricket and Tennis, how many people watch only Football?",
+        "kind": "mcq",
+        "options": [
+          "4",
+          "0",
+          "10",
+          "6"
+        ],
+        "answer": 0,
+        "uses": [
+          1
+        ],
+        "why": [
+          "The 30 Cricket and 20 Tennis watchers are different people: 50. Of the 54 who watch something, the other 4 watch only Football."
+        ]
+      },
+      {
+        "stem": "If exactly 5 people watch all three sports, what is the greatest possible number of people who watch only Football?",
+        "kind": "tita",
+        "answer": "19",
+        "uses": [
+          1
+        ],
+        "why": [
+          "The 24 Football watchers include the 5 who watch all three, so at most 19 watch only Football.",
+          "19 works: 5 all three, 19 only Football, 15 only Cricket, 5 only Tennis, 10 Cricket and Tennis, 6 none."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Whole-number counts fix the size first: it must be a multiple of 2, 5, 3 and 10, that is of 30, so 60.",
+        "With 60: Cricket 30, Football 24, Tennis 20 and 6 watch none, so 54 watch at least one.",
+        "With n1, n2, n3 watching exactly one, two and three: n1 + n2 + n3 = 54 and n1 + 2n2 + 3n3 = 74, so n2 + 2n3 = 20. The picture shows the most who can watch all three."
+      ],
+      "diagram": {
+        "layout": "venn",
+        "sets": [
+          "Cricket",
+          "Football",
+          "Tennis"
+        ],
+        "seats": [
+          "Cricket only",
+          "Football only",
+          "Tennis only",
+          "Cricket and Football only",
+          "Cricket and Tennis only",
+          "Football and Tennis only",
+          "All three",
+          "None"
+        ],
+        "note": "Counts of people in each region.",
+        "frames": [
+          [
+            [
+              [],
+              [],
+              [],
+              [],
+              [],
+              [],
+              [],
+              []
+            ]
+          ],
+          [
+            [
+              [],
+              [],
+              [],
+              [],
+              [],
+              [],
+              [],
+              [
+                "6"
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                "20"
+              ],
+              [
+                "14"
+              ],
+              [
+                "10"
+              ],
+              [
+                "0"
+              ],
+              [
+                "0"
+              ],
+              [
+                "0"
+              ],
+              [
+                "10"
+              ],
+              [
+                "6"
+              ]
+            ]
+          ]
+        ]
+      }
+    }
+  }
+]
