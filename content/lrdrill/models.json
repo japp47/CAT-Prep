@@ -1,0 +1,91 @@
+[
+  {
+    "set": "arr-round-table",
+    "board": { "layout": "circle", "n": 6 },
+    "groups": [{ "name": "Friend", "values": ["Asha", "Bilal", "Chitra", "Dev", "Esha", "Farhan"] }],
+    "clues": [
+      { "right": "Asha", "of": "Bilal", "d": 2 },
+      { "opp": ["Chitra", "Asha"] },
+      { "not": { "next": ["Dev", "Bilal"] } },
+      { "left": "Esha", "of": "Chitra", "d": 1 }
+    ]
+  },
+  {
+    "set": "arr-six-colleagues",
+    "board": { "layout": "row", "n": 6 },
+    "groups": [
+      { "name": "Person", "values": ["Aarav", "Bhavna", "Chirag", "Divya", "Eshan", "Farah"] },
+      { "name": "City", "values": ["Delhi", "Pune", "Chennai", "Kochi", "Indore", "Surat"] },
+      { "name": "Profession", "values": ["doctor", "lawyer", "pilot", "chef", "architect", "teacher"] }
+    ],
+    "clues": [
+      { "next": ["teacher", "Chennai"] },
+      { "next": ["Pune", "Divya"] },
+      { "left": "doctor", "of": "Surat", "d": 1 },
+      { "not": { "end": "doctor" } },
+      { "not": { "end": "chef" } },
+      { "gap": ["Eshan", "Chirag"], "n": 1 },
+      { "next": ["Indore", "lawyer"] },
+      { "next": ["lawyer", "Farah"] },
+      { "gap": ["Farah", "teacher"], "n": 1 },
+      { "left": "Pune", "of": "Chennai", "d": "any" },
+      { "left": "Pune", "of": "Delhi", "d": 1 },
+      { "at": "architect", "seat": 6 },
+      { "gap": ["architect", "Aarav"], "n": 3 },
+      { "left": "Aarav", "of": "Chirag", "d": 1 }
+    ]
+  },
+  {
+    "set": "arr-seven-consultants",
+    "board": { "layout": "circle", "n": 7 },
+    "groups": [
+      { "name": "Person", "values": ["Kabir", "Ishaan", "Jaya", "Leela", "Mohan", "Nisha", "Omkar"] },
+      { "name": "Specialisation", "values": ["Auditing", "Branding", "Cybersecurity", "Derivatives", "Ergonomics", "Forecasting", "Genomics"] },
+      { "name": "Country", "values": ["Brazil", "Canada", "Denmark", "Egypt", "Finland", "Ghana", "Hungary"] }
+    ],
+    "clues": [
+      { "left": "Cybersecurity", "of": "Nisha", "d": 2 },
+      { "next": ["Ghana", "Ishaan"] },
+      { "next": ["Brazil", "Omkar"] },
+      { "next": ["Derivatives", "Brazil"] },
+      { "not": { "next": ["Leela", "Kabir"] } },
+      { "left": "Auditing", "of": "Kabir", "d": 1 },
+      { "left": "Branding", "of": "Ishaan", "d": 2 },
+      { "left": "Egypt", "of": "Canada", "d": 2 },
+      { "next": ["Branding", "Ergonomics"] },
+      { "left": "Mohan", "of": "Ergonomics", "d": 2 },
+      { "not": { "next": ["Denmark", "Cybersecurity"] } },
+      { "left": "Finland", "of": "Canada", "d": 1 },
+      { "left": "Jaya", "of": "Kabir", "d": 1 },
+      { "next": ["Auditing", "Ergonomics"] }
+    ]
+  },
+  {
+    "set": "arr-friends-drinks",
+    "board": { "layout": "row", "n": 6 },
+    "groups": [
+      { "name": "Person", "values": ["Aditi", "Bharat", "Charu", "Dhruv", "Esha", "Farhan"] },
+      { "name": "City", "values": ["Jaipur", "Kolkata", "Lucknow", "Mysuru", "Nagpur", "Patna"] },
+      { "name": "Profession", "values": ["analyst", "banker", "curator", "dentist", "editor", "farmer"] },
+      { "name": "Drink", "values": ["coffee", "juice", "milk", "soda", "tea", "water"] }
+    ],
+    "clues": [
+      { "gap": ["farmer", "Jaipur"], "n": 1 },
+      { "gap": ["Nagpur", "curator"], "n": 2 },
+      { "gap": ["Nagpur", "milk"], "n": 3 },
+      { "at": "Patna", "seat": 4 },
+      { "gap": ["Aditi", "Mysuru"], "n": 4 },
+      { "at": "Esha", "seat": 5 },
+      { "if": { "next": ["Lucknow", "tea"] }, "then": { "end": "dentist" } },
+      { "gap": ["Esha", "Bharat"], "n": 2 },
+      { "gap": ["tea", "milk"], "n": 1 },
+      { "at": "water", "seat": 4 },
+      { "xor": [{ "next": ["Aditi", "banker"] }, { "left": "dentist", "of": "tea", "d": 1 }] },
+      { "xor": [{ "next": ["Dhruv", "curator"] }, { "or": [{ "at": "farmer", "seat": 2 }, { "at": "farmer", "seat": 4 }, { "at": "farmer", "seat": 6 }] }] },
+      { "at": "Kolkata", "seat": 3 },
+      { "gap": ["juice", "soda"], "n": 2 },
+      { "gap": ["soda", "Charu"], "n": 1 },
+      { "xor": [{ "left": "editor", "of": "Farhan", "d": "any" }, { "left": "Esha", "of": "editor", "d": "any" }] }
+    ]
+  }
+]

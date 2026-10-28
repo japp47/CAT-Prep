@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { shortDate, todayIso } from "../../lib/date";
 import { ContentGate } from "../../components/Content";
-import { Empty, LinkButton, Page, PageHeader, Section, Stat } from "../../components/kit";
+import { ArrowLink, Empty, LinkButton, Page, PageHeader, Section, Stat } from "../../components/kit";
+import { LR_GUIDE_BY_TYPE } from "../../sections/dilr/guides";
 import { useStore } from "../../lib/store";
 import type { Content } from "../../practice/content";
 import { lrRight } from "../../practice/lrcheck";
@@ -196,7 +197,10 @@ function LrRedo({ ref_: ref, pane, setPane, pick, setPick, typed, setTyped, resu
           {result ? (
             <>
               <LrReview set={ref.set} qi={ref.qi} given={result.gaveUp ? null : q.kind === "mcq" ? pick : typed.trim()} att={att?.id ?? ""} whole={whole} />
-              {att && <LinkButton to={`/practice/lr/${ref.set.id}?review=${att.id}`} variant="ghost" className="w-fit">See how the whole set is solved</LinkButton>}
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+                {att && <ArrowLink to={`/practice/lr/${ref.set.id}?review=${att.id}`}>See how the whole set is solved</ArrowLink>}
+                {LR_GUIDE_BY_TYPE.has(ref.set.type) && <ArrowLink to={`/dilr?guide=${ref.set.type}`}>Read the guide for this type</ArrowLink>}
+              </div>
             </>
           ) : (
             <div className="flex flex-col gap-4">

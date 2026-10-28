@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
-import { loadCrItems, loadLrFile, loadRcFile, loadVaParas, LR_FILES, RC_FILES } from "./bank";
+import { loadCrItems, loadLrDrills, loadLrFile, loadRcFile, loadVaParas, LR_FILES, RC_FILES } from "./bank";
 import { LR_CATALOG, LR_FILE, RC_CATALOG, RC_FILE } from "./catalog.gen";
+import type { LrDrills } from "./lrdrill";
 import type { CrItem, LrSet, RcSet, VaPara } from "./types";
 
 /** The practice content a page asked for. Lists and rotations use catalog.gen.ts instead, which is small. */
@@ -12,19 +13,21 @@ export interface Content {
   crById: (id: string) => CrItem | undefined;
   lrSets: LrSet[];
   lrById: (id: string) => LrSet | undefined;
+  /** The LR drills' content, when asked for (F83 to F85). */
+  lrDrills: LrDrills | null;
 }
 
 /**
  * What a page needs: "all" (the sectional, the redo queue, the report card), or only some RC sets by id,
  * the VA paragraphs, the critical reasoning questions, and some LR sets by id. A page that asks for less downloads less.
  */
-export type Need = "all" | { rc?: string[]; va?: boolean; cr?: boolean; lr?: string[] };
+export type Need = "all" | { rc?: string[]; va?: boolean; cr?: boolean; lr?: string[]; drills?: boolean };
 
-export function makeContent(rcSets: RcSet[], vaParas: VaPara[], crItems: CrItem[], lrSets: LrSet[] = []): Content {
+export function makeContent(rcSets: RcSet[], vaParas: VaPara[], crItems: CrItem[], lrSets: LrSet[] = [], lrDrills: LrDrills | null = null): Content {
   const byId = new Map(rcSets.map((s) => [s.id, s]));
   const crById = new Map(crItems.map((c) => [c.id, c]));
   const lrById = new Map(lrSets.map((s) => [s.id, s]));
-  return { rcSets, rcById: (id) => byId.get(id), vaParas, crItems, crById: (id) => crById.get(id), lrSets, lrById: (id) => lrById.get(id) };
+  return { rcSets, rcById: (id) => byId.get(id), vaParas, crItems, crById: (id) => crById.get(id), lrSets, lrById: (id) => lrById.get(id), lrDrills };
 }
 
 // Parts already loaded, so a page opened again renders at once, and the loads in flight, so two pages share one.
@@ -32,13 +35,16 @@ const files = new Map<string, RcSet[]>();
 const lrFiles = new Map<string, LrSet[]>();
 let va: VaPara[] | null = null;
 let cr: CrItem[] | null = null;
+let drills: LrDrills | null = null;
 const inflight = new Map<string, Promise<void>>();
 const built = new Map<string, Content>();
 
-const keyOf = (need: Need) => (need === "all" ? "all" : JSON.stringify([need.rc ?? [], !!need.va, !!need.cr, need.lr ?? []]));
+const keyOf = (need: Need) => (need === "all" ? "all" : JSON.stringify([need.rc ?? [], !!need.va, !!need.cr, need.lr ?? [], !!need.drills]));
 const filesFor = (need: Need) => (need === "all" ? RC_FILES : [...new Set((need.rc ?? []).map((id) => RC_FILE[id]).filter(Boolean))]);
 const lrFilesFor = (need: Need) => (need === "all" ? LR_FILES : [...new Set((need.lr ?? []).map((id) => LR_FILE[id]).filter(Boolean))]);
 const wants = (need: Need, part: "va" | "cr") => need === "all" || !!need[part];
+// The drills are not part of "all": no page that lists everything needs them.
+const wantsDrills = (need: Need) => need !== "all" && !!need.drills;
 
 function once<T>(key: string, load: () => Promise<T>, keep: (x: T) => void): Promise<void> {
   let p = inflight.get(key);
@@ -56,13 +62,13 @@ export function peekContent(need: Need = "all"): Content | null {
   if (hit) return hit;
   const fs = filesFor(need);
   const ls = lrFilesFor(need);
-  if (fs.some((f) => !files.has(f)) || ls.some((f) => !lrFiles.has(f)) || (wants(need, "va") && !va) || (wants(need, "cr") && !cr)) return null;
+  if (fs.some((f) => !files.has(f)) || ls.some((f) => !lrFiles.has(f)) || (wants(need, "va") && !va) || (wants(need, "cr") && !cr) || (wantsDrills(need) && !drills)) return null;
   const byId = new Map(fs.flatMap((f) => files.get(f)!).map((s) => [s.id, s]));
   // Catalog order, so "all" lists the sets the way the library does.
   const rcSets = RC_CATALOG.map((m) => byId.get(m.id)).filter((s): s is RcSet => !!s);
   const lrById = new Map(ls.flatMap((f) => lrFiles.get(f)!).map((s) => [s.id, s]));
   const lrSets = LR_CATALOG.map((m) => lrById.get(m.id)).filter((s): s is LrSet => !!s);
-  const c = makeContent(rcSets, wants(need, "va") ? va! : [], wants(need, "cr") ? cr! : [], lrSets);
+  const c = makeContent(rcSets, wants(need, "va") ? va! : [], wants(need, "cr") ? cr! : [], lrSets, wantsDrills(need) ? drills : null);
   built.set(key, c);
   return c;
 }
@@ -74,6 +80,7 @@ export function loadContent(need: Need = "all"): Promise<Content> {
     ...lrFilesFor(need).map((f) => once("lr:" + f, () => loadLrFile(f), (x) => { lrFiles.set(f, x); })),
     wants(need, "va") ? once("va", loadVaParas, (x) => { va = x; }) : null,
     wants(need, "cr") ? once("cr", loadCrItems, (x) => { cr = x; }) : null,
+    wantsDrills(need) ? once("drills", loadLrDrills, (x) => { drills = x; }) : null,
   ]).then(() => peekContent(need)!);
 }
 

@@ -15,10 +15,11 @@ const TAB = "h-auto min-h-10 flex-auto whitespace-normal px-2.5 leading-tight sm
 
 export default function Progress() {
   const { state } = useStore();
-  const [sec, setSec] = useState("VARC");
+  const [sp] = useSearchParams();
+  // A link such as /progress?sec=DILR (from an LR drill) opens on that section.
+  const [sec, setSec] = useState(() => SECTIONS.find((s) => s.short === sp.get("sec"))?.short ?? "VARC");
   const [tab, setTab] = usePref<Tab>("progTab", "report");
   // A link such as /progress?tab=log (from History) opens that tab once.
-  const [sp] = useSearchParams();
   const asked = sp.get("tab");
   useEffect(() => { if (asked === "report" || asked === "mocks" || asked === "log") setTab(asked); }, [asked, setTab]);
   const def = sectionByLabel(sec);

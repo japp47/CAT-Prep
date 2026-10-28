@@ -1,5 +1,5 @@
-import { useDeferredValue, useState, type ReactNode } from "react";
-import { useParams } from "react-router-dom";
+import { useDeferredValue, useEffect, useState, type ReactNode } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
 import { ChevronDown, Search } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -10,7 +10,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { CategoryBlock } from "../components/Resources";
 import { Empty, Ext, LinkButton, Page, PageHeader, Section as Block, TextLink } from "../components/kit";
-import { TypeGuide, TypeIndex } from "../components/TypeGuide";
+import { GuideExplorer } from "../components/GuideExplorer";
+import { LrGuideBody } from "../components/LrGuide";
+import { LrThumb } from "../components/LrThumb";
+import { TypeGuideBody } from "../components/TypeGuide";
+import { LR_GUIDES } from "../sections/dilr/guides";
 import { BENCHMARKS, PASSAGE_SOURCES, TOPPERS } from "../data/stories";
 import { dow, todayIso } from "../lib/date";
 import { usePref } from "../lib/prefs";
@@ -79,8 +83,7 @@ function Topic({ t }: { t: TopicData }) {
   );
 }
 
-function Learn({ id, page }: { id: SectionId; page: PageData }) {
-  const [open, setOpen] = useState<Record<string, boolean>>({});
+function Learn({ id, page, focus }: { id: SectionId; page: PageData; focus: string | null }) {
   return (
     <div className="flex flex-col gap-12">
       <Block title="The section">
@@ -105,10 +108,14 @@ function Learn({ id, page }: { id: SectionId; page: PageData }) {
       <div className="flex flex-col gap-3">{page.topics.map((t) => <Topic key={t.h} t={t} />)}</div>
       {id === "varc" && (
         <Block title="A guide for each question type" description="Method, common traps, a worked example to try, and three links: a written guide, a video and a free question bank.">
-          <TypeIndex guides={TYPE_GUIDES} onOpen={(id) => setOpen((o) => ({ ...o, [id]: true }))} />
-          <div className="flex flex-col gap-3">
-            {TYPE_GUIDES.map((g) => <TypeGuide key={g.id} g={g} open={!!open[g.id]} onOpenChange={(v) => setOpen((o) => ({ ...o, [g.id]: v }))} />)}
-          </div>
+          <GuideExplorer label="VARC question types" prefKey="guide:varc" focus={focus}
+            items={TYPE_GUIDES.map((g) => ({ id: g.id, h: g.h, tag: g.tag, body: () => <TypeGuideBody g={g} /> }))} />
+        </Block>
+      )}
+      {id === "dilr" && (
+        <Block title="A guide for each set type" description="What to draw, where to start, the method and the traps, then one of our own sets as the worked example, with its solution drawn step by step.">
+          <GuideExplorer label="LR set types" prefKey="guide:dilr" focus={focus}
+            items={LR_GUIDES.map((g) => ({ id: g.id, h: g.h, tag: g.tag, icon: <LrThumb type={g.id} className="size-9" />, body: () => <LrGuideBody g={g} /> }))} />
         </Block>
       )}
     </div>
@@ -160,6 +167,10 @@ function Toppers() {
 function Live({ sec, page }: { sec: SectionDef; page: PageData }) {
   const { state } = useStore();
   const [vtab, setVtab] = usePref("vtab", "learn");
+  // ?guide=<type> opens the Learn tab on that guide (from a set's review, the practice list, search).
+  const [sp] = useSearchParams();
+  const focus = sp.get("guide");
+  useEffect(() => { if (focus) setVtab("learn"); }, [focus, setVtab]);
   const [pri, setPri] = usePref<"all" | "must">("pri", "all");
   const [hideDone, setHideDone] = usePref("hideDone", false);
   const [q, setQ] = usePref("q:" + sec.id, "");
@@ -236,7 +247,7 @@ function Live({ sec, page }: { sec: SectionDef; page: PageData }) {
           </div>
           {page.tabs.map((t) => (
             <TabsContent key={t.id} value={t.id} className="flex flex-col gap-12">
-              {t.id === "learn" && <Learn id={sec.id} page={page} />}
+              {t.id === "learn" && <Learn id={sec.id} page={page} focus={focus} />}
               {extra(t.id)}
               <div className="flex flex-col gap-10">{list(t.id, "Everything here is ticked or filtered out. Switch off Hide done or Must-do only.")}</div>
             </TabsContent>

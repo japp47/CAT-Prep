@@ -7,12 +7,14 @@ import { PAPERS_PAGE } from "../../data/papers";
 import { shortDate, todayIso, uid } from "../../lib/date";
 import { calm, loadGsap, type Gsap } from "../../lib/motion";
 import { usePref } from "../../lib/prefs";
-import type { LrAttempt } from "../../lib/state";
+import type { LrAttempt, LrDrillRun } from "../../lib/state";
 import { useStore } from "../../lib/store";
-import { LinkButton, Section, TextLink } from "../../components/kit";
+import { ArrowLink, LinkButton, Section, TextLink } from "../../components/kit";
+import { LR_GUIDE_BY_TYPE } from "../../sections/dilr/guides";
 import { LR_CATALOG } from "../../practice/catalog.gen";
 import { dueRedo, upcomingRedo } from "../../practice/redo";
 import { LR_TYPE, LR_TYPES, type LrMeta, type LrType } from "../../practice/types";
+import { LrThumb as Thumb } from "../../components/LrThumb";
 import { PaperRow, Row, Rows } from "./rows";
 
 const LEVEL = { easy: 0, medium: 1, hard: 2 } as const;
@@ -22,26 +24,6 @@ export const LR_ORDER = [...LR_CATALOG].sort((a, b) => LR_TYPES.indexOf(a.type) 
 
 const meta = (s: LrMeta) => { const t = [s.sub, s.difficulty, `${s.minutes} minutes`, `${s.questions} questions`].filter(Boolean).join(", "); return t[0].toUpperCase() + t.slice(1); };
 const score = (s: LrMeta, a: LrAttempt) => `${3 * a.c - a.w} of ${3 * s.questions}`;
-
-/** A small drawing of each type's picture, so a group reads at a glance: seats round a table, a bracket, a table. */
-function Thumb({ type }: { type: LrType }) {
-  const c = "fill-none stroke-current stroke-[1.75]";
-  return (
-    <svg viewBox="0 0 48 48" className="size-11 shrink-0 text-primary" aria-hidden>
-      {type === "arrangement" ? (
-        <><circle cx="24" cy="24" r="9" className={c} />{Array.from({ length: 6 }, (_, k) => { const a = (k * Math.PI) / 3; return <circle key={k} cx={24 + 17 * Math.sin(a)} cy={24 + 17 * Math.cos(a)} r="3.2" className="fill-current" />; })}</>
-      ) : type === "routes" ? (
-        <><path d="M8 36 20 12l12 22 9-20M20 12l21 2M8 36h24" className={c} />{[[8, 36], [20, 12], [32, 34], [41, 14]].map(([x, y]) => <circle key={x} cx={x} cy={y} r="3.6" className="fill-current" />)}</>
-      ) : type === "venn" || type === "setmax" ? (
-        <><circle cx="18" cy="20" r="11" className={c} /><circle cx="30" cy="20" r="11" className={c} /><circle cx="24" cy="31" r="11" className={c} /></>
-      ) : type === "tournament" ? (
-        <path d="M5 8h10v8H5M5 32h10v8H5M15 12h8v24h-8M23 24h8M31 18h10v12H31" className={c} />
-      ) : (
-        <><rect x="5" y="8" width="38" height="32" rx="3" className={c} /><path d="M5 18.5h38M5 29h38M17.5 8v32M30.5 8v32" className={c} /></>
-      )}
-    </svg>
-  );
-}
 
 /**
  * One type of set, folded (D43): the header says how far the student has got; the sets render only while open, so a
@@ -91,7 +73,61 @@ function TypeGroup({ type, sets, last, open, onToggle, children }: { type: LrTyp
   );
 }
 
-/** DILR practice: the next set to try, every LR set by type, and past papers. */
+/** A small picture of each drill: four cases with one struck out, three bins, bars of different lengths. */
+function DrillGlyph({ kind }: { kind: LrDrillRun["kind"] }) {
+  const c = "fill-secondary transition-[fill] duration-300 motion-reduce:transition-none";
+  return (
+    <svg viewBox="0 0 48 48" className="size-12 shrink-0" aria-hidden>
+      {kind === "clue" && <>
+        <rect x="4" y="4" width="18" height="18" rx="4" className={c} />
+        <rect x="26" y="4" width="18" height="18" rx="4" className="fill-danger-soft" />
+        <path d="M30 8l10 10M40 8L30 18" className="stroke-danger" strokeWidth="2.5" strokeLinecap="round" />
+        <rect x="4" y="26" width="18" height="18" rx="4" className={c} />
+        <rect x="26" y="26" width="18" height="18" rx="4" className={cn(c, "group-hover:fill-primary/30")} />
+      </>}
+      {kind === "mcc" && <>
+        <rect x="4" y="8" width="11" height="32" rx="3" className="fill-success-soft" />
+        <rect x="18.5" y="8" width="11" height="32" rx="3" className={cn(c, "group-hover:fill-primary/30")} />
+        <rect x="33" y="8" width="11" height="32" rx="3" className="fill-danger-soft" />
+      </>}
+      {kind === "first" && <>
+        <rect x="4" y="8" width="12" height="7" rx="3.5" className="fill-success" />
+        <rect x="4" y="20.5" width="40" height="7" rx="3.5" className={c} />
+        <rect x="4" y="33" width="26" height="7" rx="3.5" className={cn(c, "group-hover:fill-primary/30")} />
+      </>}
+    </svg>
+  );
+}
+
+const DRILLS: { kind: LrDrillRun["kind"]; to: string; h: string; p: string; meta: string }[] = [
+  { kind: "clue", to: "/practice/clues", h: "Clue translator", p: "Read \"only if\", \"unless\", \"between\" and left and right onto a small board. A misreading is named.", meta: "8 clues, about 3 minutes" },
+  { kind: "mcc", to: "/practice/must-could", h: "Must, could, cannot", p: "A set's finished seatings side by side; sort six statements by whether they hold in all, some or none. Uses sets you have solved.", meta: "6 statements, about 4 minutes" },
+  { kind: "first", to: "/practice/first-move", h: "First move", p: "Pick the clue to start with. See how many ways each clue leaves open, worked out by solving the set. Uses sets you have solved.", meta: "3 moves, about 3 minutes" },
+];
+
+/** The three LR drills, each with how the last run went. */
+function Drills({ runs }: { runs: LrDrillRun[] }) {
+  return (
+    <ul className="grid gap-3 md:grid-cols-3">
+      {DRILLS.map((d) => {
+        const mine = runs.filter((r) => r.kind === d.kind), last = mine[mine.length - 1] as LrDrillRun | undefined;
+        const c = last?.items.filter((i) => i.ok).length;
+        return (
+          <li key={d.kind}>
+            <Link to={d.to} className="group flex h-full flex-col gap-3 rounded-xl bg-card p-5 transition-colors hover:bg-card/70 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:p-6">
+              <DrillGlyph kind={d.kind} />
+              <span className="text-heading font-semibold group-hover:text-primary">{d.h}</span>
+              <span className="text-base text-muted-foreground">{d.p}</span>
+              <span className="mt-auto pt-1 text-sm text-muted-foreground">{last ? `Last time ${c} of ${last.items.length}, ${shortDate(last.d)}` : d.meta}</span>
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+/** DILR practice: the next set to try, the LR drills, every LR set by type, and past papers. */
 export default function DilrPractice({ next }: { next: LrMeta | undefined }) {
   const { state } = useStore();
   const [seed] = useState(uid);
@@ -129,6 +165,10 @@ export default function DilrPractice({ next }: { next: LrMeta | undefined }) {
         </Rows>
       </Section>
 
+      <Section title="Drills" description="Short drills for the skills that lose solved sets: reading a clue exactly, telling must from could, and choosing where to start. Every answer is worked out by solving the set in code.">
+        <Drills runs={state.lrDrills} />
+      </Section>
+
       <Section title="Logical reasoning sets"
         description={`${LR_ORDER.length} original sets, every answer checked by solving the set in code. Each has a timer, a scratch pad, a solution drawn step by step as a picture, and a two-minute post-mortem.${last.size ? ` You have tried ${last.size}.` : ""}`}>
         <div className="flex flex-col gap-3">
@@ -157,6 +197,7 @@ export default function DilrPractice({ next }: { next: LrMeta | undefined }) {
                     );
                   })}
                 </Rows>
+                {LR_GUIDE_BY_TYPE.has(t) && <div className="bg-card px-5 py-4 sm:px-6"><ArrowLink to={`/dilr?guide=${t}`}>Read the guide first: what to draw and where to start</ArrowLink></div>}
               </TypeGroup>
             );
           })}
