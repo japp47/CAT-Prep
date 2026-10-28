@@ -177,6 +177,11 @@ export const LR_CATALOG: LrMeta[] = [
   {"id":"arr-desk-shuffle","title":"The desk shuffle","type":"arrangement","difficulty":"medium","minutes":10,"questions":5,"since":"2026-10-25","v":"64e82132","sub":"movement over three evenings"},
   {"id":"arr-friends-drinks","title":"Six friends: cities, professions and drinks","type":"arrangement","difficulty":"hard","minutes":15,"questions":5,"since":"2026-10-25","v":"d990be5e","sub":"linear, three attributes"},
   {"id":"arr-panel-empty-chair","title":"A selection panel with an empty chair","type":"arrangement","difficulty":"hard","minutes":20,"questions":5,"since":"2026-10-25","v":"1a157cf9","sub":"circular, empty chair, ratings"},
+  {"id":"tour-knockout-byes","title":"A seeded knockout with byes and upsets","type":"tournament","difficulty":"medium","minutes":10,"questions":5,"since":"2026-10-29","v":"b5f778ff","sub":"knockout, byes and a re-made draw"},
+  {"id":"tour-damaged-table","title":"A round-robin with a damaged points table","type":"tournament","difficulty":"medium","minutes":10,"questions":5,"since":"2026-10-29","v":"0b7acbc1","sub":"round robin, points table"},
+  {"id":"tour-qualification","title":"Qualification scenarios in a five-team league","type":"tournament","difficulty":"hard","minutes":15,"questions":5,"since":"2026-10-29","v":"e25a1a9a","sub":"round robin, who can qualify"},
+  {"id":"tour-archery-rounds","title":"A three-round archery tournament","type":"tournament","difficulty":"hard","minutes":15,"questions":5,"since":"2026-10-29","v":"de117974","sub":"rounds and ranking points"},
+  {"id":"tour-redrawn-knockout","title":"Reconstructing a 16-player knockout","type":"tournament","difficulty":"hard","minutes":18,"questions":5,"since":"2026-10-29","v":"e353769f","sub":"knockout, draw re-made every round"},
 ];
 
 /** The content/rc file that holds each set, so a page loads only that file. */
@@ -241,4 +246,9 @@ export const LR_FILE: Record<string, string> = {
   "arr-desk-shuffle": "arrangement",
   "arr-friends-drinks": "arrangement",
   "arr-panel-empty-chair": "arrangement",
+  "tour-knockout-byes": "tournament",
+  "tour-damaged-table": "tournament",
+  "tour-qualification": "tournament",
+  "tour-archery-rounds": "tournament",
+  "tour-redrawn-knockout": "tournament",
 };

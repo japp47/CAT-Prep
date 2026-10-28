@@ -1,6 +1,6 @@
 import type { ComponentProps, ReactNode } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useStore } from "../lib/store";
@@ -86,6 +86,21 @@ export function Ext({ href, children, className }: { href: string; children: Rea
 export function TextLink({ to, children, className }: { to: string; children: ReactNode; className?: string }) {
   const cls = cn("font-medium text-primary underline underline-offset-4 decoration-primary/40 hover:decoration-primary", className);
   return to.startsWith("/") ? <RouterLink to={to} className={cls}>{children}</RouterLink> : <Ext href={to} className={cls}>{children}</Ext>;
+}
+
+/**
+ * A link that stands on its own ("All updates", "Open VARC"): ink-coloured text and an arrow, no underline at rest. On
+ * hover the arrow steps forward and an underline draws in from the left. Links inside a sentence stay TextLink.
+ */
+export function ArrowLink({ to, children, className }: { to: string; children: ReactNode; className?: string }) {
+  const cls = cn("group inline-flex w-fit items-center gap-1.5 rounded-sm text-base font-semibold text-foreground transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none", className);
+  const inner = (
+    <>
+      <span className="bg-[linear-gradient(currentColor,currentColor)] bg-left-bottom bg-no-repeat pb-0.5 transition-[background-size] duration-300 [background-size:0%_1.5px] group-hover:[background-size:100%_1.5px] motion-reduce:transition-none">{children}</span>
+      <ArrowRight className="size-4 shrink-0 transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none" aria-hidden />
+    </>
+  );
+  return to.startsWith("/") ? <RouterLink to={to} className={cls}>{inner}</RouterLink> : <Ext href={to} className={cls}>{inner}</Ext>;
 }
 
 /**

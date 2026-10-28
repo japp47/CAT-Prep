@@ -198,9 +198,28 @@ describe("LR sets (docs/content/lr-format.md)", () => {
     });
     if (s.solution.diagram) it(`${s.id} has a picture for every solution step`, () => {
       const g = s.solution.diagram!;
-      expect(["row", "circle"]).toContain(g.layout);
-      expect(g.seats.length).toBeGreaterThanOrEqual(3);
+      expect(["row", "circle", "grid", "bracket"]).toContain(g.layout);
+      expect(g.seats.length).toBeGreaterThanOrEqual(g.layout === "bracket" ? 1 : 3);
       if (g.layout === "circle") expect(g.rows, "a circle has one ring").toBeUndefined();
+      if (g.layout === "grid" || g.layout === "bracket") expect(g.rows?.length, "a grid or bracket names its rows").toBeGreaterThan(0);
+      if (g.mirror) {
+        expect(g.layout, "mirror is for results grids").toBe("grid");
+        // The first columns are the row teams in the same order, so a cell has a partner across the diagonal.
+        expect(g.rows!.length).toBeLessThanOrEqual(g.seats.length);
+        Object.entries(g.mirror).forEach(([k, v]) => expect(g.mirror![v], `mirror ${k}`).toBe(k));
+      }
+      // A cell closed in the first picture (a team against itself, a slot a round lacks) stays closed in every step.
+      if (g.layout === "grid" || g.layout === "bracket") {
+        g.frames.forEach((f, i) => f.forEach((r, ri) => r.forEach((cell, k) => expect(cell === null, `frame ${i + 1} cell ${ri},${k}`).toBe(g.frames[0][ri][k] === null))));
+      }
+      // A bracket match lists both players, then the winner, who must be one of them.
+      if (g.layout === "bracket") {
+        g.frames.flat(2).forEach((m) => {
+          if (!m || m.length === 0) return;
+          expect(m.length).toBeGreaterThanOrEqual(2);
+          if (m[2]) expect([m[0], m[1]]).toContain(m[2]);
+        });
+      }
       expect(g.frames, "one frame per step").toHaveLength(s.solution.steps.length);
       g.frames.forEach((f, i) => {
         expect(f, `frame ${i + 1} rows`).toHaveLength(g.rows?.length ?? 1);

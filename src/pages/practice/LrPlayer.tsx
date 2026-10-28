@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
 import { mediumDate, todayIso, uid } from "../../lib/date";
@@ -20,12 +21,16 @@ import { LR_CATALOG } from "../../practice/catalog.gen";
 import { lrRight } from "../../practice/lrcheck";
 import { LR_SLIP_LABEL, LR_TIME_LABEL, lrError, lrErrorSrc, recordLr, saveLrPostMortem, scoreLr } from "../../practice/lrattempt";
 import { fmtSecs, LETTERS } from "../../practice/record";
-import { LR_TYPE, lrVersion, type LrSet, type LrTable } from "../../practice/types";
+import { LR_TYPE, lrVersion, type LrDiagram, type LrSet, type LrTable } from "../../practice/types";
 import NotFound from "../NotFound";
 import { Choice, ChoiceGroup, Confirm, ElapsedTimer, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, TimeUp, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
 import { PaneJump, PaneSwitch, showQuestion, Split } from "./RcPlayer";
 
-/** One logical reasoning set (F23): the story, clues and a scratch pad beside the questions, then the review with the walkthrough and post-mortem (F86). */
+/**
+ * One logical reasoning set (F23): the story and clues on one side; the scratch pad, then the question, on the other
+ * (D40), so a student writes in the pad while reading the clues and reads the pad while answering. Then the review
+ * with the walkthrough and post-mortem (F86).
+ */
 export default function LrPlayer() {
   const { id = "" } = useParams();
   // Only the file of this set's type loads.
@@ -45,6 +50,14 @@ function Player({ set, reviewId }: { set: LrSet; reviewId: string | null }) {
   const attempt = shown && shown.set === set.id ? shown : undefined;
   if (waiting) return null;
   return attempt ? <Review set={set} attempt={attempt} /> : <Attempt set={set} onDone={(id) => finish(id, ["n"])} />;
+}
+
+/** What to type in the scratch pad, by layout. */
+function padHint(g: LrDiagram | undefined): string {
+  if (!g) return "Write down your working as you go.";
+  if (g.layout === "grid") return g.mirror ? "Type W, D or L for the team on the left; the other team's result fills itself in." : "Type into any cell.";
+  if (g.layout === "bracket") return "Type each match as you work it out, such as 4 v 13.";
+  return "Type a name or a note into any seat.";
 }
 
 const kicker = (set: LrSet, what: string) => `${what}, ${LR_TYPE[set.type].label.toLowerCase()}, ${set.difficulty}`;
@@ -80,7 +93,7 @@ function SetText({ set, lit = [] }: { set: LrSet; lit?: number[] }) {
   );
 }
 
-/** A folding block under the set, for the scratch pad. */
+/** A folding block, for the scratch pad and the post-mortem. */
 function Fold({ title, open, onOpenChange, children }: { title: string; open: boolean; onOpenChange: (o: boolean) => void; children: ReactNode }) {
   return (
     <Collapsible open={open} onOpenChange={onOpenChange} className="group rounded-lg bg-card">
@@ -93,7 +106,7 @@ function Fold({ title, open, onOpenChange, children }: { title: string; open: bo
   );
 }
 
-interface LrDraft { ans: (number | string | null)[]; marked: boolean[]; unsure: boolean[]; cur: number; secs: number; scratch?: string[][] }
+interface LrDraft { ans: (number | string | null)[]; marked: boolean[]; unsure: boolean[]; cur: number; secs: number; scratch?: string[][]; notes?: string }
 
 function Attempt({ set, onDone }: { set: LrSet; onDone: (id: string) => void }) {
   const { update } = useStore();
@@ -107,6 +120,7 @@ function Attempt({ set, onDone }: { set: LrSet; onDone: (id: string) => void }) 
   const [marked, setMarked] = useState<boolean[]>(saved?.marked ?? Array(n).fill(false));
   const [unsure, setUnsure] = useState<boolean[]>(saved?.unsure?.length === n ? saved.unsure : Array(n).fill(false));
   const [scratch, setScratch] = useState<string[][]>(() => saved?.scratch ?? (g ? blankScratch(g) : []));
+  const [notes, setNotes] = useState(saved?.notes ?? "");
   const [cur, setCur] = useState(saved?.cur ?? 0);
   const [pane, setPane] = useState<"p" | "q">("p");
   const [confirming, setConfirming] = useState(false);
@@ -114,13 +128,13 @@ function Attempt({ set, onDone }: { set: LrSet; onDone: (id: string) => void }) 
   const [hideTimer, setHideTimer] = usePref("rcHideTimer", false);
   const [startAt] = useState(() => Date.now() - (saved?.secs ?? 0) * 1000);
   const submitted = useRef(false);
-  const draftRef = useRef<LrDraft>({ ans, marked, unsure, cur, secs: 0, scratch });
-  draftRef.current = { ans, marked, unsure, cur, secs: 0, scratch };
+  const draftRef = useRef<LrDraft>({ ans, marked, unsure, cur, secs: 0, scratch, notes });
+  draftRef.current = { ans, marked, unsure, cur, secs: 0, scratch, notes };
 
   // Kept on every change, and on leaving the page, so a reload or a phone switching apps comes back to the same place.
   useEffect(() => {
-    if (!submitted.current) writeDraft(draftKey, { ans, marked, unsure, cur, scratch, secs: (Date.now() - startAt) / 1000 } satisfies LrDraft);
-  }, [draftKey, ans, marked, unsure, cur, scratch, startAt]);
+    if (!submitted.current) writeDraft(draftKey, { ans, marked, unsure, cur, scratch, notes, secs: (Date.now() - startAt) / 1000 } satisfies LrDraft);
+  }, [draftKey, ans, marked, unsure, cur, scratch, notes, startAt]);
   useEffect(() => {
     const keep = () => { if (!submitted.current) writeDraft(draftKey, { ...draftRef.current, secs: (Date.now() - startAt) / 1000 }); };
     window.addEventListener("pagehide", keep);
@@ -156,19 +170,18 @@ function Attempt({ set, onDone }: { set: LrSet; onDone: (id: string) => void }) 
       <PaneSwitch pane={pane} setPane={setPane} q={`Question ${cur + 1} of ${n}`} p="Set" />
 
       <Split pane={pane}>
-        <div className="flex flex-col gap-4">
-          <SetText set={set} />
-          {g && (
-            <Fold title="Scratch pad" open={padOpen} onOpenChange={setPadOpen}>
-              <div className="flex flex-col gap-3">
-                <p className="text-sm text-muted-foreground">Type a name or a note into any seat. It is only for you, and it is kept with your answers.</p>
-                <LrScratch g={g} value={scratch} onChange={setScratch} />
-                <Button variant="ghost" size="sm" className="self-start" onClick={() => setScratch(blankScratch(g))}>Clear the pad</Button>
-              </div>
-            </Fold>
-          )}
-        </div>
+        <SetText set={set} />
         <>
+          <Fold title={g ? "Scratch pad" : "Notes"} open={padOpen} onOpenChange={setPadOpen}>
+            <div className="flex flex-col gap-3">
+              <p className="text-sm text-muted-foreground">{padHint(g)} Only you see it, and it is kept with your answers.</p>
+              {g && <LrScratch g={g} value={scratch} onChange={setScratch} />}
+              <Textarea aria-label="Your notes" value={notes} onChange={(e) => setNotes(e.target.value.slice(0, 2000))} rows={g ? 2 : 4}
+                placeholder={g ? "Cases, totals, anything else" : "Your working: fields, pairings, totals"} className="bg-secondary text-base" />
+              <Button variant="ghost" size="sm" className="self-start" disabled={!notes && scratch.every((r) => r.every((x) => !x))}
+                onClick={() => { if (g) setScratch(blankScratch(g)); setNotes(""); }}>Clear the pad</Button>
+            </div>
+          </Fold>
           <div className="flex flex-wrap gap-2" role="group" aria-label="Questions">
             {set.questions.map((_, i) => {
               const s = marked[i] ? (!blank(ans[i]) ? "doneMarked" : "marked") : !blank(ans[i]) ? "done" : "unseen";
@@ -252,7 +265,7 @@ function FullReview({ set, attempt }: { set: LrSet; attempt: LrAttempt }) {
           <h2 className="text-heading font-semibold">The final table</h2>
           <DataTable t={set.solution.grid} />
           {set.solution.cases != null && set.solution.cases > 0 && (
-            <p className="text-sm text-muted-foreground">{set.solution.cases === 1 ? "Exactly one arrangement fits every clue." : `${set.solution.cases} arrangements fit every clue; the questions say which details they need.`}</p>
+            <p className="text-sm text-muted-foreground">{set.solution.cases === 1 ? "Exactly one solution fits every clue." : `${set.solution.cases} solutions fit every clue; the questions say which details they need.`}</p>
           )}
         </section>
       )}
@@ -314,7 +327,7 @@ function ReviewQuestion({ set, qi, given, att, whole }: { set: LrSet; qi: number
       <div className="flex flex-col gap-2 rounded-lg bg-card p-4">
         {q.why.map((w, i) => <p key={i} className="text-base">{w}</p>)}
       </div>
-      <p className="text-sm text-muted-foreground">{whole ? "This question needs the whole set solved." : `The highlighted clue${q.uses.length > 1 ? "s settle" : " settles"} it.`}</p>
+      <p className="text-sm text-muted-foreground">{q.uses.length === 0 ? (set.tables ? "The table alone settles it; no clue is needed." : "The rules in the story settle it; no clue is needed.") : whole ? "This question needs the whole set solved." : `The highlighted clue${q.uses.length > 1 ? "s settle" : " settles"} it.`}</p>
       {!ok && (inLog
         ? <ErrorCause src={src} />
         : <Button variant="secondary" size="sm" className="self-start" onClick={() => { update((st) => { st.errors.push(lrError(set, qi, given, todayIso(), false, att)); }); toast("Added to your Error log."); }}>Add to Error log</Button>)}

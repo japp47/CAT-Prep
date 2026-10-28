@@ -11,15 +11,17 @@ export interface Phase {
   name: string;
   start: string;
   end: string;
+  /** What the phase is for, in one line (shown on the home page timeline). */
+  focus: string;
 }
 
 /** Phases are shared by every section. Each section supplies its own goal and checkpoint text per phase. */
 export const PHASES: Phase[] = [
-  { id: 1, name: "Foundation", start: "2026-10-17", end: "2027-01-31" },
-  { id: 2, name: "Build", start: "2027-02-01", end: "2027-05-31" },
-  { id: 3, name: "Apply", start: "2027-06-01", end: "2027-08-31" },
-  { id: 4, name: "Mock phase", start: "2027-09-01", end: "2027-11-17" },
-  { id: 5, name: "Taper", start: "2027-11-18", end: "2027-11-27" },
+  { id: 1, name: "Foundation", start: "2026-10-17", end: "2027-01-31", focus: "A reading habit, every question type untimed, word roots." },
+  { id: 2, name: "Build", start: "2027-02-01", end: "2027-05-31", focus: "Daily drills by type, a timed past paper every two weeks." },
+  { id: 3, name: "Apply", start: "2027-06-01", end: "2027-08-31", focus: "Harder passages, a timed paper every week, a mock series picked." },
+  { id: 4, name: "Mock phase", start: "2027-09-01", end: "2027-11-17", focus: "Mocks every weekend with full analysis, short sets on weekdays." },
+  { id: 5, name: "Taper", start: "2027-11-18", end: "2027-11-27", focus: "Light practice and Error log revision." },
 ];
 
 export type PhaseInfo =

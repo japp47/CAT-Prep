@@ -14,7 +14,7 @@ const LEVEL = { easy: 0, medium: 1, hard: 2 } as const;
 export const LR_ORDER = [...LR_CATALOG].sort((a, b) => LR_TYPES.indexOf(a.type) - LR_TYPES.indexOf(b.type) || LEVEL[a.difficulty] - LEVEL[b.difficulty] || a.minutes - b.minutes);
 
 /** Types the owner has written and that arrive next, one category at a time (docs/implement.md 4a.3). */
-const NEXT_TYPES = "games and tournaments, reasoning-based caselets, routes and networks, set theory with maximum and minimum, and Venn diagrams with syllogisms";
+const NEXT_TYPES = "reasoning-based caselets, routes and networks, set theory with maximum and minimum, and Venn diagrams with syllogisms";
 
 const meta = (s: LrMeta) => { const t = [s.sub, s.difficulty, `${s.minutes} minutes`, `${s.questions} questions`].filter(Boolean).join(", "); return t[0].toUpperCase() + t.slice(1); };
 const score = (s: LrMeta, a: LrAttempt) => `${3 * a.c - a.w} of ${3 * s.questions}`;
@@ -34,7 +34,7 @@ export default function DilrPractice({ next }: { next: LrMeta | undefined }) {
           {next ? (
             <Row next title={<Link to={`/practice/lr/${next.id}`} className="hover:text-primary">{next.title}</Link>}
               action={<LinkButton to={`/practice/lr/${next.id}`}>Start the set</LinkButton>}>
-              <p>{LR_TYPE[next.type].label}. {meta(next)}. Read every clue, draw the {next.sub?.startsWith("circular") ? "table" : "seats"} in the scratch pad, and stop at the target time.</p>
+              <p>{LR_TYPE[next.type].label}. {meta(next)}. Read every clue, work it out in the scratch pad beside the questions, and stop at the target time.</p>
             </Row>
           ) : (
             <Row title="You have tried every set" action={<LinkButton to="/dilr" variant="secondary">Sets on other sites</LinkButton>}>
@@ -45,7 +45,7 @@ export default function DilrPractice({ next }: { next: LrMeta | undefined }) {
       </Section>
 
       <Section title="Logical reasoning sets"
-        description={`${LR_ORDER.length} original sets, every answer checked by solving the set in code. Each has a timer, a scratch pad, a step-by-step solution drawn on the seats and a two-minute post-mortem.${last.size ? ` You have tried ${last.size}.` : ""}`}>
+        description={`${LR_ORDER.length} original sets, every answer checked by solving the set in code. Each has a timer, a scratch pad, a solution drawn step by step as a picture, and a two-minute post-mortem.${last.size ? ` You have tried ${last.size}.` : ""}`}>
         <div className="flex flex-col gap-8">
           {types.map((t) => {
             const sets = LR_ORDER.filter((s) => s.type === t);

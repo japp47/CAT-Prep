@@ -174,11 +174,17 @@ export interface LrQuestion { stem: string; kind: "mcq" | "tita"; options?: stri
  * person first ("" when only an attribute is known); [] while nothing is known, null for a seat known to be empty.
  * A line ending in "?" is one possible place, not a fact. A row picture may have several rows (one per morning, say).
  * Seats run left to right, or for a circle round to the left (clockwise seen from above) from the bottom.
+ * A grid is a table: rows are its row heads, seats its column heads, and null a cell that cannot hold anything (a team
+ * against itself). mirror, for a results grid whose first columns are the row teams in the same order, fills in the
+ * other team's result on the scratch pad (W in Aces v Bulls writes L in Bulls v Aces). A bracket has one row per round
+ * and one seat per match slot, null for slots a round does not have; a match lists both players, then the winner if
+ * known, then any notes ("upset").
  */
 export interface LrDiagram {
-  layout: "row" | "circle";
+  layout: "row" | "circle" | "grid" | "bracket";
   seats: string[];
   rows?: string[];
+  mirror?: Record<string, string>;
   note?: string;
   frames: (string[] | null)[][][];
 }

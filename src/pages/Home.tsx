@@ -1,187 +1,131 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useRef, useState } from "react";
 import SyncPrompt from "../components/SyncPrompt";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { daysLeft, examLine, PhaseBar } from "../components/Countdown";
-import { Ext, LinkButton, Page, Section, TextLink } from "../components/kit";
-import { CAT_PATTERN, CHECKED_ON, EXAM_CONFIRMED, EXAM_NAME, PHASES, phaseOf } from "../data/exam";
-import { REPO_URL } from "../data/site";
+import { daysLeft } from "../components/Countdown";
+import { ArrowLink, LinkButton, Page, Section } from "../components/kit";
+import { CAT_PATTERN, CHECKED_ON, EXAM_NAME, PHASES, phaseOf } from "../data/exam";
 import { UPDATES } from "../data/updates";
-import { addDays, clamp, diffDays, longDate, mediumDate, shortDate, todayIso, weekStart } from "../lib/date";
+import { shortDate, todayIso } from "../lib/date";
+import { calm } from "../lib/motion";
 import { useStore } from "../lib/store";
-import { budgetFor, buildDay, doneMinutes } from "../planner/engine";
-import { LIVE_SECTIONS, SECTIONS } from "../sections";
-import { rcOfDay } from "../practice/daily";
-import { dueRedo } from "../practice/redo";
-import { reviewOf, reviewWeek } from "../practice/weekopen";
 import { activityDays } from "../practice/streak";
-import { GENRES } from "../practice/types";
-import { DAILY_MIX } from "../practice/va/build";
-import { StreakBadge } from "../components/StreakBadge";
+import { SECTIONS } from "../sections";
+import { curveColumns, Z99 } from "./home/curve";
+import { Head } from "./home/Head";
+
+// The 3D field brings three.js, and everything below the hero loads after it: neither is in the first download (D41, D42).
+const PercentileField = lazy(() => import("./home/PercentileField"));
+const Road = lazy(() => import("./home/Road").then((m) => ({ default: m.Road })));
+const TodayLine = lazy(() => import("./home/TodayLine").then((m) => ({ default: m.TodayLine })));
+const Showcase = lazy(() => import("./home/More").then((m) => ({ default: m.Showcase })));
+const Numbers = lazy(() => import("./home/More").then((m) => ({ default: m.Numbers })));
+const Statement = lazy(() => import("./home/More").then((m) => ({ default: m.Statement })));
+const Closing = lazy(() => import("./home/More").then((m) => ({ default: m.Closing })));
 
 const STATUS = { official: ["Official", "success"], expected: ["Expected", "warning"], tip: ["Tip", "secondary"] } as const;
-const WEEK = ["M", "T", "W", "T", "F", "S", "S"];
 
-type Leads = Record<string, [string, string]>;
-let leadsLoaded: Leads | null = null;
-
-/** The passages' opening paragraphs, loaded on demand so they stay out of the first download. */
-function useLeads() {
-  const [leads, setLeads] = useState(leadsLoaded);
-  useEffect(() => {
-    if (leads) return;
-    let live = true;
-    import("../practice/leads.gen").then((m) => { leadsLoaded = m.RC_LEADS; if (live) setLeads(m.RC_LEADS); }, () => { /* the sheet still has its title and button */ });
-    return () => { live = false; };
-  }, [leads]);
-  return leads;
+/** Data Saver, 2G or no WebGL: the flat drawing of the curve stays and three.js is never fetched. */
+function canDraw3d(): boolean {
+  const net = (navigator as { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+  if (net?.saveData || /2g/.test(net?.effectiveType ?? "")) return false;
+  try { return !!document.createElement("canvas").getContext("webgl2"); } catch { return false; }
 }
 
-/**
- * Grey bars the size of the opening paragraph, while its text loads. It is set in the same type as the real paragraph,
- * with placeholder words of the same total length, so it wraps to about as many lines and nothing below it moves.
- */
-function LeadPlaceholder({ chars }: { chars: number }) {
-  const turnChars = Math.round(chars * 0.32);
-  const body = "xxxxxxx ".repeat(Math.max(1, Math.round((chars - turnChars) / 8))).trim();
-  const turn = "xxxxxxx ".repeat(Math.max(1, Math.round(turnChars / 8))).trim();
+/** The curve as flat dots: what the hero shows before the 3D field arrives, and instead of it when that cannot load. */
+function CurveDrawing({ className }: { className?: string }) {
+  const cols = curveColumns(41, 15);
   return (
-    <p className="measure text-reading" aria-hidden>
-      <span className="block line-clamp-4 animate-pulse rounded-sm bg-muted text-transparent [box-decoration-break:clone] [-webkit-box-decoration-break:clone] motion-reduce:animate-none">{body}</span>
-      <span className="block animate-pulse rounded-sm bg-muted text-transparent [box-decoration-break:clone] [-webkit-box-decoration-break:clone] motion-reduce:animate-none">{turn}</span>
+    <svg viewBox="0 0 410 170" preserveAspectRatio="xMidYMax meet" className={className} aria-hidden>
+      {cols.flatMap(({ z, n }, c) => Array.from({ length: n }, (_, r) => (
+        <circle key={`${c}-${r}`} cx={c * 10 + 5} cy={165 - r * 10} r={3.4} fill={z >= Z99 ? "var(--highlight)" : "var(--primary)"} fillOpacity={z >= Z99 ? 1 : 0.42} />
+      )))}
+    </svg>
+  );
+}
+
+/** Days left and the phase, in one line under the hero's button. The full road is its own section below. */
+function StatusLine() {
+  const left = Math.max(daysLeft(), 0);
+  const ph = phaseOf(todayIso());
+  return (
+    <p className="flex items-center gap-2.5 text-base text-muted-foreground">
+      <span className="size-2 shrink-0 rounded-full bg-success" aria-hidden />
+      <span><b className="font-semibold text-foreground tabular-nums">{left} days</b> to {EXAM_NAME}{ph.kind === "phase" ? <>. Phase {ph.phase.id} of {PHASES.length}, {ph.phase.name}.</> : "."}</span>
     </p>
   );
 }
 
-/**
- * Today's passage, opened on a sheet: reading a dense passage is what CAT prep looks like every day.
- * The opening paragraph's last sentence, where the passage turns, carries the highlighter. It changes daily.
- */
-function TodaysPassage() {
-  const { state } = useStore();
-  const t = todayIso();
-  const rc = rcOfDay(t);
-  const leads = useLeads();
-  const [body, turn] = leads?.[rc.id] ?? ["", ""];
-  const tried = state.rcAttempts.filter((a) => a.set === rc.id && a.d === t).pop();
-  const to = tried ? `/practice/rc/${rc.id}?review=${tried.id}` : `/practice/rc/${rc.id}`;
-  return (
-    <article aria-labelledby="todays-passage" className="flex min-w-0 flex-col gap-5 rounded-xl bg-card px-6 py-7 sm:px-9 sm:py-9 xl:translate-y-4">
-      <h2 id="todays-passage" className="font-serif text-[clamp(1.5rem,1.25rem+0.9vw,2rem)] leading-tight font-semibold tracking-[-0.01em]">
-        <Link to={to} className="hover:text-primary">{rc.title}</Link>
-      </h2>
-      {leads
-        ? body && <p className="measure text-reading"><span className="block line-clamp-4">{body}</span>{turn && <span className="block"><mark className="hl text-inherit">{turn}</mark></span>}</p>
-        : <LeadPlaceholder chars={rc.lead} />}
-      <p className="text-base text-muted-foreground">
-        Today's RC: {GENRES[rc.genre].toLowerCase()}, {rc.difficulty}, {rc.words} words and {rc.questions} questions, about 7 minutes. The same passage for everyone today, and a new one tomorrow.
-      </p>
-      {tried && <p className="text-base text-success">Done today: {tried.c} of {rc.questions} correct.</p>}
-      <div><LinkButton to={to} size="lg" variant="secondary">{tried ? "Review your answers" : "Start the passage"}</LinkButton></div>
-    </article>
-  );
-}
-
 function Hero({ isNew }: { isNew: boolean }) {
+  const box = useRef<HTMLElement>(null);
+  const [want3d] = useState(canDraw3d);
+  const [live, setLive] = useState(false);
+  const [still] = useState(calm);
+  const [fine] = useState(() => matchMedia("(pointer: fine)").matches);
   return (
-    <header className="grid items-start gap-x-10 gap-y-8 xl:min-h-[calc(100svh-10.5rem)] xl:items-center xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] 2xl:gap-x-14">
-      <div className="flex min-w-0 flex-col gap-5 xl:pt-3">
+    <header ref={box} className="grid items-center gap-x-6 gap-y-6 lg:min-h-[calc(100svh-8rem)] lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)]">
+      <div className="relative z-10 flex min-w-0 flex-col gap-7">
         {/* Keep the exam name together; let the rest of the headline wrap naturally. */}
-        <h1 className="max-w-[18ch] text-[clamp(2.25rem,1rem+2.5vw,3.5rem)] leading-[1.02] font-bold tracking-[-0.04em] xl:-translate-y-14">Prepare for {EXAM_NAME.replace(/ /g, "\u00a0")}, one day at a time.</h1>
-        <p className="max-w-[52ch] text-lg leading-relaxed text-foreground/80">A free CAT coach with a plan that fits your day, original practice, and clear explanations. No sign-up; your progress stays on this device.</p>
-        <div className="flex flex-wrap gap-4">
-          {isNew ? <>
-            <LinkButton to="/guides/start-here" size="lg" className="min-w-40">Start here</LinkButton>
-            <LinkButton to="/today" size="lg" variant="outline" className="min-w-48">Open today's plan</LinkButton>
-          </> : <>
-            <LinkButton to="/today" size="lg" className="min-w-48">Open today's plan</LinkButton>
-            <LinkButton to="/guides/start-here" size="lg" variant="outline" className="min-w-40">Start here</LinkButton>
-          </>}
+        <h1 className="max-w-[11ch] text-[clamp(3rem,1rem+5.6vw,7.25rem)] leading-[0.92] font-extrabold tracking-[-0.055em]">Prepare for {EXAM_NAME.replace(/ /g, "\u00a0")}, one day at a time.</h1>
+        <p className="max-w-[42ch] text-lg leading-relaxed text-foreground/80">A free CAT coach: a plan that fits your day, original practice, and a reason for every option. No sign-up; your progress stays on this device.</p>
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+          {isNew
+            ? <><LinkButton to="/guides/start-here" size="lg" className="min-w-44">Start here</LinkButton><ArrowLink to="/today">Open today's plan</ArrowLink></>
+            : <><LinkButton to="/today" size="lg" className="min-w-48">Open today's plan</LinkButton><ArrowLink to="/guides/start-here">Start here</ArrowLink></>}
         </div>
-        <div className="mt-2 translate-y-0 border-t border-border/70 pt-6 xl:translate-y-10"><Countdown /></div>
+        <StatusLine />
       </div>
-      <TodaysPassage />
+      {/* The field runs to the screen's edge on a wide screen, with its caption laid over its foot. */}
+      <figure className="relative flex min-w-0 flex-col gap-3 lg:-mr-[var(--gutter)] lg:-ml-[10%]">
+        <div className="relative aspect-[5/4] w-full lg:aspect-auto lg:h-[min(88vh,58rem)]">
+          <CurveDrawing className={cn("absolute inset-x-0 bottom-[16%] h-[58%] w-full transition-opacity duration-700 motion-reduce:transition-none", live && "opacity-0")} />
+          {want3d && <Suspense fallback={null}><PercentileField track={box} onReady={() => setLive(true)} onFail={() => setLive(false)} /></Suspense>}
+        </div>
+        {/* A legend in the picture's own colours, left-aligned where the dots begin, then what the student can do with it. */}
+        <figcaption className="flex max-w-[80ch] flex-col gap-1.5 text-sm text-muted-foreground lg:absolute lg:bottom-5 lg:left-0">
+          <span className="flex flex-wrap gap-x-5 gap-y-1">
+            <span className="inline-flex items-center gap-2"><i className="size-2.5 rounded-full bg-primary/45" aria-hidden />Each dot, a group of CAT takers</span>
+            <span className="inline-flex items-center gap-2"><i className="size-2.5 rounded-full bg-highlight" aria-hidden />The 99th percentile, one in a hundred</span>
+            {live && <span className="inline-flex items-center gap-2"><i className="size-2.5 rounded-full bg-primary" aria-hidden />You</span>}
+          </span>
+          {live && !still && <span>Scroll, and you climb.{fine && " Drag to turn the hill; click to send a ripple."}</span>}
+        </figcaption>
+      </figure>
     </header>
   );
 }
 
-/** Capabilities students can use across the study cycle, rather than a count of the content library. */
-function StudyTools() {
-  const items = [
-    { title: "A plan that fits today", text: "Set the time you have. Your timetable puts core work first and carries unfinished work forward.", to: "/plan", link: "Shape your plan" },
-    { title: "Learn from every option", text: "See why an answer is right, why the others miss, and what trap made them tempting.", to: "/practice", link: "Explore practice" },
-    { title: "Bring mistakes back", text: "Missed questions return on a spaced schedule so you can practise them again while they still matter.", to: "/practice/redo", link: "See your redo queue" },
-  ];
-  return (
-    <Section title="A better way to build consistency" description="The tools connect your daily practice, review, and next step.">
-      <div className="grid gap-3 md:grid-cols-3">
-        {items.map((item) => (
-          <article key={item.title} className="flex min-h-48 flex-col gap-3 rounded-xl bg-card p-5 sm:p-6">
-            <h3 className="text-heading font-semibold">{item.title}</h3>
-            <p className="text-base leading-relaxed text-muted-foreground">{item.text}</p>
-            <TextLink to={item.to} className="mt-auto pt-1">{item.link}</TextLink>
-          </article>
-        ))}
-      </div>
-    </Section>
-  );
-}
+const STATUS_LABEL = { live: ["Ready", "highlight"], open: ["Open", "success"], soon: ["Coming soon", "secondary"] } as const;
 
-/** Every CAT section has a place on the home page; cards update as section status and practice types change. */
+/** The three sections as wide rows: the name large, what it covers, and where it stands. */
 function SectionOverview() {
   return (
-    <Section title="Prepare across all three sections" description="Start with VARC today. DILR and Quant are part of the same roadmap and will open here as they launch.">
-      <div className="grid gap-3 lg:grid-cols-3">
+    <section aria-labelledby="secs-h" className="flex flex-col gap-10">
+      <Head id="secs-h" lead="Three sections, one plan." rest="VARC is ready with its timetable. DILR has its guides and logic sets. Quant opens in January." />
+      <ul className="flex flex-col gap-px overflow-hidden rounded-xl bg-background">
         {SECTIONS.map((sec) => {
-          const live = sec.status === "live";
+          const [label, variant] = STATUS_LABEL[sec.status];
           return (
-            <article key={sec.id} className={cn("flex min-h-52 flex-col gap-4 rounded-xl p-5 sm:p-6", live ? "bg-card" : "border border-border bg-background")}>
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex flex-col gap-1">
-                  <h3 className="text-heading font-semibold">{sec.short}</h3>
-                  <p className="text-sm text-muted-foreground">{sec.name}</p>
-                </div>
-                <Badge variant={live ? "highlight" : "secondary"}>{live ? "Ready" : "Coming soon"}</Badge>
+            <li key={sec.id} className="grid gap-x-10 gap-y-4 bg-card px-6 py-6 sm:px-8 lg:grid-cols-[13rem_minmax(0,1fr)_auto] lg:items-center">
+              <div className="flex flex-col gap-1">
+                <h3 className="text-[clamp(2rem,1.6rem+1.2vw,2.75rem)] leading-none font-bold tracking-[-0.03em]">{sec.short}</h3>
+                <p className="text-sm text-muted-foreground">{sec.name}</p>
               </div>
-              <p className="text-base text-foreground/80">{sec.tagline}</p>
-              <ul className="flex flex-wrap gap-2" aria-label={`${sec.short} practice types`}>
-                {sec.practiceTypes.slice(0, 4).map((type) => <li key={type} className="rounded-full bg-background px-2.5 py-1 text-sm text-muted-foreground">{type}</li>)}
-              </ul>
-              <Link to={`/${sec.id}`} className="mt-auto w-fit text-base font-semibold text-primary underline decoration-primary/40 underline-offset-4 hover:decoration-primary">
-                {live ? `Explore ${sec.short}` : `See ${sec.short} roadmap`}
-              </Link>
-            </article>
+              <div className="flex flex-col gap-3">
+                <p className="measure text-base text-foreground/80">{sec.tagline}</p>
+                <ul className="flex flex-wrap gap-2" aria-label={`${sec.short} practice types`}>
+                  {sec.practiceTypes.slice(0, 4).map((type) => <li key={type} className="rounded-full bg-background px-2.5 py-1 text-sm text-muted-foreground">{type}</li>)}
+                </ul>
+              </div>
+              <div className="flex items-center gap-4 lg:flex-col lg:items-end">
+                <Badge variant={variant}>{label}</Badge>
+                <ArrowLink to={`/${sec.id}`}>{sec.status === "soon" ? `See the ${sec.short} roadmap` : `Open ${sec.short}`}</ArrowLink>
+              </div>
+            </li>
           );
         })}
-      </div>
-    </Section>
-  );
-}
-
-function About() {
-  const points: [string, string][] = [
-    ["A plan that fits your day", "Tell it you have 30 minutes or 3 hours. The timetable reshapes itself, and a missed core task comes back as a catch-up."],
-    ["A reason for every wrong option", "Each wrong option names its trap, so you learn why it looked right, not only which answer was."],
-    ["Mistakes come back", "Every missed question returns after 1, 3 and 7 days, until you get it right three times in a row."],
-    ["Private and free", "No sign-up and no ads. Your progress stays in your browser, works offline, and you can back it up in Settings."],
-  ];
-  return (
-    <section id="about" aria-labelledby="about-h" className="grid scroll-mt-24 gap-x-14 gap-y-8 rounded-xl bg-card px-6 py-8 sm:px-9 sm:py-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
-      <div className="flex flex-col gap-4">
-        <h2 id="about-h" className="text-title font-bold">About 99ile</h2>
-        <p className="measure text-lg leading-relaxed text-foreground/85">A free CAT coach built on one idea: a little every day, done well, beats a lot done once in a while. The name is the goal, the 99th percentile.</p>
-        <p className="measure text-base text-muted-foreground">Every passage and question is written for this site and checked by tests before it ships. The code is open on <Ext href={REPO_URL} className="font-medium text-primary underline decoration-primary/40 underline-offset-4 hover:decoration-primary">GitHub</Ext>.</p>
-      </div>
-      <dl className="flex flex-col gap-6">
-        {points.map(([title, detail]) => (
-          <div key={title} className="flex flex-col gap-1">
-            <dt className="text-heading font-semibold">{title}</dt>
-            <dd className="measure text-base text-foreground/80">{detail}</dd>
-          </div>
-        ))}
-      </dl>
+      </ul>
     </section>
   );
 }
@@ -192,7 +136,7 @@ function LatestUpdates() {
   if (!featured) return null;
   const [featuredLabel, featuredVariant] = STATUS[featured.status];
   return (
-    <Section title="Latest updates" action={<TextLink to="/updates">All updates</TextLink>}>
+    <Section title="Latest updates" action={<ArrowLink to="/updates">All updates</ArrowLink>}>
       <div className="flex flex-col gap-2">
         <article className="flex flex-col gap-3 rounded-xl bg-card p-5 sm:p-6">
           <div className="flex flex-wrap items-center gap-2">
@@ -202,7 +146,7 @@ function LatestUpdates() {
           </div>
           <h3 className="text-heading font-semibold leading-snug">{featured.title}</h3>
           <p className="line-clamp-2 text-base leading-relaxed text-muted-foreground">{featured.body}</p>
-          <TextLink to="/updates" className="w-fit pt-1">Read the update</TextLink>
+          <ArrowLink to="/updates" className="pt-1">Read the update</ArrowLink>
         </article>
         {rest.length > 0 && <ul className="flex flex-col gap-1" aria-label="More recent updates">
           {rest.map((u) => {
@@ -220,93 +164,26 @@ function LatestUpdates() {
   );
 }
 
-/** Days to the exam and the phase you are in, as one line over the year's phases. */
-function Countdown() {
-  const left = Math.max(daysLeft(), 0);
-  const t = todayIso();
-  const ph = phaseOf(t);
-  const phase = ph.kind === "phase"
-    ? <>Phase {ph.phase.id} of {PHASES.length}, <b className="font-semibold text-foreground">{ph.phase.name}</b>, with {diffDays(t, ph.phase.end) + 1} days left in it, to {mediumDate(ph.phase.end)}.</>
-    : ph.kind === "pre" ? <>The plan starts on {mediumDate(PHASES[0].start)}.</>
-    : ph.kind === "exam" ? <>Exam day. All the best.</> : <>{EXAM_NAME} is over. Check results on iimcat.ac.in.</>;
-  return (
-    <section aria-label="Countdown" className="flex flex-col gap-3">
-      <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <span className="text-heading font-semibold"><span className="tabular-nums">{left}</span> {left === 1 ? "day" : "days"} to {EXAM_NAME}</span>
-        <span className="text-base text-muted-foreground">{examLine(EXAM_CONFIRMED)}.</span>
-      </p>
-      <PhaseBar />
-      <p className="text-base text-muted-foreground">{phase}</p>
-    </section>
-  );
-}
-
-function TodayPanel() {
-  const { state } = useStore();
-  const t = todayIso();
-  const planned = LIVE_SECTIONS.reduce((s, sec) => s + budgetFor(sec, state, t), 0);
-  const done = doneMinutes(state, t);
-  const core = LIVE_SECTIONS.map((sec) => buildDay(sec, state, t, budgetFor(sec, state, t), { today: t }).find((b) => b.pri === 1)).filter((b) => !!b);
-  const doneMap = state.days[t]?.done ?? {};
-  const active = activityDays(state);
-  const mon = weekStart(t);
-  const vaTry = state.vaAttempts.filter((a) => a.mode === "daily" && a.d === t).pop();
-  const redo = dueRedo(state.redo, t).length;
-  const reviewFor = reviewWeek(t, new Date().getHours());
-  const reviewReady = !!reviewFor && !reviewOf(state, reviewFor);
-
-  return (
-    <Section title={<>Today<span className="font-normal text-muted-foreground">, {longDate(t)}</span></>} action={<StreakBadge />}>
-      <div className="grid gap-px overflow-hidden rounded-lg lg:grid-cols-2">
-        <div className="flex flex-col gap-3 bg-card p-5 sm:p-6">
-          <p className="flex items-baseline gap-1.5"><span className="text-title font-bold tabular-nums">{done}</span><span className="text-base text-muted-foreground">of {planned} min done today</span></p>
-          <Progress value={planned ? clamp(done / planned, 0, 1) * 100 : 0} aria-label="Minutes done today" className="h-2" />
-          {core.length
-            ? core.map((b) => <p key={b.key} className="text-base"><Badge variant="highlight" className="mr-1.5">Core</Badge>{b.name}, {b.mins} min{doneMap[b.key] && <span className="text-success">, done</span>}</p>)
-            : <p className="text-base text-muted-foreground">Rest day. Nothing planned.</p>}
-          <ol className="mt-1 grid grid-cols-7 gap-1 text-sm text-muted-foreground" aria-label="Days studied this week">
-            {WEEK.map((w, i) => {
-              const d = addDays(mon, i), on = active.has(d);
-              return (
-                <li key={d} className={cn("flex flex-col items-center gap-1.5", d === t && "font-semibold text-foreground")}>
-                  <i className={cn("h-1.5 w-full max-w-7 rounded-full", on ? "bg-success" : "bg-secondary", d === t && "ring-2 ring-foreground/30 ring-offset-2 ring-offset-card")} aria-hidden />
-                  <span aria-hidden>{w}</span>
-                  <span className="sr-only">{longDate(d)}, {on ? "studied" : "not studied"}</span>
-                </li>
-              );
-            })}
-          </ol>
-          {reviewReady && <Link to="/review" className="rounded-md bg-secondary px-3 py-2 text-base hover:bg-secondary/70">Your week in review is ready: two minutes, one focus for next week</Link>}
-          <TextLink to="/today" className="mt-auto pt-2">Open the timetable</TextLink>
-        </div>
-        <div className="flex flex-col gap-3 bg-card p-5 sm:p-6">
-          <h3 className="text-heading font-semibold"><Link to="/practice/va" className="hover:text-primary">Daily VA drill</Link></h3>
-          <p className="text-base text-muted-foreground">{DAILY_MIX.length} questions, 2 each of para summary, sentence insertion, odd sentence out and para jumbles.</p>
-          {vaTry && <p className="text-base text-success">Done today: {vaTry.items.filter((i) => i.ok).length} of {vaTry.items.length} correct.</p>}
-          {redo > 0 && <Link to="/practice/redo" className="rounded-md bg-highlight-soft px-3 py-2 text-base hover:bg-highlight-soft/70"><b>{redo}</b> missed question{redo > 1 ? "s" : ""} due in your redo queue</Link>}
-          <TextLink to="/practice/va" className="mt-auto pt-2">{vaTry ? "Review your answers" : "Start the drill"}</TextLink>
-        </div>
-      </div>
-    </Section>
-  );
-}
-
 export default function Home() {
   const { state } = useStore();
   const isNew = activityDays(state).size === 0;
   const total = CAT_PATTERN.reduce((a, s) => ({ q: a.q + s.questions, m: a.m + s.minutes }), { q: 0, m: 0 });
+  const today = <Suspense fallback={<div className="min-h-[32rem]" />}><TodayLine /></Suspense>;
 
   return (
-    <Page className="max-w-[1440px] gap-14 lg:gap-16">
+    <Page className="max-w-[1440px] gap-24 lg:gap-36">
       <Hero isNew={isNew} />
       <SyncPrompt />
+      {!isNew && today}
+      <Suspense fallback={<div className="min-h-[28rem]" />}><Road /></Suspense>
+      <Suspense fallback={<div className="min-h-[48rem]" />}><Showcase /></Suspense>
+      <Suspense fallback={<div className="min-h-[20rem]" />}><Numbers /></Suspense>
       <SectionOverview />
-      <StudyTools />
-      <TodayPanel />
+      {isNew && today}
 
       <div className="grid gap-14 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:gap-16">
         <LatestUpdates />
-        <Section title="The exam" action={<TextLink to="/exams">Pattern and marking</TextLink>}>
+        <Section title="The exam" action={<ArrowLink to="/exams">Pattern and marking</ArrowLink>}>
           <div className="flex flex-col gap-1 rounded-lg bg-card p-2">
             {CAT_PATTERN.map((s) => (
               <div key={s.id} className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3 rounded-md px-3 py-2.5 sm:grid-cols-[4.5rem_minmax(0,1fr)_auto]">
@@ -325,9 +202,11 @@ export default function Home() {
         </Section>
       </div>
 
-      <About />
-
-      <p className="w-full max-w-none text-base leading-relaxed text-muted-foreground">Resources checked on {CHECKED_ON}. The {EXAM_NAME} date is an estimate until the conducting IIM announces it. Score benchmarks come from coaching institutes. Not affiliated with the IIMs or any coaching institute. Avoid pirated book PDFs; the papers and free mocks listed here are legitimately free.</p>
+      <Suspense fallback={<div className="min-h-[30rem]" />}><Statement /></Suspense>
+      <p className="-mt-12 w-full max-w-none text-sm leading-relaxed text-muted-foreground lg:-mt-24">Resources checked on {CHECKED_ON}. The {EXAM_NAME} date is an estimate until the conducting IIM announces it. Score benchmarks come from coaching institutes. Not affiliated with the IIMs or any coaching institute. Avoid pirated book PDFs; the papers and free mocks listed here are legitimately free.</p>
+      <Suspense fallback={<div className="min-h-[40rem]" />}>
+        <Closing to={isNew ? "/guides/start-here" : "/today"} label={isNew ? "Start here" : "Open today's plan"} />
+      </Suspense>
     </Page>
   );
 }
