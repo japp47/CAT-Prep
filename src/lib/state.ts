@@ -150,6 +150,8 @@ export interface AppState {
   weekReviews: WeekReview[];
   /** False for saves from before the redo queue; RedoSeeder then builds the queue from past attempts. */
   redoSeeded: boolean;
+  /** False for saves with LR sets taken before LR joined the redo queue; RedoSeeder adds their misses once. */
+  lrRedoSeeded: boolean;
   /** The percentile the student is aiming for in each section. Only VARC has percentile tables so far. */
   targets: { varc: number };
   /** About the student, from the You page (F81): unset until they answer. */
@@ -166,7 +168,7 @@ const emptyDow = () => [null, null, null, null, null, null, null] as (number | n
 export function blankState(): AppState {
   const settings = {} as Record<SectionId, TimeSettings>;
   SECTION_IDS.forEach((id) => (settings[id] = { ...DEFAULT_TIME[id], dow: emptyDow() }));
-  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], crAttempts: [], lrAttempts: [], speedRuns: [], redo: [], sectionals: [], summaries: [], mockReviews: [], recs: [], weekReviews: [], redoSeeded: true, targets: { varc: DEFAULT_TARGET }, about: {} };
+  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], crAttempts: [], lrAttempts: [], speedRuns: [], redo: [], sectionals: [], summaries: [], mockReviews: [], recs: [], weekReviews: [], redoSeeded: true, lrRedoSeeded: true, targets: { varc: DEFAULT_TARGET }, about: {} };
 }
 
 type Obj = Record<string, unknown>;
@@ -344,6 +346,7 @@ export function normalize(raw: unknown): AppState {
   }
   // Saves from before the redo queue have none; it is built from their attempts once the content loads.
   b.redoSeeded = Array.isArray(raw.redo) && raw.redoSeeded !== false;
+  b.lrRedoSeeded = raw.lrRedoSeeded === true || b.lrAttempts.length === 0;
   return b;
 }
 

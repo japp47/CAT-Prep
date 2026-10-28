@@ -4,13 +4,14 @@ import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { PAPERS_PAGE } from "../../data/papers";
-import { uid } from "../../lib/date";
+import { shortDate, todayIso, uid } from "../../lib/date";
 import { calm, loadGsap, type Gsap } from "../../lib/motion";
 import { usePref } from "../../lib/prefs";
 import type { LrAttempt } from "../../lib/state";
 import { useStore } from "../../lib/store";
 import { LinkButton, Section, TextLink } from "../../components/kit";
 import { LR_CATALOG } from "../../practice/catalog.gen";
+import { dueRedo, upcomingRedo } from "../../practice/redo";
 import { LR_TYPE, LR_TYPES, type LrMeta, type LrType } from "../../practice/types";
 import { PaperRow, Row, Rows } from "./rows";
 
@@ -97,6 +98,9 @@ export default function DilrPractice({ next }: { next: LrMeta | undefined }) {
   const last = new Map<string, LrAttempt>();
   state.lrAttempts.forEach((a) => last.set(a.set, a));
   const types = LR_TYPES.filter((t) => LR_ORDER.some((s) => s.type === t));
+  // The LR part of the redo queue.
+  const lrRedo = state.redo.filter((r) => r.k.startsWith("lr:"));
+  const lrOpen = lrRedo.filter((r) => !r.cleared), lrDue = dueRedo(lrRedo, todayIso()), lrNext = upcomingRedo(lrRedo, todayIso())[0]?.[0];
   // Which groups are open is remembered; at first only the group holding the next set is.
   const [saved, setSaved] = usePref<LrType[] | null>("lrOpen", null);
   const openTypes = saved ?? [next?.type ?? types[0]];
@@ -114,6 +118,12 @@ export default function DilrPractice({ next }: { next: LrMeta | undefined }) {
           ) : (
             <Row title="You have tried every set" action={<LinkButton to="/dilr" variant="secondary">Sets on other sites</LinkButton>}>
               <p>Retake the ones you got wrong without looking at the walkthrough, or practise past CAT sets from the DILR page while new types arrive.</p>
+            </Row>
+          )}
+          {lrOpen.length > 0 && (
+            <Row title={lrDue.length ? `Redo queue, ${lrDue.length} LR ${lrDue.length === 1 ? "question" : "questions"} due` : "Redo queue"}
+              action={lrDue.length ? <LinkButton to={`/practice/redo?k=${lrDue.slice(0, 20).map((r) => r.k).join(",")}`} variant="secondary">Redo them</LinkButton> : <span className="text-base text-muted-foreground">Nothing due today</span>}>
+              <p>LR questions you missed come back after 1, 3 and 7 days, each with its whole set, until you get them right three times in a row.{!lrDue.length && lrNext ? ` Next on ${shortDate(lrNext)}.` : ""}</p>
             </Row>
           )}
         </Rows>

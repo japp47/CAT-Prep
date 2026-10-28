@@ -29,7 +29,7 @@ function varcToday(st: { rcAttempts: RcAttempt[]; vaAttempts: VaAttempt[]; redo:
   const daily = rcOfDay(today);
   const dailyTry = st.rcAttempts.filter((a) => a.set === daily.id && a.d === today).pop();
   const vaToday = st.vaAttempts.filter((a) => a.mode === "daily" && a.d === today).pop();
-  const redoDue = dueRedo(st.redo, today).length;
+  const redoDue = dueRedo(st.redo.filter((r) => !r.k.startsWith("lr:")), today).length;
   // The first daily task not yet done gets the highlighter and the one filled button.
   const next = !dailyTry ? "rc" : !vaToday ? "va" : redoDue ? "redo" : null;
   return { today, daily, dailyTry, vaToday, redoDue, next };
@@ -54,10 +54,11 @@ function Hub({ sec }: { sec: SectionDef }) {
   const varc = varcToday(state);
   const lrNext = nextLr(state.lrAttempts);
   const tried = new Set(state.lrAttempts.map((a) => a.set)).size;
+  const lrRedoDue = dueRedo(state.redo.filter((r) => r.k.startsWith("lr:")), varc.today).length;
   const left = [!varc.dailyTry, !varc.vaToday, varc.redoDue > 0].filter(Boolean).length;
   const status: Record<SectionId, { text: string; due: boolean }> = {
     varc: { text: left ? `${left} left today` : "Done for today", due: left > 0 },
-    dilr: { text: `${LR_ORDER.length} sets${tried ? `, ${tried} tried` : ""}`, due: !!lrNext },
+    dilr: lrRedoDue ? { text: `${lrRedoDue} to redo`, due: true } : { text: `${LR_ORDER.length} sets${tried ? `, ${tried} tried` : ""}`, due: !!lrNext },
     quant: { text: "From January", due: false },
   };
 

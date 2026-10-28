@@ -1,7 +1,7 @@
 import { addDays } from "../lib/date";
 import type { AppState, ErrorEntry, RedoItem } from "../lib/state";
 import { RECENT_DAYS, type Status } from "./errorfilter";
-import { CR_CATALOG, RC_CATALOG, VA_CATALOG } from "./catalog.gen";
+import { CR_CATALOG, LR_CATALOG, RC_CATALOG, VA_CATALOG } from "./catalog.gen";
 import { redoKeyExists } from "./redo";
 import { VA_KIND, VA_KINDS } from "./va/build";
 
@@ -22,6 +22,11 @@ export function errorKey(e: ErrorEntry): string | null {
   if (rc) {
     const set = RC_CATALOG.find((s) => s.title === rc[1]);
     if (set) return `rc:${set.id}:${Number(rc[2]) - 1}`;
+  }
+  const lr = /^LR: (.*), Q(\d+)$/.exec(e.src);
+  if (lr) {
+    const set = LR_CATALOG.find((s) => s.title === lr[1]);
+    if (set) return `lr:${set.id}:${Number(lr[2]) - 1}`;
   }
   const cr = /^Critical reasoning ([A-Za-z0-9-]+):/.exec(e.src);
   if (cr && CR_CATALOG.some((c) => c.id === cr[1])) return `cr:${cr[1]}`;
@@ -49,6 +54,11 @@ export function errorLink(e: ErrorEntry, st: AppState): ErrorLink | null {
     const [, set, n] = key.split(":");
     const att = pick(st.rcAttempts.filter((a) => a.set === set), e);
     return { key, retry, review: att ? `/practice/rc/${set}?review=${att.id}&q=${Number(n) + 1}` : undefined };
+  }
+  if (key.startsWith("lr:")) {
+    const [, set, n] = key.split(":");
+    const att = pick(st.lrAttempts.filter((a) => a.set === set), e);
+    return { key, retry, review: att ? `/practice/lr/${set}?review=${att.id}&q=${Number(n) + 1}` : undefined };
   }
   const list = key.startsWith("cr:") ? st.crAttempts : st.vaAttempts;
   const att = pick((list as { id: string; d: string; items: { k: string }[] }[]).filter((a) => a.items.some((i) => i.k === key)), e);

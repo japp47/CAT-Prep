@@ -2,6 +2,7 @@ import { uid } from "../lib/date";
 import type { AppState, ErrorEntry, LrAttempt, LrPostMortem, LrSlip, LrTimeSink } from "../lib/state";
 import { lrRight } from "./lrcheck";
 import { LETTERS } from "./record";
+import { lrRedoKey, queueMiss } from "./redo";
 import { LR_TYPE, lrVersion, type LrSet } from "./types";
 
 /** Labels for the post-mortem (F86), worded as the student would say them. */
@@ -33,13 +34,17 @@ export function scoreLr(set: LrSet, ans: (number | string | null)[]) {
   return { c, w, tw, skipped, marks: 3 * c - w };
 }
 
-/** Saves an LR attempt and logs it as one DILR practice set, so Progress and History count it. */
+/**
+ * Saves an LR attempt and logs it as one DILR practice set, so Progress and History count it. Wrong, blank and
+ * unsure questions go into the redo queue, as in every other section.
+ */
 export function recordLr(st: AppState, id: string, set: LrSet, ans: (number | string | null)[], secs: number, d: string, unsure: number[], now: number): void {
   const { c, w, tw } = scoreLr(set, ans);
   const a: LrAttempt = { id, d, set: set.id, ans, c, w, secs: Math.round(secs), updatedAt: now, v: lrVersion(set) };
   if (unsure.length) a.unsure = [...unsure].sort((x, y) => x - y);
   st.lrAttempts.push(a);
   if (c + w + tw > 0) st.practice.push({ id: id + "p", d, sec: "DILR", t: "LR", a: c + w + tw, c, src: "Practice: " + set.title });
+  set.questions.forEach((q, qi) => { if (!lrRight(q, ans[qi] ?? null) || unsure.includes(qi)) queueMiss(st, lrRedoKey(set.id, qi), d); });
 }
 
 /** Saves the post-mortem onto its attempt. The newer copy wins in sync, so the change reaches other devices. */
@@ -59,11 +64,11 @@ export function lrAnswerText(set: LrSet, qi: number, a: number | string | null):
 
 export const lrErrorSrc = (set: LrSet, qi: number) => `LR: ${set.title}, Q${qi + 1}`;
 
-/** An Error log row for a missed LR question. It carries no redo key: LR questions are not in the redo queue yet. */
+/** An Error log row for a missed LR question, carrying its redo key so "Try it again" brings it back with its set. */
 export function lrError(set: LrSet, qi: number, given: number | string | null, d: string, unsure: boolean, att: string): ErrorEntry {
   const q = set.questions[qi];
   return {
-    id: uid(), d, sec: "DILR", t: LR_TYPE[set.type].label, trap: "", ...(unsure ? { cause: "guess" as const } : {}), att,
+    id: uid(), d, sec: "DILR", t: LR_TYPE[set.type].label, trap: "", ...(unsure ? { cause: "guess" as const } : {}), att, q: lrRedoKey(set.id, qi),
     src: lrErrorSrc(set, qi),
     why: given === null || given === "" ? "Skipped this question." : `Answered ${lrAnswerText(set, qi, given)}. ${q.stem}`,
     fix: `Answer ${lrAnswerText(set, qi, q.answer)}. ${q.why.join(" ")}`,

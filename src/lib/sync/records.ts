@@ -101,7 +101,7 @@ const order = (row: Record<string, unknown>) => String(row.d ?? row.added ?? "")
 
 /** Builds a state from live records. Lists come out in a fixed order; everything goes through normalize(). */
 export function fromRecords(recs: Rec[]): AppState {
-  const raw: Record<string, unknown> = { ticks: {}, days: {}, settings: {}, redo: [], redoSeeded: true };
+  const raw: Record<string, unknown> = { ticks: {}, days: {}, settings: {}, redo: [], redoSeeded: true, lrRedoSeeded: true };
   (Object.keys(LISTS) as ListField[]).forEach((f) => (raw[f] = []));
   recs.forEach((r) => {
     if (r.kind in FIELD) (raw[FIELD[r.kind]] as unknown[]).push(r.data);
@@ -131,6 +131,7 @@ export function applyRecords(st: AppState, incoming: SyncRecord[], timeOf: (key:
   });
   const out = fromRecords([...live.values()].filter((r) => !r.deleted));
   out.redoSeeded = st.redoSeeded;
+  out.lrRedoSeeded = st.lrRedoSeeded;
   return out;
 }
 
