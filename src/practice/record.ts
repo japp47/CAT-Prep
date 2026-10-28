@@ -54,11 +54,11 @@ export function recordCr(st: AppState, id: string, items: CrItem[], answers: (nu
   if (done.length) st.practice.push({ id: id + "cr", d, sec: "VARC", t: "Critical reasoning", a: done.length, c: done.filter((r) => r.ok).length, src: "Critical reasoning drill" });
 }
 
-/** Logs one redo-queue answer, adding it to that day's redo row for the question type. */
-export function recordRedoAnswer(st: AppState, t: string, ok: boolean, d: string): void {
-  const row = st.practice.find((p) => p.d === d && p.t === t && p.src === REDO_SRC);
+/** Logs one redo-queue answer, adding it to that day's redo row for the question type, in its section. */
+export function recordRedoAnswer(st: AppState, t: string, ok: boolean, d: string, sec = "VARC"): void {
+  const row = st.practice.find((p) => p.d === d && p.t === t && p.sec === sec && p.src === REDO_SRC);
   if (row) { row.a++; if (ok) row.c++; return; }
-  st.practice.push({ id: uid(), d, sec: "VARC", t, a: 1, c: ok ? 1 : 0, src: REDO_SRC });
+  st.practice.push({ id: uid(), d, sec, t, a: 1, c: ok ? 1 : 0, src: REDO_SRC });
 }
 export const REDO_SRC = "Redo queue";
 

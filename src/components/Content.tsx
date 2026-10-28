@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useStore } from "../lib/store";
 import { loadContent, useContent, type Content, type Need } from "../practice/content";
-import { seedRedo } from "../practice/redo";
+import { seedLrRedo, seedRedo } from "../practice/redo";
 import { Page } from "./kit";
 
 /**
@@ -31,12 +31,15 @@ export function ContentGate({ children, inline, need = "all" }: { children: (c: 
 /** Saves from before the redo queue get one built from their past attempts, once the answer keys have loaded. */
 export function RedoSeeder() {
   const { state, update } = useStore();
-  const need = !state.redoSeeded;
+  const need = !state.redoSeeded || !state.lrRedoSeeded;
   useEffect(() => {
     if (!need) return;
     let live = true;
     loadContent().then((c) => {
-      if (live) update((st) => { if (!st.redoSeeded) { seedRedo(st, c); st.redoSeeded = true; } });
+      if (live) update((st) => {
+        if (!st.redoSeeded) { seedRedo(st, c); st.redoSeeded = true; st.lrRedoSeeded = true; }
+        if (!st.lrRedoSeeded) { seedLrRedo(st, c); st.lrRedoSeeded = true; }
+      });
     }, () => { /* try again next time the app opens */ });
     return () => { live = false; };
   }, [need, update]);

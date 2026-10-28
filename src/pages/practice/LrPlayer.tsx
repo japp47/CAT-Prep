@@ -77,7 +77,7 @@ function DataTable({ t }: { t: LrTable }) {
 }
 
 /** The story and numbered clues. In review the clues a question used are highlighted. */
-function SetText({ set, lit = [] }: { set: LrSet; lit?: number[] }) {
+export function SetText({ set, lit = [] }: { set: LrSet; lit?: number[] }) {
   return (
     <article className="flex flex-col gap-4 rounded-lg bg-card px-5 py-5 sm:px-7 sm:py-6" aria-label="The set">
       {set.intro.map((p, i) => <p key={i} className="text-reading">{p}</p>)}
@@ -293,7 +293,7 @@ function FullReview({ set, attempt }: { set: LrSet; attempt: LrAttempt }) {
   );
 }
 
-function ReviewQuestion({ set, qi, given, att, whole }: { set: LrSet; qi: number; given: number | string | null; att: string; whole: boolean }) {
+export function ReviewQuestion({ set, qi, given, att, whole }: { set: LrSet; qi: number; given: number | string | null; att: string; whole: boolean }) {
   const { state, update } = useStore();
   const q = set.questions[qi];
   const blank = given === null || given === "";

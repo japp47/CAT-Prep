@@ -44,6 +44,7 @@ export function merge3(base: AppState, ours: AppState, theirs: AppState): AppSta
   });
   const merged = fromRecords(out);
   merged.redoSeeded = ours.redoSeeded;
+  merged.lrRedoSeeded = ours.lrRedoSeeded;
   return merged;
 }
 
