@@ -25,7 +25,7 @@ import { recordRcSummary, summaryFor, summaryScore } from "../../practice/summar
 import { rcStale } from "../../practice/versions";
 import { GENRES, RC_QTYPE, setWords, SUMMARY_MAX_WORDS, words, type RcSet, type RcSummary } from "../../practice/types";
 import NotFound from "../NotFound";
-import { Choice, ChoiceGroup, Confirm, ElapsedTimer, TimeUp, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
+import { Choice, ChoiceGroup, QuestionNav, Confirm, ElapsedTimer, TimeUp, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
 
 /** Words too common to be worth saving to flashcards. */
 const COMMON = new Set("the and for are but not you all any can had her was one our out has him his how its may new now old see two way who did get let put say she too use that with have this will your from they know want been good much some time very when come here just like long make many more only over such take than them well were what which their there these those would could should about after other where while being because through between does into also each most even then upon whose".split(" "));
@@ -384,10 +384,7 @@ function FullReview({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
             })}
           </div>
           <ReviewQuestion set={set} qi={cur} chosen={ans[cur]} att={attempt.id} />
-          <div className="flex justify-between gap-2">
-            <Button variant="secondary" size="sm" disabled={cur === 0} onClick={() => setCur(cur - 1)}>Previous question</Button>
-            <Button variant="secondary" size="sm" disabled={cur === n - 1} onClick={() => setCur(cur + 1)}>Next question</Button>
-          </div>
+          <QuestionNav cur={cur} n={n} onGo={setCur} />
         </>
       </Split>
       {pane === "p" && <PaneJump onClick={() => showQuestion(setPane)}>Question {cur + 1} of {n}</PaneJump>}

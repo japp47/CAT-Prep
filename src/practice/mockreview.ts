@@ -1,6 +1,6 @@
 import { CAUSES } from "../data/traps";
 import { uid } from "../lib/date";
-import type { Cause, ErrorEntry, MockQ, MockReview, PracticeSet, Recommendation, SectionalAttempt } from "../lib/state";
+import type { Cause, ErrorEntry, Mock, MockQ, MockReview, PracticeSet, Recommendation, SectionalAttempt } from "../lib/state";
 import type { Scored } from "./sectional";
 import { VA_KIND, type VaKind } from "./va/build";
 
@@ -143,6 +143,30 @@ export function findings(r: Pick<MockReview, "qs"> & Partial<Pick<MockReview, "s
     byType,
     time: timed ? { right: sum((q) => q.st === "right"), wrong: sum((q) => q.st === "wrong"), gaveUp: sum((q) => q.st === "skip" || q.st === "unseen" || q.st === "unmarked") } : undefined,
   };
+}
+
+/**
+ * What the question grid says about the result: rights, wrong MCQs (the only answers that cost a mark), and how many
+ * questions still have no result. A grid with gaps cannot stand in for a logged score.
+ */
+export function gridResult(qs: MockQ[]): { c: number; w: number; unmarked: number; complete: boolean } {
+  const unmarked = qs.filter((q) => q.st === "unmarked").length;
+  return {
+    c: qs.filter((q) => q.st === "right").length,
+    w: qs.filter((q) => q.st === "wrong" && !isTita(q.type, q.format)).length,
+    unmarked, complete: unmarked === 0,
+  };
+}
+
+/**
+ * The logged result after a review is saved (D44). A logged result is the record: the analysis attaches to it and
+ * never rewrites it, unless the student asks to (`sync`) and every question has a result. A mock analysed without
+ * having been logged first is logged from its grid. Returns the row to keep, or a new one to add.
+ */
+export function loggedAfter(m: Mock | undefined, qs: MockQ[], meta: Pick<Mock, "id" | "d" | "sec" | "n" | "k">, sync = false): Mock {
+  const g = gridResult(qs);
+  if (!m) return { ...meta, c: g.c, w: g.w };
+  return sync && g.complete ? { ...m, c: g.c, w: g.w } : m;
 }
 
 /** What to do about each cause, in one line the student can act on this week. */

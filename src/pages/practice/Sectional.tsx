@@ -8,7 +8,9 @@ import { ContentGate } from "../../components/Content";
 import { LinkButton, Meta, Page, PageHeader, Section, TextLink } from "../../components/kit";
 import { benchmark } from "../../data/percentiles";
 import { mediumDate, todayIso, uid } from "../../lib/date";
+import type { MockReview } from "../../lib/state";
 import { useStore } from "../../lib/store";
+import { findings } from "../../practice/mockreview";
 import type { Content } from "../../practice/content";
 import { fmtSecs, LETTERS } from "../../practice/record";
 import { resolveExam } from "../../practice/redo";
@@ -19,7 +21,7 @@ import {
 import { VA_KIND } from "../../practice/va/build";
 import { sectionalStale } from "../../practice/versions";
 import NotFound from "../NotFound";
-import { Choice, ChoiceGroup, Confirm, PaletteCell, PlayerBar, ScoreCard, Timer, useLeaveConfirmation, useStartQuestion } from "./common";
+import { Choice, ChoiceGroup, Confirm, PaletteCell, QuestionNav, PlayerBar, ScoreCard, Timer, useLeaveConfirmation, useStartQuestion } from "./common";
 import { PaneJump, Passage, PaneSwitch, ReviewQuestion, showQuestion, Split } from "./RcPlayer";
 import { ItemInput, ItemReview } from "./VaPlayer";
 
@@ -249,6 +251,52 @@ export function SectionalReview() {
   return <ContentGate>{(c) => <Review c={c} />}</ContentGate>;
 }
 
+/**
+ * The way on from the review (D44). Before analysis: what it gives and one button into it. After: its short version,
+ * where most marks went, what was within reach and the open actions, with the full analysis one tap away. The
+ * analysis is its own page, so it can be revisited from Progress, but it reads as the next step of this review.
+ */
+function GoBeyond({ id, review }: { id: string; review?: MockReview }) {
+  const { state } = useStore();
+  if (review) {
+    const f = findings(review);
+    const top = [...f.groups].filter((g) => g.key !== "unsorted").sort((a, b) => b.marks - a.marks)[0];
+    const open = state.recs.filter((x) => x.src === review.id && x.status === "open");
+    return (
+      <section aria-labelledby="go-beyond" className="grid gap-6 rounded-2xl bg-card p-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+        <div className="flex flex-col gap-4">
+          <h2 id="go-beyond" className="max-w-[34ch] text-[clamp(1.5rem,1.1rem+1.2vw,2.25rem)] leading-tight font-extrabold tracking-[-0.03em]">
+            Your analysis. <span className="font-bold text-muted-foreground">{top ? `Most marks went to ${top.label.toLowerCase()}, ${top.marks} of them.` : "No single cause cost you much."}</span>
+          </h2>
+          {f.potential > f.score && <p className="text-base">Within reach: <b className="hl font-semibold">{f.potential}</b> instead of {f.score}, with no careless slips and the doable skips solved.</p>}
+          {open.length > 0 && (
+            <ul className="flex flex-col gap-2">
+              {open.slice(0, 3).map((x) => <li key={x.id} className="flex gap-3 text-base"><span className="mt-2 size-1.5 shrink-0 rounded-full bg-primary" aria-hidden />{x.text}</li>)}
+            </ul>
+          )}
+        </div>
+        <LinkButton to={`/progress/mock-review/${review.id}`} size="lg" variant="secondary">Open the full analysis</LinkButton>
+      </section>
+    );
+  }
+  return (
+    <section aria-labelledby="go-beyond" className="grid gap-6 rounded-2xl bg-card p-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+      <div className="flex flex-col gap-4">
+        <h2 id="go-beyond" className="max-w-[30ch] text-[clamp(1.5rem,1.1rem+1.2vw,2.25rem)] leading-tight font-extrabold tracking-[-0.03em]">
+          Go beyond the score. <span className="font-bold text-muted-foreground">See where you lost marks and what to fix before the next one.</span>
+        </h2>
+        <ol className="flex flex-wrap gap-2 text-base">
+          {["Tag why each wrong answer went wrong", "See marks lost, by cause", "Choose up to three things to fix"].map((t, i) => (
+            <li key={t} className="flex items-center gap-2 rounded-full bg-secondary px-3.5 py-1.5"><span className="font-semibold tabular-nums text-muted-foreground">{i + 1}</span>{t}</li>
+          ))}
+        </ol>
+        <p className="text-sm text-muted-foreground">About five minutes. Your answers are already filled in, and every question stays one tap away.</p>
+      </div>
+      <LinkButton to={`/progress/mock-review?sectional=${id}`} size="lg">Analyse performance</LinkButton>
+    </section>
+  );
+}
+
 function Review({ c }: { c: Content }) {
   const { id } = useParams();
   const [search] = useSearchParams();
@@ -275,7 +323,7 @@ function Review({ c }: { c: Content }) {
   return (
     <Page className="gap-6 lg:gap-8">
       <PlayerBar kicker={`Sectional review, ${mediumDate(s.d)}`} title={`Score ${marks > 0 ? "+" : ""}${marks} of ${MAX}`}>
-        {fromAnalysis && <LinkButton to={`/progress/mock-review?sectional=${s.id}&q=${cur + 1}`} variant="secondary" size="sm">Back to mock analysis · Q{cur + 1}</LinkButton>}
+        {fromAnalysis && <LinkButton to={`/progress/mock-review?sectional=${s.id}&q=${cur + 1}`} variant="secondary" size="sm">Back to your analysis, Q{cur + 1}</LinkButton>}
         <LinkButton to="/practice/sectional" variant="secondary" size="sm">All sectionals</LinkButton>
       </PlayerBar>
 
@@ -298,10 +346,11 @@ function Review({ c }: { c: Content }) {
         {slow.length > 0 && <p className="text-base">Longest on {slow.map((r) => `Q${r.i + 1} (${fmtSecs(s.t[r.i])}${r.ok ? ", right" : r.blank ? ", blank" : ", wrong"})`).join(", ")}. Over 2 minutes on one question is usually time better spent elsewhere.</p>}
         <p className="text-base text-muted-foreground">Saved in Progress as a sectional and by question type. Wrong and blank questions join your <TextLink to="/practice/redo">redo queue</TextLink>.</p>
         <div className="flex flex-wrap gap-2">
-          <LinkButton to="/practice/sectional">Take another sectional</LinkButton>
-          <LinkButton to={review ? `/progress/mock-review/${review.id}` : `/progress/mock-review?sectional=${s.id}`} variant="secondary">{review ? "Open its mock review" : "Analyse this sectional"}</LinkButton>
+          <LinkButton to="/practice/sectional" variant="secondary">Take another sectional</LinkButton>
         </div>
       </ScoreCard>
+
+      <GoBeyond id={s.id} review={review} />
 
       {stale.length > 0 && <p className="measure rounded-lg bg-muted px-4 py-3 text-base">{stale.length === 1 ? "One question was" : `${stale.length} questions were`} rewritten after this sectional ({stale.map((i) => "Q" + (i + 1)).join(", ")}). Their review shows the new version, so your old answer may not match it. Your score stays as it was.</p>}
       <div className="flex flex-wrap gap-2" role="group" aria-label="Questions">
@@ -315,16 +364,15 @@ function Review({ c }: { c: Content }) {
             <PaneSwitch pane={pane} setPane={setPane} q={`Question ${row.i + 1}`} />
             <Split pane={pane}>
               <Passage set={row.ref.set} highlight={row.ref.set.questions[row.ref.qi].proof} wordMode />
-              <ReviewQuestion set={row.ref.set} qi={row.ref.qi} chosen={s.a[row.i] === "" ? null : Number(s.a[row.i])} />
+              <>
+                <ReviewQuestion set={row.ref.set} qi={row.ref.qi} chosen={s.a[row.i] === "" ? null : Number(s.a[row.i])} />
+                <QuestionNav cur={cur} n={rows.length} onGo={setCur} />
+              </>
             </Split>
             {pane === "p" && <PaneJump onClick={() => showQuestion(setPane)}>Question {row.i + 1}</PaneJump>}
           </>
         )}
-        {row?.ref.kind === "va" && <div className="mx-auto flex w-full max-w-[760px] flex-col gap-5"><ItemReview item={row.ref.item} answer={s.a[row.i]} /></div>}
-        <div className="flex justify-between gap-2">
-          <Button variant="secondary" size="sm" disabled={cur === 0} onClick={() => setCur(cur - 1)}>Previous question</Button>
-          <Button variant="secondary" size="sm" disabled={cur >= rows.length - 1} onClick={() => setCur(cur + 1)}>Next question</Button>
-        </div>
+        {row?.ref.kind === "va" && <div className="mx-auto flex w-full max-w-[760px] flex-col gap-5"><ItemReview item={row.ref.item} answer={s.a[row.i]} /><QuestionNav cur={cur} n={rows.length} onGo={setCur} /></div>}
       </div>
     </Page>
   );

@@ -3,6 +3,7 @@ import { blankState, normalize, type MockQ, type MockReview, type PracticeSet } 
 import { CONTENT } from "./full";
 import {
   acrossReviews, DEFAULT_LAYOUT, findings, fromSectional, lost, proposeActions, questionsFor, toErrors, toPractice, typesOf,
+  gridResult, loggedAfter,
 } from "./mockreview";
 import { resolveExam } from "./redo";
 import { buildPaper, marksOf, scorePaper } from "./sectional";
@@ -113,6 +114,25 @@ describe("saving a review", () => {
   });
 });
 
+describe("a logged result and its analysis (D44)", () => {
+  const logged = { id: "m1", d: "2026-10-20", sec: "VARC", n: "SimCAT 3", k: "Full mock", c: 14, w: 3 };
+  const meta = { id: "m1", d: "2026-10-20", sec: "VARC", n: "SimCAT 3", k: "Full mock" };
+  it("keeps the logged score when the grid has gaps, even if asked to update it", () => {
+    const qs = grid({ 1: { st: "unmarked" }, 2: { st: "unmarked" } });
+    expect(gridResult(qs)).toMatchObject({ unmarked: 2, complete: false });
+    expect(loggedAfter(logged, qs, meta, true)).toBe(logged);
+  });
+  it("keeps the logged score by default, and updates it only on request with a complete grid", () => {
+    const qs = grid({ 1: { st: "wrong", cause: "slip" } });
+    expect(loggedAfter(logged, qs, meta)).toBe(logged);
+    expect(loggedAfter(logged, qs, meta, true)).toMatchObject({ id: "m1", n: "SimCAT 3", c: 23, w: 1 });
+  });
+  it("logs a mock analysed without a logged result from its grid", () => {
+    const qs = grid({ 1: { st: "wrong", cause: "slip" }, 3: { st: "skip", could: false } });
+    expect(loggedAfter(undefined, qs, meta)).toEqual({ ...meta, c: 22, w: 1 });
+  });
+});
+
 describe("from a sectional on this site", () => {
   it("fills status, type and time per question, and matches the sectional's own score", () => {
     const qs = buildPaper(blankState(), "mock-review");
@@ -142,7 +162,7 @@ describe("state", () => {
   });
   it("keeps a review and a recommendation through a save, and drops bad fields", () => {
     const s = blankState();
-    s.mockReviews.push(review(grid({ 1: { st: "wrong", cause: "trap" }, 2: { st: "skip", could: true, solved: false } }), { planned: 20 }));
+    s.mockReviews.push(review(grid({ 1: { st: "wrong", cause: "trap" }, 2: { st: "skip", could: true, solved: false } }), { planned: 20, group: "g1" }));
     s.recs.push({ id: "x", d: "2026-10-20", updatedAt: 1, from: "mock", src: "r1", sec: "VARC", skill: { kind: "cause", key: "trap" }, text: "Name the trap.", why: "3 wrong.", to: "/practice", status: "open", before: { c: 1, n: 2 } });
     const back = normalize(JSON.parse(JSON.stringify(s)));
     expect(back.mockReviews).toEqual(s.mockReviews);

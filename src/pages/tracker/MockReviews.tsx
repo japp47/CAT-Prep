@@ -22,10 +22,10 @@ export function MockReviews({ sec }: { sec: string }) {
 
   return (
     <Section title="Mock reviews" action={<LinkButton to="/progress/mock-review" variant="secondary" size="sm">Analyse a mock</LinkButton>}
-      description={`After each mock, review its ${sec} section to see where the marks went and choose up to three things to fix before the next one. Log the result in the same section to keep its score history together.`}>
+      description={`Log each mock's score in the Log tab: that is your record. Then analyse its ${sec} section question by question to see where the marks went and choose up to three things to fix. Analysing never changes a logged score unless you ask it to.`}>
       {todo.length > 0 && (
         <div className="flex flex-col gap-2">
-          <h3 className="text-base font-semibold">Not analysed yet</h3>
+          <h3 className="text-base font-semibold">Score logged, not analysed yet</h3>
           <ul className="flex flex-col gap-1 rounded-lg bg-card p-1.5">
             {todo.map((m) => (
               <li key={m.id} className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-md px-3.5 py-3">
@@ -38,7 +38,7 @@ export function MockReviews({ sec }: { sec: string }) {
       )}
       {reviews.length > 0 ? (
         <div className="flex flex-col gap-2">
-          <h3 className="text-base font-semibold">Your reviews</h3>
+          <h3 className="text-base font-semibold">Analysed</h3>
           <LogList empty="">
             {reviews.slice(0, 5).map((r) => {
               const f = findings(r), top = [...f.groups].filter((g) => g.key !== "unsorted").sort((a, b) => b.marks - a.marks)[0], n = open(r.id);

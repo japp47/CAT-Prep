@@ -206,6 +206,8 @@ describe("uid", () => {
   it("does not repeat in 100,000 ids and starts with the time", () => {
     const ids = new Set(Array.from({ length: 100_000 }, uid));
     expect(ids.size).toBe(100_000);
-    expect(uid().slice(0, 8)).toBe(Date.now().toString(36).slice(0, 8));
+    // The clock can tick between reading it and making the id, so either side of the call is fine.
+    const before = Date.now().toString(36).slice(0, 8), id = uid(), after = Date.now().toString(36).slice(0, 8);
+    expect([before, after]).toContain(id.slice(0, 8));
   });
 });
