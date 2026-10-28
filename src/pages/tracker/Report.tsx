@@ -11,7 +11,9 @@ import { useContent } from "../../practice/content";
 import { HABIT_WINDOW, summaryHabits } from "../../practice/summary";
 import { filterHref, typeMatches } from "../../practice/errorfilter";
 import { RC_QTYPE, type RcQType } from "../../practice/types";
-import type { ErrorEntry } from "../../lib/state";
+import type { ErrorEntry, LrDrillRun } from "../../lib/state";
+import { clueReport } from "../../practice/lrdrill";
+import { MISREAD } from "../../practice/lrlogic";
 import { accuracy, byPracticeType, crByKind, focusLines, luckyGuesses, MIN_TOTAL, paceTrend, patterns, rcByDifficulty, rcByGenre, rcByQuestionType, topTraps, type Row } from "../../practice/report";
 
 /** CAT has about 2,000 words of RC; reading them in 10 minutes leaves time for the questions. */
@@ -65,6 +67,47 @@ function mistakesLink(errors: ErrorEntry[], sec: string, typeOf: (r: Row) => str
     const t = typeOf(r);
     return t && errors.some((e) => e.sec === sec && typeMatches(e.t, t)) ? filterHref({ sec, t }) : undefined;
   };
+}
+
+/**
+ * How the student reads LR clues (F83): accuracy per kind of clue in the clue translator, the misreading they make
+ * most, and how the other two drills (F84, F85) are going.
+ */
+function ClueReading({ runs }: { runs: LrDrillRun[] }) {
+  const r = clueReport(runs);
+  const sum = (k: LrDrillRun["kind"]) => runs.filter((x) => x.kind === k).flatMap((x) => x.items).reduce((s, i) => ({ c: s.c + (i.ok ? 1 : 0), a: s.a + 1 }), { c: 0, a: 0 });
+  const mcc = sum("mcc"), first = sum("first");
+  const top = r.slips[0];
+  return (
+    <Section title="How you read clues" description="From the clue translator: which kinds of clue you read right, and the misreading you make most. Misreading a condition is the commonest LR error."
+      action={r.answered > 0 ? <TextLink to="/practice/clues">Read eight more</TextLink> : undefined}>
+      {r.answered > 0 ? (
+        <div className="flex flex-col gap-6 rounded-lg bg-card p-5 sm:p-6">
+          {top && (
+            <div className="flex flex-col gap-1">
+              <p className="text-base">Your commonest misreading, {top.n === 1 ? "once" : `${top.n} times`}: <span className="hl font-semibold">{MISREAD[top.how].h}</span></p>
+              <p className="measure text-base text-muted-foreground">{MISREAD[top.how].fix}</p>
+            </div>
+          )}
+          <AccuracyList title="Clues read right, by kind" rows={r.kinds.map((k) => ({ key: k.kind, label: k.label, attempted: k.a, correct: k.c }))} empty="" unit={["clue", "clues"]}
+            link={(row) => `/practice/clues?kind=${row.key}`} />
+          {r.kinds[0] && r.kinds[0].c < r.kinds[0].a && (
+            <div><LinkButton to={`/practice/clues?kind=${r.kinds[0].kind}`} variant="secondary">Practise {r.kinds[0].label.toLowerCase()} clues, your weakest</LinkButton></div>
+          )}
+          {(mcc.a > 0 || first.a > 0) && (
+            <div className="flex flex-wrap gap-x-12 gap-y-3">
+              {mcc.a > 0 && <Stat value={`${mcc.c} of ${mcc.a}`} label="Must, could, cannot: statements sorted right" />}
+              {first.a > 0 && <Stat value={`${first.c} of ${first.a}`} label="First move: best moves" />}
+            </div>
+          )}
+        </div>
+      ) : (
+        <Empty action={<LinkButton to="/practice/clues" variant="secondary">Read eight clues</LinkButton>}>
+          No clues read yet. The clue translator takes about three minutes: eight clues, each read onto a small board, and any misreading named.
+        </Empty>
+      )}
+    </Section>
+  );
 }
 
 export function Report({ sec }: { sec: string }) {
@@ -153,6 +196,8 @@ export function Report({ sec }: { sec: string }) {
           )}
         </Section>
       )}
+
+      {sec === "DILR" && <ClueReading runs={state.lrDrills} />}
 
       <Section title="Traps that cost you most" description="The reasons behind your logged mistakes. Naming a trap is how you stop falling for it."
         action={traps.length > 0 ? <TextLink to="/errors">Open the Error log</TextLink> : undefined}>

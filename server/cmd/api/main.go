@@ -161,7 +161,7 @@ var turnstileEndpoint = turnstile.SiteVerify
 
 // SyncKinds are the record kinds the browser may push: every kind in docs/architecture.md §6.1. It must match
 // KINDS in src/lib/sync/records.ts (a test checks).
-var SyncKinds = []string{"rc", "va", "cr", "lr", "speed", "sectional", "mockReview", "summary", "error", "word", "mock",
+var SyncKinds = []string{"rc", "va", "cr", "lr", "lrDrill", "speed", "sectional", "mockReview", "summary", "error", "word", "mock",
 	"practice", "recommendation", "weekReview", "redo", "day", "tick", "setting", "profile"}
 
 // newV1 builds the student API (docs/architecture.md §5, §6), behind reqinfo.Gate.

@@ -28,6 +28,9 @@ const SectionalReview = lazy(() => import("./pages/practice/Sectional").then((m)
 const SpeedTest = lazy(() => import("./pages/practice/SpeedTest"));
 const VaPlayer = lazy(() => import("./pages/practice/VaPlayer"));
 const CrPlayer = lazy(() => import("./pages/practice/CrPlayer"));
+const ClueDrill = lazy(() => import("./pages/practice/ClueDrill"));
+const MustCould = lazy(() => import("./pages/practice/MustCould"));
+const FirstMove = lazy(() => import("./pages/practice/FirstMove"));
 const Progress = lazy(load.progress);
 const Roadmap = lazy(() => import("./pages/Roadmap"));
 const Section = lazy(() => import("./pages/Section"));
@@ -97,6 +100,9 @@ export const router = createBrowserRouter(createRoutesFromElements(
       <Route path="practice/lr/:id" element={<LrPlayer />} />
       <Route path="practice/va" element={<VaPlayer />} />
       <Route path="practice/cr" element={<CrPlayer />} />
+      <Route path="practice/clues" element={<ClueDrill />} />
+      <Route path="practice/must-could" element={<MustCould />} />
+      <Route path="practice/first-move" element={<FirstMove />} />
       <Route path="practice/speed" element={<SpeedTest />} />
       <Route path="practice/redo" element={<Redo />} />
       <Route path="practice/sectional" element={<Sectional />} />

@@ -1,0 +1,57 @@
+[
+  {
+    "id": "mcc-round-table", "set": "arr-round-table", "drop": [3],
+    "statements": [
+      { "text": "Dev sits next to Asha.", "expr": { "next": ["Dev", "Asha"] } },
+      { "text": "Bilal sits opposite Dev.", "expr": { "opp": ["Bilal", "Dev"] } },
+      { "text": "Farhan sits opposite Chitra.", "expr": { "opp": ["Farhan", "Chitra"] } },
+      { "text": "Esha sits second to the right of Asha.", "expr": { "right": "Esha", "of": "Asha", "d": 2 } },
+      { "text": "Farhan sits next to Bilal.", "expr": { "next": ["Farhan", "Bilal"] } },
+      { "text": "Esha sits next to Bilal.", "expr": { "next": ["Esha", "Bilal"] } }
+    ]
+  },
+  {
+    "id": "mcc-colleagues-chef", "set": "arr-six-colleagues", "drop": [5],
+    "statements": [
+      { "text": "The chef sits at one end.", "expr": { "end": "chef" } },
+      { "text": "Divya is from Kochi.", "expr": { "same": ["Divya", "Kochi"] } },
+      { "text": "Aarav is the doctor.", "expr": { "same": ["Aarav", "doctor"] } },
+      { "text": "The pilot sits next to the doctor.", "expr": { "next": ["pilot", "doctor"] } },
+      { "text": "The lawyer sits immediately to the left of the architect.", "expr": { "left": "lawyer", "of": "architect", "d": 1 } },
+      { "text": "The teacher sits at one end.", "expr": { "end": "teacher" } }
+    ]
+  },
+  {
+    "id": "mcc-colleagues-cities", "set": "arr-six-colleagues", "drop": [7],
+    "statements": [
+      { "text": "Farah is from Indore.", "expr": { "same": ["Farah", "Indore"] } },
+      { "text": "The person from Indore sits at one end.", "expr": { "end": "Indore" } },
+      { "text": "The architect is from Pune.", "expr": { "same": ["architect", "Pune"] } },
+      { "text": "The pilot is from Kochi.", "expr": { "same": ["pilot", "Kochi"] } },
+      { "text": "Bhavna is from Surat.", "expr": { "same": ["Bhavna", "Surat"] } },
+      { "text": "The lawyer is from Indore.", "expr": { "same": ["lawyer", "Indore"] } }
+    ]
+  },
+  {
+    "id": "mcc-consultants", "set": "arr-seven-consultants", "drop": [],
+    "statements": [
+      { "text": "Leela is the Cybersecurity specialist.", "expr": { "same": ["Leela", "Cybersecurity"] } },
+      { "text": "Mohan specialises in Genomics.", "expr": { "same": ["Mohan", "Genomics"] } },
+      { "text": "Ishaan sits next to Kabir.", "expr": { "next": ["Ishaan", "Kabir"] } },
+      { "text": "The Forecasting specialist sits next to the person from Ghana.", "expr": { "next": ["Forecasting", "Ghana"] } },
+      { "text": "The Branding specialist is from Canada.", "expr": { "same": ["Branding", "Canada"] } },
+      { "text": "The person from Hungary is the Auditing specialist.", "expr": { "same": ["Hungary", "Auditing"] } }
+    ]
+  },
+  {
+    "id": "mcc-friends", "set": "arr-friends-drinks", "drop": [],
+    "statements": [
+      { "text": "The farmer is from Patna.", "expr": { "same": ["farmer", "Patna"] } },
+      { "text": "The dentist sits at one end.", "expr": { "end": "dentist" } },
+      { "text": "Charu drinks milk.", "expr": { "same": ["Charu", "milk"] } },
+      { "text": "Bharat is from Jaipur.", "expr": { "same": ["Bharat", "Jaipur"] } },
+      { "text": "The banker sits immediately to the left of the editor.", "expr": { "left": "banker", "of": "editor", "d": 1 } },
+      { "text": "The curator is from Mysuru.", "expr": { "same": ["curator", "Mysuru"] } }
+    ]
+  }
+]

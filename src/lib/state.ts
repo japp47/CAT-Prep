@@ -67,6 +67,11 @@ export type LrTimeSink = (typeof LR_TIME_SINKS)[number];
 export type LrSlip = (typeof LR_SLIPS)[number];
 /** The set post-mortem (F86): the clue that opened the set, where the time went, and the slip with its clue. Each part is optional. */
 export interface LrPostMortem { key?: number; time?: LrTimeSink; slip?: LrSlip; slipClue?: number }
+/**
+ * One run of an LR drill (F83 to F85, D47): the clue translator, must-could-cannot or first move. ref is the drill or
+ * set it used; each item is one clue, statement or move, and miss names the misreading a wrong clue matched.
+ */
+export interface LrDrillRun { id: string; d: string; kind: "clue" | "mcc" | "first"; ref?: string; items: { k: string; ok: boolean; miss?: string }[]; secs: number }
 /** One reading speed test. recall is the number of recall questions answered correctly, out of 2. */
 export interface SpeedRun { id: string; d: string; set: string; words: number; secs: number; wpm: number; recall: number }
 /**
@@ -141,6 +146,7 @@ export interface AppState {
   vaAttempts: VaAttempt[];
   crAttempts: CrAttempt[];
   lrAttempts: LrAttempt[];
+  lrDrills: LrDrillRun[];
   speedRuns: SpeedRun[];
   redo: RedoItem[];
   sectionals: SectionalAttempt[];
@@ -168,7 +174,7 @@ const emptyDow = () => [null, null, null, null, null, null, null] as (number | n
 export function blankState(): AppState {
   const settings = {} as Record<SectionId, TimeSettings>;
   SECTION_IDS.forEach((id) => (settings[id] = { ...DEFAULT_TIME[id], dow: emptyDow() }));
-  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], crAttempts: [], lrAttempts: [], speedRuns: [], redo: [], sectionals: [], summaries: [], mockReviews: [], recs: [], weekReviews: [], redoSeeded: true, lrRedoSeeded: true, targets: { varc: DEFAULT_TARGET }, about: {} };
+  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], crAttempts: [], lrAttempts: [], lrDrills: [], speedRuns: [], redo: [], sectionals: [], summaries: [], mockReviews: [], recs: [], weekReviews: [], redoSeeded: true, lrRedoSeeded: true, targets: { varc: DEFAULT_TARGET }, about: {} };
 }
 
 type Obj = Record<string, unknown>;
@@ -264,6 +270,11 @@ export function normalize(raw: unknown): AppState {
     }
     return a;
   }).filter((a) => a.id && a.set);
+  b.lrDrills = list(raw.lrDrills, (x): LrDrillRun => ({
+    id: str(x.id), d: str(x.d), kind: x.kind === "mcc" || x.kind === "first" ? x.kind : "clue", secs: num(x.secs),
+    ...(typeof x.ref === "string" && x.ref ? { ref: x.ref } : {}),
+    items: list(x.items, (i) => ({ k: str(i.k), ok: !!i.ok, ...(typeof i.miss === "string" && i.miss ? { miss: i.miss } : {}) })),
+  })).filter((x) => x.id && x.items.length);
   b.speedRuns = list(raw.speedRuns, (x) => ({ id: str(x.id), d: str(x.d), set: str(x.set), words: num(x.words), secs: num(x.secs), wpm: num(x.wpm), recall: clamp(num(x.recall), 0, 2) }));
   b.sectionals = list(raw.sectionals, (x) => ({
     id: str(x.id), d: str(x.d), secs: num(x.secs), c: num(x.c), w: num(x.w), updatedAt: num(x.updatedAt),

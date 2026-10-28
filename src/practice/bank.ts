@@ -3,6 +3,8 @@
  * an RC set loads its own file (about 15 to 30 KB), not every passage. This is the only file that names
  * the content files; content.ts calls these loaders and caches what they return.
  */
+import type { LrDrills, MccDrill } from "./lrdrill";
+import type { ClueItem, LrModel } from "./lrlogic";
 import type { CrItem, LrSet, RcSet, VaPara } from "./types";
 
 // Each content/rc/*.json becomes its own chunk. A new file is picked up here without a change.
@@ -24,4 +26,8 @@ export function loadLrFile(file: string): Promise<LrSet[]> {
   return f ? f().then((m) => m.default as LrSet[]) : Promise.reject(new Error("No LR file " + file));
 }
 export const loadVaParas = (): Promise<VaPara[]> => import("./va/paragraphs").then((m) => m.VA_PARAS);
+/** The LR drills' content (F83 to F85): clues to read, set models and must-could-cannot drills, in one chunk. */
+export const loadLrDrills = (): Promise<LrDrills> => Promise.all([
+  import("../../content/lrdrill/clues.json"), import("../../content/lrdrill/models.json"), import("../../content/lrdrill/mcc.json"),
+]).then(([c, m, x]) => ({ clues: c.default as ClueItem[], models: m.default as unknown as LrModel[], mcc: x.default as unknown as MccDrill[] }));
 export const loadCrItems = (): Promise<CrItem[]> => import("./cr").then((m) => m.CR_ITEMS);

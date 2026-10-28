@@ -83,6 +83,16 @@ export function historyItems(st: AppState): HistoryItem[] {
       detail: `LR set, ${right(a.c, n)}${skipped ? `, ${skipped} skipped` : ""}, ${mins(a.secs)}${key}`,
       href: `/practice/lr/${a.set}?review=${a.id}` });
   });
+  // LR drills (F83 to F85): one row a run, leading back to the same drill.
+  st.lrDrills.forEach((r) => {
+    const c = r.items.filter((i) => i.ok).length, n = r.items.length;
+    const [title, href, what] = r.kind === "mcc" ? ["Must, could, cannot", `/practice/must-could?d=${r.ref ?? ""}`, right(c, n)]
+      : r.kind === "first" ? ["First move", `/practice/first-move?set=${r.ref ?? ""}`, `${c} of ${n} best moves`]
+      : ["Clue translator", "/practice/clues", `${c} of ${n} clues read right`];
+    const set = r.kind === "first" && r.ref ? lrTitle.get(r.ref) : undefined;
+    add({ id: "lrd-" + r.id, d: r.d, kind: "practice", icon: "lr", title: title + (set ? ": " + set : ""), secs: r.secs,
+      detail: `LR drill, ${what}, ${mins(r.secs)}`, href });
+  });
   st.speedRuns.forEach((r) => add({ id: "speed-" + r.id, d: r.d, kind: "practice", icon: "speed", title: "Reading speed: " + (rcTitle.get(r.set) ?? "a passage"), secs: r.secs,
     detail: `${r.wpm} words a minute, recall ${r.recall} of 2`, href: "/practice/speed" }));
 

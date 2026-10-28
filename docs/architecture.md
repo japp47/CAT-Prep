@@ -226,6 +226,7 @@ Every syncable thing in `AppState` becomes a record `{ kind, id, data, updatedAt
 | `rc`, `va`, `cr`, `speed`, `sectional`, `mockReview` | attempt id | none needed: written once |
 | `summary`, `error`, `word`, `mock`, `practice`, `recommendation`, `weekReview` | row id | newest `updatedAt` wins |
 | `lr` | attempt id | newest `updatedAt` wins (only the post-mortem changes). **Deploy order:** the server must list `lr` in `SyncKinds` before the browser pushes it; a refused write is not retried until the row changes |
+| `lrDrill` | run id | none needed: written once (an LR drill run, F83 to F85, D47). **Deploy order:** as for `lr`, the server must list `lrDrill` before the browser pushes it, or a run never syncs |
 | `redo` | question key | the copy with more `tries` wins; equal tries → newest `updatedAt` |
 | `day` | date | field by field: `done` and `spent` take the larger minutes per block; `min`, `carried`, `dismiss` newest wins |
 | `tick` | link id | newest wins; unticking is a tombstone |

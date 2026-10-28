@@ -15,7 +15,9 @@ import { usePref } from "../../lib/prefs";
 import { LR_SLIPS, LR_TIME_SINKS, type LrAttempt, type LrPostMortem } from "../../lib/state";
 import { useStore } from "../../lib/store";
 import { ContentGate } from "../../components/Content";
-import { LinkButton, Page } from "../../components/kit";
+import { ArrowLink, LinkButton, Page } from "../../components/kit";
+import { LR_GUIDE_BY_TYPE } from "../../sections/dilr/guides";
+import { LrNextDrill } from "../../components/LrNextDrill";
 import { blankScratch, LrScratch, LrWalkthrough } from "../../components/LrDiagram";
 import { LR_CATALOG } from "../../practice/catalog.gen";
 import { lrRight } from "../../practice/lrcheck";
@@ -261,7 +263,9 @@ function FullReview({ set, attempt }: { set: LrSet; attempt: LrAttempt }) {
       </PlayerBar>
       <Score set={set} attempt={attempt} />
       <PostMortem set={set} attempt={attempt} />
+      <LrNextDrill set={set} attempt={attempt} />
       <LrWalkthrough steps={set.solution.steps} g={set.solution.diagram} />
+      {LR_GUIDE_BY_TYPE.has(set.type) && <ArrowLink to={`/dilr?guide=${set.type}`}>Read the {LR_TYPE[set.type].label.charAt(0).toLowerCase() + LR_TYPE[set.type].label.slice(1)} guide: what to draw, where to start, the traps</ArrowLink>}
       {set.solution.grid && (
         <section className="flex flex-col gap-3 rounded-lg bg-card p-5 sm:p-6" aria-label="Final table">
           <h2 className="text-heading font-semibold">The final table</h2>
