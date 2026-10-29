@@ -54,6 +54,7 @@ Use both: shadcn/ui is built on Tailwind.
 - **Icons:** keep our own nav icons. shadcn components use Lucide icons inside (chevrons, ticks); that's fine and stays invisible.
 - **New packages:** `tailwindcss`, `@tailwindcss/vite`, `radix-ui`, `class-variance-authority`, `clsx`, `tailwind-merge`, `lucide-react`, `sonner`, `tw-animate-css`. Each is checked against `package.json` before adding.
 - **Bundle:** the main bundle is 427 KB (135 KB gzipped) today. Each page will load only when opened (`React.lazy`), which should cut the first load well below today's, even with Radix added.
+- **Reference sites, not dependencies:** `ui.watermelon.sh/developers` for component interaction patterns and `motion.dev` for animation technique, checked before building a non-trivial component or animation and re-expressed in shadcn/Tailwind and GSAP (see the `frontend-reference-sites` skill). Neither is added as a package without asking first.
 
 ## 4. Design direction
 

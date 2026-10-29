@@ -1,0 +1,844 @@
+[
+ {
+  "id": "dir-four-friends-field",
+  "title": "Four friends on a field",
+  "type": "directions",
+  "sub": "multi-leg walks",
+  "difficulty": "hard",
+  "minutes": 14,
+  "source": "original",
+  "since": "2026-10-31",
+  "intro": [
+   "Four friends, Arjun, Bela, Chirag and Dev, start together at a flagpole F on a flat field. Each first faces the direction shown, then walks and turns exactly as described. Every turn is a right-angle turn, left or right of the direction the walker is facing at that moment. Everyone stops after the last leg.",
+   "A person is south-east of another if he is both further south and further east than the other. The other diagonal directions are defined the same way."
+  ],
+  "clues": [
+   "Arjun starts facing north: walks 16 m, turns right, walks 12 m.",
+   "Bela starts facing east: walks 20 m, turns left, walks 11 m, turns left, walks 4 m.",
+   "Chirag starts facing south: walks 9 m, turns left, walks 24 m, turns left, walks 5 m.",
+   "Dev starts facing west: walks 12 m, turns right, walks 23 m."
+  ],
+  "questions": [
+   {
+    "stem": "What is the straight-line distance, in metres, between the points where Arjun and Dev stop?",
+    "kind": "tita",
+    "answer": "25",
+    "uses": [
+     1,
+     4
+    ],
+    "why": [
+     "Arjun stops 12 m east and 16 m north of F; Dev, after turning right from west to north, stops 12 m west and 23 m north.",
+     "The gaps are 24 m east-west and 7 m north-south: the square root of 576 + 49 = 625 is 25."
+    ],
+    "fig": {
+     "layout": "map",
+     "pad": false,
+     "seats": [
+      "Arjun",
+      "Dev"
+     ],
+     "paths": [
+      {
+       "name": "Arjun",
+       "pts": [
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         16
+        ],
+        [
+         12,
+         16
+        ]
+       ]
+      },
+      {
+       "name": "Dev",
+       "pts": [
+        [
+         0,
+         0
+        ],
+        [
+         -12,
+         0
+        ],
+        [
+         -12,
+         23
+        ]
+       ]
+      }
+     ],
+     "legs": [
+      [
+       2,
+       2
+      ],
+      [
+       2,
+       2
+      ]
+     ],
+     "frames": [
+      [
+       [
+        [
+         "12 E, 16 N"
+        ],
+        [
+         "12 W, 23 N"
+        ]
+       ]
+      ],
+      [
+       [
+        [
+         "12 E, 16 N"
+        ],
+        [
+         "12 W, 23 N"
+        ]
+       ]
+      ]
+     ],
+     "ties": [
+      [],
+      [
+       [
+        [
+         12,
+         16
+        ],
+        [
+         -12,
+         23
+        ],
+        "25 m"
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "stem": "In which direction from Bela's stopping point is Chirag's stopping point?",
+    "kind": "mcq",
+    "options": [
+     "North-east",
+     "South-east",
+     "South-west",
+     "North-west"
+    ],
+    "answer": 1,
+    "uses": [
+     2,
+     3
+    ],
+    "why": [
+     "Bela: 20 m east, left to face north for 11 m, left to face west for 4 m: 16 m east, 11 m north. Chirag: 9 m south, left to face east for 24 m, left to face north for 5 m: 24 m east, 4 m south.",
+     "Chirag is 8 m further east and 15 m further south than Bela: south-east."
+    ],
+    "fig": {
+     "layout": "map",
+     "pad": false,
+     "seats": [
+      "Bela",
+      "Chirag"
+     ],
+     "paths": [
+      {
+       "name": "Bela",
+       "pts": [
+        [
+         0,
+         0
+        ],
+        [
+         20,
+         0
+        ],
+        [
+         20,
+         11
+        ],
+        [
+         16,
+         11
+        ]
+       ]
+      },
+      {
+       "name": "Chirag",
+       "pts": [
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         -9
+        ],
+        [
+         24,
+         -9
+        ],
+        [
+         24,
+         -4
+        ]
+       ]
+      }
+     ],
+     "legs": [
+      [
+       3,
+       3
+      ],
+      [
+       3,
+       3
+      ]
+     ],
+     "frames": [
+      [
+       [
+        [
+         "16 E, 11 N"
+        ],
+        [
+         "24 E, 4 S"
+        ]
+       ]
+      ],
+      [
+       [
+        [
+         "16 E, 11 N"
+        ],
+        [
+         "24 E, 4 S"
+        ]
+       ]
+      ]
+     ],
+     "ties": [
+      [],
+      [
+       [
+        [
+         16,
+         11
+        ],
+        [
+         24,
+         -4
+        ],
+        "south-east"
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "stem": "What is the straight-line distance, in metres, between the points where Bela and Chirag stop?",
+    "kind": "tita",
+    "answer": "17",
+    "uses": [
+     2,
+     3
+    ],
+    "why": [
+     "Bela stops at 16 m east, 11 m north and Chirag at 24 m east, 4 m south.",
+     "The gaps are 8 m and 15 m: the square root of 64 + 225 = 289 is 17."
+    ],
+    "fig": {
+     "layout": "map",
+     "pad": false,
+     "seats": [
+      "Bela",
+      "Chirag"
+     ],
+     "paths": [
+      {
+       "name": "Bela",
+       "pts": [
+        [
+         0,
+         0
+        ],
+        [
+         20,
+         0
+        ],
+        [
+         20,
+         11
+        ],
+        [
+         16,
+         11
+        ]
+       ]
+      },
+      {
+       "name": "Chirag",
+       "pts": [
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         -9
+        ],
+        [
+         24,
+         -9
+        ],
+        [
+         24,
+         -4
+        ]
+       ]
+      }
+     ],
+     "legs": [
+      [
+       3,
+       3
+      ],
+      [
+       3,
+       3
+      ]
+     ],
+     "frames": [
+      [
+       [
+        [
+         "16 E, 11 N"
+        ],
+        [
+         "24 E, 4 S"
+        ]
+       ]
+      ],
+      [
+       [
+        [
+         "16 E, 11 N"
+        ],
+        [
+         "24 E, 4 S"
+        ]
+       ]
+      ]
+     ],
+     "ties": [
+      [],
+      [
+       [
+        [
+         16,
+         11
+        ],
+        [
+         24,
+         -4
+        ],
+        "17 m"
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "stem": "Who stops farthest from the flagpole F?",
+    "kind": "mcq",
+    "options": [
+     "Dev",
+     "Chirag",
+     "Arjun",
+     "Bela"
+    ],
+    "answer": 0,
+    "uses": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "why": [
+     "Squared distances from F: Arjun 144 + 256 = 400; Bela 256 + 121 = 377; Chirag 576 + 16 = 592; Dev 144 + 529 = 673.",
+     "Dev's is the largest, about 25.9 m."
+    ],
+    "fig": {
+     "layout": "map",
+     "pad": false,
+     "seats": [
+      "Arjun",
+      "Bela",
+      "Chirag",
+      "Dev"
+     ],
+     "paths": [
+      {
+       "name": "Arjun",
+       "pts": [
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         16
+        ],
+        [
+         12,
+         16
+        ]
+       ]
+      },
+      {
+       "name": "Bela",
+       "pts": [
+        [
+         0,
+         0
+        ],
+        [
+         20,
+         0
+        ],
+        [
+         20,
+         11
+        ],
+        [
+         16,
+         11
+        ]
+       ]
+      },
+      {
+       "name": "Chirag",
+       "pts": [
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         -9
+        ],
+        [
+         24,
+         -9
+        ],
+        [
+         24,
+         -4
+        ]
+       ]
+      },
+      {
+       "name": "Dev",
+       "pts": [
+        [
+         0,
+         0
+        ],
+        [
+         -12,
+         0
+        ],
+        [
+         -12,
+         23
+        ]
+       ]
+      }
+     ],
+     "legs": [
+      [
+       2,
+       3,
+       3,
+       2
+      ],
+      [
+       2,
+       3,
+       3,
+       2
+      ]
+     ],
+     "frames": [
+      [
+       [
+        [
+         "12 E, 16 N"
+        ],
+        [
+         "16 E, 11 N"
+        ],
+        [
+         "24 E, 4 S"
+        ],
+        [
+         "12 W, 23 N"
+        ]
+       ]
+      ],
+      [
+       [
+        [
+         "20 m"
+        ],
+        [
+         "19.4 m"
+        ],
+        [
+         "24.3 m"
+        ],
+        [
+         "25.9 m"
+        ]
+       ]
+      ]
+     ],
+     "ties": [
+      [],
+      [
+       [
+        [
+         0,
+         0
+        ],
+        [
+         -12,
+         23
+        ],
+        "farthest"
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "stem": "Suppose Arjun had turned left instead of right after his first leg, with everything else unchanged. What would then be the straight-line distance, in metres, between the points where Arjun and Dev stop?",
+    "kind": "tita",
+    "answer": "7",
+    "uses": [
+     1,
+     4
+    ],
+    "why": [
+     "Arjun walks 16 m north, turns left to face west and walks 12 m: 12 m west, 16 m north.",
+     "Dev stops 12 m west, 23 m north, on the same north-south line: 23 - 16 = 7 m apart."
+    ],
+    "fig": {
+     "layout": "map",
+     "pad": false,
+     "seats": [
+      "Arjun",
+      "Dev"
+     ],
+     "paths": [
+      {
+       "name": "Arjun",
+       "pts": [
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         16
+        ],
+        [
+         -12,
+         16
+        ]
+       ]
+      },
+      {
+       "name": "Dev",
+       "pts": [
+        [
+         0,
+         0
+        ],
+        [
+         -12,
+         0
+        ],
+        [
+         -12,
+         23
+        ]
+       ]
+      }
+     ],
+     "legs": [
+      [
+       2,
+       2
+      ],
+      [
+       2,
+       2
+      ]
+     ],
+     "frames": [
+      [
+       [
+        [
+         "12 W, 16 N"
+        ],
+        [
+         "12 W, 23 N"
+        ]
+       ]
+      ],
+      [
+       [
+        [
+         "12 W, 16 N"
+        ],
+        [
+         "12 W, 23 N"
+        ]
+       ]
+      ]
+     ],
+     "ties": [
+      [],
+      [
+       [
+        [
+         -12,
+         16
+        ],
+        [
+         -12,
+         23
+        ],
+        "7 m"
+       ]
+      ]
+     ]
+    }
+   }
+  ],
+  "solution": {
+   "steps": [
+    "Track the direction each walker faces. A right turn takes north to east, east to south, south to west and west to north; a left turn does the opposite. Write each leg as a distance and a direction.",
+    "Add the legs up as metres east or west and north or south of F: Arjun 12 E, 16 N; Bela 16 E, 11 N; Chirag 24 E, 4 S; Dev 12 W, 23 N.",
+    "For a distance between two stops, take the east-west gap and the north-south gap and use Pythagoras. For a direction, compare east-west and north-south separately."
+   ],
+   "grid": {
+    "head": [
+     "Friend",
+     "Arjun",
+     "Bela",
+     "Chirag",
+     "Dev"
+    ],
+    "rows": [
+     [
+      "Stops at",
+      "12 E, 16 N",
+      "16 E, 11 N",
+      "24 E, 4 S",
+      "12 W, 23 N"
+     ]
+    ]
+   },
+   "cases": 1,
+   "diagram": {
+    "layout": "map",
+    "pad": false,
+    "seats": [
+     "Arjun",
+     "Bela",
+     "Chirag",
+     "Dev"
+    ],
+    "paths": [
+     {
+      "name": "Arjun",
+      "pts": [
+       [
+        0,
+        0
+       ],
+       [
+        0,
+        16
+       ],
+       [
+        12,
+        16
+       ]
+      ]
+     },
+     {
+      "name": "Bela",
+      "pts": [
+       [
+        0,
+        0
+       ],
+       [
+        20,
+        0
+       ],
+       [
+        20,
+        11
+       ],
+       [
+        16,
+        11
+       ]
+      ]
+     },
+     {
+      "name": "Chirag",
+      "pts": [
+       [
+        0,
+        0
+       ],
+       [
+        0,
+        -9
+       ],
+       [
+        24,
+        -9
+       ],
+       [
+        24,
+        -4
+       ]
+      ]
+     },
+     {
+      "name": "Dev",
+      "pts": [
+       [
+        0,
+        0
+       ],
+       [
+        -12,
+        0
+       ],
+       [
+        -12,
+        23
+       ]
+      ]
+     }
+    ],
+    "legs": [
+     [
+      1,
+      1,
+      1,
+      1
+     ],
+     [
+      2,
+      3,
+      3,
+      2
+     ],
+     [
+      2,
+      3,
+      3,
+      2
+     ]
+    ],
+    "frames": [
+     [
+      [
+       [],
+       [],
+       [],
+       []
+      ]
+     ],
+     [
+      [
+       [
+        "12 E, 16 N"
+       ],
+       [
+        "16 E, 11 N"
+       ],
+       [
+        "24 E, 4 S"
+       ],
+       [
+        "12 W, 23 N"
+       ]
+      ]
+     ],
+     [
+      [
+       [
+        "12 E, 16 N"
+       ],
+       [
+        "16 E, 11 N"
+       ],
+       [
+        "24 E, 4 S"
+       ],
+       [
+        "12 W, 23 N"
+       ]
+      ]
+     ]
+    ],
+    "ties": [
+     [],
+     [],
+     [
+      [
+       [
+        12,
+        16
+       ],
+       [
+        -12,
+        23
+       ],
+       "25 m"
+      ],
+      [
+       [
+        16,
+        11
+       ],
+       [
+        24,
+        -4
+       ],
+       "17 m"
+      ]
+     ]
+    ],
+    "note": "North is up; each square is 5 m. F is the flagpole."
+   }
+  }
+ }
+]

@@ -18,7 +18,7 @@ import { ContentGate } from "../../components/Content";
 import { ArrowLink, LinkButton, Page } from "../../components/kit";
 import { LR_GUIDE_BY_TYPE } from "../../sections/dilr/guides";
 import { LrNextDrill } from "../../components/LrNextDrill";
-import { blankScratch, LrScratch, LrWalkthrough } from "../../components/LrDiagram";
+import { blankScratch, LrScratch, LrWalkthrough, QuestionFigure } from "../../components/LrDiagram";
 import { LR_CATALOG } from "../../practice/catalog.gen";
 import { lrRight } from "../../practice/lrcheck";
 import { LR_SLIP_LABEL, LR_TIME_LABEL, lrError, lrErrorSrc, recordLr, saveLrPostMortem, scoreLr } from "../../practice/lrattempt";
@@ -116,7 +116,8 @@ function Attempt({ set, onDone }: { set: LrSet; onDone: (id: string) => void }) 
   const { update } = useStore();
   const leave = useLeaveConfirmation(true);
   const n = set.questions.length;
-  const g = set.solution.diagram;
+  // A picture that would give the answer away blank (a family tree, a map of the walks) leaves only notes (D53).
+  const g = set.solution.diagram?.pad === false ? undefined : set.solution.diagram;
   const target = set.minutes * 60;
   const draftKey = "lr:" + set.id;
   const [saved] = useState(() => { const d = readDraft<LrDraft>(draftKey); return d && d.ans?.length === n ? d : null; });
@@ -327,9 +328,11 @@ export function ReviewQuestion({ set, qi, given, att, whole }: { set: LrSet; qi:
           <div className="flex flex-col"><dt className="text-sm text-muted-foreground">Answer</dt><dd className="text-heading font-semibold text-success">{String(q.answer)}</dd></div>
         </dl>
       )}
-      <div className="flex flex-col gap-2 rounded-lg bg-card p-4">
-        {q.why.map((w, i) => <p key={i} className="text-base">{w}</p>)}
-      </div>
+      {q.fig ? <QuestionFigure fig={q.fig} why={q.why} /> : (
+        <div className="flex flex-col gap-2 rounded-lg bg-card p-4">
+          {q.why.map((w, i) => <p key={i} className="text-base">{w}</p>)}
+        </div>
+      )}
       <p className="text-sm text-muted-foreground">{q.uses.length === 0 ? (set.clues.length === 0 ? "The question's own statements settle it." : set.tables ? "The table alone settles it; no clue is needed." : "The rules in the story settle it; no clue is needed.") : whole ? "This question needs the whole set solved." : `The highlighted clue${q.uses.length > 1 ? "s settle" : " settles"} it.`}</p>
       {!ok && (inLog
         ? <ErrorCause src={src} />

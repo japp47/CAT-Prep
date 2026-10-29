@@ -9,8 +9,9 @@ import { curveColumns, ordinal, percentileAt, Z99 } from "./curve";
 
 /**
  * The home page's hero picture (D42): the CAT score curve as a field of dots in 3D. Each dot is a group of test takers;
- * the top one in a hundred are in highlighter yellow; the blue dot is the student. The dots fall into place once;
- * scrolling the hero walks the blue dot up the curve while its label reads the percentile. With a mouse the hill is a
+ * the top one in a hundred are in highlighter yellow; the blue dot is an illustration of a climb, never the visitor's
+ * own percentile (D51): that is shown only on Progress, from a logged score. The dots fall into place once;
+ * scrolling the hero walks the blue dot up the curve while its label reads the percentile it has reached. With a mouse the hill is a
  * toy: it leans towards the pointer and swells under it, a drag turns it and it springs back when let go, and a click
  * sends a ripple through the crowd and returns it to its resting pose. Labels are HTML pinned to the scene. Loaded on
  * its own, after the page shows (D41).
@@ -324,12 +325,12 @@ export default function PercentileField({ track, onReady, onFail }: { track: Ref
   return (
     <div ref={box} className="absolute inset-0 touch-pan-y [@media(pointer:fine)]:cursor-grab [@media(pointer:fine)]:active:cursor-grabbing">
       <canvas ref={canvas} className="absolute inset-0 size-full" aria-hidden />
-      {/* Once the student reaches the yellow tail, their own label says it. */}
+      {/* Once the climber reaches the yellow tail, its own label says it. */}
       <div ref={topTag} className={cn("pointer-events-none absolute top-0 left-0 rounded-md bg-highlight px-2 py-0.5 text-sm font-semibold whitespace-nowrap text-highlight-foreground transition-opacity", pct >= 98 && "opacity-0")} aria-hidden>
         99th percentile
       </div>
       <div ref={youTag} className="pointer-events-none absolute top-0 left-0 rounded-md bg-primary px-2 py-0.5 text-sm font-semibold whitespace-nowrap text-primary-foreground" aria-hidden>
-        You, {ordinal(pct)} percentile
+        {ordinal(pct)} percentile
       </div>
     </div>
   );

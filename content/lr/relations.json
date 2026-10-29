@@ -1,0 +1,1639 @@
+[
+ {
+  "id": "rel-short-chains",
+  "title": "Photographs and short chains",
+  "type": "relations",
+  "sub": "five short puzzles",
+  "difficulty": "medium",
+  "minutes": 12,
+  "source": "original",
+  "since": "2026-10-31",
+  "intro": [
+   "Each question is a separate puzzle with its own people.",
+   "In every puzzle, all marriages are between a man and a woman, a person has at most one husband or wife at a time, a man's wife is the mother of his children (so \"my father's wife\" means \"my mother\"), and the children of one couple are full brothers and sisters. \"Brother\" and \"sister\" mean full brother and full sister, marriages are never between blood relatives, and different names stand for different people. Unless it is stated, you cannot assume anyone's sex. \"Only daughter\" means the person has exactly one daughter in all."
+  ],
+  "clues": [],
+  "questions": [
+   {
+    "stem": "Pointing to a girl in a photograph, Meera, a woman, says: \"Her mother is the only daughter of my mother.\" How is the girl related to Meera?",
+    "kind": "mcq",
+    "options": [
+     "Niece",
+     "Mother",
+     "Sister",
+     "Daughter"
+    ],
+    "answer": 3,
+    "uses": [],
+    "why": [
+     "Meera is a daughter of her own mother, who has only one daughter, so that only daughter is Meera.",
+     "The girl's mother is Meera: the girl is Meera's daughter."
+    ],
+    "fig": {
+     "layout": "tree",
+     "pad": false,
+     "seats": [
+      "Meera's mother",
+      "Meera",
+      "The girl"
+     ],
+     "at": [
+      [
+       50,
+       6
+      ],
+      [
+       50,
+       50
+      ],
+      [
+       50,
+       94
+      ]
+     ],
+     "links": [
+      [
+       0,
+       1,
+       ""
+      ],
+      [
+       1,
+       2,
+       ""
+      ]
+     ],
+     "lit": [
+      [
+       0
+      ],
+      [
+       0,
+       1
+      ]
+     ],
+     "frames": [
+      [
+       [
+        [
+         "woman"
+        ],
+        [
+         "her only daughter"
+        ],
+        []
+       ]
+      ],
+      [
+       [
+        [
+         "woman"
+        ],
+        [
+         "her only daughter"
+        ],
+        [
+         "Meera's daughter"
+        ]
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "stem": "P is the brother of Q. Q is the mother of R. S is the father of R. How is S related to P?",
+    "kind": "mcq",
+    "options": [
+     "Uncle",
+     "Brother-in-law",
+     "Nephew",
+     "Father-in-law"
+    ],
+    "answer": 1,
+    "uses": [],
+    "why": [
+     "Q is a woman (a mother) and P's sister. S and Q are R's parents, so S is Q's husband.",
+     "The husband of P's sister is P's brother-in-law. He is not a blood relative and not a generation apart, so not an uncle, nephew or father-in-law."
+    ],
+    "fig": {
+     "layout": "tree",
+     "pad": false,
+     "seats": [
+      "Parents",
+      "P",
+      "Q",
+      "S",
+      "R"
+     ],
+     "at": [
+      [
+       32,
+       6
+      ],
+      [
+       14,
+       50
+      ],
+      [
+       50,
+       50
+      ],
+      [
+       86,
+       50
+      ],
+      [
+       68,
+       94
+      ]
+     ],
+     "links": [
+      [
+       0,
+       1,
+       ""
+      ],
+      [
+       0,
+       2,
+       ""
+      ],
+      [
+       2,
+       3,
+       "="
+      ],
+      [
+       2,
+       4,
+       ""
+      ]
+     ],
+     "lit": [
+      [
+       0,
+       1,
+       2,
+       3
+      ],
+      [
+       0,
+       1,
+       2,
+       3
+      ]
+     ],
+     "frames": [
+      [
+       [
+        [
+         "P and Q's"
+        ],
+        [
+         "man"
+        ],
+        [
+         "woman"
+        ],
+        [
+         "man, Q's husband"
+        ],
+        [
+         "child"
+        ]
+       ]
+      ],
+      [
+       [
+        [
+         "P and Q's"
+        ],
+        [
+         "man"
+        ],
+        [
+         "woman"
+        ],
+        [
+         "P's brother-in-law"
+        ],
+        [
+         "child"
+        ]
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "stem": "Tara is the daughter of the brother of Rohan's father's wife. How is Tara related to Rohan?",
+    "kind": "mcq",
+    "options": [
+     "Cousin",
+     "Sister",
+     "Niece",
+     "Aunt"
+    ],
+    "answer": 0,
+    "uses": [],
+    "why": [
+     "Rohan's father's wife is Rohan's mother, so Tara's father is Rohan's mother's brother, his maternal uncle.",
+     "The child of a parent's brother is a cousin."
+    ],
+    "fig": {
+     "layout": "tree",
+     "pad": false,
+     "seats": [
+      "Grandparents",
+      "Rohan's father",
+      "Rohan's mother",
+      "Her brother",
+      "Rohan",
+      "Tara"
+     ],
+     "at": [
+      [
+       61,
+       6
+      ],
+      [
+       9,
+       50
+      ],
+      [
+       42,
+       50
+      ],
+      [
+       80,
+       50
+      ],
+      [
+       26,
+       94
+      ],
+      [
+       80,
+       94
+      ]
+     ],
+     "links": [
+      [
+       0,
+       2,
+       ""
+      ],
+      [
+       0,
+       3,
+       ""
+      ],
+      [
+       1,
+       2,
+       "="
+      ],
+      [
+       2,
+       4,
+       ""
+      ],
+      [
+       3,
+       5,
+       ""
+      ]
+     ],
+     "lit": [
+      [
+       0,
+       1,
+       2,
+       3
+      ],
+      [
+       0,
+       1,
+       2,
+       3,
+       4
+      ]
+     ],
+     "frames": [
+      [
+       [
+        [
+         "her parents"
+        ],
+        [
+         "man"
+        ],
+        [
+         "his father's wife"
+        ],
+        [
+         "Rohan's uncle"
+        ],
+        [
+         "child"
+        ],
+        []
+       ]
+      ],
+      [
+       [
+        [
+         "her parents"
+        ],
+        [
+         "man"
+        ],
+        [
+         "his father's wife"
+        ],
+        [
+         "Rohan's uncle"
+        ],
+        [
+         "child"
+        ],
+        [
+         "Rohan's cousin"
+        ]
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "stem": "X is the sister of Y. Y is the father of Z. Z is the husband of W. How is W related to X?",
+    "kind": "mcq",
+    "options": [
+     "Mother-in-law",
+     "Niece-in-law",
+     "Daughter-in-law",
+     "Sister-in-law"
+    ],
+    "answer": 1,
+    "uses": [],
+    "why": [
+     "Y is a man (a father) and X's brother, so Z, Y's son, is X's nephew.",
+     "W is the wife of X's nephew: X's niece-in-law. A daughter-in-law would need Z to be X's son."
+    ],
+    "fig": {
+     "layout": "tree",
+     "pad": false,
+     "seats": [
+      "Parents",
+      "X",
+      "Y",
+      "Z",
+      "W"
+     ],
+     "at": [
+      [
+       34,
+       6
+      ],
+      [
+       14,
+       50
+      ],
+      [
+       54,
+       50
+      ],
+      [
+       54,
+       94
+      ],
+      [
+       88,
+       94
+      ]
+     ],
+     "links": [
+      [
+       0,
+       1,
+       ""
+      ],
+      [
+       0,
+       2,
+       ""
+      ],
+      [
+       2,
+       3,
+       ""
+      ],
+      [
+       3,
+       4,
+       "="
+      ]
+     ],
+     "lit": [
+      [
+       0,
+       1,
+       2
+      ],
+      [
+       0,
+       1,
+       2,
+       3
+      ]
+     ],
+     "frames": [
+      [
+       [
+        [
+         "X and Y's"
+        ],
+        [
+         "woman"
+        ],
+        [
+         "man"
+        ],
+        [
+         "X's nephew"
+        ],
+        []
+       ]
+      ],
+      [
+       [
+        [
+         "X and Y's"
+        ],
+        [
+         "woman"
+        ],
+        [
+         "man"
+        ],
+        [
+         "X's nephew"
+        ],
+        [
+         "X's niece-in-law"
+        ]
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "stem": "Pointing to a man, Kavya, a woman, says: \"His mother is the only daughter of my maternal grandfather.\" How is the man related to Kavya?",
+    "kind": "mcq",
+    "options": [
+     "Brother",
+     "Maternal uncle",
+     "Cousin",
+     "Nephew"
+    ],
+    "answer": 0,
+    "uses": [],
+    "why": [
+     "Kavya's mother is a daughter of Kavya's maternal grandfather, who has only one daughter. So the man's mother is Kavya's mother.",
+     "Same mother: the man is Kavya's brother."
+    ],
+    "fig": {
+     "layout": "tree",
+     "pad": false,
+     "seats": [
+      "Grandfather",
+      "Kavya's mother",
+      "Kavya",
+      "The man"
+     ],
+     "at": [
+      [
+       50,
+       6
+      ],
+      [
+       50,
+       50
+      ],
+      [
+       28,
+       94
+      ],
+      [
+       72,
+       94
+      ]
+     ],
+     "links": [
+      [
+       0,
+       1,
+       ""
+      ],
+      [
+       1,
+       2,
+       ""
+      ],
+      [
+       1,
+       3,
+       ""
+      ]
+     ],
+     "lit": [
+      [
+       0,
+       1
+      ],
+      [
+       0,
+       1,
+       2
+      ]
+     ],
+     "frames": [
+      [
+       [
+        [
+         "Kavya's mother's father"
+        ],
+        [
+         "his only daughter"
+        ],
+        [
+         "woman"
+        ],
+        []
+       ]
+      ],
+      [
+       [
+        [
+         "Kavya's mother's father"
+        ],
+        [
+         "his only daughter"
+        ],
+        [
+         "woman"
+        ],
+        [
+         "Kavya's brother"
+        ]
+       ]
+      ]
+     ]
+    }
+   }
+  ],
+  "solution": {
+   "steps": [
+    "Write the sentence as a chain of short steps and read it from the end: \"her mother\", then \"the only daughter of my mother\", then \"that is me\". \"Only daughter\" pins one person down.",
+    "Fix sexes only from the words: mother and wife are women, father, brother and husband are men. Someone called only a child or sibling could be either.",
+    "Shorten chains as you go: father's wife is mother; mother's brother is maternal uncle; brother's son is nephew.",
+    "A relation through a marriage takes \"-in-law\": a sister's husband is a brother-in-law, a nephew's wife a niece-in-law."
+   ]
+  }
+ },
+ {
+  "id": "rel-eight-family",
+  "title": "Eight in a family",
+  "type": "relations",
+  "sub": "one family, six clues",
+  "difficulty": "hard",
+  "minutes": 14,
+  "source": "original",
+  "since": "2026-10-31",
+  "intro": [
+   "Eight people, Anil, Bela, Chetan, Deepa, Esha, Farhan, Gita and Hari, are the only people to be considered. Anil, Bela, Esha and Hari are not the children of anyone in the group.",
+   "All marriages are between a man and a woman, never between blood relatives; a person has at most one husband or wife, a person's spouse is the other parent of their children, and \"brother\" and \"sister\" mean full brother and full sister. A person's sex is known only when a clue implies it."
+  ],
+  "clues": [
+   "Bela is the wife of Anil.",
+   "Chetan is a son of Bela, and Deepa is a daughter of Bela. Bela has no other children.",
+   "Esha is the sister-in-law of Deepa, and the mother of Farhan.",
+   "Hari is the son-in-law of Bela.",
+   "Gita is the niece of Chetan.",
+   "Hari is the uncle of Farhan, and Farhan is a boy."
+  ],
+  "questions": [
+   {
+    "stem": "How is Esha related to Gita?",
+    "kind": "mcq",
+    "options": [
+     "Grandmother",
+     "Sister-in-law",
+     "Mother",
+     "Aunt"
+    ],
+    "answer": 3,
+    "uses": [
+     2,
+     3,
+     4,
+     5
+    ],
+    "why": [
+     "Hari, Bela's son-in-law, married her only daughter, Deepa. Hari has no siblings in the group, so Esha, Deepa's sister-in-law, is the wife of Deepa's brother Chetan.",
+     "Gita is Chetan's niece, so the daughter of his only sister, Deepa. Esha is the wife of Gita's maternal uncle: her aunt."
+    ]
+   },
+   {
+    "stem": "How is Hari related to Farhan?",
+    "kind": "mcq",
+    "options": [
+     "Brother-in-law",
+     "Cousin",
+     "Uncle",
+     "Father"
+    ],
+    "answer": 2,
+    "uses": [
+     3,
+     4,
+     6
+    ],
+    "why": [
+     "Farhan is the son of Esha and Chetan. Hari is the husband of Deepa, Chetan's sister and so Farhan's paternal aunt.",
+     "The husband of Farhan's aunt is his uncle, as clue 6 says."
+    ]
+   },
+   {
+    "stem": "Which pair of people in the group are cousins of each other?",
+    "kind": "mcq",
+    "options": [
+     "Farhan and Gita",
+     "Anil and Hari",
+     "Deepa and Esha",
+     "Chetan and Hari"
+    ],
+    "answer": 0,
+    "uses": [
+     2,
+     3,
+     4,
+     5
+    ],
+    "why": [
+     "Chetan and Deepa are siblings; Farhan is Chetan's son and Gita is Deepa's daughter.",
+     "Children of two siblings are cousins: Farhan and Gita."
+    ]
+   },
+   {
+    "stem": "How many of the eight people are women?",
+    "kind": "tita",
+    "answer": "4",
+    "uses": [
+     1,
+     2,
+     3,
+     5
+    ],
+    "why": [
+     "Women: Bela (a wife), Deepa (a daughter), Esha (a mother) and Gita (a niece).",
+     "Men: Anil, Chetan, Farhan and Hari. So 4."
+    ]
+   },
+   {
+    "stem": "How is Hari related to Esha's husband?",
+    "kind": "mcq",
+    "options": [
+     "Father-in-law",
+     "Cousin",
+     "Brother-in-law",
+     "Nephew"
+    ],
+    "answer": 2,
+    "uses": [
+     2,
+     3,
+     4
+    ],
+    "why": [
+     "Esha's husband is Chetan, and Hari is the husband of Chetan's sister Deepa.",
+     "So Hari is Chetan's brother-in-law."
+    ]
+   }
+  ],
+  "solution": {
+   "steps": [
+    "Generations first: Anil and Bela, then their children Chetan and Deepa with Esha and Hari, then Farhan and Gita. Sexes follow from the words: wife, son, daughter, mother, boy, son-in-law.",
+    "Hari is Bela's son-in-law, so he married her daughter, and Bela's only daughter is Deepa.",
+    "A sister-in-law is a brother's wife or a spouse's sister. Hari has no siblings in the group, so Esha is the wife of Deepa's brother Chetan, and Farhan is their son.",
+    "Gita is Chetan's niece, so the daughter of his only sister: Deepa and Hari's daughter."
+   ],
+   "cases": 1,
+   "diagram": {
+    "layout": "tree",
+    "pad": false,
+    "seats": [
+     "Anil",
+     "Bela",
+     "Chetan",
+     "Deepa",
+     "Esha",
+     "Farhan",
+     "Gita",
+     "Hari"
+    ],
+    "at": [
+     [
+      36,
+      6
+     ],
+     [
+      64,
+      6
+     ],
+     [
+      36,
+      50
+     ],
+     [
+      64,
+      50
+     ],
+     [
+      10,
+      50
+     ],
+     [
+      24,
+      94
+     ],
+     [
+      76,
+      94
+     ],
+     [
+      90,
+      50
+     ]
+    ],
+    "links": [
+     [
+      0,
+      1,
+      "="
+     ],
+     [
+      1,
+      2,
+      ""
+     ],
+     [
+      1,
+      3,
+      ""
+     ],
+     [
+      4,
+      2,
+      "="
+     ],
+     [
+      3,
+      7,
+      "="
+     ],
+     [
+      2,
+      5,
+      ""
+     ],
+     [
+      3,
+      6,
+      ""
+     ]
+    ],
+    "lit": [
+     [
+      0,
+      1,
+      2
+     ],
+     [
+      0,
+      1,
+      2,
+      4
+     ],
+     [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    ],
+    "frames": [
+     [
+      [
+       [
+        "man"
+       ],
+       [
+        "woman"
+       ],
+       [
+        "man"
+       ],
+       [
+        "woman"
+       ],
+       [],
+       [],
+       [],
+       []
+      ]
+     ],
+     [
+      [
+       [
+        "man"
+       ],
+       [
+        "woman"
+       ],
+       [
+        "man"
+       ],
+       [
+        "woman"
+       ],
+       [],
+       [],
+       [],
+       [
+        "man, Deepa's husband"
+       ]
+      ]
+     ],
+     [
+      [
+       [
+        "man"
+       ],
+       [
+        "woman"
+       ],
+       [
+        "man"
+       ],
+       [
+        "woman"
+       ],
+       [
+        "woman, Chetan's wife"
+       ],
+       [
+        "boy"
+       ],
+       [],
+       [
+        "man, Deepa's husband"
+       ]
+      ]
+     ],
+     [
+      [
+       [
+        "man"
+       ],
+       [
+        "woman"
+       ],
+       [
+        "man"
+       ],
+       [
+        "woman"
+       ],
+       [
+        "woman, Chetan's wife"
+       ],
+       [
+        "boy"
+       ],
+       [
+        "girl, Deepa's daughter"
+       ],
+       [
+        "man, Deepa's husband"
+       ]
+      ]
+     ]
+    ],
+    "note": "A double line is a marriage; a line down is a parent to a child."
+   }
+  }
+ },
+ {
+  "id": "rel-codes-traps",
+  "title": "Codes, traps and minimum families",
+  "type": "relations",
+  "sub": "symbol codes, undetermined relations",
+  "difficulty": "hard",
+  "minutes": 16,
+  "source": "original",
+  "since": "2026-10-31",
+  "intro": [
+   "Each question is a separate puzzle.",
+   "Unless it is stated, you cannot assume anyone's sex. A couple's children are full brothers and sisters of one another, a man's wife is the mother of his children, marriages are never between blood relatives, and different letters or names stand for different people. A symbol such as P x Q means P is related to Q as the question's key says."
+  ],
+  "clues": [],
+  "questions": [
+   {
+    "stem": "In a code, 'A x B' means 'A is the father of B', 'A - B' means 'A is the brother of B', 'A / B' means 'A is the sister of B', and 'A + B' means 'A is the mother of B'. In the expression P x Q - R / S + T, how is P related to T?",
+    "kind": "mcq",
+    "options": [
+     "Uncle",
+     "Paternal grandfather",
+     "Maternal grandfather",
+     "Father-in-law"
+    ],
+    "answer": 2,
+    "uses": [],
+    "why": [
+     "P is the father of Q; Q, R and S are siblings, so P is S's father too. S is a woman (T's mother).",
+     "So P is the father of T's mother: T's maternal grandfather. Paternal would need S to marry her own brother."
+    ],
+    "fig": {
+     "layout": "tree",
+     "pad": false,
+     "seats": [
+      "P",
+      "Q",
+      "R",
+      "S",
+      "S's husband",
+      "T"
+     ],
+     "at": [
+      [
+       34,
+       6
+      ],
+      [
+       10,
+       50
+      ],
+      [
+       32,
+       50
+      ],
+      [
+       56,
+       50
+      ],
+      [
+       88,
+       50
+      ],
+      [
+       72,
+       94
+      ]
+     ],
+     "links": [
+      [
+       0,
+       1,
+       ""
+      ],
+      [
+       0,
+       2,
+       ""
+      ],
+      [
+       0,
+       3,
+       ""
+      ],
+      [
+       3,
+       4,
+       "="
+      ],
+      [
+       3,
+       5,
+       ""
+      ]
+     ],
+     "lit": [
+      [
+       0,
+       1,
+       2
+      ],
+      [
+       0,
+       1,
+       2,
+       3,
+       4
+      ]
+     ],
+     "frames": [
+      [
+       [
+        [
+         "man"
+        ],
+        [
+         "man"
+        ],
+        [
+         "woman"
+        ],
+        [
+         "woman"
+        ],
+        [],
+        []
+       ]
+      ],
+      [
+       [
+        [
+         "T's maternal grandfather"
+        ],
+        [
+         "man"
+        ],
+        [
+         "woman"
+        ],
+        [
+         "woman"
+        ],
+        [
+         "T's father"
+        ],
+        [
+         "S's child"
+        ]
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "stem": "Pointing to Anu, Rohit, a man, says: \"Her brother is the only son of my mother's mother.\" How is Anu related to Rohit?",
+    "kind": "mcq",
+    "options": [
+     "Maternal aunt",
+     "Cannot be determined",
+     "Mother",
+     "Sister"
+    ],
+    "answer": 1,
+    "uses": [],
+    "why": [
+     "Anu's brother is the only son of Rohit's maternal grandmother, so Anu is a daughter of that grandmother.",
+     "A daughter of his maternal grandmother is either Rohit's mother or his mother's sister. Nothing tells them apart: cannot be determined."
+    ],
+    "fig": {
+     "layout": "tree",
+     "pad": false,
+     "seats": [
+      "Grandmother",
+      "Her only son",
+      "Rohit's mother",
+      "Anu",
+      "Rohit"
+     ],
+     "at": [
+      [
+       50,
+       6
+      ],
+      [
+       14,
+       50
+      ],
+      [
+       50,
+       50
+      ],
+      [
+       86,
+       50
+      ],
+      [
+       50,
+       94
+      ]
+     ],
+     "links": [
+      [
+       0,
+       1,
+       ""
+      ],
+      [
+       0,
+       2,
+       ""
+      ],
+      [
+       0,
+       3,
+       ""
+      ],
+      [
+       2,
+       4,
+       ""
+      ]
+     ],
+     "lit": [
+      [
+       0,
+       1,
+       3
+      ],
+      [
+       0,
+       1,
+       2,
+       3
+      ]
+     ],
+     "frames": [
+      [
+       [
+        [
+         "Rohit's mother's mother"
+        ],
+        [
+         "man"
+        ],
+        [],
+        [
+         "his sister"
+        ],
+        []
+       ]
+      ],
+      [
+       [
+        [
+         "Rohit's mother's mother"
+        ],
+        [
+         "man"
+        ],
+        [],
+        [
+         "Rohit's mother, or her sister?"
+        ],
+        [
+         "man"
+        ]
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "stem": "A family has exactly 1 grandfather, 2 fathers, 2 mothers, 3 sons, 1 daughter and 2 brothers. Here a grandfather is a man with a grandchild in the family, a father (mother) is a man (woman) with a child in the family, a son (daughter) is a man (woman) who is a child of someone in the family, and a brother is a man with a brother or sister in the family. One person can fit several descriptions, both parents of any child in the family are themselves members, and those who married into the family need not have parents in it. What is the smallest number of people the family can have?",
+    "kind": "tita",
+    "answer": "7",
+    "uses": [],
+    "why": [
+     "The grandfather G, his wife W, their child C, C's spouse S and C's child D are five different people. Only C and D among them are certainly children, and 3 sons and 1 daughter need four children, so at least two more people: 7 (making any of G, W, S a child brings in two parents instead).",
+     "Seven works: G and W have sons A and B and daughter D; D and her husband H have a son E. Fathers G and H, mothers W and D, sons A, B and E, daughter D, brothers A and B, grandfather G."
+    ],
+    "fig": {
+     "layout": "tree",
+     "pad": false,
+     "seats": [
+      "G",
+      "W",
+      "A",
+      "B",
+      "D",
+      "H",
+      "E"
+     ],
+     "at": [
+      [
+       34,
+       6
+      ],
+      [
+       66,
+       6
+      ],
+      [
+       12,
+       50
+      ],
+      [
+       38,
+       50
+      ],
+      [
+       66,
+       50
+      ],
+      [
+       92,
+       50
+      ],
+      [
+       79,
+       94
+      ]
+     ],
+     "links": [
+      [
+       0,
+       1,
+       "="
+      ],
+      [
+       1,
+       2,
+       ""
+      ],
+      [
+       1,
+       3,
+       ""
+      ],
+      [
+       1,
+       4,
+       ""
+      ],
+      [
+       4,
+       5,
+       "="
+      ],
+      [
+       4,
+       6,
+       ""
+      ]
+     ],
+     "lit": [
+      [
+       0,
+       3,
+       4,
+       5
+      ],
+      [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5
+      ]
+     ],
+     "frames": [
+      [
+       [
+        [
+         "grandfather"
+        ],
+        [
+         "mother"
+        ],
+        [],
+        [],
+        [
+         "daughter, mother"
+        ],
+        [
+         "father"
+        ],
+        [
+         "son"
+        ]
+       ]
+      ],
+      [
+       [
+        [
+         "grandfather, father"
+        ],
+        [
+         "mother"
+        ],
+        [
+         "son, brother"
+        ],
+        [
+         "son, brother"
+        ],
+        [
+         "daughter, mother"
+        ],
+        [
+         "father"
+        ],
+        [
+         "son"
+        ]
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "stem": "In a code, 'A @ B' means 'A is the daughter of B', 'A # B' means 'A is the husband of B', 'A $ B' means 'A is the mother of B', and 'A & B' means 'A is the brother of B'. In the expression K @ L # M $ N & O $ P, how is K related to P?",
+    "kind": "mcq",
+    "options": [
+     "Cousin",
+     "Paternal aunt",
+     "Mother",
+     "Maternal aunt"
+    ],
+    "answer": 3,
+    "uses": [],
+    "why": [
+     "L is M's husband and M is N's mother, so L and M are the parents of K, N and O, who are siblings. K is a daughter, so O's sister.",
+     "O is P's mother, so K is the sister of P's mother: P's maternal aunt."
+    ],
+    "fig": {
+     "layout": "tree",
+     "pad": false,
+     "seats": [
+      "L",
+      "M",
+      "K",
+      "N",
+      "O",
+      "P"
+     ],
+     "at": [
+      [
+       36,
+       6
+      ],
+      [
+       64,
+       6
+      ],
+      [
+       20,
+       50
+      ],
+      [
+       50,
+       50
+      ],
+      [
+       80,
+       50
+      ],
+      [
+       80,
+       94
+      ]
+     ],
+     "links": [
+      [
+       0,
+       1,
+       "="
+      ],
+      [
+       1,
+       2,
+       ""
+      ],
+      [
+       1,
+       3,
+       ""
+      ],
+      [
+       1,
+       4,
+       ""
+      ],
+      [
+       4,
+       5,
+       ""
+      ]
+     ],
+     "lit": [
+      [
+       0,
+       1,
+       2,
+       3
+      ],
+      [
+       0,
+       1,
+       2,
+       3,
+       4
+      ]
+     ],
+     "frames": [
+      [
+       [
+        [
+         "man"
+        ],
+        [
+         "woman"
+        ],
+        [
+         "woman"
+        ],
+        [
+         "man"
+        ],
+        [
+         "woman"
+        ],
+        []
+       ]
+      ],
+      [
+       [
+        [
+         "man"
+        ],
+        [
+         "woman"
+        ],
+        [
+         "P's maternal aunt"
+        ],
+        [
+         "man"
+        ],
+        [
+         "woman"
+        ],
+        [
+         "O's child"
+        ]
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "stem": "Pointing to a man, Arjun says: \"His mother is the only daughter of my father's mother.\" How is the man related to Arjun?",
+    "kind": "mcq",
+    "options": [
+     "Cousin",
+     "Uncle",
+     "Nephew",
+     "Brother"
+    ],
+    "answer": 0,
+    "uses": [],
+    "why": [
+     "The only daughter of Arjun's paternal grandmother is his father's sister, Arjun's paternal aunt.",
+     "Her son is the child of a sibling of Arjun's father: a cousin."
+    ],
+    "fig": {
+     "layout": "tree",
+     "pad": false,
+     "seats": [
+      "Grandmother",
+      "Arjun's father",
+      "His sister",
+      "Arjun",
+      "The man"
+     ],
+     "at": [
+      [
+       50,
+       6
+      ],
+      [
+       28,
+       50
+      ],
+      [
+       72,
+       50
+      ],
+      [
+       28,
+       94
+      ],
+      [
+       72,
+       94
+      ]
+     ],
+     "links": [
+      [
+       0,
+       1,
+       ""
+      ],
+      [
+       0,
+       2,
+       ""
+      ],
+      [
+       1,
+       3,
+       ""
+      ],
+      [
+       2,
+       4,
+       ""
+      ]
+     ],
+     "lit": [
+      [
+       0,
+       1,
+       2
+      ],
+      [
+       0,
+       1,
+       2,
+       3
+      ]
+     ],
+     "frames": [
+      [
+       [
+        [
+         "Arjun's father's mother"
+        ],
+        [
+         "man"
+        ],
+        [
+         "her only daughter, Arjun's aunt"
+        ],
+        [
+         "the speaker"
+        ],
+        []
+       ]
+      ],
+      [
+       [
+        [
+         "Arjun's father's mother"
+        ],
+        [
+         "man"
+        ],
+        [
+         "her only daughter, Arjun's aunt"
+        ],
+        [
+         "the speaker"
+        ],
+        [
+         "Arjun's cousin"
+        ]
+       ]
+      ]
+     ]
+    }
+   }
+  ],
+  "solution": {
+   "steps": [
+    "Decode a symbol chain from left to right, noting each person's sex as soon as a relation gives it. Then collapse it: siblings share both parents.",
+    "\"The only son of my mother's mother\" makes his sister a daughter of the maternal grandmother: the mother herself or her sister. If nothing rules one out, the answer is \"cannot be determined\".",
+    "For the smallest family, give each role to as few people as possible (one man can be a son, a father and a brother), but every marriage needs two people.",
+    "When two relations are chained, find the middle person's sex first: it decides paternal or maternal, uncle or aunt."
+   ]
+  }
+ }
+]

@@ -1,0 +1,1217 @@
+[
+ {
+  "id": "clk-station-clock",
+  "title": "The station clock",
+  "type": "clocks",
+  "sub": "hand angles, a gaining clock",
+  "difficulty": "medium",
+  "minutes": 12,
+  "source": "original",
+  "since": "2026-10-31",
+  "intro": [
+   "Each question is a separate puzzle.",
+   "All questions use an ordinary analog clock with a 12-hour dial and hour and minute hands, both moving smoothly (the minute hand turns 6 degrees a minute, the hour hand 0.5 degrees a minute). \"The angle between the hands\" is the smaller angle, from 0 to 180 degrees. A faulty clock runs at a steady, wrong rate."
+  ],
+  "clues": [],
+  "questions": [
+   {
+    "stem": "How many times do the hands of a correct clock make a right angle (exactly 90 degrees) between 12:00 noon and 12:00 midnight? The hands are not at a right angle at either end.",
+    "kind": "tita",
+    "answer": "22",
+    "uses": [],
+    "why": [
+     "The minute hand gains 5.5 degrees a minute on the hour hand, so the gap goes round 360 degrees every 720/11 minutes: 11 times in 12 hours.",
+     "Each round passes 90 and 270 degrees, both right angles: 11 x 2 = 22."
+    ],
+    "fig": {
+     "layout": "clock",
+     "pad": false,
+     "seats": [
+      "Gap 90 degrees",
+      "Gap 270 degrees"
+     ],
+     "frames": [
+      [
+       [
+        [
+         "12:16 4/11",
+         "90°"
+        ],
+        []
+       ]
+      ],
+      [
+       [
+        [
+         "12:16 4/11",
+         "90°"
+        ],
+        [
+         "12:49 1/11",
+         "90°"
+        ]
+       ]
+      ]
+     ],
+     "note": "A gap of 270 degrees one way is 90 the other: a right angle too."
+    }
+   },
+   {
+    "stem": "What is the angle between the hands at 8:24, in degrees?",
+    "kind": "tita",
+    "answer": "108",
+    "uses": [],
+    "why": [
+     "Hour hand: 8 x 30 + 24 x 0.5 = 252 degrees. Minute hand: 24 x 6 = 144 degrees.",
+     "252 - 144 = 108, already under 180."
+    ],
+    "fig": {
+     "layout": "clock",
+     "pad": false,
+     "seats": [
+      "8:24"
+     ],
+     "frames": [
+      [
+       [
+        [
+         "8:24"
+        ]
+       ]
+      ],
+      [
+       [
+        [
+         "8:24",
+         "108°"
+        ]
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "stem": "At what time between 4 o'clock and 5 o'clock are the hands of a correct clock exactly opposite each other (180 degrees apart)?",
+    "kind": "mcq",
+    "options": [
+     "4:54 5/11",
+     "4:55",
+     "4:53 7/11",
+     "4:54 6/11"
+    ],
+    "answer": 3,
+    "uses": [],
+    "why": [
+     "At m minutes past 4 the hour hand is at 120 + 0.5m and the minute hand at 6m. Opposite: 6m - (120 + 0.5m) = 180, so 5.5m = 300.",
+     "m = 600/11 = 54 6/11: 4:54 6/11."
+    ],
+    "fig": {
+     "layout": "clock",
+     "pad": false,
+     "seats": [
+      "Between 4 and 5"
+     ],
+     "frames": [
+      [
+       [
+        [
+         "4:00",
+         "120°"
+        ]
+       ]
+      ],
+      [
+       [
+        [
+         "4:54 6/11",
+         "180°"
+        ]
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "stem": "Between 2:00 and 3:00 the angle between the hands is exactly 33 degrees at two different moments. How many minutes pass between these two moments?",
+    "kind": "tita",
+    "answer": "12",
+    "uses": [],
+    "why": [
+     "At m minutes past 2 the gap is |60 - 5.5m|. Setting it to 33: 5.5m = 27 or 5.5m = 93, so m = 54/11 or 186/11.",
+     "The difference is 132/11 = 12 minutes."
+    ],
+    "fig": {
+     "layout": "clock",
+     "pad": false,
+     "seats": [
+      "First",
+      "Second"
+     ],
+     "frames": [
+      [
+       [
+        [
+         "2:04 10/11",
+         "33°"
+        ],
+        []
+       ]
+      ],
+      [
+       [
+        [
+         "2:04 10/11",
+         "33°"
+        ],
+        [
+         "2:16 10/11",
+         "33°"
+        ]
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "stem": "A clock gains 5 minutes every hour of true time. It was set right at 8:00 AM. Later the same day the clock shows 9:00 PM. How many minutes of true time have passed since 8:00 AM?",
+    "kind": "tita",
+    "answer": "720",
+    "uses": [],
+    "why": [
+     "The clock shows 65 minutes for every 60 true minutes. It has moved 13 hours = 780 clock minutes.",
+     "780 x 60/65 = 720 true minutes."
+    ],
+    "fig": {
+     "layout": "clock",
+     "pad": false,
+     "seats": [
+      "The clock shows",
+      "True time"
+     ],
+     "frames": [
+      [
+       [
+        [
+         "9:00"
+        ],
+        []
+       ]
+      ],
+      [
+       [
+        [
+         "9:00"
+        ],
+        [
+         "8:00"
+        ]
+       ]
+      ]
+     ],
+     "note": "Both started at 8:00; the clock ran 65 minutes for every 60."
+    }
+   }
+  ],
+  "solution": {
+   "steps": [
+    "Measure from 12 in degrees: the minute hand moves 6 a minute, the hour hand 0.5, so the minute hand gains 5.5 degrees a minute.",
+    "For a time between h and h + 1 o'clock, the hour hand is at 30h + 0.5m and the minute hand at 6m; set the gap equal to the angle (or 360 minus it) and solve for m.",
+    "For counting, the gap goes round once every 720/11 minutes, 11 times in 12 hours; most angles happen twice a round.",
+    "For a faulty clock, measure from when it was right: clock time passed over true time passed is its rate (65/60 for one gaining 5 minutes an hour)."
+   ]
+  }
+ },
+ {
+  "id": "clk-mirrors-drift",
+  "title": "Mirrors, drifting clocks and counting",
+  "type": "clocks",
+  "sub": "mirror images, two faulty clocks",
+  "difficulty": "hard",
+  "minutes": 15,
+  "source": "original",
+  "since": "2026-10-31",
+  "intro": [
+   "Each question is a separate puzzle.",
+   "All questions use an ordinary analog clock with a 12-hour dial and hour and minute hands, both moving smoothly (the minute hand turns 6 degrees a minute, the hour hand 0.5 degrees a minute). \"The angle between the hands\" is the smaller angle, from 0 to 180 degrees. A faulty clock runs at a steady, wrong rate. In the mirror question the clock is seen in a flat mirror beside it: left and right swap, up and down do not."
+  ],
+  "clues": [],
+  "questions": [
+   {
+    "stem": "A wall clock is seen in a flat vertical mirror, and the image shows the time 8:20. What is the actual time?",
+    "kind": "mcq",
+    "options": [
+     "3:20",
+     "4:40",
+     "3:40",
+     "4:20"
+    ],
+    "answer": 2,
+    "uses": [],
+    "why": [
+     "A mirror swaps left and right, so the image shows 12:00 minus the actual time.",
+     "Actual time: 12:00 - 8:20 = 3:40."
+    ],
+    "fig": {
+     "layout": "clock",
+     "pad": false,
+     "seats": [
+      "In the mirror",
+      "Actual"
+     ],
+     "frames": [
+      [
+       [
+        [
+         "8:20"
+        ],
+        []
+       ]
+      ],
+      [
+       [
+        [
+         "8:20"
+        ],
+        [
+         "3:40"
+        ]
+       ]
+      ]
+     ],
+     "note": "A mirror swaps left and right: the two times add up to 12:00."
+    }
+   },
+   {
+    "stem": "Two clocks are set right together at noon on a Monday. One gains 3 minutes every hour; the other loses 2 minutes every hour. How many hours later do the two clocks next show the same time on their 12-hour dials?",
+    "kind": "tita",
+    "answer": "144",
+    "uses": [],
+    "why": [
+     "They drift apart by 3 + 2 = 5 minutes an hour.",
+     "A 12-hour dial repeats after 720 minutes, so they agree again after 720/5 = 144 hours."
+    ]
+   },
+   {
+    "stem": "How many times are the hands of a correct clock exactly opposite each other (180 degrees apart) between 3:00 PM and 9:00 PM, counting 3:00 PM and 9:00 PM themselves if they qualify?",
+    "kind": "tita",
+    "answer": "5",
+    "uses": [],
+    "why": [
+     "The hands are opposite every 720/11 minutes: in this stretch at 3:49 1/11, 4:54 6/11, 6:00, 7:05 5/11 and 8:10 10/11.",
+     "At 3:00 and 9:00 they are at 90 degrees, so neither end counts: 5."
+    ],
+    "fig": {
+     "layout": "clock",
+     "pad": false,
+     "seats": [
+      "1st",
+      "2nd",
+      "3rd",
+      "4th",
+      "5th"
+     ],
+     "frames": [
+      [
+       [
+        [
+         "3:49 1/11",
+         "180°"
+        ],
+        [
+         "4:54 6/11",
+         "180°"
+        ],
+        [
+         "6:00",
+         "180°"
+        ],
+        [
+         "7:05 5/11",
+         "180°"
+        ],
+        [
+         "8:10 10/11",
+         "180°"
+        ]
+       ]
+      ],
+      [
+       [
+        [
+         "3:49 1/11",
+         "180°"
+        ],
+        [
+         "4:54 6/11",
+         "180°"
+        ],
+        [
+         "6:00",
+         "180°"
+        ],
+        [
+         "7:05 5/11",
+         "180°"
+        ],
+        [
+         "8:10 10/11",
+         "180°"
+        ]
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "stem": "Starting at 12:00 noon, the hands of a correct clock form a right angle for the 15th time (12:00 itself is not counted). How many minutes after noon is that, to the nearest whole minute?",
+    "kind": "tita",
+    "answer": "475",
+    "uses": [],
+    "why": [
+     "Right angles come when 5.5t = 90 + 180k for k = 0, 1, 2 and so on; the 15th has k = 14.",
+     "t = 2610/5.5 = 474.55 minutes, which rounds to 475."
+    ],
+    "fig": {
+     "layout": "clock",
+     "pad": false,
+     "seats": [
+      "Right angle"
+     ],
+     "frames": [
+      [
+       [
+        [
+         "12:16 4/11",
+         "90°"
+        ]
+       ]
+      ],
+      [
+       [
+        [
+         "7:54 6/11",
+         "90°"
+        ]
+       ]
+      ]
+     ],
+     "note": "The first right angle, then the 15th."
+    }
+   },
+   {
+    "stem": "A watch that gains time at a steady rate is 2 minutes slow at noon on a Sunday and 4 minutes 48 seconds fast at 2:00 PM on the following Sunday. After how many hours from noon on the first Sunday was it correct?",
+    "kind": "tita",
+    "answer": "50",
+    "uses": [],
+    "why": [
+     "The interval is 7 days 2 hours = 170 hours, in which the watch gains 2 min + 4 min 48 s = 408 seconds.",
+     "It was right once it had gained the first 120 seconds: 120/408 x 170 = 50 hours."
+    ]
+   }
+  ],
+  "solution": {
+   "steps": [
+    "Mirror: actual time = 12:00 minus the time in the mirror (add 12 hours first if the mirror shows between 12:00 and 1:00).",
+    "Two clocks drifting in opposite directions: add the drifts. They agree again when the gap reaches 12 hours, not 24.",
+    "For \"how many times\", list the moments from the first one, 720/11 minutes apart for opposite or coinciding hands, 360/11 apart for right angles, and check both ends.",
+    "A steadily gaining watch's error grows in proportion to time: find when it reaches zero by proportion."
+   ]
+  }
+ },
+ {
+  "id": "cal-calendars",
+  "title": "Calendars",
+  "type": "clocks",
+  "sub": "repeating years, odd days",
+  "difficulty": "hard",
+  "minutes": 16,
+  "source": "original",
+  "since": "2026-10-31",
+  "intro": [
+   "Each question is a separate puzzle.",
+   "Use the Gregorian calendar: a year is a leap year if it is divisible by 4, except that a year divisible by 100 is a leap year only if it is also divisible by 400. A week runs Monday to Sunday, and February has 28 days, or 29 in a leap year."
+  ],
+  "clues": [],
+  "questions": [
+   {
+    "stem": "How many times does the 13th of a month fall on a Friday in the 28 years from 2001 to 2028, both years included?",
+    "kind": "tita",
+    "answer": "48",
+    "uses": [],
+    "why": [
+     "The 13th is a Friday exactly when the 1st is a Sunday (12 days later is 5 weekdays on).",
+     "Counting the months that begin on a Sunday, year by year, from 2001 to 2028 gives 48."
+    ]
+   },
+   {
+    "stem": "The calendar of 2026 (the weekday of every date) repeats exactly in a later year. What is the first later year with the same calendar as 2026?",
+    "kind": "mcq",
+    "options": [
+     "2034",
+     "2037",
+     "2032",
+     "2033"
+    ],
+    "answer": 1,
+    "uses": [],
+    "why": [
+     "The year must also be non-leap and start on the same weekday. 2026 starts on a Thursday; each year moves the start on by 1 day, or 2 after a leap year.",
+     "Starts: 2027 Fri, 2028 Sat, 2029 Mon, 2030 Tue, 2031 Wed, 2032 Thu (but leap), 2033 Sat, 2034 Sun, 2035 Mon, 2036 Tue, 2037 Thu. The first match is 2037."
+    ]
+   },
+   {
+    "stem": "A non-leap year has exactly 53 Mondays. What day of the week is 25 December of that year?",
+    "kind": "mcq",
+    "options": [
+     "Tuesday",
+     "Sunday",
+     "Monday",
+     "Wednesday"
+    ],
+    "answer": 0,
+    "uses": [],
+    "why": [
+     "A non-leap year is 52 weeks and 1 day, so only the weekday of 1 January comes 53 times: 1 January is a Monday, and so is 31 December (364 days later).",
+     "25 December is 6 days earlier: Tuesday."
+    ]
+   },
+   {
+    "stem": "1 January 2000 was a Saturday. On which day of the week did 10 March 1812 fall?",
+    "kind": "mcq",
+    "options": [
+     "Tuesday",
+     "Monday",
+     "Sunday",
+     "Wednesday"
+    ],
+    "answer": 0,
+    "uses": [],
+    "why": [
+     "10 March 2000 is 69 days after 1 January 2000 (2000 is leap): 69 mod 7 = 6, so a Friday.",
+     "From 10 March 1812 to 10 March 2000: 188 x 365 + 46 leap days (1816 to 2000, without 1900) = 68,666 days, and 68,666 mod 7 = 3. Three weekdays before Friday is Tuesday."
+    ]
+   },
+   {
+    "stem": "In how many months of 2026 are there five Fridays, five Saturdays and five Sundays?",
+    "kind": "tita",
+    "answer": "1",
+    "uses": [],
+    "why": [
+     "Only a 31-day month has three weekdays five times: those of its 1st, 2nd and 3rd. So the month must start on a Friday.",
+     "The 31-day months of 2026 start on Thu, Sun, Fri (May), Wed, Sat, Thu and Tue. Only May: 1."
+    ],
+    "fig": {
+     "layout": "grid",
+     "seats": [
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat",
+      "Sun"
+     ],
+     "rows": [
+      "Week 1",
+      "Week 2",
+      "Week 3",
+      "Week 4",
+      "Week 5"
+     ],
+     "tones": {
+      "1": "key",
+      "2": "key",
+      "3": "key",
+      "29": "key",
+      "30": "key",
+      "31": "key"
+     },
+     "note": "May 2026: it starts on a Friday, so Friday, Saturday and Sunday each come five times.",
+     "frames": [
+      [
+       [
+        [],
+        [],
+        [],
+        [],
+        [
+         "1"
+        ],
+        [
+         "2"
+        ],
+        [
+         "3"
+        ]
+       ],
+       [
+        [
+         "4"
+        ],
+        [
+         "5"
+        ],
+        [
+         "6"
+        ],
+        [
+         "7"
+        ],
+        [
+         "8"
+        ],
+        [
+         "9"
+        ],
+        [
+         "10"
+        ]
+       ],
+       [
+        [
+         "11"
+        ],
+        [
+         "12"
+        ],
+        [
+         "13"
+        ],
+        [
+         "14"
+        ],
+        [
+         "15"
+        ],
+        [
+         "16"
+        ],
+        [
+         "17"
+        ]
+       ],
+       [
+        [
+         "18"
+        ],
+        [
+         "19"
+        ],
+        [
+         "20"
+        ],
+        [
+         "21"
+        ],
+        [
+         "22"
+        ],
+        [
+         "23"
+        ],
+        [
+         "24"
+        ]
+       ],
+       [
+        [
+         "25"
+        ],
+        [
+         "26"
+        ],
+        [
+         "27"
+        ],
+        [
+         "28"
+        ],
+        [
+         "29"
+        ],
+        [
+         "30"
+        ],
+        [
+         "31"
+        ]
+       ]
+      ],
+      [
+       [
+        [],
+        [],
+        [],
+        [],
+        [
+         "1"
+        ],
+        [
+         "2"
+        ],
+        [
+         "3"
+        ]
+       ],
+       [
+        [
+         "4"
+        ],
+        [
+         "5"
+        ],
+        [
+         "6"
+        ],
+        [
+         "7"
+        ],
+        [
+         "8"
+        ],
+        [
+         "9"
+        ],
+        [
+         "10"
+        ]
+       ],
+       [
+        [
+         "11"
+        ],
+        [
+         "12"
+        ],
+        [
+         "13"
+        ],
+        [
+         "14"
+        ],
+        [
+         "15"
+        ],
+        [
+         "16"
+        ],
+        [
+         "17"
+        ]
+       ],
+       [
+        [
+         "18"
+        ],
+        [
+         "19"
+        ],
+        [
+         "20"
+        ],
+        [
+         "21"
+        ],
+        [
+         "22"
+        ],
+        [
+         "23"
+        ],
+        [
+         "24"
+        ]
+       ],
+       [
+        [
+         "25"
+        ],
+        [
+         "26"
+        ],
+        [
+         "27"
+        ],
+        [
+         "28"
+        ],
+        [
+         "29"
+        ],
+        [
+         "30"
+        ],
+        [
+         "31"
+        ]
+       ]
+      ]
+     ]
+    }
+   }
+  ],
+  "solution": {
+   "steps": [
+    "A date d falls (d - 1) mod 7 weekdays after the 1st of its month, so the 13th is a Friday when the 1st is a Sunday.",
+    "A non-leap year moves the next year's first weekday on by 1 (365 = 52 weeks + 1); a leap year by 2. Two years share a calendar when both are leap or both are not, and they start on the same weekday.",
+    "Across many years, count the days between two dates (365 a year, plus each 29 February, none for century years not divisible by 400) and take the remainder by 7.",
+    "In a 31-day month the 29th, 30th and 31st fall on the same weekdays as the 1st, 2nd and 3rd, so those three weekdays come five times."
+   ],
+   "diagram": {
+    "layout": "grid",
+    "seats": [
+     "Starts on",
+     "Leap year"
+    ],
+    "rows": [
+     "2026",
+     "2027",
+     "2028",
+     "2029",
+     "2030",
+     "2031",
+     "2032",
+     "2033",
+     "2034",
+     "2035",
+     "2036",
+     "2037",
+     "2038",
+     "2039",
+     "2040"
+    ],
+    "note": "Each year's first weekday and whether it is a leap year: the run that finds 2026's twin.",
+    "frames": [
+     [
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       []
+      ]
+     ],
+     [
+      [
+       [
+        "Thu"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Fri"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Sat"
+       ],
+       [
+        "yes"
+       ]
+      ],
+      [
+       [
+        "Mon"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Tue"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Wed"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Thu"
+       ],
+       [
+        "yes"
+       ]
+      ],
+      [
+       [
+        "Sat"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Sun"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Mon"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Tue"
+       ],
+       [
+        "yes"
+       ]
+      ],
+      [
+       [
+        "Thu"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Fri"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Sat"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Sun"
+       ],
+       [
+        "yes"
+       ]
+      ]
+     ],
+     [
+      [
+       [
+        "Thu"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Fri"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Sat"
+       ],
+       [
+        "yes"
+       ]
+      ],
+      [
+       [
+        "Mon"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Tue"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Wed"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Thu"
+       ],
+       [
+        "yes"
+       ]
+      ],
+      [
+       [
+        "Sat"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Sun"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Mon"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Tue"
+       ],
+       [
+        "yes"
+       ]
+      ],
+      [
+       [
+        "Thu"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Fri"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Sat"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Sun"
+       ],
+       [
+        "yes"
+       ]
+      ]
+     ],
+     [
+      [
+       [
+        "Thu"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Fri"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Sat"
+       ],
+       [
+        "yes"
+       ]
+      ],
+      [
+       [
+        "Mon"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Tue"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Wed"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Thu"
+       ],
+       [
+        "yes"
+       ]
+      ],
+      [
+       [
+        "Sat"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Sun"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Mon"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Tue"
+       ],
+       [
+        "yes"
+       ]
+      ],
+      [
+       [
+        "Thu, same as 2026"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Fri"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Sat"
+       ],
+       [
+        "no"
+       ]
+      ],
+      [
+       [
+        "Sun"
+       ],
+       [
+        "yes"
+       ]
+      ]
+     ]
+    ]
+   }
+  }
+ }
+]

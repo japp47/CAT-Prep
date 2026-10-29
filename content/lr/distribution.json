@@ -1,0 +1,180 @@
+[
+ {
+  "id": "dist-thirty-notebooks",
+  "title": "Thirty notebooks, five students",
+  "type": "distribution",
+  "sub": "an order and a minimum",
+  "difficulty": "medium",
+  "minutes": 14,
+  "source": "original",
+  "since": "2026-10-31",
+  "intro": [
+   "Thirty identical notebooks are given out to five students, P, Q, R, S and T."
+  ],
+  "clues": [
+   "Every notebook is given to one of the five students.",
+   "Each student gets at least 2 notebooks.",
+   "P gets more than Q, Q gets more than R, R gets more than S, and S gets more than T."
+  ],
+  "questions": [
+   {
+    "stem": "What is the greatest number of notebooks P can get?",
+    "kind": "mcq",
+    "options": [
+     "18",
+     "14",
+     "20",
+     "16"
+    ],
+    "answer": 3,
+    "uses": [
+     1,
+     2,
+     3
+    ],
+    "why": [
+     "P gets the most when the others get as few as the rules allow: T 2, S 3, R 4, Q 5.",
+     "That is 14, leaving 30 - 14 = 16 for P."
+    ]
+   },
+   {
+    "stem": "What is the least number of notebooks P can get?",
+    "kind": "tita",
+    "answer": "8",
+    "uses": [
+     1,
+     3
+    ],
+    "why": [
+     "P is the largest of five different whole numbers adding to 30. With P = 7 the most possible is 7 + 6 + 5 + 4 + 3 = 25, too few.",
+     "With P = 8, 8 + 7 + 6 + 5 + 4 = 30 works. So 8."
+    ]
+   },
+   {
+    "stem": "In how many different ways can the notebooks be given out?",
+    "kind": "tita",
+    "answer": "30",
+    "uses": [
+     1,
+     2,
+     3
+    ],
+    "why": [
+     "Start everyone at the smallest staircase: P 6, Q 5, R 4, S 3, T 2 (20 notebooks). The other 10 are extras, and the order stays strict exactly when the extras never increase from P down to T.",
+     "So count the ways to split 10 into at most five parts: by largest part 10, 9, 8, 7, 6, 5, 4, 3, 2 there are 1, 1, 2, 3, 5, 6, 7, 4, 1. Total 30."
+    ]
+   },
+   {
+    "stem": "If R gets exactly 6 notebooks, in how many different ways can the notebooks be given out?",
+    "kind": "mcq",
+    "options": [
+     "12",
+     "11",
+     "15",
+     "9"
+    ],
+    "answer": 1,
+    "uses": [
+     1,
+     2,
+     3
+    ],
+    "why": [
+     "With R = 6, S and T are at most 5 and at least 2, with T below S: (S, T) = (3, 2), (4, 2), (4, 3), (5, 2), (5, 3), (5, 4). P and Q share 24 - S - T, with Q at least 7 and P above Q.",
+     "P + Q = 19 gives 3 ways, 18 gives 2, 17 (twice) 2 each, 16 gives 1 and 15 gives 1: 3 + 2 + 2 + 2 + 1 + 1 = 11."
+    ]
+   },
+   {
+    "stem": "If Q gets exactly twice as many notebooks as T, how many notebooks does P get?",
+    "kind": "tita",
+    "answer": "12",
+    "uses": [
+     1,
+     2,
+     3
+    ],
+    "why": [
+     "Let T get t, so Q gets 2t, and S and R fit strictly between t and 2t. t = 2 leaves only 3 between 2 and 4, not room for two. t = 3 gives S 4, R 5, Q 6 and P 30 - 18 = 12, which works.",
+     "With t = 4 or more, P is at most 27 - 5t, which is 7 or less, while Q = 2t is 8 or more: impossible. So P gets 12."
+    ]
+   }
+  ],
+  "solution": {
+   "steps": [
+    "A strict order with a minimum makes a staircase: the smallest distribution is P 6, Q 5, R 4, S 3, T 2, using 20 of the 30. Every way of giving out the notebooks adds 10 extras without breaking the order.",
+    "For the most one student can get, push everyone else to their least: P can reach 16 (T 2, S 3, R 4, Q 5).",
+    "For the least P can get, make the five numbers as close as possible: 8, 7, 6, 5, 4. For counting questions, fix one student's amount and count the rest, or count the splits of the extras."
+   ],
+   "diagram": {
+    "layout": "bars",
+    "seats": [
+     "P",
+     "Q",
+     "R",
+     "S",
+     "T"
+    ],
+    "note": "The smallest staircase first; then the extremes for P.",
+    "frames": [
+     [
+      [
+       [
+        "6"
+       ],
+       [
+        "5"
+       ],
+       [
+        "4"
+       ],
+       [
+        "3"
+       ],
+       [
+        "2"
+       ]
+      ]
+     ],
+     [
+      [
+       [
+        "16 at most"
+       ],
+       [
+        "5"
+       ],
+       [
+        "4"
+       ],
+       [
+        "3"
+       ],
+       [
+        "2"
+       ]
+      ]
+     ],
+     [
+      [
+       [
+        "8 at least"
+       ],
+       [
+        "7"
+       ],
+       [
+        "6"
+       ],
+       [
+        "5"
+       ],
+       [
+        "4"
+       ]
+      ]
+     ]
+    ]
+   }
+  }
+ }
+]

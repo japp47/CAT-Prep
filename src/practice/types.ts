@@ -144,19 +144,23 @@ export interface VaMeta { id: string; topic: string; difficulty: Difficulty; v: 
 export interface CrMeta { id: string; type: CrType; difficulty: Difficulty; topic: string; v: string }
 
 /** Logical reasoning set types (docs/research/lr.md §2). One content/lr/<type>.json file each. */
-export type LrType = "arrangement" | "selection" | "distribution" | "ranking" | "tournament" | "caselet" | "scheduling" | "binary" | "setmax" | "venn" | "routes" | "quant-lr" | "cubes" | "mixed";
+export type LrType = "arrangement" | "selection" | "distribution" | "ranking" | "tournament" | "caselet" | "scheduling" | "binary" | "setmax" | "venn" | "routes" | "directions" | "relations" | "clocks" | "quant-lr" | "cubes" | "mixed";
 export const LR_TYPE: Record<LrType, { label: string }> = {
+  // The order a student meets the types in (practice list, next set): the commonest in CAT first.
   arrangement: { label: "Arrangement" },
-  selection: { label: "Grouping and selection" },
-  distribution: { label: "Distribution and matching" },
-  ranking: { label: "Ranking and ordering" },
   tournament: { label: "Games and tournaments" },
   caselet: { label: "Reasoning DI and caselets" },
-  scheduling: { label: "Scheduling" },
   binary: { label: "Binary logic" },
+  distribution: { label: "Distribution and matching" },
+  selection: { label: "Grouping and selection" },
+  scheduling: { label: "Scheduling" },
+  routes: { label: "Routes and networks" },
+  directions: { label: "Directions and distances" },
   setmax: { label: "Set theory: maximum and minimum" },
   venn: { label: "Venn diagrams and syllogisms" },
-  routes: { label: "Routes and networks" },
+  relations: { label: "Blood relations" },
+  clocks: { label: "Clocks and calendars" },
+  ranking: { label: "Ranking and ordering" },
   "quant-lr": { label: "Quant-based LR" },
   cubes: { label: "Cubes and dice" },
   mixed: { label: "Mixed" },
@@ -169,7 +173,7 @@ export interface LrTable { caption?: string; head: string[]; rows: string[][] }
  * One question. answer is an option index (MCQ) or the text to type (TITA). uses names the clues (from 1) that settle
  * it, highlighted in review. if is an extra condition for this question only ("if additionally…").
  */
-export interface LrQuestion { stem: string; kind: "mcq" | "tita"; options?: string[]; answer: number | string; uses: number[]; why: string[]; if?: string }
+export interface LrQuestion { stem: string; kind: "mcq" | "tita"; options?: string[]; answer: number | string; uses: number[]; why: string[]; if?: string; fig?: LrDiagram }
 /**
  * The solution as a picture that fills in step by step (F23 review), and the blank layout of the scratch pad.
  * frames[i] is the picture after solution step i: frames[i][row][seat] holds the lines written in that seat, the
@@ -185,9 +189,25 @@ export interface LrQuestion { stem: string; kind: "mcq" | "tita"; options?: stri
  * `lit[step]` lists the links drawn bold at that step (the route found). A venn has two or three circles named in
  * `sets` and one seat per region, in the order A only, B only, AB (two circles) or A only, B only, C only, AB only,
  * AC only, BC only, ABC (three), then None (outside every circle); a region whose first line is "empty" is shaded.
+ * The newer layouts (D53, docs/design/lr-visuals.md): a `tree` is a family tree drawn like a network (a link labelled
+ * "=" is a marriage, any other a parent to a child); a `clock` has one dial per seat, its first line a time ("8:24",
+ * "4:54 6/11") and an optional second line the angle shaded between the hands ("108°"); a `map` draws one walk per
+ * seat from `paths` (points in metres east and north of the start), `legs[step][path]` legs of each drawn so far and
+ * `ties[step]` dashed distance lines; a `timeline` has one lane per row and `bars` ([lane, start, end, label]) on a
+ * `span` axis, `lit[step]` naming the bars shown; `bars` draws one bar per seat, its height the number its first line
+ * starts with. A question's own picture (`fig`) has one frame per line of its explanation.
  */
 export interface LrDiagram {
-  layout: "row" | "circle" | "grid" | "bracket" | "network" | "venn";
+  layout: "row" | "circle" | "grid" | "bracket" | "network" | "venn" | "tree" | "clock" | "map" | "timeline" | "bars";
+  /** false when the blank layout would give the answer away: the attempt then shows the notes box alone */
+  pad?: false;
+  /** grid and row: a cell whose first line is a key takes that tone ("true": "good") */
+  tones?: Record<string, "good" | "bad" | "key">;
+  paths?: { name: string; pts: [number, number][] }[];
+  legs?: number[][];
+  ties?: [[number, number], [number, number], string][][];
+  span?: [number, number];
+  bars?: [number, number, number, string][];
   seats: string[];
   rows?: string[];
   mirror?: Record<string, string>;
