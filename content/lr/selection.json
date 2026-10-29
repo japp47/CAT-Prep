@@ -1,0 +1,421 @@
+[
+ {
+  "id": "sel-project-team",
+  "title": "Choosing a project team",
+  "type": "selection",
+  "sub": "skills, clashes and a budget",
+  "difficulty": "hard",
+  "minutes": 16,
+  "source": "original",
+  "since": "2026-10-31",
+  "intro": [
+   "A software firm must choose a team of exactly four consultants from eight, A to H. Each has a daily fee (in thousands of rupees) and one or two of the three skills the project needs: web, data and security. The team's cost is the sum of its members' fees."
+  ],
+  "tables": [
+   {
+    "caption": "Consultants",
+    "head": [
+     "Consultant",
+     "A",
+     "B",
+     "C",
+     "D",
+     "E",
+     "F",
+     "G",
+     "H"
+    ],
+    "rows": [
+     [
+      "Daily fee",
+      "35",
+      "20",
+      "45",
+      "25",
+      "40",
+      "35",
+      "35",
+      "40"
+     ],
+     [
+      "Skills",
+      "web, security",
+      "web, security",
+      "data",
+      "web",
+      "data",
+      "web",
+      "security",
+      "web"
+     ]
+    ]
+   }
+  ],
+  "clues": [
+   "At least one member has each of the three skills: web, data and security.",
+   "A and B never work on the same team.",
+   "C joins only if D also joins (D may join without C).",
+   "E and G never work on the same team.",
+   "F joins only if at least one of H and A also joins."
+  ],
+  "questions": [
+   {
+    "stem": "How many different teams satisfy all five conditions?",
+    "kind": "tita",
+    "answer": "13",
+    "uses": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "why": [
+     "Split on A and B, who are never together: A without B gives 7 teams, B without A gives 5, and neither gives 1 (C, D, G, H).",
+     "7 + 5 + 1 = 13."
+    ]
+   },
+   {
+    "stem": "What is the least possible cost of a valid team, in thousands of rupees?",
+    "kind": "tita",
+    "answer": "125",
+    "uses": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "why": [
+     "The cheapest of the 13 teams are B, C, D, G (20 + 45 + 25 + 35) and B, D, E, H (20 + 25 + 40 + 40).",
+     "Both cost 125, and no valid team costs less."
+    ]
+   },
+   {
+    "stem": "Which pair of consultants is on every valid team of the least possible cost?",
+    "kind": "mcq",
+    "options": [
+     "C and G",
+     "D and H",
+     "B and D",
+     "A and D"
+    ],
+    "answer": 2,
+    "uses": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "why": [
+     "The two teams costing 125 are B, C, D, G and B, D, E, H.",
+     "Only B and D are on both."
+    ]
+   },
+   {
+    "stem": "Which consultant is on the largest number of valid teams?",
+    "kind": "mcq",
+    "options": [
+     "Consultant C",
+     "Consultant D",
+     "Consultant A",
+     "Consultant H"
+    ],
+    "answer": 1,
+    "uses": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "why": [
+     "Count appearances in the 13 teams: D 11, C 8, A 7, E 7, H 7, B 5, F 4, G 3.",
+     "D is on the most: every team with C needs D, and D is missing only from A, E, F, H and B, E, F, H."
+    ]
+   },
+   {
+    "stem": "The firm adds two more conditions: at most one of the three consultants with the security skill (A, B and G) may be on the team, and the team cost may not exceed 140. How many teams are now possible?",
+    "kind": "tita",
+    "answer": "7",
+    "uses": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "why": [
+     "Drop the teams with two of A, B and G: A, C, D, G and B, C, D, G. 11 are left.",
+     "Drop those costing more than 140: A, C, D, E; A, C, D, H; A, E, F, H; C, D, G, H. 11 - 4 = 7."
+    ]
+   }
+  ],
+  "solution": {
+   "steps": [
+    "A and B are never together, so split into three cases: A without B, B without A, and neither. Condition 2 then needs no more checking.",
+    "A without B: A gives web and security, so a data person is needed. With C, D joins and the fourth is E, F, G or H (F is fine with A in): 4 teams. Without C, E joins, G is out, and two of D, F, H fill the team: 3 teams.",
+    "B without A: with C and D, the fourth is E, G or H (F needs H or A): 3 teams. Without C, E joins, G is out, and the pair from D, F, H must not leave F without H: B, D, E, H and B, E, F, H.",
+    "Neither A nor B: the only security person left is G, which keeps E out, so the data person is C, bringing D. The fourth is H (F has no A or H beside it): C, D, G, H.",
+    "Add up each team's fees for the cost questions."
+   ],
+   "cases": 13,
+   "diagram": {
+    "layout": "grid",
+    "seats": [
+     "1",
+     "2",
+     "3",
+     "4",
+     "5",
+     "6",
+     "7"
+    ],
+    "rows": [
+     "A in, B out",
+     "B in, A out",
+     "Neither A nor B"
+    ],
+    "note": "One team a cell, by case; the last step adds each team's cost in thousands.",
+    "frames": [
+     [
+      [
+       [],
+       [],
+       [],
+       [],
+       [],
+       [],
+       []
+      ],
+      [
+       [],
+       [],
+       [],
+       [],
+       [],
+       [],
+       []
+      ],
+      [
+       [],
+       [],
+       [],
+       [],
+       [],
+       [],
+       []
+      ]
+     ],
+     [
+      [
+       [
+        "ACDE"
+       ],
+       [
+        "ACDF"
+       ],
+       [
+        "ACDG"
+       ],
+       [
+        "ACDH"
+       ],
+       [
+        "ADEF"
+       ],
+       [
+        "ADEH"
+       ],
+       [
+        "AEFH"
+       ]
+      ],
+      [
+       [],
+       [],
+       [],
+       [],
+       [],
+       [],
+       []
+      ],
+      [
+       [],
+       [],
+       [],
+       [],
+       [],
+       [],
+       []
+      ]
+     ],
+     [
+      [
+       [
+        "ACDE"
+       ],
+       [
+        "ACDF"
+       ],
+       [
+        "ACDG"
+       ],
+       [
+        "ACDH"
+       ],
+       [
+        "ADEF"
+       ],
+       [
+        "ADEH"
+       ],
+       [
+        "AEFH"
+       ]
+      ],
+      [
+       [
+        "BCDE"
+       ],
+       [
+        "BCDG"
+       ],
+       [
+        "BCDH"
+       ],
+       [
+        "BDEH"
+       ],
+       [
+        "BEFH"
+       ],
+       [],
+       []
+      ],
+      [
+       [],
+       [],
+       [],
+       [],
+       [],
+       [],
+       []
+      ]
+     ],
+     [
+      [
+       [
+        "ACDE"
+       ],
+       [
+        "ACDF"
+       ],
+       [
+        "ACDG"
+       ],
+       [
+        "ACDH"
+       ],
+       [
+        "ADEF"
+       ],
+       [
+        "ADEH"
+       ],
+       [
+        "AEFH"
+       ]
+      ],
+      [
+       [
+        "BCDE"
+       ],
+       [
+        "BCDG"
+       ],
+       [
+        "BCDH"
+       ],
+       [
+        "BDEH"
+       ],
+       [
+        "BEFH"
+       ],
+       [],
+       []
+      ],
+      [
+       [
+        "CDGH"
+       ],
+       [],
+       [],
+       [],
+       [],
+       [],
+       []
+      ]
+     ],
+     [
+      [
+       [
+        "ACDE 145"
+       ],
+       [
+        "ACDF 140"
+       ],
+       [
+        "ACDG 140"
+       ],
+       [
+        "ACDH 145"
+       ],
+       [
+        "ADEF 135"
+       ],
+       [
+        "ADEH 140"
+       ],
+       [
+        "AEFH 150"
+       ]
+      ],
+      [
+       [
+        "BCDE 130"
+       ],
+       [
+        "BCDG 125"
+       ],
+       [
+        "BCDH 130"
+       ],
+       [
+        "BDEH 125"
+       ],
+       [
+        "BEFH 135"
+       ],
+       [],
+       []
+      ],
+      [
+       [
+        "CDGH 145"
+       ],
+       [],
+       [],
+       [],
+       [],
+       [],
+       []
+      ]
+     ]
+    ]
+   }
+  }
+ }
+]

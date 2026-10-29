@@ -3,13 +3,15 @@
  * index.html loads before anything else: the main script and the stylesheet, gzipped as a browser receives them,
  * and the two latin font files every page uses (already compressed; they are not preloaded, which tested slower).
  * Practice content loads later, one file at a time (src/practice/bank.ts): the largest of those has its own budget.
+ * The stylesheet budget is 30 KB gzipped (D54): Tailwind v4 builds one stylesheet for the whole site, so it covers
+ * every page; Cloudflare sends it brotli-compressed, about a fifth smaller than measured here.
  * Run after `npm run build`: `npm run size`.
  */
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { gzipSync } from "node:zlib";
 
 const KB = 1024;
-const BUDGET = { script: 150 * KB, style: 20 * KB, fonts: 100 * KB, content: 70 * KB };
+const BUDGET = { script: 150 * KB, style: 30 * KB, fonts: 100 * KB, content: 70 * KB };
 
 const html = readFileSync("dist/index.html", "utf8");
 const first = (re) => html.match(re)?.[1];

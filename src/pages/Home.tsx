@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { daysLeft } from "../components/Countdown";
-import { ArrowLink, LinkButton, Page, Section } from "../components/kit";
+import { ArrowLink, LinkButton, Page, Section, TextLink } from "../components/kit";
 import { CAT_PATTERN, CHECKED_ON, EXAM_NAME, PHASES, phaseOf } from "../data/exam";
 import { UPDATES } from "../data/updates";
 import { shortDate, todayIso } from "../lib/date";
@@ -87,9 +87,10 @@ function Hero({ isNew }: { isNew: boolean }) {
           <span className="flex flex-wrap gap-x-5 gap-y-1">
             <span className="inline-flex items-center gap-2"><i className="size-2.5 rounded-full bg-primary/45" aria-hidden />Each dot, a group of CAT takers</span>
             <span className="inline-flex items-center gap-2"><i className="size-2.5 rounded-full bg-highlight" aria-hidden />The 99th percentile, one in a hundred</span>
-            {live && <span className="inline-flex items-center gap-2"><i className="size-2.5 rounded-full bg-primary" aria-hidden />You</span>}
+            {live && <span className="inline-flex items-center gap-2"><i className="size-2.5 rounded-full bg-primary" aria-hidden />A climb to the top, as an illustration</span>}
           </span>
-          {live && !still && <span>Scroll, and you climb.{fine && " Drag to turn the hill; click to send a ripple."}</span>}
+          {/* The blue dot is never the visitor's percentile (D51); their estimate comes from a logged mock, on Progress. */}
+          <span>{live && !still && <>Scroll to climb.{fine && " Drag to turn the hill; click to send a ripple."} </>}Your own estimate appears in <TextLink to="/progress?tab=mocks">Progress</TextLink> once you log a mock score.</span>
         </figcaption>
       </figure>
     </header>

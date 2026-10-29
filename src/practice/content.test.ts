@@ -4,7 +4,8 @@ import { VARC } from "../sections/varc";
 import { CR_ITEMS } from "./cr";
 import { LR_SETS } from "./lr";
 import { RC_SETS } from "./rc";
-import { CR_TYPE, CR_TYPES, GENRES, LR_TYPE, RC_QTYPE, setWords, SUMMARY_MAX_WORDS, TONES, words } from "./types";
+import { CR_TYPE, CR_TYPES, GENRES, LR_TYPE, RC_QTYPE, setWords, SUMMARY_MAX_WORDS, TONES, words, type LrDiagram } from "./types";
+import { clockMinutes } from "../components/LrFigures";
 import { VA_PARAS } from "./va/paragraphs";
 
 describe("RC library", () => {
@@ -172,6 +173,85 @@ describe("critical reasoning items", () => {
   });
 });
 
+/** The rules every LR picture follows (docs/content/lr-format.md): `steps` frames, the right shape for its layout. */
+function checkPicture(g: LrDiagram, steps: number) {
+      expect(["row", "circle", "grid", "bracket", "network", "venn", "tree", "clock", "map", "timeline", "bars"]).toContain(g.layout);
+      // Layouts that would show the answer when blank leave the attempt with notes only (D53).
+      if (["tree", "clock", "map", "timeline"].includes(g.layout)) expect(g.pad, "no blank pad for this layout").toBe(false);
+      if (g.layout === "tree") {
+        expect(g.at, "every person has a place").toHaveLength(g.seats.length);
+        g.links?.forEach(([a, b]) => { expect(a).toBeLessThan(g.seats.length); expect(b).toBeLessThan(g.seats.length); expect(a).not.toBe(b); });
+        expect(g.lit, "one lit list per step").toHaveLength(g.frames.length);
+        g.lit!.flat().forEach((i) => expect(i).toBeLessThan(g.links?.length ?? 0));
+      }
+      if (g.layout === "clock") {
+        g.frames.flat(2).forEach((c) => { if (c && c.length) expect(clockMinutes(c[0]), `a time: ${c[0]}`).not.toBeNull(); });
+      }
+      if (g.layout === "map") {
+        expect(g.paths, "one walk per seat").toHaveLength(g.seats.length);
+        expect(g.legs, "one list of legs per step").toHaveLength(g.frames.length);
+        g.legs!.forEach((l) => l.forEach((n, p) => { expect(n).toBeGreaterThanOrEqual(0); expect(n).toBeLessThanOrEqual(g.paths![p].pts.length - 1); }));
+        if (g.ties) expect(g.ties).toHaveLength(g.frames.length);
+      }
+      if (g.layout === "timeline") {
+        expect(g.seats, "one column for the lane's end").toHaveLength(1);
+        expect(g.rows?.length, "a timeline names its lanes").toBeGreaterThan(0);
+        expect(g.lit, "one lit list per step").toHaveLength(g.frames.length);
+        g.bars!.forEach(([lane, a, b]) => { expect(lane).toBeLessThan(g.rows!.length); expect(a).toBeLessThan(b); if (g.span) { expect(a).toBeGreaterThanOrEqual(g.span[0]); expect(b).toBeLessThanOrEqual(g.span[1]); } });
+        g.lit!.flat().forEach((i) => expect(i).toBeLessThan(g.bars!.length));
+      }
+      if (g.layout === "venn") {
+        expect([2, 3], "two or three circles").toContain(g.sets?.length);
+        expect(g.seats, "one seat per region and one outside").toHaveLength(g.sets!.length === 2 ? 4 : 8);
+        expect(g.rows, "a venn is one picture").toBeUndefined();
+        if (g.padSets) expect(g.padSets, "the pad has as many circles").toHaveLength(g.sets!.length);
+      }
+      if (g.layout !== "venn") expect(g.padSets, "padSets is for venn pictures").toBeUndefined();
+      if (g.layout === "network") {
+        expect(g.rows, "a network is one picture").toBeUndefined();
+        expect(g.at, "every town has a place").toHaveLength(g.seats.length);
+        g.at!.forEach(([x, y]) => { expect(x).toBeGreaterThanOrEqual(0); expect(x).toBeLessThanOrEqual(100); expect(y).toBeGreaterThanOrEqual(0); expect(y).toBeLessThanOrEqual(100); });
+        expect(g.links?.length, "a network has links").toBeGreaterThan(0);
+        g.links!.forEach(([a, b]) => { expect(a).toBeLessThan(g.seats.length); expect(b).toBeLessThan(g.seats.length); expect(a).not.toBe(b); });
+        if (g.lit) {
+          expect(g.lit, "one lit list per step").toHaveLength(g.frames.length);
+          g.lit.flat().forEach((i) => expect(i).toBeLessThan(g.links!.length));
+        }
+      }
+      expect(g.seats.length).toBeGreaterThanOrEqual(["bracket", "clock", "map", "timeline"].includes(g.layout) ? 1 : g.layout === "grid" || g.layout === "bars" ? 2 : 3);
+      if (g.layout === "circle") expect(g.rows, "a circle has one ring").toBeUndefined();
+      if (g.layout === "grid" || g.layout === "bracket") expect(g.rows?.length, "a grid or bracket names its rows").toBeGreaterThan(0);
+      if (g.mirror) {
+        expect(g.layout, "mirror is for results grids").toBe("grid");
+        // The first columns are the row teams in the same order, so a cell has a partner across the diagonal.
+        expect(g.rows!.length).toBeLessThanOrEqual(g.seats.length);
+        Object.entries(g.mirror).forEach(([k, v]) => expect(g.mirror![v], `mirror ${k}`).toBe(k));
+      }
+      // A cell closed in the first picture (a team against itself, a slot a round lacks) stays closed in every step.
+      if (g.layout === "grid" || g.layout === "bracket") {
+        g.frames.forEach((f, i) => f.forEach((r, ri) => r.forEach((cell, k) => expect(cell === null, `frame ${i + 1} cell ${ri},${k}`).toBe(g.frames[0][ri][k] === null))));
+      }
+      // A bracket match lists both players, then the winner, who must be one of them.
+      if (g.layout === "bracket") {
+        g.frames.flat(2).forEach((m) => {
+          if (!m || m.length === 0) return;
+          expect(m.length).toBeGreaterThanOrEqual(2);
+          if (m[2]) expect([m[0], m[1]]).toContain(m[2]);
+        });
+      }
+      expect(g.frames, "one frame per step").toHaveLength(steps);
+      g.frames.forEach((f, i) => {
+        expect(f, `frame ${i + 1} rows`).toHaveLength(g.rows?.length ?? 1);
+        f.forEach((r) => {
+          expect(r, `frame ${i + 1} seats`).toHaveLength(g.seats.length);
+          r.forEach((cell) => { if (cell) cell.forEach((t) => expect(typeof t).toBe("string")); });
+        });
+      });
+      // The last picture names everyone the intro names, at least as a possibility.
+      const last = g.frames[g.frames.length - 1].flat().flatMap((c) => c ?? []).join(" ");
+      expect(last.trim().length).toBeGreaterThan(0);
+}
+
 describe("LR sets (docs/content/lr-format.md)", () => {
   it("has unique ids", () => {
     expect(new Set(LR_SETS.map((s) => s.id)).size).toBe(LR_SETS.length);
@@ -196,59 +276,9 @@ describe("LR sets (docs/content/lr-format.md)", () => {
       expect(s.questions.length).toBeLessThanOrEqual(6);
       expect(s.solution.steps.length).toBeGreaterThan(0);
     });
-    if (s.solution.diagram) it(`${s.id} has a picture for every solution step`, () => {
-      const g = s.solution.diagram!;
-      expect(["row", "circle", "grid", "bracket", "network", "venn"]).toContain(g.layout);
-      if (g.layout === "venn") {
-        expect([2, 3], "two or three circles").toContain(g.sets?.length);
-        expect(g.seats, "one seat per region and one outside").toHaveLength(g.sets!.length === 2 ? 4 : 8);
-        expect(g.rows, "a venn is one picture").toBeUndefined();
-        if (g.padSets) expect(g.padSets, "the pad has as many circles").toHaveLength(g.sets!.length);
-      }
-      if (g.layout !== "venn") expect(g.padSets, "padSets is for venn pictures").toBeUndefined();
-      if (g.layout === "network") {
-        expect(g.rows, "a network is one picture").toBeUndefined();
-        expect(g.at, "every town has a place").toHaveLength(g.seats.length);
-        g.at!.forEach(([x, y]) => { expect(x).toBeGreaterThanOrEqual(0); expect(x).toBeLessThanOrEqual(100); expect(y).toBeGreaterThanOrEqual(0); expect(y).toBeLessThanOrEqual(100); });
-        expect(g.links?.length, "a network has links").toBeGreaterThan(0);
-        g.links!.forEach(([a, b]) => { expect(a).toBeLessThan(g.seats.length); expect(b).toBeLessThan(g.seats.length); expect(a).not.toBe(b); });
-        if (g.lit) {
-          expect(g.lit, "one lit list per step").toHaveLength(g.frames.length);
-          g.lit.flat().forEach((i) => expect(i).toBeLessThan(g.links!.length));
-        }
-      }
-      expect(g.seats.length).toBeGreaterThanOrEqual(g.layout === "bracket" ? 1 : g.layout === "grid" ? 2 : 3);
-      if (g.layout === "circle") expect(g.rows, "a circle has one ring").toBeUndefined();
-      if (g.layout === "grid" || g.layout === "bracket") expect(g.rows?.length, "a grid or bracket names its rows").toBeGreaterThan(0);
-      if (g.mirror) {
-        expect(g.layout, "mirror is for results grids").toBe("grid");
-        // The first columns are the row teams in the same order, so a cell has a partner across the diagonal.
-        expect(g.rows!.length).toBeLessThanOrEqual(g.seats.length);
-        Object.entries(g.mirror).forEach(([k, v]) => expect(g.mirror![v], `mirror ${k}`).toBe(k));
-      }
-      // A cell closed in the first picture (a team against itself, a slot a round lacks) stays closed in every step.
-      if (g.layout === "grid" || g.layout === "bracket") {
-        g.frames.forEach((f, i) => f.forEach((r, ri) => r.forEach((cell, k) => expect(cell === null, `frame ${i + 1} cell ${ri},${k}`).toBe(g.frames[0][ri][k] === null))));
-      }
-      // A bracket match lists both players, then the winner, who must be one of them.
-      if (g.layout === "bracket") {
-        g.frames.flat(2).forEach((m) => {
-          if (!m || m.length === 0) return;
-          expect(m.length).toBeGreaterThanOrEqual(2);
-          if (m[2]) expect([m[0], m[1]]).toContain(m[2]);
-        });
-      }
-      expect(g.frames, "one frame per step").toHaveLength(s.solution.steps.length);
-      g.frames.forEach((f, i) => {
-        expect(f, `frame ${i + 1} rows`).toHaveLength(g.rows?.length ?? 1);
-        f.forEach((r) => {
-          expect(r, `frame ${i + 1} seats`).toHaveLength(g.seats.length);
-          r.forEach((cell) => { if (cell) cell.forEach((t) => expect(typeof t).toBe("string")); });
-        });
-      });
-      // The last picture names everyone the intro names, at least as a possibility.
-      const last = g.frames[g.frames.length - 1].flat().flatMap((c) => c ?? []).join(" ");
-      expect(last.trim().length).toBeGreaterThan(0);
+    if (s.solution.diagram) it(`${s.id} has a picture for every solution step`, () => checkPicture(s.solution.diagram!, s.solution.steps.length));
+    s.questions.forEach((q, qi) => {
+      if (q.fig) it(`${s.id} Q${qi + 1} has a picture for every line of its explanation`, () => checkPicture(q.fig!, q.why.length));
     });
     it(`${s.id} has answers that can be right`, () => {
       s.questions.forEach((q, i) => {

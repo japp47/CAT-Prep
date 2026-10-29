@@ -6,6 +6,8 @@ import { calm, loadGsap, useGsap } from "../lib/motion";
 import { usePref } from "../lib/prefs";
 import type { LrDiagram } from "../practice/types";
 
+import { BarsFigure, ClockFigure, MapFigure, TimelineFigure, TreeFigure } from "./LrFigures";
+
 // three.js comes with it, so it loads only for the review of a circular set (D41).
 const LrTable3D = lazy(() => import("./LrTable3D"));
 
@@ -212,11 +214,13 @@ function Seat({ label, c, fresh, stack }: { label: string; c: Cell; fresh: boole
   );
 }
 
-/** One cell of a results grid: a result (W, D, L, "?") or a total, with any second line below it. */
-function Mark({ c, fresh }: { c: Cell; fresh: boolean }) {
+const TONE = { good: "bg-success-soft text-success", bad: "bg-danger-soft text-danger", key: "bg-highlight-soft" } as const;
+
+/** One cell of a results grid: a result (W, D, L, "?") or a total, with any second line below it. `tone` colours it by meaning (D53). */
+function Mark({ c, fresh, tone }: { c: Cell; fresh: boolean; tone?: keyof typeof TONE }) {
   const [top, ...rest] = c ?? [];
   return (
-    <div data-fresh={fresh || undefined} className={cn("flex h-12 min-w-9 flex-col items-center justify-center rounded-md px-1.5 whitespace-nowrap sm:min-w-11", fresh ? freshClass : "bg-secondary")}>
+    <div data-fresh={fresh || undefined} className={cn("flex h-12 min-w-9 flex-col items-center justify-center rounded-md px-1.5 whitespace-nowrap sm:min-w-11", tone ? TONE[tone] : fresh ? freshClass : "bg-secondary", fresh && tone && "ring-2 ring-highlight ring-inset")}>
       {top && <span className={cn("text-base leading-tight font-semibold tabular-nums", top.endsWith("?") && "font-normal text-muted-foreground")}>{top}</span>}
       {rest.map((t, i) => <span key={i} className="text-sm leading-tight text-foreground/80 tabular-nums">{t}</span>)}
     </div>
@@ -341,30 +345,11 @@ export function LrWalkthrough({ steps, g }: { steps: string[]; g?: LrDiagram }) 
   }, [playing, i, last]);
   // Fetched while the student reads the first step, so the second step already moves.
   useEffect(() => { if (g && !calm()) loadGsap().catch(() => {}); }, [g]);
-  useGsap(box, (gsap, el) => {
-    if (i === 0) return;
-    gsap.from(el.querySelector("[data-step]"), { opacity: 0, y: 6, duration: 0.35, ease: "power2.out" });
-    gsap.from(el.querySelectorAll("[data-fresh]"), { opacity: 0, scale: 0.82, y: 10, duration: 0.5, stagger: 0.07, ease: "back.out(1.8)", clearProps: "transform,opacity" });
-    gsap.from(el.querySelectorAll("[data-shade]"), { opacity: 0, duration: 0.6, stagger: 0.1, ease: "power1.out" });
-    gsap.fromTo(el.querySelectorAll("[data-draw]"), { strokeDasharray: 100, strokeDashoffset: 100 }, { strokeDashoffset: 0, duration: 0.7, stagger: 0.15, ease: "power2.inOut", clearProps: "strokeDasharray,strokeDashoffset" });
-    gsap.from(el.querySelectorAll("[data-fresh] [data-tick]"), { scale: 0, rotation: -90, duration: 0.4, delay: 0.3, stagger: 0.07, ease: "back.out(2.5)", transformOrigin: "50% 50%" });
-  }, [i]);
+  usePictureMotion(box, i);
   const frame = g?.frames[i], prev = i > 0 ? g?.frames[i - 1] : undefined;
   const ring = g?.layout === "circle";
   const fresh = useMemo(() => (frame && ring ? frame[0].map((c, k) => i > 0 && !same(c, prev?.[0]?.[k])) : []), [frame, prev, ring, i]);
-  const lit = g?.lit?.[i] ?? [], before = i > 0 ? (g?.lit?.[i - 1] ?? []) : [];
-  const flatPicture = g && frame && (
-    <Layout g={g} stack={g.layout === "row" && !g.rows} lit={lit} drawn={lit.filter((x) => !before.includes(x))}
-      venn={g.layout === "venn" && <VennShapes n={g.sets?.length === 2 ? 2 : 3} empty={frame[0].map((c) => c?.[0] === "empty")} fresh={frame[0].map((c, k) => i > 0 && !same(c, prev?.[0]?.[k]))} />}
-      cell={(r, k) => {
-      const c = frame[r][k], f = i > 0 && !same(c, prev?.[r]?.[k]), key = JSON.stringify(c);
-      if (g.layout === "venn") return c && c.length && c[0] !== "empty" ? <span key={key} data-fresh={f || undefined} className={cn("rounded-md px-1.5 text-base font-semibold whitespace-nowrap tabular-nums", f && "bg-highlight-soft")}>{c.join(", ")}</span> : null;
-      if (g.layout === "network") return <Town key={key} label={g.seats[k]} c={c} fresh={f} />;
-      if (g.layout === "grid") return <Mark key={key} c={c} fresh={f} />;
-      if (g.layout === "bracket") return <Match key={key} c={c} fresh={f} />;
-      return <Seat key={key} label={g.seats[k]} c={c} fresh={f} stack={!g.rows} />;
-    }} />
-  );
+  const flatPicture = g && frame && <Picture g={g} i={i} />;
   return (
     <section ref={box} className="flex flex-col gap-5 rounded-lg bg-card p-5 sm:p-6" aria-labelledby="lr-walk">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
@@ -396,6 +381,83 @@ export function LrWalkthrough({ steps, g }: { steps: string[]; g?: LrDiagram }) 
         )}
       </div>
     </section>
+  );
+}
+
+/**
+ * The motion of a picture when its step changes: the step's text rises in, new cells pop (GSAP, D41), shaded regions
+ * fade in, new lines draw themselves, new bars grow from their start, a won match ticks. Nothing under reduced motion.
+ */
+function usePictureMotion(box: React.RefObject<HTMLElement | null>, i: number) {
+  useGsap(box, (gsap, el) => {
+    if (i === 0) return;
+    gsap.from(el.querySelector("[data-step]"), { opacity: 0, y: 6, duration: 0.35, ease: "power2.out" });
+    gsap.from(el.querySelectorAll("[data-fresh]"), { opacity: 0, scale: 0.82, y: 10, duration: 0.5, stagger: 0.07, ease: "back.out(1.8)", clearProps: "transform,opacity" });
+    gsap.from(el.querySelectorAll("[data-shade]"), { opacity: 0, duration: 0.6, stagger: 0.1, ease: "power1.out" });
+    gsap.fromTo(el.querySelectorAll("[data-draw]"), { strokeDasharray: 100, strokeDashoffset: 100 }, { strokeDashoffset: 0, duration: 0.7, stagger: 0.15, ease: "power2.inOut", clearProps: "strokeDasharray,strokeDashoffset" });
+    gsap.from(el.querySelectorAll("[data-grow]"), { scaleX: 0, duration: 0.6, stagger: 0.12, ease: "power3.out", transformOrigin: "left center", clearProps: "transform" });
+    gsap.from(el.querySelectorAll("[data-fresh] [data-tick]"), { scale: 0, rotation: -90, duration: 0.4, delay: 0.3, stagger: 0.07, ease: "back.out(2.5)", transformOrigin: "50% 50%" });
+  }, [i]);
+}
+
+/** One frame of a picture, in its own layout. The walkthrough and a question's own picture both draw with it. */
+export function Picture({ g, i }: { g: LrDiagram; i: number }) {
+  const frame = g.frames[i], prev = i > 0 ? g.frames[i - 1] : undefined;
+  const lit = g.lit?.[i] ?? [], before = i > 0 ? (g.lit?.[i - 1] ?? []) : [];
+  if (!frame) return null;
+  if (g.layout === "tree") return <TreeFigure g={g} frame={frame} prev={prev} lit={lit} before={before} />;
+  if (g.layout === "clock") return <ClockFigure g={g} frame={frame} prev={prev} />;
+  if (g.layout === "map") return <MapFigure g={g} frame={frame} step={i} />;
+  if (g.layout === "timeline") return <TimelineFigure g={g} frame={frame} lit={lit} before={before} />;
+  if (g.layout === "bars") return <BarsFigure g={g} frame={frame} prev={prev} />;
+  return (
+    <Layout g={g} stack={g.layout === "row" && !g.rows} lit={lit} drawn={lit.filter((x) => !before.includes(x))}
+      venn={g.layout === "venn" && <VennShapes n={g.sets?.length === 2 ? 2 : 3} empty={frame[0].map((c) => c?.[0] === "empty")} fresh={frame[0].map((c, k) => i > 0 && !same(c, prev?.[0]?.[k]))} />}
+      cell={(r, k) => {
+      const c = frame[r][k], f = i > 0 && !same(c, prev?.[r]?.[k]), key = JSON.stringify(c);
+      if (g.layout === "venn") return c && c.length && c[0] !== "empty" ? <span key={key} data-fresh={f || undefined} className={cn("rounded-md px-1.5 text-base font-semibold whitespace-nowrap tabular-nums", f && "bg-highlight-soft")}>{c.join(", ")}</span> : null;
+      if (g.layout === "network") return <Town key={key} label={g.seats[k]} c={c} fresh={f} />;
+      if (g.layout === "grid") return <Mark key={key} c={c} fresh={f} tone={c?.[0] ? g.tones?.[c[0]] : undefined} />;
+      if (g.layout === "bracket") return <Match key={key} c={c} fresh={f} />;
+      return <Seat key={key} label={g.seats[k]} c={c} fresh={f} stack={!g.rows} />;
+    }} />
+  );
+}
+
+/**
+ * A question's own picture (D53), one frame per line of its explanation: the line in focus is in full colour beside
+ * its frame, the others muted, with Previous and Next. Sets of separate short puzzles explain each question this way.
+ */
+export function QuestionFigure({ fig, why }: { fig: LrDiagram; why: string[] }) {
+  const [i, setI] = useState(0);
+  const box = useRef<HTMLDivElement>(null);
+  const last = Math.min(why.length, fig.frames.length) - 1;
+  useEffect(() => { if (!calm()) loadGsap().catch(() => {}); }, []);
+  usePictureMotion(box, i);
+  return (
+    <div ref={box} className="flex flex-col gap-4 rounded-lg bg-card p-4 sm:p-5">
+      <Picture g={fig} i={i} />
+      {fig.note && <p className="text-sm text-muted-foreground">{fig.note}</p>}
+      <ol className="flex flex-col gap-2">
+        {why.map((w, k) => (
+          <li key={k}>
+            <button type="button" onClick={() => setI(Math.min(k, last))} aria-current={k === i ? "step" : undefined}
+              className={cn("flex w-full gap-3 rounded-md px-2 py-1.5 text-left text-base transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+                k === i ? "bg-secondary" : "text-muted-foreground hover:text-foreground")}>
+              <span className="shrink-0 font-semibold tabular-nums">{k + 1}</span>
+              <span {...(k === i ? { "data-step": true } : {})}>{w}</span>
+            </button>
+          </li>
+        ))}
+      </ol>
+      {last > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="secondary" size="sm" disabled={i === 0} onClick={() => setI(i - 1)}>Previous</Button>
+          <Button variant="secondary" size="sm" disabled={i === last} onClick={() => setI(i + 1)}>Next</Button>
+          <span className="text-sm text-muted-foreground" aria-live="polite">Step {i + 1} of {last + 1}</span>
+        </div>
+      )}
+    </div>
   );
 }
 

@@ -1,0 +1,1126 @@
+[
+ {
+  "id": "bin-five-friends",
+  "title": "Five friends, truth-tellers and liars",
+  "type": "binary",
+  "sub": "truth-tellers and liars",
+  "difficulty": "medium",
+  "minutes": 12,
+  "source": "original",
+  "since": "2026-10-31",
+  "intro": [
+   "Five friends, A, B, C, D and E, are each either a truth-teller, who always tells the truth, or a liar, who always lies. Each of them makes one statement."
+  ],
+  "clues": [
+   "A: \"D and E are both truth-tellers.\"",
+   "B: \"A is a liar.\"",
+   "C: \"A and E are of different types.\"",
+   "D: \"Exactly one of A and C is a truth-teller.\"",
+   "E: \"At least one of B and D is a truth-teller.\""
+  ],
+  "questions": [
+   {
+    "stem": "How many of the five friends are truth-tellers?",
+    "kind": "tita",
+    "answer": "3",
+    "uses": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "why": [
+     "A tells the truth (see the walkthrough), so D and E do too; B's and C's statements are false.",
+     "A, D and E are truth-tellers: 3."
+    ]
+   },
+   {
+    "stem": "Who are the liars?",
+    "kind": "mcq",
+    "options": [
+     "C and D",
+     "B and C",
+     "A and B",
+     "B and E"
+    ],
+    "answer": 1,
+    "uses": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "why": [
+     "A is a truth-teller, so D and E are truth-tellers too.",
+     "B's claim that A is a liar is false, and C's claim that A and E differ is false. The liars are B and C."
+    ]
+   },
+   {
+    "stem": "Suppose A's statement is ignored (A says nothing), while the other four statements stay as they are. How many different assignments of truth-teller and liar to the five friends are then consistent with the four statements?",
+    "kind": "tita",
+    "answer": "3",
+    "uses": [
+     2,
+     3,
+     4,
+     5
+    ],
+    "why": [
+     "Split on A. If A is a truth-teller, B is a liar; C tells the truth exactly when E lies; D tells the truth exactly when C lies; and E tells the truth exactly when D does. So D and E are of one kind and C the other: the truth-tellers are A, D, E or A, C.",
+     "If A is a liar, B tells the truth, so E does (B is one), C does (A and E differ) and D does (exactly one of A and C): B, C, D, E.",
+     "That is 3 assignments."
+    ]
+   },
+   {
+    "stem": "Suppose E's statement is changed to \"C is a truth-teller\" and the other four statements stay as they are. Who is then the only truth-teller?",
+    "kind": "mcq",
+    "options": [
+     "D",
+     "B",
+     "A",
+     "C"
+    ],
+    "answer": 1,
+    "uses": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "why": [
+     "If E told the truth, C would too, so A and E differ and A lies; D's statement would then be true, and A's (\"D and E are both truth-tellers\") true as well, against A lying. So E lies.",
+     "Then C lies, so A and E are of the same type: A lies. B says A is a liar: true, so B tells the truth. D says exactly one of A and C tells the truth: false. B is the only truth-teller."
+    ]
+   },
+   {
+    "stem": "Suppose B's statement is changed to \"Exactly 2 of the 5 of us are liars\" and the other four statements stay as they are. How many of the five are then truth-tellers?",
+    "kind": "tita",
+    "answer": "0",
+    "uses": [
+     1,
+     3,
+     4,
+     5
+    ],
+    "why": [
+     "If A told the truth, D and E would too and C would lie; then B's \"exactly 2 liars\" is false if B tells the truth, and true if B lies. Either way it fails, so A lies.",
+     "If E told the truth, A's false statement makes D a liar, D's false statement makes C the same type as A (a liar), and C's false statement makes A and E the same type: but A lies and E does not. So E lies.",
+     "E's false statement makes B and D liars, D's makes C a liar, and C's false statement fits A and E both lying. All five lie, and B's \"exactly 2\" is false, as it should be: 0 truth-tellers."
+    ]
+   }
+  ],
+  "solution": {
+   "steps": [
+    "Take A's statement and try both cases: A a truth-teller (the statement is true) or a liar (it is false). Follow each case until it breaks.",
+    "If A tells the truth, D and E do too. B's \"A is a liar\" is false, so B lies; C's \"A and E differ\" is false, so C lies. D's statement (exactly one of A and C) is true and E's (B or D) is true. Everything fits.",
+    "If A lies, B tells the truth, so E (at least one of B and D) tells the truth; A's false statement then makes D a liar, D's false statement makes C a liar, and C's \"A and E differ\" becomes true: a contradiction. So A tells the truth, and the answer is unique."
+   ],
+   "grid": {
+    "head": [
+     "Friend",
+     "A",
+     "B",
+     "C",
+     "D",
+     "E"
+    ],
+    "rows": [
+     [
+      "Kind",
+      "truth-teller",
+      "liar",
+      "liar",
+      "truth-teller",
+      "truth-teller"
+     ]
+    ]
+   },
+   "cases": 1,
+   "diagram": {
+    "layout": "grid",
+    "seats": [
+     "Kind",
+     "Their statement"
+    ],
+    "rows": [
+     "A",
+     "B",
+     "C",
+     "D",
+     "E"
+    ],
+    "note": "Try one person's statement both ways and follow it until it breaks.",
+    "frames": [
+     [
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       []
+      ]
+     ],
+     [
+      [
+       [
+        "Truth-teller?"
+       ],
+       [
+        "true?"
+       ]
+      ],
+      [
+       [
+        "Liar?"
+       ],
+       [
+        "false?"
+       ]
+      ],
+      [
+       [
+        "Liar?"
+       ],
+       [
+        "false?"
+       ]
+      ],
+      [
+       [
+        "Truth-teller?"
+       ],
+       [
+        "true?"
+       ]
+      ],
+      [
+       [
+        "Truth-teller?"
+       ],
+       [
+        "true?"
+       ]
+      ]
+     ],
+     [
+      [
+       [
+        "Truth-teller"
+       ],
+       [
+        "true"
+       ]
+      ],
+      [
+       [
+        "Liar"
+       ],
+       [
+        "false"
+       ]
+      ],
+      [
+       [
+        "Liar"
+       ],
+       [
+        "false"
+       ]
+      ],
+      [
+       [
+        "Truth-teller"
+       ],
+       [
+        "true"
+       ]
+      ],
+      [
+       [
+        "Truth-teller"
+       ],
+       [
+        "true"
+       ]
+      ]
+     ]
+    ],
+    "tones": {
+     "true": "good",
+     "false": "bad",
+     "Truth-teller": "good",
+     "Liar": "bad",
+     "Alternator": "key"
+    }
+   }
+  }
+ },
+ {
+  "id": "bin-alternators",
+  "title": "Truth-tellers, liars and alternators",
+  "type": "binary",
+  "sub": "alternators, two statements each",
+  "difficulty": "medium",
+  "minutes": 14,
+  "source": "original",
+  "since": "2026-10-31",
+  "intro": [
+   "Four people, A, B, C and D, each make two statements, one after the other. There are three kinds of person. A truth-teller makes two true statements. A liar makes two false statements. An alternator makes one true and one false statement, in either order (the order is not known in advance)."
+  ],
+  "clues": [
+   "A, first: \"B and D are of different kinds.\"",
+   "A, second: \"C is not a truth-teller.\"",
+   "B, first: \"C is not an alternator.\"",
+   "B, second: \"D is a truth-teller.\"",
+   "C, first: \"A and D are of different kinds.\"",
+   "C, second: \"Exactly 3 of the 4 of us are liars.\"",
+   "D, first: \"Exactly 2 of the 4 of us are liars.\"",
+   "D, second: \"B is a liar.\""
+  ],
+  "questions": [
+   {
+    "stem": "Who is the liar?",
+    "kind": "mcq",
+    "options": [
+     "D",
+     "A",
+     "B",
+     "C"
+    ],
+    "answer": 2,
+    "uses": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "why": [
+     "B cannot tell the truth: D would be a truth-teller, and D's \"B is a liar\" would be true.",
+     "B as an alternator fails too (see the walkthrough), so B is the liar: A tells the truth, and C and D are alternators."
+    ]
+   },
+   {
+    "stem": "How many of the eight statements are true?",
+    "kind": "tita",
+    "answer": "4",
+    "uses": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "why": [
+     "A's two are true (2), B's two false (0), C's first true and second false (1), D's first false and second true (1).",
+     "2 + 0 + 1 + 1 = 4."
+    ]
+   },
+   {
+    "stem": "Which person is an alternator who made a false statement first and a true statement second?",
+    "kind": "mcq",
+    "options": [
+     "C",
+     "B",
+     "D",
+     "A"
+    ],
+    "answer": 2,
+    "uses": [
+     7,
+     8
+    ],
+    "why": [
+     "D's first statement (exactly 2 liars) is false, since only B lies; D's second (B is a liar) is true. So D lied first.",
+     "C is the alternator who told the truth first; A is a truth-teller and B a liar."
+    ]
+   },
+   {
+    "stem": "Suppose B's first statement had been \"C is an alternator\" instead (everything else unchanged). Then who is the liar?",
+    "kind": "mcq",
+    "options": [
+     "C",
+     "A",
+     "B",
+     "D"
+    ],
+    "answer": 3,
+    "uses": [
+     1,
+     2,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "why": [
+     "B is still not a truth-teller. If B lied, C would not be an alternator, D would be an alternator who lied first, C would have to be a liar and A an alternator; but A's two statements both come out true, so A would be a truth-teller: a contradiction.",
+     "So B is an alternator: D is not a truth-teller, and B's first statement is the true one, so C is an alternator. D cannot be an alternator (D's second statement is false, and \"exactly 2 liars\" cannot then be true), so D is the liar, and A, with two true statements, is a truth-teller."
+    ]
+   },
+   {
+    "stem": "Suppose D's first statement had been \"Exactly 1 of the 4 of us is a liar\" instead (everything else unchanged). How many of the four are alternators?",
+    "kind": "tita",
+    "answer": "3",
+    "uses": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     8
+    ],
+    "why": [
+     "If B lied, the reasoning of the walkthrough makes B the only liar, and then D's new first statement (exactly 1 liar) would be true, though D lied first: a contradiction. So B is an alternator.",
+     "A liar D forces three liars (A, C, D), which makes C's second statement true: impossible. So D is an alternator who told the truth first, with exactly one liar, C; C's false first statement makes A and D the same kind.",
+     "A, B and D are alternators: 3."
+    ]
+   }
+  ],
+  "solution": {
+   "steps": [
+    "Two statements with the same truth value belong to a truth-teller or a liar; two with different values belong to an alternator. Every pair of statements has to match its speaker's kind.",
+    "B cannot be a truth-teller: B's second statement would make D one, and D's \"B is a liar\" would then be true.",
+    "If B lies: C is an alternator and D is not a truth-teller. D's \"B is a liar\" is true, so D is an alternator who lied first. With two alternators there cannot be 3 liars, so C's second statement is false and C's first is true: A and D differ. A's two statements come out true, so A is a truth-teller. This fits.",
+    "If B is an alternator: B's second statement is false, so the first is true and C is a truth-teller or a liar. A truth-teller C would need 3 liars, which there cannot be, so C lies and A and D are the same kind. A liar D gives three liars and makes C's second statement true; an alternator D needs exactly two liars with only C lying. Both fail, so B is the liar."
+   ],
+   "grid": {
+    "head": [
+     "Person",
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "rows": [
+     [
+      "Kind",
+      "truth-teller",
+      "liar",
+      "alternator, true first",
+      "alternator, false first"
+     ]
+    ]
+   },
+   "cases": 1,
+   "diagram": {
+    "layout": "grid",
+    "seats": [
+     "Kind",
+     "1st statement",
+     "2nd statement"
+    ],
+    "rows": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "note": "Each person's two statements must match their kind: both true, both false, or one of each.",
+    "frames": [
+     [
+      [
+       [],
+       [],
+       []
+      ],
+      [
+       [],
+       [],
+       []
+      ],
+      [
+       [],
+       [],
+       []
+      ],
+      [
+       [],
+       [],
+       []
+      ]
+     ],
+     [
+      [
+       [],
+       [],
+       []
+      ],
+      [
+       [
+        "not a truth-teller"
+       ],
+       [],
+       []
+      ],
+      [
+       [],
+       [],
+       []
+      ],
+      [
+       [],
+       [],
+       []
+      ]
+     ],
+     [
+      [
+       [
+        "Truth-teller?"
+       ],
+       [
+        "true?"
+       ],
+       [
+        "true?"
+       ]
+      ],
+      [
+       [
+        "not a truth-teller"
+       ],
+       [
+        "false?"
+       ],
+       [
+        "false?"
+       ]
+      ],
+      [
+       [
+        "Alternator?"
+       ],
+       [
+        "true?"
+       ],
+       [
+        "false?"
+       ]
+      ],
+      [
+       [
+        "Alternator?"
+       ],
+       [
+        "false?"
+       ],
+       [
+        "true?"
+       ]
+      ]
+     ],
+     [
+      [
+       [
+        "Truth-teller"
+       ],
+       [
+        "true"
+       ],
+       [
+        "true"
+       ]
+      ],
+      [
+       [
+        "Liar"
+       ],
+       [
+        "false"
+       ],
+       [
+        "false"
+       ]
+      ],
+      [
+       [
+        "Alternator"
+       ],
+       [
+        "true"
+       ],
+       [
+        "false"
+       ]
+      ],
+      [
+       [
+        "Alternator"
+       ],
+       [
+        "false"
+       ],
+       [
+        "true"
+       ]
+      ]
+     ]
+    ],
+    "tones": {
+     "true": "good",
+     "false": "bad",
+     "Truth-teller": "good",
+     "Liar": "bad",
+     "Alternator": "key"
+    }
+   }
+  }
+ },
+ {
+  "id": "bin-birth-months",
+  "title": "Five friends and their birth months",
+  "type": "binary",
+  "sub": "a fixed number of truth-tellers",
+  "difficulty": "hard",
+  "minutes": 16,
+  "source": "original",
+  "since": "2026-10-31",
+  "intro": [
+   "Five friends, P, Q, R, S and T, were born in five different months of the same year: January, March, April, June and September, not necessarily in that order. Each friend made one statement about the birth months. A friend whose statement is true is a truth-teller; a friend whose statement is false is a liar. Exactly three of the five friends are truth-tellers.",
+   "\"Exactly k months apart\" means the month numbers differ by k: March and June are 3 months apart. \"Earlier\" and \"later\" refer to the order within the year."
+  ],
+  "clues": [
+   "P: \"Q and S were born exactly 2 months apart.\"",
+   "Q: \"S is the latest-born of the five.\"",
+   "R: \"Q and T were born exactly 5 months apart.\"",
+   "S: \"S and T were born exactly 2 months apart.\"",
+   "T: \"Q and P were born exactly one month apart.\""
+  ],
+  "questions": [
+   {
+    "stem": "In which month was R born?",
+    "kind": "mcq",
+    "options": [
+     "April",
+     "June",
+     "March",
+     "January"
+    ],
+    "answer": 3,
+    "uses": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "why": [
+     "Q's statement is false and S is the second liar (see the walkthrough). R's and T's true statements give Q April, P March and T September; P's gives S June.",
+     "January is left, so R was born in January."
+    ]
+   },
+   {
+    "stem": "By how many months does the birth of P differ from the birth of T?",
+    "kind": "tita",
+    "answer": "6",
+    "uses": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "why": [
+     "P was born in March (3) and T in September (9).",
+     "9 - 3 = 6."
+    ]
+   },
+   {
+    "stem": "Who are the liars?",
+    "kind": "mcq",
+    "options": [
+     "Q and S",
+     "P and R",
+     "P and S",
+     "R and T"
+    ],
+    "answer": 0,
+    "uses": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "why": [
+     "With P March, Q April, R January, S June and T September: P's statement (April and June, 2 apart) is true; Q's (S latest) is false, as T is later; R's (April and September, 5 apart) is true; S's (June and September, 3 apart) is false; T's (April and March, 1 apart) is true.",
+     "The liars are Q and S."
+    ]
+   },
+   {
+    "stem": "If the five friends are lined up in the order of their birth, earliest first, in which position does Q stand?",
+    "kind": "tita",
+    "answer": "3",
+    "uses": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "why": [
+     "The order is R (January), P (March), Q (April), S (June), T (September).",
+     "Q is third."
+    ]
+   },
+   {
+    "stem": "Suppose instead that exactly two of the five statements are true, and Q's statement (\"S is the latest-born\") is one of them. In how many different ways can the five months be assigned to the five friends?",
+    "kind": "tita",
+    "answer": "8",
+    "uses": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "why": [
+     "Q's statement true puts S in September. Then P's and S's statements are false (no month is 2 from September), so exactly one of R's and T's is true.",
+     "R's true: Q and T are January and June (2 orders), P and R fill March and April (2 ways): 4, and T's statement is then false.",
+     "T's true: Q and P are March and April (2 orders), R and T fill January and June (2 ways): 4, and R's is then false. 4 + 4 = 8."
+    ]
+   }
+  ],
+  "solution": {
+   "steps": [
+    "Turn each statement into month numbers: January 1, March 3, April 4, June 6, September 9. Exactly 2 apart allows only January-March and April-June; exactly 5 apart only January-June and April-September; one apart only March-April.",
+    "If Q's statement were true, S would be September, and P's and S's statements would be false, leaving R's and T's both true: Q and T would be January and June, and Q and P March and April. Q cannot be in both pairs, so Q lies, and exactly one other friend lies.",
+    "Try each of P, R, S and T as the second liar. With R lying, S and T cannot be 2 apart; with P lying, S and T cannot be 2 apart either; with T lying, S and T always come out 3 apart. Only S lying works.",
+    "So R's and T's statements are true: Q April, P March, T September. P's makes S June, and R takes January."
+   ],
+   "grid": {
+    "head": [
+     "Friend",
+     "P",
+     "Q",
+     "R",
+     "S",
+     "T"
+    ],
+    "rows": [
+     [
+      "Month",
+      "March",
+      "April",
+      "January",
+      "June",
+      "September"
+     ]
+    ]
+   },
+   "cases": 1,
+   "diagram": {
+    "layout": "grid",
+    "seats": [
+     "Month",
+     "Their statement"
+    ],
+    "rows": [
+     "P",
+     "Q",
+     "R",
+     "S",
+     "T"
+    ],
+    "note": "Months as numbers: January 1, March 3, April 4, June 6, September 9.",
+    "frames": [
+     [
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       []
+      ]
+     ],
+     [
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       [
+        "false"
+       ]
+      ],
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       []
+      ],
+      [
+       [],
+       []
+      ]
+     ],
+     [
+      [
+       [],
+       [
+        "true"
+       ]
+      ],
+      [
+       [],
+       [
+        "false"
+       ]
+      ],
+      [
+       [],
+       [
+        "true"
+       ]
+      ],
+      [
+       [],
+       [
+        "false"
+       ]
+      ],
+      [
+       [],
+       [
+        "true"
+       ]
+      ]
+     ],
+     [
+      [
+       [
+        "March"
+       ],
+       [
+        "true"
+       ]
+      ],
+      [
+       [
+        "April"
+       ],
+       [
+        "false"
+       ]
+      ],
+      [
+       [
+        "January"
+       ],
+       [
+        "true"
+       ]
+      ],
+      [
+       [
+        "June"
+       ],
+       [
+        "false"
+       ]
+      ],
+      [
+       [
+        "September"
+       ],
+       [
+        "true"
+       ]
+      ]
+     ]
+    ],
+    "tones": {
+     "true": "good",
+     "false": "bad",
+     "Truth-teller": "good",
+     "Liar": "bad",
+     "Alternator": "key"
+    }
+   }
+  }
+ },
+ {
+  "id": "bin-liars-round-table",
+  "title": "Six friends at a round table, two of them liars",
+  "type": "binary",
+  "sub": "seating with liars",
+  "difficulty": "hard",
+  "minutes": 18,
+  "source": "original",
+  "since": "2026-10-31",
+  "intro": [
+   "Six friends, P, Q, R, S, T and U, sit at a round table with six equally spaced seats, all facing the centre. Each friend makes one statement about the seating. Exactly two of the six are liars; the other four tell the truth.",
+   "\"Immediately to X's left\" is the seat next to X on X's left-hand side as X faces the centre; \"second to X's left\" is the seat beyond that. The right-hand versions are defined the same way."
+  ],
+  "clues": [
+   "P: \"U sits immediately to P's left.\"",
+   "Q: \"T sits immediately to Q's left.\"",
+   "R: \"U sits second to T's right.\"",
+   "S: \"R sits immediately to S's left.\"",
+   "T: \"R sits immediately to T's right.\"",
+   "U: \"Q sits second to U's left.\""
+  ],
+  "questions": [
+   {
+    "stem": "Who sits opposite P?",
+    "kind": "mcq",
+    "options": [
+     "T",
+     "S",
+     "R",
+     "Q"
+    ],
+    "answer": 0,
+    "uses": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "why": [
+     "The only seating, clockwise from P, is P, U, Q, T, S, R (see the walkthrough).",
+     "The seat opposite P is the fourth from P: T."
+    ]
+   },
+   {
+    "stem": "How many of the six statements are true?",
+    "kind": "tita",
+    "answer": "4",
+    "uses": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "why": [
+     "Exactly two friends lie, T and U: the seat to T's right holds Q, not R, and the seat second to U's left holds T, not Q.",
+     "P's, Q's, R's and S's statements are true: 4."
+    ]
+   },
+   {
+    "stem": "Who sits immediately to R's right?",
+    "kind": "mcq",
+    "options": [
+     "P",
+     "Q",
+     "S",
+     "U"
+    ],
+    "answer": 2,
+    "uses": [
+     4
+    ],
+    "why": [
+     "Facing the centre, a person's right is the next seat anticlockwise (seen from above). Clockwise from P the seats are P, U, Q, T, S, R, so the seat anticlockwise of R is S.",
+     "This also agrees with S's true statement: R sits immediately to S's left."
+    ]
+   },
+   {
+    "stem": "Number the seats 1 to 6 clockwise as seen from above, starting with P in seat 1. In which seat does S sit?",
+    "kind": "tita",
+    "answer": "5",
+    "uses": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "why": [
+     "P 1, U 2, Q 3, T 4, S 5, R 6.",
+     "S sits in seat 5."
+    ]
+   },
+   {
+    "stem": "Suppose it is also known that P is one of the two liars. How many seating arrangements are possible?",
+    "kind": "tita",
+    "answer": "0",
+    "uses": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "why": [
+     "Exactly one seating fits \"exactly two liars\", and in it P tells the truth.",
+     "So if P must lie, no seating works: 0."
+    ]
+   }
+  ],
+  "solution": {
+   "steps": [
+    "Number the seats clockwise as seen from above. Facing the centre, a person's left-hand neighbour is the next seat clockwise and the right-hand neighbour the next anticlockwise. Only relative places matter, so put P in seat 1.",
+    "R's and U's statements cannot both be true: R's puts U two seats to T's right, so T is two seats clockwise of U; U's puts Q two seats clockwise of U too. So at least one of R and U lies.",
+    "If both R and U lie, the other four tell the truth, and Q's and T's statements put R in Q's seat: impossible. So exactly one of R and U lies, and one more friend lies.",
+    "If U lies and R tells the truth, the second liar has to be T (any other choice puts two friends in one seat): P 1, U 2 (P's statement), T 4 (R's), Q 3 (Q's), and R 6, S 5 (S's).",
+    "If R lies and U tells the truth, every choice of the second liar puts two friends in one seat or leaves no room. So the seating is unique: clockwise P, U, Q, T, S, R, with T and U lying."
+   ],
+   "grid": {
+    "head": [
+     "Seat (clockwise)",
+     "1",
+     "2",
+     "3",
+     "4",
+     "5",
+     "6"
+    ],
+    "rows": [
+     [
+      "Friend",
+      "P",
+      "U",
+      "Q",
+      "T",
+      "S",
+      "R"
+     ]
+    ]
+   },
+   "cases": 1,
+   "diagram": {
+    "layout": "circle",
+    "seats": [
+     "1",
+     "2",
+     "3",
+     "4",
+     "5",
+     "6"
+    ],
+    "note": "Seat numbers run clockwise from P, the way a person facing the centre turns to the left.",
+    "frames": [
+     [
+      [
+       [
+        "P"
+       ],
+       [],
+       [],
+       [],
+       [],
+       []
+      ]
+     ],
+     [
+      [
+       [
+        "P"
+       ],
+       [],
+       [],
+       [],
+       [],
+       []
+      ]
+     ],
+     [
+      [
+       [
+        "P"
+       ],
+       [],
+       [],
+       [],
+       [],
+       []
+      ]
+     ],
+     [
+      [
+       [
+        "P"
+       ],
+       [
+        "U"
+       ],
+       [
+        "Q"
+       ],
+       [
+        "T"
+       ],
+       [
+        "S"
+       ],
+       [
+        "R"
+       ]
+      ]
+     ],
+     [
+      [
+       [
+        "P"
+       ],
+       [
+        "U",
+        "liar"
+       ],
+       [
+        "Q"
+       ],
+       [
+        "T",
+        "liar"
+       ],
+       [
+        "S"
+       ],
+       [
+        "R"
+       ]
+      ]
+     ]
+    ]
+   }
+  }
+ }
+]

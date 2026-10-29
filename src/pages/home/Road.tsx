@@ -90,7 +90,7 @@ export function Road() {
               ))}
             </div>
             {months(first, total).map((m) => (
-              <span key={m.label} className="absolute bottom-0 -translate-x-1/2 text-sm text-muted-foreground" style={{ left: `${m.at * 100}%` }}>{m.label}</span>
+              <span key={m.at} className="absolute bottom-0 -translate-x-1/2 text-sm text-muted-foreground" style={{ left: `${m.at * 100}%` }}>{m.label}</span>
             ))}
           </div>
           <ol className="grid grid-cols-5 gap-3">

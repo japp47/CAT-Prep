@@ -60,7 +60,7 @@ function TypeGroup({ type, sets, last, open, onToggle, children }: { type: LrTyp
         <Thumb type={type} />
         <span className="flex min-w-0 flex-1 flex-col gap-0.5">
           <span className="text-heading font-semibold">{LR_TYPE[type].label}</span>
-          <span className="text-sm text-muted-foreground">{sets.length} sets{tried ? `, ${tried} tried` : ", none tried yet"}</span>
+          <span className="text-sm text-muted-foreground">{sets.length} {sets.length === 1 ? "set" : "sets"}{tried ? `, ${tried} tried` : ", none tried yet"}</span>
         </span>
         {/* One pill per set, filled once tried. */}
         <span className="hidden items-center gap-1 sm:flex" aria-hidden>
@@ -201,7 +201,7 @@ export default function DilrPractice({ next }: { next: LrMeta | undefined }) {
               </TypeGroup>
             );
           })}
-          <p className="measure pt-3 text-base text-muted-foreground">All six logical reasoning types are here. Data interpretation sets join in December.</p>
+          <p className="measure pt-3 text-base text-muted-foreground">{types.length} kinds of logical reasoning set are here. Data interpretation sets join in December.</p>
         </div>
       </Section>
 
