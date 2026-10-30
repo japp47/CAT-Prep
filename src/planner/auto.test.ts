@@ -26,6 +26,15 @@ describe("blocks that tick themselves from work on the site (D57)", () => {
     expect(ticked).toContain("lrset");
     expect(siteWork(blocks(st, "varc").find((b) => b.id === "rc1")!, st, d)).toBe("RC set, 3 of 4 right");
   });
+  it("never ticks a catch-up: one RC set covers today's RC block, not the missed day's too", () => {
+    const st = fresh();
+    st.since = "2026-11-03";
+    expect(blocks(st, "varc").some((b) => b.carryFrom)).toBe(true);
+    st.rcAttempts.push({ id: "r", d, set: "x", mode: "daily", ans: [0, 1, 2, 3], c: 3, w: 1, secs: 400, first: 0 });
+    const ticked = autoTicks(st, d).map((x) => x.b);
+    expect(ticked.some((b) => b.id === "rc1")).toBe(true);
+    expect(ticked.some((b) => b.carryFrom)).toBe(false);
+  });
   it("needs two LR sets for a two-set block, and the right drill for a drill block", () => {
     const st = fresh();
     const two = { id: "lrset", name: "Two LR sets", go: "lr-next" };

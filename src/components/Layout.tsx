@@ -3,7 +3,6 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Menu, PanelLeftClose, PanelLeftOpen, Search } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { SECTIONS } from "../sections";
 import { useFocus } from "../lib/focus";
 import { whenIdle } from "../lib/idle";
 import { usePref } from "../lib/prefs";
@@ -15,35 +14,10 @@ import { IconChart, IconHome, IconPen, IconToday } from "./Icons";
 import Brand from "./Brand";
 import SiteFooter from "./SiteFooter";
 import { DataNote, SyncNavRow } from "./SyncNav";
-import SiteHeader, { PRACTICE_PATH, SiteNavLink, type SiteNavGroup } from "./SiteHeader";
+import SiteHeader, { PRACTICE_PATH, SiteNavLink } from "./SiteHeader";
+import { NAV_GROUPS, SidebarNav } from "./Sidebar";
 import ThemeToggle, { type Theme as ThemeValue } from "./ThemeToggle";
 const SearchPalette = lazy(() => import("./SearchPalette"));
-
-const GROUPS: SiteNavGroup[] = [
-  { title: "Study", items: [{ to: "/", label: "Home", end: true }, { to: "/today", label: "Today" }, { to: "/practice", label: "Practice", match: PRACTICE_PATH }, { to: "/plan", label: "Plan and time" }] },
-  { title: "Sections", items: SECTIONS.map((s) => ({ to: "/" + s.id, label: s.short, soon: s.status === "soon", end: true })) },
-  { title: "Progress", items: [{ to: "/progress", label: "Overview" }, { to: "/history", label: "History" }, { to: "/review", label: "Weekly review" }, { to: "/errors", label: "Error log" }, { to: "/words", label: "Words" }, { to: "/journal", label: "Reading journal" }] },
-  { title: "Explore", items: [{ to: "/updates", label: "Updates" }, { to: "/exams", label: "CAT and other exams" }, { to: "/guides", label: "Guides" }, { to: "/stories", label: "Topper stories" }, { to: "/roadmap", label: "What's coming" }, { to: "/settings", label: "Settings and backup" }] },
-];
-
-function Nav({ onPick }: { onPick?: () => void }) {
-  return (
-    <nav aria-label="Site" className="flex flex-col gap-5">
-      {GROUPS.map((g) => (
-        <div key={g.title} className="flex flex-col gap-0.5">
-          <span className="mb-1 border-b border-border/70 px-3 pb-2 text-xs font-semibold tracking-[0.1em] text-muted-foreground uppercase">{g.title}</span>
-          {g.items.map((it) => (
-            <SiteNavLink key={it.to} item={it} onClick={onPick}
-              className={(isActive) => cn("flex h-9 items-center justify-between gap-2 rounded-md px-3 text-base font-medium text-foreground/80 transition-colors hover:bg-card/70 hover:text-foreground", isActive && "bg-card font-semibold text-foreground")}>
-              <span>{it.label}</span>
-              {it.soon && <span className="text-sm font-normal text-muted-foreground">Soon</span>}
-            </SiteNavLink>
-          ))}
-        </div>
-      ))}
-    </nav>
-  );
-}
 
 /** Shown for the moment a page's code is loading. */
 function PageSkeleton() {
@@ -150,28 +124,26 @@ export default function Layout() {
   }, []);
 
   return (
-    <div className={cn("min-h-dvh", !landing && "lg:grid", !landing && (sidebarCollapsed ? "lg:grid-cols-[72px_minmax(0,1fr)]" : "lg:grid-cols-[248px_minmax(0,1fr)]"))}>
+    <div className={cn("min-h-dvh", !landing && "lg:grid", !landing && (sidebarCollapsed ? "lg:grid-cols-[72px_minmax(0,1fr)]" : "lg:grid-cols-[288px_minmax(0,1fr)]"))}>
       <a href="#main" className="sr-only z-50 rounded-md bg-card px-3 py-2 focus:not-sr-only focus:fixed focus:top-2 focus:left-2">Skip to content</a>
 
-      <SiteHeader landing={landing} groups={GROUPS} open={open} onOpenChange={setOpen} onLoadMenu={loadMenu} onOpenMenu={openMenu} onOpenSearch={openSearch} />
+      <SiteHeader landing={landing} groups={NAV_GROUPS} open={open} onOpenChange={setOpen} onLoadMenu={loadMenu} onOpenMenu={openMenu} onOpenSearch={openSearch} />
 
-      <aside className={cn("sticky top-0 hidden h-dvh flex-col gap-7 overflow-y-auto bg-sidebar pt-6 pb-6", !landing && "lg:flex", sidebarCollapsed ? "items-center px-2" : "px-4")}>
+      <aside className={cn("sticky top-0 hidden h-dvh flex-col gap-6 overflow-y-auto overscroll-contain bg-sidebar pt-6 pb-6", !landing && "lg:flex", sidebarCollapsed ? "items-center px-2" : "px-5")}>
         <div className={cn("flex w-full items-center", sidebarCollapsed ? "flex-col gap-4" : "justify-between gap-2 px-1")}>
           <Brand compact={sidebarCollapsed} />
-          <button type="button" onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+          <button type="button" onClick={() => setSidebarCollapsed(!sidebarCollapsed)} aria-expanded={!sidebarCollapsed}
             aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"} title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             className="grid size-10 shrink-0 place-items-center rounded-md text-foreground/70 transition-colors hover:bg-card hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
             {sidebarCollapsed ? <PanelLeftOpen className="size-5" aria-hidden /> : <PanelLeftClose className="size-5" aria-hidden />}
           </button>
         </div>
         <button type="button" onClick={openSearch} aria-label="Search" title="Search (⌘K)" aria-keyshortcuts="Meta+K Control+K"
-          className={cn("flex h-11 shrink-0 items-center rounded-md text-foreground/75 transition-colors hover:bg-card hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none", sidebarCollapsed ? "w-11 justify-center" : "w-full justify-between px-3")}>
-          <span className="flex items-center gap-3"><Search className="size-5" aria-hidden />{!sidebarCollapsed && <span className="text-sm font-medium">Search</span>}</span>
-          {!sidebarCollapsed && <kbd className="rounded border border-border px-1.5 py-0.5 text-xs text-muted-foreground">⌘ K</kbd>}
+          className={cn("flex h-11 shrink-0 items-center rounded-lg text-foreground/70 transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none", sidebarCollapsed ? "w-11 justify-center hover:bg-card" : "w-full justify-between bg-foreground/[0.04] px-3.5 hover:bg-card")}>
+          <span className="flex items-center gap-3"><Search className="size-5" aria-hidden />{!sidebarCollapsed && <span className="text-base">Search</span>}</span>
+          {!sidebarCollapsed && <kbd className="rounded-md bg-card px-1.5 py-0.5 text-sm text-muted-foreground">⌘K</kbd>}
         </button>
-        {!sidebarCollapsed && <>
-          <Nav />
-        </>}
+        {!sidebarCollapsed && <SidebarNav />}
         <div className={cn("mt-auto flex", sidebarCollapsed ? "flex-col gap-2" : "items-center gap-2 px-1")}>
           <ThemeToggle />
           <InstallButton hideWhenInstalled />
@@ -205,7 +177,7 @@ export default function Layout() {
 
       {menuUsed && (
         <Suspense fallback={null}>
-          <MenuSheet open={open} onOpenChange={setOpen} title={<Brand />}><SyncNavRow onPick={() => setOpen(false)} /><Nav onPick={() => setOpen(false)} /></MenuSheet>
+          <MenuSheet open={open} onOpenChange={setOpen} title={<Brand />}><SyncNavRow onPick={() => setOpen(false)} /><SidebarNav onPick={() => setOpen(false)} /></MenuSheet>
         </Suspense>
       )}
       {searchUsed && <Suspense fallback={null}><SearchPalette open={searchOpen} onOpenChange={setSearchOpen} onNavigate={navigateFromSearch} /></Suspense>}

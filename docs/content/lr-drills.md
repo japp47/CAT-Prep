@@ -25,6 +25,27 @@ Left and right are the person's own: in a row facing the same way as the reader,
 
 `{ set, board: { layout, n }, groups: [{ name, values }], clues: [expr, …] }`, the people first, then each attribute, every group as large as the number of seats; one expression per clue, in order. The test solves the model and checks the number of seatings and each against the set's `solution.cases` and final table.
 
+## `models.json`: grid models (D51)
+
+Sets that are not seatings (team selection, truth-tellers and liars, a league) are **grid models**, on the same general solver (`src/practice/solver.ts`) as the seating models.
+
+`{ set, kind: "grid", vars: [{ names, values, labels? }], league?, distinct?, facts?, clues: [cond, …], show? }`
+- `vars`: values to fill, in groups sharing their choices (`["T", "L"]` with labels `truth-teller`, `liar`; `[1, 0]` for in or out of a team).
+- `league`: `{ teams, win, draw }` adds one value per match, named `"X v Y"` (X before Y in `teams`): `W` when X won, `D`, `L` when Y won.
+- `facts`: what always holds and is not a numbered clue (a team of exactly four, the surviving cells of a points table). Never left out by a drill, never a first move.
+- `clues`: one condition per clue, in order. `show: "members"` lists who is in (a team) instead of one row per value.
+
+| Condition or number | Means |
+|---|---|
+| `{ "is": ["A", "T"] }`, `{ "isnt": … }` | a value's choice |
+| `{ "eq": [t, t] }` and `ne`, `lt`, `le`, `gt`, `ge` | compare two numbers |
+| `{ "v": "A" }`, a number, `{ "sum": [t, …] }`, `{ "count": [cond, …] }` | numbers: a value (0 when not a number), a sum, how many conditions hold |
+| `{ "wins": "X" }`, `draws`, `losses`, `points` | a league team's figures |
+| `{ "beat": ["X", "Y"] }`, `{ "drew": ["X", "Y"] }` | a match's result |
+| `not`, `and`, `or`, `xor`, `{ "iff": [c, c] }`, `{ "if": c, "then": c }` | joins; `iff` is "exactly when" (a truth-teller's statement is true exactly when they tell the truth) |
+
+The test solves each grid model and checks its number of cases against the set's `solution.cases`, and the case against the set's final table where it has one. Must-could-cannot statements on a grid set are written in the same conditions. First move runs only on sets with more clues than moves.
+
 ## `clues.json`: the clue translator
 
 Ids start with their kind: `oi` only if, `un` unless, `if` if and only if, `ei` either/or, `co` exactly/at least/at most, `im` immediately or somewhere, `bw` between, `fa` facing. At least ten of each.

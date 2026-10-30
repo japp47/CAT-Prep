@@ -408,7 +408,7 @@ The same solved set with one clue changed or dropped; the student says what move
 #### F88. Draw it first — Planned (step 4b or later)
 60 seconds: choose the right skeleton (line, circle, matrix, points table, timeline, Venn, graph) for a set before solving; the chosen skeleton opens as the scratch grid. Trains representation, the step toppers do first.
 
-#### F89. Skill map — Planned (step 4b, after F82 part 1; D51)
+#### F89. Skill map — Building (30 Oct 2026, with Progress v2; D63, `docs/design/progress-v2.md`)
 **Problem.** Progress has accuracy lists, a report card and the clue-reading pattern, but no single picture of where a student stands across every skill, and nothing that says what to practise from it.
 **What the student gets.** One tile per skill (VARC question types, LR set types, kinds of clue; Quant later), in four states with strict rules: not started; learning (fewer than 8 attempts, no verdict yet); weak (8 or more, under 60%); strong (80% or more, and held on redo a week later). A tap opens that skill's drill or guide. Flat first, on Progress; a 3D "city" may become an optional view of the same data only if the map is used, with a flat fallback (D41).
 **Done when** every tile's state follows from recorded attempts by a tested rule, and no tile shows a verdict on too little data.
@@ -440,8 +440,9 @@ Before re-solving an RC question from the Error log or the redo queue, a three-l
 ### Thinking practice in DILR and Quant (23 Oct 2026; built with steps 4 and 5)
 These are what make the DILR and Quant sections ours rather than another question bank. Review and reasons: `docs/research/beyond-cat.md`.
 
-#### F56. Set Selection Arena (DILR) — Planned (step 4)
+#### F56. Set Selection Arena (DILR) — Planned (step 4a.9; design `docs/design/arena.md`, D58 to D62)
 **Problem.** Students who solve sets well still lose marks by picking the wrong ones: a set that looks easy turns into casework, a doable one is skipped. Nothing trains or measures this choice.
+**Revised 30 Oct 2026:** five sets, not four (CAT 2024 and 2025 had five DILR sets per slot); the look is inside the 40 minutes, with a nudge at 4; no "most students" until real aggregates exist; no counterfactual marks, only recorded time. The bullets below are the first version; the design doc wins where they differ.
 **What the student gets.**
 - A round shows four unseen sets. Two minutes to look, then rank them and guess each one's time and marks.
 - They solve under the clock (40 minutes for the round, as in the exam's DILR section) and may switch sets at any time.

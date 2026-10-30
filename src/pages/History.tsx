@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import {
-  BookOpen, CalendarCheck, ChevronRight, CircleAlert, ClipboardList, FileText, Gauge, NotebookPen, RotateCcw, Scale, Search,
+  BookOpen, CalendarCheck, ChevronRight, CircleAlert, ClipboardList, FileText, Gauge, ListChecks, NotebookPen, RotateCcw, Scale, Search,
   Puzzle, SearchCheck, Shuffle, Timer, X, type LucideIcon,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +17,7 @@ import {
 } from "../practice/history";
 
 const ICON: Record<HistoryIcon, LucideIcon> = {
-  rc: BookOpen, va: Shuffle, cr: Scale, lr: Puzzle, speed: Gauge, redo: RotateCcw, own: ClipboardList, sectional: Timer, mock: FileText,
+  plan: ListChecks, rc: BookOpen, va: Shuffle, cr: Scale, lr: Puzzle, speed: Gauge, redo: RotateCcw, own: ClipboardList, sectional: Timer, mock: FileText,
   analysis: SearchCheck, week: CalendarCheck, summary: NotebookPen, mistake: CircleAlert,
 };
 const SHADE = ["bg-secondary", "bg-primary/20", "bg-primary/45", "bg-primary/70", "bg-primary"] as const;

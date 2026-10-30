@@ -5,6 +5,8 @@ import { CONTENT } from "./full";
 import { daySummary, filterDays, historyDays, historyItems, level, stripWeeks, studySoFar } from "./history";
 import { recordCr, recordRc, recordRedoAnswer, recordVa } from "./record";
 import { parseKey } from "./va/build";
+import { buildDay, budgetFor } from "../planner/engine";
+import { VARC } from "../sections/varc";
 
 const set = CONTENT.rcSets[0], cr = CONTENT.crItems.slice(0, 2);
 const va = [parseKey("pj:" + CONTENT.vaParas[0].id, CONTENT.vaParas)!];
@@ -45,9 +47,30 @@ describe("History", () => {
   it("groups by day, newest first, with ticked minutes or else measured time", () => {
     const days = historyDays(sample());
     expect(days.map((d) => d.d)).toEqual(["2026-10-22", "2026-10-21", "2026-10-20", "2026-10-19", "2026-10-18"]);
-    expect(days.find((d) => d.d === "2026-10-18")).toMatchObject({ items: [], minutes: 30 });
+    expect(days.find((d) => d.d === "2026-10-18")).toMatchObject({ items: [expect.objectContaining({ kind: "plan" })], minutes: 30 });
     expect(days.find((d) => d.d === "2026-10-20")!.minutes).toBe(Math.round((420 + 90) / 60));
     expect(days[0].items[0].kind).toBe("tests");
+  });
+
+  it("lists each block ticked on Today by the plan's own name, its minutes and who ticked it", () => {
+    const st = sample();
+    st.days["2026-10-18"] = { done: { "varc:read": 30, "varc:vocab": 10, "varc:carry:2026-10-17": 20, "varc:gone": 5 }, auto: { "varc:vocab": 1 }, spent: { "varc:read": 30 } };
+    const plan = historyDays(st).find((d) => d.d === "2026-10-18")!.items;
+    expect(plan.every((x) => x.kind === "plan" && x.icon === "plan")).toBe(true);
+    const read = plan.find((x) => x.id.endsWith("varc:read"))!;
+    expect(read.title).toBe(buildDay(VARC, st, "2026-10-18", budgetFor(VARC, st, "2026-10-18"), { today: "2026-10-18" }).find((b) => b.key === "varc:read")!.name);
+    expect(read.detail).toBe("VARC, 30 min, ticked by you, focus timer 30 min");
+    expect(plan.find((x) => x.id.endsWith("varc:vocab"))!.detail).toBe("VARC, 10 min, ticked by your practice on the site");
+    expect(plan.find((x) => x.id.endsWith("varc:carry:2026-10-17"))!.title).toMatch(/^Catch|Catch-up/);
+    // A block the plan no longer has keeps a plain name.
+    expect(plan.find((x) => x.id.endsWith("varc:gone"))!.title).toBe("Gone");
+    expect(historyDays(st).find((d) => d.d === "2026-10-18")!.minutes).toBe(65);
+  });
+
+  it("leaves unticked (zero) blocks out", () => {
+    const st = blankState();
+    st.days["2026-10-18"] = { done: { "varc:read": 0 } };
+    expect(historyItems(st).filter((x) => x.kind === "plan")).toEqual([]);
   });
 
   it("filters by kind and by words in the title", () => {

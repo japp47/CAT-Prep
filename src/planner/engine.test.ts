@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { blankState, normalize } from "../lib/state";
 import { VARC } from "../sections/varc";
-import { buildDay, carryInfo, defaultMin, doneKey } from "./engine";
+import { buildDay, carryId, carryInfo, defaultMin, doneKey, markBlockDone, missedDays, skipCarry } from "./engine";
 
 const WEEKDAY = "2026-10-19"; // Monday, Foundation phase
 const SATURDAY = "2026-10-24";
@@ -65,9 +65,40 @@ describe("carry over", () => {
     const carry = carryInfo(VARC, st, today);
     expect(carry?.date).toBe("2026-10-19");
     const bl = buildDay(VARC, st, today, 60, { today });
-    expect(bl.some((b) => b.id === "carry")).toBe(true);
+    expect(bl.some((b) => b.id === carryId("2026-10-19"))).toBe(true);
     st.days["2026-10-19"] = { done: { [doneKey(VARC, carry!.block.id)]: 30 } };
     expect(carryInfo(VARC, st, today)?.date).not.toBe("2026-10-19");
+  });
+  // The bug of 30 Oct 2026: finishing one catch-up brought in the next older missed day under the same key, already
+  // ticked; skipping that one brought in the next, also ticked.
+  it("gives one catch-up a day: once done it stays done, and no older missed day takes its place", () => {
+    const st = blankState();
+    st.since = "2026-10-17";
+    const today = "2026-10-21";
+    expect(missedDays(VARC, st, today).map((x) => x.date)).toEqual(["2026-10-20", "2026-10-19", "2026-10-18", "2026-10-17"]);
+    const carry = buildDay(VARC, st, today, 60, { today }).find((b) => b.carryFrom)!;
+    expect(carry.carryFrom).toBe("2026-10-20");
+    markBlockDone(st, today, VARC.id, carry.key, carry.mins, carry.carryFrom);
+    expect(carryInfo(VARC, st, today)).toMatchObject({ date: "2026-10-20", done: true });
+    const again = buildDay(VARC, st, today, 60, { today }).filter((b) => b.carryFrom);
+    expect(again.map((b) => [b.carryFrom, !!st.days[today].done![b.key]])).toEqual([["2026-10-20", true]]);
+    // Tomorrow the next older day comes, not ticked.
+    const next = buildDay(VARC, st, "2026-10-22", 60, { today: "2026-10-22" }).find((b) => b.carryFrom)!;
+    expect(next.carryFrom).toBe("2026-10-21");
+    expect(st.days["2026-10-22"]?.done?.[next.key]).toBeUndefined();
+  });
+  it("counts a catch-up ticked before ids carried a date as today's, and shows no other", () => {
+    const st = blankState();
+    st.since = "2026-10-17";
+    st.days["2026-10-21"] = { done: { "varc:carry": 15 } };
+    expect(carryInfo(VARC, st, "2026-10-21")).toBeNull();
+  });
+  it("lets every missed day go when a catch-up is skipped", () => {
+    const st = blankState();
+    st.since = "2026-10-17";
+    skipCarry(st, VARC, "2026-10-21");
+    expect(carryInfo(VARC, st, "2026-10-21")).toBeNull();
+    expect(missedDays(VARC, st, "2026-10-21")).toEqual([]);
   });
   it("does not carry from a rest day", () => {
     const st = blankState();

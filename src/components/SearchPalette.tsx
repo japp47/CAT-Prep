@@ -197,8 +197,8 @@ export default function SearchPalette({ open, onOpenChange, onNavigate }: Search
 
   useEffect(() => { if (open) { setQuery(""); setActive(0); setTourStep(0); requestAnimationFrame(() => input.current?.focus()); } }, [open]);
 
-  // Newest first, so a passage done twice is found on its latest day. Mistakes and redo rows have no title to find.
-  const practiceItems = useMemo(() => historyItems(state).filter((x) => x.kind !== "mistakes" && x.icon !== "redo").sort((a, b) => (a.d < b.d ? 1 : a.d > b.d ? -1 : 0)), [state]);
+  // Newest first, so a passage done twice is found on its latest day. Mistakes, redo and ticked plan rows have no page of their own to open.
+  const practiceItems = useMemo(() => historyItems(state).filter((x) => x.kind !== "mistakes" && x.kind !== "plan" && x.icon !== "redo").sort((a, b) => (a.d < b.d ? 1 : a.d > b.d ? -1 : 0)), [state]);
   const groups = useMemo<SearchGroup[]>(() => {
     const q = query.trim().toLocaleLowerCase();
     if (!q) return [];

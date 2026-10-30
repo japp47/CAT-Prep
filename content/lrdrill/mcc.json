@@ -53,5 +53,27 @@
       { "text": "The banker sits immediately to the left of the editor.", "expr": { "left": "banker", "of": "editor", "d": 1 } },
       { "text": "The curator is from Mysuru.", "expr": { "same": ["curator", "Mysuru"] } }
     ]
+  },
+  {
+    "id": "mcc-five-friends", "set": "bin-five-friends", "drop": [1],
+    "statements": [
+      {"text": "A and B are of different types.", "expr": {"xor": [{"is": ["A", "T"]}, {"is": ["B", "T"]}]}},
+      {"text": "C is a truth-teller.", "expr": {"is": ["C", "T"]}},
+      {"text": "Exactly three of the five are truth-tellers.", "expr": {"eq": [{"count": [{"is": ["A", "T"]}, {"is": ["B", "T"]}, {"is": ["C", "T"]}, {"is": ["D", "T"]}, {"is": ["E", "T"]}]}, 3]}},
+      {"text": "D and E are of the same type.", "expr": {"iff": [{"is": ["D", "T"]}, {"is": ["E", "T"]}]}},
+      {"text": "All five are truth-tellers.", "expr": {"and": [{"is": ["A", "T"]}, {"is": ["B", "T"]}, {"is": ["C", "T"]}, {"is": ["D", "T"]}, {"is": ["E", "T"]}]}},
+      {"text": "A and C are both liars.", "expr": {"and": [{"is": ["A", "L"]}, {"is": ["C", "L"]}]}}
+    ]
+  },
+  {
+    "id": "mcc-damaged-table", "set": "tour-damaged-table", "drop": [2],
+    "statements": [
+      {"text": "Chargers beat Bulls.", "expr": {"beat": ["Chargers", "Bulls"]}},
+      {"text": "Aces drew with Chargers.", "expr": {"drew": ["Aces", "Chargers"]}},
+      {"text": "Bulls beat Aces.", "expr": {"beat": ["Bulls", "Aces"]}},
+      {"text": "Chargers drew with Eagles.", "expr": {"drew": ["Chargers", "Eagles"]}},
+      {"text": "Dynamos beat Aces.", "expr": {"beat": ["Dynamos", "Aces"]}},
+      {"text": "Chargers lost at least one match.", "expr": {"ge": [{"losses": "Chargers"}, 1]}}
+    ]
   }
 ]

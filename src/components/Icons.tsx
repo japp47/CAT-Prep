@@ -5,3 +5,10 @@ export const IconBook = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"
 export const IconChart = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" /></svg>;
 export const IconMenu = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>;
 export const IconPen = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z" /><path d="M14 6l4 4" /></svg>;
+export const IconClock = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>;
+export const IconRedo = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><path d="M20 12a8 8 0 11-2.4-5.7" /><path d="M20 4v5h-5" /></svg>;
+export const IconMistake = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><path d="M12 3l9.5 17h-19z" /><path d="M12 10v4M12 17.5v.01" /></svg>;
+export const IconHistory = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 102.5-6" /><path d="M3 4v4h4" /><path d="M12 8v4l3 2" /></svg>;
+export const IconWeek = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2" /><path d="M3 9h18" /><path d="M7 14v3M11 13v4M15 15v2M19 12v5" /></svg>;
+export const IconWords = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><path d="M3 19l5-14 5 14M4.8 14h6.4" /><path d="M20 19v-5.5a2.5 2.5 0 00-5 0M15 16.5a2.5 2.5 0 105 0" /></svg>;
+export const IconJournal = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><rect x="5" y="3" width="15" height="18" rx="2" /><path d="M9 8h7M9 12h7M9 16h4" /><path d="M5 7H3M5 12H3M5 17H3" /></svg>;

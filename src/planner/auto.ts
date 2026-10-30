@@ -60,7 +60,8 @@ export function siteWork(b: Pick<PlacedBlock, "id" | "name" | "ptype" | "go">, s
 export function autoTicks(st: AppState, d: string): { sec: SectionDef; b: PlacedBlock }[] {
   const rec = st.days[d];
   return LIVE_SECTIONS.flatMap((sec) => buildDay(sec, st, d, budgetFor(sec, st, d), { today: d })
-    .filter((b) => !rec?.done?.[b.key] && !rec?.auto?.[b.key] && siteWork(b, st, d) !== null)
+    // A catch-up is ticked by the student: the same RC set would otherwise tick both today's block and the catch-up.
+    .filter((b) => !b.carryFrom && !rec?.done?.[b.key] && !rec?.auto?.[b.key] && siteWork(b, st, d) !== null)
     .map((b) => ({ sec, b })));
 }
 

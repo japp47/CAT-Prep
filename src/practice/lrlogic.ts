@@ -1,3 +1,5 @@
+import { search, type Csp } from "./solver";
+
 /**
  * Clues as code (D47), for the LR drills: the clue translator (F83), must, could, cannot (F84) and first move (F85).
  * A clue is a small expression over people and things in seats; a model lists who and what gets a seat and each of a
@@ -128,44 +130,31 @@ export interface LrModel { set: string; board: Board; groups: Group[]; clues: Ex
 export type Seating = Map<Ref, number>;
 
 /**
- * Walks every seating of `refs` that keeps each group's refs in different seats and fits every clue, placing refs one
- * at a time and testing each clue as soon as everything it names has a seat. On a round table with no seat numbers the
- * first ref is fixed in seat 1, so seatings that are turns of each other count once. Stops after `cap` seatings.
- * Returns how many it found; `leaf` sees each one.
+ * A seating puzzle for the general solver (D51): each ref is a value to fill with a seat (0-based), refs of one group
+ * take different seats, and each clue is a rule over the refs it names. On a round table with no seat numbers the
+ * first ref is fixed in seat 1, so seatings that are turns of each other count once.
  */
-function walk(board: Board, groupOf: Map<Ref, number>, refs: Ref[], clues: Expr[], cap: number, leaf?: (at: Seating) => void): number {
-  const at = new Map<Ref, number>();
-  const pos: Pos = (r) => at.get(r)!;
-  const used = new Map<number, Set<number>>();
+export function seatCsp(board: Board, groupOf: Map<Ref, number>, refs: Ref[], clues: Expr[]): Csp {
   const fix = board.layout === "circle" && !clues.some(absolute);
-  // Each clue is checked at the depth where its last ref is placed.
-  const due: Expr[][] = refs.map(() => []);
+  const seats = Array.from({ length: board.n }, (_, k) => k);
   clues.forEach((c) => {
-    const rs = refsOf(c);
-    const unknown = rs.find((r) => !groupOf.has(r));
+    const unknown = refsOf(c).find((r) => !groupOf.has(r));
     if (unknown) throw new Error(`Clue names "${unknown}", which is in no group`);
-    due[Math.max(...rs.map((r) => refs.indexOf(r)))]?.push(c);
   });
-  let found = 0;
-  const place = (i: number): void => {
-    if (found >= cap) return;
-    if (i === refs.length) { found++; leaf?.(new Map(at)); return; }
-    const g = groupOf.get(refs[i])!;
-    const taken = used.get(g) ?? used.set(g, new Set()).get(g)!;
-    for (let s = 0; s < (fix && i === 0 ? 1 : board.n); s++) {
-      if (taken.has(s)) continue;
-      at.set(refs[i], s);
-      taken.add(s);
-      if (due[i].every((c) => holds(c, pos, board))) place(i + 1);
-      taken.delete(s);
-      at.delete(refs[i]);
-    }
+  const groups = [...new Set(refs.map((r) => groupOf.get(r)!))].map((g) => refs.filter((r) => groupOf.get(r) === g));
+  return {
+    vars: refs.map((r, i) => ({ name: r, domain: fix && i === 0 ? [0] : seats })),
+    distinct: groups,
+    rules: clues.map((c) => ({ deps: refsOf(c), test: (get) => holds(c, (r) => get(r) as number, board) })),
   };
-  place(0);
-  return found;
 }
 
-/** Every seating of `refs` that fits the clues (see walk), up to `cap`. */
+/** Counts (and, with `leaf`, lists) the seatings of `refs` that fit the clues, up to `cap`. */
+function walk(board: Board, groupOf: Map<Ref, number>, refs: Ref[], clues: Expr[], cap: number, leaf?: (at: Seating) => void): number {
+  return search(seatCsp(board, groupOf, refs, clues), cap, leaf ? (c) => leaf(c as Seating) : undefined);
+}
+
+/** Every seating of `refs` that fits the clues (see seatCsp), up to `cap`. */
 export function seatings(board: Board, groupOf: Map<Ref, number>, refs: Ref[], clues: Expr[], cap = 1000): Seating[] {
   const out: Seating[] = [];
   walk(board, groupOf, refs, clues, cap, (s) => out.push(s));

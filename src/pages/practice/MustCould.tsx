@@ -10,8 +10,9 @@ import { ContentGate } from "../../components/Content";
 import { DrillHow, HowSteps, SeatBoard, SolveFirst } from "../../components/DrillBoard";
 import { LinkButton, Page, Segmented } from "../../components/kit";
 import { LR_CATALOG } from "../../practice/catalog.gen";
-import { backTo, binWhy, keptBy, mccSolved, movers, nextDrill, type LrDrills, type MccDrill } from "../../practice/lrdrill";
-import { holds, refsOf, seatRows, type Bin, type LrModel, type Seating } from "../../practice/lrlogic";
+import { backTo, binWhy, holdsIn, isGrid, keptBy, mccSolved, movers, namedBy, nextDrill, type AnyModel, type LrDrills, type MccDrill } from "../../practice/lrdrill";
+import { seatRows, type Bin, type LrModel, type Seating } from "../../practice/lrlogic";
+import { gridVars, labelOf, type Case, type GridModel } from "../../practice/solver";
 import type { LrSet } from "../../practice/types";
 import { PlayerBar } from "./common";
 
@@ -58,7 +59,7 @@ const BINS: [Bin, string][] = [["must", "Must"], ["could", "Could"], ["cannot", 
 const SAYS: Record<Bin, string> = { must: "must be true", could: "could be true", cannot: "cannot be true" };
 const listNums = (xs: number[]) => (xs.length < 2 ? String(xs[0]) : `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}`);
 
-function Drill({ drill, model, set, back, another }: { drill: MccDrill; model: LrModel; set: LrSet; back: string | null; another: () => void }) {
+function Drill({ drill, model, set, back, another }: { drill: MccDrill; model: AnyModel; set: LrSet; back: string | null; another: () => void }) {
   const { state, update } = useStore();
   const { cases, bins } = useMemo(() => mccSolved(drill, model), [drill, model]);
   const moving = useMemo(() => movers(cases), [cases]);
@@ -68,8 +69,10 @@ function Drill({ drill, model, set, back, another }: { drill: MccDrill; model: L
   const [focus, setFocus] = useState<number | null>(null);
   const [startAt] = useState(Date.now);
   const right = answers.filter((a, i) => a === bins[i]).length;
-  const lit = focus === null ? [] : refsOf(drill.statements[focus].expr);
+  const lit = focus === null ? [] : namedBy(model, drill.statements[focus].expr);
   const dropped = drill.drop.length > 0;
+  // A seating set's cases are seatings; anything else (a team, truth-tellers, a league) is just a case.
+  const noun = isGrid(model) ? "case" : "seating";
 
   const check = () => {
     setChecked(true);
@@ -79,6 +82,7 @@ function Drill({ drill, model, set, back, another }: { drill: MccDrill; model: L
   return (
     <Page className="gap-6 lg:gap-8">
       <PlayerBar kicker="DILR drill" title="Must, could, cannot">
+        {!checked && <Button variant="ghost" size="sm" onClick={another}>Another drill</Button>}
         <LinkButton to={back ?? "/dilr/practice"} variant="ghost" size="sm">{back ? "Back to the set" : "Stop"}</LinkButton>
       </PlayerBar>
 
@@ -109,18 +113,20 @@ function Drill({ drill, model, set, back, another }: { drill: MccDrill; model: L
           })}
         </ol>
         <p className="text-base font-semibold">
-          {dropped ? `Without clue ${listNums(drill.drop)}, these ${cases.length} seatings fit.` : `Even with every clue, ${cases.length} seatings fit: the set leaves this open.`}
+          {dropped ? `Without clue ${listNums(drill.drop)}, these ${cases.length} ${noun}s fit.` : `Even with every clue, ${cases.length} ${noun}s fit: the set leaves this open.`}
         </p>
       </section>
 
       <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:gap-8">
-        <Seatings model={model} cases={cases} moving={moving} lit={lit} kept={checked ? kept : -1} />
+        {isGrid(model)
+          ? <GridCases model={model} cases={cases} lit={lit} kept={checked ? kept : -1} />
+          : <Seatings model={model} cases={cases as Seating[]} moving={moving} lit={lit} kept={checked ? kept : -1} />}
         <div className="flex flex-col gap-2 lg:sticky lg:top-24">
-          <p className="pb-1 text-base text-muted-foreground"><b className="text-foreground">Must</b>: true in every seating. <b className="text-foreground">Could</b>: in some. <b className="text-foreground">Cannot</b>: in none.</p>
+          <p className="pb-1 text-base text-muted-foreground"><b className="text-foreground">Must</b>: true in every {noun}. <b className="text-foreground">Could</b>: in some. <b className="text-foreground">Cannot</b>: in none.</p>
           <ol className="flex flex-col gap-2">
             {drill.statements.map((s, i) => (
-              <Statement key={i} n={i + 1} text={s.text} value={answers[i]} bin={checked ? bins[i] : undefined}
-                per={checked ? cases.map((c) => holds(s.expr, (r) => c.get(r)!, model.board)) : undefined}
+              <Statement key={i} n={i + 1} noun={noun} text={s.text} value={answers[i]} bin={checked ? bins[i] : undefined}
+                per={checked ? cases.map((c) => holdsIn(model, s.expr, c)) : undefined}
                 onFocus={() => setFocus(i)} onBlur={() => setFocus((f) => (f === i ? null : f))}
                 onChange={(v) => setAnswers((a) => a.map((x, j) => (j === i ? v : x)))} />
             ))}
@@ -133,7 +139,7 @@ function Drill({ drill, model, set, back, another }: { drill: MccDrill; model: L
           ) : (
             <section aria-live="polite" className="mt-2 flex flex-col gap-3 rounded-2xl bg-card p-5">
               <p className="text-heading font-semibold">{right} of {drill.statements.length} right</p>
-              {kept >= 0 && <p className="measure text-base">With clue {listNums(drill.drop)} back, only seating {kept + 1} fits. That is the set's answer: the left-out clue is what rules the other out.</p>}
+              {kept >= 0 && <p className="measure text-base">With clue {listNums(drill.drop)} back, only {noun} {kept + 1} fits. That is the set's answer: the left-out clue is what rules the other out.</p>}
               <div className="flex flex-wrap items-center gap-3">
                 <Button onClick={another}>Another drill</Button>
                 <LinkButton to={back ?? `/practice/lr/${drill.set}`} variant="secondary">{back ? "Back to the set" : "Solve the whole set"}</LinkButton>
@@ -209,9 +215,53 @@ function Seatings({ model, cases, moving, lit, kept }: { model: LrModel; cases: 
   );
 }
 
+/**
+ * A grid set's cases side by side: one row per value (a person's type, a match's result), one column per case. A team
+ * is one row listing who is in. Rows that differ between cases are marked from the start; the statement in focus marks
+ * the rows it reads; once checked, the case the left-out clue keeps is named.
+ */
+function GridCases({ model, cases, lit, kept }: { model: GridModel; cases: Case[]; lit: string[]; kept: number }) {
+  const root = useRef<HTMLDivElement>(null);
+  useGsap(root, (gsap, el) => { gsap.from(el.querySelectorAll("[data-case]"), { y: 14, opacity: 0, duration: 0.45, stagger: 0.1, ease: "power3.out", clearProps: "all" }); }, []);
+  const names = gridVars(model).map((v) => v.name);
+  const members = model.show === "members";
+  const rows: { head: string; cells: string[]; lit: boolean }[] = members
+    ? [{ head: "Team", cells: cases.map((c) => names.filter((n) => c.get(n) === 1).join(", ")), lit: lit.length > 0 }]
+    : names.map((n) => ({ head: n, cells: cases.map((c) => labelOf(model, n, c.get(n)!)), lit: lit.includes(n) }));
+  const name = (i: number) => <>Case {i + 1}{kept === i && <span className="ml-2 rounded-md bg-success-soft px-1.5 text-sm font-semibold text-success">The set's answer</span>}</>;
+  return (
+    <div ref={root} className="flex min-w-0 flex-col gap-2">
+      <div className="overflow-x-auto">
+        <table className="w-full border-separate border-spacing-1.5 text-left">
+          <thead>
+            <tr>
+              <th scope="col" className="text-sm font-semibold text-muted-foreground"><span className="sr-only">Value</span></th>
+              {cases.map((_, ci) => <th key={ci} scope="col" data-case className="text-base font-semibold whitespace-nowrap">{name(ci)}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => {
+              const differs = r.cells.some((x) => x !== r.cells[0]);
+              return (
+                <tr key={r.head}>
+                  <th scope="row" className={cn("pr-2 text-base font-semibold whitespace-nowrap", r.lit && "text-primary")}>{r.head}</th>
+                  {r.cells.map((x, ci) => (
+                    <td key={ci} data-case className={cn("min-w-28 rounded-lg px-3 py-2 align-top text-base", differs ? "bg-highlight-soft" : "bg-card", r.lit && "ring-2 ring-primary ring-inset")}>{x}</td>
+                  ))}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <p className="text-sm text-muted-foreground">Marked: what changes from one case to another. Only statements about it can be Could.</p>
+    </div>
+  );
+}
+
 const listNames = (xs: string[]) => (xs.length < 2 ? xs[0] : `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}`);
 
-function Statement({ n, text, value, bin, per, onChange, onFocus, onBlur }: { n: number; text: string; value: Bin | null; bin?: Bin; per?: boolean[]; onChange: (v: Bin) => void; onFocus: () => void; onBlur: () => void }) {
+function Statement({ n, noun, text, value, bin, per, onChange, onFocus, onBlur }: { n: number; noun: string; text: string; value: Bin | null; bin?: Bin; per?: boolean[]; onChange: (v: Bin) => void; onFocus: () => void; onBlur: () => void }) {
   const ok = bin && value === bin;
   return (
     <li className={cn("flex flex-col gap-3 rounded-xl bg-card p-4 transition-colors duration-300", bin && (ok ? "bg-success-soft" : "bg-danger-soft"))}
@@ -222,12 +272,12 @@ function Statement({ n, text, value, bin, per, onChange, onFocus, onBlur }: { n:
       ) : (
         <div className="flex flex-col gap-1.5">
           <p className="text-base font-semibold">{ok ? `Right: it ${SAYS[bin]}.` : `It ${SAYS[bin]}; you said it ${value ? SAYS[value] : "nothing"}.`}</p>
-          <p className="text-base">{binWhy(per!)}</p>
+          <p className="text-base">{binWhy(per!, noun)}</p>
           {/* True or false in each seating: what decides the bin. */}
-          <ul className="flex flex-wrap gap-1.5" aria-label="In each seating">
+          <ul className="flex flex-wrap gap-1.5" aria-label={`In each ${noun}`}>
             {per!.map((t, i) => (
               <li key={i} className={cn("inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-sm font-semibold", t ? "bg-success/15 text-success" : "bg-danger/15 text-danger")}>
-                {t ? <Check className="size-3.5" aria-hidden /> : <X className="size-3.5" aria-hidden />}Seating {i + 1}<span className="sr-only">: {t ? "true" : "false"}</span>
+                {t ? <Check className="size-3.5" aria-hidden /> : <X className="size-3.5" aria-hidden />}{noun === "case" ? "Case" : "Seating"} {i + 1}<span className="sr-only">: {t ? "true" : "false"}</span>
               </li>
             ))}
           </ul>

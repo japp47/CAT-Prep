@@ -191,18 +191,6 @@ export function RuleTiles({ lines, picked, onTap, answer }: { lines: Record<Worl
   );
 }
 
-/** A strip of one segment per item: done right, done wrong, the current one, still to come. */
-export function RunStrip({ results, n, cur }: { results: boolean[]; n: number; cur: number }) {
-  return (
-    <div className="flex gap-1" role="img" aria-label={`${results.length} of ${n} done, ${results.filter(Boolean).length} right`}>
-      {Array.from({ length: n }, (_, i) => (
-        <span key={i} className={cn("h-1.5 flex-1 rounded-full transition-colors duration-300",
-          i < results.length ? (results[i] ? "bg-success" : "bg-danger") : i === cur ? "bg-primary" : "bg-secondary")} />
-      ))}
-    </div>
-  );
-}
-
 /**
  * How a drill works, with one worked example (D48). Open until the student has finished a run of this drill, then
  * folded; opening or closing it is remembered.

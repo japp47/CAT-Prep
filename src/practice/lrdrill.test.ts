@@ -4,11 +4,14 @@ import mccJson from "../../content/lrdrill/mcc.json";
 import modelsJson from "../../content/lrdrill/models.json";
 import type { LrDrillRun } from "../lib/state";
 import { LR_SETS } from "./lr";
-import { backTo, binWhy, clueReport, nextDrill, firstMoveStep, fixedBy, keptBy, mccSolved, movers, moveReason, nextOf, pickClues, type MccDrill } from "./lrdrill";
+import { backTo, binWhy, casesOf, firstMoveSets, clueReport, isGrid, namedBy, nextDrill, firstMoveStep, fixedBy, keptBy, mccSolved, movers, moveReason, nextOf, openOf, pickClues, type AnyModel, type MccDrill } from "./lrdrill";
+import { evalTerm, gridVars, labelOf, namesOf } from "./solver";
 import { answerOf, CLUE_KIND, groupMap, isRuleClue, kindOfClue, kindOfExpr, misread, refsOf, seatRows, settle, solve, trapsOf, type ClueItem, type ClueKind, type Expr, type LrModel } from "./lrlogic";
 
 const CLUES = cluesJson as ClueItem[];
-const MODELS = modelsJson as unknown as LrModel[];
+const MODELS = modelsJson as unknown as AnyModel[];
+const SEATS = MODELS.filter((m): m is LrModel => !isGrid(m));
+const GRIDS = MODELS.filter(isGrid);
 const MCC = mccJson as unknown as MccDrill[];
 const setOf = (id: string) => LR_SETS.find((s) => s.id === id);
 
@@ -20,7 +23,7 @@ function wellFormed(e: Expr, layout: "row" | "circle"): boolean {
 }
 
 describe("set models (D47): the solver agrees with every modelled set", () => {
-  for (const m of MODELS) {
+  for (const m of SEATS) {
     const set = setOf(m.set);
     it(`${m.set}: one expression per clue, naming only the set's people and things`, () => {
       expect(set, m.set).toBeDefined();
@@ -87,6 +90,53 @@ describe("the clue translator's content (F83)", () => {
   }
 });
 
+describe("grid models (D51): selection, truth-tellers and a league on the same solver", () => {
+  it("has selection, binary logic and tournament sets", () => {
+    expect(GRIDS.map((m) => setOf(m.set)!.type).sort()).toEqual(["binary", "selection", "tournament"]);
+  });
+  for (const m of GRIDS) {
+    const set = setOf(m.set)!;
+    it(`${m.set}: one condition per clue, reading only the model's values`, () => {
+      expect(set, m.set).toBeDefined();
+      expect(m.clues).toHaveLength(set.clues.length);
+      const known = new Set(gridVars(m).map((v) => v.name));
+      [...m.clues, ...(m.facts ?? [])].forEach((c, i) => namesOf(c, m.league).forEach((n) => expect(known.has(n), `rule ${i + 1}: ${n}`).toBe(true)));
+    });
+    it(`${m.set}: as many cases as the set says`, () => {
+      expect(casesOf(m)).toHaveLength(set.solution.cases!);
+    });
+  }
+  it("bin-five-friends: the one case is the set's table, and without A's statement three fit (its question 3)", () => {
+    const m = GRIDS.find((x) => x.set === "bin-five-friends")!, grid = setOf(m.set)!.solution.grid!;
+    const [c] = casesOf(m);
+    expect(grid.head.slice(1).map((p) => labelOf(m, p, c.get(p)!))).toEqual(grid.rows[0].slice(1));
+    expect(casesOf(m, [1])).toHaveLength(3);
+  });
+  it("tour-damaged-table: wins, draws, losses and points match the set's finished table", () => {
+    const m = GRIDS.find((x) => x.set === "tour-damaged-table")!, grid = setOf(m.set)!.solution.grid!;
+    const [c] = casesOf(m);
+    const get = (n: string) => c.get(n)!;
+    grid.rows.forEach(([team, ...cells]) => {
+      expect([{ wins: team }, { draws: team }, { losses: team }, { points: team }].map((t) => String(evalTerm(t, get, m.league))), team).toEqual(cells);
+    });
+  });
+  it("sel-project-team: the least team cost is the set's answer, and every cheapest team has B and D (its questions 2 and 3)", () => {
+    const m = GRIDS.find((x) => x.set === "sel-project-team")!;
+    const fee: Record<string, number> = { A: 35, B: 20, C: 45, D: 25, E: 40, F: 35, G: 35, H: 40 };
+    const teams = casesOf(m).map((c) => Object.keys(fee).filter((n) => c.get(n) === 1));
+    const cost = (t: string[]) => t.reduce((s, n) => s + fee[n], 0);
+    const least = Math.min(...teams.map(cost));
+    expect(String(least)).toBe(setOf(m.set)!.questions[1].answer);
+    teams.filter((t) => cost(t) === least).forEach((t) => expect(t).toEqual(expect.arrayContaining(["B", "D"])));
+  });
+  it("counts first moves on a grid set from the values a clue names", () => {
+    const m = GRIDS.find((x) => x.set === "bin-five-friends")!;
+    // B's statement names A and B: of the four ways to fill them, two fit.
+    expect(openOf(m, [2])).toBe(2);
+    expect(moveReason(m, [], 2, 2)).toMatch(/ties|names/);
+  });
+});
+
 describe("must, could, cannot (F84)", () => {
   it("has drills with unique ids, each on a modelled set", () => {
     expect(new Set(MCC.map((d) => d.id)).size).toBe(MCC.length);
@@ -100,15 +150,15 @@ describe("must, could, cannot (F84)", () => {
       expect(cases.length).toBeLessThanOrEqual(3);
       expect(d.statements).toHaveLength(6);
       (["must", "could", "cannot"] as const).forEach((b) => expect(bins.filter((x) => x === b).length, b).toBeGreaterThanOrEqual(1));
-      const known = groupMap(m);
-      d.statements.forEach((s) => refsOf(s.expr).forEach((r) => expect(known.has(r), r).toBe(true)));
+      const known = isGrid(m) ? new Set(gridVars(m).map((v) => v.name)) : groupMap(m);
+      d.statements.forEach((s) => namedBy(m, s.expr).forEach((r) => expect(known.has(r), r).toBe(true)));
       d.drop.forEach((k) => expect(k >= 1 && k <= m.clues.length).toBe(true));
     });
   }
 });
 
 describe("first move (F85)", () => {
-  const table = MODELS.find((m) => m.set === "arr-round-table")!;
+  const table = SEATS.find((m) => m.set === "arr-round-table")!;
   it("shows how many ways each clue leaves open, and the fewest", () => {
     const s = firstMoveStep(table, []);
     expect(s.counts.map((c) => c.n)).toEqual([1, 1, 3, 1]);
@@ -126,6 +176,11 @@ describe("first move (F85)", () => {
     expect(s).not.toBeNull();
     expect(s!.get("Asha")).toBe(0);
     expect(fixedBy(table, [3])).toBeNull();
+  });
+  it("runs only on sets with more clues than moves", () => {
+    const sets = firstMoveSets(MODELS).map((m) => m.set);
+    expect(sets).not.toContain("tour-damaged-table");
+    expect(sets).toEqual(expect.arrayContaining(["bin-five-friends", "sel-project-team", "arr-round-table"]));
   });
   it("finishes a step on every modelled set quickly enough for a phone", () => {
     for (const m of MODELS) {
@@ -171,15 +226,15 @@ describe("drill runs", () => {
 });
 
 describe("explaining and linking the drills (D48)", () => {
-  const table = MODELS.find((m) => m.set === "arr-round-table")!;
-  const six = MODELS.find((m) => m.set === "arr-six-colleagues")!;
+  const table = SEATS.find((m) => m.set === "arr-round-table")!;
+  const six = SEATS.find((m) => m.set === "arr-six-colleagues")!;
   it("names the seating the left-out clue keeps, which is the set's own answer", () => {
     const d = MCC.find((x) => x.id === "mcc-round-table")!;
     const { cases } = mccSolved(d, table);
     const k = keptBy(d, table, cases);
     expect(k).toBeGreaterThanOrEqual(0);
     expect(cases[k].get("Farhan")).toBe(1);
-    expect(keptBy(MCC.find((x) => x.drop.length === 0)!, MODELS.find((m) => m.set === "arr-friends-drinks")!, [])).toBe(-1);
+    expect(keptBy(MCC.find((x) => x.drop.length === 0)!, SEATS.find((m) => m.set === "arr-friends-drinks")!, [])).toBe(-1);
   });
   it("marks only who moves between seatings", () => {
     const { cases } = mccSolved(MCC.find((x) => x.id === "mcc-round-table")!, table);
@@ -199,8 +254,8 @@ describe("explaining and linking the drills (D48)", () => {
   it("finds the translator kind of every modelled set clue it can, so a misread clue leads to its practice", () => {
     expect(kindOfExpr(six.clues[5])).toBe("count");
     expect(kindOfExpr(six.clues[9])).toBe("immediate");
-    expect(kindOfExpr(MODELS.find((m) => m.set === "arr-friends-drinks")!.clues[6])).toBe("onlyif");
-    expect(kindOfExpr(MODELS.find((m) => m.set === "arr-seven-consultants")!.clues[0])).toBe("facing");
+    expect(kindOfExpr(SEATS.find((m) => m.set === "arr-friends-drinks")!.clues[6])).toBe("onlyif");
+    expect(kindOfExpr(SEATS.find((m) => m.set === "arr-seven-consultants")!.clues[0])).toBe("facing");
     expect(kindOfExpr(six.clues[11])).toBeUndefined();
   });
   it("runs a single kind when asked", () => {

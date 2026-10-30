@@ -87,5 +87,53 @@
       { "gap": ["soda", "Charu"], "n": 1 },
       { "xor": [{ "left": "editor", "of": "Farhan", "d": "any" }, { "left": "Esha", "of": "editor", "d": "any" }] }
     ]
+  },
+  {
+    "set": "bin-five-friends",
+    "kind": "grid",
+    "vars": [{"names": ["A", "B", "C", "D", "E"], "values": ["T", "L"], "labels": {"T": "truth-teller", "L": "liar"}}],
+    "clues": [
+      {"iff": [{"is": ["A", "T"]}, {"and": [{"is": ["D", "T"]}, {"is": ["E", "T"]}]}]},
+      {"iff": [{"is": ["B", "T"]}, {"is": ["A", "L"]}]},
+      {"iff": [{"is": ["C", "T"]}, {"xor": [{"is": ["A", "T"]}, {"is": ["E", "T"]}]}]},
+      {"iff": [{"is": ["D", "T"]}, {"xor": [{"is": ["A", "T"]}, {"is": ["C", "T"]}]}]},
+      {"iff": [{"is": ["E", "T"]}, {"or": [{"is": ["B", "T"]}, {"is": ["D", "T"]}]}]}
+    ]
+  },
+  {
+    "set": "sel-project-team",
+    "kind": "grid",
+    "show": "members",
+    "vars": [{"names": ["A", "B", "C", "D", "E", "F", "G", "H"], "values": [1, 0], "labels": {"1": "In", "0": "Out"}}],
+    "facts": [
+      {"eq": [{"sum": [{"v": "A"}, {"v": "B"}, {"v": "C"}, {"v": "D"}, {"v": "E"}, {"v": "F"}, {"v": "G"}, {"v": "H"}]}, 4]}
+    ],
+    "clues": [
+      {"and": [{"ge": [{"sum": [{"v": "A"}, {"v": "B"}, {"v": "D"}, {"v": "F"}, {"v": "H"}]}, 1]}, {"ge": [{"sum": [{"v": "C"}, {"v": "E"}]}, 1]}, {"ge": [{"sum": [{"v": "A"}, {"v": "B"}, {"v": "G"}]}, 1]}]},
+      {"not": {"and": [{"is": ["A", 1]}, {"is": ["B", 1]}]}},
+      {"if": {"is": ["C", 1]}, "then": {"is": ["D", 1]}},
+      {"not": {"and": [{"is": ["E", 1]}, {"is": ["G", 1]}]}},
+      {"if": {"is": ["F", 1]}, "then": {"or": [{"is": ["H", 1]}, {"is": ["A", 1]}]}}
+    ]
+  },
+  {
+    "set": "tour-damaged-table",
+    "kind": "grid",
+    "vars": [],
+    "league": {"teams": ["Aces", "Bulls", "Chargers", "Dynamos", "Eagles"], "win": 3, "draw": 1},
+    "facts": [
+      {"eq": [{"draws": "Aces"}, 2]},
+      {"eq": [{"losses": "Aces"}, 1]},
+      {"eq": [{"wins": "Bulls"}, 1]},
+      {"eq": [{"wins": "Chargers"}, 2]},
+      {"eq": [{"losses": "Chargers"}, 0]},
+      {"eq": [{"points": "Dynamos"}, 4]},
+      {"eq": [{"draws": "Eagles"}, 1]},
+      {"eq": [{"losses": "Eagles"}, 1]}
+    ],
+    "clues": [
+      {"beat": ["Dynamos", "Bulls"]},
+      {"beat": ["Chargers", "Eagles"]}
+    ]
   }
 ]

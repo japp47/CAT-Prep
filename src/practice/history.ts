@@ -1,5 +1,8 @@
 import { addDays, dow as weekday } from "../lib/date";
 import type { AppState } from "../lib/state";
+import { buildDay, budgetFor } from "../planner/engine";
+import { LIVE_SECTIONS, SECTION_BY_ID } from "../sections";
+import type { SectionId } from "../sections/types";
 import { CR_CATALOG, LR_CATALOG, RC_CATALOG, VA_CATALOG } from "./catalog.gen";
 import { REDO_SRC } from "./record";
 import { SECTIONAL_SRC } from "./sectional";
@@ -12,12 +15,12 @@ import { VA_KIND, type VaKind } from "./va/build";
  * day. Practice rows that an in-app attempt wrote are left out, since the attempt itself is shown.
  */
 
-export type HistoryKind = "practice" | "tests" | "reviews" | "writing" | "mistakes";
-export const KIND_LABEL: Record<HistoryKind, string> = { practice: "Practice", tests: "Tests", reviews: "Reviews", writing: "Writing", mistakes: "Mistakes" };
+export type HistoryKind = "plan" | "practice" | "tests" | "reviews" | "writing" | "mistakes";
+export const KIND_LABEL: Record<HistoryKind, string> = { plan: "Plan", practice: "Practice", tests: "Tests", reviews: "Reviews", writing: "Writing", mistakes: "Mistakes" };
 export const HISTORY_KINDS = Object.keys(KIND_LABEL) as HistoryKind[];
 
 /** What the row shows as its icon; the page maps it to a picture. */
-export type HistoryIcon = "rc" | "va" | "cr" | "lr" | "speed" | "redo" | "own" | "sectional" | "mock" | "analysis" | "week" | "summary" | "mistake";
+export type HistoryIcon = "plan" | "rc" | "va" | "cr" | "lr" | "speed" | "redo" | "own" | "sectional" | "mock" | "analysis" | "week" | "summary" | "mistake";
 
 export interface HistoryItem {
   id: string;
@@ -52,9 +55,34 @@ export function tickedMinutes(st: AppState, d: string): number {
   return Object.values(st.days[d]?.done ?? {}).reduce((s, m) => s + (m > 0 ? m : 0), 0);
 }
 
+/**
+ * The blocks ticked off on Today that day, one row each, named as that day's plan named them: so the day's minutes
+ * (which come from these ticks) say what they were spent on, including work done away from the site, like reading an
+ * article. A block the plan no longer has (the plan changed since) keeps a plain name from its key.
+ */
+function planItems(st: AppState, d: string): Omit<HistoryItem, "search">[] {
+  const rec = st.days[d];
+  const done = Object.entries(rec?.done ?? {}).filter(([, m]) => m > 0);
+  if (!done.length) return [];
+  const placed = new Map(LIVE_SECTIONS.flatMap((sec) => buildDay(sec, st, d, budgetFor(sec, st, d), { today: d }).map((b) => [b.key, { sec, name: b.name }] as const)));
+  const order = [...placed.keys()];
+  return done
+    .sort(([a], [b]) => (order.indexOf(a) + 1 || 999) - (order.indexOf(b) + 1 || 999))
+    .map(([key, m]) => {
+      const [secId, id = ""] = key.split(/:(.*)/s);
+      const hit = placed.get(key), sec = hit?.sec ?? SECTION_BY_ID[secId as SectionId];
+      const name = hit?.name ?? (id.startsWith("carry") ? "Catch-up" : id.charAt(0).toUpperCase() + id.slice(1).replace(/[-_]/g, " "));
+      const how = rec?.auto?.[key] ? "ticked by your practice on the site" : "ticked by you";
+      const timed = rec?.spent?.[key] ? `, focus timer ${rec.spent[key]} min` : "";
+      return { id: `plan-${d}-${key}`, d, kind: "plan" as const, icon: "plan" as const, title: name, detail: `${sec?.short ?? secId.toUpperCase()}, ${m} min, ${how}${timed}` };
+    });
+}
+
 export function historyItems(st: AppState): HistoryItem[] {
   const out: HistoryItem[] = [];
   const add = (x: Omit<HistoryItem, "search">) => out.push({ ...x, search: (x.title + " " + x.detail).toLocaleLowerCase() });
+
+  Object.keys(st.days).forEach((d) => planItems(st, d).forEach(add));
 
   st.rcAttempts.forEach((a) => {
     const title = rcTitle.get(a.set) ?? "RC set";
@@ -133,7 +161,7 @@ export function historyDays(st: AppState, items = historyItems(st)): HistoryDay[
   const by = new Map<string, HistoryItem[]>();
   items.forEach((x) => { const l = by.get(x.d); if (l) l.push(x); else by.set(x.d, [x]); });
   Object.keys(st.days).forEach((d) => { if (tickedMinutes(st, d) > 0 && !by.has(d)) by.set(d, []); });
-  const order: Record<HistoryKind, number> = { tests: 0, practice: 1, reviews: 2, writing: 3, mistakes: 4 };
+  const order: Record<HistoryKind, number> = { tests: 0, plan: 1, practice: 2, reviews: 3, writing: 4, mistakes: 5 };
   return [...by.entries()]
     .sort((a, b) => (a[0] < b[0] ? 1 : -1))
     .map(([d, xs]) => ({

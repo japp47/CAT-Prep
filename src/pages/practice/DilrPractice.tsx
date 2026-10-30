@@ -11,6 +11,7 @@ import type { LrAttempt, LrDrillRun } from "../../lib/state";
 import { useStore } from "../../lib/store";
 import { ArrowLink, LinkButton, Section, TextLink } from "../../components/kit";
 import { LR_GUIDE_BY_TYPE } from "../../sections/dilr/guides";
+import { arenaTrend, freshLeft } from "../../practice/arena";
 import { dueRedo, upcomingRedo } from "../../practice/redo";
 import { LR_TYPE, LR_TYPES, type LrMeta, type LrType } from "../../practice/types";
 import { LrThumb as Thumb } from "../../components/LrThumb";
@@ -132,6 +133,8 @@ export default function DilrPractice({ next }: { next: LrMeta | undefined }) {
   const last = new Map<string, LrAttempt>();
   state.lrAttempts.forEach((a) => last.set(a.set, a));
   const types = LR_TYPES.filter((t) => LR_ORDER.some((s) => s.type === t));
+  const dealt = new Set(state.arenaRounds.flatMap((r) => r.sets));
+  const arena = arenaTrend(state.arenaRounds, state.lrAttempts);
   // The LR part of the redo queue.
   const lrRedo = state.redo.filter((r) => r.k.startsWith("lr:"));
   const lrOpen = lrRedo.filter((r) => !r.cleared), lrDue = dueRedo(lrRedo, todayIso()), lrNext = upcomingRedo(lrRedo, todayIso())[0]?.[0];
@@ -191,6 +194,7 @@ export default function DilrPractice({ next }: { next: LrMeta | undefined }) {
                           : <LinkButton to={`/practice/lr/${s.id}`} variant="secondary">Start</LinkButton>}>
                         <p>{meta(s)}</p>
                         {a && <p className="text-foreground">Scored {score(s, a)}{a.pm?.key ? `; opened with clue ${a.pm.key}` : ""}</p>}
+                        {!a && dealt.has(s.id) && <p>Seen in the Arena, not solved yet</p>}
                       </Row>
                     );
                   })}
@@ -205,6 +209,9 @@ export default function DilrPractice({ next }: { next: LrMeta | undefined }) {
 
       <Section title="When you have more time">
         <Rows>
+          <Row title="Set Selection Arena" action={<LinkButton to="/practice/arena" variant="secondary">Play a round</LinkButton>}>
+            <p>Five sets you have not seen, 40 minutes. Pick your order before solving, then see where the minutes went and which pick cost you.{arena ? ` Your picks were right ${arena.pct}% of the time over ${arena.rounds} rounds.` : ` ${freshLeft(state.lrAttempts, state.arenaRounds)} fresh sets left for rounds.`}</p>
+          </Row>
           <PaperRow>
             <p>Sit the DILR section of a past paper alone: 40 minutes, read all the sets first and pick two or three. Papers up to 2020 come with solutions, later ones with answer keys. From <TextLink to={PAPERS_PAGE}>Bodhee Prep</TextLink>.</p>
           </PaperRow>
