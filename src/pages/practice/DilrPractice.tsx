@@ -11,15 +11,13 @@ import type { LrAttempt, LrDrillRun } from "../../lib/state";
 import { useStore } from "../../lib/store";
 import { ArrowLink, LinkButton, Section, TextLink } from "../../components/kit";
 import { LR_GUIDE_BY_TYPE } from "../../sections/dilr/guides";
-import { LR_CATALOG } from "../../practice/catalog.gen";
 import { dueRedo, upcomingRedo } from "../../practice/redo";
 import { LR_TYPE, LR_TYPES, type LrMeta, type LrType } from "../../practice/types";
 import { LrThumb as Thumb } from "../../components/LrThumb";
 import { PaperRow, Row, Rows } from "./rows";
 
-const LEVEL = { easy: 0, medium: 1, hard: 2 } as const;
-/** Easiest first, then shorter first: the order a student should meet the sets in. */
-export const LR_ORDER = [...LR_CATALOG].sort((a, b) => LR_TYPES.indexOf(a.type) - LR_TYPES.indexOf(b.type) || LEVEL[a.difficulty] - LEVEL[b.difficulty] || a.minutes - b.minutes);
+import { LR_ORDER } from "../../practice/lrorder";
+export { LR_ORDER };
 
 
 const meta = (s: LrMeta) => { const t = [s.sub, s.difficulty, `${s.minutes} minutes`, `${s.questions} questions`].filter(Boolean).join(", "); return t[0].toUpperCase() + t.slice(1); };

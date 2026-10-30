@@ -1,5 +1,6 @@
 import type { AppState } from "../lib/state";
 import { buildDay, budgetFor } from "../planner/engine";
+import { goFor } from "../planner/go";
 import { LIVE_SECTIONS } from "../sections";
 import { rcOfDay } from "./daily";
 import { dueRedo } from "./redo";
@@ -39,7 +40,8 @@ export function nextSteps(st: AppState, today: string, ctx: { sectionalMinsLeft?
   const done = st.days[today]?.done ?? {};
   LIVE_SECTIONS.forEach((sec) => {
     const core = buildDay(sec, st, today, budgetFor(sec, st, today), { today }).find((b) => b.pri === 1 && !done[b.key]);
-    if (core) out.push({ key: "core:" + core.key, title: core.name, mins: core.mins, to: `#plan-${sec.id}`, why: `The core block of today's ${sec.short} plan.` });
+    // The block's own practice when it has one on this site (D56), else its place in today's plan.
+    if (core) out.push({ key: "core:" + core.key, title: core.name, mins: core.mins, to: goFor(core, st, today)?.to ?? `#plan-${sec.id}`, why: `The core block of today's ${sec.short} plan.` });
   });
   const mock = [...st.recs].reverse().find((r) => r.status === "open" && r.from === "mock" && r.to);
   if (mock) out.push({ key: "mock:" + mock.id, title: mock.text, mins: 15, to: mock.to!, why: "From your last mock review." });

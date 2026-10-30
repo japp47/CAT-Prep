@@ -62,7 +62,7 @@ const maxMap = (x: Record<string, number> = {}, y: Record<string, number> = {}) 
 };
 const union = <T extends object>(x?: T, y?: T): T | undefined => (x || y ? ({ ...x, ...y } as T) : undefined);
 
-/** Two days merged field by field: ticked blocks and timer minutes keep the larger value, flags are kept from both, minutes set for the day come from the newer copy. */
+/** Two days merged field by field: ticked blocks and timer minutes keep the larger value, flags (carried, dismissed, auto-ticked) are kept from both, minutes set for the day come from the newer copy. */
 function mergeDay(a: SyncRecord, b: SyncRecord): DayRec {
   const x = a.data as DayRec, y = b.data as DayRec;
   const n = newer(a, b).data as DayRec;
@@ -70,9 +70,10 @@ function mergeDay(a: SyncRecord, b: SyncRecord): DayRec {
   if (n.min) out.min = n.min;
   if (x.done || y.done) out.done = maxMap(x.done, y.done);
   if (x.spent || y.spent) out.spent = maxMap(x.spent, y.spent);
-  const carried = union(x.carried, y.carried), dismiss = union(x.dismiss, y.dismiss);
+  const carried = union(x.carried, y.carried), dismiss = union(x.dismiss, y.dismiss), auto = union(x.auto, y.auto);
   if (carried) out.carried = carried;
   if (dismiss) out.dismiss = dismiss;
+  if (auto) out.auto = auto;
   return out;
 }
 

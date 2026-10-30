@@ -24,6 +24,8 @@ export const VARC: SectionDef = {
       check: "Walk in rested, with a fixed attempt order and time split." },
   },
   template: varcTemplate,
+  // One-time setup per phase for Today's "Set up your prep" (D57): things done once, not the daily banks.
+  setup: { 1: ["iim-site", "gejo", "b-arun", "bharath"], 2: ["2iim-free", "lawhub"], 3: ["xat"], 4: ["iim-mock", "cracku-mock", "cl-mock"] },
   // The list is about 10 KB, so it loads with the pages that show it rather than on every page.
   resources: () => import("./resources").then((m) => ({ categories: m.CATEGORIES, resources: m.RESOURCES })),
 };

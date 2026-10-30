@@ -103,7 +103,7 @@ const STATUS_LABEL = { live: ["Ready", "highlight"], open: ["Open", "success"], 
 function SectionOverview() {
   return (
     <section aria-labelledby="secs-h" className="flex flex-col gap-10">
-      <Head id="secs-h" lead="Three sections, one plan." rest="VARC is ready with its timetable. DILR has its guides and logic sets. Quant opens in January." />
+      <Head id="secs-h" lead="Three sections, one plan." rest="VARC and DILR are in the timetable, with practice for both. Quant opens in January." />
       <ul className="flex flex-col gap-px overflow-hidden rounded-xl bg-background">
         {SECTIONS.map((sec) => {
           const [label, variant] = STATUS_LABEL[sec.status];

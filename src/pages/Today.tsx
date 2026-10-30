@@ -1,37 +1,39 @@
-import { useEffect, useMemo, useState, type FormEvent } from "react";
-import { daySummary, historyDays } from "../practice/history";
+import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown, ChevronLeft, ChevronRight, PenLine, Timer as TimerIcon } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Progress } from "@/components/ui/progress";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
 import { ArticleSummarySheet } from "../components/ArticleSummary";
-import { phaseCaption } from "../components/Countdown";
-import { ErrorText, Ext, Field, LinkButton, LinkButtons, Meta, Page, PageHeader, Section, TextLink } from "../components/kit";
+import { ErrorText, Ext, Field, LinkButton, LinkButtons, Meta, Page, TextLink } from "../components/kit";
 import SyncPrompt from "../components/SyncPrompt";
 import { NativeSelect } from "../components/Select";
+import { StreakBadge } from "../components/StreakBadge";
 import { PHASES, phaseOf } from "../data/exam";
-import { addDays, clamp, DOW, dow, isWeekend, longDate, shortDate, todayIso, uid, weekStart, mediumDate } from "../lib/date";
-import { useStore } from "../lib/store";
-import type { AppState } from "../lib/state";
-import { buildDay, budgetFor, carryInfo, defaultMin, doneKey, doneMinutes, coreOf, markBlockDone, type PlacedBlock } from "../planner/engine";
+import { addDays, clamp, DOW, dow, isWeekend, longDate, mediumDate, shortDate, todayIso, uid, weekStart } from "../lib/date";
 import { useFocus } from "../lib/focus";
-import { LIVE_SECTIONS, SECTIONS } from "../sections";
-import type { SectionDef } from "../sections/types";
-import { useResources } from "../sections/useResources";
-import { rcOfDay } from "../practice/daily";
-import { dueRedo } from "../practice/redo";
-import { FOCUS_DAYS, focusToday, reviewOf, reviewWeek } from "../practice/week";
+import { useGsap } from "../lib/motion";
+import type { AppState } from "../lib/state";
+import { useStore } from "../lib/store";
+import { buildDay, budgetFor, carryInfo, defaultMin, doneMinutes, markBlockDone, type PlacedBlock } from "../planner/engine";
+import { goFor } from "../planner/go";
+import { siteWork } from "../planner/auto";
+import { daySummary, historyDays } from "../practice/history";
 import { nextSteps } from "../practice/next";
 import { loadDraft, secsLeft } from "../practice/sectional";
-import { GENRES } from "../practice/types";
-import { DAILY_MIX } from "../practice/va/build";
-import { StreakBadge } from "../components/StreakBadge";
+import { FOCUS_DAYS, focusToday, reviewOf, reviewWeek } from "../practice/week";
+import { LIVE_SECTIONS } from "../sections";
+import type { SectionDef } from "../sections/types";
+import { useResources } from "../sections/useResources";
+
+/**
+ * Today (D55, docs/design/today-v2.md): the day as a path. A ring shows how much of today is done, with the week
+ * beside it; "Up next" is the one thing to do now, with the page's only filled button; the rest of the day is one
+ * list of blocks across sections that open in place, done blocks folded under them. GSAP runs one entrance, the ring,
+ * the tick and the finished-day sweep; nothing moves under reduced motion.
+ */
 
 const POP = "flex w-[min(92vw,22rem)] flex-col gap-4 rounded-lg border-0 bg-popover p-4 shadow-xl"; // taste-skill-ignore: a popover floats
 const CHIP_MINS = [0, 30, 45, 60, 90, 120, 150, 180];
@@ -46,8 +48,17 @@ function useToday() {
   return t;
 }
 
+/** A block placed on the day, with its section. */
+interface DayBlock { sec: SectionDef; b: PlacedBlock }
+
 function markDone(st: AppState, d: string, b: PlacedBlock, sec: SectionDef) {
   markBlockDone(st, d, sec.id, b.key, b.mins, b.carryFrom);
+}
+
+/** Every live section's blocks for a day, in section order, and the minutes planned. */
+function dayPlan(st: AppState, d: string, today: string): { blocks: DayBlock[]; planned: number } {
+  const blocks = LIVE_SECTIONS.flatMap((sec) => buildDay(sec, st, d, budgetFor(sec, st, d), { today }).map((b) => ({ sec, b })));
+  return { blocks, planned: blocks.reduce((s, x) => s + x.b.mins, 0) };
 }
 
 function LogForm({ sec, b, d }: { sec: SectionDef; b: PlacedBlock; d: string }) {
@@ -68,6 +79,7 @@ function LogForm({ sec, b, d }: { sec: SectionDef; b: PlacedBlock; d: string }) 
   };
   return (
     <form className="flex flex-col gap-2 rounded-lg bg-muted p-3" onSubmit={submit}>
+      <p className="text-sm text-muted-foreground">Did it somewhere else? Log it here and the block is done.</p>
       <div className="grid grid-cols-2 items-end gap-3 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
         {b.kind === "practice" ? (
           <>
@@ -89,7 +101,7 @@ function LogForm({ sec, b, d }: { sec: SectionDef; b: PlacedBlock; d: string }) 
   );
 }
 
-/** "120 min planned" with the day's time choices folded into a popover. */
+/** "VARC 60 min" with the day's time choices folded into a popover. */
 function TimeControl({ sec, d }: { sec: SectionDef; d: string }) {
   const { state, update } = useStore();
   const [custom, setCustom] = useState("");
@@ -105,7 +117,7 @@ function TimeControl({ sec, d }: { sec: SectionDef; d: string }) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="secondary" size="sm" className="gap-1.5">{budget === 0 ? "Rest day" : `${budget} min planned`}<ChevronDown className="size-4" aria-hidden /></Button>
+        <Button variant="secondary" size="sm" className="gap-1.5"><span className="font-semibold">{sec.short}</span>{budget === 0 ? "rest" : `${budget} min`}<ChevronDown className="size-4" aria-hidden /></Button>
       </PopoverTrigger>
       <PopoverContent align="start" className={POP}>
         <p className="text-base font-semibold">{sec.short} time for {shortDate(d)}</p>
@@ -134,237 +146,259 @@ function TimeControl({ sec, d }: { sec: SectionDef; d: string }) {
   );
 }
 
-function SectionDay({ sec, d, today }: { sec: SectionDef; d: string; today: string }) {
+// ---------------------------------------------------------------------------------------------------------------
+// The ring and the week
+
+/**
+ * Minutes done out of minutes planned, as a ring whose arc eases to its new share whenever a block is ticked, with the
+ * number in the middle. Under it, the week: one small ring per day; tap a day to open it.
+ */
+function DayRing({ done, planned, d, today, onPick }: { done: number; planned: number; d: string; today: string; onPick: (d: string) => void }) {
+  const { state } = useStore();
+  const box = useRef<HTMLDivElement>(null);
+  const share = planned ? clamp(done / planned, 0, 1) : 0;
+  const was = useRef(0);
+  const C = 2 * Math.PI * 52;
+  useGsap(box, (gsap, el) => {
+    const arc = el.querySelector("[data-arc]");
+    if (arc) gsap.fromTo(arc, { strokeDashoffset: C * (1 - was.current) }, { strokeDashoffset: C * (1 - share), duration: 0.9, ease: "power3.out" });
+    was.current = share;
+  }, [share]);
+  const ws = weekStart(d);
+  return (
+    // On a phone the ring sits beside the week in one short row; from a wide screen it stands above it.
+    <div ref={box} className="flex items-center gap-4 rounded-2xl bg-card p-4 sm:p-5 lg:flex-col lg:gap-5 lg:p-6">
+      <div className="relative size-24 shrink-0 lg:size-44" role="img" aria-label={`${done} of ${planned} minutes done`}>
+        <svg viewBox="0 0 120 120" className="size-full -rotate-90" aria-hidden>
+          <circle cx="60" cy="60" r="52" className="fill-none stroke-secondary" strokeWidth="10" />
+          <circle data-arc cx="60" cy="60" r="52" className={cn("fill-none", share >= 1 ? "stroke-success" : "stroke-primary")} strokeWidth="10" strokeLinecap="round"
+            strokeDasharray={C} strokeDashoffset={C * (1 - share)} />
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className="text-[1.75rem] leading-none font-extrabold tracking-[-0.04em] tabular-nums lg:text-[2.75rem]">{done}</span>
+          <span className="text-sm text-muted-foreground tabular-nums">of {planned} min</span>
+        </div>
+      </div>
+      <ol className="grid min-w-0 flex-1 grid-cols-7 gap-0.5 lg:w-full lg:flex-none lg:gap-1" aria-label="This week">
+        {Array.from({ length: 7 }, (_, i) => {
+          const x = addDays(ws, i);
+          const p = phaseOf(x).kind !== "phase" ? 0 : LIVE_SECTIONS.reduce((s, sec) => s + budgetFor(sec, state, x), 0);
+          const dn = doneMinutes(state, x), f = p ? clamp(dn / p, 0, 1) : dn > 0 ? 1 : 0;
+          const c = 2 * Math.PI * 9;
+          return (
+            <li key={x}>
+              <button type="button" onClick={() => onPick(x)} aria-label={`${longDate(x)}, ${p ? p + " minutes planned" : "rest"}, ${dn} done`} aria-current={x === d ? "date" : undefined}
+                className={cn("flex w-full flex-col items-center gap-1 rounded-lg py-1.5 text-sm transition-colors hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none", x === d && "bg-secondary")}>
+                <span className={cn(x === today ? "font-bold text-foreground" : "text-muted-foreground")}>{DOW[dow(x)].slice(0, 1)}</span>
+                <svg viewBox="0 0 24 24" className="size-6 -rotate-90" aria-hidden>
+                  <circle cx="12" cy="12" r="9" className="fill-none stroke-secondary" strokeWidth="4" />
+                  {f > 0 && <circle cx="12" cy="12" r="9" className={cn("fill-none", f >= 1 ? "stroke-success" : "stroke-primary")} strokeWidth="4" strokeDasharray={c} strokeDashoffset={c * (1 - f)} strokeLinecap="round" />}
+                </svg>
+              </button>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Up next
+
+/**
+ * The one thing to do now (F41's rules, with each plan block's own practice, D56): big, with the page's only filled
+ * button and "Something else". The week's focus, when there is one, sits under it as a quiet line.
+ */
+function UpNext({ today }: { today: string }) {
+  const { state, update } = useStore();
+  const [skip, setSkip] = useState(0);
+  const box = useRef<HTMLDivElement>(null);
+  const [sectionalMinsLeft] = useState(() => { const d = loadDraft(); const left = d ? secsLeft(d, Date.now()) : 0; return left > 0 ? Math.ceil(left / 60) : null; });
+  const steps = nextSteps(state, today, { sectionalMinsLeft });
+  const s = steps[skip % steps.length];
+  const focus = focusToday(state, today);
+  useGsap(box, (gsap, el) => { if (skip) gsap.from(el.querySelectorAll("[data-swap]"), { opacity: 0, y: 8, duration: 0.35, stagger: 0.05, ease: "power2.out" }); }, [skip]);
+  const markFocus = () => update((st) => {
+    const r = st.weekReviews.find((x) => x.id === focus?.review.id);
+    if (r) { r.days = r.days.includes(today) ? r.days.filter((x) => x !== today) : [...r.days, today]; r.updatedAt = Date.now(); }
+  });
+  const finished = s.key === "done";
+  return (
+    <div ref={box} className="relative flex flex-col justify-between gap-5 overflow-hidden rounded-2xl bg-card p-5 sm:gap-6 sm:p-8" aria-live="polite">
+      <div className="flex flex-col gap-2">
+        <p data-swap className="text-base text-muted-foreground">{finished ? "Everything planned is done" : `Up next, about ${s.mins} min`}</p>
+        <h2 data-swap className="max-w-[24ch] text-[clamp(1.5rem,1.1rem+1.8vw,2.6rem)] leading-[1.05] font-extrabold tracking-[-0.035em] text-balance">{s.title}</h2>
+        <p data-swap className="measure text-base text-foreground/80">{s.why}</p>
+      </div>
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        {s.to.startsWith("#") ? <Button asChild size="lg"><a href={s.to}>Start</a></Button> : <LinkButton to={s.to} size="lg">{finished ? "Open the library" : "Start"}</LinkButton>}
+        {steps.length > 1 && <Button variant="ghost" onClick={() => setSkip((k) => k + 1)}>Something else</Button>}
+      </div>
+      {focus && (
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-xl bg-secondary/60 px-4 py-3">
+          <p className="min-w-0 text-base"><span className="text-muted-foreground">Focus of the week{focus.left ? `, ${focus.left} of ${FOCUS_DAYS} days left` : ""}: </span>{focus.rec.text}</p>
+          <Button size="sm" variant="ghost" onClick={markFocus}>{focus.doneToday ? "Undo" : "Done for today"}</Button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// The day's blocks
+
+/** A round tick that draws its check when the block is done. */
+function Tick({ done, onClick, label }: { done: boolean; onClick?: () => void; label: string }) {
+  const box = useRef<HTMLButtonElement>(null);
+  const first = useRef(true);
+  useGsap(box, (gsap, el) => {
+    if (first.current) { first.current = false; return; }
+    if (done) {
+      gsap.fromTo(el.querySelector("path"), { strokeDasharray: 24, strokeDashoffset: 24 }, { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" });
+      gsap.fromTo(el, { scale: 0.8 }, { scale: 1, duration: 0.45, ease: "back.out(3)" });
+    }
+  }, [done]);
+  const look = cn("flex size-7 shrink-0 items-center justify-center rounded-full transition-colors", done ? "bg-success text-white dark:text-black" : "bg-secondary text-transparent hover:text-muted-foreground");
+  const check = <svg viewBox="0 0 16 16" className="size-4" aria-hidden><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+  if (!onClick) return <span className={look} aria-hidden>{check}</span>;
+  return (
+    <button ref={box} type="button" role="checkbox" aria-checked={done} aria-label={label} onClick={onClick}
+      className={cn(look, "focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none active:scale-90")}>{check}</button>
+  );
+}
+
+function BlockRow({ x, d, today, open, onOpen, onSummary }: { x: DayBlock; d: string; today: string; open: boolean; onOpen: () => void; onSummary: () => void }) {
   const { state, update } = useStore();
   const focus = useFocus();
-  const isToday = d === today;
+  const { sec, b } = x;
   const rec = state.days[d];
-  const budget = budgetFor(sec, state, d);
-  const dm = rec?.done ?? {};
-  const carry = isToday ? carryInfo(sec, state, today) : null;
-  const blocks = buildDay(sec, state, d, budget, { today });
-  const ph = phaseOf(d);
-  const canTick = d <= today;
-  // The reading block whose summary sheet is open, if any (step 2e, place 2).
-  const [summing, setSumming] = useState<PlacedBlock | null>(null);
-  const articleSums = state.summaries.filter((s) => s.src === "article" && s.d === d);
-
-  const toggle = (b: PlacedBlock, on: boolean) => update((st) => {
-    if (on) markDone(st, d, b, sec);
+  const done = !!rec?.done?.[b.key];
+  const isToday = d === today, canTick = d <= today;
+  const timed = rec?.spent?.[b.key] ?? 0;
+  const running = focus.run?.key === b.key && focus.run.d === d;
+  const go = goFor(b, state, today);
+  const onSite = siteWork(b, state, d);
+  const sums = state.summaries.filter((s) => s.src === "article" && s.d === d);
+  const body = useRef<HTMLDivElement>(null);
+  useGsap(body, (gsap, el) => { if (open) gsap.from(el, { height: 0, opacity: 0, duration: 0.3, ease: "power2.out", clearProps: "all" }); }, [open]);
+  const toggle = () => update((st) => {
+    if (!done) markDone(st, d, b, sec);
     else {
       const r = st.days[d];
       if (r?.done) delete r.done[b.key];
       if (b.carryFrom && st.days[b.carryFrom]?.carried) delete st.days[b.carryFrom].carried![sec.id];
     }
   });
-  const total = blocks.reduce((s, b) => s + b.mins, 0);
-  const doneCount = blocks.filter((b) => dm[b.key]).length;
-  const timedTotal = blocks.reduce((s, b) => s + (rec?.spent?.[b.key] ?? 0), 0);
-
-  let body: React.ReactNode;
-  if (ph.kind !== "phase") {
-    body = <div className="rounded-lg bg-card p-6"><p className="text-heading font-semibold">{ph.kind === "exam" ? "Exam day." : ph.kind === "after" ? "CAT 2027 is over." : "The plan starts on " + mediumDate(PHASES[0].start) + "."}</p>
-      {ph.kind === "exam" && <p className="text-base text-muted-foreground">Eat well, reach early, and trust your attempt order.</p>}</div>;
-  } else if (!blocks.length) {
-    body = <div className="rounded-lg bg-card p-6"><p className="text-heading font-semibold">Rest day.</p><p className="text-base text-muted-foreground">Nothing is planned. The core task moves to your next session. Pick a time above if you can study after all.</p></div>;
-  } else {
-    body = (
-      <ol className="flex flex-col gap-2">
-        {blocks.map((b) => {
-          const done = !!dm[b.key];
-          const timed = rec?.spent?.[b.key] ?? 0;
-          const running = focus.run?.key === b.key && focus.run.d === d;
-          const core = b.pri === 1;
-          const tickId = "tick-" + sec.id + "-" + b.key;
-          return (
-            <li key={b.key} className={cn("relative grid grid-cols-[1.5rem_minmax(0,1fr)] gap-x-3 gap-y-1 overflow-hidden rounded-lg bg-card py-3 pr-3 pl-4 sm:gap-x-3.5 sm:py-4 sm:pr-6 sm:pl-5", core && !done && "before:absolute before:inset-y-0 before:left-0 before:w-1.5 before:bg-highlight")}>
-              {canTick ? <Checkbox id={tickId} checked={done} onCheckedChange={(v) => toggle(b, v === true)} className="mt-1" /> : <span />}
-              <div className={cn("flex min-w-0 flex-col gap-1.5 sm:gap-2", done && "opacity-60")}>
-                <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-                  {/* The block's name is the checkbox's label, so tapping it ticks the block too. */}
-                  {canTick
-                    ? <label htmlFor={tickId} className={cn("cursor-pointer text-base font-semibold sm:text-lg", done && "line-through decoration-muted-foreground")}>{b.name}</label>
-                    : <span className="text-base font-semibold sm:text-lg">{b.name}</span>}
-                  <span className="text-sm text-muted-foreground tabular-nums sm:text-base">{b.mins} min</span>
-                  {core && <Badge variant="highlight">Core</Badge>}
-                  {b.pri === 9 && <Badge variant="secondary">Extra time</Badge>}
-                  {b.carryFrom && <Badge variant="warning">Catch-up</Badge>}
-                </div>
-                <p className="measure text-sm text-foreground/80 sm:text-base">{b.desc}</p>
-                <LinkButtons links={b.links} />
-                {b.id === "read" && canTick && (articleSums.length ? (
-                  <p className="text-sm text-success sm:text-base">
-                    Summary saved, {articleSums[articleSums.length - 1].checks.filter(Boolean).length} of 4 checks. <TextLink to="/journal" className="text-base">Reading journal</TextLink>
-                  </p>
-                ) : (
-                  <div><Button variant="secondary" size="sm" className="gap-1.5" onClick={() => setSumming(b)}><PenLine className="size-4" aria-hidden />Write your summary</Button></div>
-                ))}
-                {isToday && !done && (
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-                    {running ? <span className="inline-flex items-center gap-1.5 text-sm text-success sm:text-base"><TimerIcon className="size-4" />Focus timer running</span>
-                      : focus.run ? <Meta>Another block's timer is running</Meta>
-                      : <Button variant="link" size="sm" className="gap-1.5"
-                          onClick={() => focus.start({ key: b.key, name: sec.short + ": " + b.name, sec: sec.id, d, target: b.mins, log: !!b.kind, carryFrom: b.carryFrom })}>
-                          <TimerIcon className="size-4" />Start focus timer</Button>}
-                    {timed > 0 && <Meta>Timed {timed} of {b.mins} min</Meta>}
-                  </div>
-                )}
-                {done && timed > 0 && <Meta>Timed {timed} of {b.mins} min.</Meta>}
-                {canTick && !done && b.kind && <LogForm sec={sec} b={b} d={d} />}
-                {done && b.kind && <p className="text-sm text-success sm:text-base">Logged and done.</p>}
-              </div>
-            </li>
-          );
-        })}
-      </ol>
-    );
-  }
-
+  const id = `block-${sec.id}-${b.key}`;
   return (
-    <Section
-      id={"plan-" + sec.id} className="scroll-mt-24"
-      title={<>{sec.short}{blocks.length > 0 && ph.kind === "phase" && <span className="font-normal text-muted-foreground">, {ph.phase.name} phase</span>}</>}
-      action={<div className="flex w-full items-center justify-between gap-3 sm:w-auto sm:justify-end"><TimeControl sec={sec} d={d} /><TextLink to={"/" + sec.id} className="relative text-sm after:absolute after:-inset-x-2 after:-inset-y-3 after:content-[''] sm:text-base">Resources</TextLink></div>}>
-      {blocks.length > 0 && <Meta className="-mt-2">{blocks.length} block{blocks.length === 1 ? "" : "s"}, {total} min, {doneCount} done{timedTotal > 0 ? `, ${timedTotal} min timed` : ""}</Meta>}
-      {carry && (
-        <div className="flex flex-col items-start gap-2 rounded-lg bg-warning-soft px-4 py-3 text-sm sm:flex-row sm:items-center sm:justify-between sm:text-base">
-          <span>Catch-up added from {shortDate(carry.date)}: {carry.block.name}.</span>
-          <Button variant="link" size="sm" className="self-end sm:self-auto" onClick={() => update((st) => { ((st.days[carry.date] ??= {}).dismiss ??= {})[sec.id] = 1; })}>Skip it</Button>
+    <li className={cn("overflow-hidden rounded-xl bg-card", done && "bg-card/60")}>
+      <div className="flex items-center gap-3 px-4 py-3 sm:gap-4 sm:px-5">
+        <Tick done={done} onClick={canTick ? toggle : undefined} label={`${b.name}: ${done ? "done" : "not done"}`} />
+        <button type="button" onClick={onOpen} aria-expanded={open} aria-controls={id}
+          className="flex min-w-0 flex-1 items-center gap-3 text-left focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-md">
+          <span className="flex min-w-0 flex-1 flex-col">
+            <span className={cn("truncate text-base font-semibold sm:text-lg", done && "text-muted-foreground line-through decoration-muted-foreground/60")}>{b.name}</span>
+            <span className="flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
+              <span className="font-semibold text-foreground/80">{sec.short}</span>
+              <span className="tabular-nums">{b.mins} min</span>
+              {b.pri === 1 && !done && <span className="text-foreground">core</span>}
+              {b.carryFrom && <span className="text-warning">catch-up</span>}
+              {onSite && <span className="text-success">done on the site: {onSite}</span>}
+              {timed > 0 && <span>timed {timed}</span>}
+            </span>
+          </span>
+          <ChevronDown className={cn("size-5 shrink-0 text-muted-foreground transition-transform duration-300 motion-reduce:transition-none", open && "rotate-180")} aria-hidden />
+        </button>
+      </div>
+      {open && (
+        <div ref={body} id={id} className="flex flex-col gap-3 overflow-hidden px-4 pb-4 sm:pl-[4.25rem] sm:pr-5">
+          <p className="measure text-base text-foreground/85">{b.desc}</p>
+          {b.carryFrom && <Meta>Missed on {shortDate(b.carryFrom)}.</Meta>}
+          <div className="flex flex-wrap items-center gap-2">
+            {go && !done && <LinkButton to={go.to} variant="secondary" size="sm">{go.label}</LinkButton>}
+            <LinkButtons links={b.links.filter(([, u]) => u !== go?.to)} />
+          </div>
+          {b.id === "read" && canTick && (sums.length
+            ? <p className="text-base text-success">Summary saved, {sums[sums.length - 1].checks.filter(Boolean).length} of 4 checks. <TextLink to="/journal">Reading journal</TextLink></p>
+            : <div><Button variant="secondary" size="sm" className="gap-1.5" onClick={onSummary}><PenLine className="size-4" aria-hidden />Write your summary</Button></div>)}
+          {isToday && !done && (
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+              {running ? <span className="inline-flex items-center gap-1.5 text-base text-success"><TimerIcon className="size-4" />Focus timer running</span>
+                : focus.run ? <Meta>Another block's timer is running</Meta>
+                : <Button variant="link" size="sm" className="gap-1.5" onClick={() => focus.start({ key: b.key, name: sec.short + ": " + b.name, sec: sec.id, d, target: b.mins, log: !!b.kind, carryFrom: b.carryFrom })}>
+                    <TimerIcon className="size-4" />Start focus timer</Button>}
+              {timed > 0 && <Meta>Timed {timed} of {b.mins} min</Meta>}
+            </div>
+          )}
+          {canTick && !done && b.kind && <LogForm sec={sec} b={b} d={d} />}
+          {done && b.kind && <p className="text-base text-success">Logged and done.</p>}
         </div>
       )}
-      {body}
-      <ArticleSummarySheet open={!!summing} onOpenChange={(o) => { if (!o) setSumming(null); }} d={d}
-        sources={(summing?.links ?? []).filter(([, u]) => !u.startsWith("/")).map(([l]) => l)}
-        saveLabel={summing && !dm[summing.key] ? "Save and finish block" : "Save summary"}
-        onSave={(st) => { if (summing && !st.days[d]?.done?.[summing.key]) markDone(st, d, summing, sec); }} />
-    </Section>
+    </li>
   );
 }
 
-function Week({ d, today, onPick }: { d: string; today: string; onPick: (d: string) => void }) {
-  const { state } = useStore();
-  const ws = weekStart(d);
-  let target = 0, done = 0, studied = 0;
-  const cells = Array.from({ length: 7 }, (_, i) => {
-    const x = addDays(ws, i);
-    const b = phaseOf(x).kind !== "phase" ? 0 : LIVE_SECTIONS.reduce((s, sec) => s + budgetFor(sec, state, x), 0);
-    const dn = doneMinutes(state, x);
-    target += b; done += dn; if (dn > 0) studied++;
-    const f = b > 0 ? clamp(dn / b, 0, 1) * 100 : dn > 0 ? 100 : 0;
-    return (
-      <button key={x} type="button" onClick={() => onPick(x)} aria-label={longDate(x) + ", " + b + " minutes planned, " + dn + " done"}
-        className={cn("flex min-w-0 flex-col items-center gap-1 rounded-md px-0.5 py-2 text-sm hover:bg-muted", x === d && "bg-accent text-accent-foreground hover:bg-accent", x === today && "font-semibold")}>
-        <span>{DOW[dow(x)].slice(0, 3)}</span>
-        <span className="text-muted-foreground tabular-nums">{b === 0 ? "rest" : b}</span>
-        <span className="h-1 w-full max-w-7 overflow-hidden rounded-full bg-secondary"><span className="block h-full bg-primary" style={{ width: f.toFixed(0) + "%" }} /></span>
-      </button>
-    );
-  });
+/** The catch-up notices, one per section that has one, with "Skip it". */
+function CarryNotes({ today }: { today: string }) {
+  const { state, update } = useStore();
+  const carries = LIVE_SECTIONS.map((sec) => ({ sec, c: carryInfo(sec, state, today) })).filter((x) => x.c);
+  if (!carries.length) return null;
   return (
-    <Section title="This week">
-      <div className="flex flex-col gap-4 rounded-lg bg-card p-4 sm:p-5">
-        <p className="text-sm sm:text-base">Done <b className="font-semibold tabular-nums">{done}</b> of <b className="font-semibold tabular-nums">{target}</b> min, studied <b className="font-semibold">{studied}</b> of 7 days</p>
-        <Progress value={target ? clamp(done / target, 0, 1) * 100 : 0} aria-label="Minutes done this week" className="h-2" />
-        <div className="grid grid-cols-7 gap-1">{cells}</div>
-      </div>
-    </Section>
-  );
-}
-
-function MustDo() {
-  const { state } = useStore();
-  // Only VARC has a list so far; it loads on demand, and this section sits low on the page.
-  const varc = LIVE_SECTIONS[0];
-  const res = useResources(varc);
-  if (!res) return null;
-  const items = res.resources.map((r) => ({ r, s: varc })).filter(({ r }) => r.p === "must" && !state.ticks[r.id]).slice(0, 5);
-  return (
-    <Section title="Must-do resources left">
-      <ul className="flex flex-col gap-1 rounded-lg bg-card p-2">
-        {items.length ? items.map(({ r, s }) => {
-          const cat = res.categories.find((c) => c.id === r.c)?.n ?? "";
-          return (
-            <li key={r.id}>
-              <Ext href={r.u} className="flex flex-col gap-0.5 rounded-md px-3 py-2 hover:bg-muted">
-                <span className="text-sm font-semibold sm:text-base">{r.n}</span>
-                <Meta>{s.short}, {cat.toLowerCase()}{r.find ? ", opens a search" : ""}</Meta>
-              </Ext>
-            </li>
-          );
-        }) : <li className="px-3 py-2.5 text-base text-muted-foreground">Every must-do resource is ticked.</li>}
-      </ul>
-    </Section>
-  );
-}
-
-export default function Today() {
-  const today = useToday();
-  const [d, setD] = useState(today);
-  const { state } = useStore();
-  const isToday = d === today, past = d < today;
-  const coreLeft = LIVE_SECTIONS.filter((s) => { const c = coreOf(s, state, today); return c && !state.days[today]?.done?.[doneKey(s, c.id)]; }).length;
-  const ph = phaseOf(today);
-  const goal = ph.kind === "phase" ? LIVE_SECTIONS[0]?.phaseText?.[ph.phase.id]?.goal : undefined;
-  const soon = SECTIONS.filter((s) => s.status !== "live");
-
-  return (
-    <Page className="gap-8 lg:gap-12">
-      <PageHeader title={isToday ? "Today" : past ? "A past day" : "Planning ahead"} aside={<StreakBadge />}><span className="text-sm sm:text-base">{phaseCaption(goal)}</span></PageHeader>
-
-      <div className="-mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 sm:gap-x-4">
-        <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon-sm" aria-label="Previous day" onClick={() => setD(addDays(d, -1))}><ChevronLeft className="size-5" /></Button>
-          <span className="min-w-0 text-center text-base font-semibold sm:min-w-[11.5rem] sm:text-heading">{longDate(d)}</span>
-          <Button variant="ghost" size="icon-sm" aria-label="Next day" onClick={() => setD(addDays(d, 1))}><ChevronRight className="size-5" /></Button>
+    <>
+      {carries.map(({ sec, c }) => (
+        <div key={sec.id} className="flex flex-col items-start gap-2 rounded-xl bg-warning-soft px-4 py-3 text-base sm:flex-row sm:items-center sm:justify-between">
+          <span>{sec.short} catch-up added from {shortDate(c!.date)}: {c!.block.name}.</span>
+          <Button variant="link" size="sm" onClick={() => update((st) => { ((st.days[c!.date] ??= {}).dismiss ??= {})[sec.id] = 1; })}>Skip it</Button>
         </div>
-        {!isToday && <Button variant="link" size="sm" onClick={() => setD(today)}>Back to today</Button>}
-        {isToday && coreLeft > 0 && <Badge variant="highlight">{coreLeft} core task{coreLeft > 1 ? "s" : ""} left</Badge>}
-      </div>
-
-      <DoneLine d={d} isToday={isToday} />
-
-      {isToday && <SyncPrompt />}
-      {isToday && <StartHere today={today} />}
-      {isToday && <ReviewCard today={today} />}
-
-      {LIVE_SECTIONS.map((s) => <SectionDay key={s.id} sec={s} d={d} today={today} />)}
-
-      {isToday && <PracticeToday today={today} />}
-
-      {soon.length > 0 && <p className="measure text-base text-muted-foreground">{soon.map((s) => s.short).join(" and ")} timetables are coming soon.{soon.filter((s) => s.status === "open").map((s) => <span key={s.id}> The <TextLink to={"/" + s.id}>{s.short} page</TextLink> already has guides, resources and the first practice sets.</span>)} You can already log their mock scores in <TextLink to="/progress">Progress</TextLink> and mistakes in the <TextLink to="/errors">Error log</TextLink>.</p>}
-
-      <div className="grid gap-10 lg:grid-cols-2 lg:gap-8">
-        <Week d={d} today={today} onPick={setD} />
-        <MustDo />
-      </div>
-    </Page>
+      ))}
+    </>
   );
 }
 
-/**
- * One thing to do now, with its time and reason (F41). "Something else" shows the next suggestion, one at a time.
- * It has the screen's one filled button and the highlighter's edge, because it is the thing that matters most here.
- */
-function StartHere({ today }: { today: string }) {
+function DayBlocks({ blocks, d, today }: { blocks: DayBlock[]; d: string; today: string }) {
   const { state } = useStore();
-  const [skip, setSkip] = useState(0);
-  const [sectionalMinsLeft] = useState(() => { const d = loadDraft(); const left = d ? secsLeft(d, Date.now()) : 0; return left > 0 ? Math.ceil(left / 60) : null; });
-  const steps = nextSteps(state, today, { sectionalMinsLeft });
-  const s = steps[skip % steps.length];
+  const [open, setOpen] = useState<string | null>(null);
+  const [showDone, setShowDone] = useState(false);
+  const [summing, setSumming] = useState<DayBlock | null>(null);
+  const done = state.days[d]?.done ?? {};
+  const left = blocks.filter((x) => !done[x.b.key]), finished = blocks.filter((x) => done[x.b.key]);
+  const row = (x: DayBlock) => {
+    const k = x.sec.id + ":" + x.b.key;
+    return <BlockRow key={k} x={x} d={d} today={today} open={open === k} onOpen={() => setOpen(open === k ? null : k)} onSummary={() => setSumming(x)} />;
+  };
   return (
-    <div className="relative flex flex-col gap-4 overflow-hidden rounded-lg bg-card py-5 pr-5 pl-6 before:absolute before:inset-y-0 before:left-0 before:w-1.5 before:bg-highlight sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:py-6 sm:pr-6 sm:pl-7" aria-live="polite">
-      <div className="flex min-w-0 flex-col gap-1">
-        <Meta>Start here, about {s.mins} min</Meta>
-        <h2 className="text-heading font-semibold text-pretty">{s.title}</h2>
-        <p className="text-base text-muted-foreground">{s.why}</p>
+    <section aria-labelledby="day-h" className="flex flex-col gap-3" id="plan">
+      {/* Old links into one section's plan still land here. */}
+      {LIVE_SECTIONS.map((s) => <span key={s.id} id={"plan-" + s.id} className="block scroll-mt-24" aria-hidden />)}
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+        <h2 id="day-h" className="text-heading font-semibold">{left.length ? (d === today ? "The rest of today" : "The plan") : "All done"}</h2>
+        {/* On a phone the time buttons wait under the list, so the blocks come first. */}
+        <div className="flex flex-wrap items-center gap-2 max-sm:hidden">{LIVE_SECTIONS.map((s) => <TimeControl key={s.id} sec={s} d={d} />)}</div>
       </div>
-      <div className="flex shrink-0 flex-wrap items-center gap-2">
-        {s.to.startsWith("#") ? <Button asChild><a href={s.to}>Start</a></Button> : <LinkButton to={s.to}>Start</LinkButton>}
-        {steps.length > 1 && <Button variant="ghost" onClick={() => setSkip((k) => k + 1)}>Something else</Button>}
-      </div>
-    </div>
+      {d === today && <CarryNotes today={today} />}
+      {left.length > 0 && <ol className="flex flex-col gap-2">{left.map(row)}</ol>}
+      {finished.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <button type="button" onClick={() => setShowDone(!showDone)} aria-expanded={showDone}
+            className="flex items-center gap-2 self-start rounded-md px-1 text-base text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
+            <ChevronDown className={cn("size-4 transition-transform duration-300 motion-reduce:transition-none", showDone && "rotate-180")} aria-hidden />
+            Done, {finished.length} {finished.length === 1 ? "block" : "blocks"}, {finished.reduce((s, x) => s + (done[x.b.key] ?? 0), 0)} min
+          </button>
+          {showDone && <ol className="flex flex-col gap-2">{finished.map(row)}</ol>}
+        </div>
+      )}
+      <div className="flex flex-wrap items-center gap-2 sm:hidden"><span className="text-sm text-muted-foreground">Time today:</span>{LIVE_SECTIONS.map((s) => <TimeControl key={s.id} sec={s} d={d} />)}</div>
+      <ArticleSummarySheet open={!!summing} onOpenChange={(o) => { if (!o) setSumming(null); }} d={d}
+        sources={(summing?.b.links ?? []).filter(([, u]) => !u.startsWith("/")).map(([l]) => l)}
+        saveLabel={summing && !done[summing.b.key] ? "Save and finish block" : "Save summary"}
+        onSave={(st) => { if (summing && !st.days[d]?.done?.[summing.b.key]) markDone(st, d, summing.b, summing.sec); }} />
+    </section>
   );
 }
+
+// ---------------------------------------------------------------------------------------------------------------
+// The rest of the page
 
 /** From Saturday evening to Monday: the weekly review is ready. "Not now" hides it until next Saturday. */
 function ReviewCard({ today }: { today: string }) {
@@ -373,7 +407,7 @@ function ReviewCard({ today }: { today: string }) {
   if (!monday || reviewOf(state, monday)) return null;
   const skip = () => update((st) => { if (!st.weekReviews.some((r) => r.id === monday)) st.weekReviews.push({ id: monday, d: today, updatedAt: Date.now(), days: [], closed: true, skipped: true }); });
   return (
-    <div className="flex flex-col gap-3 rounded-lg bg-card p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:p-6">
+    <div className="flex flex-col gap-3 rounded-2xl bg-card p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:p-6">
       <div className="flex flex-col gap-1">
         <h2 className="text-heading font-semibold">Your week in review is ready</h2>
         <p className="text-base text-muted-foreground">Two minutes: what moved this week, and one focus for the next.</p>
@@ -386,52 +420,108 @@ function ReviewCard({ today }: { today: string }) {
   );
 }
 
-/** The two daily sets, so the timetable's RC and VA blocks have something to open on this site. */
-function PracticeToday({ today }: { today: string }) {
-  const { state, update } = useStore();
-  const rc = rcOfDay(today);
-  const rcTry = state.rcAttempts.filter((a) => a.set === rc.id && a.d === today).pop();
-  const vaTry = state.vaAttempts.filter((a) => a.mode === "daily" && a.d === today).pop();
-  const redo = dueRedo(state.redo, today).length;
-  const focus = focusToday(state, today);
-  const markFocus = () => update((st) => {
-    const r = st.weekReviews.find((x) => x.id === focus?.review.id);
-    if (r) { r.days = r.days.includes(today) ? r.days.filter((x) => x !== today) : [...r.days, today]; r.updatedAt = Date.now(); }
-  });
-  const rows: { label: string; to: string; title: string; done?: string; go: string }[] = [
-    { label: `RC of the day, ${GENRES[rc.genre].toLowerCase()}`, to: rcTry ? `/practice/rc/${rc.id}?review=${rcTry.id}` : `/practice/rc/${rc.id}`, title: rc.title, done: rcTry && `${rcTry.c} of ${rc.questions} correct`, go: rcTry ? "Review" : "Start" },
-    { label: "Daily VA drill", to: "/practice/va", title: `${DAILY_MIX.length} questions, all four VA types`, done: vaTry && `${vaTry.items.filter((i) => i.ok).length} of ${vaTry.items.length} correct`, go: vaTry ? "Review" : "Start" },
-  ];
-  if (redo > 0) rows.push({ label: "Redo queue", to: "/practice/redo", title: `${redo} question${redo > 1 ? "s" : ""} you missed earlier`, go: "Start" });
+/**
+ * When every block is done: the day closes with one highlighter sweep, what was done in each block (with the score
+ * when it was done on the site), one optional extra for a student with time left, and tomorrow's first block.
+ */
+function DayDone({ today }: { today: string }) {
+  const { state } = useStore();
+  const box = useRef<HTMLDivElement>(null);
+  useGsap(box, (gsap, el) => {
+    gsap.from(el.querySelector("[data-sweep]"), { scaleX: 0, transformOrigin: "left center", duration: 0.8, ease: "power2.inOut", delay: 0.2 });
+    gsap.from(el.querySelectorAll("[data-done]"), { opacity: 0, x: -8, duration: 0.4, stagger: 0.06, delay: 0.4, ease: "power2.out" });
+  }, []);
+  const blocks = dayPlan(state, today, today).blocks;
+  const tomorrow = addDays(today, 1);
+  const first = dayPlan(state, tomorrow, tomorrow).blocks[0];
+  const extra = nextSteps(state, today).find((x) => x.key !== "done" && !x.key.startsWith("core:"));
   return (
-    <Section title="Practice on this site today" action={<TextLink to="/practice" className="text-base">All practice</TextLink>} description="Scores log themselves in Progress. Tick the matching timetable block when you are done.">
-      <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-        {focus && (
-          <li className="grid gap-3 rounded-lg bg-card p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-x-6 sm:p-5 md:col-span-2 xl:col-span-3">
-            <div className="flex min-w-0 flex-col gap-1">
-              <Meta>Focus of the week, from your weekly review{focus.left ? `, ${focus.left} of ${FOCUS_DAYS} days left` : ""}</Meta>
-              <p className="text-base font-semibold text-pretty">{focus.rec.text}</p>
-              {focus.doneToday && <p className="text-base text-success">Done today.</p>}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {focus.rec.to && !focus.doneToday && <LinkButton to={focus.rec.to} size="sm" variant="secondary">Practise it</LinkButton>}
-              <Button size="sm" variant="ghost" onClick={markFocus}>{focus.doneToday ? "Undo" : "Mark done for today"}</Button>
-            </div>
-          </li>
-        )}
-        {rows.map((r) => (
-          <li key={r.label} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 rounded-lg bg-card p-4 sm:gap-x-4 sm:p-5">
-            <div className="flex min-w-0 flex-col gap-1">
-              <Meta>{r.label}</Meta>
-              <Link to={r.to} className="text-sm font-semibold text-pretty hover:text-primary sm:text-base">{r.title}</Link>
-              {r.done && <p className="text-sm text-success sm:text-base">Done: {r.done}</p>}
-            </div>
-            {/* Quiet: the timetable above already has this screen's one filled button. */}
-            <LinkButton to={r.to} size="sm" variant="secondary">{r.go}</LinkButton>
-          </li>
-        ))}
+    <div ref={box} className="flex flex-col gap-4 rounded-2xl bg-card p-6 sm:p-8">
+      <h2 className="text-title font-extrabold"><span className="relative inline-block"><span data-sweep className="absolute inset-x-0 bottom-0.5 h-2.5 rounded-sm bg-highlight/60" aria-hidden /><span className="relative">Day done.</span></span></h2>
+      <ul className="flex flex-col gap-1.5">
+        {blocks.map(({ sec, b }) => {
+          const w = siteWork(b, state, today);
+          return (
+            <li key={sec.id + b.key} data-done className="flex flex-wrap items-baseline gap-x-2 text-base">
+              <span className="font-semibold">{b.name}</span>
+              <span className="text-sm text-muted-foreground">{sec.short}, {state.days[today]?.done?.[b.key] ?? b.mins} min{w ? `, ${w}` : ""}</span>
+            </li>
+          );
+        })}
       </ul>
-    </Section>
+      {extra && (
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-xl bg-secondary/60 px-4 py-3">
+          <p className="min-w-0 text-base"><span className="text-muted-foreground">If you have time: </span>{extra.title}, about {extra.mins} min</p>
+          {extra.to.startsWith("#") ? null : <LinkButton to={extra.to} variant="secondary" size="sm">Start</LinkButton>}
+        </div>
+      )}
+      <div className="flex flex-col gap-1">
+        <DoneLine d={today} isToday />
+        {first && <p className="text-base text-muted-foreground">Tomorrow starts with {first.sec.short}: {first.b.name}, {first.b.mins} min.</p>}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * One-time setup for the phase (D57), from both sections' `setup` lists: open the official site, start a course, get
+ * the book. Ticks are the Learn tabs' own, so a tick here shows there and syncs. While anything is left it is a card
+ * with a count; once all are ticked it folds to one line.
+ */
+function SetupCard({ d }: { d: string }) {
+  const { state, update } = useStore();
+  const ph = phaseOf(d);
+  const varc = useResources(LIVE_SECTIONS[0]);
+  const dilr = useResources(LIVE_SECTIONS[1] ?? LIVE_SECTIONS[0]);
+  const [open, setOpen] = useState(false);
+  if (ph.kind !== "phase") return null;
+  const seen = new Set<string>();
+  const items = LIVE_SECTIONS.flatMap((sec, i) => {
+    const res = i === 0 ? varc : dilr;
+    return (sec.setup?.[ph.phase.id] ?? []).flatMap((id) => {
+      const r = res?.resources.find((x) => x.id === id);
+      // The same link listed by two sections (the official site) is one job.
+      if (!r || seen.has(r.u)) return [];
+      seen.add(r.u);
+      return [{ sec, r }];
+    });
+  });
+  if (!items.length) return null;
+  const doneN = items.filter((x) => state.ticks[x.r.id]).length, all = doneN === items.length;
+  const toggle = (id: string) => update((st) => { if (st.ticks[id]) delete st.ticks[id]; else st.ticks[id] = 1; });
+  const show = !all || open;
+  return (
+    <section aria-labelledby="setup-h" className="flex flex-col gap-3 rounded-2xl bg-card p-5 sm:p-6">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+        <div className="flex flex-col gap-0.5">
+          <h2 id="setup-h" className="text-heading font-semibold">{all ? "Setup for this phase is done" : "Set up your prep"}</h2>
+          <p className="text-base text-muted-foreground">{all ? `All ${items.length} one-time jobs for the ${ph.phase.name} phase are ticked.` : `One-time jobs for the ${ph.phase.name} phase. ${doneN} of ${items.length} done.`}</p>
+        </div>
+        {all && <Button variant="ghost" size="sm" onClick={() => setOpen(!open)} aria-expanded={open}>{open ? "Hide" : "Show"}</Button>}
+      </div>
+      <div className="h-1.5 overflow-hidden rounded-full bg-secondary" aria-hidden>
+        <div className={cn("h-full rounded-full transition-[width] duration-500 motion-reduce:transition-none", all ? "bg-success" : "bg-primary")} style={{ width: `${(doneN / items.length) * 100}%` }} />
+      </div>
+      {show && (
+        <ul className="flex flex-col gap-1">
+          {items.map(({ sec, r }) => {
+            const on = !!state.ticks[r.id];
+            // Only the next job says why it matters; the rest stay one line, so the card stays short.
+            const next = !on && r.id === items.find((x) => !state.ticks[x.r.id])?.r.id;
+            return (
+              <li key={r.id} className={cn("flex items-start gap-3 rounded-xl px-2 py-2", next && "bg-secondary/60 py-3")}>
+                <Tick done={on} onClick={() => toggle(r.id)} label={`${r.n}: ${on ? "done" : "not done"}`} />
+                <div className="flex min-w-0 flex-col gap-0.5">
+                  <Ext href={r.u} className={cn("text-base font-semibold hover:text-primary", on && "text-muted-foreground line-through decoration-muted-foreground/60")}>{r.n}</Ext>
+                  {next && <p className="measure text-base text-foreground/80">{r.w}</p>}
+                  <span className="text-sm text-muted-foreground">{sec.short}, {r.t}</span>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </section>
   );
 }
 
@@ -441,9 +531,73 @@ function DoneLine({ d, isToday }: { d: string; isToday: boolean }) {
   const text = useMemo(() => daySummary(historyDays(state).find((x) => x.d === d)), [state, d]);
   if (!text) return null;
   return (
-    <p className="-mt-4 text-base">
+    <p className="text-base">
       <span className="font-semibold">{isToday ? "Done today" : "Done that day"}:</span> {text}.{" "}
       <TextLink to={`/history?d=${d}`}>See it in History</TextLink>
     </p>
+  );
+}
+
+/** The day's note when there is no plan: before the phases, exam day, after it, or a rest day. */
+function NoPlan({ d }: { d: string }) {
+  const ph = phaseOf(d);
+  const [h, p]: [string, ReactNode] = ph.kind === "exam" ? ["Exam day.", "Eat well, reach early, and trust your attempt order."]
+    : ph.kind === "after" ? ["CAT 2027 is over.", null]
+    : ph.kind === "pre" ? ["The plan starts on " + mediumDate(PHASES[0].start) + ".", null]
+    : ["Rest day.", "Nothing is planned. The core task moves to your next session. Pick a time above if you can study after all."];
+  return <div className="flex flex-col gap-1 rounded-2xl bg-card p-6"><p className="text-heading font-semibold">{h}</p>{p && <p className="text-base text-muted-foreground">{p}</p>}</div>;
+}
+
+export default function Today() {
+  const today = useToday();
+  const [d, setD] = useState(today);
+  const { state } = useStore();
+  const root = useRef<HTMLDivElement>(null);
+  const isToday = d === today, past = d < today;
+  const { blocks, planned } = dayPlan(state, d, today);
+  const done = doneMinutes(state, d);
+  const allDone = blocks.length > 0 && blocks.every((x) => state.days[d]?.done?.[x.b.key]);
+  const ph = phaseOf(d);
+  // One entrance for the whole page, in reading order.
+  useGsap(root, (gsap, el) => { gsap.from(el.querySelectorAll("[data-rise]"), { opacity: 0, y: 14, duration: 0.5, stagger: 0.08, ease: "power3.out", clearProps: "all" }); }, []);
+
+  return (
+    <Page className="gap-6 lg:gap-10">
+      <div ref={root} className="flex flex-col gap-6 lg:gap-10">
+        <header data-rise className="flex flex-col gap-1">
+          <div className="flex items-center justify-between gap-4">
+            <h1 className="text-title font-extrabold">{isToday ? "Today" : past ? "A past day" : "Planning ahead"}</h1>
+            <StreakBadge />
+          </div>
+          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0 text-base text-muted-foreground">
+            <Button variant="ghost" size="icon-sm" className="-ml-2" aria-label="Previous day" onClick={() => setD(addDays(d, -1))}><ChevronLeft className="size-5" /></Button>
+            <span className="font-semibold text-foreground">{longDate(d)}</span>
+            <Button variant="ghost" size="icon-sm" aria-label="Next day" onClick={() => setD(addDays(d, 1))}><ChevronRight className="size-5" /></Button>
+            {ph.kind === "phase" && <Link to="/plan" className="rounded-sm underline-offset-4 hover:text-foreground hover:underline">{ph.phase.name}<span className="max-sm:hidden">, phase {ph.phase.id} of {PHASES.length}</span></Link>}
+            {!isToday && <Button variant="link" size="sm" onClick={() => setD(today)}>Back to today</Button>}
+          </div>
+        </header>
+
+        <div data-rise className="grid gap-3 lg:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] lg:gap-6">
+          <DayRing done={done} planned={planned} d={d} today={today} onPick={setD} />
+          {isToday ? (allDone ? <DayDone today={today} /> : <UpNext today={today} />) : (
+            <div className="flex flex-col justify-center gap-2 rounded-2xl bg-card p-6 sm:p-8">
+              <p className="text-base text-muted-foreground">{past ? "What was planned that day" : "What is planned for this day"}</p>
+              <p className="text-[clamp(1.75rem,1.3rem+1.6vw,2.6rem)] leading-[1.05] font-extrabold tracking-[-0.035em]">{blocks.length ? `${blocks.length} blocks, ${planned} min` : "Nothing planned"}</p>
+              <DoneLine d={d} isToday={false} />
+            </div>
+          )}
+        </div>
+
+        {isToday && <ReviewCard today={today} />}
+
+        <div data-rise>{blocks.length ? <DayBlocks blocks={blocks} d={d} today={today} /> : <NoPlan d={d} />}</div>
+
+        {isToday && !allDone && <div data-rise><DoneLine d={d} isToday /></div>}
+        {/* The sign-in nudge waits until after the plan, so it never stands between the student and the work. */}
+        {isToday && <SyncPrompt />}
+        <div data-rise><SetupCard d={d} /></div>
+      </div>
+    </Page>
   );
 }

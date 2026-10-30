@@ -3,7 +3,7 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { todayIso } from "../../lib/date";
 import { usePref } from "../../lib/prefs";
-import type { LrAttempt, RcAttempt, VaAttempt } from "../../lib/state";
+import type { RcAttempt, VaAttempt } from "../../lib/state";
 import { useStore } from "../../lib/store";
 import { LinkButton, Page, PageHeader } from "../../components/kit";
 import { StreakBadge } from "../../components/StreakBadge";
@@ -14,6 +14,7 @@ import { SECTION_BY_ID, SECTIONS } from "../../sections";
 import type { SectionDef, SectionId } from "../../sections/types";
 import NotFound from "../NotFound";
 import DilrPractice, { LR_ORDER } from "./DilrPractice";
+import { nextLrSet } from "../../practice/lrorder";
 import VarcPractice from "./VarcPractice";
 
 /**
@@ -35,7 +36,7 @@ function varcToday(st: { rcAttempts: RcAttempt[]; vaAttempts: VaAttempt[]; redo:
   return { today, daily, dailyTry, vaToday, redoDue, next };
 }
 
-const nextLr = (lr: LrAttempt[]) => { const tried = new Set(lr.map((a) => a.set)); return LR_ORDER.find((s) => !tried.has(s.id)); };
+const nextLr = nextLrSet;
 
 const isSection = (x: string | undefined): x is SectionId => !!x && x in SECTION_BY_ID;
 

@@ -13,8 +13,11 @@ export interface PlacedBlock extends Block {
 export const doneKey = (sec: SectionDef, id: string) => sec.id + ":" + id;
 const ctxOf = (st: AppState): PlanCtx => ({ ticks: st.ticks, mocks: st.mocks });
 
+/** Before a section joined the timetable (`liveSince`) it has no blocks and no time, so nothing is owed (D56). */
+const notYet = (sec: SectionDef, d: string) => !!sec.liveSince && d < sec.liveSince;
+
 export function templateFor(sec: SectionDef, st: AppState, d: string): DayTemplate {
-  return sec.template ? sec.template(d, ctxOf(st)) : { base: [], extra: [] };
+  return sec.template && !notYet(sec, d) ? sec.template(d, ctxOf(st)) : { base: [], extra: [] };
 }
 
 /** The section's usual minutes for this date, before any one-day change. */
@@ -24,6 +27,7 @@ export function defaultMin(sec: SectionDef, st: AppState, d: string): number {
   return typeof o === "number" ? o : isWeekend(d) ? s.we : s.wd;
 }
 export function budgetFor(sec: SectionDef, st: AppState, d: string): number {
+  if (notYet(sec, d)) return 0;
   const v = st.days[d]?.min?.[sec.id];
   return typeof v === "number" ? v : defaultMin(sec, st, d);
 }
