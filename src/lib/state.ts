@@ -5,7 +5,8 @@ import type { SectionId } from "../sections/types";
 export const SECTION_IDS: SectionId[] = ["varc", "dilr", "quant"];
 const DEFAULT_TIME: Record<SectionId, { wd: number; we: number }> = {
   varc: { wd: 60, we: 120 },
-  dilr: { wd: 45, we: 90 },
+  // Lowered from 45 and 90 when DILR joined the timetable (D56); untouched old defaults move on load, below.
+  dilr: { wd: 30, we: 60 },
   quant: { wd: 45, we: 90 },
 };
 
@@ -29,6 +30,8 @@ export interface DayRec {
   carried?: Partial<Record<SectionId, 1>>;
   /** The catch-up for this day was skipped */
   dismiss?: Partial<Record<SectionId, 1>>;
+  /** Blocks ticked by on-site work (planner/auto.ts, D57), kept so a block the student unticks is not ticked again */
+  auto?: Record<string, 1>;
 }
 
 export interface Mock { id: string; d: string; sec: string; n: string; k: string; c: number; w: number }
@@ -206,6 +209,9 @@ export function normalize(raw: unknown): AppState {
       if (isFinite(Number(s.we))) b.settings[id].we = mins(s.we);
       if (Array.isArray(s.dow)) { const dw: unknown[] = s.dow; b.settings[id].dow = emptyDow().map((_, i) => (typeof dw[i] === "number" ? mins(dw[i]) : null)); }
     });
+    // DILR's old placeholder time, never changed by the student, moves to the new usual time (D56).
+    const dl = b.settings.dilr;
+    if (dl.wd === 45 && dl.we === 90 && dl.dow.every((x) => x === null)) { dl.wd = DEFAULT_TIME.dilr.wd; dl.we = DEFAULT_TIME.dilr.we; }
   }
   if (isObj(raw.days)) {
     Object.keys(raw.days).forEach((k) => {
@@ -220,6 +226,7 @@ export function normalize(raw: unknown): AppState {
       if (isObj(v.spent)) { rec.spent = {}; Object.keys(v.spent).forEach((bk) => (rec.spent![bk] = mins((v.spent as Obj)[bk]))); }
       if (v.carried) rec.carried = flags(v.carried);
       if (v.dismiss) rec.dismiss = flags(v.dismiss);
+      if (isObj(v.auto)) { const a: Record<string, 1> = {}; Object.keys(v.auto).forEach((bk) => { if (v.auto && (v.auto as Obj)[bk]) a[bk] = 1; }); if (Object.keys(a).length) rec.auto = a; }
       b.days[k] = rec;
     });
   }

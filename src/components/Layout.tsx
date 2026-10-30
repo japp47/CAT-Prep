@@ -8,6 +8,7 @@ import { useFocus } from "../lib/focus";
 import { whenIdle } from "../lib/idle";
 import { usePref } from "../lib/prefs";
 import { RedoSeeder } from "./Content";
+import { AutoTicker } from "./AutoTicker";
 import FocusBar from "./FocusBar";
 import InstallButton from "./InstallButton";
 import { IconChart, IconHome, IconPen, IconToday } from "./Icons";
@@ -190,6 +191,7 @@ export default function Layout() {
 
       <FocusBar />
       <RedoSeeder />
+      <AutoTicker />
       {idle && <Suspense fallback={null}><Toaster /></Suspense>}
 
       <nav aria-label="Quick" className={BOTTOM_BAR}>

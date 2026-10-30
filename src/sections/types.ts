@@ -48,6 +48,8 @@ export interface Block {
   ptype?: string;
   paper?: string;
   pkind?: string;
+  /** The on-site action the block's button opens: a path, or "lr-next" for the next LR set (planner/go.ts, D56) */
+  go?: string;
 }
 
 export interface PlanCtx {
@@ -80,6 +82,10 @@ export interface SectionDef {
   errorTypes: string[];
   phaseText?: Record<number, PhaseText>;
   template?: (d: string, ctx: PlanCtx) => DayTemplate;
+  /** One-time setup for each phase (resource ids, ticked like the Learn tab's): Today's "Set up your prep" (D57) */
+  setup?: Record<number, string[]>;
+  /** The first day the section is in the timetable: earlier days plan no time for it and owe no catch-up (D56) */
+  liveSince?: string;
   /** The curated resource list, loaded on demand: only the section page and Today show it. Use useResources(). */
   resources?: () => Promise<SectionResources>;
 }
