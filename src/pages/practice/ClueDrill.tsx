@@ -7,13 +7,13 @@ import { useGsap } from "../../lib/motion";
 import type { LrDrillRun } from "../../lib/state";
 import { useStore } from "../../lib/store";
 import { ContentGate } from "../../components/Content";
-import { boardCaption, caseLines, DrillHow, HowSteps, RuleTiles, RunStrip, SeatBoard, type Mark } from "../../components/DrillBoard";
+import { boardCaption, caseLines, DrillHow, HowSteps, RuleTiles, SeatBoard, type Mark } from "../../components/DrillBoard";
 import { ArrowLink, LinkButton, Page } from "../../components/kit";
 import { LR_CATALOG } from "../../practice/catalog.gen";
 import { backTo, CLUE_RUN, pickClues, type LrDrills } from "../../practice/lrdrill";
 import { answerOf, CLUE_KIND, isRuleClue, markClue, MISREAD, type ClueItem, type ClueKind, type Misread, type World } from "../../practice/lrlogic";
 import { fmtSecs } from "../../practice/record";
-import { PlayerBar, ScoreCard } from "./common";
+import { PaletteCell, PlayerBar, ScoreCard } from "./common";
 
 /** The clue translator (F83): eight clues, about three minutes, each read onto a board. */
 export default function ClueDrill() {
@@ -51,30 +51,46 @@ function Run({ d, kind, back, again }: { d: LrDrills; kind?: ClueKind; back: str
   const [items] = useState(() => pickClues(d.clues, state.lrDrills, CLUE_RUN, Math.random, kind));
   const firstRun = !state.lrDrills.some((r) => r.kind === "clue");
   const [i, setI] = useState(0);
-  const [picked, setPicked] = useState<Pick[]>([]);
-  const [results, setResults] = useState<Result[]>([]);
+  // Taps and verdicts per clue, so the student can move between clues, skip one and come back to it.
+  const [picks, setPicks] = useState<Pick[][]>(() => items.map(() => []));
+  const [results, setResults] = useState<(Result | undefined)[]>(() => items.map(() => undefined));
   const [startAt] = useState(Date.now);
   const [secs, setSecs] = useState<number | null>(null);
   const item = items[i];
-  const checked = results.length > i;
+  const picked = picks[i] ?? [];
+  const res = results[i];
+  const checked = !!res;
+  const answered = results.filter(Boolean).length;
+  const open = results.findIndex((r, k) => !r && k !== i);
 
-  const toggle = (x: Pick) => { if (!checked) setPicked((p) => (p.includes(x) ? p.filter((y) => y !== x) : [...p, x])); };
-  const check = () => { if (picked.length && !checked) setResults((r) => [...r, { k: item.id, ...markClue(item, picked) }]); };
-  const next = () => {
-    if (i + 1 < items.length) { setI(i + 1); setPicked([]); return; }
+  const toggle = (x: Pick) => { if (!checked) setPicks((ps) => ps.map((p, k) => (k !== i ? p : p.includes(x) ? p.filter((y) => y !== x) : [...p, x]))); };
+  const check = () => { if (picked.length && !checked) setResults((r) => r.map((x, k) => (k === i ? { k: item.id, ...markClue(item, picked) } : x))); };
+  const go = (k: number) => { if (k >= 0 && k < items.length) setI(k); };
+  /** Ends the run with the clues checked so far; skipped ones are not counted. */
+  const finish = () => {
+    const done = results.filter((r): r is Result => !!r);
     const s = Math.round((Date.now() - startAt) / 1000);
-    update((st) => { st.lrDrills.push({ id: uid(), d: todayIso(), kind: "clue", items: results.map(({ k, ok, miss }) => ({ k, ok, ...(miss ? { miss } : {}) })), secs: s }); });
+    if (done.length) update((st) => { st.lrDrills.push({ id: uid(), d: todayIso(), kind: "clue", items: done.map(({ k, ok, miss }) => ({ k, ok, ...(miss ? { miss } : {}) })), secs: s }); });
     setSecs(s);
   };
+  /** After a check: the next clue not yet checked (from here, then from the start), or the end of the run. */
+  const next = () => {
+    const after = results.findIndex((r, k) => !r && k > i);
+    const k = after >= 0 ? after : results.findIndex((r) => !r);
+    if (k >= 0 && k !== i) go(k);
+    else finish();
+  };
 
-  // Keys: 1 to 9 tap a seat or case, Enter checks and then moves on.
-  const keys = useRef({ toggle, check, next, checked, done: secs !== null, item });
-  keys.current = { toggle, check, next, checked, done: secs !== null, item };
+  // Keys: 1 to 9 tap a seat or case, Enter checks and then moves on, arrows move between clues.
+  const keys = useRef({ toggle, check, next, go, i, checked, done: secs !== null, item });
+  keys.current = { toggle, check, next, go, i, checked, done: secs !== null, item };
   useEffect(() => {
     const on = (e: KeyboardEvent) => {
       const k = keys.current;
       if (k.done || e.metaKey || e.ctrlKey || e.altKey || (e.target as HTMLElement).closest("input, textarea")) return;
       if (e.key === "Enter" && !(e.target as HTMLElement).closest("button, a")) { e.preventDefault(); if (k.checked) k.next(); else k.check(); return; }
+      if (e.key === "ArrowRight") { k.go(k.i + 1); return; }
+      if (e.key === "ArrowLeft") { k.go(k.i - 1); return; }
       const n = parseInt(e.key, 10);
       if (!n || k.checked) return;
       if (isRuleClue(k.item)) { if (n <= 4) k.toggle((["both", "p", "q", "neither"] as const)[n - 1]); }
@@ -86,23 +102,36 @@ function Run({ d, kind, back, again }: { d: LrDrills; kind?: ClueKind; back: str
 
   if (!items.length) return null;
   if (secs !== null) return <Done items={items} results={results} secs={secs} again={again} back={back} />;
-  const res = results[i];
   return (
     <Page width="read" className="gap-6 lg:gap-8">
       <PlayerBar kicker={kind ? `DILR drill: ${CLUE_KIND[kind].toLowerCase()} clues` : "DILR drill, about three minutes"} title="Clue translator">
+        {answered > 0 && answered < items.length && <Button variant="ghost" size="sm" onClick={finish}>Finish now</Button>}
         <LinkButton to={back ?? "/dilr/practice"} variant="ghost" size="sm">{back ? "Back to the set" : "Stop"}</LinkButton>
       </PlayerBar>
       {i === 0 && !checked && <How done={!firstRun} />}
       <div className="flex flex-col gap-2">
-        <RunStrip results={results.map((r) => r.ok)} n={items.length} cur={i} />
+        <div className="flex flex-wrap gap-1.5 sm:gap-2" role="group" aria-label="Clues in this run">
+          {items.map((c, k) => (
+            <PaletteCell key={c.id} n={k + 1} current={k === i} onClick={() => go(k)} className="h-9 min-w-9 sm:h-10 sm:min-w-10"
+              state={results[k] ? (results[k]!.ok ? "right" : "wrong") : picks[k].length ? "open" : "unseen"}
+              label={`Clue ${k + 1}, ${results[k] ? (results[k]!.ok ? "right" : "wrong") : "not checked"}`} />
+          ))}
+        </div>
         <p className="text-sm text-muted-foreground">Clue {i + 1} of {items.length}. {CLUE_KIND[item.kind]}</p>
       </div>
       <ClueCard key={item.id} item={item} picked={picked} toggle={toggle} res={res} />
-      <div className="flex flex-wrap items-center gap-3">
-        {!checked
-          ? <Button onClick={check} disabled={!picked.length}>Check</Button>
-          : <Button onClick={next}>{i + 1 < items.length ? "Next clue" : "See how you did"}</Button>}
-        <span className="text-sm text-muted-foreground max-sm:hidden">{checked ? "Enter for the next clue" : "Keys 1 to 9 tap, Enter checks"}</span>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          {!checked
+            ? <Button onClick={check} disabled={!picked.length}>Check</Button>
+            : <Button onClick={next}>{open >= 0 ? "Next clue" : "See how you did"}</Button>}
+          {!checked && open >= 0 && <Button variant="ghost" onClick={() => go(results.findIndex((r, k) => !r && k > i) >= 0 ? results.findIndex((r, k) => !r && k > i) : open)}>Skip for now</Button>}
+          <span className="text-sm text-muted-foreground max-sm:hidden">{checked ? "Enter for the next clue" : "Keys 1 to 9 tap, Enter checks, arrows move"}</span>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="secondary" size="sm" disabled={i === 0} onClick={() => go(i - 1)}>Previous</Button>
+          <Button variant="secondary" size="sm" disabled={i === items.length - 1} onClick={() => go(i + 1)}>Next</Button>
+        </div>
       </div>
     </Page>
   );
@@ -161,13 +190,14 @@ function Verdict({ item, res, from }: { item: ClueItem; res: Result; from?: { id
 }
 
 /** The run's score, the misreadings it showed and every clue with how it went. */
-function Done({ items, results, secs, again, back }: { items: ClueItem[]; results: Result[]; secs: number; again: () => void; back: string | null }) {
-  const right = results.filter((r) => r.ok).length;
-  const slips = [...new Set(results.map((r) => r.miss).filter((m): m is Misread => !!m))];
+function Done({ items, results, secs, again, back }: { items: ClueItem[]; results: (Result | undefined)[]; secs: number; again: () => void; back: string | null }) {
+  const right = results.filter((r) => r?.ok).length;
+  const slips = [...new Set(results.map((r) => r?.miss).filter((m): m is Misread => !!m))];
+  const skipped = results.filter((r) => !r).length;
   return (
     <Page width="read" className="gap-6 lg:gap-8">
       <PlayerBar kicker="DILR drill" title="Clue translator" />
-      <ScoreCard score={right} of={items.length} parts={[["Time", fmtSecs(secs)], ["Misreadings named", String(slips.length)]]}>
+      <ScoreCard score={right} of={items.length - skipped} parts={[["Time", fmtSecs(secs)], ["Misreadings named", String(slips.length)], ...(skipped ? [["Skipped", String(skipped)] as [string, string]] : [])]}>
         {slips.length > 0 && (
           <ul className="flex flex-col gap-3">
             {slips.map((m) => <li key={m} className="flex flex-col gap-0.5"><span className="text-base font-semibold">{MISREAD[m].h}</span><span className="measure text-base text-muted-foreground">{MISREAD[m].fix}</span></li>)}
@@ -177,10 +207,10 @@ function Done({ items, results, secs, again, back }: { items: ClueItem[]; result
       <ol className="flex flex-col gap-px overflow-hidden rounded-xl">
         {items.map((c, i) => (
           <li key={c.id} className="flex items-start gap-3 bg-card px-5 py-3.5">
-            <span className={cn("mt-1.5 size-2.5 shrink-0 rounded-full", results[i]?.ok ? "bg-success" : "bg-danger")} aria-label={results[i]?.ok ? "Right" : "Wrong"} />
+            <span className={cn("mt-1.5 size-2.5 shrink-0 rounded-full", !results[i] ? "bg-secondary" : results[i]!.ok ? "bg-success" : "bg-danger")} aria-label={!results[i] ? "Skipped" : results[i]!.ok ? "Right" : "Wrong"} />
             <span className="flex flex-col gap-0.5">
               <span className="text-base">{c.text}</span>
-              <span className="text-sm text-muted-foreground">{CLUE_KIND[c.kind]}{results[i]?.miss ? `. ${MISREAD[results[i].miss as Misread].h}` : ""}</span>
+              <span className="text-sm text-muted-foreground">{CLUE_KIND[c.kind]}{!results[i] ? ". Skipped" : results[i]!.miss ? `. ${MISREAD[results[i]!.miss as Misread].h}` : ""}</span>
             </span>
           </li>
         ))}

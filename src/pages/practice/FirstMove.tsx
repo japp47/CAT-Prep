@@ -10,8 +10,9 @@ import { ContentGate } from "../../components/Content";
 import { boardCaption, DrillHow, HowSteps, SeatBoard, SolveFirst } from "../../components/DrillBoard";
 import { ArrowLink, LinkButton, Page } from "../../components/kit";
 import { LR_CATALOG } from "../../practice/catalog.gen";
-import { backTo, FIRST_MOVES, firstMoveStep, fixedBy, moveReason, nextDrill, type LrDrills } from "../../practice/lrdrill";
-import { OPEN_CAP, openCases, seatRows, type LrModel } from "../../practice/lrlogic";
+import { backTo, FIRST_MOVES, firstMoveSets, firstMoveStep, fixedBy, isGrid, moveReason, namedBy, nextDrill, openOf, type AnyModel, type LrDrills } from "../../practice/lrdrill";
+import { OPEN_CAP, seatRows } from "../../practice/lrlogic";
+import { labelOf, type Case, type GridModel } from "../../practice/solver";
 import type { LrSet } from "../../practice/types";
 import { PlayerBar, ScoreCard } from "./common";
 
@@ -28,8 +29,9 @@ function Pick({ d, asked, back }: { d: LrDrills; asked: string | null; back: str
   const [allowed, setAllowed] = useState<string[]>([]);
   const solved = useMemo(() => new Set(state.lrAttempts.map((a) => a.set)), [state.lrAttempts]);
   // The set named in the address, else one already solved (D49), never done or done longest ago; "Another set" moves along.
-  const first = useMemo(() => d.models.find((m) => m.set === asked) ?? nextDrill(d.models, (m) => m.set, (m) => m.set, state.lrDrills, "first", solved), []); // eslint-disable-line react-hooks/exhaustive-deps
-  const m = d.models[((first ? d.models.indexOf(first) : 0) + skip) % d.models.length];
+  const models = useMemo(() => firstMoveSets(d.models), [d.models]);
+  const first = useMemo(() => models.find((m) => m.set === asked) ?? nextDrill(models, (m) => m.set, (m) => m.set, state.lrDrills, "first", solved), []); // eslint-disable-line react-hooks/exhaustive-deps
+  const m = models[((first ? models.indexOf(first) : 0) + skip) % models.length];
   if (!m) return null;
   const from = skip ? null : back;
   const meta = LR_CATALOG.find((x) => x.id === m.set);
@@ -49,7 +51,7 @@ function Pick({ d, asked, back }: { d: LrDrills; asked: string | null; back: str
 const andList = (xs: number[]) => (xs.length < 2 ? String(xs[0]) : `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}`);
 const ways = (n: number) => (n === 1 ? "1 way" : n >= OPEN_CAP ? `over ${OPEN_CAP.toLocaleString("en-IN")} ways` : `${n.toLocaleString("en-IN")} ways`);
 
-function Moves({ model, set, back, another }: { model: LrModel; set: LrSet; back: string | null; another: () => void }) {
+function Moves({ model, set, back, another }: { model: AnyModel; set: LrSet; back: string | null; another: () => void }) {
   const { state, update } = useStore();
   // Clues used so far, in order, and each move's verdict.
   const [picked, setPicked] = useState<number[]>([]);
@@ -62,7 +64,8 @@ function Moves({ model, set, back, another }: { model: LrModel; set: LrSet; back
   const n = (k: number) => step.counts.find((c) => c.clue === k)?.n ?? 0;
   const max = Math.max(2, ...step.counts.map((c) => c.n));
   const placed = useMemo(() => fixedBy(model, picked), [model, picked]);
-  const sofar = useMemo(() => (picked.length ? openCases(model, picked) : 0), [model, picked]);
+  const sofar = useMemo(() => (picked.length ? openOf(model, picked) : 0), [model, picked]);
+  const grid = isGrid(model);
 
   const choose = (k: number) => { if (shown === null && !done) { setShown(k); setOks((o) => [...o, n(k) === step.best]); } };
   const go = () => {
@@ -79,6 +82,7 @@ function Moves({ model, set, back, another }: { model: LrModel; set: LrSet; back
   return (
     <Page className="gap-6 lg:gap-8">
       <PlayerBar kicker="DILR drill" title="First move">
+        {!done && <Button variant="ghost" size="sm" onClick={another}>Another set</Button>}
         <LinkButton to={back ?? "/dilr/practice"} variant="ghost" size="sm">{back ? "Back to the set" : "Stop"}</LinkButton>
       </PlayerBar>
       <DrillHow id="first" done={state.lrDrills.some((r) => r.kind === "first")}>
@@ -101,7 +105,7 @@ function Moves({ model, set, back, another }: { model: LrModel; set: LrSet; back
               ? picked.length ? `Move ${picked.length + 1} of ${FIRST_MOVES}: which clue next?` : `Move 1 of ${FIRST_MOVES}: which clue would you start with?`
               : n(shown) === step.best ? (bestClues.length > 1 ? `A best move: clues ${andList(bestClues)} all leave ${ways(step.best)}.` : "The best move.") : `${bestClues.length > 1 ? `Clues ${andList(bestClues)} each` : `Clue ${bestClues[0]}`} would have left fewer ways.`}
           </p>
-          {shown === null && !done && <p className="measure text-base text-muted-foreground">Pick the clue that leaves the fewest ways to seat the people and things you have used so far.</p>}
+          {shown === null && !done && <p className="measure text-base text-muted-foreground">{grid ? "Pick the clue that leaves the fewest ways to fill what you have used so far." : "Pick the clue that leaves the fewest ways to seat the people and things you have used so far."}</p>}
           {shown !== null && (
             <div className="flex flex-col gap-1 rounded-xl bg-card px-4 py-3">
               <p className="measure text-base">Clue {shown} leaves {ways(n(shown))}: {moveReason(model, picked, shown, n(shown))}.</p>
@@ -114,19 +118,39 @@ function Moves({ model, set, back, another }: { model: LrModel; set: LrSet; back
           </div>
         </section>
         <aside className="flex flex-col gap-4 rounded-2xl bg-card p-5 lg:sticky lg:top-24">
-          <p className="text-base font-semibold">{picked.length ? `After clue ${picked.join(", ")}` : "The empty board"}</p>
-          <SeatBoard board={model.board} small label="The board so far" seat={(k) => {
-            if (!placed) return {};
-            const row = seatRows(model, placed)[k].filter(Boolean);
-            return row.length ? { lines: row, fresh: true } : {};
-          }} />
+          <p className="text-base font-semibold">{picked.length ? `After clue ${picked.join(", ")}` : grid ? "Nothing filled yet" : "The empty board"}</p>
+          {grid ? <Filled model={model} picked={picked} placed={placed} /> : (
+            <SeatBoard board={model.board} small label="The board so far" seat={(k) => {
+              if (!placed) return {};
+              const row = seatRows(model, placed as Map<string, number>)[k].filter(Boolean);
+              return row.length ? { lines: row, fresh: true } : {};
+            }} />
+          )}
           <p className="text-sm text-muted-foreground">
-            {!picked.length ? boardCaption(model.board) : placed ? "These clues fix where everyone they name sits." : `These clues leave ${ways(sofar)} to seat everyone they name, so nothing is fixed yet.`}
+            {!picked.length ? (grid ? "Each clue you pick fills in what it settles." : boardCaption(model.board))
+              : placed ? (grid ? "These clues settle everything they name." : "These clues fix where everyone they name sits.")
+              : `These clues leave ${ways(sofar)} to ${grid ? "fill what they name" : "seat everyone they name"}, so nothing is fixed yet.`}
           </p>
         </aside>
       </div>
       {done && <Finished set={set} oks={oks} another={another} back={back} />}
     </Page>
+  );
+}
+
+/** A grid set's board so far: each value the picked clues name, with its choice once they settle it. */
+function Filled({ model, picked, placed }: { model: GridModel; picked: number[]; placed: Case | null }) {
+  const names = [...new Set(picked.flatMap((k) => namedBy(model, model.clues[k - 1])))];
+  if (!names.length) return null;
+  return (
+    <ul className="flex flex-col gap-1">
+      {names.map((n) => (
+        <li key={n} className="flex items-baseline justify-between gap-3 rounded-lg bg-secondary px-3 py-2 text-base">
+          <span className="font-semibold">{n}</span>
+          <span className={placed ? "text-success" : "text-muted-foreground"}>{placed ? labelOf(model, n, placed.get(n)!) : "open"}</span>
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -175,7 +199,7 @@ function Finished({ set, oks, another, back }: { set: LrSet; oks: boolean[]; ano
         <LinkButton to={back ?? `/practice/lr/${set.id}`}>{back ? "Back to the set" : "Solve the set"}</LinkButton>
         <Button variant="secondary" onClick={another}>Another set</Button>
       </div>
-      <ArrowLink to="/dilr?guide=arrangement">Where to start, in the arrangement guide</ArrowLink>
+      <ArrowLink to={`/dilr?guide=${set.type}`}>Where to start, in the guide for this kind of set</ArrowLink>
     </ScoreCard>
   );
 }

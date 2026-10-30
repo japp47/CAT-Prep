@@ -440,6 +440,29 @@ Full entries are written here when a step comes within two steps of being built:
 **Tests.** `pickRound`: five distinct, never tried or dealt, at least three types, at most one easy, same seed same round, replay round when fewer than five remain. `selectionAccuracy`: hand-worked rounds (all right, all wrong, a left set completed later, under three pairs gives none). `debrief` and `costliest` against fixed visits. `normalize` keeps a good round and drops a broken one; sync kind round trip. `LrPlayer` tests unchanged. Budgets: main script unchanged (route is lazy), CSS under 30 KB (D54).
 **By hand.** Phone width: deal, swipe the five cards, pick an order with one "Leave it", switch sets twice, reload mid-round (resumes), let it run out or submit; the debrief's lanes match the switches; the solved sets appear in History and tick today's LR block; a left set still shows as untried in Practice. Reduced motion: nothing moves.
 
+**History: ticked plan blocks (A46), 30 Oct 2026.** `planItems` in `practice/history.ts`: one "Plan" row per block ticked on a day, named by that day's plan (`buildDay`), with its minutes, "ticked by you" or "by your practice on the site", and focus-timer minutes; a block the plan no longer has keeps a plain name. New kind `plan` (filter chip, `ListChecks` icon); left out of site search. `fix/catch-up-one-a-day` or its own branch `feat/history-plan-blocks` · `feat: show the blocks you ticked on Today in History`.
+
+**4a.10 Progress v2 and the skill map (D63, F89), 30 Oct 2026**
+`feat/progress-v2` · `feat: redesign Progress around three answers and a skill map that gives no verdict on too little data`
+- `practice/skills.ts`: `skillMap(st, content, sec, today)` (families of tiles, five states by the D63 rule, the place each tile opens), `startHere`, `weeklyAccuracy(practice, sec, today, 6)`. Tests in `practice/skills.test.ts`: each state's edge (7 and 8 answers, 59 and 60%, 79 and 80%, an old open redo miss), stale RC attempts left out, the weakest tile, weeks under 10 questions.
+- `pages/Progress.tsx` rebuilt: section switch, `Answers` (three answers, the weekly bars; DILR's selection answer), `SkillMap`, focus lines and `Fixing`, then "All the numbers" (the old tabs; stats moved into the Report card tab). `Report` gains `detail` to leave out what moved up.
+- Motion: one arrival sequence (bars, then tiles) through `useGsap`; nothing under reduced motion.
+**By hand.** Phone and desktop, VARC and DILR, with no data, a little (under 8 per skill) and six weeks; tiles open their drills; `?tab=log` still opens the log.
+
+**4a.11 The general solver (D51, D64), 30 Oct 2026**
+`feat/general-solver` · `feat: solve selection, truth-teller and league sets with one general solver, and bring must-could-cannot and first move to them`
+- `practice/solver.ts`: `search`, `allCases`, `orderVars`; grid conditions (`Cond`, `Term`, `evalCond`, `evalTerm`, `namesOf`), leagues (`matches`, wins, draws, losses, points, beat, drew), `gridCsp` (with `only` for first move), `gridVars`, `labelOf`. Tests: `practice/solver.test.ts`.
+- `practice/lrlogic.ts`: `seatCsp`; the old seat search now runs on `search` (every seat test unchanged).
+- `practice/lrdrill.ts`: `AnyModel`, `isGrid`, `casesOf`, `holdsIn`, `namedBy`, `openOf`, `firstMoveSets`; `mccSolved`, `firstMoveStep`, `fixedBy`, `moveReason`, `keptBy`, `binWhy` take either kind.
+- Content: grid models for `sel-project-team`, `bin-five-friends`, `tour-damaged-table` in `content/lrdrill/models.json`; drills `mcc-five-friends` (without A's statement, 3 cases) and `mcc-damaged-table` (without clue 2, 3 cases) in `mcc.json`; format in `docs/content/lr-drills.md`.
+- UI: `MustCould` shows grid cases as a table (one row per value, or the team as one row), says "case" for grid sets; `FirstMove` shows what the picked clues fill in; `LrNextDrill` offers first move only where it can run.
+**Tests.** Solver unit tests; each grid model's clue count, names and case count against its set; the binary case against the set's table and 3 cases without A's statement; every league figure against the set's table; the selection set's least cost and its cheapest teams; must-could drills on grid sets fill all three bins; first move skips the two-clue league.
+
+**Sidebar v2 (D65), 30 Oct 2026**
+`feat/sidebar-v2` · `feat: redesign the sidebar around the places used daily, with what is waiting there and an icon rail when collapsed`
+- `components/Sidebar.tsx`: `SidebarNav` (open sidebar and phone menu), `NAV_GROUPS` (the landing page's "All pages"), the sliding pill, the day ring. Collapsed shows only logo, search and the bottom controls (owner). Width 288 px. `components/Icons.tsx`: seven icons in the existing stroke style. `components/Layout.tsx` uses them; the old `Nav` and `GROUPS` are gone. `SiteHeader`'s "All pages" headings lose their capitals and rules.
+**By hand.** Desktop open and collapsed, every place current in turn (the pill slides; on the redo page only Redo queue is current), More folding and opening itself on its pages, phone menu, reduced motion.
+
 **Next after 4a.9:** Progress v2 (D55, D58) with the skill map (F89) and the Arena trend; then the general solver that takes must-could-cannot and first move to selection, binary logic and tournaments and serves F57 and F61 (D51); DI sets (F23) and F27 (one daily budget). In step 4b: F82 part 1 with the exam year and a weekly target.
 
 **4a.1b DILR page opened, 24 Oct 2026** on `feat/dilr-resources`: section status `open` (`sections/types.ts`), `sections/dilr/learn.ts` (format, set types, topic share, concept guides, tabs and notes) and `sections/dilr/resources.ts` (34 links, ids prefixed `d-`, all opened on 24 Oct 2026); `pages/Section.tsx` reads per-section page data; the header, footer and Today stop calling DILR "soon". Test: `sections/dilr/resources.test.ts`.

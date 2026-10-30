@@ -119,13 +119,14 @@ export function topTraps(errors: ErrorEntry[], sec: string, n = 6): [string, num
 export interface FocusLine { text: string; to: string; cta: string }
 
 /** Plain sentences on what to work on next, from what the student has logged. Empty until there is enough to say. */
-export function focusLines(i: { types: Row[]; genres: Row[]; traps: [string, number][]; pace: Pace; examPace: number; pattern?: Pattern }): FocusLine[] {
+export function focusLines(i: { types: Row[]; genres: Row[]; traps: [string, number][]; pace: Pace; examPace: number; pattern?: Pattern; skipType?: boolean }): FocusLine[] {
   const total = i.types.reduce((s, r) => s + r.attempted, 0);
   if (total < MIN_TOTAL) return [];
   const out: FocusLine[] = [];
 
   const t = weakest(i.types);
-  if (t && accuracy(t)! < 80) out.push({ text: `${t.label} is your weakest type: ${t.correct} of ${t.attempted} right, ${accuracy(t)}%.`, to: "/varc/practice", cta: "Drill it in Practice" });
+  // Progress's skill map names the weakest skill itself (D63), so it asks for the rest only.
+  if (t && !i.skipType && accuracy(t)! < 80) out.push({ text: `${t.label} is your weakest type: ${t.correct} of ${t.attempted} right, ${accuracy(t)}%.`, to: "/varc/practice", cta: "Drill it in Practice" });
 
   const rc = i.genres.reduce((s, r) => ({ attempted: s.attempted + r.attempted, correct: s.correct + r.correct }), { attempted: 0, correct: 0 });
   const g = weakest(i.genres, 8);

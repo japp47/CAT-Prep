@@ -394,7 +394,7 @@ The ⌘K palette and History (F51) read the student's own state in the browser. 
 
 ## 14. Later services (planned 23 Oct 2026; details decided when each step starts)
 
-**Solver (F57, F61; TypeScript, browser).** A small constraint solver for scheduling, grouping, tournaments and grid puzzles: counts the arrangements left after each clue, proves one answer, drives Replay and generates daily puzzles from a seed. Pure functions with property tests; loaded only on DILR and Arcade pages. No server.
+**Solver (D51, D64; F84, F85, then F57, F61; TypeScript, browser).** Built 30 Oct 2026 as `practice/solver.ts`: values to fill, the choices each can take, groups that must differ, and rules tested once what they read is filled. Seating models compile to it; grid models (conditions in JSON, a league helper) cover selection, binary logic and tournaments. It counts the cases left after any set of clues, which is what DILR Replay and the daily puzzle need. Pure functions with tests; loaded only on DILR drill pages. No server.
 
 **Notifications (F64, F65; Go module `notify`).**
 - Inbox and preferences through `/v1/notify/*`, behind the same `/v1` gate and device cookie as sync.

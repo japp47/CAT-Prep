@@ -78,7 +78,7 @@ export default function SiteHeader({ landing, groups, open, onOpenChange, onLoad
         <div className="mx-auto flex w-full max-w-[1440px] justify-end">
           <nav aria-label="All pages" className="grid w-full max-w-[1120px] grid-cols-4 gap-4 rounded-xl border border-border/70 bg-card p-5 shadow-[0_24px_40px_-24px_rgb(0_0_0/0.3)] xl:gap-6 xl:p-6">
             {groups.map((group) => <div key={group.title} className="flex min-w-0 flex-col">
-              <span className="mb-1 border-b border-border/70 px-3 pb-2 text-xs font-semibold tracking-[0.1em] text-muted-foreground uppercase">{group.title}</span>
+              <span className="mb-1 px-3 pb-1 text-sm text-muted-foreground">{group.title}</span>
               <div className="flex flex-col gap-0.5">
                 {group.items.map((item) => <SiteNavLink key={item.to} item={item} onClick={() => onOpenChange(false)} title={item.label}
                   className={(isActive) => cn("flex min-h-10 items-center justify-between gap-2 rounded-md px-3 py-2 text-base font-medium text-foreground/80 transition-colors hover:bg-muted/70 hover:text-foreground", isActive && "bg-muted text-foreground")}>

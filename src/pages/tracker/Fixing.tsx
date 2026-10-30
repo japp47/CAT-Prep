@@ -2,55 +2,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { LinkButton, Meta, Section, TextLink } from "../../components/kit";
-import { todayIso } from "../../lib/date";
 import type { Cause, ErrorEntry, Recommendation } from "../../lib/state";
 import { useStore } from "../../lib/store";
-import { AFTER_MIN, readiness, tracked, trend, type Measured } from "../../practice/recs";
+import { AFTER_MIN, tracked, type Measured } from "../../practice/recs";
 import { filterHref, matches, type ErrorFilter } from "../../practice/errorfilter";
-
-/** Progress opens on three plain answers (docs/feature.md, F44); the tabs below hold the detail. */
-export function ThreeAnswers() {
-  const { state } = useStore();
-  const t = trend(state, todayIso());
-  const fixing = tracked(state);
-  const counts = { fixed: 0, better: 0, early: 0, notyet: 0 };
-  fixing.forEach((m) => { if (m.state in counts) counts[m.state as keyof typeof counts]++; });
-  const r = readiness(state);
-  const parts = [counts.fixed && `${counts.fixed} fixed`, counts.better && `${counts.better} getting better`, counts.notyet && `${counts.notyet} not yet`, counts.early && `${counts.early} too early to tell`].filter(Boolean);
-
-  const cards: { q: string; a: string; link?: [string, string] }[] = [
-    {
-      q: "Are you improving?",
-      a: t.now != null && t.before != null
-        ? `Accuracy over the last two weeks is ${t.now}%, ${t.now === t.before ? "the same as" : `${Math.abs(t.now - t.before)} points ${t.now > t.before ? "up on" : "down on"}`} the two weeks before.`
-        : `A trend needs 20 questions in each of two fortnights. You have ${t.n} in the last two weeks.`,
-      link: t.now == null ? ["/practice", "Practise"] : undefined,
-    },
-    {
-      q: "Are your weak spots getting fixed?",
-      a: parts.length ? parts.join(", ") + "." : "Nothing picked yet. A mock review or the weekly review picks a weak spot to work on.",
-      link: parts.length ? ["#fixing", "See them"] : ["/review", "Weekly review"],
-    },
-    {
-      q: "Are you exam ready?",
-      a: r ? `Your last ${r.count === 1 ? "result" : `${r.count} results`} averaged ${r.avg} right; your target needs ${r.band[0]} to ${r.band[1]}.` : "Take a timed sectional or log a mock to see how practice holds up under time.",
-      link: r ? undefined : ["/practice/sectional", "Take a sectional"],
-    },
-  ];
-  return (
-    <ul className="grid gap-px overflow-hidden rounded-lg bg-background md:grid-cols-3">
-      {cards.map((c) => (
-        <li key={c.q} className="flex flex-col gap-2 bg-card p-5 sm:p-6">
-          <h2 className="text-base font-semibold">{c.q}</h2>
-          <p className="text-base text-foreground/85">{c.a}</p>
-          {c.link && (c.link[0].startsWith("#")
-            ? <a href={c.link[0]} className="mt-auto w-fit pt-1 font-medium text-primary underline underline-offset-4 decoration-primary/40 hover:decoration-primary">{c.link[1]}</a>
-            : <TextLink to={c.link[0]} className="mt-auto w-fit pt-1">{c.link[1]}</TextLink>)}
-        </li>
-      ))}
-    </ul>
-  );
-}
 
 const STATE: Record<Measured["state"], { label: string; tone: "success" | "secondary" | "danger" | "highlight" }> = {
   fixed: { label: "Fixed", tone: "success" },

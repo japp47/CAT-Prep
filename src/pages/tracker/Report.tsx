@@ -1,5 +1,4 @@
 import { todayIso } from "../../lib/date";
-import { Fixing } from "./Fixing";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { Bars, PaceChart } from "../../components/Chart";
@@ -110,48 +109,75 @@ function ClueReading({ runs }: { runs: LrDrillRun[] }) {
   );
 }
 
+/**
+ * Where to focus (VARC): up to three lines from the report card, the pattern of the month and lucky guesses. Progress
+ * shows it above the skill map's detail; the numbers it rests on are in the Report card tab.
+ */
+export function WhereToFocus({ sec }: { sec: string }) {
+  const { state } = useStore();
+  const def = sectionByLabel(sec);
+  const types = byPracticeType(state.practice, sec, def.practiceTypes);
+  const attempted = types.reduce((s, r) => s + r.attempted, 0);
+  const traps = topTraps(state.errors, sec);
+  const genres = rcByGenre(state.rcAttempts, RC_CATALOG);
+  const pace = paceTrend(state.speedRuns);
+  const lines = focusLines({ types, genres, traps, pace, examPace: EXAM_PACE, pattern: patterns(state.errors, state.practice, todayIso(), sec)[0], skipType: true });
+  const lucky = luckyGuesses(state);
+  const luckyN = lucky.reduce((s, [, n]) => s + n, 0);
+  return (
+    <Section title="Where to focus" description="Beyond single skills: passage genres, reading pace and the traps in your Error log.">
+      {lines.length > 0 ? (
+        <ul className="flex flex-col gap-px overflow-hidden rounded-xl bg-background">
+          {lines.map((l, i) => (
+            <li key={l.text} className={cn("relative flex flex-wrap items-center justify-between gap-x-6 gap-y-1 bg-card px-5 py-4 sm:px-6", i === 0 && "before:absolute before:inset-y-0 before:left-0 before:w-1.5 before:bg-highlight")}>
+              <p className="measure min-w-0 text-base">{l.text}</p>
+              <TextLink to={l.to}>{l.cta}</TextLink>
+            </li>
+          ))}
+        </ul>
+      ) : attempted >= MIN_TOTAL ? (
+        <Empty>Nothing stands out. Every type, genre and trap is within a few points of the rest, so keep the mix going.</Empty>
+      ) : (
+        <Empty action={<LinkButton to="/practice" variant="secondary">Go to Practice</LinkButton>}>
+          This needs about {MIN_TOTAL} questions before it can say what to work on. You have done {attempted}. The daily RC and VA drill make about 12.
+        </Empty>
+      )}
+      {luckyN > 0 && <p className="measure text-base">You got {luckyN === 1 ? "1 answer" : `${luckyN} answers`} right while marked “Not sure”{lucky.length ? `, most in ${lucky[0][0].toLowerCase() === "rc" ? "RC" : lucky[0][0].toLowerCase()}` : ""}. They count in your score, and come back once in your <TextLink to="/practice/redo">redo queue</TextLink> to check the skill is really there.</p>}
+    </Section>
+  );
+}
+
+/** The section's headline numbers, at the top of the Report card tab. */
+function Totals({ sec }: { sec: string }) {
+  const { state } = useStore();
+  const rows = state.practice.filter((p) => p.sec === sec);
+  const totA = rows.reduce((s, x) => s + x.a, 0), totC = rows.reduce((s, x) => s + x.c, 0);
+  return (
+    <div className="grid grid-cols-2 gap-x-4 gap-y-4 rounded-lg bg-card p-5 sm:grid-cols-4 sm:gap-x-8 sm:gap-y-0 sm:p-6">
+      <Stat value={totA} label="Questions done" />
+      <Stat value={totA ? Math.round((totC / totA) * 100) + "%" : "None yet"} label="Accuracy" />
+      <Stat value={state.mocks.filter((m) => m.sec === sec).length} label="Papers and mocks" />
+      <Stat value={state.errors.filter((e) => e.sec === sec).length} label="Errors logged" />
+    </div>
+  );
+}
+
+/** Every number behind Progress's answers and skill map (D63): the "Report card" tab under "All the numbers". */
 export function Report({ sec }: { sec: string }) {
   const { state } = useStore();
   const def = sectionByLabel(sec);
   const varc = sec === "VARC";
   const types = byPracticeType(state.practice, sec, def.practiceTypes);
-  const attempted = types.reduce((s, r) => s + r.attempted, 0);
   const traps = topTraps(state.errors, sec);
   const genres = varc ? rcByGenre(state.rcAttempts, RC_CATALOG) : [];
   const levels = varc ? rcByDifficulty(state.rcAttempts, RC_CATALOG) : [];
   const crKinds = varc ? crByKind(state.crAttempts, CR_CATALOG) : [];
   const pace = paceTrend(state.speedRuns);
-  const lines = varc ? focusLines({ types, genres, traps, pace, examPace: EXAM_PACE, pattern: patterns(state.errors, state.practice, todayIso(), sec)[0] }) : [];
-  const lucky = varc ? luckyGuesses(state) : [];
-  const luckyN = lucky.reduce((s, [, n]) => s + n, 0);
   const habits = summaryHabits(state.summaries);
 
   return (
     <div className="flex flex-col gap-12">
-      {varc && (
-        <Section title="Where to focus" description="Worked out from your practice sets, reading speed tests and Error log.">
-          {lines.length > 0 ? (
-            <ul className="flex flex-col gap-px overflow-hidden rounded-xl bg-background">
-              {lines.map((l, i) => (
-                <li key={l.text} className={cn("relative flex flex-wrap items-center justify-between gap-x-6 gap-y-1 bg-card px-5 py-4 sm:px-6", i === 0 && "before:absolute before:inset-y-0 before:left-0 before:w-1.5 before:bg-highlight")}>
-                  <p className="measure min-w-0 text-base">{l.text}</p>
-                  <TextLink to={l.to}>{l.cta}</TextLink>
-                </li>
-              ))}
-            </ul>
-          ) : attempted >= MIN_TOTAL ? (
-            <Empty>Nothing stands out. Every type, genre and trap is within a few points of the rest, so keep the mix going.</Empty>
-          ) : (
-            <Empty action={<LinkButton to="/practice">Go to Practice</LinkButton>}>
-              The report card needs about {MIN_TOTAL} questions before it can say what to work on. You have done {attempted}. The daily RC and VA drill make about 12.
-            </Empty>
-          )}
-          {luckyN > 0 && <p className="measure text-base">You got {luckyN === 1 ? "1 answer" : `${luckyN} answers`} right while marked “Not sure”{lucky.length ? `, most in ${lucky[0][0].toLowerCase() === "rc" ? "RC" : lucky[0][0].toLowerCase()}` : ""}. They count in your score, and come back once in your <TextLink to="/practice/redo">redo queue</TextLink> to check the skill is really there.</p>}
-        </Section>
-      )}
-
-      {varc && <Fixing />}
-
+      <Totals sec={sec} />
       <Section title="Accuracy" description="Bars under 60% are red. Spend more drill time on those. A group with only a few questions can swing a lot, so check the count.">
         <div className="grid gap-x-12 gap-y-10 rounded-lg bg-card p-5 sm:p-6 md:grid-cols-2">
           <AccuracyList title="By question type" rows={types} empty="No sets yet." link={mistakesLink(state.errors, sec)} />

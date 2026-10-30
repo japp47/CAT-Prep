@@ -408,7 +408,7 @@ The same solved set with one clue changed or dropped; the student says what move
 #### F88. Draw it first — Planned (step 4b or later)
 60 seconds: choose the right skeleton (line, circle, matrix, points table, timeline, Venn, graph) for a set before solving; the chosen skeleton opens as the scratch grid. Trains representation, the step toppers do first.
 
-#### F89. Skill map — Planned (step 4b, after F82 part 1; D51)
+#### F89. Skill map — Building (30 Oct 2026, with Progress v2; D63, `docs/design/progress-v2.md`)
 **Problem.** Progress has accuracy lists, a report card and the clue-reading pattern, but no single picture of where a student stands across every skill, and nothing that says what to practise from it.
 **What the student gets.** One tile per skill (VARC question types, LR set types, kinds of clue; Quant later), in four states with strict rules: not started; learning (fewer than 8 attempts, no verdict yet); weak (8 or more, under 60%); strong (80% or more, and held on redo a week later). A tap opens that skill's drill or guide. Flat first, on Progress; a 3D "city" may become an optional view of the same data only if the map is used, with a flat fallback (D41).
 **Done when** every tile's state follows from recorded attempts by a tested rule, and no tile shows a verdict on too little data.

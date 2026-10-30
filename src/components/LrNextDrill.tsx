@@ -1,7 +1,7 @@
 import type { LrAttempt } from "../lib/state";
 import { useContent } from "../practice/content";
-import { firstMoveStep, moveReason } from "../practice/lrdrill";
-import { CLUE_KIND, kindOfExpr, openCases } from "../practice/lrlogic";
+import { firstMoveSets, firstMoveStep, isGrid, moveReason, openOf } from "../practice/lrdrill";
+import { CLUE_KIND, kindOfExpr } from "../practice/lrlogic";
 import type { LrSet } from "../practice/types";
 import { LinkButton } from "./kit";
 
@@ -19,13 +19,14 @@ export function LrNextDrill({ set, attempt }: { set: LrSet; attempt: LrAttempt }
   const d = content?.lrDrills;
   if (!d) return null;
   const model = d.models.find((m) => m.set === set.id);
+  const firstOk = !!model && firstMoveSets([model]).length > 0;
   const mcc = d.mcc.find((x) => x.set === set.id);
   const back = encodeURIComponent(`/practice/lr/${set.id}?review=${attempt.id}`);
   const rows: { text: string; to: string; cta: string }[] = [];
 
-  if (pm.key && model) {
+  if (pm.key && model && firstOk) {
     const start = firstMoveStep(model, []);
-    const n = openCases(model, [pm.key]);
+    const n = openOf(model, [pm.key]);
     const best = start.counts.filter((c) => c.n === start.best).map((c) => c.clue);
     const ways = (x: number) => (x === 1 ? "1 way" : `${x} ways`);
     rows.push(n === start.best
@@ -33,14 +34,15 @@ export function LrNextDrill({ set, attempt }: { set: LrSet; attempt: LrAttempt }
       : { text: `You opened with clue ${pm.key}, which leaves ${ways(n)}. Clue ${best[0]} leaves ${ways(start.best)}: ${moveReason(model, [], best[0], start.best)}. Practise choosing where to start.`, to: `/practice/first-move?set=${set.id}&back=${back}`, cta: "First move on this set" });
   }
   if (pm.slip === "misread") {
-    const kind = pm.slipClue && model ? kindOfExpr(model.clues[pm.slipClue - 1]) : undefined;
+    // The translator's kinds are seating clues; a grid set's clue has none.
+    const kind = pm.slipClue && model && !isGrid(model) ? kindOfExpr(model.clues[pm.slipClue - 1]) : undefined;
     rows.push(kind
       ? { text: `Clue ${pm.slipClue} is of the kind "${CLUE_KIND[kind].toLowerCase()}". Eight clues of that kind, each read onto a small board, show where the reading slips.`, to: `/practice/clues?kind=${kind}&back=${back}`, cta: `Practise ${CLUE_KIND[kind].toLowerCase()} clues` }
       : { text: "A misread clue is the commonest LR error. Eight clues, each read onto a small board, name the misreading when there is one.", to: `/practice/clues?back=${back}`, cta: "Clue translator" });
   }
   if (pm.slip === "missed-case") {
     rows.push(mcc
-      ? { text: "A missed case usually means a statement was judged from one seating. Sort statements as must, could or cannot across this set's seatings.", to: `/practice/must-could?d=${mcc.id}&back=${back}`, cta: "Must, could, cannot on this set" }
+      ? { text: "A missed case usually means a statement was judged from one case. Sort statements as must, could or cannot across every case this set leaves.", to: `/practice/must-could?d=${mcc.id}&back=${back}`, cta: "Must, could, cannot on this set" }
       : { text: "A missed case usually means a statement was judged from one seating. Practise checking every seating before answering.", to: `/practice/must-could?back=${back}`, cta: "Must, could, cannot" });
   }
   if (!rows.length) return null;
