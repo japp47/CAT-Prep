@@ -17,7 +17,7 @@ import { useFocus } from "../lib/focus";
 import { useGsap } from "../lib/motion";
 import type { AppState } from "../lib/state";
 import { useStore } from "../lib/store";
-import { buildDay, budgetFor, carryInfo, defaultMin, doneMinutes, markBlockDone, type PlacedBlock } from "../planner/engine";
+import { buildDay, budgetFor, carryInfo, defaultMin, doneMinutes, markBlockDone, missedDays, skipCarry, type PlacedBlock } from "../planner/engine";
 import { goFor } from "../planner/go";
 import { siteWork } from "../planner/auto";
 import { daySummary, historyDays } from "../practice/history";
@@ -342,16 +342,20 @@ function BlockRow({ x, d, today, open, onOpen, onSummary }: { x: DayBlock; d: st
 /** The catch-up notices, one per section that has one, with "Skip it". */
 function CarryNotes({ today }: { today: string }) {
   const { state, update } = useStore();
-  const carries = LIVE_SECTIONS.map((sec) => ({ sec, c: carryInfo(sec, state, today) })).filter((x) => x.c);
+  // A catch-up already done today needs no notice.
+  const carries = LIVE_SECTIONS.map((sec) => ({ sec, c: carryInfo(sec, state, today) })).filter((x) => x.c && !x.c.done);
   if (!carries.length) return null;
   return (
     <>
-      {carries.map(({ sec, c }) => (
-        <div key={sec.id} className="flex flex-col items-start gap-2 rounded-xl bg-warning-soft px-4 py-3 text-base sm:flex-row sm:items-center sm:justify-between">
-          <span>{sec.short} catch-up added from {shortDate(c!.date)}: {c!.block.name}.</span>
-          <Button variant="link" size="sm" onClick={() => update((st) => { ((st.days[c!.date] ??= {}).dismiss ??= {})[sec.id] = 1; })}>Skip it</Button>
-        </div>
-      ))}
+      {carries.map(({ sec, c }) => {
+        const older = missedDays(sec, state, today).length - 1;
+        return (
+          <div key={sec.id} className="flex flex-col items-start gap-2 rounded-xl bg-warning-soft px-4 py-3 text-base sm:flex-row sm:items-center sm:justify-between">
+            <span>{sec.short} catch-up added from {shortDate(c!.date)}: {c!.block.name}.{older > 0 ? ` ${older} older missed ${older === 1 ? "day comes" : "days come"} one a day after it.` : ""}</span>
+            <Button variant="link" size="sm" onClick={() => update((st) => skipCarry(st, sec, today))}>{older > 0 ? "Skip them all" : "Skip it"}</Button>
+          </div>
+        );
+      })}
     </>
   );
 }

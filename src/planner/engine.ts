@@ -35,9 +35,14 @@ export function coreOf(sec: SectionDef, st: AppState, d: string): Block | null {
   return templateFor(sec, st, d).base.find((b) => b.pri === 1) ?? null;
 }
 
-/** The most recent core task from the last 7 days that had time planned but was not done. */
-export function carryInfo(sec: SectionDef, st: AppState, today: string): { date: string; block: Block } | null {
+/** A catch-up block's id carries the day it makes up for, so a newer catch-up never inherits an older one's tick. */
+export const carryId = (date: string) => "carry:" + date;
+const CARRY_KEY = /^[a-z]+:carry(?::(\d{4}-\d{2}-\d{2}))?$/;
+
+/** Core tasks from the last 7 days that had time planned and were not done, caught up or skipped; most recent first. */
+export function missedDays(sec: SectionDef, st: AppState, today: string): { date: string; block: Block }[] {
   const from = st.since > START_ISO ? st.since : START_ISO;
+  const out: { date: string; block: Block }[] = [];
   for (let i = 1; i <= 7; i++) {
     const d = addDays(today, -i);
     if (d < from) break;
@@ -47,9 +52,29 @@ export function carryInfo(sec: SectionDef, st: AppState, today: string): { date:
     if (rec.carried?.[sec.id] || rec.dismiss?.[sec.id]) continue;
     if (budgetFor(sec, st, d) < core.mm) continue;
     if (rec.done?.[doneKey(sec, core.id)]) continue;
-    return { date: d, block: core };
+    out.push({ date: d, block: core });
   }
-  return null;
+  return out;
+}
+
+/**
+ * Today's catch-up: one a day at most. Once today's is done it stays on the day, ticked (`done`), and no older missed
+ * day follows it until tomorrow; otherwise it is the most recent missed core task. A catch-up ticked before ids
+ * carried their date also counts as today's, though its day is unknown, so none is shown.
+ */
+export function carryInfo(sec: SectionDef, st: AppState, today: string): { date: string; block: Block; done?: true } | null {
+  for (const k of Object.keys(st.days[today]?.done ?? {})) {
+    const m = CARRY_KEY.exec(k);
+    if (!m || !k.startsWith(sec.id + ":")) continue;
+    const block = m[1] ? coreOf(sec, st, m[1]) : null;
+    return block ? { date: m[1], block, done: true } : null;
+  }
+  return missedDays(sec, st, today)[0] ?? null;
+}
+
+/** "Skip it" on a catch-up: every missed day still owed is let go, so an older one does not take its place. */
+export function skipCarry(st: AppState, sec: SectionDef, today: string): void {
+  missedDays(sec, st, today).forEach(({ date }) => { ((st.days[date] ??= {}).dismiss ??= {})[sec.id] = 1; });
 }
 
 /**
@@ -64,7 +89,7 @@ export function buildDay(sec: SectionDef, st: AppState, d: string, budget: numbe
   const carry = !opts.noCarry && d === opts.today ? carryInfo(sec, st, opts.today) : null;
   if (carry) {
     base.splice(1, 0, {
-      ...carry.block, id: "carry", carryFrom: carry.date, pri: 1.5, ord: 1.5,
+      ...carry.block, id: carryId(carry.date), carryFrom: carry.date, pri: 1.5, ord: 1.5,
       name: "Catch up: " + carry.block.name, desc: "Missed on " + shortDate(carry.date) + ". " + carry.block.desc,
     });
   }

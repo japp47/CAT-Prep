@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Page, PageHeader, Segmented, Stat } from "../components/kit";
+import { ArrowLink, Page, PageHeader, Segmented, Stat } from "../components/kit";
 import { usePref } from "../lib/prefs";
 import { useStore } from "../lib/store";
 import { SECTIONS, sectionByLabel } from "../sections";
+import { arenaTrend } from "../practice/arena";
 import { Log } from "./tracker/Log";
 import { Mocks } from "./tracker/Mocks";
 import { Report } from "./tracker/Report";
@@ -27,6 +28,7 @@ export default function Progress() {
   const rows = state.practice.filter((p) => p.sec === sec);
   const totA = rows.reduce((s, x) => s + x.a, 0), totC = rows.reduce((s, x) => s + x.c, 0);
   const papers = state.mocks.filter((m) => m.sec === sec).length;
+  const arena = arenaTrend(state.arenaRounds, state.lrAttempts);
 
   return (
     <Page>
@@ -41,6 +43,9 @@ export default function Progress() {
           <Stat value={state.errors.filter((e) => e.sec === sec).length} label="Errors logged" />
         </div>
         {def.short === "VARC" && <ThreeAnswers />}
+        {def.short === "DILR" && arena && (
+          <p className="measure text-base">Set selection: over {arena.rounds} Arena rounds, your earlier picks earned at least as much a minute as your later ones <b className="font-semibold">{arena.pct}%</b> of the time. <ArrowLink to="/practice/arena">Play a round</ArrowLink></p>
+        )}
       </div>
 
       <Tabs value={tab} onValueChange={(v) => setTab(v as Tab)} className="gap-8">

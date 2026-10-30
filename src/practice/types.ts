@@ -238,7 +238,8 @@ export interface LrSet {
   questions: LrQuestion[];
   solution: { steps: string[]; grid?: LrTable; cases?: number; diagram?: LrDiagram };
 }
-export interface LrMeta { id: string; title: string; type: LrType; sub?: string; difficulty: Difficulty; minutes: number; questions: number; since: string; v: string }
+/** apart: each question is its own short puzzle (no shared clues or tables), so the set is not a CAT-style set for the Arena. */
+export interface LrMeta { id: string; title: string; type: LrType; sub?: string; difficulty: Difficulty; minutes: number; questions: number; since: string; v: string; apart?: true }
 
 /**
  * A short fingerprint (32-bit FNV-1a, 8 hex digits) of what decides an answer. Not for security; it only has to change
@@ -274,6 +275,7 @@ export const lrVersion = (s: LrSet) => contentHash([s.intro, s.clues, s.tables ?
 export function lrMeta(s: LrSet): LrMeta {
   const m: LrMeta = { id: s.id, title: s.title, type: s.type, difficulty: s.difficulty, minutes: s.minutes, questions: s.questions.length, since: s.since, v: lrVersion(s) };
   if (s.sub) m.sub = s.sub;
+  if (!s.clues.length && !s.tables?.length) m.apart = true;
   return m;
 }
 export const crMeta = (c: CrItem): CrMeta => ({ id: c.id, type: c.type, difficulty: c.difficulty, topic: c.topic, v: contentHash(c) });

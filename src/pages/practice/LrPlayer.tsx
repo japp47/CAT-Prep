@@ -110,56 +110,135 @@ function Fold({ title, open, onOpenChange, children }: { title: string; open: bo
   );
 }
 
-interface LrDraft { ans: (number | string | null)[]; marked: boolean[]; unsure: boolean[]; cur: number; secs: number; scratch?: string[][]; notes?: string }
+/** Where a student is in one set: answers, marks, "not sure" flags, the scratch pad, notes and the open question. */
+export interface LrWork { ans: (number | string | null)[]; marked: boolean[]; unsure: boolean[]; scratch: string[][]; notes: string; cur: number }
+interface LrDraft extends Partial<LrWork> { ans: (number | string | null)[]; secs: number }
+
+/** The scratch pad's picture: none when the blank layout would give the answer away (a family tree, a map; D53). */
+const padOf = (set: LrSet) => (set.solution.diagram?.pad === false ? undefined : set.solution.diagram);
+export const blankWork = (set: LrSet): LrWork => {
+  const n = set.questions.length, g = padOf(set);
+  return { ans: Array(n).fill(null), marked: Array(n).fill(false), unsure: Array(n).fill(false), scratch: g ? blankScratch(g) : [], notes: "", cur: 0 };
+};
+const isBlank = (a: number | string | null) => a === null || a === "";
+export const answered = (w: LrWork) => w.ans.filter((a) => !isBlank(a)).length;
+
+/**
+ * Solving one set: the story and clues on one side, the pad, palette and question on the other. The caller keeps the
+ * work, the clock and the submit, so the LR player and the Arena (five sets under one clock) share it. `last` is the
+ * button at the last question.
+ */
+export function LrSolve({ set, work, onChange, pane, setPane, last }: {
+  set: LrSet; work: LrWork; onChange: (w: LrWork) => void; pane: "p" | "q"; setPane: (p: "p" | "q") => void; last: ReactNode;
+}) {
+  const n = set.questions.length;
+  const g = padOf(set);
+  const [padOpen, setPadOpen] = usePref("lrPad", true);
+  const { ans, marked, unsure, scratch, notes, cur } = work;
+  const set1 = (patch: Partial<LrWork>) => onChange({ ...work, ...patch });
+  const at = <T,>(xs: T[], v: T) => xs.map((x, i) => (i === cur ? v : x));
+  const setCur = (c: number) => set1({ cur: c });
+  const q = set.questions[cur];
+  const numeric = q.kind === "tita" && /^-?\d+(\.\d+)?$/.test(String(q.answer));
+
+  return (
+    <>
+      <PaneSwitch pane={pane} setPane={setPane} q={`Question ${cur + 1} of ${n}`} p="Set" />
+
+      <Split pane={pane}>
+        <SetText set={set} />
+        <>
+          <Fold title={g ? "Scratch pad" : "Notes"} open={padOpen} onOpenChange={setPadOpen}>
+            <div className="flex flex-col gap-3">
+              <p className="text-sm text-muted-foreground">{padHint(g)} Only you see it, and it is kept with your answers.</p>
+              {g && <LrScratch g={g} value={scratch} onChange={(v) => set1({ scratch: v })} />}
+              <Textarea aria-label="Your notes" value={notes} onChange={(e) => set1({ notes: e.target.value.slice(0, 2000) })} rows={g ? 2 : 4}
+                placeholder={g ? "Cases, totals, anything else" : "Your working: fields, pairings, totals"} className="bg-secondary text-base" />
+              <Button variant="ghost" size="sm" className="self-start" disabled={!notes && scratch.every((r) => r.every((x) => !x))}
+                onClick={() => set1({ scratch: g ? blankScratch(g) : [], notes: "" })}>Clear the pad</Button>
+            </div>
+          </Fold>
+          <div className="flex flex-wrap gap-2" role="group" aria-label="Questions">
+            {set.questions.map((_, i) => {
+              const s = marked[i] ? (!isBlank(ans[i]) ? "doneMarked" : "marked") : !isBlank(ans[i]) ? "done" : "unseen";
+              return <PaletteCell key={i} n={i + 1} state={s} current={i === cur} onClick={() => { setCur(i); setPane("q"); }} label={`Question ${i + 1}, ${isBlank(ans[i]) ? "not answered" : "answered"}${marked[i] ? ", marked" : ""}`} />;
+            })}
+          </div>
+          <div className="flex flex-col gap-4">
+            <p className="text-sm text-muted-foreground">Question {cur + 1} of {n}, {q.kind === "mcq" ? "choose one" : "type your answer (no negative marking)"}</p>
+            <p className="text-lg leading-snug font-semibold whitespace-pre-line">{q.stem}</p>
+            {q.kind === "mcq" ? (
+              <ChoiceGroup label={"Options for question " + (cur + 1)}>
+                {q.options!.map((o, i) => <Choice key={i} mark={LETTERS[i]} checked={ans[cur] === i} onClick={() => set1({ ans: at(ans, i) })}>{o}</Choice>)}
+              </ChoiceGroup>
+            ) : (
+              <form className="flex flex-wrap items-center gap-2" onSubmit={(e) => { e.preventDefault(); if (cur < n - 1) setCur(cur + 1); }}>
+                <Input
+                  key={set.id + cur} aria-label={`Your answer to question ${cur + 1}`} autoComplete="off" spellCheck={false}
+                  inputMode={numeric ? "decimal" : "text"} className="w-44 bg-card text-lg font-semibold"
+                  value={typeof ans[cur] === "string" ? (ans[cur] as string) : ""} onChange={(e) => set1({ ans: at<number | string | null>(ans, e.target.value.slice(0, 20)) })} placeholder="Answer"
+                />
+              </form>
+            )}
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+              <div className="flex flex-wrap gap-2">
+                <Button variant="ghost" size="sm" onClick={() => set1({ ans: at(ans, null) })} disabled={isBlank(ans[cur])}>Clear</Button>
+                <Button variant="ghost" size="sm" aria-pressed={marked[cur]} onClick={() => set1({ marked: at(marked, !marked[cur]) })}>{marked[cur] ? "Unmark" : "Mark for review"}</Button>
+                <NotSure on={unsure[cur]} onChange={(v) => set1({ unsure: at(unsure, v) })} />
+              </div>
+              <div className="flex gap-2">
+                <Button variant="secondary" size="sm" disabled={cur === 0} onClick={() => setCur(cur - 1)}>Previous</Button>
+                {cur < n - 1 ? <Button size="sm" onClick={() => setCur(cur + 1)}>Next</Button> : last}
+              </div>
+            </div>
+          </div>
+        </>
+      </Split>
+      {pane === "p" && <PaneJump onClick={() => setPane("q")}>Question {cur + 1} of {n}</PaneJump>}
+    </>
+  );
+}
 
 function Attempt({ set, onDone }: { set: LrSet; onDone: (id: string) => void }) {
   const { update } = useStore();
   const leave = useLeaveConfirmation(true);
   const n = set.questions.length;
-  // A picture that would give the answer away blank (a family tree, a map of the walks) leaves only notes (D53).
-  const g = set.solution.diagram?.pad === false ? undefined : set.solution.diagram;
   const target = set.minutes * 60;
   const draftKey = "lr:" + set.id;
   const [saved] = useState(() => { const d = readDraft<LrDraft>(draftKey); return d && d.ans?.length === n ? d : null; });
-  const [ans, setAns] = useState<(number | string | null)[]>(saved?.ans ?? Array(n).fill(null));
-  const [marked, setMarked] = useState<boolean[]>(saved?.marked ?? Array(n).fill(false));
-  const [unsure, setUnsure] = useState<boolean[]>(saved?.unsure?.length === n ? saved.unsure : Array(n).fill(false));
-  const [scratch, setScratch] = useState<string[][]>(() => saved?.scratch ?? (g ? blankScratch(g) : []));
-  const [notes, setNotes] = useState(saved?.notes ?? "");
-  const [cur, setCur] = useState(saved?.cur ?? 0);
+  const [work, setWork] = useState<LrWork>(() => {
+    const w = blankWork(set);
+    if (!saved) return w;
+    return { ...w, ans: saved.ans, marked: saved.marked ?? w.marked, unsure: saved.unsure?.length === n ? saved.unsure : w.unsure, scratch: saved.scratch ?? w.scratch, notes: saved.notes ?? "", cur: saved.cur ?? 0 };
+  });
   const [pane, setPane] = useState<"p" | "q">("p");
   const [confirming, setConfirming] = useState(false);
-  const [padOpen, setPadOpen] = usePref("lrPad", true);
   const [hideTimer, setHideTimer] = usePref("rcHideTimer", false);
   const [startAt] = useState(() => Date.now() - (saved?.secs ?? 0) * 1000);
   const submitted = useRef(false);
-  const draftRef = useRef<LrDraft>({ ans, marked, unsure, cur, secs: 0, scratch, notes });
-  draftRef.current = { ans, marked, unsure, cur, secs: 0, scratch, notes };
+  const workRef = useRef(work);
+  workRef.current = work;
 
   // Kept on every change, and on leaving the page, so a reload or a phone switching apps comes back to the same place.
   useEffect(() => {
-    if (!submitted.current) writeDraft(draftKey, { ans, marked, unsure, cur, scratch, notes, secs: (Date.now() - startAt) / 1000 } satisfies LrDraft);
-  }, [draftKey, ans, marked, unsure, cur, scratch, notes, startAt]);
+    if (!submitted.current) writeDraft(draftKey, { ...work, secs: (Date.now() - startAt) / 1000 } satisfies LrDraft);
+  }, [draftKey, work, startAt]);
   useEffect(() => {
-    const keep = () => { if (!submitted.current) writeDraft(draftKey, { ...draftRef.current, secs: (Date.now() - startAt) / 1000 }); };
+    const keep = () => { if (!submitted.current) writeDraft(draftKey, { ...workRef.current, secs: (Date.now() - startAt) / 1000 } satisfies LrDraft); };
     window.addEventListener("pagehide", keep);
     return () => { window.removeEventListener("pagehide", keep); keep(); };
   }, [draftKey, startAt]);
 
-  const q = set.questions[cur];
-  const setAt = <T,>(f: (fn: (xs: T[]) => T[]) => void, v: T) => f((xs) => xs.map((x, i) => (i === cur ? v : x)));
   const submit = () => {
     const id = uid();
     submitted.current = true;
     writeDraft(draftKey, null);
-    update((st) => recordLr(st, id, set, ans, (Date.now() - startAt) / 1000, todayIso(), unsure.flatMap((u, i) => (u ? [i] : [])), Date.now()));
+    update((st) => recordLr(st, id, set, work.ans, (Date.now() - startAt) / 1000, todayIso(), work.unsure.flatMap((u, i) => (u ? [i] : [])), Date.now()));
     setConfirming(false);
     leave.allowNextNavigation();
     onDone(id);
   };
-  const blank = (a: number | string | null) => a === null || a === "";
-  const blanks = ans.filter(blank).length;
-  const numeric = q.kind === "tita" && /^-?\d+(\.\d+)?$/.test(String(q.answer));
+  const blanks = n - answered(work);
 
   return (
     <Page className="gap-6 lg:gap-8">
@@ -172,58 +251,7 @@ function Attempt({ set, onDone }: { set: LrSet; onDone: (id: string) => void }) 
       <TimeUp startAt={startAt} target={target} onSubmit={submit} />
       {saved && <p className="text-sm text-muted-foreground">Your saved answers and notes are back. The timer paused while you were away ({fmtSecs(saved.secs)} elapsed).</p>}
 
-      <PaneSwitch pane={pane} setPane={setPane} q={`Question ${cur + 1} of ${n}`} p="Set" />
-
-      <Split pane={pane}>
-        <SetText set={set} />
-        <>
-          <Fold title={g ? "Scratch pad" : "Notes"} open={padOpen} onOpenChange={setPadOpen}>
-            <div className="flex flex-col gap-3">
-              <p className="text-sm text-muted-foreground">{padHint(g)} Only you see it, and it is kept with your answers.</p>
-              {g && <LrScratch g={g} value={scratch} onChange={setScratch} />}
-              <Textarea aria-label="Your notes" value={notes} onChange={(e) => setNotes(e.target.value.slice(0, 2000))} rows={g ? 2 : 4}
-                placeholder={g ? "Cases, totals, anything else" : "Your working: fields, pairings, totals"} className="bg-secondary text-base" />
-              <Button variant="ghost" size="sm" className="self-start" disabled={!notes && scratch.every((r) => r.every((x) => !x))}
-                onClick={() => { if (g) setScratch(blankScratch(g)); setNotes(""); }}>Clear the pad</Button>
-            </div>
-          </Fold>
-          <div className="flex flex-wrap gap-2" role="group" aria-label="Questions">
-            {set.questions.map((_, i) => {
-              const s = marked[i] ? (!blank(ans[i]) ? "doneMarked" : "marked") : !blank(ans[i]) ? "done" : "unseen";
-              return <PaletteCell key={i} n={i + 1} state={s} current={i === cur} onClick={() => { setCur(i); setPane("q"); }} label={`Question ${i + 1}, ${blank(ans[i]) ? "not answered" : "answered"}${marked[i] ? ", marked" : ""}`} />;
-            })}
-          </div>
-          <div className="flex flex-col gap-4">
-            <p className="text-sm text-muted-foreground">Question {cur + 1} of {n}, {q.kind === "mcq" ? "choose one" : "type your answer (no negative marking)"}</p>
-            <p className="text-lg leading-snug font-semibold whitespace-pre-line">{q.stem}</p>
-            {q.kind === "mcq" ? (
-              <ChoiceGroup label={"Options for question " + (cur + 1)}>
-                {q.options!.map((o, i) => <Choice key={i} mark={LETTERS[i]} checked={ans[cur] === i} onClick={() => setAt(setAns, i)}>{o}</Choice>)}
-              </ChoiceGroup>
-            ) : (
-              <form className="flex flex-wrap items-center gap-2" onSubmit={(e) => { e.preventDefault(); if (cur < n - 1) setCur(cur + 1); }}>
-                <Input
-                  key={cur} aria-label={`Your answer to question ${cur + 1}`} autoComplete="off" spellCheck={false}
-                  inputMode={numeric ? "decimal" : "text"} className="w-44 bg-card text-lg font-semibold"
-                  value={typeof ans[cur] === "string" ? (ans[cur] as string) : ""} onChange={(e) => setAt(setAns, e.target.value.slice(0, 20))} placeholder="Answer"
-                />
-              </form>
-            )}
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-              <div className="flex flex-wrap gap-2">
-                <Button variant="ghost" size="sm" onClick={() => setAt(setAns, null)} disabled={blank(ans[cur])}>Clear</Button>
-                <Button variant="ghost" size="sm" aria-pressed={marked[cur]} onClick={() => setAt(setMarked, !marked[cur])}>{marked[cur] ? "Unmark" : "Mark for review"}</Button>
-                <NotSure on={unsure[cur]} onChange={(v) => setAt(setUnsure, v)} />
-              </div>
-              <div className="flex gap-2">
-                <Button variant="secondary" size="sm" disabled={cur === 0} onClick={() => setCur(cur - 1)}>Previous</Button>
-                {cur < n - 1 ? <Button size="sm" onClick={() => setCur(cur + 1)}>Next</Button> : <Button size="sm" onClick={() => setConfirming(true)}>Submit set</Button>}
-              </div>
-            </div>
-          </div>
-        </>
-      </Split>
-      {pane === "p" && <PaneJump onClick={() => setPane("q")}>Question {cur + 1} of {n}</PaneJump>}
+      <LrSolve set={set} work={work} onChange={setWork} pane={pane} setPane={setPane} last={<Button size="sm" onClick={() => setConfirming(true)}>Submit set</Button>} />
 
       <Confirm open={confirming} onOpenChange={setConfirming} title="Submit this set?" action="Submit set" onAction={submit}>
         {blanks ? `${blanks} question${blanks > 1 ? "s are" : " is"} unanswered. Blanks score 0, a wrong MCQ costs 1 mark and a wrong typed answer costs nothing.` : "All questions answered."}

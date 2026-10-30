@@ -75,6 +75,17 @@ export interface LrPostMortem { key?: number; time?: LrTimeSink; slip?: LrSlip; 
  * set it used; each item is one clue, statement or move, and miss names the misreading a wrong clue matched.
  */
 export interface LrDrillRun { id: string; d: string; kind: "clue" | "mcc" | "first"; ref?: string; items: { k: string; ok: boolean; miss?: string }[]; secs: number }
+/**
+ * One Set Selection Arena round (F56, docs/design/arena.md): five sets dealt (A to E), the order the student picked and
+ * the sets they left, their optional guesses, the seconds spent looking, each visit to a set as [set, from, to] in
+ * seconds from the round's start, and the LrAttempt id of every set they answered. replay marks a round of sets tried
+ * before, which does not count towards selection accuracy. Saved once, at submit.
+ */
+export interface ArenaRound {
+  id: string; d: string; updatedAt: number; sets: string[]; order: string[]; left: string[];
+  guess: Record<string, ArenaGuess>; look: number; visits: [string, number, number][]; attempts: Record<string, string>; secs: number; replay?: boolean;
+}
+export interface ArenaGuess { min?: number; right?: number }
 /** One reading speed test. recall is the number of recall questions answered correctly, out of 2. */
 export interface SpeedRun { id: string; d: string; set: string; words: number; secs: number; wpm: number; recall: number }
 /**
@@ -150,6 +161,7 @@ export interface AppState {
   crAttempts: CrAttempt[];
   lrAttempts: LrAttempt[];
   lrDrills: LrDrillRun[];
+  arenaRounds: ArenaRound[];
   speedRuns: SpeedRun[];
   redo: RedoItem[];
   sectionals: SectionalAttempt[];
@@ -177,7 +189,7 @@ const emptyDow = () => [null, null, null, null, null, null, null] as (number | n
 export function blankState(): AppState {
   const settings = {} as Record<SectionId, TimeSettings>;
   SECTION_IDS.forEach((id) => (settings[id] = { ...DEFAULT_TIME[id], dow: emptyDow() }));
-  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], crAttempts: [], lrAttempts: [], lrDrills: [], speedRuns: [], redo: [], sectionals: [], summaries: [], mockReviews: [], recs: [], weekReviews: [], redoSeeded: true, lrRedoSeeded: true, targets: { varc: DEFAULT_TARGET }, about: {} };
+  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], crAttempts: [], lrAttempts: [], lrDrills: [], arenaRounds: [], speedRuns: [], redo: [], sectionals: [], summaries: [], mockReviews: [], recs: [], weekReviews: [], redoSeeded: true, lrRedoSeeded: true, targets: { varc: DEFAULT_TARGET }, about: {} };
 }
 
 type Obj = Record<string, unknown>;
@@ -282,6 +294,27 @@ export function normalize(raw: unknown): AppState {
     ...(typeof x.ref === "string" && x.ref ? { ref: x.ref } : {}),
     items: list(x.items, (i) => ({ k: str(i.k), ok: !!i.ok, ...(typeof i.miss === "string" && i.miss ? { miss: i.miss } : {}) })),
   })).filter((x) => x.id && x.items.length);
+  b.arenaRounds = list(raw.arenaRounds, (x): ArenaRound => {
+    const ids = (v: unknown) => (Array.isArray(v) ? v.filter((s): s is string => typeof s === "string" && !!s) : []);
+    const guess: Record<string, ArenaGuess> = {};
+    if (isObj(x.guess)) Object.entries(x.guess).forEach(([k, g]) => {
+      if (!isObj(g)) return;
+      const o: ArenaGuess = {};
+      if (Number.isFinite(g.min) && (g.min as number) > 0) o.min = g.min as number;
+      if (Number.isInteger(g.right) && (g.right as number) >= 0) o.right = g.right as number;
+      guess[k] = o;
+    });
+    const attempts: Record<string, string> = {};
+    if (isObj(x.attempts)) Object.entries(x.attempts).forEach(([k, v]) => { if (typeof v === "string" && v) attempts[k] = v; });
+    const visits = (Array.isArray(x.visits) ? x.visits : []).filter((v: unknown): v is [string, number, number] =>
+      Array.isArray(v) && typeof v[0] === "string" && Number.isFinite(v[1]) && Number.isFinite(v[2]) && v[2] >= v[1]);
+    const r: ArenaRound = {
+      id: str(x.id), d: str(x.d), updatedAt: num(x.updatedAt), sets: ids(x.sets), order: ids(x.order), left: ids(x.left),
+      guess, look: num(x.look), visits, attempts, secs: num(x.secs),
+    };
+    if (x.replay === true) r.replay = true;
+    return r;
+  }).filter((r) => r.id && isIsoDate(r.d) && r.sets.length > 0);
   b.speedRuns = list(raw.speedRuns, (x) => ({ id: str(x.id), d: str(x.d), set: str(x.set), words: num(x.words), secs: num(x.secs), wpm: num(x.wpm), recall: clamp(num(x.recall), 0, 2) }));
   b.sectionals = list(raw.sectionals, (x) => ({
     id: str(x.id), d: str(x.d), secs: num(x.secs), c: num(x.c), w: num(x.w), updatedAt: num(x.updatedAt),

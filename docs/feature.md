@@ -440,8 +440,9 @@ Before re-solving an RC question from the Error log or the redo queue, a three-l
 ### Thinking practice in DILR and Quant (23 Oct 2026; built with steps 4 and 5)
 These are what make the DILR and Quant sections ours rather than another question bank. Review and reasons: `docs/research/beyond-cat.md`.
 
-#### F56. Set Selection Arena (DILR) — Planned (step 4)
+#### F56. Set Selection Arena (DILR) — Planned (step 4a.9; design `docs/design/arena.md`, D58 to D62)
 **Problem.** Students who solve sets well still lose marks by picking the wrong ones: a set that looks easy turns into casework, a doable one is skipped. Nothing trains or measures this choice.
+**Revised 30 Oct 2026:** five sets, not four (CAT 2024 and 2025 had five DILR sets per slot); the look is inside the 40 minutes, with a nudge at 4; no "most students" until real aggregates exist; no counterfactual marks, only recorded time. The bullets below are the first version; the design doc wins where they differ.
 **What the student gets.**
 - A round shows four unseen sets. Two minutes to look, then rank them and guess each one's time and marks.
 - They solve under the clock (40 minutes for the round, as in the exam's DILR section) and may switch sets at any time.
