@@ -46,6 +46,17 @@ Sets that are not seatings (team selection, truth-tellers and liars, a league) a
 
 The test solves each grid model and checks its number of cases against the set's `solution.cases`, and the case against the set's final table where it has one. Must-could-cannot statements on a grid set are written in the same conditions. First move runs only on sets with more clues than moves.
 
+## `replay.json`: DILR Replay sets (F57, D66)
+
+One object per set, at `/practice/replay/<id>`:
+
+- `id` (`rp-…`), `format` (`scheduling`, `grouping` or `tournament`), `title`, `skill` (a few words, sentence case), `intro` (paragraphs), `clues` (sentences).
+- `set`: the LR set it replays, when it is one; then `intro` and `clues` must equal that set's, and `REPLAY_OF_SET` in `practice/replay.ts` must list it (tests check both).
+- `model`: a grid model without `set` (as in `models.json`). Each `vars` group is one grid on the board: `title` heads it, `rows` names its rows (else the names), `labels` its columns. Groups whose names are all in one `distinct` group are one-each grids, so a tick crosses its column too. A `league` shows as a list of matches.
+- `steps`: the worked solution, each `{ "use": [clue numbers], "say": "what a topper writes" }`, in the order a topper would go (anchors first). Every clue is used exactly once across the steps, and the count must fall at every step.
+
+Tests (`practice/replay.test.ts`): exactly one answer; dropping any clue leaves more than one (every clue is needed); the steps' counts fall to 1. To write a new set, pick the answer, write a pool of true clues, and search the pool for sets with one answer where every clue is needed; then write the steps from the counts the solver gives.
+
 ## `clues.json`: the clue translator
 
 Ids start with their kind: `oi` only if, `un` unless, `if` if and only if, `ei` either/or, `co` exactly/at least/at most, `im` immediately or somewhere, `bw` between, `fa` facing. At least ten of each.

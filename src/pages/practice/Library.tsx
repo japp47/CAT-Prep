@@ -10,7 +10,7 @@ import { Empty, LinkButton, Meta, Page, PageHeader } from "../../components/kit"
 import { NativeSelect } from "../../components/Select";
 import { RC_CATALOG } from "../../practice/catalog.gen";
 import { DAILY_EPOCH, dayNumber, rcOfDay } from "../../practice/daily";
-import { GENRES, type Genre, type RcMeta } from "../../practice/types";
+import { GENRES, RC_PACKS, type Genre, type RcMeta, type RcPack } from "../../practice/types";
 
 interface Best { best: number; last: RcAttempt }
 
@@ -38,7 +38,7 @@ function Row({ set, label, best }: { set: RcMeta; label?: string; best?: Best })
       <div className="flex min-w-0 flex-col gap-0.5">
         {label && <span className="text-sm text-muted-foreground">{label}</span>}
         <Link to={`/practice/rc/${set.id}`} className="text-base font-semibold text-pretty hover:text-primary">{set.title}</Link>
-        <Meta>{GENRES[set.genre]}, {set.difficulty}, {set.words} words{best ? `. Best ${best.best > 0 ? "+" : ""}${best.best} of ${3 * set.questions}` : ""}</Meta>
+        <Meta>{set.pack ? RC_PACKS[set.pack].label + ", " : ""}{GENRES[set.genre]}, {set.difficulty}, {set.words} words{best ? `. Best ${best.best > 0 ? "+" : ""}${best.best} of ${3 * set.questions}` : ""}</Meta>
       </div>
       <div className="flex flex-col-reverse items-stretch gap-1 sm:flex-row sm:items-center sm:gap-2">
         {best && <LinkButton to={`/practice/rc/${set.id}?review=${best.last.id}`} variant="ghost" size="sm">Review</LinkButton>}
@@ -56,10 +56,12 @@ export default function Library() {
   const [genre, setGenre] = usePref<Genre | "all">("libGenre", "all");
   const [diff, setDiff] = usePref<"all" | "easy" | "medium" | "hard">("libDiff", "all");
   const [attempted, setAttempted] = usePref<"all" | "tried" | "untried">("libAttempted", "all");
+  const [pack, setPack] = usePref<RcPack | "all">("libPack", "all");
   const bests = useBest();
   const tried = new Set(bests.keys());
   const lib = RC_CATALOG.filter((s) =>
     (genre === "all" || s.genre === genre) &&
+    (pack === "all" || s.pack === pack) &&
     (diff === "all" || s.difficulty === diff) &&
     (attempted === "all" || (attempted === "tried" ? tried.has(s.id) : !tried.has(s.id)))
   );
@@ -80,6 +82,10 @@ export default function Library() {
             <NativeSelect aria-label="Genre" value={genre} onChange={(e) => setGenre(e.target.value as Genre | "all")} className="w-auto min-w-52">
               <option value="all">All genres</option>
               {(Object.keys(GENRES) as Genre[]).map((g) => <option key={g} value={g}>{GENRES[g]}</option>)}
+            </NativeSelect>
+            <NativeSelect aria-label="Collection" value={pack} onChange={(e) => setPack(e.target.value as RcPack | "all")} className="w-auto min-w-48">
+              <option value="all">All collections</option>
+              {(Object.keys(RC_PACKS) as RcPack[]).map((k) => <option key={k} value={k}>{RC_PACKS[k].label}</option>)}
             </NativeSelect>
             <NativeSelect aria-label="Practice status" value={attempted} onChange={(e) => setAttempted(e.target.value as typeof attempted)} className="w-auto min-w-44">
               <option value="all">All passages</option>

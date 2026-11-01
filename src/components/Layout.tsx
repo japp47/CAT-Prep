@@ -15,7 +15,7 @@ import Brand from "./Brand";
 import SiteFooter from "./SiteFooter";
 import { DataNote, SyncNavRow } from "./SyncNav";
 import SiteHeader, { PRACTICE_PATH, SiteNavLink } from "./SiteHeader";
-import { NAV_GROUPS, SidebarNav } from "./Sidebar";
+import { SidebarNav } from "./Sidebar";
 import ThemeToggle, { type Theme as ThemeValue } from "./ThemeToggle";
 const SearchPalette = lazy(() => import("./SearchPalette"));
 
@@ -49,6 +49,8 @@ const BOTTOM_BAR = "fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t bg-c
 
 // The phone menu loads on first use; loadMenu fetches it early (on idle, or when a finger lands on a menu button).
 const loadMenu = () => import("./MenuSheet");
+const loadAllPages = () => import("./AllPages");
+const AllPages = lazy(loadAllPages);
 const MenuSheet = lazy(loadMenu);
 
 // Toasts only follow an action, so their code loads after the page.
@@ -127,7 +129,8 @@ export default function Layout() {
     <div className={cn("min-h-dvh", !landing && "lg:grid", !landing && (sidebarCollapsed ? "lg:grid-cols-[72px_minmax(0,1fr)]" : "lg:grid-cols-[288px_minmax(0,1fr)]"))}>
       <a href="#main" className="sr-only z-50 rounded-md bg-card px-3 py-2 focus:not-sr-only focus:fixed focus:top-2 focus:left-2">Skip to content</a>
 
-      <SiteHeader landing={landing} groups={NAV_GROUPS} open={open} onOpenChange={setOpen} onLoadMenu={loadMenu} onOpenMenu={openMenu} onOpenSearch={openSearch} />
+      <SiteHeader landing={landing} open={open} onLoadPanel={loadAllPages}
+        panel={<Suspense fallback={null}><AllPages onClose={() => setOpen(false)} /></Suspense>} onOpenChange={setOpen} onLoadMenu={loadMenu} onOpenMenu={openMenu} onOpenSearch={openSearch} />
 
       <aside className={cn("sticky top-0 hidden h-dvh flex-col gap-6 overflow-y-auto overscroll-contain bg-sidebar pt-6 pb-6", !landing && "lg:flex", sidebarCollapsed ? "items-center px-2" : "px-5")}>
         <div className={cn("flex w-full items-center", sidebarCollapsed ? "flex-col gap-4" : "justify-between gap-2 px-1")}>

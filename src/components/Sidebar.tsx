@@ -9,7 +9,7 @@ import { useStore } from "../lib/store";
 import { buildDay, budgetFor, doneMinutes } from "../planner/engine";
 import { LIVE_SECTIONS, SECTIONS } from "../sections";
 import { IconChart, IconClock, IconHistory, IconHome, IconJournal, IconMistake, IconPen, IconRedo, IconToday, IconWeek, IconWords } from "./Icons";
-import { PRACTICE_PATH, SiteNavLink, type SiteNavGroup, type SiteNavItem } from "./SiteHeader";
+import { PRACTICE_PATH, SiteNavLink, type SiteNavItem } from "./SiteHeader";
 
 /**
  * The sidebar, version 2 (D65, docs/design/sidebar-v2.md): the places used every day with icons and what is waiting
@@ -19,16 +19,16 @@ import { PRACTICE_PATH, SiteNavLink, type SiteNavGroup, type SiteNavItem } from 
  */
 
 type Badge = "today" | "redo";
-interface Item extends SiteNavItem { Icon: () => ReactNode; badge?: Badge }
+export interface Item extends SiteNavItem { Icon: () => ReactNode; badge?: Badge }
 
-const MAIN: Item[] = [
+export const MAIN: Item[] = [
   { to: "/", label: "Home", end: true, Icon: IconHome },
   { to: "/today", label: "Today", Icon: IconToday, badge: "today" },
   { to: "/practice", label: "Practice", match: PRACTICE_PATH, Icon: IconPen },
   { to: "/progress", label: "Progress", Icon: IconChart },
   { to: "/plan", label: "Plan and time", Icon: IconClock },
 ];
-const TRACK: Item[] = [
+export const TRACK: Item[] = [
   { to: "/practice/redo", label: "Redo queue", Icon: IconRedo, badge: "redo" },
   { to: "/errors", label: "Error log", Icon: IconMistake },
   { to: "/history", label: "History", Icon: IconHistory },
@@ -36,25 +36,17 @@ const TRACK: Item[] = [
   { to: "/words", label: "Words", Icon: IconWords },
   { to: "/journal", label: "Reading journal", Icon: IconJournal },
 ];
-const MORE: SiteNavItem[] = [
+export const MORE: SiteNavItem[] = [
   { to: "/updates", label: "Updates" }, { to: "/exams", label: "CAT and other exams" }, { to: "/guides", label: "Guides" },
   { to: "/stories", label: "Topper stories" }, { to: "/roadmap", label: "What's coming" }, { to: "/settings", label: "Settings and backup" },
 ];
-const SECTION_ITEMS: SiteNavItem[] = SECTIONS.map((s) => ({ to: "/" + s.id, label: s.short, soon: s.status === "soon", end: true }));
-
-/** The same places as groups, for the landing page's "All pages" panel. */
-export const NAV_GROUPS: SiteNavGroup[] = [
-  { title: "Study", items: MAIN },
-  { title: "Sections", items: SECTION_ITEMS },
-  { title: "Track", items: TRACK },
-  { title: "More", items: MORE },
-];
+export const SECTION_ITEMS: SiteNavItem[] = SECTIONS.map((s) => ({ to: "/" + s.id, label: s.short, soon: s.status === "soon", end: true }));
 
 /** Practice's own redo page is a Practice address too, but in the sidebar the Redo queue item owns it. */
 const isRedo = (p: string) => p.startsWith("/practice/redo");
 
 /** Today's minutes done and planned (the same plan Today shows), and how many redo questions are due. */
-function useWaiting() {
+export function useWaiting() {
   const { state } = useStore();
   return useMemo(() => {
     const d = todayIso();
@@ -66,7 +58,7 @@ function useWaiting() {
 }
 
 /** A small ring of the day's minutes: primary while under way, success once the plan is done. */
-function DayRing({ done, planned, size = 20 }: { done: number; planned: number; size?: number }) {
+export function DayRing({ done, planned, size = 20 }: { done: number; planned: number; size?: number }) {
   const r = 8, c = 2 * Math.PI * r, part = planned ? Math.min(1, done / planned) : 0;
   return (
     <svg viewBox="0 0 20 20" width={size} height={size} aria-hidden className="-rotate-90 shrink-0">
@@ -76,7 +68,7 @@ function DayRing({ done, planned, size = 20 }: { done: number; planned: number; 
   );
 }
 
-const minutes = (w: { done: number; planned: number }) => `${w.done} of ${w.planned} minutes done today`;
+export const minutes = (w: { done: number; planned: number }) => `${w.done} of ${w.planned} minutes done today`;
 
 /**
  * The pill behind the current place. It is measured from the link marked current and moved with a transform, so it

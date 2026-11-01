@@ -1143,5 +1143,168 @@
       "claim": "Corrections rarely backfire",
       "qualifier": "modest and fade"
     }
+  },
+  {
+    "id": "pat-street-names",
+    "title": "The politics of a street name",
+    "genre": "society",
+    "difficulty": "medium",
+    "since": "2026-11-02",
+    "pack": "cat-pattern",
+    "paras": [
+      "When a city changes the name of a street, the immediate dispute is often framed as a choice between remembering the past and erasing it. Supporters of a new name may argue that public spaces should not honour figures associated with oppression; opponents may warn that changing names falsifies history. Both sides can make the street sign carry more responsibility than it can bear. A name is a public statement, but it is not a complete historical record.",
+      "A municipal historian, Meera Rao, once explained a proposed renaming to residents by asking them to distinguish three things: what a name commemorates, what a city remembers, and what a city teaches. These overlap, but they are not identical. A colonial administrator's name on a major avenue may commemorate the authority that built it, while the city’s archives preserve evidence of the workers who laid the road and the residents displaced to make room for it. Replacing the sign can withdraw an honour; it cannot, on its own, recover those other histories.",
+      "This does not mean that renaming is merely theatrical. Symbols organise attention. A person whose name appears on maps, transit announcements, and official documents receives a kind of routine recognition that a person mentioned only in a specialist archive does not. Renaming can therefore alter the public hierarchy of memory. Yet the symbolic act is most consequential when it is accompanied by work that makes the newly visible history accessible: school materials, local exhibitions, oral-history projects, and archives that do not require specialist knowledge to navigate.",
+      "There is also a practical complication. Residents build habits around place names. A changed name can confuse emergency services, burden small businesses, or make older people feel that familiar landmarks have been made strange. Such costs deserve attention, but they do not automatically settle the moral question. Cities routinely update signs, boundaries, and transport routes when there is a compelling reason. The relevant question is not whether change has costs, but whether the city acknowledges them and makes the transition reasonably fair.",
+      "The argument over a street name is therefore best understood neither as a choice between history and forgetting nor as a simple contest between old and new. It is a contest over which parts of the past receive everyday public honour and which are left difficult to find. A city cannot preserve every historical detail on its street signs. It can, however, decide whether a name change will be an isolated gesture or the beginning of a wider account of how the city came to be."
+    ],
+    "questions": [
+      {
+        "type": "main",
+        "stem": "Which of the following best expresses the main point of the passage?",
+        "proof": [
+          2,
+          4
+        ],
+        "answer": 1,
+        "options": [
+          {
+            "t": "A street should be renamed only when the practical costs to residents, emergency services and small businesses are small enough to be absorbed easily.",
+            "why": "Paragraph 4: costs 'deserve attention, but they do not automatically settle the moral question'.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Renaming changes what a city honours every day, but it does more for the past when teaching, exhibitions and accessible archives go with it.",
+            "why": "Paragraph 3 says renaming alters 'the public hierarchy of memory' and is most consequential with that wider work."
+          },
+          {
+            "t": "A city's memory lives in its archives rather than its street signs, so renaming matters only as a symbol.",
+            "why": "The author says renaming is not 'merely theatrical': symbols organise attention.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Disputes over renaming are, at bottom, contests between residents attached to the old and those who want the new.",
+            "why": "The last paragraph rejects reading it as 'a simple contest between old and new'.",
+            "trap": "Wrong direction"
+          }
+        ]
+      },
+      {
+        "type": "structure",
+        "stem": "Meera Rao's distinction among commemoration, memory and teaching is used to suggest that:",
+        "proof": [
+          1
+        ],
+        "answer": 3,
+        "options": [
+          {
+            "t": "an archive is a more trustworthy record of the past than any commemoration.",
+            "why": "The passage compares what each does, not which is more trustworthy.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "a city should decide what to teach before it decides what to commemorate.",
+            "why": "No order of decisions is proposed.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "renaming a street erases the history that the old name preserved.",
+            "why": "That is the opponents' worry the passage questions; the old history stays in the archive.",
+            "trap": "Wrong direction"
+          },
+          {
+            "t": "taking down one honour does not, by that act alone, bring the city's neglected histories into view.",
+            "why": "'Replacing the sign can withdraw an honour; it cannot, on its own, recover those other histories.'"
+          }
+        ]
+      },
+      {
+        "type": "inference",
+        "stem": "Which of the following can be inferred from the passage?",
+        "proof": [
+          3
+        ],
+        "answer": 0,
+        "options": [
+          {
+            "t": "The burden a renaming places on residents bears on how the change is made, but does not by itself decide whether it should be made.",
+            "why": "Paragraph 4: the question is whether the city 'makes the transition reasonably fair', not whether change has costs."
+          },
+          {
+            "t": "Cities should avoid renaming streets that emergency services and older residents rely on.",
+            "why": "These costs 'deserve attention' but do not settle the question.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "A renaming that confuses residents is justified only if the old name honoured an oppressor.",
+            "why": "The passage sets no such condition.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "Because cities routinely change signs, boundaries and transport routes, the cost of renaming a street is too small to deserve attention.",
+            "why": "The author says the costs 'deserve attention'.",
+            "trap": "Wrong direction"
+          }
+        ]
+      },
+      {
+        "type": "except",
+        "stem": "Which of the following is NOT supported by the passage?",
+        "proof": [
+          2,
+          3
+        ],
+        "answer": 2,
+        "options": [
+          {
+            "t": "A name on maps and transit announcements gives its bearer a recognition that a specialist archive does not.",
+            "why": "Paragraph 3 says exactly this.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "A renaming can matter even though a sign cannot hold a full historical account.",
+            "why": "Paragraphs 1 and 3 say both.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "The disruption a renaming causes is, by itself, enough to show that the change is wrong.",
+            "why": "Paragraph 4: costs 'do not automatically settle the moral question'."
+          },
+          {
+            "t": "Exhibitions, school materials and archives that need no specialist knowledge can make neglected histories easier to find.",
+            "why": "Paragraph 3 lists these.",
+            "trap": "True but not the answer"
+          }
+        ]
+      }
+    ],
+    "recall": [
+      {
+        "q": "What is Meera Rao's job?",
+        "options": [
+          "Municipal historian",
+          "City planner",
+          "Museum curator",
+          "Local councillor"
+        ],
+        "answer": 0
+      },
+      {
+        "q": "Which practical cost of renaming does the passage mention?",
+        "options": [
+          "Higher property taxes",
+          "Confusing emergency services",
+          "Reprinting school textbooks",
+          "Losing tourist visits"
+        ],
+        "answer": 1
+      }
+    ],
+    "summary": {
+      "model": "Renaming a street changes whom a city honours, but it recovers neglected history only when wider teaching and archives go with it.",
+      "tone": "analytical",
+      "claim": "changes whom a city honours",
+      "qualifier": "only when wider teaching and archives go with it"
+    }
   }
 ]

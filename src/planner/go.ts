@@ -15,6 +15,7 @@ const NAMED: Record<string, string> = {
   "/practice/clues": "Start the clue translator",
   "/practice/must-could": "Start must, could, cannot",
   "/practice/first-move": "Start first move",
+  "/practice/replay": "Open a replay set",
   "/practice/redo": "Open the redo queue",
 };
 

@@ -4,6 +4,7 @@
  * the content files; content.ts calls these loaders and caches what they return.
  */
 import type { LrDrills, MccDrill } from "./lrdrill";
+import type { ReplayPuzzle } from "./replay";
 import type { ClueItem, LrModel } from "./lrlogic";
 import type { CrItem, LrSet, RcSet, VaPara } from "./types";
 
@@ -26,8 +27,8 @@ export function loadLrFile(file: string): Promise<LrSet[]> {
   return f ? f().then((m) => m.default as LrSet[]) : Promise.reject(new Error("No LR file " + file));
 }
 export const loadVaParas = (): Promise<VaPara[]> => import("./va/paragraphs").then((m) => m.VA_PARAS);
-/** The LR drills' content (F83 to F85): clues to read, set models and must-could-cannot drills, in one chunk. */
+/** The LR drills' content (F83 to F85, F57): clues to read, set models, must-could-cannot drills and replay sets, in one chunk. */
 export const loadLrDrills = (): Promise<LrDrills> => Promise.all([
-  import("../../content/lrdrill/clues.json"), import("../../content/lrdrill/models.json"), import("../../content/lrdrill/mcc.json"),
-]).then(([c, m, x]) => ({ clues: c.default as ClueItem[], models: m.default as unknown as LrModel[], mcc: x.default as unknown as MccDrill[] }));
+  import("../../content/lrdrill/clues.json"), import("../../content/lrdrill/models.json"), import("../../content/lrdrill/mcc.json"), import("../../content/lrdrill/replay.json"),
+]).then(([c, m, x, r]) => ({ clues: c.default as ClueItem[], models: m.default as unknown as LrModel[], mcc: x.default as unknown as MccDrill[], replay: r.default as unknown as ReplayPuzzle[] }));
 export const loadCrItems = (): Promise<CrItem[]> => import("./cr").then((m) => m.CR_ITEMS);

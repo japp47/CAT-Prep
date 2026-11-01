@@ -1,4 +1,5 @@
 import type { LrDrillRun } from "../lib/state";
+import type { ReplayPuzzle } from "./replay";
 import { absolute, CLUE_KIND, groupMap, holds, kindOfClue, MISREAD, OPEN_CAP, openCases, refsOf, seatings, settle, solve, type Bin, type ClueItem, type ClueKind, type Expr, type LrModel, type Misread } from "./lrlogic";
 import { allCases, evalCond, gridCsp, namesOf, search, type Case, type Cond, type GridModel } from "./solver";
 
@@ -16,7 +17,7 @@ export const isGrid = (m: AnyModel): m is GridModel => (m as GridModel).kind ===
 
 /** A must, could, cannot drill: a modelled set with some clues left out, and statements to sort (in the model's kind of expression). */
 export interface MccDrill { id: string; set: string; drop: number[]; statements: { text: string; expr: Expr | Cond }[] }
-export interface LrDrills { clues: ClueItem[]; models: AnyModel[]; mcc: MccDrill[] }
+export interface LrDrills { clues: ClueItem[]; models: AnyModel[]; mcc: MccDrill[]; replay: ReplayPuzzle[] }
 
 const allBut = (m: AnyModel, drop: number[]) => m.clues.map((_, i) => i + 1).filter((k) => !drop.includes(k));
 
@@ -41,6 +42,7 @@ export const DRILL: Record<DrillKind, { h: string; path: string }> = {
   clue: { h: "Clue translator", path: "/practice/clues" },
   mcc: { h: "Must, could, cannot", path: "/practice/must-could" },
   first: { h: "First move", path: "/practice/first-move" },
+  replay: { h: "Replay", path: "/practice/replay" },
 };
 
 /** Clues in a translator run. Eight take about three minutes. */

@@ -962,5 +962,169 @@
       "claim": "users who devise their own rules can sustain them",
       "qualifier": "mainly in small, close-knit groups"
     }
+  },
+  {
+    "id": "pat-proxies",
+    "title": "The comfort of a measurable proxy",
+    "genre": "economics",
+    "difficulty": "hard",
+    "since": "2026-11-02",
+    "pack": "cat-pattern",
+    "paras": [
+      "Institutions often adopt numerical indicators because the qualities they care about are difficult to observe directly. A university wants to identify promising applicants, a hospital wants to improve care, and a company wants to hire dependable employees. These are reasonable goals, but “promise,” “care,” and “dependability” are not objects that can be placed on a scale. Institutions therefore use proxies: test scores, waiting times, patient satisfaction ratings, or measures of past performance. A proxy becomes dangerous not because it is a number, but because its convenience can make it seem identical to the quality it was designed to represent.",
+      "Imagine a hiring platform that ranks applicants by how quickly they complete a set of timed tasks. At first, the ranking correlates with success in the role, so employers begin using it more widely. Applicants learn which task patterns earn high scores and prepare for them. Over time, the platform's score becomes less informative about broad job competence and more informative about familiarity with the test. The measure has not necessarily become worse at measuring task speed; rather, the institution has quietly expanded the meaning of the score. What began as one useful clue has become a substitute for a much wider judgement.",
+      "This familiar problem is sometimes described as a consequence of measurement changing behaviour. But the issue is not limited to people deliberately gaming a system. A proxy can reshape decisions even when nobody cheats. If a hospital is judged mainly by how rapidly patients are discharged, staff may become more attentive to discharge speed than to the quality of a patient's recovery at home. The metric will influence what the institution notices, rewards, and regards as a problem. Eventually, the organisation may become excellent at improving the indicator while remaining uncertain about the underlying goal.",
+      "The obvious response is to add more indicators. Yet a longer dashboard is not automatically a wiser one. Indicators can conflict; some may be difficult to interpret together; and the administrative burden of collecting them may consume time that would otherwise be spent on the work itself. Nor can every important quality be converted into a number without loss. A teacher's contribution to a classroom, for instance, may include the confidence to ask an awkward question—a result that is real but hard to attribute or count.",
+      "The lesson is not that institutions should make decisions without evidence. Numerical indicators can expose prejudice, reveal patterns, and make arbitrary judgements easier to challenge. The lesson is that a measure should retain the status of evidence rather than acquire the status of an unquestionable objective. Institutions must periodically ask what their proxies omit, how their use has changed behaviour, and whether the decision still needs a human judgement that the number cannot supply. Quantification is most useful when it disciplines judgement, not when it pretends to eliminate the need for it."
+    ],
+    "questions": [
+      {
+        "type": "main",
+        "stem": "Which of the following is the passage's central claim?",
+        "proof": [
+          0,
+          4
+        ],
+        "answer": 0,
+        "options": [
+          {
+            "t": "Numerical indicators are valuable evidence, but they mislead when an institution comes to treat them as the very quality they stand for.",
+            "why": "Paragraphs 1 and 5: a measure should keep 'the status of evidence rather than' become 'an unquestionable objective'."
+          },
+          {
+            "t": "Proxies fail mainly because the people being measured learn to game them.",
+            "why": "Paragraph 3: 'the issue is not limited to people deliberately gaming a system'.",
+            "trap": "Too narrow or too broad"
+          },
+          {
+            "t": "Since one indicator distorts behaviour, institutions should judge performance through a wide range of indicators.",
+            "why": "Paragraph 4: 'a longer dashboard is not automatically a wiser one'.",
+            "trap": "Wrong direction"
+          },
+          {
+            "t": "Qualities such as care and promise cannot be measured directly, so decisions about them should rest on experienced human judgement instead of numbers.",
+            "why": "The first half is in the passage; the second is not, since the author wants numbers to discipline judgement, not be dropped.",
+            "trap": "Half right, half wrong"
+          }
+        ]
+      },
+      {
+        "type": "detail",
+        "stem": "Which of the following best explains why the hiring platform's score may become less useful over time?",
+        "proof": [
+          1
+        ],
+        "answer": 2,
+        "options": [
+          {
+            "t": "Timed tasks never had much to do with how well people performed in the role.",
+            "why": "At first 'the ranking correlates with success in the role'.",
+            "trap": "Wrong direction"
+          },
+          {
+            "t": "The platform's tasks became worse at measuring how fast applicants work.",
+            "why": "'The measure has not necessarily become worse at measuring task speed.'",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "The score comes to reflect preparation for the test while employers go on reading it as a sign of broad competence.",
+            "why": "Applicants prepare for the tasks, and the institution 'quietly expanded the meaning of the score'."
+          },
+          {
+            "t": "Once the platform spread, employers stopped looking at anything other than the score, so interviews and references no longer counted.",
+            "why": "The passage says the score became a substitute for a wider judgement, not that employers ignore everything else.",
+            "trap": "Extreme wording"
+          }
+        ]
+      },
+      {
+        "type": "structure",
+        "stem": "The hospital example is included primarily to show that:",
+        "proof": [
+          2
+        ],
+        "answer": 1,
+        "options": [
+          {
+            "t": "staff will manipulate the figures whenever a hospital is set a target.",
+            "why": "The example is introduced with 'even when nobody cheats'.",
+            "trap": "Wrong direction"
+          },
+          {
+            "t": "a measure can shift what an institution pays attention to even when nobody is trying to cheat.",
+            "why": "'The metric will influence what the institution notices, rewards, and regards as a problem.'"
+          },
+          {
+            "t": "discharge speed is a poorer measure of hospital care than patient satisfaction.",
+            "why": "The passage never ranks these two measures.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "hospital care is too complex to be judged by any number.",
+            "why": "Paragraph 5 says indicators can 'reveal patterns' and expose prejudice.",
+            "trap": "Extreme wording"
+          }
+        ]
+      },
+      {
+        "type": "strengthen",
+        "stem": "Which of the following, if true, would most weaken the author's concern about proxies becoming substitutes for broader judgement?",
+        "proof": [
+          1,
+          2,
+          4
+        ],
+        "answer": 3,
+        "options": [
+          {
+            "t": "Most employees say they prefer clear numerical targets to long written appraisals.",
+            "why": "Preference says nothing about whether the proxy still tracks the goal.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "Some indicators cost far less to collect than others.",
+            "why": "Cost of collection is beside the point of validity.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "Institutions often struggle to agree on a single definition of success.",
+            "why": "This deepens the difficulty the author describes.",
+            "trap": "Wrong direction"
+          },
+          {
+            "t": "In a long controlled study, institutions that relied on the proxy alone kept meeting the broader goals it was meant to predict, even after people adapted to it.",
+            "why": "If the proxy stayed valid after behaviour adapted, treating it as the goal would do little harm."
+          }
+        ]
+      }
+    ],
+    "recall": [
+      {
+        "q": "In the hiring example, applicants are ranked by:",
+        "options": [
+          "their past job titles",
+          "how quickly they complete timed tasks",
+          "interviews with a manager",
+          "references from former employers"
+        ],
+        "answer": 1
+      },
+      {
+        "q": "In the hospital example, the hospital is judged mainly by:",
+        "options": [
+          "patient satisfaction ratings",
+          "how rapidly patients are discharged",
+          "waiting times in the emergency ward",
+          "the number of operations performed"
+        ],
+        "answer": 1
+      }
+    ],
+    "summary": {
+      "model": "Numerical proxies are useful evidence, but they distort decisions once institutions treat them as the goal instead of a check on judgement.",
+      "tone": "cautionary",
+      "claim": "useful evidence",
+      "qualifier": "once institutions treat them as the goal"
+    }
   }
 ]

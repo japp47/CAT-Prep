@@ -4,7 +4,7 @@ import { VARC } from "../sections/varc";
 import { CR_ITEMS } from "./cr";
 import { LR_SETS } from "./lr";
 import { RC_SETS } from "./rc";
-import { CR_TYPE, CR_TYPES, GENRES, LR_TYPE, RC_QTYPE, setWords, SUMMARY_MAX_WORDS, TONES, words, type LrDiagram } from "./types";
+import { CR_TYPE, CR_TYPES, GENRES, LR_TYPE, RC_PACKS, RC_QTYPE, setWords, SUMMARY_MAX_WORDS, TONES, words, type LrDiagram } from "./types";
 import { clockMinutes } from "../components/LrFigures";
 import { VA_PARAS } from "./va/paragraphs";
 
@@ -56,6 +56,15 @@ describe("RC library", () => {
       expect(m.model).not.toMatch(/\d/);
     });
   }
+  it("keeps collection sets in a known collection, and their right option is not usually the longest", () => {
+    const packed = RC_SETS.filter((s) => s.pack);
+    expect(packed.length).toBeGreaterThanOrEqual(5);
+    packed.forEach((s) => expect(Object.keys(RC_PACKS)).toContain(s.pack));
+    // A right answer that is usually the longest option teaches students to guess by length.
+    const qs = packed.flatMap((s) => s.questions);
+    const longest = qs.filter((q) => q.options.every((o, i) => i === q.answer || o.t.length < q.options[q.answer].t.length)).length;
+    expect(longest / qs.length).toBeLessThan(0.4);
+  });
   it("spreads right answers across A to D", () => {
     const counts = [0, 0, 0, 0];
     RC_SETS.forEach((s) => s.questions.forEach((q) => counts[q.answer]++));
