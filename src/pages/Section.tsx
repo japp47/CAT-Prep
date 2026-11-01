@@ -9,19 +9,20 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { CategoryBlock } from "../components/Resources";
-import { Empty, Ext, LinkButton, Page, PageHeader, Section as Block, TextLink } from "../components/kit";
+import { Empty, Ext, LinkButton, Page, PageHeader, Section as Block, Segmented, TextLink } from "../components/kit";
 import { GuideExplorer } from "../components/GuideExplorer";
 import { LrGuideBody } from "../components/LrGuide";
 import { LrThumb } from "../components/LrThumb";
 import { TypeGuideBody } from "../components/TypeGuide";
 import { LR_GUIDES } from "../sections/dilr/guides";
 import { BENCHMARKS, PASSAGE_SOURCES, TOPPERS } from "../data/stories";
+import { phaseOf } from "../data/exam";
 import { dow, todayIso } from "../lib/date";
 import { usePref } from "../lib/prefs";
 import { LR_CATALOG, RC_CATALOG } from "../practice/catalog.gen";
 import { useStore } from "../lib/store";
 import { SECTION_BY_ID } from "../sections";
-import type { SectionDef, SectionId } from "../sections/types";
+import type { Category, SectionDef, SectionId } from "../sections/types";
 import { TYPE_GUIDES } from "../sections/varc/guides";
 import * as VARC_LEARN from "../sections/varc/learn";
 import { VA_MIX, type Topic as TopicData } from "../sections/varc/learn";
@@ -32,11 +33,18 @@ import NotFound from "./NotFound";
 
 const TR = "border-t align-top"; // taste-skill-ignore: rows of a real table
 
-/** What each section's page shows besides its resource list: tabs, notes under them, the format and the guides. */
-interface PageData { tabs: { id: string; label: string }[]; notes: Record<string, string[]>; format: [string, string][]; topics: TopicData[] }
+/**
+ * What each section's page shows besides its resource list: tabs, notes under them, the format and the guides. DILR's
+ * Learn tab has two halves behind a switch (`parts`), and its Practice tab groups categories by phase (`groups`).
+ */
+interface PageData {
+  tabs: { id: string; label: string }[]; notes: Record<string, string[]>; format: [string, string][]; topics: TopicData[];
+  parts?: typeof DILR_LEARN.PARTS; groups?: typeof DILR_LEARN.GROUPS;
+}
+type Part = "lr" | "di";
 const PAGES: Partial<Record<SectionId, PageData>> = {
   varc: { tabs: VARC_LEARN.VTABS, notes: VARC_LEARN.TAB_NOTES, format: VARC_LEARN.FORMAT, topics: VARC_LEARN.TOPICS },
-  dilr: { tabs: DILR_LEARN.TABS, notes: DILR_LEARN.TAB_NOTES, format: DILR_LEARN.FORMAT, topics: DILR_LEARN.TOPICS },
+  dilr: { tabs: DILR_LEARN.TABS, notes: DILR_LEARN.TAB_NOTES, format: DILR_LEARN.FORMAT, topics: DILR_LEARN.TOPICS, parts: DILR_LEARN.PARTS, groups: DILR_LEARN.GROUPS },
 };
 
 function Soon({ sec }: { sec: SectionDef }) {
@@ -64,6 +72,25 @@ function Table({ head, rows, num = [] }: { head: string[]; rows: ReactNode[][]; 
   );
 }
 
+/**
+ * A three-column reference table that stays a table from a tablet up and becomes stacked rows on a phone, where three
+ * narrow columns of sentences grow taller than the screen.
+ */
+function TypeTable({ head, rows }: { head: [string, string, string]; rows: [ReactNode, ReactNode, ReactNode][] }) {
+  return <>
+    <div className="max-sm:hidden"><Table head={head} rows={rows.map(([a, b, c]) => [<b key="a" className="font-semibold">{a}</b>, b, c])} /></div>
+    <ul className="flex flex-col gap-px overflow-hidden rounded-lg bg-background sm:hidden">
+      {rows.map(([a, b, c], i) => (
+        <li key={i} className="flex flex-col gap-1 bg-card px-4 py-3.5">
+          <span className="text-base font-semibold">{a}</span>
+          <span className="text-base"><span className="text-muted-foreground">{head[1]}: </span>{b}</span>
+          <span className="text-base"><span className="text-muted-foreground">{head[2]}: </span>{c}</span>
+        </li>
+      ))}
+    </ul>
+  </>;
+}
+
 function Topic({ t }: { t: TopicData }) {
   const [open, setOpen] = useState(!!t.open);
   return (
@@ -83,7 +110,9 @@ function Topic({ t }: { t: TopicData }) {
   );
 }
 
-function Learn({ id, page, focus }: { id: SectionId; page: PageData; focus: string | null }) {
+function Learn({ id, page, focus, part, setPart, cats }: { id: SectionId; page: PageData; focus: string | null; part: Part; setPart: (p: Part) => void; cats: (keep: (c: Category) => boolean) => ReactNode }) {
+  const topics = (p?: Part) => page.topics.filter((t) => t.part === p);
+  const both = <div className="flex flex-col gap-3">{topics().map((t) => <Topic key={t.h} t={t} />)}</div>;
   return (
     <div className="flex flex-col gap-12">
       <Block title="The section">
@@ -91,33 +120,48 @@ function Learn({ id, page, focus }: { id: SectionId; page: PageData; focus: stri
           {page.format.map(([k, v]) => <div key={k} className="contents"><dt className="text-base font-semibold">{k}</dt><dd className="measure text-base text-foreground/85">{v}</dd></div>)}
         </dl>
       </Block>
-      {id === "varc" && (
+      {id === "varc" && <>
         <Block title="VA questions per slot, by year" description="From IMS, Cracku and Careers360 slot analyses. A few slot reports differ by one question.">
           <Table head={["Year", "Para summary", "Sentence insertion", "Odd sentence out", "Para jumble", "Note"]} num={[1, 2, 3, 4]}
             rows={VA_MIX.map((r) => [r.year, r.ps || "–", r.si || "–", r.oso || "–", r.pj || "–", <span key="n" className="whitespace-nowrap text-muted-foreground">{r.note ?? ""}</span>])} />
         </Block>
-      )}
-      {id === "dilr" && <>
-        <Block title="Logical reasoning set types" description="What each type looks like, and what to draw before you solve. CAT dresses the same types in new stories: trains, ratings, trade, chairs.">
-          <Table head={["Type", "Looks like", "Draw"]} rows={DILR_LEARN.SET_TYPES.map(([t, l, d]) => [<b key="t" className="font-semibold">{t}</b>, l, d])} />
-        </Block>
-        <Block title="How often each topic came, 2017 to 2022" description="Percent of DILR topics per year, from InsideIIM's mix of coaching analyses. Pure DI is shrinking; mixed and number-based LR sets are growing.">
-          <Table head={["Topic", ...DILR_LEARN.TOPIC_YEARS]} num={[1, 2, 3, 4, 5, 6]} rows={DILR_LEARN.TOPIC_SHARE.map((r) => [r.topic, ...r.y.map((v) => (v ? v + "%" : "–"))])} />
-        </Block>
-      </>}
-      <div className="flex flex-col gap-3">{page.topics.map((t) => <Topic key={t.h} t={t} />)}</div>
-      {id === "varc" && (
+        {both}
         <Block title="A guide for each question type" description="Method, common traps, a worked example to try, and three links: a written guide, a video and a free question bank.">
           <GuideExplorer label="VARC question types" prefKey="guide:varc" focus={focus}
             items={TYPE_GUIDES.map((g) => ({ id: g.id, h: g.h, tag: g.tag, body: () => <TypeGuideBody g={g} /> }))} />
         </Block>
-      )}
-      {id === "dilr" && (
-        <Block title="A guide for each set type" description="What to draw, where to start, the method and the traps, then one of our own sets as the worked example, with its solution drawn step by step.">
-          <GuideExplorer label="LR set types" prefKey="guide:dilr" focus={focus}
-            items={LR_GUIDES.map((g) => ({ id: g.id, h: g.h, tag: g.tag, icon: <LrThumb type={g.id} className="size-9" />, body: () => <LrGuideBody g={g} /> }))} />
+      </>}
+      {id === "dilr" && page.parts && <>
+        <Block title="Recent slots, set by set" description="Seven slots from 2021 to 2025, read from the papers. The number of data sets swings from none to four, so neither half can be skipped.">
+          <TypeTable head={["Slot", "Data sets", "Logic sets"]}
+            rows={DILR_LEARN.SLOTS.map((r) => [r.slot, r.data.length ? `${r.data.length}, ${r.data.join("; ")}` : "none", `${r.logic.length}, ${r.logic.join("; ")}`])} />
         </Block>
-      )}
+        {both}
+        {cats((c) => !c.part)}
+        <section aria-label="Logical reasoning or data interpretation" className="flex flex-col gap-10">
+          <div className="flex flex-col gap-3">
+            <Segmented value={part} onChange={setPart} options={page.parts.map((p) => [p.id, p.label] as [Part, string])} label="Which half of the section" />
+            <p className="measure text-base text-muted-foreground">{page.parts.find((p) => p.id === part)!.intro}</p>
+          </div>
+          {part === "lr" ? <>
+            <Block title="Logical reasoning set types" description="What each type looks like, and what to draw before you solve. CAT dresses the same types in new stories: trains, ratings, trade, chairs.">
+              <TypeTable head={["Type", "Looks like", "Draw"]} rows={DILR_LEARN.SET_TYPES} />
+            </Block>
+            <div className="flex flex-col gap-3">{topics("lr").map((t) => <Topic key={t.h} t={t} />)}</div>
+            <Block title="A guide for each set type" description="What to draw, where to start, the method and the traps, then one of our own sets as the worked example, with its solution drawn step by step.">
+              <GuideExplorer label="LR set types" prefKey="guide:dilr" focus={focus}
+                items={LR_GUIDES.map((g) => ({ id: g.id, h: g.h, tag: g.tag, icon: <LrThumb type={g.id} className="size-9" />, body: () => <LrGuideBody g={g} /> }))} />
+            </Block>
+            {cats((c) => c.part === "lr")}
+          </> : <>
+            <Block title="Data interpretation pictures" description="What each picture asks, and where to start before any question. Sets often join a picture to rules, which makes them logic sets with numbers.">
+              <TypeTable head={["Picture", "What it asks", "Start with"]} rows={DILR_LEARN.DI_TYPES} />
+            </Block>
+            <div className="flex flex-col gap-3">{topics("di").map((t) => <Topic key={t.h} t={t} />)}</div>
+            {cats((c) => c.part === "di")}
+          </>}
+        </section>
+      </>}
     </div>
   );
 }
@@ -167,10 +211,14 @@ function Toppers() {
 function Live({ sec, page }: { sec: SectionDef; page: PageData }) {
   const { state } = useStore();
   const [vtab, setVtab] = usePref("vtab", "learn");
-  // ?guide=<type> opens the Learn tab on that guide (from a set's review, the practice list, search).
+  // ?guide=<type> opens the Learn tab on that guide (from a set's review, the practice list, search); ?tab=<id> opens a tab.
   const [sp] = useSearchParams();
-  const focus = sp.get("guide");
-  useEffect(() => { if (focus) setVtab("learn"); }, [focus, setVtab]);
+  const focus = sp.get("guide"), askedTab = sp.get("tab");
+  const [part, setPart] = usePref<Part>("dilrPart", "lr");
+  useEffect(() => {
+    if (focus) { setVtab("learn"); setPart("lr"); }
+    else if (askedTab && page.tabs.some((t) => t.id === askedTab)) setVtab(askedTab);
+  }, [focus, askedTab, setVtab, setPart, page.tabs]);
   const [pri, setPri] = usePref<"all" | "must">("pri", "all");
   const [hideDone, setHideDone] = usePref("hideDone", false);
   const [q, setQ] = usePref("q:" + sec.id, "");
@@ -185,11 +233,36 @@ function Live({ sec, page }: { sec: SectionDef; page: PageData }) {
   const filter = (catId: string, withQuery: boolean) => all.filter((x) =>
     x.c === catId && (pri !== "must" || x.p === "must") && !(hideDone && state.ticks[x.id]) &&
     (!withQuery || (x.n + " " + x.w + " " + x.t).toLowerCase().includes(query)));
+  const loading = <div className="flex flex-col gap-3" role="status"><span className="sr-only">Loading resources…</span><Skeleton className="h-7 w-1/3" /><Skeleton className="h-40" /><Skeleton className="h-40" /></div>;
+  const blocksOf = (tab: string | null, keep: (c: Category) => boolean = () => true) =>
+    cats.filter((c) => (tab === null || c.tab === tab) && keep(c)).map((c) => ({ c, items: filter(c.id, tab === null) })).filter((x) => x.items.length);
+  const now = phaseOf(todayIso());
+  const nowPhase = now.kind === "phase" ? now.phase.id : 1;
   const list = (tab: string | null, emptyMsg: string) => {
-    if (!res) return <div className="flex flex-col gap-3" role="status"><span className="sr-only">Loading resources…</span><Skeleton className="h-7 w-1/3" /><Skeleton className="h-40" /><Skeleton className="h-40" /></div>;
-    const blocks = cats.filter((c) => tab === null || c.tab === tab).map((c) => ({ c, items: filter(c.id, tab === null) })).filter((x) => x.items.length);
-    return blocks.length ? blocks.map(({ c, items }) => <CategoryBlock key={c.id} cat={c} items={items} all={all} />) : <Empty>{emptyMsg}</Empty>;
+    if (!res) return loading;
+    const blocks = blocksOf(tab);
+    if (!blocks.length) return <Empty>{emptyMsg}</Empty>;
+    // Categories with a group sit under its heading (DILR's Practice tab, by phase); the rest as they come.
+    if (tab === null || !page.groups || !blocks.some((x) => x.c.group)) return blocks.map(({ c, items }) => <CategoryBlock key={c.id} cat={c} items={items} all={all} />);
+    const order = [...new Set(blocks.map((x) => x.c.group ?? ""))];
+    return order.map((g) => {
+      const head = g ? page.groups![g] : undefined;
+      return (
+        <div key={g || "rest"} className="flex flex-col gap-8">
+          {head && (
+            <div className="flex flex-col gap-1">
+              <h2 className="text-title font-extrabold">{head.h}{head.phases.includes(nowPhase) && <span className="ml-3 align-middle text-base font-semibold text-primary">You are here</span>}</h2>
+              <p className="measure text-base text-muted-foreground">{head.note}</p>
+            </div>
+          )}
+          {blocks.filter((x) => (x.c.group ?? "") === g).map(({ c, items }) => <CategoryBlock key={c.id} cat={c} items={items} all={all} />)}
+        </div>
+      );
+    });
   };
+  // The Learn tab's lists, placed by Learn itself (DILR shows each half's lists under its switch).
+  const learnCats = (keep: (c: Category) => boolean) => (!res ? loading : <div className="flex flex-col gap-10">{blocksOf("learn", keep).map(({ c, items }) => <CategoryBlock key={c.id} cat={c} items={items} all={all} />)}</div>);
+  const learnInside = !!page.parts;
   const tabValid = page.tabs.some((t) => t.id === vtab) ? vtab : "learn";
 
   const extra = (id: string) => (
@@ -197,7 +270,7 @@ function Live({ sec, page }: { sec: SectionDef; page: PageData }) {
       {id === "practice" && sec.id === "dilr" && (
         <div className="flex flex-col gap-3 rounded-lg bg-card p-5 sm:p-6">
           <h3 className="text-heading font-semibold">Practice on this site</h3>
-          <p className="measure text-base text-foreground/85">{LR_CATALOG.length} original logical reasoning sets, each with a timer, a scratch pad, a step-by-step solution drawn as you go, and a two-minute post-mortem. More set types follow, then short drills on reading clues and choosing where to start.</p>
+          <p className="measure text-base text-foreground/85">{LR_CATALOG.length} original logical reasoning sets, each with a timer, a scratch pad, a step-by-step solution drawn as you go, and a two-minute post-mortem, plus drills on reading clues, choosing where to start and replaying the deductions. Data interpretation sets arrive here in December; until then, use the DI sets by topic and the past CAT DI sets below.</p>
           <div className="flex flex-wrap gap-3"><LinkButton to="/dilr/practice">Open DILR practice</LinkButton></div>
         </div>
       )}
@@ -247,9 +320,9 @@ function Live({ sec, page }: { sec: SectionDef; page: PageData }) {
           </div>
           {page.tabs.map((t) => (
             <TabsContent key={t.id} value={t.id} className="flex flex-col gap-12">
-              {t.id === "learn" && <Learn id={sec.id} page={page} focus={focus} />}
+              {t.id === "learn" && <Learn id={sec.id} page={page} focus={focus} part={part} setPart={setPart} cats={learnCats} />}
               {extra(t.id)}
-              <div className="flex flex-col gap-10">{list(t.id, "Everything here is ticked or filtered out. Switch off Hide done or Must-do only.")}</div>
+              {!(t.id === "learn" && learnInside) && <div className="flex flex-col gap-14">{list(t.id, "Everything here is ticked or filtered out. Switch off Hide done or Must-do only.")}</div>}
             </TabsContent>
           ))}
         </Tabs>

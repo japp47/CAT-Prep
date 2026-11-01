@@ -7,7 +7,7 @@ export const FORMAT: [string, string][] = [
   ["Time split", "About 28 minutes on RC and 10 to 12 on VA. Decide RC-first or VA-first in mocks, not on exam day."],
 ];
 
-export interface Topic { h: string; p?: string[]; ul?: string[]; ol?: string[]; open?: boolean }
+export interface Topic { h: string; p?: string[]; ul?: string[]; ol?: string[]; open?: boolean; /** DILR: the half of the Learn tab it belongs to; none shows always. */ part?: "lr" | "di" }
 
 /** General advice. Each question type has its own guide in guides.ts. */
 export const TOPICS: Topic[] = [

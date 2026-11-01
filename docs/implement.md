@@ -463,6 +463,26 @@ Full entries are written here when a step comes within two steps of being built:
 - `components/Sidebar.tsx`: `SidebarNav` (open sidebar and phone menu), `NAV_GROUPS` (the landing page's "All pages"), the sliding pill, the day ring. Collapsed shows only logo, search and the bottom controls (owner). Width 288 px. `components/Icons.tsx`: seven icons in the existing stroke style. `components/Layout.tsx` uses them; the old `Nav` and `GROUPS` are gone. `SiteHeader`'s "All pages" headings lose their capitals and rules.
 **By hand.** Desktop open and collapsed, every place current in turn (the pill slides; on the redo page only Redo queue is current), More folding and opening itself on its pages, phone menu, reduced motion.
 
+**DILR page v2 (D78; design `docs/design/dilr-page-v2.md`), 1 Nov 2026**
+`feat/dilr-page-v2` · `feat: redesign the DILR page around one start path and a switch between logical reasoning and data interpretation`
+- `sections/types.ts`: `Category.part` and `Category.group`; `Topic.part` (`sections/varc/learn.ts`). `sections/dilr/learn.ts`: `SLOTS`, `DI_TYPES`, `PARTS`, `GROUPS`, the merged start path, parts on the guides; the topic-share table removed. `sections/dilr/resources.ts`: categories regrouped (`d-lr-courses`, `d-di-books` new; LR courses and DI books moved).
+- `pages/Section.tsx`: DILR Learn (slots table, shared start, the switch with pref `dilrPart`, each half's tables, guides and lists); `?guide=` opens the LR half; Practice lists under phase headings with "You are here"; `TypeTable` (table from a tablet up, stacked rows on a phone).
+**Tests.** `resources.test.ts`: each slot has four or five sets; each half has guides and lists; part only on Learn categories; every Practice category in a known group.
+**By hand.** `/dilr?tab=learn` on a phone and desktop: the switch shows one half, its lists follow it, search still finds both; `/dilr?guide=tournament` opens the LR half; `/dilr?tab=practice`: Foundation marked "You are here"; Watch headings.
+
+**DI resources and how to start (D77), 1 Nov 2026**
+`feat/di-resources` · `feat: add data interpretation guides, books, playlists and a ladder of past CAT DI sets to the DILR page`
+- `sections/dilr/resources.ts`: categories `d-di-start` (learn), `d-di-topic` and `d-di-ladder` (practice), `d-di-yt` (watch); books `d-b-sinha-di`, `d-b-arun-di`, `d-b-time-di`, a Google Books preview on `d-b-sinha`. `sections/dilr/learn.ts`: three DI guides; the practice note on borrowing 2023 to 2025 sets. `sections/index.ts`: tagline; `d-di-wallah` in Foundation setup.
+- `pages/Section.tsx`: `?tab=` opens a tab; the DILR practice card mentions DI. `pages/practice/DilrPractice.tsx`: links to the ladder and the guides.
+**Tests.** `resources.test.ts`: the ladder has 12 sets in order, each linking to a 2IIM DILR paper and naming the same year and slot.
+**By hand.** `/dilr?tab=learn`: the three DI guides and "Data interpretation: start here"; `/dilr?tab=practice`: DI sets by topic and the ladder (tick one; the count moves); `/dilr?tab=watch`; DILR practice's footer link opens the Practice tab; Today in Foundation lists the DI starter kit under "Set up your prep".
+
+**Step 4, data interpretation: planned 1 Nov 2026 (research `docs/research/di.md`; F90 to F96; D70 to D76). Not started.** Each branch gets its design doc first, in the new design language.
+- **4.1 DI format** `feat/di-format`: `LrSet.data`, `LrSet.charts`, types `di-table` and `di-chart` (`practice/types.ts`, `docs/content/lr-format.md`); SVG chart components (`components/DiChart.tsx`, lazy with the player); TITA precision rule; `practice/di/checks.ts` and its test harness; DI causes in the cause list; the CAT calculator in the DILR player; seconds per question and the calculation log on `LrAttempt` (`normalize`, capped at 80). Two L2 sets to prove the format. The DI guide (F21 pattern: what each picture hides, the four calculation tools, where to start, traps, links from the research note §6).
+- **4.2 First twelve sets** `feat/di-sets-1`: 2 L1, 3 L2, 4 L3, 3 L4 across tables, bars, lines, shares, two linked charts, scatter; review with the filled table and formulas; F95 (minutes per question and the calculator log in review); the Arena deals DI (text from A60); DILR plan blocks alternate an LR and a DI set of the day.
+- **4.3 Read the chart and fill the table** `feat/di-drills`: F91 (generated charts, five questions on three levels, named reading traps) and F93 (Replay for missing-value tables on the general solver).
+- **Later (4b):** F92 number sense, F94 can it be answered, sets 13 to 24; F96 if the owner agrees (D74).
+
 **4a.12 DILR Replay (F57, D66; design `docs/design/replay.md`), 1 Nov 2026**
 `feat/dilr-replay` · `feat: add DILR Replay, scheduling, grouping and tournament sets on a board that shows the arrangements left after every deduction`
 - `practice/replay.ts`: formats and modes, `boardOf`, `settledBy` (listed cases up to 20,000, cell tests above; counts capped at 200,000), `trailOf`, `biggestCut`, `answerOf`, marks (`tap`, `shownOf` with crosses that follow from a tick), `wrongMarks`, `solvedBy`, `stepCheck`, `hintFor`, `REPLAY_OF_SET`. `practice/solver.ts`: a grid group may carry `title` and `rows`.
