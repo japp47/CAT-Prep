@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
-import { ChevronDown } from "lucide-react";
+import { Calculator, ChevronDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -12,11 +12,14 @@ import { cn } from "@/lib/utils";
 import { mediumDate, todayIso, uid } from "../../lib/date";
 import { readDraft, writeDraft } from "../../lib/draft";
 import { usePref } from "../../lib/prefs";
-import { LR_SLIPS, LR_TIME_SINKS, type LrAttempt, type LrPostMortem } from "../../lib/state";
+import { DI_SLIPS, LR_SLIPS, LR_TIME_SINKS, type LrAttempt, type LrPostMortem } from "../../lib/state";
 import { useStore } from "../../lib/store";
 import { ContentGate } from "../../components/Content";
 import { ArrowLink, LinkButton, Page } from "../../components/kit";
 import { LR_GUIDE_BY_TYPE } from "../../sections/dilr/guides";
+import { CatCalculator } from "../../components/CatCalculator";
+import { DiFigure } from "../../components/DiChart";
+import { DiReview } from "../../components/DiReview";
 import { LrNextDrill } from "../../components/LrNextDrill";
 import { blankScratch, LrScratch, LrWalkthrough, QuestionFigure } from "../../components/LrDiagram";
 import { LR_CATALOG } from "../../practice/catalog.gen";
@@ -24,7 +27,7 @@ import { lrRight } from "../../practice/lrcheck";
 import { REPLAY_OF_SET } from "../../practice/replay";
 import { LR_SLIP_LABEL, LR_TIME_LABEL, lrError, lrErrorSrc, recordLr, saveLrPostMortem, scoreLr } from "../../practice/lrattempt";
 import { fmtSecs, LETTERS } from "../../practice/record";
-import { LR_TYPE, lrVersion, type LrDiagram, type LrSet, type LrTable } from "../../practice/types";
+import { isDi, LR_TYPE, lrVersion, type LrDiagram, type LrSet, type LrTable } from "../../practice/types";
 import NotFound from "../NotFound";
 import { Choice, ChoiceGroup, QuestionNav, Confirm, ElapsedTimer, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, TimeUp, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
 import { PaneJump, PaneSwitch, showQuestion, Split } from "./RcPlayer";
@@ -65,7 +68,7 @@ function padHint(g: LrDiagram | undefined): string {
   return "Type a name or a note into any seat.";
 }
 
-const kicker = (set: LrSet, what: string) => `${what}, ${LR_TYPE[set.type].label.charAt(0).toLowerCase() + LR_TYPE[set.type].label.slice(1)}, ${set.difficulty}`;
+const kicker = (set: LrSet, what: string) => `${isDi(set.type) && what === "LR practice" ? "DI practice" : what}, ${LR_TYPE[set.type].label.charAt(0).toLowerCase() + LR_TYPE[set.type].label.slice(1)}, ${set.difficulty}`;
 
 function DataTable({ t }: { t: LrTable }) {
   return (
@@ -84,6 +87,7 @@ export function SetText({ set, lit = [] }: { set: LrSet; lit?: number[] }) {
   return (
     <article className="flex flex-col gap-4 rounded-lg bg-card px-5 py-5 sm:px-7 sm:py-6" aria-label="The set">
       {set.intro.map((p, i) => <p key={i} className="text-reading">{p}</p>)}
+      {set.charts?.map((c, i) => { const d = set.data?.find((x) => x.id === c.data); return d ? <DiFigure key={i} chart={c} data={d} /> : null; })}
       {set.clues.length > 0 && (
         <ol className="flex flex-col gap-1.5">
           {set.clues.map((c, i) => (
@@ -113,7 +117,7 @@ function Fold({ title, open, onOpenChange, children }: { title: string; open: bo
 
 /** Where a student is in one set: answers, marks, "not sure" flags, the scratch pad, notes and the open question. */
 export interface LrWork { ans: (number | string | null)[]; marked: boolean[]; unsure: boolean[]; scratch: string[][]; notes: string; cur: number }
-interface LrDraft extends Partial<LrWork> { ans: (number | string | null)[]; secs: number }
+interface LrDraft extends Partial<LrWork> { ans: (number | string | null)[]; secs: number; qs?: number[]; calc?: string[] }
 
 /** The scratch pad's picture: none when the blank layout would give the answer away (a family tree, a map; D53). */
 const padOf = (set: LrSet) => (set.solution.diagram?.pad === false ? undefined : set.solution.diagram);
@@ -154,7 +158,7 @@ export function LrSolve({ set, work, onChange, pane, setPane, last }: {
               <p className="text-sm text-muted-foreground">{padHint(g)} Only you see it, and it is kept with your answers.</p>
               {g && <LrScratch g={g} value={scratch} onChange={(v) => set1({ scratch: v })} />}
               <Textarea aria-label="Your notes" value={notes} onChange={(e) => set1({ notes: e.target.value.slice(0, 2000) })} rows={g ? 2 : 4}
-                placeholder={g ? "Cases, totals, anything else" : "Your working: fields, pairings, totals"} className="bg-secondary text-base" />
+                placeholder={g ? "Cases, totals, anything else" : set.data ? "Your working: the numbers you need, sums, shares" : "Your working: fields, pairings, totals"} className="bg-secondary text-base" />
               <Button variant="ghost" size="sm" className="self-start" disabled={!notes && scratch.every((r) => r.every((x) => !x))}
                 onClick={() => set1({ scratch: g ? blankScratch(g) : [], notes: "" })}>Clear the pad</Button>
             </div>
@@ -219,22 +223,34 @@ function Attempt({ set, onDone }: { set: LrSet; onDone: (id: string) => void }) 
   const submitted = useRef(false);
   const workRef = useRef(work);
   workRef.current = work;
+  // The calculator (CAT's, D73) and its log; time on each question, counted from when it was opened (F95).
+  const [calcOpen, setCalcOpen] = useState(false);
+  const [calc, setCalc] = useState<string[]>(() => saved?.calc ?? []);
+  const qs = useRef<number[]>(saved?.qs?.length === n ? [...saved.qs] : Array(n).fill(0));
+  const onQ = useRef({ q: work.cur, at: Date.now() });
+  const tickQ = () => { const now = Date.now(); qs.current[onQ.current.q] += (now - onQ.current.at) / 1000; onQ.current = { q: workRef.current.cur, at: now }; };
+  useEffect(() => { tickQ(); }, [work.cur]); // eslint-disable-line react-hooks/exhaustive-deps
+  const draft = (): LrDraft => { tickQ(); return { ...workRef.current, secs: (Date.now() - startAt) / 1000, qs: qs.current, calc }; };
 
   // Kept on every change, and on leaving the page, so a reload or a phone switching apps comes back to the same place.
+  const draftRef = useRef(draft);
+  draftRef.current = draft;
   useEffect(() => {
-    if (!submitted.current) writeDraft(draftKey, { ...work, secs: (Date.now() - startAt) / 1000 } satisfies LrDraft);
-  }, [draftKey, work, startAt]);
+    if (!submitted.current) writeDraft(draftKey, draftRef.current());
+  }, [draftKey, work, calc]);
   useEffect(() => {
-    const keep = () => { if (!submitted.current) writeDraft(draftKey, { ...workRef.current, secs: (Date.now() - startAt) / 1000 } satisfies LrDraft); };
+    const keep = () => { if (!submitted.current) writeDraft(draftKey, draftRef.current()); };
     window.addEventListener("pagehide", keep);
     return () => { window.removeEventListener("pagehide", keep); keep(); };
-  }, [draftKey, startAt]);
+  }, [draftKey]);
 
   const submit = () => {
     const id = uid();
     submitted.current = true;
     writeDraft(draftKey, null);
-    update((st) => recordLr(st, id, set, work.ans, (Date.now() - startAt) / 1000, todayIso(), work.unsure.flatMap((u, i) => (u ? [i] : [])), Date.now()));
+    tickQ();
+    const extra = { qs: [...qs.current], calc };
+    update((st) => recordLr(st, id, set, work.ans, (Date.now() - startAt) / 1000, todayIso(), work.unsure.flatMap((u, i) => (u ? [i] : [])), Date.now(), extra));
     setConfirming(false);
     leave.allowNextNavigation();
     onDone(id);
@@ -247,8 +263,10 @@ function Attempt({ set, onDone }: { set: LrSet; onDone: (id: string) => void }) 
         {hideTimer
           ? <Button variant="link" size="sm" onClick={() => setHideTimer(false)}>Show timer</Button>
           : <ElapsedTimer startAt={startAt} target={target} onClick={() => setHideTimer(true)} title={`Target ${set.minutes} minutes. Tap to hide.`} />}
+        <Button size="sm" variant="ghost" aria-pressed={calcOpen} onClick={() => setCalcOpen(!calcOpen)}><Calculator aria-hidden />Calculator</Button>
         <Button size="sm" variant="secondary" onClick={() => setConfirming(true)}>Submit set</Button>
       </PlayerBar>
+      {calcOpen && <CatCalculator onClose={() => setCalcOpen(false)} onLog={(l) => setCalc((x) => [...x, l].slice(-80))} />}
       <TimeUp startAt={startAt} target={target} onSubmit={submit} />
       {saved && <p className="text-sm text-muted-foreground">Your saved answers and notes are back. The timer paused while you were away ({fmtSecs(saved.secs)} elapsed).</p>}
 
@@ -293,6 +311,7 @@ function FullReview({ set, attempt }: { set: LrSet; attempt: LrAttempt }) {
       </PlayerBar>
       <Score set={set} attempt={attempt} />
       <PostMortem set={set} attempt={attempt} />
+      <DiReview set={set} attempt={attempt} />
       <LrNextDrill set={set} attempt={attempt} />
       {REPLAY_OF_SET[set.id] && <ArrowLink to={`/practice/replay/${REPLAY_OF_SET[set.id]}?mode=watch&back=${encodeURIComponent(`/practice/lr/${set.id}?review=${attempt.id}`)}`}>Watch the deduction happen: this set on a board, step by step, with the arrangements left after each step</ArrowLink>}
       <LrWalkthrough steps={set.solution.steps} g={set.solution.diagram} />
@@ -363,7 +382,7 @@ export function ReviewQuestion({ set, qi, given, att, whole }: { set: LrSet; qi:
           {q.why.map((w, i) => <p key={i} className="text-base">{w}</p>)}
         </div>
       )}
-      <p className="text-sm text-muted-foreground">{q.uses.length === 0 ? (set.clues.length === 0 ? "The question's own statements settle it." : set.tables ? "The table alone settles it; no clue is needed." : "The rules in the story settle it; no clue is needed.") : whole ? "This question needs the whole set solved." : `The highlighted clue${q.uses.length > 1 ? "s settle" : " settles"} it.`}</p>
+      <p className="text-sm text-muted-foreground">{q.uses.length === 0 ? (set.data ? "The charts and tables settle it." : set.clues.length === 0 ? "The question's own statements settle it." : set.tables ? "The table alone settles it; no clue is needed." : "The rules in the story settle it; no clue is needed.") : whole ? "This question needs the whole set solved." : `The highlighted clue${q.uses.length > 1 ? "s settle" : " settles"} it.`}</p>
       {!ok && (inLog
         ? <ErrorCause src={src} />
         : <Button variant="secondary" size="sm" className="self-start" onClick={() => { update((st) => { st.errors.push(lrError(set, qi, given, todayIso(), false, att)); }); toast("Added to your Error log."); }}>Add to Error log</Button>)}
@@ -431,7 +450,7 @@ function PostMortem({ set, attempt }: { set: LrSet; attempt: LrAttempt }) {
         <p className="measure text-base text-muted-foreground">Answer from memory, before the walkthrough if you can. Saying what opened the set, and what went wrong, is what makes the next set faster.</p>
         {clues.length > 0 && <Pick label="Which clue gave you the first real deduction?" value={pm.key} options={clues} onChange={(key) => save({ ...pm, key })} />}
         <Pick label="Where did most of the time go?" value={pm.time} options={LR_TIME_SINKS.map((k) => [k, LR_TIME_LABEL[k]])} onChange={(time) => save({ ...pm, time })} />
-        <Pick label="What cost you an answer?" value={pm.slip} options={LR_SLIPS.map((k) => [k, LR_SLIP_LABEL[k]])} onChange={(slip) => save({ ...pm, slip, ...(slip === "none" ? { slipClue: undefined } : {}) })} />
+        <Pick label="What cost you an answer?" value={pm.slip} options={LR_SLIPS.filter((k) => isDi(set.type) || !DI_SLIPS.includes(k)).map((k) => [k, LR_SLIP_LABEL[k]])} onChange={(slip) => save({ ...pm, slip, ...(slip === "none" ? { slipClue: undefined } : {}) })} />
         {needsClue && clues.length > 0 && <Pick label="Which clue was it?" value={pm.slipClue} options={clues} onChange={(slipClue) => save({ ...pm, slipClue })} />}
         {done > 0 && <p className="text-sm text-success" role="status">Saved with this attempt. History shows the clue that opened the set.</p>}
       </div>

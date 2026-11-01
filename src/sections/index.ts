@@ -3,15 +3,15 @@ import type { SectionDef, SectionId } from "./types";
 import { VARC } from "./varc";
 
 /**
- * DILR is live: its LR sets, drills and plan blocks are in the timetable (F22, D56); data interpretation joins in
- * December. Quant is a placeholder. To make a section live, give it a template and phaseText, then set status to "live".
+ * DILR is live: its LR sets, drills and plan blocks are in the timetable (F22, D56); data interpretation sets started
+ * on 1 Nov 2026 (F90), with more through December. Quant is a placeholder. To make a section live, give it a template and phaseText, then set status to "live".
  */
 const DILR: SectionDef = {
   id: "dilr",
   short: "DILR",
   name: "Data Interpretation and Logical Reasoning",
   status: "live",
-  tagline: "Logical reasoning first: set types, how to read clues, how to choose sets. Data interpretation: guides and past CAT sets now, sets on this site from December.",
+  tagline: "Logical reasoning and data interpretation: set types, how to read clues and charts, how to choose sets. The first DI sets are live; more arrive through December.",
   defaults: { wd: 30, we: 60 },
   maxQ: 22,
   phaseText: DILR_PHASE_TEXT,

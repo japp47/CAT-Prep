@@ -62,10 +62,16 @@ export interface CrAttempt { id: string; d: string; items: { k: string; a: numbe
  * blank. c counts right answers and w wrong MCQs only (TITA has no negative marking), so 3c - w is the score. pm is the
  * post-mortem (F86), written after the review opens; that is why this kind syncs by updatedAt instead of write-once.
  */
-export interface LrAttempt { id: string; d: string; set: string; ans: (number | string | null)[]; c: number; w: number; secs: number; updatedAt: number; v?: string; unsure?: number[]; pm?: LrPostMortem }
+export interface LrAttempt {
+  id: string; d: string; set: string; ans: (number | string | null)[]; c: number; w: number; secs: number; updatedAt: number; v?: string; unsure?: number[]; pm?: LrPostMortem;
+  /** Seconds on each question, and the calculator's finished calculations (the last 80), for the review (F95). */
+  qs?: number[]; calc?: string[];
+}
 /** Where the time went in an LR set, and the slip that cost an answer (F86). */
 export const LR_TIME_SINKS = ["reading", "drawing", "cases", "calculation", "stuck"] as const;
-export const LR_SLIPS = ["misread", "missed-case", "assumption", "calculation", "none"] as const;
+export const LR_SLIPS = ["misread", "missed-case", "assumption", "calculation", "reading", "base", "rounding", "none"] as const;
+/** Slips only a data set can have (D73): offered in a DI set's post-mortem, not an LR set's. */
+export const DI_SLIPS: readonly string[] = ["reading", "base", "rounding"];
 export type LrTimeSink = (typeof LR_TIME_SINKS)[number];
 export type LrSlip = (typeof LR_SLIPS)[number];
 /** The set post-mortem (F86): the clue that opened the set, where the time went, and the slip with its clue. Each part is optional. */
@@ -280,6 +286,8 @@ export function normalize(raw: unknown): AppState {
     };
     if (typeof x.v === "string" && x.v) a.v = x.v;
     if (Array.isArray(x.unsure)) a.unsure = x.unsure.filter((n: unknown) => Number.isInteger(n)) as number[];
+    if (Array.isArray(x.qs)) a.qs = x.qs.map((n: unknown) => (Number.isFinite(n) && (n as number) >= 0 ? Math.round(n as number) : 0));
+    if (Array.isArray(x.calc)) a.calc = x.calc.filter((l: unknown): l is string => typeof l === "string").slice(-80).map((l) => l.slice(0, 80));
     if (isObj(x.pm)) {
       const p = x.pm, pm: LrPostMortem = {};
       if (Number.isInteger(p.key) && (p.key as number) > 0) pm.key = p.key as number;

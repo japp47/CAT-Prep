@@ -2,7 +2,7 @@ import type { Topic } from "../varc/learn";
 
 /**
  * The DILR page's Learn tab (docs/feature.md F21, research in docs/research/lr.md). Logical reasoning comes first
- * (D37); data interpretation has its starting guides here (docs/research/di.md) and its own sets from December. Figures
+ * (D37); data interpretation has its starting guides here (docs/research/di.md) and its first sets from 1 Nov 2026. Figures
  * are ranges from coaching analyses, not IIM data.
  */
 export const FORMAT: [string, string][] = [

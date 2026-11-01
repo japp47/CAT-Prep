@@ -1,0 +1,260 @@
+[
+  {
+    "id": "di-batch-enrolments",
+    "title": "Enrolments in five batches",
+    "type": "di-table",
+    "difficulty": "medium",
+    "minutes": 13,
+    "source": "original",
+    "since": "2026-11-02",
+    "intro": [
+      "A coaching institute runs five batches, A, B, C, D and E. The table shows the number of students who enrolled in each batch in each of four months, with each batch's four-month total and each month's total over all five batches. Eight entries are missing.",
+      "Additional information is given below the table."
+    ],
+    "clues": [
+      "Each of the 20 monthly figures in the table (excluding the totals), including each missing one, is a multiple of 5 from 10 to 60, inclusive.",
+      "In each month, no two batches had the same number of enrolments.",
+      "Batch C's enrolments rose every month.",
+      "In April, batch B had the second-highest number of enrolments."
+    ],
+    "data": [
+      {
+        "id": "enrol",
+        "caption": "Enrolments by batch and month",
+        "unit": "Number of students",
+        "rowHead": "Batch",
+        "cols": [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "Total"
+        ],
+        "rows": [
+          {
+            "name": "A",
+            "cells": [
+              null,
+              null,
+              50,
+              25,
+              150
+            ]
+          },
+          {
+            "name": "B",
+            "cells": [
+              25,
+              null,
+              30,
+              null,
+              150
+            ]
+          },
+          {
+            "name": "C",
+            "cells": [
+              15,
+              null,
+              35,
+              null,
+              125
+            ]
+          },
+          {
+            "name": "D",
+            "cells": [
+              null,
+              30,
+              20,
+              null,
+              145
+            ]
+          },
+          {
+            "name": "E",
+            "cells": [
+              30,
+              50,
+              45,
+              35,
+              160
+            ]
+          },
+          {
+            "name": "Total",
+            "cells": [
+              165,
+              180,
+              180,
+              205,
+              730
+            ]
+          }
+        ]
+      }
+    ],
+    "charts": [
+      {
+        "kind": "table",
+        "data": "enrol"
+      }
+    ],
+    "questions": [
+      {
+        "stem": "How many students enrolled in batch D in January?",
+        "kind": "tita",
+        "answer": "55",
+        "uses": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "why": [
+          "C's row: 15 + Feb + 35 + Apr = 125, so Feb + Apr = 75, with 15 < Feb < 35 < Apr (fact 3). As multiples of 5 within 10 to 60, (Feb, Apr) is (20, 55) or (25, 50).",
+          "April's column: 25 + B + C + D + 35 = 205, so B + C + D = 145 in April. B's row gives B Feb + B Apr = 95, and D's row gives D Jan + D Apr = 95.",
+          "Try C = 50 in April: then B + D = 95. If B is 45 or less, D is 50 or more, so C and D both stand above B. If B is 55 or more, D is 40 or less and B is the highest. B = 50 ties with C. None leaves B second (facts 2 and 4). So C = 55, and B + D = 90 with B second: B = 50, D = 40.",
+          "So C's February is 20, and D's January is 95 − 40 = 55."
+        ]
+      },
+      {
+        "stem": "In how many of the four months did batch E have more enrolments than batch A?",
+        "kind": "mcq",
+        "options": [
+          "0",
+          "1",
+          "2",
+          "3"
+        ],
+        "answer": 2,
+        "uses": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "why": [
+          "January's column: A + 25 + 15 + 55 + 30 = 165 gives A Jan = 40, and A's row then gives A Feb = 150 − 40 − 50 − 25 = 35.",
+          "A: 40, 35, 50, 25. E: 30, 50, 45, 35.",
+          "E is ahead in February and April only: 2 months."
+        ]
+      },
+      {
+        "stem": "What percentage of all April enrolments was accounted for by batches B and D together, to the nearest integer?",
+        "kind": "tita",
+        "answer": "44",
+        "tol": 0.5,
+        "uses": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "why": [
+          "In April, B had 50 and D had 40, out of 205 in all.",
+          "90 ÷ 205 = 43.9%, which is 44 to the nearest integer."
+        ]
+      },
+      {
+        "stem": "Taking each batch's best month, what was the highest share of a batch's own four-month total enrolled in a single month?",
+        "kind": "mcq",
+        "options": [
+          "31.3%",
+          "33.3%",
+          "37.9%",
+          "44.0%"
+        ],
+        "answer": 3,
+        "uses": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "why": [
+          "Each batch's largest month over its own total: A 50 of 150 (33.3%), B 50 of 150 (33.3%), C 55 of 125 (44.0%), D 55 of 145 (37.9%), E 50 of 160 (31.3%).",
+          "The highest is C's April, 44.0%.",
+          "D also had 55 in a month, but over a larger total: the largest single entry is not the largest share."
+        ]
+      },
+      {
+        "stem": "If the information in point 4 were not available, and everything else stayed the same, which of the following could NOT be batch B's enrolment in February?",
+        "kind": "mcq",
+        "options": [
+          "35",
+          "40",
+          "45",
+          "55"
+        ],
+        "answer": 0,
+        "uses": [
+          1,
+          2,
+          3
+        ],
+        "why": [
+          "Without fact 4, the totals and facts 1 to 3 allow four ways to fill the table, and B's February entry is 40, 45 or 55 in them.",
+          "B Feb = 35 would need A Feb + C Feb = 180 − 35 − 30 − 50 = 65 and B Apr = 150 − 25 − 30 − 35 = 60. Working through C's two options, either D's January leaves the 10 to 60 range or D's April becomes 35, tying with E's April.",
+          "So 35 is the one value B's February entry cannot take. 40, 45 and 55 each appear in a fill that keeps every fact but the fourth."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Write each row's and column's missing sum first. A: Jan + Feb = 75. B: Feb + Apr = 95. C: Feb + Apr = 75. D: Jan + Apr = 95. January: A + D = 95. February: A + B + C = 100. April: B + C + D = 145.",
+        "Batch C rises every month (fact 3): 15 < Feb < 35 < Apr with Feb + Apr = 75, so (Feb, Apr) is (20, 55) or (25, 50).",
+        "Fact 4 settles April: B must be second-highest, so C takes 55 and B 50, and D gets 145 − 105 = 40. Then C Feb = 20.",
+        "Every other blank follows from a sum: B Feb = 95 − 50 = 45, D Jan = 95 − 40 = 55, A Jan = 95 − 55 = 40, A Feb = 75 − 40 = 35.",
+        "Check fact 2, month by month: January 40, 25, 15, 55, 30; February 35, 45, 20, 30, 50; March 50, 30, 35, 20, 45; April 25, 50, 55, 40, 35. No ties: the table fills exactly one way."
+      ],
+      "fills": [
+        {
+          "data": "enrol",
+          "cells": [
+            [
+              "A",
+              "Jan",
+              40
+            ],
+            [
+              "A",
+              "Feb",
+              35
+            ],
+            [
+              "B",
+              "Feb",
+              45
+            ],
+            [
+              "B",
+              "Apr",
+              50
+            ],
+            [
+              "C",
+              "Feb",
+              20
+            ],
+            [
+              "C",
+              "Apr",
+              55
+            ],
+            [
+              "D",
+              "Jan",
+              55
+            ],
+            [
+              "D",
+              "Apr",
+              40
+            ]
+          ]
+        }
+      ]
+    }
+  }
+]
