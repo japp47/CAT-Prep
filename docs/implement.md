@@ -463,6 +463,28 @@ Full entries are written here when a step comes within two steps of being built:
 - `components/Sidebar.tsx`: `SidebarNav` (open sidebar and phone menu), `NAV_GROUPS` (the landing page's "All pages"), the sliding pill, the day ring. Collapsed shows only logo, search and the bottom controls (owner). Width 288 px. `components/Icons.tsx`: seven icons in the existing stroke style. `components/Layout.tsx` uses them; the old `Nav` and `GROUPS` are gone. `SiteHeader`'s "All pages" headings lose their capitals and rules.
 **By hand.** Desktop open and collapsed, every place current in turn (the pill slides; on the redo page only Redo queue is current), More folding and opening itself on its pages, phone menu, reduced motion.
 
+**4a.12 DILR Replay (F57, D66; design `docs/design/replay.md`), 1 Nov 2026**
+`feat/dilr-replay` · `feat: add DILR Replay, scheduling, grouping and tournament sets on a board that shows the arrangements left after every deduction`
+- `practice/replay.ts`: formats and modes, `boardOf`, `settledBy` (listed cases up to 20,000, cell tests above; counts capped at 200,000), `trailOf`, `biggestCut`, `answerOf`, marks (`tap`, `shownOf` with crosses that follow from a tick), `wrongMarks`, `solvedBy`, `stepCheck`, `hintFor`, `REPLAY_OF_SET`. `practice/solver.ts`: a grid group may carry `title` and `rows`.
+- Content: `content/lrdrill/replay.json`, six sets (two scheduling, two grouping, two tournaments, one of them the archery LR set), loaded with the drills (`bank.ts`, `LrDrills.replay`). Format in `docs/content/lr-drills.md`.
+- `components/ReplayBoard.tsx`: `ReplayBoard` (grids, league rows, 44 px cells with spoken labels, fresh cells pop in) and `WaysLeft` (the count and its staircase, GSAP count-down).
+- Pages (lazy): `/practice/replay` (`Replay.tsx`: next set, sets by format) and `/practice/replay/:id` (`ReplayPlayer.tsx`: Watch, Step by step, On your own, Done). Mode in `?mode=`; `?back=` returns to an LR set's review.
+- Wiring: `lrDrills` kind `replay` (`lib/state.ts`; no server change), a fourth card in DILR practice's Drills, History rows, `planner/go.ts` and `planner/auto.ts` know `/practice/replay`, the archery set's review links to its replay.
+**Tests.** `practice/replay.test.ts`: every set has one answer, needs every clue, uses every clue once in its steps, the count falls at each step and ends solved; the archery replay matches its LR set word for word; marks, auto crosses, wrong marks, solved rows, step checks (guesses ahead, misses), hints (wrong marks first, then the next step), the biggest cut, the capped count on the widest board.
+**By hand.** `/practice/replay` on a phone and a desktop. Step by step on "Five talks": tick Bilal on Monday, Check step (one wrong, in red; step 1 places no one, rules out cells), Show me for the rest, see "Shown step by step". Watch "Archery": Apply the first step, Play, the count falls from over 2,00,000 to 1 and step 3 is highlighted. On your own on "A round robin": a wrong tick, Check, Hint names the red mark first. History shows each run.
+
+**"All pages" panel v2 (D69; design `docs/design/all-pages.md`), 1 Nov 2026**
+`feat/all-pages-v2` · `feat: redesign the home page's All pages panel around the three sections as towers of real numbers`
+- `components/AllPages.tsx` (lazy, loaded on hover or focus of the button; `Layout.tsx` passes it to `SiteHeader` as `panel`): towers card with section tiles, Study with lines and live counts, Track, More; dimmed page; GSAP entrance. `useTowers`: answers in the last 30 days from `practice`, else catalog counts; `unitFor` keeps towers at twelve blocks or fewer.
+- `components/SectionTowers.tsx` (three.js): towers, plates, outline for a section not open; hover and click by raycast; lift and colour by GSAP; blocks drop in once; flat fallback without WebGL.
+- `components/Sidebar.tsx` exports `MAIN`, `TRACK`, `MORE`, `SECTION_ITEMS`, `useWaiting`, `DayRing`; `NAV_GROUPS` and `SiteNavGroup` removed.
+**By hand.** Home at 1440 px, light and dark: open All pages, the page dims and the blocks drop; hover each section tile (its tower lifts) and each tower (its tile lights); click DILR's tower (opens /dilr); Escape and a click on the dimmed page close it; with reduced motion the towers are still; log a practice set and reopen: the towers show your answers.
+
+**CAT-pattern RC sets (D67), 1 Nov 2026**
+`feat/rc-cat-pattern` · `feat: add five CAT-pattern RC sets as a collection in the RC library`
+- Five sets in `content/rc/` (science: `pat-replication`, `pat-restoration`; society: `pat-street-names`; economics: `pat-proxies`; arts: `pat-authenticity`), `pack: "cat-pattern"`, `since` 2026-11-02. `RcSet.pack`, `RcMeta.pack`, `RC_PACKS` in `practice/types.ts`; a Collection filter in `pages/practice/Library.tsx`. Test: collection sets are in a known collection and their right option is the longest in under 40%.
+**By hand.** RC library: Collection, CAT-pattern sets lists five; take one and check the review's explanations.
+
 **Next after 4a.9:** Progress v2 (D55, D58) with the skill map (F89) and the Arena trend; then the general solver that takes must-could-cannot and first move to selection, binary logic and tournaments and serves F57 and F61 (D51); DI sets (F23) and F27 (one daily budget). In step 4b: F82 part 1 with the exam year and a weekly target.
 
 **4a.1b DILR page opened, 24 Oct 2026** on `feat/dilr-resources`: section status `open` (`sections/types.ts`), `sections/dilr/learn.ts` (format, set types, topic share, concept guides, tabs and notes) and `sections/dilr/resources.ts` (34 links, ids prefixed `d-`, all opened on 24 Oct 2026); `pages/Section.tsx` reads per-section page data; the header, footer and Today stop calling DILR "soon". Test: `sections/dilr/resources.test.ts`.

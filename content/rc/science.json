@@ -1325,5 +1325,334 @@
       "claim": "met by a swift, flexible treaty that worked",
       "qualifier": "may not carry over"
     }
+  },
+  {
+    "id": "pat-replication",
+    "title": "When scientific results fail to travel",
+    "genre": "science",
+    "difficulty": "hard",
+    "since": "2026-11-02",
+    "pack": "cat-pattern",
+    "paras": [
+      "A scientific finding is often treated as if it were a parcel: once dispatched from a laboratory, it should arrive intact in another laboratory, provided the recipient follows the instructions printed on the label. The language of replication encourages this picture. A result is considered robust when another team can reproduce it; a failure to do so is often described as evidence that the original result was unreliable. Yet this account can obscure what researchers actually do when they try to make a finding travel.",
+      "Consider a laboratory that reports a particular chemical response only when samples are cooled within a narrow temperature range. A second laboratory follows the published protocol and fails to observe the response. The first team's notes may describe the cooling procedure as “standard,” but that word can conceal a sequence of small judgements: how long a sample is left on the bench, how a sensor is positioned, or how a technician recognises that a machine has stabilised. Such judgements may be so familiar to the original team that they do not appear worth recording. The second team, meanwhile, may be perfectly competent and still lack the same habits.",
+      "It would be a mistake to conclude that scientific results are therefore merely local or subjective. Instruments can be calibrated; tacit procedures can be documented; rival explanations can be tested. But the episode shows that a published method is not always a complete description of the activity that produced a result. Scientific knowledge depends partly on inscriptions—tables, protocols, graphs—and partly on trained people who know how to interpret and enact them.",
+      "This also complicates the distinction between reproducibility and replicability. Reproducibility is commonly used for obtaining consistent results from the same data and analytical steps; replicability refers to obtaining consistent results in a new study. The distinction is useful, but neither term alone tells us where a failure occurred. A mismatch may arise from an overfitted analysis, an unreported feature of the sample, a changed instrument, or a genuine weakness in the original claim. Calling all such cases “failed replication” groups together problems that demand different remedies.",
+      "The answer, then, is not to abandon standards or to excuse every inconsistency as a quirk of laboratory culture. It is to treat replication as an investigation rather than a verdict. When a result fails to travel, researchers should ask what travelled with it, what was left behind, and which parts of the claim survive once the difference is understood. A scientific community becomes more reliable not by assuming that methods are self-explanatory, but by learning to expose the practical conditions under which evidence becomes persuasive."
+    ],
+    "questions": [
+      {
+        "type": "main",
+        "stem": "Which of the following best captures the central argument of the passage?",
+        "proof": [
+          0,
+          4
+        ],
+        "answer": 2,
+        "options": [
+          {
+            "t": "Because researchers rely on habits they rarely record, a failed replication usually says more about the second laboratory's skill than about the original claim.",
+            "why": "The passage says the second team 'may be perfectly competent', and that a mismatch can come from 'a genuine weakness in the original claim'.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "The distinction between reproducibility and replicability should replace the loose label 'failed replication' in scientific reporting.",
+            "why": "Paragraph 4 says 'neither term alone tells us where a failure occurred'; the distinction is one step in the argument, not its conclusion.",
+            "trap": "Too narrow or too broad"
+          },
+          {
+            "t": "A result that fails to travel should be investigated, since written methods can leave out practical conditions and mismatches have different causes.",
+            "why": "Paragraphs 2 to 5: methods omit tacit judgements, causes differ, so replication is 'an investigation rather than a verdict'."
+          },
+          {
+            "t": "Scientific knowledge rests less on published inscriptions than on the trained people who know how to enact them.",
+            "why": "Knowledge depends 'partly' on inscriptions and 'partly' on trained people; the passage does not rank one above the other.",
+            "trap": "Distorts the passage"
+          }
+        ]
+      },
+      {
+        "type": "inference",
+        "stem": "Which of the following can be most reasonably inferred from the passage?",
+        "proof": [
+          2,
+          3
+        ],
+        "answer": 0,
+        "options": [
+          {
+            "t": "Writing down procedures a team takes for granted could help explain a failed replication, without guaranteeing that two laboratories will then agree.",
+            "why": "Paragraph 3 says 'tacit procedures can be documented'; paragraph 4 lists other causes, such as instruments, samples and weak claims, that documentation would not remove."
+          },
+          {
+            "t": "Had both laboratories followed the written protocol exactly, the second team's failure would show the original result to be unreliable.",
+            "why": "The cooling example is exactly a protocol followed faithfully that still misses unrecorded judgements.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Once an analysis has been reproduced from the same data, a failure to replicate it in a new study points to a weakness in the original claim rather than in the new study.",
+            "why": "Paragraph 4 says a new-study mismatch may come from the sample, an instrument or the claim; reproducing the analysis does not single out the claim.",
+            "trap": "Half right, half wrong"
+          },
+          {
+            "t": "Replication failures are more often caused by unrecorded laboratory habits than by weaknesses in the original claims.",
+            "why": "The passage never compares how often each cause occurs.",
+            "trap": "Out of scope"
+          }
+        ]
+      },
+      {
+        "type": "structure",
+        "stem": "The example of the cooling procedure primarily serves to:",
+        "proof": [
+          1
+        ],
+        "answer": 3,
+        "options": [
+          {
+            "t": "show that the second laboratory lacked the competence to follow a published protocol.",
+            "why": "The passage says the second team 'may be perfectly competent and still lack the same habits'.",
+            "trap": "Wrong direction"
+          },
+          {
+            "t": "argue that words such as 'standard' should be kept out of published methods.",
+            "why": "The passage points out what the word can conceal; it proposes no rule about wording.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "suggest that results which depend on a narrow temperature range are less trustworthy than findings that hold under ordinary laboratory conditions.",
+            "why": "The example is about what a protocol leaves out, not about which kinds of result can be trusted.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "illustrate how small, unrecorded judgements behind a 'standard' procedure can stop a published method from transferring.",
+            "why": "The 'standard' cooling hides judgements about the bench, the sensor and the machine that the second team did not share."
+          }
+        ]
+      },
+      {
+        "type": "except",
+        "stem": "Which of the following is least consistent with the author's position?",
+        "proof": [
+          3,
+          4
+        ],
+        "answer": 1,
+        "options": [
+          {
+            "t": "Replication can expose a genuine weakness in the original claim.",
+            "why": "Paragraph 4 lists 'a genuine weakness in the original claim' among the causes.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "A failed replication is, on its own, enough to show that the original claim was false.",
+            "why": "The author wants replication treated as 'an investigation rather than a verdict', so a failure alone settles nothing."
+          },
+          {
+            "t": "Practitioners may leave some steps unrecorded because those steps seem too familiar to mention.",
+            "why": "Paragraph 2: such judgements may not 'appear worth recording'.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "An overfitted analysis and an unreported feature of the sample call for different remedies.",
+            "why": "Paragraph 4: grouping these problems together hides that they 'demand different remedies'.",
+            "trap": "True but not the answer"
+          }
+        ]
+      }
+    ],
+    "recall": [
+      {
+        "q": "In the passage's example, the chemical response appears only when samples are:",
+        "options": [
+          "cooled within a narrow temperature range",
+          "heated slowly over several hours",
+          "kept away from light",
+          "mixed by a trained technician"
+        ],
+        "answer": 0
+      },
+      {
+        "q": "According to the passage, 'reproducibility' commonly refers to:",
+        "options": [
+          "consistent results in a new study",
+          "consistent results from the same data and analytical steps",
+          "results confirmed by a second laboratory's instruments",
+          "results that survive peer review"
+        ],
+        "answer": 1
+      }
+    ],
+    "summary": {
+      "model": "A failed replication should start an investigation, not end one, since written methods can omit the practical conditions behind a result.",
+      "tone": "analytical",
+      "claim": "should start an investigation, not end one",
+      "qualifier": "can omit the practical conditions"
+    }
+  },
+  {
+    "id": "pat-restoration",
+    "title": "What does it mean to restore nature?",
+    "genre": "science",
+    "difficulty": "medium",
+    "since": "2026-11-02",
+    "pack": "cat-pattern",
+    "paras": [
+      "The phrase “restore the ecosystem” sounds as if nature had once occupied a stable, identifiable state and humans could simply return it there. In practice, restoration projects must decide which past to use as a reference. Should a wetland resemble the landscape recorded before a dam was built, the vegetation observed fifty years ago, or the habitat best able to support wildlife under present climate conditions? Each choice carries a different idea of what counts as recovery.",
+      "Suppose a team working on a damaged grassland removes an invasive shrub and replants native grasses. The project appears successful if the chosen grasses spread, but that result alone may not show that the grassland is recovering as a functioning ecological system. In the former landscape, periodic fires and grazing may have kept shrubs limited. If those processes no longer occur, the same shrub may return even after repeated removal. The project has treated a visible symptom without fully addressing the conditions that produced it.",
+      "One response is to reconstruct as much as possible of the ecosystem's earlier processes rather than only its earlier appearance. This may mean restoring water flows, reintroducing grazing animals, or changing how nearby land is managed. Even then, there is no guarantee that the system will settle into an exact historical configuration. Rainfall patterns may have changed; species may have moved; and a landscape is shaped by interactions that cannot all be controlled by a project team. “Historical fidelity” is therefore not always a straightforward or even achievable target.",
+      "Some critics worry that this flexibility gives managers permission to call any convenient intervention restoration. The concern is serious. Without a clear reference point, a project can declare success simply because a chosen indicator has improved. Yet the alternative—a rigid commitment to recreating one date in the past—can also be misleading. It may privilege a moment selected for administrative convenience, ignore earlier human influence, or demand a condition that current climate makes unsustainable.",
+      "A defensible restoration plan should make its goals explicit. It might seek to recover native biodiversity, restore the movement of water, improve resilience to drought, or preserve a culturally significant landscape. These goals can overlap, but they can also conflict. If managers state what they are trying to recover and explain the trade-offs, success becomes open to public scrutiny rather than resting on the reassuring but vague claim that nature has been put back as it was."
+    ],
+    "questions": [
+      {
+        "type": "main",
+        "stem": "Which of the following best captures the author's view of ecological restoration?",
+        "proof": [
+          1,
+          2,
+          4
+        ],
+        "answer": 3,
+        "options": [
+          {
+            "t": "A restoration succeeds only when a landscape returns to the state it was in before people altered it.",
+            "why": "Paragraph 3 says 'historical fidelity' is not always achievable, and paragraph 4 warns against a rigid past date.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "Because ecosystems keep changing, a restoration cannot be judged a success or a failure.",
+            "why": "The author wants explicit goals precisely so that success is 'open to public scrutiny'.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Restoration should aim to bring back ecological processes such as fire, grazing and water flow, rather than to reproduce what a landscape once looked like.",
+            "why": "Processes matter, but the author also accepts goals such as 'a culturally significant landscape' and insists on stating goals and trade-offs.",
+            "trap": "Half right, half wrong"
+          },
+          {
+            "t": "Restoration needs stated goals and working ecological processes, since neither a past appearance nor one improved indicator is enough.",
+            "why": "Paragraphs 2 to 5 reject both copying the past and a single indicator, and ask for explicit goals."
+          }
+        ]
+      },
+      {
+        "type": "structure",
+        "stem": "Why does the author discuss fire and grazing in the grassland example?",
+        "proof": [
+          1
+        ],
+        "answer": 1,
+        "options": [
+          {
+            "t": "To show that invasive shrubs should be removed wherever they appear.",
+            "why": "The example questions whether removal alone works; it makes no general rule about shrubs.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "To show that removing a visible problem may not last if the processes that once shaped the ecosystem are still missing.",
+            "why": "Without fire and grazing 'the same shrub may return even after repeated removal'."
+          },
+          {
+            "t": "To suggest that restoration projects should replant shrubs instead of grasses.",
+            "why": "The shrub is the problem being removed; nothing favours replanting it.",
+            "trap": "Wrong direction"
+          },
+          {
+            "t": "To prove that once fire and grazing are brought back, a grassland will return to its earlier state without further intervention.",
+            "why": "Paragraph 3: even restoring processes gives 'no guarantee'.",
+            "trap": "Extreme wording"
+          }
+        ]
+      },
+      {
+        "type": "inference",
+        "stem": "Which of the following can be inferred from the passage?",
+        "proof": [
+          2,
+          4
+        ],
+        "answer": 2,
+        "options": [
+          {
+            "t": "A project that adapts its goals to a changed climate has given up on restoration.",
+            "why": "The author accepts that the climate may make a past state 'unsustainable' and still treats such projects as restoration.",
+            "trap": "Wrong direction"
+          },
+          {
+            "t": "Historical records are of little use to restoration because they miss nature's complexity.",
+            "why": "The past is still a reference; the author only warns against treating one date as the target.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "A project can set goals that are clear and checkable without promising to recreate one exact moment in the past.",
+            "why": "Paragraph 5 lists such goals, and paragraph 3 says an exact past state may not be achievable."
+          },
+          {
+            "t": "Once ecologists agree on a restoration plan among themselves, there is little need to explain its trade-offs to the wider public.",
+            "why": "The author wants trade-offs explained so that success is 'open to public scrutiny'.",
+            "trap": "Wrong direction"
+          }
+        ]
+      },
+      {
+        "type": "detail",
+        "stem": "Which concern about flexible restoration goals does the author acknowledge?",
+        "proof": [
+          3,
+          4
+        ],
+        "answer": 0,
+        "options": [
+          {
+            "t": "Without stated goals and trade-offs, flexibility could let managers declare success whenever a chosen indicator improves.",
+            "why": "Paragraph 4 calls this concern 'serious'; paragraph 5 answers it with explicit goals."
+          },
+          {
+            "t": "Flexible goals make it impossible to recover native biodiversity.",
+            "why": "Biodiversity is listed as one possible goal of a flexible plan.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "Public consultation makes restoration slower and more expensive.",
+            "why": "Cost and speed of consultation are never discussed.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "Choosing a single historical date makes restoration objective and hard to dispute.",
+            "why": "The author says a single date can be 'misleading' and chosen 'for administrative convenience'.",
+            "trap": "Wrong direction"
+          }
+        ]
+      }
+    ],
+    "recall": [
+      {
+        "q": "In the grassland example, what does the team remove?",
+        "options": [
+          "A native grass",
+          "An invasive shrub",
+          "A grazing herd",
+          "A dam"
+        ],
+        "answer": 1
+      },
+      {
+        "q": "Which processes may once have kept shrubs limited in the grassland?",
+        "options": [
+          "Floods and droughts",
+          "Periodic fires and grazing",
+          "Frost and strong winds",
+          "Insects and disease"
+        ],
+        "answer": 1
+      }
+    ],
+    "summary": {
+      "model": "Restoration needs explicit goals and working processes, because neither copying a past landscape nor improving one indicator shows real recovery.",
+      "tone": "analytical",
+      "claim": "needs explicit goals and working processes",
+      "qualifier": "neither copying a past landscape nor improving one indicator"
+    }
   }
 ]

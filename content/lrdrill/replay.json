@@ -1,0 +1,1900 @@
+[
+  {
+    "id": "rp-talk-week",
+    "format": "scheduling",
+    "title": "Five talks in one week",
+    "skill": "Building a block from clues that tie people together",
+    "intro": [
+      "Five speakers, Asha, Bilal, Chitra, Dev and Esha, each give one talk at a college, one a day from Monday to Friday."
+    ],
+    "clues": [
+      "Esha speaks later in the week than Asha.",
+      "Exactly two talks fall between Bilal's talk and Chitra's.",
+      "Esha does not speak on Friday.",
+      "Dev speaks the day after Bilal.",
+      "Dev speaks neither on Monday nor on Friday."
+    ],
+    "model": {
+      "kind": "grid",
+      "vars": [
+        {
+          "title": "Day",
+          "names": [
+            "Asha",
+            "Bilal",
+            "Chitra",
+            "Dev",
+            "Esha"
+          ],
+          "values": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "labels": {
+            "1": "Mon",
+            "2": "Tue",
+            "3": "Wed",
+            "4": "Thu",
+            "5": "Fri"
+          }
+        }
+      ],
+      "distinct": [
+        [
+          "Asha",
+          "Bilal",
+          "Chitra",
+          "Dev",
+          "Esha"
+        ]
+      ],
+      "clues": [
+        {
+          "gt": [
+            {
+              "v": "Esha"
+            },
+            {
+              "v": "Asha"
+            }
+          ]
+        },
+        {
+          "or": [
+            {
+              "eq": [
+                {
+                  "v": "Bilal"
+                },
+                {
+                  "sum": [
+                    {
+                      "v": "Chitra"
+                    },
+                    3
+                  ]
+                }
+              ]
+            },
+            {
+              "eq": [
+                {
+                  "v": "Chitra"
+                },
+                {
+                  "sum": [
+                    {
+                      "v": "Bilal"
+                    },
+                    3
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "isnt": [
+            "Esha",
+            5
+          ]
+        },
+        {
+          "eq": [
+            {
+              "v": "Dev"
+            },
+            {
+              "sum": [
+                {
+                  "v": "Bilal"
+                },
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "and": [
+            {
+              "isnt": [
+                "Dev",
+                1
+              ]
+            },
+            {
+              "isnt": [
+                "Dev",
+                5
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "steps": [
+      {
+        "use": [
+          4,
+          2
+        ],
+        "say": "Start with the clues that tie people together. Dev is the day after Bilal, and Chitra is three days from Bilal, so only three shapes fit: Bilal Mon, Dev Tue, Chitra Thu; Bilal Tue, Dev Wed, Chitra Fri; or Bilal Thu, Dev Fri, Chitra Mon."
+      },
+      {
+        "use": [
+          5
+        ],
+        "say": "Dev is not on Friday, so the third shape goes. In both shapes left, Bilal and Dev take Monday and Tuesday or Tuesday and Wednesday."
+      },
+      {
+        "use": [
+          1,
+          3
+        ],
+        "say": "Asha and Esha fill the two free days, Esha later. In the first shape the free days are Wednesday and Friday, which puts Esha on Friday, against clue 3. So it is the second shape: Asha on Monday and Esha on Thursday."
+      }
+    ]
+  },
+  {
+    "id": "rp-four-trips",
+    "format": "scheduling",
+    "title": "Four trips, four cities",
+    "skill": "Linking two grids: days and cities",
+    "intro": [
+      "Four managers, Kabir, Lata, Mohan and Nisha, each make one trip this week, on different days from Monday to Thursday, to different cities: Pune, Indore, Surat and Kochi."
+    ],
+    "clues": [
+      "Nisha travels later than Kabir.",
+      "The Pune trip is the last of the week.",
+      "Whoever goes to Surat travels the day after Lata.",
+      "Mohan travels after Nisha.",
+      "The Indore trip is the day after the Surat trip."
+    ],
+    "model": {
+      "kind": "grid",
+      "vars": [
+        {
+          "title": "Day",
+          "rows": [
+            "Kabir",
+            "Lata",
+            "Mohan",
+            "Nisha"
+          ],
+          "names": [
+            "Kabir day",
+            "Lata day",
+            "Mohan day",
+            "Nisha day"
+          ],
+          "values": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "labels": {
+            "1": "Mon",
+            "2": "Tue",
+            "3": "Wed",
+            "4": "Thu"
+          }
+        },
+        {
+          "title": "City",
+          "rows": [
+            "Kabir",
+            "Lata",
+            "Mohan",
+            "Nisha"
+          ],
+          "names": [
+            "Kabir city",
+            "Lata city",
+            "Mohan city",
+            "Nisha city"
+          ],
+          "values": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "labels": {
+            "1": "Pune",
+            "2": "Indore",
+            "3": "Surat",
+            "4": "Kochi"
+          }
+        }
+      ],
+      "distinct": [
+        [
+          "Kabir day",
+          "Lata day",
+          "Mohan day",
+          "Nisha day"
+        ],
+        [
+          "Kabir city",
+          "Lata city",
+          "Mohan city",
+          "Nisha city"
+        ]
+      ],
+      "clues": [
+        {
+          "gt": [
+            {
+              "v": "Nisha day"
+            },
+            {
+              "v": "Kabir day"
+            }
+          ]
+        },
+        {
+          "and": [
+            {
+              "if": {
+                "is": [
+                  "Kabir city",
+                  1
+                ]
+              },
+              "then": {
+                "is": [
+                  "Kabir day",
+                  4
+                ]
+              }
+            },
+            {
+              "if": {
+                "is": [
+                  "Lata city",
+                  1
+                ]
+              },
+              "then": {
+                "is": [
+                  "Lata day",
+                  4
+                ]
+              }
+            },
+            {
+              "if": {
+                "is": [
+                  "Mohan city",
+                  1
+                ]
+              },
+              "then": {
+                "is": [
+                  "Mohan day",
+                  4
+                ]
+              }
+            },
+            {
+              "if": {
+                "is": [
+                  "Nisha city",
+                  1
+                ]
+              },
+              "then": {
+                "is": [
+                  "Nisha day",
+                  4
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "and": [
+            {
+              "if": {
+                "is": [
+                  "Kabir city",
+                  3
+                ]
+              },
+              "then": {
+                "eq": [
+                  {
+                    "v": "Kabir day"
+                  },
+                  {
+                    "sum": [
+                      {
+                        "v": "Lata day"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "if": {
+                "is": [
+                  "Lata city",
+                  3
+                ]
+              },
+              "then": {
+                "eq": [
+                  {
+                    "v": "Lata day"
+                  },
+                  {
+                    "sum": [
+                      {
+                        "v": "Lata day"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "if": {
+                "is": [
+                  "Mohan city",
+                  3
+                ]
+              },
+              "then": {
+                "eq": [
+                  {
+                    "v": "Mohan day"
+                  },
+                  {
+                    "sum": [
+                      {
+                        "v": "Lata day"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "if": {
+                "is": [
+                  "Nisha city",
+                  3
+                ]
+              },
+              "then": {
+                "eq": [
+                  {
+                    "v": "Nisha day"
+                  },
+                  {
+                    "sum": [
+                      {
+                        "v": "Lata day"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "gt": [
+            {
+              "v": "Mohan day"
+            },
+            {
+              "v": "Nisha day"
+            }
+          ]
+        },
+        {
+          "and": [
+            {
+              "if": {
+                "and": [
+                  {
+                    "is": [
+                      "Kabir city",
+                      2
+                    ]
+                  },
+                  {
+                    "is": [
+                      "Kabir city",
+                      3
+                    ]
+                  }
+                ]
+              },
+              "then": {
+                "eq": [
+                  {
+                    "v": "Kabir day"
+                  },
+                  {
+                    "sum": [
+                      {
+                        "v": "Kabir day"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "if": {
+                "and": [
+                  {
+                    "is": [
+                      "Kabir city",
+                      2
+                    ]
+                  },
+                  {
+                    "is": [
+                      "Lata city",
+                      3
+                    ]
+                  }
+                ]
+              },
+              "then": {
+                "eq": [
+                  {
+                    "v": "Kabir day"
+                  },
+                  {
+                    "sum": [
+                      {
+                        "v": "Lata day"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "if": {
+                "and": [
+                  {
+                    "is": [
+                      "Kabir city",
+                      2
+                    ]
+                  },
+                  {
+                    "is": [
+                      "Mohan city",
+                      3
+                    ]
+                  }
+                ]
+              },
+              "then": {
+                "eq": [
+                  {
+                    "v": "Kabir day"
+                  },
+                  {
+                    "sum": [
+                      {
+                        "v": "Mohan day"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "if": {
+                "and": [
+                  {
+                    "is": [
+                      "Kabir city",
+                      2
+                    ]
+                  },
+                  {
+                    "is": [
+                      "Nisha city",
+                      3
+                    ]
+                  }
+                ]
+              },
+              "then": {
+                "eq": [
+                  {
+                    "v": "Kabir day"
+                  },
+                  {
+                    "sum": [
+                      {
+                        "v": "Nisha day"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "if": {
+                "and": [
+                  {
+                    "is": [
+                      "Lata city",
+                      2
+                    ]
+                  },
+                  {
+                    "is": [
+                      "Kabir city",
+                      3
+                    ]
+                  }
+                ]
+              },
+              "then": {
+                "eq": [
+                  {
+                    "v": "Lata day"
+                  },
+                  {
+                    "sum": [
+                      {
+                        "v": "Kabir day"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "if": {
+                "and": [
+                  {
+                    "is": [
+                      "Lata city",
+                      2
+                    ]
+                  },
+                  {
+                    "is": [
+                      "Lata city",
+                      3
+                    ]
+                  }
+                ]
+              },
+              "then": {
+                "eq": [
+                  {
+                    "v": "Lata day"
+                  },
+                  {
+                    "sum": [
+                      {
+                        "v": "Lata day"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "if": {
+                "and": [
+                  {
+                    "is": [
+                      "Lata city",
+                      2
+                    ]
+                  },
+                  {
+                    "is": [
+                      "Mohan city",
+                      3
+                    ]
+                  }
+                ]
+              },
+              "then": {
+                "eq": [
+                  {
+                    "v": "Lata day"
+                  },
+                  {
+                    "sum": [
+                      {
+                        "v": "Mohan day"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "if": {
+                "and": [
+                  {
+                    "is": [
+                      "Lata city",
+                      2
+                    ]
+                  },
+                  {
+                    "is": [
+                      "Nisha city",
+                      3
+                    ]
+                  }
+                ]
+              },
+              "then": {
+                "eq": [
+                  {
+                    "v": "Lata day"
+                  },
+                  {
+                    "sum": [
+                      {
+                        "v": "Nisha day"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "if": {
+                "and": [
+                  {
+                    "is": [
+                      "Mohan city",
+                      2
+                    ]
+                  },
+                  {
+                    "is": [
+                      "Kabir city",
+                      3
+                    ]
+                  }
+                ]
+              },
+              "then": {
+                "eq": [
+                  {
+                    "v": "Mohan day"
+                  },
+                  {
+                    "sum": [
+                      {
+                        "v": "Kabir day"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "if": {
+                "and": [
+                  {
+                    "is": [
+                      "Mohan city",
+                      2
+                    ]
+                  },
+                  {
+                    "is": [
+                      "Lata city",
+                      3
+                    ]
+                  }
+                ]
+              },
+              "then": {
+                "eq": [
+                  {
+                    "v": "Mohan day"
+                  },
+                  {
+                    "sum": [
+                      {
+                        "v": "Lata day"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "if": {
+                "and": [
+                  {
+                    "is": [
+                      "Mohan city",
+                      2
+                    ]
+                  },
+                  {
+                    "is": [
+                      "Mohan city",
+                      3
+                    ]
+                  }
+                ]
+              },
+              "then": {
+                "eq": [
+                  {
+                    "v": "Mohan day"
+                  },
+                  {
+                    "sum": [
+                      {
+                        "v": "Mohan day"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "if": {
+                "and": [
+                  {
+                    "is": [
+                      "Mohan city",
+                      2
+                    ]
+                  },
+                  {
+                    "is": [
+                      "Nisha city",
+                      3
+                    ]
+                  }
+                ]
+              },
+              "then": {
+                "eq": [
+                  {
+                    "v": "Mohan day"
+                  },
+                  {
+                    "sum": [
+                      {
+                        "v": "Nisha day"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "if": {
+                "and": [
+                  {
+                    "is": [
+                      "Nisha city",
+                      2
+                    ]
+                  },
+                  {
+                    "is": [
+                      "Kabir city",
+                      3
+                    ]
+                  }
+                ]
+              },
+              "then": {
+                "eq": [
+                  {
+                    "v": "Nisha day"
+                  },
+                  {
+                    "sum": [
+                      {
+                        "v": "Kabir day"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "if": {
+                "and": [
+                  {
+                    "is": [
+                      "Nisha city",
+                      2
+                    ]
+                  },
+                  {
+                    "is": [
+                      "Lata city",
+                      3
+                    ]
+                  }
+                ]
+              },
+              "then": {
+                "eq": [
+                  {
+                    "v": "Nisha day"
+                  },
+                  {
+                    "sum": [
+                      {
+                        "v": "Lata day"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "if": {
+                "and": [
+                  {
+                    "is": [
+                      "Nisha city",
+                      2
+                    ]
+                  },
+                  {
+                    "is": [
+                      "Mohan city",
+                      3
+                    ]
+                  }
+                ]
+              },
+              "then": {
+                "eq": [
+                  {
+                    "v": "Nisha day"
+                  },
+                  {
+                    "sum": [
+                      {
+                        "v": "Mohan day"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "if": {
+                "and": [
+                  {
+                    "is": [
+                      "Nisha city",
+                      2
+                    ]
+                  },
+                  {
+                    "is": [
+                      "Nisha city",
+                      3
+                    ]
+                  }
+                ]
+              },
+              "then": {
+                "eq": [
+                  {
+                    "v": "Nisha day"
+                  },
+                  {
+                    "sum": [
+                      {
+                        "v": "Nisha day"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "steps": [
+      {
+        "use": [
+          1,
+          4
+        ],
+        "say": "Kabir, Nisha and Mohan travel in that order, so on the day grid only Lata's place is open: first, second, third or fourth. The cities are still wide open."
+      },
+      {
+        "use": [
+          3,
+          5
+        ],
+        "say": "Chain the city clues: Surat is the day after Lata, and Indore the day after Surat. That is three trips in a row starting from Lata's day, so Lata goes Monday or Tuesday, and she is not the one going to Surat or Indore."
+      },
+      {
+        "use": [
+          2
+        ],
+        "say": "Pune is Thursday. With Lata on Tuesday, Surat would be Wednesday and Indore Thursday, clashing with Pune. So Lata goes Monday, Surat is Tuesday, Indore Wednesday, Pune Thursday, and Lata takes the city left, Kochi. Kabir, Nisha and Mohan take Tuesday, Wednesday and Thursday in order, with Surat, Indore and Pune."
+      }
+    ]
+  },
+  {
+    "id": "rp-quiz-teams",
+    "format": "grouping",
+    "title": "Three quiz teams",
+    "skill": "Grouping with blocks that must stay together",
+    "intro": [
+      "Nine students, Arun, Bela, Chirag, Divya, Farhan, Gita, Hari, Isha and Jai, are split into three quiz teams, Red, Blue and Green, of exactly three each."
+    ],
+    "clues": [
+      "Isha and Divya are on different teams.",
+      "Farhan and Gita are on the same team, and it is not Red.",
+      "Hari is on the same team as Chirag.",
+      "Divya is on Blue.",
+      "Jai and Farhan are on the same team.",
+      "Bela and Divya are on different teams."
+    ],
+    "model": {
+      "kind": "grid",
+      "vars": [
+        {
+          "title": "Team",
+          "names": [
+            "Arun",
+            "Bela",
+            "Chirag",
+            "Divya",
+            "Farhan",
+            "Gita",
+            "Hari",
+            "Isha",
+            "Jai"
+          ],
+          "values": [
+            1,
+            2,
+            3
+          ],
+          "labels": {
+            "1": "Red",
+            "2": "Blue",
+            "3": "Green"
+          }
+        }
+      ],
+      "facts": [
+        {
+          "eq": [
+            {
+              "count": [
+                {
+                  "is": [
+                    "Arun",
+                    1
+                  ]
+                },
+                {
+                  "is": [
+                    "Bela",
+                    1
+                  ]
+                },
+                {
+                  "is": [
+                    "Chirag",
+                    1
+                  ]
+                },
+                {
+                  "is": [
+                    "Divya",
+                    1
+                  ]
+                },
+                {
+                  "is": [
+                    "Farhan",
+                    1
+                  ]
+                },
+                {
+                  "is": [
+                    "Gita",
+                    1
+                  ]
+                },
+                {
+                  "is": [
+                    "Hari",
+                    1
+                  ]
+                },
+                {
+                  "is": [
+                    "Isha",
+                    1
+                  ]
+                },
+                {
+                  "is": [
+                    "Jai",
+                    1
+                  ]
+                }
+              ]
+            },
+            3
+          ]
+        },
+        {
+          "eq": [
+            {
+              "count": [
+                {
+                  "is": [
+                    "Arun",
+                    2
+                  ]
+                },
+                {
+                  "is": [
+                    "Bela",
+                    2
+                  ]
+                },
+                {
+                  "is": [
+                    "Chirag",
+                    2
+                  ]
+                },
+                {
+                  "is": [
+                    "Divya",
+                    2
+                  ]
+                },
+                {
+                  "is": [
+                    "Farhan",
+                    2
+                  ]
+                },
+                {
+                  "is": [
+                    "Gita",
+                    2
+                  ]
+                },
+                {
+                  "is": [
+                    "Hari",
+                    2
+                  ]
+                },
+                {
+                  "is": [
+                    "Isha",
+                    2
+                  ]
+                },
+                {
+                  "is": [
+                    "Jai",
+                    2
+                  ]
+                }
+              ]
+            },
+            3
+          ]
+        },
+        {
+          "eq": [
+            {
+              "count": [
+                {
+                  "is": [
+                    "Arun",
+                    3
+                  ]
+                },
+                {
+                  "is": [
+                    "Bela",
+                    3
+                  ]
+                },
+                {
+                  "is": [
+                    "Chirag",
+                    3
+                  ]
+                },
+                {
+                  "is": [
+                    "Divya",
+                    3
+                  ]
+                },
+                {
+                  "is": [
+                    "Farhan",
+                    3
+                  ]
+                },
+                {
+                  "is": [
+                    "Gita",
+                    3
+                  ]
+                },
+                {
+                  "is": [
+                    "Hari",
+                    3
+                  ]
+                },
+                {
+                  "is": [
+                    "Isha",
+                    3
+                  ]
+                },
+                {
+                  "is": [
+                    "Jai",
+                    3
+                  ]
+                }
+              ]
+            },
+            3
+          ]
+        }
+      ],
+      "clues": [
+        {
+          "ne": [
+            {
+              "v": "Isha"
+            },
+            {
+              "v": "Divya"
+            }
+          ]
+        },
+        {
+          "and": [
+            {
+              "eq": [
+                {
+                  "v": "Farhan"
+                },
+                {
+                  "v": "Gita"
+                }
+              ]
+            },
+            {
+              "isnt": [
+                "Farhan",
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "eq": [
+            {
+              "v": "Hari"
+            },
+            {
+              "v": "Chirag"
+            }
+          ]
+        },
+        {
+          "is": [
+            "Divya",
+            2
+          ]
+        },
+        {
+          "eq": [
+            {
+              "v": "Jai"
+            },
+            {
+              "v": "Farhan"
+            }
+          ]
+        },
+        {
+          "ne": [
+            {
+              "v": "Bela"
+            },
+            {
+              "v": "Divya"
+            }
+          ]
+        }
+      ]
+    },
+    "steps": [
+      {
+        "use": [
+          2,
+          5
+        ],
+        "say": "Farhan, Gita and Jai are on one team (clues 2 and 5). That is a whole team of three, and it is not Red."
+      },
+      {
+        "use": [
+          4
+        ],
+        "say": "Divya is on Blue. The block of three cannot join her there (that would make four), so the block is Green."
+      },
+      {
+        "use": [
+          3
+        ],
+        "say": "Chirag and Hari go together. Green is full, so they share Red or Blue."
+      },
+      {
+        "use": [
+          1,
+          6
+        ],
+        "say": "Neither Isha nor Bela is with Divya, so Blue's other two come from Arun, Chirag and Hari. Chirag and Hari are a pair, so Blue is Divya, Chirag and Hari, and Red is Arun, Bela and Isha."
+      }
+    ]
+  },
+  {
+    "id": "rp-committee",
+    "format": "grouping",
+    "title": "A committee of four",
+    "skill": "Following if-then chains from one fixed fact",
+    "intro": [
+      "A society must choose a committee of exactly four from eight members: Pooja, Qadir, Rhea, Sunil, Tanvi, Uma, Vikram and Wasim."
+    ],
+    "clues": [
+      "If Pooja is chosen, Qadir is not.",
+      "Sunil is chosen only if Vikram is chosen.",
+      "Qadir is chosen.",
+      "Uma is chosen only if Pooja is chosen.",
+      "Vikram is not chosen."
+    ],
+    "model": {
+      "kind": "grid",
+      "show": "members",
+      "vars": [
+        {
+          "title": "Chosen?",
+          "names": [
+            "Pooja",
+            "Qadir",
+            "Rhea",
+            "Sunil",
+            "Tanvi",
+            "Uma",
+            "Vikram",
+            "Wasim"
+          ],
+          "values": [
+            1,
+            0
+          ],
+          "labels": {
+            "0": "Out",
+            "1": "In"
+          }
+        }
+      ],
+      "facts": [
+        {
+          "eq": [
+            {
+              "sum": [
+                {
+                  "v": "Pooja"
+                },
+                {
+                  "v": "Qadir"
+                },
+                {
+                  "v": "Rhea"
+                },
+                {
+                  "v": "Sunil"
+                },
+                {
+                  "v": "Tanvi"
+                },
+                {
+                  "v": "Uma"
+                },
+                {
+                  "v": "Vikram"
+                },
+                {
+                  "v": "Wasim"
+                }
+              ]
+            },
+            4
+          ]
+        }
+      ],
+      "clues": [
+        {
+          "if": {
+            "is": [
+              "Pooja",
+              1
+            ]
+          },
+          "then": {
+            "is": [
+              "Qadir",
+              0
+            ]
+          }
+        },
+        {
+          "if": {
+            "is": [
+              "Sunil",
+              1
+            ]
+          },
+          "then": {
+            "is": [
+              "Vikram",
+              1
+            ]
+          }
+        },
+        {
+          "is": [
+            "Qadir",
+            1
+          ]
+        },
+        {
+          "if": {
+            "is": [
+              "Uma",
+              1
+            ]
+          },
+          "then": {
+            "is": [
+              "Pooja",
+              1
+            ]
+          }
+        },
+        {
+          "is": [
+            "Vikram",
+            0
+          ]
+        }
+      ]
+    },
+    "steps": [
+      {
+        "use": [
+          3,
+          1
+        ],
+        "say": "Start from the only fact: Qadir is in. Clue 1 read backwards (if Qadir is in, Pooja is not) takes Pooja out."
+      },
+      {
+        "use": [
+          4
+        ],
+        "say": "Uma needs Pooja, and Pooja is out, so Uma is out too. One fixed person has now settled two more."
+      },
+      {
+        "use": [
+          5,
+          2
+        ],
+        "say": "Vikram is out, and Sunil needs Vikram, so Sunil is out. Four are out, so the other four, Qadir, Rhea, Tanvi and Wasim, are the committee."
+      }
+    ]
+  },
+  {
+    "id": "rp-round-robin",
+    "format": "tournament",
+    "title": "A round robin of four",
+    "skill": "Reading points back into wins, draws and losses",
+    "intro": [
+      "Four teams, Aces, Bulls, Comets and Daggers, play a league in which each team plays every other team once. A win earns 3 points, a draw 1 and a loss 0."
+    ],
+    "clues": [
+      "Aces finished with 7 points.",
+      "Exactly two matches ended in a draw.",
+      "Every team except Daggers won at least one match.",
+      "Daggers finished with 1 point.",
+      "Comets finished with more points than Bulls."
+    ],
+    "model": {
+      "kind": "grid",
+      "vars": [],
+      "league": {
+        "teams": [
+          "Aces",
+          "Bulls",
+          "Comets",
+          "Daggers"
+        ],
+        "win": 3,
+        "draw": 1
+      },
+      "clues": [
+        {
+          "eq": [
+            {
+              "points": "Aces"
+            },
+            7
+          ]
+        },
+        {
+          "eq": [
+            {
+              "count": [
+                {
+                  "drew": [
+                    "Aces",
+                    "Bulls"
+                  ]
+                },
+                {
+                  "drew": [
+                    "Aces",
+                    "Comets"
+                  ]
+                },
+                {
+                  "drew": [
+                    "Aces",
+                    "Daggers"
+                  ]
+                },
+                {
+                  "drew": [
+                    "Bulls",
+                    "Comets"
+                  ]
+                },
+                {
+                  "drew": [
+                    "Bulls",
+                    "Daggers"
+                  ]
+                },
+                {
+                  "drew": [
+                    "Comets",
+                    "Daggers"
+                  ]
+                }
+              ]
+            },
+            2
+          ]
+        },
+        {
+          "and": [
+            {
+              "gt": [
+                {
+                  "wins": "Aces"
+                },
+                0
+              ]
+            },
+            {
+              "gt": [
+                {
+                  "wins": "Bulls"
+                },
+                0
+              ]
+            },
+            {
+              "gt": [
+                {
+                  "wins": "Comets"
+                },
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "eq": [
+            {
+              "points": "Daggers"
+            },
+            1
+          ]
+        },
+        {
+          "gt": [
+            {
+              "points": "Comets"
+            },
+            {
+              "points": "Bulls"
+            }
+          ]
+        }
+      ]
+    },
+    "steps": [
+      {
+        "use": [
+          1
+        ],
+        "say": "Seven points from three matches can only be two wins and a draw. Aces lost nothing."
+      },
+      {
+        "use": [
+          4
+        ],
+        "say": "One point from three matches is one draw and two losses. Daggers won nothing."
+      },
+      {
+        "use": [
+          2
+        ],
+        "say": "There are exactly two draws: one is Aces', one is Daggers'. Either they drew each other and Bulls drew Comets, or Aces and Daggers each drew one of Bulls and Comets."
+      },
+      {
+        "use": [
+          3,
+          5
+        ],
+        "say": "Bulls and Comets must each win a match, and Comets must finish above Bulls. Try the cases: the draws that leave Comets ahead are Aces with Comets and Daggers with Comets. Comets end on 5 points, Bulls on 3."
+      }
+    ]
+  },
+  {
+    "id": "rp-archery",
+    "format": "tournament",
+    "set": "tour-archery-rounds",
+    "title": "Archery over three rounds",
+    "skill": "Splitting totals into round-by-round points",
+    "intro": [
+      "Five archers, Rohan, Sana, Tara, Uday and Veer, compete in a tournament of three rounds. In every round all five shoot and are ranked 1st to 5th with no ties. Ranking points are awarded in every round: 1st 7, 2nd 4, 3rd 2, 4th 1 and 5th 0. An archer's total is the sum of the points from the three rounds.",
+      "Nothing else is known about the order of finishing except the clues, all of which are true."
+    ],
+    "clues": [
+      "Rohan scored 12 points in total.",
+      "Tara scored 2 points in total.",
+      "Uday scored 10 points in total.",
+      "In Round 2, Uday finished 4th.",
+      "In Round 1, Sana finished 3rd.",
+      "In Round 2, Veer finished 1st.",
+      "In Round 3, Sana finished ahead of Rohan.",
+      "In Round 1, Veer finished ahead of Tara."
+    ],
+    "model": {
+      "kind": "grid",
+      "vars": [
+        {
+          "title": "Round 1",
+          "rows": [
+            "Rohan",
+            "Sana",
+            "Tara",
+            "Uday",
+            "Veer"
+          ],
+          "names": [
+            "Rohan 1",
+            "Sana 1",
+            "Tara 1",
+            "Uday 1",
+            "Veer 1"
+          ],
+          "values": [
+            7,
+            4,
+            2,
+            1,
+            0
+          ],
+          "labels": {
+            "0": "5th",
+            "1": "4th",
+            "2": "3rd",
+            "4": "2nd",
+            "7": "1st"
+          }
+        },
+        {
+          "title": "Round 2",
+          "rows": [
+            "Rohan",
+            "Sana",
+            "Tara",
+            "Uday",
+            "Veer"
+          ],
+          "names": [
+            "Rohan 2",
+            "Sana 2",
+            "Tara 2",
+            "Uday 2",
+            "Veer 2"
+          ],
+          "values": [
+            7,
+            4,
+            2,
+            1,
+            0
+          ],
+          "labels": {
+            "0": "5th",
+            "1": "4th",
+            "2": "3rd",
+            "4": "2nd",
+            "7": "1st"
+          }
+        },
+        {
+          "title": "Round 3",
+          "rows": [
+            "Rohan",
+            "Sana",
+            "Tara",
+            "Uday",
+            "Veer"
+          ],
+          "names": [
+            "Rohan 3",
+            "Sana 3",
+            "Tara 3",
+            "Uday 3",
+            "Veer 3"
+          ],
+          "values": [
+            7,
+            4,
+            2,
+            1,
+            0
+          ],
+          "labels": {
+            "0": "5th",
+            "1": "4th",
+            "2": "3rd",
+            "4": "2nd",
+            "7": "1st"
+          }
+        }
+      ],
+      "distinct": [
+        [
+          "Rohan 1",
+          "Sana 1",
+          "Tara 1",
+          "Uday 1",
+          "Veer 1"
+        ],
+        [
+          "Rohan 2",
+          "Sana 2",
+          "Tara 2",
+          "Uday 2",
+          "Veer 2"
+        ],
+        [
+          "Rohan 3",
+          "Sana 3",
+          "Tara 3",
+          "Uday 3",
+          "Veer 3"
+        ]
+      ],
+      "clues": [
+        {
+          "eq": [
+            {
+              "sum": [
+                {
+                  "v": "Rohan 1"
+                },
+                {
+                  "v": "Rohan 2"
+                },
+                {
+                  "v": "Rohan 3"
+                }
+              ]
+            },
+            12
+          ]
+        },
+        {
+          "eq": [
+            {
+              "sum": [
+                {
+                  "v": "Tara 1"
+                },
+                {
+                  "v": "Tara 2"
+                },
+                {
+                  "v": "Tara 3"
+                }
+              ]
+            },
+            2
+          ]
+        },
+        {
+          "eq": [
+            {
+              "sum": [
+                {
+                  "v": "Uday 1"
+                },
+                {
+                  "v": "Uday 2"
+                },
+                {
+                  "v": "Uday 3"
+                }
+              ]
+            },
+            10
+          ]
+        },
+        {
+          "is": [
+            "Uday 2",
+            1
+          ]
+        },
+        {
+          "is": [
+            "Sana 1",
+            2
+          ]
+        },
+        {
+          "is": [
+            "Veer 2",
+            7
+          ]
+        },
+        {
+          "gt": [
+            {
+              "v": "Sana 3"
+            },
+            {
+              "v": "Rohan 3"
+            }
+          ]
+        },
+        {
+          "gt": [
+            {
+              "v": "Veer 1"
+            },
+            {
+              "v": "Tara 1"
+            }
+          ]
+        }
+      ]
+    },
+    "steps": [
+      {
+        "use": [
+          4,
+          5,
+          6
+        ],
+        "say": "Place the fixed finishes first: Uday 4th in Round 2, Sana 3rd in Round 1, Veer 1st in Round 2."
+      },
+      {
+        "use": [
+          3
+        ],
+        "say": "Uday has 10 points with only 1 from Round 2, so Rounds 1 and 3 gave 9, which is 7 + 2. Round 1's 3rd place is Sana's, so Uday won Round 1 and was 3rd in Round 3."
+      },
+      {
+        "use": [
+          1,
+          7
+        ],
+        "say": "Rohan's 12 is 4 + 4 + 4 or 7 + 4 + 1. A 7 needs a round win, but Uday won Round 1, Veer Round 2, and Sana beat Rohan in Round 3. So Rohan was 2nd in all three rounds, and Sana won Round 3."
+      },
+      {
+        "use": [
+          8
+        ],
+        "say": "Round 1 has 4th and 5th left for Veer and Tara; Veer was ahead, so Veer 4th and Tara 5th."
+      },
+      {
+        "use": [
+          2
+        ],
+        "say": "Tara has 0 from Round 1 and 2 in all. Round 2 leaves her 3rd or 5th, and Round 3 at most 1 more, so she was 3rd in Round 2 and 5th in Round 3. Sana was 5th in Round 2 and Veer 4th in Round 3."
+      }
+    ]
+  }
+]

@@ -18,7 +18,7 @@ export function wanted(name: string): number {
 }
 
 const VA_TYPES = new Set(["Para jumble", "Para summary", "Odd sentence out", "Sentence insertion"]);
-const DRILL_OF: Record<string, "clue" | "mcc" | "first"> = { "/practice/clues": "clue", "/practice/must-could": "mcc", "/practice/first-move": "first" };
+const DRILL_OF: Record<string, "clue" | "mcc" | "first" | "replay"> = { "/practice/clues": "clue", "/practice/must-could": "mcc", "/practice/first-move": "first", "/practice/replay": "replay" };
 
 /**
  * What on-site work that day covers a block, in a few words ("2 LR sets", "RC set, 3 of 4"), or null when the day's

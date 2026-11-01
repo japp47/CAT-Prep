@@ -21,6 +21,7 @@ import { LrNextDrill } from "../../components/LrNextDrill";
 import { blankScratch, LrScratch, LrWalkthrough, QuestionFigure } from "../../components/LrDiagram";
 import { LR_CATALOG } from "../../practice/catalog.gen";
 import { lrRight } from "../../practice/lrcheck";
+import { REPLAY_OF_SET } from "../../practice/replay";
 import { LR_SLIP_LABEL, LR_TIME_LABEL, lrError, lrErrorSrc, recordLr, saveLrPostMortem, scoreLr } from "../../practice/lrattempt";
 import { fmtSecs, LETTERS } from "../../practice/record";
 import { LR_TYPE, lrVersion, type LrDiagram, type LrSet, type LrTable } from "../../practice/types";
@@ -293,6 +294,7 @@ function FullReview({ set, attempt }: { set: LrSet; attempt: LrAttempt }) {
       <Score set={set} attempt={attempt} />
       <PostMortem set={set} attempt={attempt} />
       <LrNextDrill set={set} attempt={attempt} />
+      {REPLAY_OF_SET[set.id] && <ArrowLink to={`/practice/replay/${REPLAY_OF_SET[set.id]}?mode=watch&back=${encodeURIComponent(`/practice/lr/${set.id}?review=${attempt.id}`)}`}>Watch the deduction happen: this set on a board, step by step, with the arrangements left after each step</ArrowLink>}
       <LrWalkthrough steps={set.solution.steps} g={set.solution.diagram} />
       {LR_GUIDE_BY_TYPE.has(set.type) && <ArrowLink to={`/dilr?guide=${set.type}`}>Read the {LR_TYPE[set.type].label.charAt(0).toLowerCase() + LR_TYPE[set.type].label.slice(1)} guide: what to draw, where to start, the traps</ArrowLink>}
       {set.solution.grid && (

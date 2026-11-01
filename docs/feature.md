@@ -68,7 +68,7 @@ Short on purpose: the code and its tests are the spec for these.
 | Start | Site search | Command palette over pages, guides, RC sets and updates, with a short tour; Back closes it first |
 | Plan | Today | Blocks per section from the phase template and minutes, catch-up of a missed core task, focus timer (15), must-do links, article summary sheet |
 | Plan | Plan and time | Minutes per weekday and weekend, per-day overrides, phase view, VARC target percentile, calendar reminder (`.ics`) |
-| Practice | RC player | 50 original sets (9 genres), including AI and technology, every option explained with a trap label, RC of the day with a stable rotation, summary step after the set |
+| Practice | RC player | 55 original sets (9 genres), including AI and technology and a "CAT-pattern sets" collection, every option explained with a trap label, RC of the day with a stable rotation, summary step after the set |
 | Practice | VA drill | 80 paragraphs: para summary (1), sentence insertion, odd sentence out, para jumbles. Daily mix or one type |
 | Practice | Critical reasoning drill | 30 items, six types |
 | Practice | Timed VARC sectional (5) | 40 minutes, 4 RCs and 8 VA, CAT-style palette, mark for review, draft survives reload |
@@ -452,7 +452,8 @@ These are what make the DILR and Quant sections ours rather than another questio
 **Needs.** About 40 DILR sets, so rounds do not repeat too soon (step 4 starts with 20; the Arena opens at 32).
 **Done when** a round can be played on a phone, the debrief names the set that cost the most time with its numbers, and selection accuracy moves across three rounds.
 
-#### F57. DILR Replay: see the deduction happen — Planned (step 4, three formats)
+#### F57. DILR Replay: see the deduction happen — Built 1 Nov 2026 (design `docs/design/replay.md`, D66)
+**As built:** three modes (Watch, Step by step, On your own) instead of one learn mode; steps can use two clues at once, in a topper's order; six original sets, two per format, at `/practice/replay`. The bullets below are the first version; the design doc wins where they differ.
 **Problem.** A written DILR solution shows the final grid, not how anyone got there. Students learn answers, not how to represent the problem.
 **What the student gets.**
 - An interactive board for three formats first: **scheduling** (people × slots), **grouping** (people into teams) and **tournaments** (results table). Tap to place, cross out, or mark "must be".

@@ -116,6 +116,7 @@ export function historyItems(st: AppState): HistoryItem[] {
     const c = r.items.filter((i) => i.ok).length, n = r.items.length;
     const [title, href, what] = r.kind === "mcc" ? ["Must, could, cannot", `/practice/must-could?d=${r.ref ?? ""}`, right(c, n)]
       : r.kind === "first" ? ["First move", `/practice/first-move?set=${r.ref ?? ""}`, `${c} of ${n} best moves`]
+      : r.kind === "replay" ? ["DILR replay", `/practice/replay/${r.ref ?? ""}`, r.items[0]?.k.includes(":") ? `${c} of ${n} rows right first time` : `${c} of ${n} steps without a slip`]
       : ["Clue translator", "/practice/clues", `${c} of ${n} clues read right`];
     const set = r.kind === "first" && r.ref ? lrTitle.get(r.ref) : undefined;
     add({ id: "lrd-" + r.id, d: r.d, kind: "practice", icon: "lr", title: title + (set ? ": " + set : ""), secs: r.secs,

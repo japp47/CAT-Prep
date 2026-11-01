@@ -957,5 +957,169 @@
       "claim": "rests on thin evidence",
       "qualifier": "only modestly"
     }
+  },
+  {
+    "id": "pat-authenticity",
+    "title": "The market for authenticity",
+    "genre": "arts",
+    "difficulty": "hard",
+    "since": "2026-11-02",
+    "pack": "cat-pattern",
+    "paras": [
+      "When a craft object enters a museum shop or a premium retail catalogue, it often acquires a new vocabulary. A bowl becomes “heritage,” a woven bag “ancestral,” and a pattern “untouched by modernity.” These descriptions may help consumers recognise the history embedded in an object. They can also imply that a craft is most valuable when its makers appear to have remained outside history—unchanged by migration, machinery, new materials, or the demands of contemporary life.",
+      "That implication creates a peculiar burden for artisans. A designer who adopts a new dye or changes the dimensions of a product to suit present-day use may be accused of diluting tradition. Yet crafts have rarely survived by repeating an identical form forever. Techniques move between regions; motifs are borrowed and altered; tools change; and makers respond to the materials available to them. Continuity often lies less in an object's exact appearance than in a chain of judgement and skill: how a pattern is balanced, how a material is handled, or how a maker decides that a piece is finished.",
+      "The market for authenticity can obscure this history because stable-looking products are easier to narrate. A retailer can sell a bag as the unchanged expression of a community's identity. It is harder to explain a more complicated story in which artisans disagree, experiment, borrow from other traditions, and make commercial decisions. The simple story may attract buyers, but it can also turn living makers into representatives of a frozen past. Their work is valued precisely to the extent that they seem not to change.",
+      "There is a genuine counterargument. Commercial demand can preserve skills that might otherwise disappear, provide income, and give makers a reason to train apprentices. Nor is every appeal to tradition dishonest: some techniques carry knowledge that cannot be replaced by a machine, and some communities consciously choose to protect particular forms. The problem begins when the market's preferred image of tradition is treated as the tradition itself. A maker's choice to innovate is then seen as a threat, while a buyer's preference for a familiar pattern is presented as cultural preservation.",
+      "A more useful account of craft would ask who has the authority to define authenticity and who benefits from that definition. It would recognise artisans not only as guardians of inherited techniques but also as people entitled to make choices about their work. The aim should not be to celebrate every change, any more than it should be to romanticise every old practice. It should be to distinguish continuity chosen by makers from continuity demanded of them by consumers. A tradition that can survive only when its practitioners are denied the freedom to adapt may be preserved as an image while being weakened as a practice."
+    ],
+    "questions": [
+      {
+        "type": "main",
+        "stem": "Which of the following best states the central argument of the passage?",
+        "proof": [
+          1,
+          4
+        ],
+        "answer": 1,
+        "options": [
+          {
+            "t": "Because the craft market rewards objects that look old, artisans who experiment with new materials or forms cannot earn a living from their work.",
+            "why": "The passage says innovators may be 'accused of diluting tradition', not that they cannot earn.",
+            "trap": "Extreme wording"
+          },
+          {
+            "t": "Seeing authenticity as an unchanging look constrains artisans; continuity lies in skill and judgement, which makers should be free to adapt.",
+            "why": "Paragraphs 2 and 5: continuity lies in 'a chain of judgement and skill', and makers are 'entitled to make choices'."
+          },
+          {
+            "t": "Commerce does craft traditions more harm than good, because buyers want a simple story.",
+            "why": "Paragraph 4 grants that demand 'can preserve skills', provide income and train apprentices.",
+            "trap": "Wrong direction"
+          },
+          {
+            "t": "Retailers should stop describing craft objects as 'heritage' or 'ancestral'.",
+            "why": "The vocabulary is the starting point; the argument is about who defines authenticity.",
+            "trap": "Too narrow or too broad"
+          }
+        ]
+      },
+      {
+        "type": "inference",
+        "stem": "Which of the following is most strongly implied by the passage?",
+        "proof": [
+          1
+        ],
+        "answer": 2,
+        "options": [
+          {
+            "t": "A craft stays authentic as long as its makers remain free to change its designs and materials however they wish.",
+            "why": "The author says the aim 'should not be to celebrate every change'.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "Artisans who adopt new dyes or tools show more skill than those who keep older methods.",
+            "why": "Skill is never ranked by method.",
+            "trap": "Out of scope"
+          },
+          {
+            "t": "A tradition can keep its continuity even when particular designs, materials or tools change.",
+            "why": "Continuity 'often lies less in an object's exact appearance than in a chain of judgement and skill'."
+          },
+          {
+            "t": "Techniques that a machine cannot replace are the only part of a craft worth protecting.",
+            "why": "Such techniques are one reason to protect forms, not the only one.",
+            "trap": "Extreme wording"
+          }
+        ]
+      },
+      {
+        "type": "tone",
+        "stem": "The author acknowledges the benefits of commercial demand primarily in order to:",
+        "proof": [
+          3
+        ],
+        "answer": 0,
+        "options": [
+          {
+            "t": "qualify the critique, granting that demand can sustain crafts while separating that benefit from a frozen image imposed on makers.",
+            "why": "'The problem begins when the market's preferred image of tradition is treated as the tradition itself.'"
+          },
+          {
+            "t": "concede that retail descriptions of heritage are usually accurate.",
+            "why": "The concession is about income and skills, not the accuracy of descriptions.",
+            "trap": "Distorts the passage"
+          },
+          {
+            "t": "argue that buyers, since their demand keeps crafts alive, should be the ones who decide what counts as authentic in a living tradition.",
+            "why": "The author asks 'who has the authority to define authenticity' and sides with makers' choices.",
+            "trap": "Wrong direction"
+          },
+          {
+            "t": "suggest that artisans should adapt their work to whatever buyers prefer.",
+            "why": "Continuity 'demanded of them by consumers' is what the author criticises.",
+            "trap": "Distorts the passage"
+          }
+        ]
+      },
+      {
+        "type": "except",
+        "stem": "Which of the following would the author be least likely to endorse?",
+        "proof": [
+          1,
+          3,
+          4
+        ],
+        "answer": 3,
+        "options": [
+          {
+            "t": "Some traditional techniques hold knowledge that deserves deliberate protection.",
+            "why": "Paragraph 4 grants this.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "Who defines authenticity affects both makers' choices and who profits.",
+            "why": "Paragraph 5 asks exactly this.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "A tradition can weaken when its makers must perform an unchanging identity for outsiders.",
+            "why": "The last sentence says so.",
+            "trap": "True but not the answer"
+          },
+          {
+            "t": "An artisan who changes a design for present-day use has betrayed the tradition it came from.",
+            "why": "The author rejects the charge of 'diluting tradition' for such changes."
+          }
+        ]
+      }
+    ],
+    "recall": [
+      {
+        "q": "In the opening paragraph, a bowl in a catalogue becomes:",
+        "options": [
+          "“ancestral”",
+          "“heritage”",
+          "“handmade”",
+          "“untouched by modernity”"
+        ],
+        "answer": 1
+      },
+      {
+        "q": "According to the passage, commercial demand can give makers a reason to:",
+        "options": [
+          "train apprentices",
+          "move to cities",
+          "use machines",
+          "open museums"
+        ],
+        "answer": 0
+      }
+    ],
+    "summary": {
+      "model": "Treating authenticity as an unchanging look burdens artisans, though commerce can sustain crafts when makers keep the freedom to adapt.",
+      "tone": "critical",
+      "claim": "burdens artisans",
+      "qualifier": "though commerce can sustain crafts"
+    }
   }
 ]

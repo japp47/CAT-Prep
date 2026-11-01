@@ -19,11 +19,13 @@ export function SiteNavLink({ item, className, onClick, title, children }: { ite
   if (item.match?.test(pathname)) return <Link to={item.to} aria-current="page" className={className(true)} onClick={onClick} title={title}>{children}</Link>;
   return <NavLink to={item.to} end={item.end} className={({ isActive }) => className(isActive)} onClick={onClick} title={title}>{children}</NavLink>;
 }
-export interface SiteNavGroup { title: string; items: SiteNavItem[] }
 
 interface SiteHeaderProps {
   landing: boolean;
-  groups: SiteNavGroup[];
+  /** The "All pages" panel (components/AllPages.tsx, loaded on demand), shown while open. */
+  panel: ReactNode;
+  /** Starts loading the panel, on hover or focus of its button, so a click opens it at once. */
+  onLoadPanel: () => unknown;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onLoadMenu: () => unknown;
@@ -38,7 +40,7 @@ const LANDING_LINKS: SiteNavItem[] = [
   { to: "/practice", label: "Practice" },
 ];
 
-export default function SiteHeader({ landing, groups, open, onOpenChange, onLoadMenu, onOpenMenu, onOpenSearch }: SiteHeaderProps) {
+export default function SiteHeader({ landing, panel, onLoadPanel, open, onOpenChange, onLoadMenu, onOpenMenu, onOpenSearch }: SiteHeaderProps) {
   const root = useRef<HTMLElement>(null);
   useEffect(() => {
     if (!open) return;
@@ -68,27 +70,13 @@ export default function SiteHeader({ landing, groups, open, onOpenChange, onLoad
           <ThemeToggle />
           <InstallButton hideWhenInstalled />
           <AccountButton withLabel />
-          <button type="button" aria-expanded={open} aria-controls="all-pages" onClick={() => onOpenChange(!open)}
+          <button type="button" aria-expanded={open} aria-controls="all-pages" onClick={() => onOpenChange(!open)} onPointerEnter={() => { void onLoadPanel(); }} onFocus={() => { void onLoadPanel(); }}
             className={cn("inline-flex h-11 items-center gap-2 rounded-md px-3 text-base font-medium text-foreground/80 transition-colors hover:bg-card hover:text-foreground", open && "bg-card text-foreground")}>
             All pages<ChevronDown className={cn("size-4 transition-transform motion-reduce:transition-none", open && "rotate-180")} aria-hidden />
           </button>
         </div>
       </div>
-      {open && <div id="all-pages" className="absolute inset-x-0 top-full px-gutter pt-3 pb-6">
-        <div className="mx-auto flex w-full max-w-[1440px] justify-end">
-          <nav aria-label="All pages" className="grid w-full max-w-[1120px] grid-cols-4 gap-4 rounded-xl border border-border/70 bg-card p-5 shadow-[0_24px_40px_-24px_rgb(0_0_0/0.3)] xl:gap-6 xl:p-6">
-            {groups.map((group) => <div key={group.title} className="flex min-w-0 flex-col">
-              <span className="mb-1 px-3 pb-1 text-sm text-muted-foreground">{group.title}</span>
-              <div className="flex flex-col gap-0.5">
-                {group.items.map((item) => <SiteNavLink key={item.to} item={item} onClick={() => onOpenChange(false)} title={item.label}
-                  className={(isActive) => cn("flex min-h-10 items-center justify-between gap-2 rounded-md px-3 py-2 text-base font-medium text-foreground/80 transition-colors hover:bg-muted/70 hover:text-foreground", isActive && "bg-muted text-foreground")}>
-                  <span className="truncate">{item.label}</span>{item.soon && <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">Soon</span>}
-                </SiteNavLink>)}
-              </div>
-            </div>)}
-          </nav>
-        </div>
-      </div>}
+      {open && panel}
     </header>}
     <header className="sticky top-0 z-40 flex h-14 items-center justify-between bg-sidebar px-gutter lg:hidden">
       <Brand />

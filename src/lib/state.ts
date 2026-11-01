@@ -71,10 +71,11 @@ export type LrSlip = (typeof LR_SLIPS)[number];
 /** The set post-mortem (F86): the clue that opened the set, where the time went, and the slip with its clue. Each part is optional. */
 export interface LrPostMortem { key?: number; time?: LrTimeSink; slip?: LrSlip; slipClue?: number }
 /**
- * One run of an LR drill (F83 to F85, D47): the clue translator, must-could-cannot or first move. ref is the drill or
- * set it used; each item is one clue, statement or move, and miss names the misreading a wrong clue matched.
+ * One run of an LR drill (F83 to F85, D47): the clue translator, must-could-cannot, first move or a replay set (F57).
+ * ref is the drill or set it used; each item is one clue, statement or move (for a replay, one step done step by step,
+ * "<set>#<step>", or one row solved alone, "<set>:<row>"), and miss names the misreading a wrong clue matched.
  */
-export interface LrDrillRun { id: string; d: string; kind: "clue" | "mcc" | "first"; ref?: string; items: { k: string; ok: boolean; miss?: string }[]; secs: number }
+export interface LrDrillRun { id: string; d: string; kind: "clue" | "mcc" | "first" | "replay"; ref?: string; items: { k: string; ok: boolean; miss?: string }[]; secs: number }
 /**
  * One Set Selection Arena round (F56, docs/design/arena.md): five sets dealt (A to E), the order the student picked and
  * the sets they left, their optional guesses, the seconds spent looking, each visit to a set as [set, from, to] in
@@ -290,7 +291,7 @@ export function normalize(raw: unknown): AppState {
     return a;
   }).filter((a) => a.id && a.set);
   b.lrDrills = list(raw.lrDrills, (x): LrDrillRun => ({
-    id: str(x.id), d: str(x.d), kind: x.kind === "mcc" || x.kind === "first" ? x.kind : "clue", secs: num(x.secs),
+    id: str(x.id), d: str(x.d), kind: x.kind === "mcc" || x.kind === "first" || x.kind === "replay" ? x.kind : "clue", secs: num(x.secs),
     ...(typeof x.ref === "string" && x.ref ? { ref: x.ref } : {}),
     items: list(x.items, (i) => ({ k: str(i.k), ok: !!i.ok, ...(typeof i.miss === "string" && i.miss ? { miss: i.miss } : {}) })),
   })).filter((x) => x.id && x.items.length);

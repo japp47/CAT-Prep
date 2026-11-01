@@ -103,8 +103,11 @@ export interface League { teams: string[]; win: number; draw: number }
 export interface GridModel {
   set: string;
   kind: "grid";
-  /** Values to fill, in groups sharing their choices; `labels` names each choice for a person reading the case. */
-  vars: { names: string[]; values: Val[]; labels?: Record<string, string> }[];
+  /**
+   * Values to fill, in groups sharing their choices; `labels` names each choice for a person reading the case. A board
+   * (DILR Replay) shows each group as a grid headed `title`, its rows named by `rows` (else by the names).
+   */
+  vars: { names: string[]; values: Val[]; labels?: Record<string, string>; title?: string; rows?: string[] }[];
   league?: League;
   /** Groups whose values must all differ. */
   distinct?: string[][];

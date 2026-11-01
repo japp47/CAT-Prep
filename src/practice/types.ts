@@ -56,7 +56,16 @@ export interface RcSet {
   since?: string;
   /** The model summary shown after the set, before the answers. claim and qualifier are exact phrases from model. */
   summary?: RcSummary;
+  /** A collection the set belongs to beside its genre, such as the CAT-pattern sets. */
+  pack?: RcPack;
 }
+
+/** Collections of RC sets, shown as a filter in the library. */
+export type RcPack = "cat-pattern";
+export const RC_PACKS: Record<RcPack, { label: string }> = {
+  // Written to the pattern of recent CAT papers (question mix, four per passage, close options); original text, not past questions.
+  "cat-pattern": { label: "CAT-pattern sets" },
+};
 
 export interface RcSummary { model: string; tone: Tone; claim: string; qualifier: string }
 
@@ -139,7 +148,7 @@ export interface VaPara {
  */
 /** lead is the opening paragraph's length in characters: the home page reserves that much room while the text loads. */
 /** v is the content version (contentHash): it changes when a question, option or answer changes, so old attempts can tell. */
-export interface RcMeta { id: string; title: string; genre: Genre; difficulty: Difficulty; words: number; questions: number; lead: number; v: string; since?: string }
+export interface RcMeta { id: string; title: string; genre: Genre; difficulty: Difficulty; words: number; questions: number; lead: number; v: string; since?: string; pack?: RcPack }
 export interface VaMeta { id: string; topic: string; difficulty: Difficulty; v: string; since?: string }
 export interface CrMeta { id: string; type: CrType; difficulty: Difficulty; topic: string; v: string }
 
@@ -257,6 +266,7 @@ export const rcVersion = (s: RcSet) => contentHash(s.questions.map((q) => [q.ste
 export function rcMeta(s: RcSet): RcMeta {
   const m: RcMeta = { id: s.id, title: s.title, genre: s.genre, difficulty: s.difficulty, words: setWords(s), questions: s.questions.length, lead: s.paras[0].length, v: rcVersion(s) };
   if (s.since) m.since = s.since;
+  if (s.pack) m.pack = s.pack;
   return m;
 }
 /**

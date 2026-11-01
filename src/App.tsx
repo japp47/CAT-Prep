@@ -32,6 +32,8 @@ const ClueDrill = lazy(() => import("./pages/practice/ClueDrill"));
 const MustCould = lazy(() => import("./pages/practice/MustCould"));
 const FirstMove = lazy(() => import("./pages/practice/FirstMove"));
 const Arena = lazy(() => import("./pages/practice/Arena"));
+const Replay = lazy(() => import("./pages/practice/Replay"));
+const ReplayPlayer = lazy(() => import("./pages/practice/ReplayPlayer"));
 const Progress = lazy(load.progress);
 const Roadmap = lazy(() => import("./pages/Roadmap"));
 const Section = lazy(() => import("./pages/Section"));
@@ -52,7 +54,7 @@ const Privacy = lazy(() => import("./pages/Privacy"));
 const LinkPage = API_ENABLED ? lazy(() => import("./pages/Link")) : null;
 
 const TITLES: Record<string, string> = {
-  "/": "99ile: free CAT prep", "/today": "Today", "/plan": "Plan and time", "/practice": "Practice", "/varc/practice": "VARC practice", "/dilr/practice": "DILR practice", "/quant/practice": "Quant practice", "/practice/library": "RC library", "/practice/sectional": "VARC sectional", "/practice/va": "VA drill", "/practice/cr": "Critical reasoning drill", "/practice/speed": "Reading speed test", "/practice/redo": "Redo queue", "/practice/arena": "Set Selection Arena", "/varc": "VARC", "/dilr": "DILR", "/quant": "Quant",
+  "/": "99ile: free CAT prep", "/today": "Today", "/plan": "Plan and time", "/practice": "Practice", "/varc/practice": "VARC practice", "/dilr/practice": "DILR practice", "/quant/practice": "Quant practice", "/practice/library": "RC library", "/practice/sectional": "VARC sectional", "/practice/va": "VA drill", "/practice/cr": "Critical reasoning drill", "/practice/speed": "Reading speed test", "/practice/redo": "Redo queue", "/practice/arena": "Set Selection Arena", "/practice/replay": "DILR replay", "/varc": "VARC", "/dilr": "DILR", "/quant": "Quant",
   "/progress": "Progress", "/progress/mock-review": "Analyse a mock", "/review": "Weekly review", "/errors": "Error log", "/words": "Words", "/journal": "Reading journal", "/updates": "Important updates", "/exams": "CAT and other exams",
   "/guides": "Guides", "/stories": "Topper stories", "/roadmap": "What's coming", "/settings": "Settings", "/link": "Link this device", "/privacy": "Privacy",
 };
@@ -105,6 +107,8 @@ export const router = createBrowserRouter(createRoutesFromElements(
       <Route path="practice/must-could" element={<MustCould />} />
       <Route path="practice/first-move" element={<FirstMove />} />
       <Route path="practice/arena" element={<Arena />} />
+      <Route path="practice/replay" element={<Replay />} />
+      <Route path="practice/replay/:id" element={<ReplayPlayer />} />
       <Route path="practice/speed" element={<SpeedTest />} />
       <Route path="practice/redo" element={<Redo />} />
       <Route path="practice/sectional" element={<Sectional />} />

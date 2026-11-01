@@ -89,6 +89,12 @@ function DrillGlyph({ kind }: { kind: LrDrillRun["kind"] }) {
         <rect x="18.5" y="8" width="11" height="32" rx="3" className={cn(c, "group-hover:fill-primary/30")} />
         <rect x="33" y="8" width="11" height="32" rx="3" className="fill-danger-soft" />
       </>}
+      {kind === "replay" && <>
+        <rect x="4" y="8" width="40" height="6" rx="3" className={c} />
+        <rect x="4" y="18" width="26" height="6" rx="3" className={c} />
+        <rect x="4" y="28" width="14" height="6" rx="3" className={cn(c, "group-hover:fill-primary/30")} />
+        <rect x="4" y="38" width="5" height="6" rx="3" className="fill-success" />
+      </>}
       {kind === "first" && <>
         <rect x="4" y="8" width="12" height="7" rx="3.5" className="fill-success" />
         <rect x="4" y="20.5" width="40" height="7" rx="3.5" className={c} />
@@ -102,12 +108,13 @@ const DRILLS: { kind: LrDrillRun["kind"]; to: string; h: string; p: string; meta
   { kind: "clue", to: "/practice/clues", h: "Clue translator", p: "Read \"only if\", \"unless\", \"between\" and left and right onto a small board. A misreading is named.", meta: "8 clues, about 3 minutes" },
   { kind: "mcc", to: "/practice/must-could", h: "Must, could, cannot", p: "A set's finished seatings side by side; sort six statements by whether they hold in all, some or none. Uses sets you have solved.", meta: "6 statements, about 4 minutes" },
   { kind: "first", to: "/practice/first-move", h: "First move", p: "Pick the clue to start with. See how many ways each clue leaves open, worked out by solving the set. Uses sets you have solved.", meta: "3 moves, about 3 minutes" },
+  { kind: "replay", to: "/practice/replay", h: "Replay", p: "Scheduling, grouping and tournament sets on a board you mark. After every step, see how many arrangements are left.", meta: "One set, about 8 minutes" },
 ];
 
-/** The three LR drills, each with how the last run went. */
+/** The four LR drills, each with how the last run went. */
 function Drills({ runs }: { runs: LrDrillRun[] }) {
   return (
-    <ul className="grid gap-3 md:grid-cols-3">
+    <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
       {DRILLS.map((d) => {
         const mine = runs.filter((r) => r.kind === d.kind), last = mine[mine.length - 1] as LrDrillRun | undefined;
         const c = last?.items.filter((i) => i.ok).length;
@@ -166,7 +173,7 @@ export default function DilrPractice({ next }: { next: LrMeta | undefined }) {
         </Rows>
       </Section>
 
-      <Section title="Drills" description="Short drills for the skills that lose solved sets: reading a clue exactly, telling must from could, and choosing where to start. Every answer is worked out by solving the set in code.">
+      <Section title="Drills" description="Short drills for the skills that lose solved sets: reading a clue exactly, telling must from could, choosing where to start, and seeing each deduction cut the arrangements. Every answer is worked out by solving the set in code.">
         <Drills runs={state.lrDrills} />
       </Section>
 
