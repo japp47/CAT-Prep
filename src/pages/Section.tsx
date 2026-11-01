@@ -9,7 +9,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { CategoryBlock } from "../components/Resources";
-import { Empty, Ext, LinkButton, Page, PageHeader, Section as Block, Segmented, TextLink } from "../components/kit";
+import { Empty, Ext, LinkButton, Page, PageHeader, Section as Block, SwitchTabs, TextLink } from "../components/kit";
 import { GuideExplorer } from "../components/GuideExplorer";
 import { LrGuideBody } from "../components/LrGuide";
 import { LrThumb } from "../components/LrThumb";
@@ -138,9 +138,9 @@ function Learn({ id, page, focus, part, setPart, cats }: { id: SectionId; page: 
         </Block>
         {both}
         {cats((c) => !c.part)}
-        <section aria-label="Logical reasoning or data interpretation" className="flex flex-col gap-10">
+        <section id="dilr-half" role="tabpanel" aria-label={page.parts.find((p) => p.id === part)!.label} className="flex flex-col gap-10">
           <div className="flex flex-col gap-3">
-            <Segmented value={part} onChange={setPart} options={page.parts.map((p) => [p.id, p.label] as [Part, string])} label="Which half of the section" />
+            <SwitchTabs value={part} onChange={setPart} options={page.parts.map((p) => ({ id: p.id, label: p.label, short: p.id === "lr" ? "LR" : "DI" }))} label="Which half of the section" panel="dilr-half" />
             <p className="measure text-base text-muted-foreground">{page.parts.find((p) => p.id === part)!.intro}</p>
           </div>
           {part === "lr" ? <>
@@ -270,7 +270,7 @@ function Live({ sec, page }: { sec: SectionDef; page: PageData }) {
       {id === "practice" && sec.id === "dilr" && (
         <div className="flex flex-col gap-3 rounded-lg bg-card p-5 sm:p-6">
           <h3 className="text-heading font-semibold">Practice on this site</h3>
-          <p className="measure text-base text-foreground/85">{LR_CATALOG.length} original logical reasoning sets, each with a timer, a scratch pad, a step-by-step solution drawn as you go, and a two-minute post-mortem, plus drills on reading clues, choosing where to start and replaying the deductions. Data interpretation sets arrive here in December; until then, use the DI sets by topic and the past CAT DI sets below.</p>
+          <p className="measure text-base text-foreground/85">{LR_CATALOG.length} original sets, logical reasoning and now data interpretation, each with a timer, CAT's calculator, a step-by-step solution and a two-minute post-mortem, plus drills on reading clues, choosing where to start and replaying the deductions. More DI sets arrive through December; for more now, use the DI sets by topic and the past CAT DI sets below.</p>
           <div className="flex flex-wrap gap-3"><LinkButton to="/dilr/practice">Open DILR practice</LinkButton></div>
         </div>
       )}

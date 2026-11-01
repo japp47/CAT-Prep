@@ -3,6 +3,8 @@ import arrangement from "../../../content/lr/arrangement.json";
 import binary from "../../../content/lr/binary.json";
 import caselet from "../../../content/lr/caselet.json";
 import clocks from "../../../content/lr/clocks.json";
+import diChart from "../../../content/lr/di-chart.json";
+import diTable from "../../../content/lr/di-table.json";
 import directions from "../../../content/lr/directions.json";
 import distribution from "../../../content/lr/distribution.json";
 import relations from "../../../content/lr/relations.json";
@@ -18,5 +20,5 @@ import venn from "../../../content/lr/venn.json";
  * used with permission (D38). Add a new type's file here too; catalog.test.ts fails if the two lists differ. JSON has no
  * types, so content.test.ts checks every set's shape and answers.
  */
-export const LR_BY_FILE = { arrangement, binary, caselet, clocks, directions, distribution, relations, routes, scheduling, selection, setmax, tournament, venn } as unknown as Record<string, LrSet[]>;
+export const LR_BY_FILE = { arrangement, binary, caselet, clocks, "di-chart": diChart, "di-table": diTable, directions, distribution, relations, routes, scheduling, selection, setmax, tournament, venn } as unknown as Record<string, LrSet[]>;
 export const LR_SETS: LrSet[] = Object.values(LR_BY_FILE).flat();

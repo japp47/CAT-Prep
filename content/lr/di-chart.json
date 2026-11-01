@@ -1,0 +1,267 @@
+[
+  {
+    "id": "di-port-cargo",
+    "title": "Containers at five ports",
+    "type": "di-chart",
+    "difficulty": "medium",
+    "minutes": 12,
+    "source": "original",
+    "since": "2026-11-02",
+    "intro": [
+      "The bar chart shows the total cargo, in million tonnes, handled by five ports, P, Q, R, S and T, in 2023 and 2024. The table shows the percentage of each port's total cargo that was containerised in each of the two years.",
+      "All cargo at a port that is not containerised is bulk cargo.",
+      "Additional information for questions 4 and 5: in 2025, each port is expected to handle exactly as much total cargo as in 2024. The port authority wants the containerised cargo of the five ports together to be at least half of their combined cargo. No port's containerised share can fall below its 2024 level or rise by more than 10 percentage points above it."
+    ],
+    "clues": [],
+    "data": [
+      {
+        "id": "cargo",
+        "caption": "Total cargo handled",
+        "unit": "million tonnes",
+        "rowHead": "Port",
+        "cols": [
+          "2023",
+          "2024"
+        ],
+        "rows": [
+          {
+            "name": "P",
+            "cells": [
+              128,
+              140
+            ]
+          },
+          {
+            "name": "Q",
+            "cells": [
+              84,
+              96
+            ]
+          },
+          {
+            "name": "R",
+            "cells": [
+              152,
+              144
+            ]
+          },
+          {
+            "name": "S",
+            "cells": [
+              64,
+              80
+            ]
+          },
+          {
+            "name": "T",
+            "cells": [
+              92,
+              99
+            ]
+          }
+        ]
+      },
+      {
+        "id": "share",
+        "caption": "Containerised cargo as a percentage of total cargo",
+        "unit": "%",
+        "rowHead": "Port",
+        "cols": [
+          "2023",
+          "2024"
+        ],
+        "rows": [
+          {
+            "name": "P",
+            "cells": [
+              40,
+              37.5
+            ]
+          },
+          {
+            "name": "Q",
+            "cells": [
+              35,
+              45
+            ]
+          },
+          {
+            "name": "R",
+            "cells": [
+              50,
+              55
+            ]
+          },
+          {
+            "name": "S",
+            "cells": [
+              20,
+              32
+            ]
+          },
+          {
+            "name": "T",
+            "cells": [
+              60,
+              53
+            ]
+          }
+        ]
+      }
+    ],
+    "charts": [
+      {
+        "kind": "bar",
+        "data": "cargo",
+        "axis": {
+          "max": 160,
+          "step": 20,
+          "label": "million tonnes"
+        },
+        "labels": true
+      },
+      {
+        "kind": "table",
+        "data": "share"
+      }
+    ],
+    "questions": [
+      {
+        "stem": "Which port recorded the largest increase in containerised cargo, in million tonnes, from 2023 to 2024?",
+        "kind": "mcq",
+        "options": [
+          "P",
+          "Q",
+          "R",
+          "S"
+        ],
+        "answer": 1,
+        "uses": [],
+        "why": [
+          "Containerised cargo is total cargo × share. 2023 to 2024: P 51.2 to 52.5, Q 29.4 to 43.2, R 76.0 to 79.2, S 12.8 to 25.6, T 55.2 to 52.47.",
+          "The increases: Q 13.8, S 12.8, R 3.2, P 1.3; T fell. Q is the largest.",
+          "The trap is S: its share rose the most (12 points) and its containerised cargo doubled, but from a smaller base, so the increase in tonnes is smaller."
+        ]
+      },
+      {
+        "stem": "By approximately what percentage did the bulk cargo handled by the five ports together increase from 2023 to 2024?",
+        "kind": "mcq",
+        "options": [
+          "3.6%",
+          "5.7%",
+          "7.5%",
+          "12.6%"
+        ],
+        "answer": 0,
+        "uses": [],
+        "why": [
+          "Total cargo: 520 in 2023 and 559 in 2024. Containerised cargo: 224.6 in 2023 and 252.97 in 2024.",
+          "Bulk cargo: 520 − 224.6 = 295.4 and 559 − 252.97 = 306.03, an increase of 306.03 ÷ 295.4 − 1 = 3.6%.",
+          "5.7% averages the five ports' bulk growth rates, which ignores their sizes; 7.5% is the growth of total cargo and 12.6% that of containerised cargo."
+        ]
+      },
+      {
+        "stem": "For how many of the five ports was the percentage change in containerised cargo from 2023 to 2024 greater than the percentage change in the port's total cargo?",
+        "kind": "mcq",
+        "options": [
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "answer": 2,
+        "uses": [],
+        "why": [
+          "The percentage change in a part is greater than that in its whole exactly when the part's share of the whole rises, so no multiplication is needed.",
+          "The share rose at Q (35 to 45), R (50 to 55) and S (20 to 32), and fell at P and T. That is 3 ports.",
+          "R is the one to watch: its total cargo fell by 5.3% while its containerised cargo rose by 4.2%, and +4.2% is greater than −5.3%."
+        ]
+      },
+      {
+        "stem": "If the containerised cargo of the five ports together is exactly half of their combined cargo in 2025, and the containerised shares of P and T stay at their 2024 levels, what is the minimum possible containerised share of port R in 2025, in per cent, to the nearest integer?",
+        "kind": "tita",
+        "answer": "61",
+        "tol": 0.5,
+        "uses": [],
+        "why": [
+          "Half of 559 is 279.5. Containerised cargo in 2024 was 252.97, so the five ports must add 26.53 million tonnes.",
+          "P and T add nothing. Q and S can add at most 10 points of their cargo: 9.6 and 8.0, together 17.6.",
+          "To keep R as low as possible, Q and S add their most, and R adds the rest: 26.53 − 17.6 = 8.93, within R's own limit of 14.4.",
+          "R's containerised cargo is then 79.2 + 8.93 = 88.13 out of 144, a share of 61.2%, which is 61 to the nearest integer."
+        ]
+      },
+      {
+        "stem": "What is the smallest number of ports whose containerised share needs to rise for the authority's target to be met?",
+        "kind": "tita",
+        "answer": "2",
+        "uses": [],
+        "why": [
+          "Half of 559 is 279.5. Containerised cargo in 2024 was 252.97, so it must rise by at least 26.53 million tonnes.",
+          "A port can add at most 10% of its total cargo: R 14.4, P 14.0, T 9.9, Q 9.6, S 8.0.",
+          "One port is not enough (R alone adds 14.4). The two largest, R and P, can add 28.4, which covers 26.53. So 2."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Turn the two charts into one table first: containerised cargo = total cargo × share. 2023: P 51.2, Q 29.4, R 76.0, S 12.8, T 55.2 (224.6 in all). 2024: P 52.5, Q 43.2, R 79.2, S 25.6, T 52.47 (252.97 in all).",
+        "Bulk cargo is the rest: 295.4 in 2023 and 306.03 in 2024, out of totals of 520 and 559.",
+        "A part's percentage change is greater than its whole's exactly when its share rises: read that straight off the table, without multiplying.",
+        "For the 2025 questions, turn every limit into tonnes: the target is 279.5, so 26.53 more is needed, and a port can add at most 10% of its cargo (R 14.4, P 14.0, T 9.9, Q 9.6, S 8.0). For the fewest ports, use the biggest first; for the least at one port, let the others add their most."
+      ],
+      "grid": {
+        "head": [
+          "Port",
+          "Containerised 2023",
+          "Containerised 2024",
+          "Change",
+          "Most it can add in 2025"
+        ],
+        "rows": [
+          [
+            "P",
+            "51.2",
+            "52.5",
+            "+1.3",
+            "14.0"
+          ],
+          [
+            "Q",
+            "29.4",
+            "43.2",
+            "+13.8",
+            "9.6"
+          ],
+          [
+            "R",
+            "76.0",
+            "79.2",
+            "+3.2",
+            "14.4"
+          ],
+          [
+            "S",
+            "12.8",
+            "25.6",
+            "+12.8",
+            "8.0"
+          ],
+          [
+            "T",
+            "55.2",
+            "52.47",
+            "−2.73",
+            "9.9"
+          ],
+          [
+            "All",
+            "224.6",
+            "252.97",
+            "+28.37",
+            "55.9"
+          ]
+        ]
+      }
+    }
+  }
+]

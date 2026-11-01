@@ -303,6 +303,56 @@ export const LR_GUIDES: LrGuide[] = [
     example: { set: "clk-station-clock", note: "Hand angles, opposite hands and a gaining clock, each worked from degrees." },
     links: [RODHA, BASICS, CRACKU],
   },
+  {
+    id: "di-chart", h: "Charts", tag: "Bars, lines and shares, often two charts read together",
+    what: "A bar or line chart, often beside a table or a second chart, about a few items over two or more years. Questions ask for changes, shares and percentages; the harder ones join the two charts (a total times a share), ask for the fewest or most of something, or for a value correct to a decimal place.",
+    draw: "A small table of your own: one row per item, the values you will need from each chart side by side, and a column for the number the two charts make together.",
+    start: "Read the title, the units and the scale of every chart before any question, then write down the one sentence that links the charts (\"containerised cargo = total × share\").",
+    method: [
+      "Note the unit and the base of every number: million tonnes, %, % of what.",
+      "Build the combined column once (total × share, amount ÷ rate) for every item, instead of recomputing it in each question.",
+      "Read the options before calculating. Far apart: round. Close together: calculate exactly, with the calculator if needed.",
+      "Look for a shortcut that removes a calculation: a part grows faster than its whole exactly when its share rises.",
+      "For \"at least\" and \"fewest\", turn every limit into a quantity and use the biggest first.",
+    ],
+    traps: [
+      ["The wrong base", "\"% of total cargo\" and \"% of containerised cargo\" are different numbers. Options are built from both."],
+      ["Averaging rates", "Growth over several items is total over total, not the average of their growth rates."],
+      ["Share points and amounts", "The largest rise in share is not the largest rise in quantity when the bases differ."],
+      ["Rounding too early", "Round only at the end; two options can be 0.1 apart."],
+    ],
+    example: { set: "di-port-cargo", note: "Two charts, five ports, five questions, three of them needing both charts. Solve it in 14 minutes, then compare your table with the solution's." },
+    links: [
+      { k: "Video", n: "DI tables and charts, a starter kit (MBA Wallah)", u: "https://www.youtube.com/playlist?list=PLlxE9WKuvDj-EpQRRmi209Ht3RrDKtIa8", note: "One short video per chart type." },
+      { k: "Practice", n: "Charts, past CAT sets (Cracku)", u: "https://cracku.in/cat-di-charts-questions/", note: "Bar, line and pie sets from past papers, with solutions." },
+      { k: "Guide", n: "Tricks to speed up DI calculations (PaGaLGuY)", u: "https://www.pagalguy.com/articles/tricks-to-speed-up-calculations-for-data-interpretation-questions-in-cat-2011-14278", note: "Fractions as percentages, and when the options let you round." },
+    ],
+  },
+  {
+    id: "di-table", h: "Tables and missing data", tag: "Fill the blanks from totals and rules, then answer",
+    what: "A table with some entries missing, row and column totals, and a few facts: every entry a multiple of 5, no two equal in a column, one row rising, a rank. The questions need the filled table; the hardest ask what changes if one fact is dropped.",
+    draw: "Copy the table with a gap for each blank, and write the missing sum beside every row and column (\"A: Jan + Feb = 75\").",
+    start: "Write every row's and column's missing sum first. Then go to the row or column with the fewest blanks, or to the fact that leaves the fewest choices.",
+    method: [
+      "Turn every total into the sum of its blanks.",
+      "List the few values a blank can take from the domain fact (multiples of 5 from 10 to 60).",
+      "Apply the strongest fact first (a rising row, a rank), splitting into two or three cases where it allows them.",
+      "Let the no-tie fact and the sums kill cases; one case should survive.",
+      "Check the finished table against every fact once before answering.",
+    ],
+    traps: [
+      ["Answering before filling", "Most questions need two or three blanks; fill all of them first and answer from the table."],
+      ["Forgetting a given entry in a no-tie check", "A blank cannot equal any entry in its column, given or found."],
+      ["Second-highest", "\"Second-highest\" means exactly one entry above it; test both directions."],
+      ["Dropped-fact questions", "\"If fact 4 were not known\" asks for all the fills without it; solve that question on a copy."],
+    ],
+    example: { set: "di-batch-enrolments", note: "Five batches, four months, eight blanks and four facts, every one of them needed. Fill it in 15 minutes, then check the tinted entries in the review." },
+    links: [
+      { k: "Practice", n: "Tables with missing values, past CAT sets (Cracku)", u: "https://cracku.in/cat-table-based-di-sets-questions/", note: "The commonest DI picture in recent CAT." },
+      { k: "Guide", n: "Tables in DI (PW)", u: "https://www.pw.live/mba/exams/cat-lrdi-tables", note: "A short primer: bases, fraction shortcuts and missing values." },
+      { k: "Video", n: "Data interpretation, lesson by lesson (Unacademy CAT)", u: "https://www.youtube.com/playlist?list=PLh-uxFrOdsq9rrJS0iBTZRFn5a8WsSbvU", note: "Tables, then bar graphs, then pie charts, each in several levels." },
+    ],
+  },
 ];
 
 export const LR_GUIDE_BY_TYPE = new Map(LR_GUIDES.map((g) => [g.id, g]));

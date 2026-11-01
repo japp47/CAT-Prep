@@ -153,11 +153,14 @@ export interface VaMeta { id: string; topic: string; difficulty: Difficulty; v: 
 export interface CrMeta { id: string; type: CrType; difficulty: Difficulty; topic: string; v: string }
 
 /** Logical reasoning set types (docs/research/lr.md §2). One content/lr/<type>.json file each. */
-export type LrType = "arrangement" | "selection" | "distribution" | "ranking" | "tournament" | "caselet" | "scheduling" | "binary" | "setmax" | "venn" | "routes" | "directions" | "relations" | "clocks" | "quant-lr" | "cubes" | "mixed";
+export type LrType = "arrangement" | "selection" | "distribution" | "ranking" | "tournament" | "caselet" | "scheduling" | "binary" | "setmax" | "venn" | "routes" | "directions" | "relations" | "clocks" | "quant-lr" | "cubes" | "mixed" | "di-table" | "di-chart";
 export const LR_TYPE: Record<LrType, { label: string }> = {
   // The order a student meets the types in (practice list, next set): the commonest in CAT first.
   arrangement: { label: "Arrangement" },
   tournament: { label: "Games and tournaments" },
+  // Data interpretation sets (F90, D70): LR sets whose story is data. In the LR player and practice list, beside LR.
+  "di-table": { label: "Tables and missing data" },
+  "di-chart": { label: "Charts" },
   caselet: { label: "Reasoning DI and caselets" },
   binary: { label: "Binary logic" },
   distribution: { label: "Distribution and matching" },
@@ -182,7 +185,24 @@ export interface LrTable { caption?: string; head: string[]; rows: string[][] }
  * One question. answer is an option index (MCQ) or the text to type (TITA). uses names the clues (from 1) that settle
  * it, highlighted in review. if is an extra condition for this question only ("if additionally…").
  */
-export interface LrQuestion { stem: string; kind: "mcq" | "tita"; options?: string[]; answer: number | string; uses: number[]; why: string[]; if?: string; fig?: LrDiagram }
+export interface LrQuestion { stem: string; kind: "mcq" | "tita"; options?: string[]; answer: number | string; uses: number[]; why: string[]; if?: string; fig?: LrDiagram; tol?: number }
+
+/** The DI types, which show `data` and `charts` (docs/content/lr-format.md, "Data interpretation"). */
+export const DI_SET_TYPES: LrType[] = ["di-table", "di-chart"];
+export const isDi = (t: LrType) => DI_SET_TYPES.includes(t);
+
+/**
+ * A table of numbers in a DI set: one row per item, one cell per column; null is a blank the student must work out.
+ * unit names what the numbers count ("₹ crore", "%", "thousand tonnes").
+ */
+export interface DiData { id: string; caption: string; unit?: string; rowHead: string; cols: string[]; rows: { name: string; cells: (number | null)[] }[] }
+/**
+ * How a DI set draws one of its tables (components/DiChart.tsx). bar: one group per row, one bar per column (or, with
+ * by "cols", one group per column); stacked: the same, stacked; line: one line per row across the columns; table: the
+ * table itself, blanks shown as "?". axis fixes the value scale; labels prints values on the marks, as a printed exam
+ * chart does. Pie, radar and scatter come with the sets that need them.
+ */
+export interface DiChart { kind: "bar" | "stacked" | "line" | "table"; data: string; title?: string; by?: "rows" | "cols"; axis?: { max: number; step: number; label: string }; labels?: boolean }
 /**
  * The solution as a picture that fills in step by step (F23 review), and the blank layout of the scratch pad.
  * frames[i] is the picture after solution step i: frames[i][row][seat] holds the lines written in that seat, the
@@ -244,8 +264,14 @@ export interface LrSet {
   intro: string[];
   clues: string[];
   tables?: LrTable[];
+  /** DI sets: the numbers, and how to draw them (F90). */
+  data?: DiData[];
+  charts?: DiChart[];
+  /** Real data: where it comes from and its licence (F96). */
+  cite?: string;
   questions: LrQuestion[];
-  solution: { steps: string[]; grid?: LrTable; cases?: number; diagram?: LrDiagram };
+  /** fills: a DI table's blanks as [row, column, value], shown in review and proved by the set's check (practice/di/checks.ts). */
+  solution: { steps: string[]; grid?: LrTable; cases?: number; diagram?: LrDiagram; fills?: { data: string; cells: [string, string, number][] }[] };
 }
 /** apart: each question is its own short puzzle (no shared clues or tables), so the set is not a CAT-style set for the Arena. */
 export interface LrMeta { id: string; title: string; type: LrType; sub?: string; difficulty: Difficulty; minutes: number; questions: number; since: string; v: string; apart?: true }
@@ -281,11 +307,11 @@ export function rcLead(s: RcSet): [string, string] {
   return [p.slice(0, at).trimEnd(), p.slice(at).trim()];
 }
 /** An LR set's content version: what decides its answers (the story, clues, tables and questions), not explanations or dates. */
-export const lrVersion = (s: LrSet) => contentHash([s.intro, s.clues, s.tables ?? [], s.questions.map((q) => [q.stem, q.kind, q.options ?? [], q.answer, q.if ?? ""])]);
+export const lrVersion = (s: LrSet) => contentHash([s.intro, s.clues, s.tables ?? [], ...(s.data ? [s.data] : []), s.questions.map((q) => [q.stem, q.kind, q.options ?? [], q.answer, q.if ?? ""])]);
 export function lrMeta(s: LrSet): LrMeta {
   const m: LrMeta = { id: s.id, title: s.title, type: s.type, difficulty: s.difficulty, minutes: s.minutes, questions: s.questions.length, since: s.since, v: lrVersion(s) };
   if (s.sub) m.sub = s.sub;
-  if (!s.clues.length && !s.tables?.length) m.apart = true;
+  if (!s.clues.length && !s.tables?.length && !s.data?.length) m.apart = true;
   return m;
 }
 export const crMeta = (c: CrItem): CrMeta => ({ id: c.id, type: c.type, difficulty: c.difficulty, topic: c.topic, v: contentHash(c) });

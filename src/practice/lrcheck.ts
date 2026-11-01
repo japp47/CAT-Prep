@@ -16,5 +16,11 @@ export function titaMatches(given: string, answer: string): boolean {
 /** Whether an answer to an LR question is right: an option index for MCQ, typed text for TITA; null is skipped. */
 export function lrRight(q: LrQuestion, given: number | string | null): boolean {
   if (given === null || given === "") return false;
-  return q.kind === "mcq" ? given === q.answer : titaMatches(String(given), String(q.answer));
+  if (q.kind === "mcq") return given === q.answer;
+  // A DI answer typed to a stated precision: within tol of the answer ("33.3" for 33.33 with tol 0.05). A trailing % is fine.
+  if (q.tol !== undefined) {
+    const x = Number(String(given).trim().replace(/[%,\s]/g, ""));
+    return String(given).trim() !== "" && Number.isFinite(x) && Math.abs(x - Number(q.answer)) <= q.tol + 1e-9;
+  }
+  return titaMatches(String(given), String(q.answer));
 }

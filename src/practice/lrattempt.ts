@@ -3,7 +3,7 @@ import type { AppState, ErrorEntry, LrAttempt, LrPostMortem, LrSlip, LrTimeSink 
 import { lrRight } from "./lrcheck";
 import { LETTERS } from "./record";
 import { lrRedoKey, queueMiss } from "./redo";
-import { LR_TYPE, lrVersion, type LrSet } from "./types";
+import { isDi, LR_TYPE, lrVersion, type LrSet } from "./types";
 
 /** Labels for the post-mortem (F86), worded as the student would say them. */
 export const LR_TIME_LABEL: Record<LrTimeSink, string> = {
@@ -18,6 +18,9 @@ export const LR_SLIP_LABEL: Record<LrSlip, string> = {
   "missed-case": "Missed a case",
   assumption: "Assumed something not given",
   calculation: "Calculation slip",
+  reading: "Read the wrong year, series or unit",
+  base: "Took the wrong base for a percentage",
+  rounding: "Rounded too early",
   none: "No slip",
 };
 
@@ -38,12 +41,14 @@ export function scoreLr(set: LrSet, ans: (number | string | null)[]) {
  * Saves an LR attempt and logs it as one DILR practice set, so Progress and History count it. Wrong, blank and
  * unsure questions go into the redo queue, as in every other section.
  */
-export function recordLr(st: AppState, id: string, set: LrSet, ans: (number | string | null)[], secs: number, d: string, unsure: number[], now: number): void {
+export function recordLr(st: AppState, id: string, set: LrSet, ans: (number | string | null)[], secs: number, d: string, unsure: number[], now: number, extra: { qs?: number[]; calc?: string[] } = {}): void {
   const { c, w, tw } = scoreLr(set, ans);
   const a: LrAttempt = { id, d, set: set.id, ans, c, w, secs: Math.round(secs), updatedAt: now, v: lrVersion(set) };
   if (unsure.length) a.unsure = [...unsure].sort((x, y) => x - y);
+  if (extra.qs?.some((x) => x > 0)) a.qs = extra.qs.map((x) => Math.round(x));
+  if (extra.calc?.length) a.calc = extra.calc.slice(-80);
   st.lrAttempts.push(a);
-  if (c + w + tw > 0) st.practice.push({ id: id + "p", d, sec: "DILR", t: "LR", a: c + w + tw, c, src: "Practice: " + set.title });
+  if (c + w + tw > 0) st.practice.push({ id: id + "p", d, sec: "DILR", t: isDi(set.type) ? "DI" : "LR", a: c + w + tw, c, src: "Practice: " + set.title });
   set.questions.forEach((q, qi) => { if (!lrRight(q, ans[qi] ?? null) || unsure.includes(qi)) queueMiss(st, lrRedoKey(set.id, qi), d); });
 }
 

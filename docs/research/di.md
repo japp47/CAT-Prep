@@ -56,12 +56,12 @@ The three levels (reading the data, between the data, beyond the data) come from
 ### Levels we write (the owner's "medium to hard and beyond, CAT level")
 | Level | What it is | Picture | Questions | Target |
 |---|---|---|---|---|
-| **L1 Learn** (not CAT level, labelled so) | One chart, clean numbers; for learning a picture | One | Read, compare, one-step change | 6 to 8 min |
+| ~~L1 Learn~~ (dropped 1 Nov 2026: the owner asked for CAT level only) | For learning a picture, use the outside DI basics pages instead | | | |
 | **L2 Medium** (a slot's easy set) | One or two charts, derived values | One or two | Change, share, average, count with a condition; 1 "closest to" | 8 to 10 min |
 | **L3 Hard** (the CAT core) | Missing values and rules, reverse and convert, two linked charts | One or two + rules | Fill, convert, extremes, one determinacy question | 12 to 15 min |
 | **L4 CAT+** (beyond) | DI-LR hybrids: rates and events from a graph, chained trade, integer constraints, cases | Any + rules | Extremes, "how many can be determined", must/could | 15 to 20 min |
 
-A first library of 24 sets: 4 at L1, 6 at L2, 9 at L3, 5 at L4, with every picture type at L2 or above and half the questions TITA.
+A first library of 24 sets: 6 at L2, 12 at L3, 6 at L4 (CAT level only, owner 1 Nov 2026), with every picture type at L2 or above and half the questions TITA.
 
 ## 3. Why students find DI hard (papers, coaching guides, Reddit)
 

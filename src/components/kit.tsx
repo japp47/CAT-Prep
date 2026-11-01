@@ -137,6 +137,39 @@ export function ErrorText({ children }: { children: ReactNode }) {
   return children ? <p className="text-sm text-danger" role="alert">{children}</p> : null;
 }
 
+/**
+ * A switch between two or three halves of a page (logical reasoning or data interpretation), as tabs: equal parts, a
+ * card-toned pill that slides to the chosen one (transform only, still under reduced motion), an optional count
+ * beside each label, a short label on a phone (the full one stays for screen readers), and arrow keys to move. The panel it controls has the id `panel`.
+ */
+export function SwitchTabs<T extends string>({ value, onChange, options, label, panel, className }: {
+  value: T; onChange: (v: T) => void; options: { id: T; label: string; short?: string; count?: number }[]; label: string; panel: string; className?: string;
+}) {
+  const i = Math.max(0, options.findIndex((o) => o.id === value));
+  const move = (d: number) => onChange(options[(i + d + options.length) % options.length].id);
+  return (
+    <div role="tablist" aria-label={label}
+      onKeyDown={(e) => { if (e.key === "ArrowRight") { e.preventDefault(); move(1); } else if (e.key === "ArrowLeft") { e.preventDefault(); move(-1); } }}
+      className={cn("relative grid w-full rounded-xl bg-secondary p-1 sm:w-fit", className)} style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}>
+      <span aria-hidden className="absolute inset-y-1 left-1 rounded-lg bg-card shadow-[0_1px_2px_rgb(0_0_0/0.06)] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+        style={{ width: `calc((100% - 0.5rem) / ${options.length})`, transform: `translateX(${i * 100}%)` }} />
+      {options.map((o) => {
+        const on = o.id === value;
+        return (
+          <button key={o.id} type="button" role="tab" aria-selected={on} aria-controls={panel} tabIndex={on ? 0 : -1} onClick={() => onChange(o.id)}
+            className={cn("relative z-[1] flex min-h-11 items-center justify-center gap-2 rounded-lg px-4 text-base transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none motion-reduce:transition-none sm:px-6",
+              on ? "font-semibold text-foreground" : "text-muted-foreground hover:text-foreground")}>
+            {o.short ? <><span className="truncate sm:hidden" aria-hidden>{o.short}</span><span className="truncate max-sm:sr-only">{o.label}</span></> : <span className="truncate">{o.label}</span>}
+            {o.count !== undefined && (
+              <span className={cn("rounded-md px-1.5 text-sm font-semibold tabular-nums transition-colors duration-200", on ? "bg-primary/10 text-primary" : "bg-foreground/[0.06] text-muted-foreground")}>{o.count}</span>
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 /** A row of mutually exclusive choices, such as VARC, DILR and Quant. */
 export function Segmented<T extends string>({ value, onChange, options, label, className }: { value: T; onChange: (v: T) => void; options: (T | [T, ReactNode])[]; label: string; className?: string }) {
   return (

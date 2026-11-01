@@ -30,6 +30,12 @@ export function LrThumb({ type, className }: { type: LrType; className?: string 
       ) : type === "clocks" ? (
         // A clock face at ten past ten.
         <><circle cx="24" cy="24" r="17" className={c} /><path d="M24 24 17 18M24 24l10-7" className={c} /><circle cx="24" cy="24" r="2" className="fill-current" /></>
+      ) : type === "di-chart" ? (
+        // Bars on an axis.
+        <><path d="M6 6v36h36" className={c} /><rect x="11" y="24" width="6" height="18" rx="1.5" className="fill-current" /><rect x="20" y="14" width="6" height="28" rx="1.5" className={c} /><rect x="29" y="20" width="6" height="22" rx="1.5" className="fill-current" /></>
+      ) : type === "di-table" ? (
+        // A table with one cell missing.
+        <><rect x="5" y="8" width="38" height="32" rx="3" className={c} /><path d="M5 18.5h38M5 29h38M17.5 8v32M30.5 8v32" className={c} /><rect x="20" y="21" width="8" height="5.5" rx="1.5" className="fill-current" /></>
       ) : type === "tournament" ? (
         <path d="M5 8h10v8H5M5 32h10v8H5M15 12h8v24h-8M23 24h8M31 18h10v12H31" className={c} />
       ) : (

@@ -35,7 +35,7 @@ One idea: **one path through the section, then the two halves side by side.**
    LR courses, LR books                 DI start here (course, calculation, primers), DI books
 ```
 - **Recent slots, set by set** replaces the 2017–2022 percentages: seven slots from 2021 to 2025 read from the papers (`docs/research/di.md` §1 and 2IIM), each row naming its data sets and logic sets. It shows what a percentage hid: 2024 slot 3 had four data sets, 2022 slot 1 none, so neither half can be skipped.
-- **The switch** is the kit's `Segmented`; it filters the guides, tables and the Learn tab's resource lists by a `part` on topics and categories. Search still finds everything. A `?guide=` link opens the LR side.
+- **The switch** is the kit's `SwitchTabs` (1 Nov 2026, owner: "a switch tab, modern and better design"): equal halves, a card-toned pill that slides (transform only), counts beside the labels, "LR" and "DI" on a phone, arrow keys, tab roles. DILR practice uses the same switch for its sets (pref `dilrHalf`; it opens on DI when the next set is a DI one); it filters the guides, tables and the Learn tab's resource lists by a `part` on topics and categories. Search still finds everything. A `?guide=` link opens the LR side.
 - **How to start** merges "Starting from zero" (LR) and "Data interpretation: how to start" into one week-by-week path, so DI has a place in time, not only a list.
 
 ### Practice, in the plan's phases

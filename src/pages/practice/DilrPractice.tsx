@@ -9,11 +9,11 @@ import { calm, loadGsap, type Gsap } from "../../lib/motion";
 import { usePref } from "../../lib/prefs";
 import type { LrAttempt, LrDrillRun } from "../../lib/state";
 import { useStore } from "../../lib/store";
-import { ArrowLink, LinkButton, Section, TextLink } from "../../components/kit";
+import { ArrowLink, LinkButton, Section, SwitchTabs, TextLink } from "../../components/kit";
 import { LR_GUIDE_BY_TYPE } from "../../sections/dilr/guides";
 import { arenaTrend, freshLeft } from "../../practice/arena";
 import { dueRedo, upcomingRedo } from "../../practice/redo";
-import { LR_TYPE, LR_TYPES, type LrMeta, type LrType } from "../../practice/types";
+import { isDi, LR_TYPE, LR_TYPES, type LrMeta, type LrType } from "../../practice/types";
 import { LrThumb as Thumb } from "../../components/LrThumb";
 import { PaperRow, Row, Rows } from "./rows";
 
@@ -140,6 +140,13 @@ export default function DilrPractice({ next }: { next: LrMeta | undefined }) {
   const last = new Map<string, LrAttempt>();
   state.lrAttempts.forEach((a) => last.set(a.set, a));
   const types = LR_TYPES.filter((t) => LR_ORDER.some((s) => s.type === t));
+  // Logical reasoning and data interpretation are listed apart: each half has its own count and description.
+  const lrTypes = types.filter((t) => !isDi(t)), diTypes = types.filter(isDi);
+  const lrSets = LR_ORDER.filter((s) => !isDi(s.type)), diSets = LR_ORDER.filter((s) => isDi(s.type));
+  const triedOf = (sets: LrMeta[]) => sets.filter((s) => last.has(s.id)).length;
+  // Which half the list shows, remembered; it opens on data interpretation when the next set is one.
+  const [savedHalf, setHalf] = usePref<"lr" | "di" | null>("dilrHalf", null);
+  const half: "lr" | "di" = !diSets.length ? "lr" : savedHalf ?? (next && isDi(next.type) ? "di" : "lr");
   const dealt = new Set(state.arenaRounds.flatMap((r) => r.sets));
   const arena = arenaTrend(state.arenaRounds, state.lrAttempts);
   // The LR part of the redo queue.
@@ -150,6 +157,40 @@ export default function DilrPractice({ next }: { next: LrMeta | undefined }) {
   const openTypes = saved ?? [next?.type ?? types[0]];
   const setOpenTypes = (ts: LrType[]) => setSaved(ts);
 
+  // One section's type groups, with Open all and Close all for its own types.
+  const groups = (ts: LrType[]) => <>
+    {ts.length > 1 && (
+      <div className="flex gap-2 self-end">
+        <Button variant="ghost" size="sm" onClick={() => setOpenTypes([...new Set([...openTypes, ...ts])])} disabled={ts.every((t) => openTypes.includes(t))}>Open all</Button>
+        <Button variant="ghost" size="sm" onClick={() => setOpenTypes(openTypes.filter((t) => !ts.includes(t)))} disabled={!ts.some((t) => openTypes.includes(t))}>Close all</Button>
+      </div>
+    )}
+    {ts.map((t) => {
+      const sets = LR_ORDER.filter((s) => s.type === t);
+      return (
+        <TypeGroup key={t} type={t} sets={sets} last={last} open={openTypes.includes(t)}
+          onToggle={(o) => setOpenTypes(o ? [...openTypes, t] : openTypes.filter((x) => x !== t))}>
+          <Rows>
+            {sets.map((s) => {
+              const a = last.get(s.id);
+              return (
+                <Row key={s.id} side title={<Link to={a ? `/practice/lr/${s.id}?review=${a.id}` : `/practice/lr/${s.id}`} className="hover:text-primary">{s.title}</Link>}
+                  action={a
+                    ? <><LinkButton to={`/practice/lr/${s.id}?review=${a.id}`} variant="secondary">Review</LinkButton><LinkButton to={`/practice/lr/${s.id}?n=${seed}`} variant="ghost" className="max-sm:hidden">Retake</LinkButton></>
+                    : <LinkButton to={`/practice/lr/${s.id}`} variant="secondary">Start</LinkButton>}>
+                  <p>{meta(s)}</p>
+                  {a && <p className="text-foreground">Scored {score(s, a)}{a.pm?.key ? `; opened with clue ${a.pm.key}` : ""}</p>}
+                  {!a && dealt.has(s.id) && <p>Seen in the Arena, not solved yet</p>}
+                </Row>
+              );
+            })}
+          </Rows>
+          {LR_GUIDE_BY_TYPE.has(t) && <div className="bg-card px-5 py-4 sm:px-6"><ArrowLink to={`/dilr?guide=${t}`}>Read the guide first: {isDi(t) ? "what each picture hides and where to start" : "what to draw and where to start"}</ArrowLink></div>}
+        </TypeGroup>
+      );
+    })}
+  </>;
+
   return (
     <>
       <Section title="Next set">
@@ -157,7 +198,7 @@ export default function DilrPractice({ next }: { next: LrMeta | undefined }) {
           {next ? (
             <Row next title={<Link to={`/practice/lr/${next.id}`} className="hover:text-primary">{next.title}</Link>}
               action={<LinkButton to={`/practice/lr/${next.id}`}>Start the set</LinkButton>}>
-              <p>{LR_TYPE[next.type].label}. {meta(next)}. Read every clue, work it out in the scratch pad beside the questions, and stop at the target time.</p>
+              <p>{LR_TYPE[next.type].label}. {meta(next)}. {isDi(next.type) ? "Read the charts and the facts, use the calculator only where the options are close, and stop at the target time." : "Read every clue, work it out in the scratch pad beside the questions, and stop at the target time."}</p>
             </Row>
           ) : (
             <Row title="You have tried every set" action={<LinkButton to="/dilr" variant="secondary">Sets on other sites</LinkButton>}>
@@ -177,40 +218,23 @@ export default function DilrPractice({ next }: { next: LrMeta | undefined }) {
         <Drills runs={state.lrDrills} />
       </Section>
 
-      <Section title="Logical reasoning sets"
-        description={`${LR_ORDER.length} original sets, every answer checked by solving the set in code. Each has a timer, a scratch pad, a solution drawn step by step as a picture, and a two-minute post-mortem.${last.size ? ` You have tried ${last.size}.` : ""}`}>
-        <div className="flex flex-col gap-3">
-          {types.length > 1 && (
-            <div className="flex gap-2 self-end">
-              <Button variant="ghost" size="sm" onClick={() => setOpenTypes(types)} disabled={types.every((t) => openTypes.includes(t))}>Open all</Button>
-              <Button variant="ghost" size="sm" onClick={() => setOpenTypes([])} disabled={!openTypes.length}>Close all</Button>
-            </div>
-          )}
-          {types.map((t) => {
-            const sets = LR_ORDER.filter((s) => s.type === t);
-            return (
-              <TypeGroup key={t} type={t} sets={sets} last={last} open={openTypes.includes(t)}
-                onToggle={(o) => setOpenTypes(o ? [...openTypes, t] : openTypes.filter((x) => x !== t))}>
-                <Rows>
-                  {sets.map((s) => {
-                    const a = last.get(s.id);
-                    return (
-                      <Row key={s.id} side title={<Link to={a ? `/practice/lr/${s.id}?review=${a.id}` : `/practice/lr/${s.id}`} className="hover:text-primary">{s.title}</Link>}
-                        action={a
-                          ? <><LinkButton to={`/practice/lr/${s.id}?review=${a.id}`} variant="secondary">Review</LinkButton><LinkButton to={`/practice/lr/${s.id}?n=${seed}`} variant="ghost" className="max-sm:hidden">Retake</LinkButton></>
-                          : <LinkButton to={`/practice/lr/${s.id}`} variant="secondary">Start</LinkButton>}>
-                        <p>{meta(s)}</p>
-                        {a && <p className="text-foreground">Scored {score(s, a)}{a.pm?.key ? `; opened with clue ${a.pm.key}` : ""}</p>}
-                        {!a && dealt.has(s.id) && <p>Seen in the Arena, not solved yet</p>}
-                      </Row>
-                    );
-                  })}
-                </Rows>
-                {LR_GUIDE_BY_TYPE.has(t) && <div className="bg-card px-5 py-4 sm:px-6"><ArrowLink to={`/dilr?guide=${t}`}>Read the guide first: what to draw and where to start</ArrowLink></div>}
-              </TypeGroup>
-            );
-          })}
-          <p className="measure pt-3 text-base text-muted-foreground">{types.length} kinds of logical reasoning set are here. Data interpretation sets join in December; until then, practise <TextLink to="/dilr?tab=practice">past CAT DI sets, easiest first</TextLink>, and read the <TextLink to="/dilr?tab=learn">DI guides</TextLink>.</p>
+      <Section title="Sets">
+        <div className="flex flex-col gap-5">
+          <SwitchTabs label="Logical reasoning or data interpretation" panel="dilr-sets" value={half} onChange={setHalf}
+            options={[{ id: "lr", label: "Logical reasoning", short: "LR sets", count: lrSets.length }, ...(diSets.length ? [{ id: "di" as const, label: "Data interpretation", short: "DI sets", count: diSets.length }] : [])]} />
+          <div id="dilr-sets" role="tabpanel" aria-label={half === "lr" ? "Logical reasoning sets" : "Data interpretation sets"} className="flex flex-col gap-3">
+            <p className="measure text-base text-muted-foreground">
+              {half === "lr"
+                ? `Original sets, every answer checked by solving the set in code. Each has a timer, a scratch pad, a solution drawn step by step as a picture, and a two-minute post-mortem.${triedOf(lrSets) ? ` You have tried ${triedOf(lrSets)} of ${lrSets.length}.` : ""}`
+                : `Original sets at CAT level. The data is drawn as the exam draws it, CAT's calculator is a tap away, and every answer is checked in code and solved by two independent solvers. The review fills in the table and shows where your minutes and calculations went.${triedOf(diSets) ? ` You have tried ${triedOf(diSets)} of ${diSets.length}.` : ""}`}
+            </p>
+            {groups(half === "lr" ? lrTypes : diTypes)}
+            <p className="measure pt-3 text-base text-muted-foreground">
+              {half === "lr"
+                ? `${lrTypes.length} kinds of logical reasoning set are here.`
+                : <>More DI sets arrive through December. Meanwhile, practise <TextLink to="/dilr?tab=practice">past CAT DI sets, easiest first</TextLink>, and read the <TextLink to="/dilr?tab=learn">DI guides</TextLink>.</>}
+            </p>
+          </div>
         </div>
       </Section>
 

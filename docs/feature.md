@@ -416,9 +416,9 @@ The same solved set with one clue changed or dropped; the student says what move
 ### Data interpretation (step 4, Dec 2026 to Jan 2027; research `docs/research/di.md`, planned 1 Nov 2026)
 DI joins the LR player rather than becoming a separate section: CAT mixes DI and LR in one section and its data sets increasingly need reasoning (D70). Levels, pictures and question kinds are in the research note, §2. Every DI answer is computed from the set's own numbers in tests.
 
-#### F90. DI sets with real charts — Planned (step 4, first)
+#### F90. DI sets with real charts — Part 1 built 1 Nov 2026 (`docs/design/di-sets.md`): format, charts, calculator, checks, two sets
 **Problem.** DILR has 47 LR sets and no data sets; every slot has one or two, and students call them "the safe set".
-**What the student gets.** DI sets in the LR player: the data drawn as the exam draws it (bar, stacked bar, line, cumulative or step line, shares, radar, scatter, tables, tables with blanks), from the set's numbers, with no hover values while solving. Levels L1 (learn, labelled not CAT level) to L4 (CAT+); about half the answers TITA. Review adds the completed table (blanks filled), the formula behind each answer, and the trap each wrong option sets.
+**What the student gets.** DI sets in the LR player: the data drawn as the exam draws it (bar, stacked bar, line, cumulative or step line, shares, radar, scatter, tables, tables with blanks), from the set's numbers, with no hover values while solving. CAT level only (owner, 1 Nov 2026): medium (a slot's doable set) to CAT+; about half the answers TITA; every set solved by two independent agents before it ships. Review adds the completed table (blanks filled), the formula behind each answer, and the trap each wrong option sets.
 **Data.** A set carries `data` (named tables of numbers with units) and `charts` (how to draw them); the questions are as for LR sets. Each answer is recomputed from `data` in tests; a missing-value table is a grid model that the general solver proves has one fill.
 **Done when** the first 12 sets (every picture at L2 or above, three at L4) pass their checks, render on a phone, and join the practice list, the redo queue, the Error log (DI causes) and the Arena.
 
@@ -437,7 +437,7 @@ From a set's data, statements to sort as "answer it", "cannot be determined" or 
 #### F95. Where the minutes went, by question — Planned (step 4, with F90)
 The player already times a set; DI review shows minutes per question and the calculator log: each calculation the student made, with those the options' spacing made unnecessary marked ("options 12 points apart: about 74%"). The Arena debrief uses the same per-question minutes. **Done when** the calculator log and the per-question minutes are recorded with the attempt and synced.
 
-#### F96. Real numbers — Proposed (owner to decide, D74)
+#### F96. Real numbers — Agreed 1 Nov 2026 (D74: three or four sets)
 Some sets built on real, openly licensed data (World Bank CC BY 4.0; data.gov.in under the Government Open Data Licence), rounded, dated and cited under the chart. The questions stay ours.
 
 #### F27. One daily budget — moved to step 4 (was step 6)
