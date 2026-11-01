@@ -210,7 +210,7 @@ export default function DilrPractice({ next }: { next: LrMeta | undefined }) {
               </TypeGroup>
             );
           })}
-          <p className="measure pt-3 text-base text-muted-foreground">{types.length} kinds of logical reasoning set are here. Data interpretation sets join in December.</p>
+          <p className="measure pt-3 text-base text-muted-foreground">{types.length} kinds of logical reasoning set are here. Data interpretation sets join in December; until then, practise <TextLink to="/dilr?tab=practice">past CAT DI sets, easiest first</TextLink>, and read the <TextLink to="/dilr?tab=learn">DI guides</TextLink>.</p>
         </div>
       </Section>
 

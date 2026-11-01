@@ -30,6 +30,10 @@ export interface Category {
   tab: string;
   n: string;
   note: string;
+  /** DILR's Learn tab: the half it belongs to (logical reasoning or data interpretation); none shows in both. */
+  part?: "lr" | "di";
+  /** A heading the category sits under on its tab, in the plan's phases (the page's GROUPS). */
+  group?: string;
 }
 
 export interface Block {

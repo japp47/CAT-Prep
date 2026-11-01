@@ -372,7 +372,7 @@ All AI features follow principle 3. They need the backend (the API key stays on 
 **Recent practice on Progress → Log** shows the last 10 sets with their percentage, a "Show all" button for the rest, and a link to History. Log stays the place to add outside practice and delete wrong entries, so every set must stay reachable there (History cannot delete).
 **No backend needed, now or at scale (decided 24 Oct 2026).** History and search read this device's own data, which sync already copies to every device; nothing new is stored or sent. A student's data is capped by sync (20,000 records, 8 MB), so building the list in the browser stays fast: a year of heavy use (1,800 attempts) builds in about 10 ms; the test allows 150 ms for slow CI machines. Server search is needed only for what is shared between students: community posts (F67, F68) will use Postgres full-text search then.
 
-#### F21 to F23. DILR, logical reasoning first — Planned (step 4a LR from Nov 2026; DI in step 4, Dec 2026 to Jan 2027)
+#### F21 to F23. DILR, logical reasoning first — Planned (step 4a LR from Nov 2026; DI in step 4, Dec 2026 to Jan 2027; DI planned as F90 to F96 below)
 Research: `docs/research/lr.md`. Set format: `docs/content/lr-format.md`. **LR comes first (D37):** the owner has LR sets ready, and four of five sets in CAT 2025 slot 1 were LR or numbers-driven LR. The DILR page goes live with LR; DI is marked "December".
 - **F23, LR set player (first).** One set per screen: the story, numbered clues and any table on one side (on a phone, a tab), the questions on the other; MCQ and TITA; a timer against the set's target minutes; a scratch grid the student can fill (line, circle or matrix, from the set's type). Review shows the solution steps, the final grid, and the clues each question used. Wrong answers go to the redo queue and Error log with LR causes (misread condition, missed case, wrong assumption, calculation, time sink), as RC does.
 - **Built for arrangement sets, 24 Oct 2026:** the player at `/practice/lr/:id` (story and numbered clues beside the questions, MCQ and TITA, CAT marking with no penalty on TITA, the D31 timer, a scratch pad drawn from the set's layout, draft kept), and a review with a step-by-step walkthrough that fills the seats in on a row or round-table picture (highlighted as each step places them, Play to step through, still under reduced motion), the final table, each question's explanation with the clues it used, and one tap to the Error log. Five owner sets plus the example, checked by brute force. **Games and tournaments, 28 Oct 2026:** five owner sets with a results-grid picture (W, D or L, team against team) and a knockout bracket; the scratch pad now sits above the question with a notes box (D40). **All six LR types, 28 Oct 2026:** caselets (tables), routes (network picture), set theory and Venn and syllogism (Venn picture), 31 sets. **Five more types, 29 Oct 2026 (D50):** binary logic (four sets, one a round table with liars), directions (new type), scheduling (machines, a task network, an exam timetable), distribution and selection: 41 sets in eleven types. **Blood relations and clocks and calendars, 30 Oct 2026 (D52):** six sets, 47 in thirteen types. **Not yet:** LR causes in the Error log beyond the post-mortem, and DILR in the timetable.
@@ -412,6 +412,33 @@ The same solved set with one clue changed or dropped; the student says what move
 **Problem.** Progress has accuracy lists, a report card and the clue-reading pattern, but no single picture of where a student stands across every skill, and nothing that says what to practise from it.
 **What the student gets.** One tile per skill (VARC question types, LR set types, kinds of clue; Quant later), in four states with strict rules: not started; learning (fewer than 8 attempts, no verdict yet); weak (8 or more, under 60%); strong (80% or more, and held on redo a week later). A tap opens that skill's drill or guide. Flat first, on Progress; a 3D "city" may become an optional view of the same data only if the map is used, with a flat fallback (D41).
 **Done when** every tile's state follows from recorded attempts by a tested rule, and no tile shows a verdict on too little data.
+
+### Data interpretation (step 4, Dec 2026 to Jan 2027; research `docs/research/di.md`, planned 1 Nov 2026)
+DI joins the LR player rather than becoming a separate section: CAT mixes DI and LR in one section and its data sets increasingly need reasoning (D70). Levels, pictures and question kinds are in the research note, §2. Every DI answer is computed from the set's own numbers in tests.
+
+#### F90. DI sets with real charts — Planned (step 4, first)
+**Problem.** DILR has 47 LR sets and no data sets; every slot has one or two, and students call them "the safe set".
+**What the student gets.** DI sets in the LR player: the data drawn as the exam draws it (bar, stacked bar, line, cumulative or step line, shares, radar, scatter, tables, tables with blanks), from the set's numbers, with no hover values while solving. Levels L1 (learn, labelled not CAT level) to L4 (CAT+); about half the answers TITA. Review adds the completed table (blanks filled), the formula behind each answer, and the trap each wrong option sets.
+**Data.** A set carries `data` (named tables of numbers with units) and `charts` (how to draw them); the questions are as for LR sets. Each answer is recomputed from `data` in tests; a missing-value table is a grid model that the general solver proves has one fill.
+**Done when** the first 12 sets (every picture at L2 or above, three at L4) pass their checks, render on a phone, and join the practice list, the redo queue, the Error log (DI causes) and the Arena.
+
+#### F91. Read the chart — Planned (step 4, with F90)
+Ninety seconds, one small chart, five questions climbing reading levels (read a value, compare or count, then beyond the data). Every wrong option is a named reading trap (wrong base, wrong series or year, scale, units, average of averages). Charts are generated from small seeded data, so there are hundreds; answers come from the data. **Done when** each trap appears in at least ten items and a student's commonest reading trap shows on Progress.
+
+#### F92. Number sense for DI — Planned (step 4b)
+Two minutes, spaced: fraction–percentage pairs, change as a ratio, compare two fractions without dividing, "near 23% or 31%?" with the options' spacing shown, and "calculator or mind?" (choose, then see which was faster for you). Items generated; due again like the redo queue. **Done when** items are generated and checked by code and a student's weakest kind leads the next run.
+
+#### F93. Fill the table (DI Replay) — Planned (step 4, after F90)
+Replay (F57) for tables with missing values: the student fills blanks rule by rule; "unknown cells" falls after each step (14 → 9 → 3 → 0); Watch, Step by step, On your own as in Replay. The general solver checks every fill and proves one. **Done when** every missing-value set at L3 and L4 has a replay and its steps use every rule once.
+
+#### F94. Can it be answered? — Planned (step 4b)
+From a set's data, statements to sort as "answer it", "cannot be determined" or "needs one more fact", the determinacy questions CAT now asks, trained like must/could/cannot. Bins computed from the data by code.
+
+#### F95. Where the minutes went, by question — Planned (step 4, with F90)
+The player already times a set; DI review shows minutes per question and the calculator log: each calculation the student made, with those the options' spacing made unnecessary marked ("options 12 points apart: about 74%"). The Arena debrief uses the same per-question minutes. **Done when** the calculator log and the per-question minutes are recorded with the attempt and synced.
+
+#### F96. Real numbers — Proposed (owner to decide, D74)
+Some sets built on real, openly licensed data (World Bank CC BY 4.0; data.gov.in under the Government Open Data Licence), rounded, dated and cited under the chart. The questions stay ours.
 
 #### F27. One daily budget — moved to step 4 (was step 6)
 Once two sections are live, "I have 90 minutes today" must split itself: by phase, by the weakest section (from the report), and by what is due (redo, focus drill). The student can still set minutes per section.
