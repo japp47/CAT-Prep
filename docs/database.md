@@ -264,7 +264,7 @@ Synced progress: one row per record (`docs/architecture.md` §6). The server sto
 
 **Refused one row at a time, never the whole push** (decided 22 Oct 2026 after negative tests): a row of an unknown kind, with a bad id, over 16 KB, or a *new* row that would take the identity past its limits comes back in `rejected` with a code (`unknown_kind`, `bad_id`, `record_too_big`, `over_limit`); the rest of the push applies. Updates and deletions are always allowed, so a full identity can make room. One `sync.rejected` audit event per push, with counts by code. The browser marks a refused row (`"!" + hash` in the ledger) and skips it until its content changes.
 
-Size: about 100 KB per active student; a 500 MB free database holds about 5,000. Deletions stay as small tombstones so a device that was offline for months still learns about them.
+Size: about 100 KB per active student was the first estimate; measured from real record shapes on 4 Nov 2026 it is about 250 KB for a light student and 1 to 2 MB for a serious one over a year, so the free 500 MB holds far fewer students (`docs/design/scale-10k.md`). Deletions stay as small tombstones so a device that was offline for months still learns about them.
 
 ### 5.5 `audit.events`
 Append-only history of security and account events (`docs/architecture.md` §7). Not page views, not clicks, not study content.

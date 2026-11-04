@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"io/fs"
 	"log/slog"
+	"os"
+	"strconv"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgconn"
@@ -17,14 +19,18 @@ import (
 	"github.com/pressly/goose/v3/lock"
 )
 
-// Open connects to Postgres and checks the connection. The pool is small on purpose: the free database
-// allows few connections, and the free Render service runs one instance.
+// Open connects to Postgres and checks the connection. The pool is small by default: the free database allows few
+// connections, and the free Render service runs one instance. DB_MAX_CONNS raises it on a bigger plan (10 to 15
+// through Supabase's pooler; docs/design/scale-10k.md).
 func Open(ctx context.Context, url string) (*pgxpool.Pool, error) {
 	cfg, err := pgxpool.ParseConfig(url)
 	if err != nil {
 		return nil, fmt.Errorf("parse DATABASE_URL: %w", err)
 	}
 	cfg.MaxConns = 5
+	if n, err := strconv.Atoi(os.Getenv("DB_MAX_CONNS")); err == nil && n > 0 && n <= 100 {
+		cfg.MaxConns = int32(n)
+	}
 	cfg.MaxConnIdleTime = 5 * time.Minute
 	pool, err := pgxpool.NewWithConfig(ctx, cfg)
 	if err != nil {

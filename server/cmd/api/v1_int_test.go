@@ -343,3 +343,73 @@ func TestConcurrentPushesNeverHideARowFromAPuller(t *testing.T) {
 		t.Fatalf("the puller saw %d of %d records", len(seen), 2*each)
 	}
 }
+
+// One push mixing a new row, an update, an unchanged retry, a stale change and a deletion is decided row by row as
+// before the set-based push (docs/design/scale-10k.md, phase 1): answers keep the order sent and carry the right revs.
+func TestAMixedPushIsDecidedRowByRowInOrder(t *testing.T) {
+	srv, _ := apiServer(t, testOpts)
+	a := newDevice(t, srv).turnOn()
+	first, _ := a.push(change("keep", `{"v":1}`, 0), change("edit", `{"v":1}`, 0), change("gone", `{"v":1}`, 0), change("old", `{"v":1}`, 0))
+	rev := map[string]int64{}
+	for _, x := range first.Applied {
+		rev[x.ID] = x.Rev
+	}
+	// Move "old" on, so a change based on its first rev is stale.
+	if res, _ := a.push(change("old", `{"v":2}`, rev["old"])); len(res.Applied) != 1 {
+		t.Fatalf("move old on: %+v", res)
+	}
+	res, code := a.push(change("new", `{"v":1}`, 0), change("keep", `{"v":1}`, rev["keep"]), change("edit", `{"v":2}`, rev["edit"]),
+		change("old", `{"v":3}`, rev["old"]), change("gone", "", rev["gone"]))
+	if code != http.StatusOK {
+		t.Fatalf("push: %d", code)
+	}
+	var order []string
+	for _, x := range res.Applied {
+		order = append(order, x.ID)
+	}
+	if fmt.Sprint(order) != "[new keep edit gone]" {
+		t.Fatalf("applied %v, want new keep edit gone in order", order)
+	}
+	if res.Applied[1].Rev != rev["keep"] {
+		t.Errorf("an unchanged retry keeps its rev: %d, want %d", res.Applied[1].Rev, rev["keep"])
+	}
+	if res.Applied[2].Rev <= rev["edit"] || res.Applied[3].Rev <= rev["gone"] {
+		t.Errorf("written rows take new revs: %+v", res.Applied)
+	}
+	if len(res.Stale) != 1 || res.Stale[0].ID != "old" || !sameJSON(res.Stale[0].Data, `{"v":2}`) {
+		t.Errorf("stale %+v, want old with the server's copy", res.Stale)
+	}
+	got := map[string]syncapi.Record{}
+	for _, r := range a.pull(0).Records {
+		got[r.ID] = r
+	}
+	if !got["gone"].Deleted || !sameJSON(got["edit"].Data, `{"v":2}`) || got["new"].Rev == 0 {
+		t.Errorf("stored rows: %+v", got)
+	}
+}
+
+// Pulls that find nothing new may be answered from memory; a push by another device of the same progress must still
+// reach the next pull at once.
+func TestAPushReachesTheOtherDeviceAlthoughEmptyPullsAreAnsweredFromMemory(t *testing.T) {
+	srv, _ := apiServer(t, testOpts)
+	a := newDevice(t, srv).turnOn()
+	b := newDevice(t, srv).linkTo(a)
+	res, _ := a.push(change("1", `{"v":1}`, 0))
+	cursor := b.pull(0).Cursor
+	if cursor != res.Applied[0].Rev {
+		t.Fatalf("cursor %d, want %d", cursor, res.Applied[0].Rev)
+	}
+	if got := b.pull(cursor); len(got.Records) != 0 || got.Cursor != cursor {
+		t.Fatalf("nothing new: %+v", got)
+	}
+	a.push(change("2", `{"v":1}`, 0))
+	if got := b.pull(cursor); len(got.Records) != 1 || got.Records[0].ID != "2" {
+		t.Fatalf("the new record: %+v", got)
+	}
+}
+
+// sameJSON compares JSON by value: Postgres may space it differently from what was sent.
+func sameJSON(a json.RawMessage, b string) bool {
+	var x, y any
+	return json.Unmarshal(a, &x) == nil && json.Unmarshal([]byte(b), &y) == nil && fmt.Sprint(x) == fmt.Sprint(y)
+}
