@@ -2,9 +2,8 @@ import { useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
-import { Page, PageHeader, Section, TextLink } from "../components/kit";
+import { FeedbackInvite, Page, PageHeader, Section } from "../components/kit";
 import { ROADMAP, UPDATED, type RoadGroup } from "../data/roadmap";
-import { CONTACT_EMAIL } from "../data/site";
 import { mediumDate } from "../lib/date";
 import { useGsap } from "../lib/motion";
 
@@ -18,7 +17,7 @@ const [fresh, live, ...ahead] = ROADMAP as [RoadGroup, RoadGroup, ...RoadGroup[]
 
 export default function Roadmap() {
   return (
-    <Page width="read">
+    <Page>
       <PageHeader title="What's coming">
         The site grows one step at a time. VARC and DILR are live; harder DI sets, AI feedback and optional sign-in come next, then Quant from January. Updated {mediumDate(UPDATED)}.
       </PageHeader>
@@ -26,7 +25,7 @@ export default function Roadmap() {
       <Section title="New this month">
         <ul className="grid gap-3 sm:grid-cols-2">
           {fresh.items.map((it) => (
-            <li key={it.title} className="flex flex-col gap-2 rounded-xl bg-card p-5 sm:p-6">
+            <li key={it.title} className="flex flex-col gap-2 rounded-xl bg-card p-5 sm:px-7 sm:py-6 sm:last:odd:col-span-2">
               <span className="flex items-center gap-2 text-sm font-medium text-success"><span className="size-2 rounded-full bg-success" aria-hidden />Live</span>
               <h3 className="text-heading font-semibold">{it.title}</h3>
               <p className="text-base text-foreground/80">{it.text}</p>
@@ -40,9 +39,7 @@ export default function Roadmap() {
         <Timeline groups={ahead} />
       </Section>
 
-      <p className="measure rounded-xl bg-card px-5 py-4 text-base sm:px-6">
-        An idea, or something that does not work? Write to <TextLink to={"mailto:" + CONTACT_EMAIL}>{CONTACT_EMAIL}</TextLink>. Every message is read, and the roadmap moves with what students ask for.
-      </p>
+      <FeedbackInvite title="Help shape what comes next">Have an idea or spotted something that does not work? Every message is read, and the roadmap grows with what students ask for.</FeedbackInvite>
     </Page>
   );
 }
@@ -57,7 +54,7 @@ function AlsoLive({ group }: { group: RoadGroup }) {
         <ChevronDown className={cn("size-5 shrink-0 transition-transform motion-reduce:transition-none", open && "rotate-180")} aria-hidden />
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <ul className="grid gap-x-8 gap-y-4 px-5 pb-6 sm:grid-cols-2 sm:px-6">
+        <ul className="grid gap-x-10 gap-y-4 px-5 pb-6 sm:grid-cols-2 sm:px-7">
           {group.items.map((it) => (
             <li key={it.title} className="flex flex-col gap-1">
               <b className="text-base font-semibold">{it.title}</b>
@@ -93,7 +90,7 @@ function Timeline({ groups }: { groups: RoadGroup[] }) {
             <h3 className="text-heading font-semibold">{g.title}</h3>
             <span className="text-base text-muted-foreground">{g.status}</span>
           </div>
-          <ul className="flex flex-col gap-1 rounded-xl bg-card p-2">
+          <ul className="grid gap-1 rounded-xl bg-card p-2 lg:grid-cols-2 lg:gap-x-4">
             {g.items.map((it) => (
               <li key={it.title} className="flex flex-col gap-0.5 rounded-lg px-3.5 py-3">
                 <b className="text-base font-semibold">{it.title}</b>

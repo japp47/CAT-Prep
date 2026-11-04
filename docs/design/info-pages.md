@@ -8,10 +8,19 @@ Owner, 4 Nov 2026: "redesign these pages, modern, a better UI and UX … GSAP re
 - "Every entry checked on …" from `CHECKED`.
 
 ## Roadmap (`pages/Roadmap.tsx`)
-- **New this month** as cards, each marked Live; the rest of what is live folded under "Also live: 9 more".
+- **New this month** as cards, two to a row across the full page width (owner, 4 Nov 2026: "use more width … reduce height, increase width of block"), a lone last card spanning the row; each marked Live. The rest of what is live folded under "Also live: 9 more". The timeline's lists sit two to a row on wide screens.
 - **What's next**, the one memorable thing: a timeline from Now through each dated group. GSAP: the line draws down from Now once and each station marks as it reaches it.
 - The GitHub line is gone: "Write to 99ile.team@gmail.com" (`CONTACT_EMAIL`), which opens the mail app in place (`TextLink` now treats `mailto:` that way everywhere).
+- The shared feedback invite is a quiet rounded tone surface, with its email link beside the copy on wide screens and below it on phones.
 
 ## Guides (`pages/Guides.tsx`)
 - **Start here** featured, its title in the serif; while CAT 2026 is ahead, "The last 25 days before CAT 2026" beside it in the highlighter tone with the days to go. The rest by kind (Strategy and the exam, Mocks, Life around preparation, After the score). GSAP: the two featured cards rise in once.
 - **A guide**: a thin reading line under the header that fills as the student reads (scroll-linked, not an animation), the part on screen marked in "In this guide", numbered and bulleted markers in ink blue, "Next guide" labelled.
+
+## Topper stories (`pages/Stories.tsx`)
+Owner, 4 Nov 2026: "redesign this page also … looks very awful." Before, ten identical cards with the score in small grey type, uneven buttons, and an interview list that repeated four interviews already linked from the cards.
+- **The score first**, the one memorable thing: the highest score (Sarthak Gupta, 100 in VARC) as a wide lead card with the figure in display size; the other nine in three columns, each opening with its percentile in large figures and what it is a percentile in. The figures count up once on arrival (GSAP), in proportional digits so "99.94" does not space out round the point.
+- **What they have in common**: the four habits as cards, each pointing to the page that builds it here (Reading journal, Error log, the report card, Analyse a mock).
+- **More from toppers** and **How each CAT went** side by side, leaving out the interviews already on a card.
+- Sharing a story: write to the team email, in place of "story submissions are on the roadmap".
+- The shared feedback invite uses the same quiet, responsive treatment as the roadmap.

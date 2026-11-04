@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { LinkButton, Page, PageHeader, Segmented } from "../components/kit";
+import { LinkButton, Page, PageHeader, SwitchTabs } from "../components/kit";
 import { CHECKED, UPDATES, type Update } from "../data/updates";
 import { diffDays, mediumDate, todayIso } from "../lib/date";
 import { useGsap } from "../lib/motion";
@@ -14,6 +14,8 @@ import { useGsap } from "../lib/motion";
 
 const STATUS = { official: ["Official", "success"], expected: ["Expected", "warning"], tip: ["Tip", "default"] } as const;
 const EXAMS = ["All", ...new Set(UPDATES.map((u) => u.exam))];
+/** The filter's tabs, each with how many updates it holds. */
+const TABS = EXAMS.map((id) => ({ id, label: id, count: id === "All" ? UPDATES.length : UPDATES.filter((u) => u.exam === id).length }));
 const MONTH = new Intl.DateTimeFormat("en-IN", { month: "short" });
 
 /** "Today", "Tomorrow", "In 21 days". */
@@ -36,14 +38,16 @@ export default function Updates() {
       <PageHeader title="Important updates">
         Dates and changes for CAT and other MBA exams. <b className="font-semibold">Official</b> means the exam body has published it; <b className="font-semibold">Expected</b> rests on past years or on reports, and may change. Always confirm on the official site before you act. Every entry checked on {mediumDate(CHECKED)}.
       </PageHeader>
-      <Segmented label="Filter by exam" value={f} onChange={setF} options={EXAMS} className="-mt-4 w-fit" />
+      <SwitchTabs label="Filter by exam" panel="updates-list" value={f} onChange={setF} options={TABS} className="-mt-4" />
       {/* Desktop: the updates on the left, the dates ahead as a calendar column that stays in view. Phone: the dates as a
           strip above the updates. */}
       <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-8 lg:grid-cols-[minmax(0,1fr)_20rem] xl:grid-cols-[minmax(0,1fr)_22rem]">
         {ahead.length > 0 && <ComingUp ahead={ahead} />}
-        <ol className="flex flex-col gap-4 lg:col-start-1 lg:row-start-1" aria-label="Updates, newest first">
-          {list.map((u) => <li key={u.id}><Entry u={u} today={today} /></li>)}
-        </ol>
+        <div id="updates-list" role="tabpanel" aria-label={f === "All" ? "All updates" : f + " updates"} className="lg:col-start-1 lg:row-start-1">
+          <ol className="flex flex-col gap-4" aria-label="Updates, newest first">
+            {list.map((u) => <li key={u.id}><Entry u={u} today={today} /></li>)}
+          </ol>
+        </div>
       </div>
     </Page>
   );
