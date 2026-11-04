@@ -14,7 +14,7 @@ import { SECTION_BY_ID, SECTIONS } from "../../sections";
 import type { SectionDef, SectionId } from "../../sections/types";
 import NotFound from "../NotFound";
 import DilrPractice, { LR_ORDER } from "./DilrPractice";
-import { nextLrSet } from "../../practice/lrorder";
+import { nextDiSet, nextLrSet } from "../../practice/lrorder";
 import VarcPractice from "./VarcPractice";
 
 /**
@@ -36,7 +36,8 @@ function varcToday(st: { rcAttempts: RcAttempt[]; vaAttempts: VaAttempt[]; redo:
   return { today, daily, dailyTry, vaToday, redoDue, next };
 }
 
-const nextLr = nextLrSet;
+/** The practice page's next set: the next LR set, then the next DI set once every LR set is tried. */
+const nextLr = (lr: Parameters<typeof nextLrSet>[0]) => nextLrSet(lr) ?? nextDiSet(lr);
 
 const isSection = (x: string | undefined): x is SectionId => !!x && x in SECTION_BY_ID;
 

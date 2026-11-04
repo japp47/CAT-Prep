@@ -1,6 +1,7 @@
 import type { AppState } from "../lib/state";
 import { rcOfDay } from "../practice/daily";
-import { nextLrSet } from "../practice/lrorder";
+import { nextDiSet, nextLrSet } from "../practice/lrorder";
+import { DI_LADDER } from "../sections/dilr/ladder";
 import type { Block } from "../sections/types";
 
 /**
@@ -23,6 +24,15 @@ export function goFor(b: Pick<Block, "go" | "ptype" | "links">, st: AppState, to
   if (b.go === "lr-next") {
     const s = nextLrSet(st.lrAttempts);
     return s ? { to: `/practice/lr/${s.id}`, label: `Start ${s.title}` } : { to: "/dilr/practice", label: "Choose a set to retake" };
+  }
+  if (b.go === "di-next") {
+    // Our next DI set; when every one is tried, the next past CAT set on the ladder the student has not ticked; then a
+    // retake from the redo queue (D82). The block never opens nothing.
+    const s = nextDiSet(st.lrAttempts);
+    if (s) return { to: `/practice/lr/${s.id}`, label: `Start ${s.title}` };
+    const past = DI_LADDER.find(([id]) => !st.ticks[id]);
+    if (past) return { to: past[2], label: `Open ${past[3].split(". ")[0]}: ${past[1].replace(/^\d+\.\s*/, "")}` };
+    return { to: "/practice/redo", label: "Retake a DI set from the redo queue" };
   }
   if (b.go) return { to: b.go, label: NAMED[b.go] ?? "Open" };
   if (b.ptype === "RC") {

@@ -48,6 +48,15 @@ describe("blocks that tick themselves from work on the site (D57)", () => {
     st.lrDrills.push({ id: "y", d, kind: "clue", items: [{ k: "a", ok: true }, { k: "b", ok: false }], secs: 60 });
     expect(siteWork(drill, st, d)).toBe("1 of 2 right");
   });
+  it("ticks the DI block on a DI set and the LR block on an LR set, never one set for both (D82)", () => {
+    const st = fresh();
+    const lr = { id: "lrset", name: "LR set of the day", go: "lr-next" }, di = { id: "diset", name: "DI set of the day", go: "di-next" };
+    st.lrAttempts.push({ id: "p", d, set: "di-port-cargo", ans: [0, 1, 2, 3, 4], c: 3, w: 1, secs: 600, updatedAt: 1 });
+    expect(siteWork(di, st, d)).toBe("DI set, 8 of 15");
+    expect(siteWork(lr, st, d)).toBeNull();
+    st.lrAttempts.push({ id: "q", d, set: "arr-round-table", ans: [0], c: 1, w: 0, secs: 300, updatedAt: 1 });
+    expect(siteWork(lr, st, d)).toBe("LR set, 3 of 3");
+  });
   it("ticks once, and never ticks again a block the student unticked", () => {
     const st = fresh();
     st.rcAttempts.push({ id: "r", d, set: "x", mode: "daily", ans: [0], c: 1, w: 0, secs: 100, first: 0 });
