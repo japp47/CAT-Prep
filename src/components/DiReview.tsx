@@ -10,11 +10,10 @@ import { DiTable } from "./DiChart";
  * calculations too.
  */
 
-/** A table with its blanks filled from the solution. */
-export function filledOf(d: DiData, set: LrSet): DiData {
+/** A blank's value (or range) from the solution, by row and column. */
+export function fillOf(d: DiData, set: LrSet) {
   const fill = set.solution.fills?.find((f) => f.data === d.id);
-  if (!fill) return d;
-  return { ...d, rows: d.rows.map((r) => ({ ...r, cells: r.cells.map((v, j) => v ?? fill.cells.find(([row, col]) => row === r.name && col === d.cols[j])?.[2] ?? null) })) };
+  return (row: string, col: string) => fill?.cells.find(([r, c]) => r === row && c === col)?.[2];
 }
 
 /**
@@ -42,8 +41,10 @@ export function DiReview({ set, attempt }: { set: LrSet; attempt: LrAttempt }) {
       {blanks.map((d) => (
         <div key={d.id} className="flex flex-col gap-3 rounded-lg bg-card p-5 sm:p-6 lg:col-span-2">
           <h2 className="text-heading font-semibold">{d.caption}, filled</h2>
-          <p className="measure text-base text-muted-foreground">The missing entries, worked out from the totals and the rules, are tinted.</p>
-          <DiTable data={d} filled={filledOf(d, set)} />
+          <p className="measure text-base text-muted-foreground">{set.solution.fills?.some((f) => f.data === d.id && f.cells.some((c) => typeof c[2] === "string"))
+            ? "The hidden entries are tinted. The rules pin some of them down only to a range, so the range is shown."
+            : "The missing entries, worked out from the totals and the rules, are tinted."}</p>
+          <DiTable data={d} fill={fillOf(d, set)} />
         </div>
       ))}
       {qs && (

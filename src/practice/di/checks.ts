@@ -118,4 +118,71 @@ export const CHECKS: Record<string, (s: LrSet) => Checked> = {
       table: { data: d, domain, facts },
     };
   },
+
+  "di-six-economies": (s) => {
+    const e = dataOf(s, "econ");
+    const names = e.rows.map((r) => r.name);
+    const head = (c: string) => cellOf(e, c, "GDP per head"), rate = (c: string) => 1 + cellOf(e, c, "Growth") / 100;
+    const gdp = (c: string) => head(c) * cellOf(e, c, "Population");
+    // Q1: the countries under US$ 5,000 together, against China.
+    const q1 = pct(sum(names.filter((c) => head(c) < 5000).map(gdp)), gdp("China"));
+    // Q2: faster than every richer country (the richest is not counted).
+    const q2 = String(names.filter((c) => { const richer = names.filter((r) => head(r) > head(c)); return richer.length > 0 && richer.every((r) => rate(c) > rate(r)); }).length);
+    // Q3 and Q5: whole years of compounding until the mark is reached, as the end of 2023 + n.
+    const yearsTo = (start: number, grow: number, mark: number) => { let n = 0; for (let x = start; x < mark; n++) x *= grow; return n; };
+    const q3 = String(2023 + yearsTo(gdp("India") / gdp("China"), rate("India") / rate("China"), 1 / 3));
+    const q4 = pct(gdp("Bangladesh") * rate("Bangladesh") ** 5, gdp("Vietnam") * rate("Vietnam") ** 5) - 100;
+    const q5 = String(2023 + Math.max(...["India", "Indonesia", "Vietnam", "Bangladesh"].map((c) => yearsTo(head(c), rate(c), 6000))));
+    return { answers: [q1, q2, q3, q4, q5] };
+  },
+
+  "di-india-trade-partners": (s) => {
+    const ex = dataOf(s, "exports"), ra = dataOf(s, "ratio"), ps = ex.rows.map((r) => r.name), [y0, y1] = ex.cols;
+    const exp = (p: string, y: string) => cellOf(ex, p, y), imp = (p: string, y: string) => (exp(p, y) * cellOf(ra, p, y)) / 100;
+    const deficit = (p: string, y: string) => imp(p, y) - exp(p, y);
+    const q1 = sum(ps.filter((p) => deficit(p, y1) > 0).map((p) => deficit(p, y1)));
+    const four = ["China", "UAE", "Saudi Arabia", "Singapore"], growth = four.map((p) => deficit(p, y1) / deficit(p, y0));
+    const q2 = four[growth.indexOf(Math.max(...growth))];
+    const net = (y: string) => sum(ps.map((p) => deficit(p, y)));
+    if (net(y0) <= 0 || net(y1) <= 0) throw new Error("the stem says the net balance was negative in both years");
+    const q3 = Math.round(pct(net(y1), net(y0)) - 100) + "%";
+    const q4 = String(ps.filter((p) => imp(p, y1) > imp(p, y0) && cellOf(ra, p, y1) < cellOf(ra, p, y0)).length);
+    const newExports = imp("China", y1) - 0.6 * deficit("China", y1);
+    const q5 = Math.round(pct(newExports, exp("China", y1)) - 100) + "%";
+    return { answers: [q1, q2, q3, q4, q5] };
+  },
+
+  "di-monsoon-2025": (s) => {
+    const d = dataOf(s, "rain"), N = "Normal (mm)", A = "Actual (mm)", D = "Departure (%)";
+    // A shown departure k stands for [k − 0.5, k + 0.5) when positive and (k − 0.5, k + 0.5] when negative: halves
+    // round away from zero (clue 1). The question's bounds are taken at their ends, reached or not (clue 3).
+    const band = (k: number) => [k - 0.5, k + 0.5];
+    const shown = (x: number) => Math.sign(x) * Math.round(Math.abs(x) + 1e-12);
+    const [nwLo] = band(cellOf(d, "North West India", D)), [enLo, enHi] = band(cellOf(d, "East & North East India", D));
+    const nwMin = cellOf(d, "North West India", N) * (1 + nwLo / 100);
+    const enN = cellOf(d, "East & North East India", N), enMin = enN * (1 + enLo / 100), enMax = enN * (1 + enHi / 100);
+    const sp = "South Peninsula", spA = cellOf(d, sp, A), [spLo] = band(cellOf(d, sp, D));
+    const central = pct(cellOf(d, "Central India", A) - cellOf(d, "Central India", N), cellOf(d, "Central India", N));
+    const q2 = s.questions[1].options!.filter((o) => shown(pct(spA - Number(o), Number(o))) !== cellOf(d, sp, D));
+    const q3 = String(Math.round(nwMin + cellOf(d, "Central India", A) + enMin + spA));
+    // Certain to be 10% or more above: the lowest departure each row allows.
+    const least = [nwLo, central, enLo, spLo];
+    const q4 = String(least.filter((x) => x >= 10).length);
+    return { answers: [nwMin, q2.length === 1 ? q2[0] : `${q2.length} options cannot`, q3, q4, enN - enMax] };
+  },
+
+  "di-power-capacity": (s) => {
+    const cap = dataOf(s, "cap"), mix = dataOf(s, "mix"), ys = cap.cols;
+    const total = (y: string) => sum(cap.rows.map((r) => cellOf(cap, r.name, y)));
+    const v = (src: string, y: string) => mix.rows.some((r) => r.name === src) ? (cellOf(cap, "Renewables", y) * cellOf(mix, src, y)) / 100 : cellOf(cap, src, y);
+    const sources = ["Solar", "Wind", "Other RE", "Hydro (large)", "Nuclear", "Thermal"];
+    const q1 = pct(v("Solar", ys[2]), v("Solar", ys[0])) - 100;
+    const q2 = String(sources.filter((x) => [1, 2].every((i) => v(x, ys[i]) > v(x, ys[i - 1]) && v(x, ys[i]) / total(ys[i]) < v(x, ys[i - 1]) / total(ys[i - 1]))).length);
+    const gap = v("Thermal", ys[2]) - v("Solar", ys[2]), closes = v("Solar", ys[2]) - v("Solar", ys[1]) - (v("Thermal", ys[2]) - v("Thermal", ys[1]));
+    const q3 = String(Math.floor(gap / closes) + 1);
+    const q4 = pct(v("Solar", ys[0]), v("Solar", ys[0]) + v("Wind", ys[2]) + v("Other RE", ys[2])).toFixed(1) + "%";
+    const rest = total(ys[2]) - cellOf(cap, "Renewables", ys[2]);
+    const q5 = (rest * 40) / 60 - cellOf(cap, "Renewables", ys[2]);
+    return { answers: [q1, q2, q3, q4, q5] };
+  },
 };

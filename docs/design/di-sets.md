@@ -47,5 +47,10 @@ Both invented; the real-data sets come in part 2. **As built, after two independ
 
 **Built differently from the plan:** chart kinds are bar, stacked, line and table (pie, radar and scatter come with the sets that need them); a chart keeps its size and scrolls sideways in a narrow pane, with a line saying so; the calculator works on every LR set, not in the Arena yet; "an estimate was enough" is noted per question when its options are calculated values at least 8% apart, not per calculation.
 
+## Real-data sets (4 Nov 2026, D81, F96)
+Four sets on public data, questions ours: **Six economies** (World Bank 2023; a scatter of GDP per head against growth, a table with population; compounding to a threshold, "catch-up" counting), **India's trade with five partners** (DGCIS 2024-25 and 2025-26; exports and imports as a percentage of exports; wrong-base traps, a falling ratio with rising imports), **Monsoon 2025** (IMD; a table whose hidden entries are ranges set by the rounding rule; least and greatest possible values) and **Installed power capacity** (CEA, three years; a stacked bar with renewables as one part, linked to a chart of their split). Each cites its source under the charts. Two rounds of two independent solvers agreed with every key; round one's "too easy" verdict on two sets was fixed before round two.
+
+**Charts added:** `scatter` (one point per row, names beside the points, `place` moves a label off a neighbour, a table gives the exact values), `share` (a pie, for a set that needs one), `colors` per chart so a source keeps its colour, and printed values keep their table's decimals (57.0 beside 53.4). Inside a stacked bar, values carry a halo so they read on any colour; a segment too thin for its value prints it beside the bar.
+
 ## Rules
 Tokens only (charts use the theme's series colours and work in dark mode), text 14 px and up, tone not borders, one filled button per screen (Submit set), nothing moves under reduced motion (charts draw once, no animation in the attempt; review bars may grow once, as the Arena's do). The calculator panel and charts load with the player's lazy chunk, not the first download.

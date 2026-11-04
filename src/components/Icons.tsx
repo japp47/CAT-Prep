@@ -12,3 +12,8 @@ export const IconHistory = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="tr
 export const IconWeek = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2" /><path d="M3 9h18" /><path d="M7 14v3M11 13v4M15 15v2M19 12v5" /></svg>;
 export const IconWords = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><path d="M3 19l5-14 5 14M4.8 14h6.4" /><path d="M20 19v-5.5a2.5 2.5 0 00-5 0M15 16.5a2.5 2.5 0 105 0" /></svg>;
 export const IconJournal = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><rect x="5" y="3" width="15" height="18" rx="2" /><path d="M9 8h7M9 12h7M9 16h4" /><path d="M5 7H3M5 12H3M5 17H3" /></svg>;
+export const IconBell = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><path d="M6 16v-5a6 6 0 0112 0v5l2 2H4z" /><path d="M10 21h4" /></svg>;
+export const IconExam = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2" /><path d="M9 2.5h6v3H9z" /><path d="M9 13l2 2 4-4" /></svg>;
+export const IconTrophy = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><path d="M8 4h8v6a4 4 0 01-8 0z" /><path d="M8 6H5v1a3 3 0 003 3M16 6h3v1a3 3 0 01-3 3" /><path d="M12 14v4M8 20h8" /></svg>;
+export const IconFlag = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><path d="M5 21V4" /><path d="M5 4h12l-2.5 4L17 12H5" /></svg>;
+export const IconSliders = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8" /><circle cx="16" cy="7" r="2" /><circle cx="10" cy="17" r="2" /></svg>;

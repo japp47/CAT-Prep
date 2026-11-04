@@ -263,5 +263,633 @@
         ]
       }
     }
+  },
+  {
+    "id": "di-six-economies",
+    "title": "Six economies: income, growth and size",
+    "type": "di-chart",
+    "difficulty": "medium",
+    "minutes": 15,
+    "source": "original",
+    "since": "2026-11-05",
+    "cite": "World Bank, World Development Indicators, 2023 (GDP per head in current US$, real GDP growth, GDP in current US$), as tabulated by StatisticsTimes; CC BY 4.0. GDP per head rounded to US$ 10, growth to 0.1 point. Population is GDP ÷ GDP per head, rounded to the nearest million (derived, not a published figure). The questions are ours.",
+    "intro": [
+      "The scatter chart plots six economies by GDP per head in 2023 (across, in US$) and real GDP growth in 2023 (up, in %). The table gives the plotted values and each economy's population.",
+      "Use the figures printed here. A country's total GDP is its GDP per head × its population (US$, nominal).",
+      "Additional information for questions 3 to 5: the printed figures are for the end of 2023. From then on, each country's total GDP and GDP per head (in US$) both grow every year at the growth rate shown for it, compounded annually, and its population does not change. So a figure for the end of 2023 + n is the 2023 figure after n years of growth."
+    ],
+    "clues": [],
+    "data": [
+      {
+        "id": "econ",
+        "caption": "GDP per head (US$), growth (%) and population (million), 2023",
+        "unit": "",
+        "rowHead": "Economy",
+        "cols": [
+          "GDP per head",
+          "Growth",
+          "Population"
+        ],
+        "rows": [
+          {
+            "name": "India",
+            "cells": [
+              2530,
+              9.2,
+              1438
+            ]
+          },
+          {
+            "name": "China",
+            "cells": [
+              12950,
+              5.4,
+              1410
+            ]
+          },
+          {
+            "name": "Brazil",
+            "cells": [
+              10380,
+              3.2,
+              211
+            ]
+          },
+          {
+            "name": "Indonesia",
+            "cells": [
+              4880,
+              5.0,
+              281
+            ]
+          },
+          {
+            "name": "Vietnam",
+            "cells": [
+              4320,
+              5.1,
+              100
+            ]
+          },
+          {
+            "name": "Bangladesh",
+            "cells": [
+              2550,
+              5.8,
+              172
+            ]
+          }
+        ]
+      }
+    ],
+    "charts": [
+      {
+        "kind": "scatter",
+        "data": "econ",
+        "axis": {
+          "max": 10,
+          "step": 2,
+          "label": "Growth (%)"
+        },
+        "xaxis": {
+          "max": 14000,
+          "step": 2000,
+          "label": "GDP per head (US$)"
+        },
+        "title": "GDP per head and growth, 2023",
+        "place": {
+          "India": "right",
+          "Bangladesh": "above",
+          "Vietnam": "left",
+          "Indonesia": "right",
+          "Brazil": "below",
+          "China": "left"
+        }
+      },
+      {
+        "kind": "table",
+        "data": "econ"
+      }
+    ],
+    "questions": [
+      {
+        "stem": "The combined GDP of all the countries whose GDP per head is below US$ 5,000 is what percentage of China's GDP? Give your answer to the nearest integer.",
+        "kind": "tita",
+        "answer": "32",
+        "tol": 0.5,
+        "uses": [],
+        "why": [
+          "Below US$ 5,000: India, Indonesia, Vietnam and Bangladesh. Their totals (US$ billion): India 2,530 × 1,438 = 3,638; Indonesia 4,880 × 281 = 1,371; Vietnam 4,320 × 100 = 432; Bangladesh 2,550 × 172 = 439. Sum 5,880.",
+          "China: 12,950 × 1,410 = 18,260. 5,880 ÷ 18,260 = 32.2%, so 32."
+        ]
+      },
+      {
+        "stem": "Call a country a 'catch-up economy' if its growth rate is higher than the growth rate of every country that has a higher GDP per head than it. (The country with the highest GDP per head is not counted.) How many of the six are catch-up economies?",
+        "kind": "mcq",
+        "options": [
+          "4",
+          "1",
+          "2",
+          "3"
+        ],
+        "answer": 2,
+        "uses": [],
+        "why": [
+          "Richest first, with growth: China 5.4, Brazil 3.2, Indonesia 5.0, Vietnam 5.1, Bangladesh 5.8, India 9.2.",
+          "Brazil, Indonesia and Vietnam each grow slower than China (5.4), so none of them qualifies. Bangladesh's 5.8 beats all four richer countries, and India's 9.2 beats all five. So 2.",
+          "4 compares each country only with the next richer one: Indonesia (5.0 > 3.2) and Vietnam (5.1 > 5.0) then pass too."
+        ]
+      },
+      {
+        "stem": "By the end of which year will India's total GDP first be at least one-third of China's total GDP?",
+        "kind": "mcq",
+        "options": [
+          "2037",
+          "2038",
+          "2039",
+          "2040"
+        ],
+        "answer": 1,
+        "uses": [],
+        "why": [
+          "India ÷ China now = 3,638 ÷ 18,260 = 0.1992. Each year the ratio is multiplied by 1.092 ÷ 1.054 = 1.0361.",
+          "0.1992 needs to grow by 1/3 ÷ 0.1992 = 1.673 times. After 14 years the ratio is 0.327, after 15 years 0.339. So 15 years: the end of 2038.",
+          "2039 comes from comparing GDP per head (2,530 ÷ 12,950 = 0.195) instead of total GDP, which needs one more year. 2037 comes from growing at the difference of the rates, 3.8% a year, which overstates the gain."
+        ]
+      },
+      {
+        "stem": "By what percentage will Bangladesh's total GDP exceed Vietnam's total GDP at the end of 2028? Give your answer to the nearest integer.",
+        "kind": "tita",
+        "answer": "5",
+        "tol": 0.5,
+        "uses": [],
+        "why": [
+          "Today Bangladesh is 438.6 and Vietnam 432.0 (US$ billion): Bangladesh is already 1.5% ahead.",
+          "After 5 years: Bangladesh 438.6 × 1.058⁵ = 581.4; Vietnam 432.0 × 1.051⁵ = 554.0. 581.4 ÷ 554.0 = 1.0495, so 5%."
+        ]
+      },
+      {
+        "stem": "By the end of which year will each of India, Indonesia, Vietnam and Bangladesh have a GDP per head of at least US$ 6,000?",
+        "kind": "mcq",
+        "options": [
+          "2039",
+          "2038",
+          "2033",
+          "2040"
+        ],
+        "answer": 0,
+        "uses": [],
+        "why": [
+          "Years each needs: Indonesia 5 (4,880 → 6,228), Vietnam 7, India 10, Bangladesh 16 (2,550 × 1.058¹⁵ = 5,940, × 1.058¹⁶ = 6,285).",
+          "All four are there only when the last, Bangladesh, is: 2023 + 16 = 2039.",
+          "2033 is India's year: the poorest country on the chart is not the last to arrive, because it grows fastest. 2038 stops at 15 years, when Bangladesh is still 1% short. 2040 counts 2024 as the first of the 16 years and adds one too many."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Total GDP = GDP per head × population. In US$ billion: India 3,638, China 18,260, Brazil 2,190, Indonesia 1,371, Vietnam 432, Bangladesh 439.",
+        "Growth questions compare ratios: a ratio of two countries' GDP changes each year by (1 + one rate) ÷ (1 + the other), so one multiplication a year on the calculator is enough.",
+        "For 'the first year', find the last year short of the mark and the first year past it; the options are a year apart."
+      ]
+    }
+  },
+  {
+    "id": "di-india-trade-partners",
+    "title": "India's goods trade with five partners",
+    "type": "di-chart",
+    "difficulty": "medium",
+    "minutes": 14,
+    "source": "original",
+    "since": "2026-11-05",
+    "cite": "Department of Commerce, Government of India, DGCIS Quick Estimates, country-wise merchandise exports and imports, released by PIB, July 2026; US$ million converted to US$ billion, exports rounded to 0.1 billion, imports as % of exports to the nearest whole percent. Financial years run April to March. The questions are ours.",
+    "intro": [
+      "The first bar chart shows India's merchandise exports to five partners in 2024-25 and 2025-26. The second shows India's imports from each partner as a percentage of its exports to that partner, in the same two years.",
+      "Use the rounded figures printed here. Imports from a partner in a year = exports to that partner × the percentage shown for that year. The trade deficit with a partner is imports − exports, and the trade surplus is exports − imports. All amounts are in US$ billion."
+    ],
+    "clues": [],
+    "data": [
+      {
+        "id": "exports",
+        "caption": "Exports to each partner",
+        "unit": "US$ billion",
+        "rowHead": "Partner",
+        "cols": [
+          "2024-25",
+          "2025-26"
+        ],
+        "rows": [
+          {
+            "name": "USA",
+            "cells": [
+              86.5,
+              87.3
+            ]
+          },
+          {
+            "name": "China",
+            "cells": [
+              14.3,
+              19.5
+            ]
+          },
+          {
+            "name": "UAE",
+            "cells": [
+              36.6,
+              37.4
+            ]
+          },
+          {
+            "name": "Saudi Arabia",
+            "cells": [
+              11.8,
+              10.3
+            ]
+          },
+          {
+            "name": "Singapore",
+            "cells": [
+              13.0,
+              11.9
+            ]
+          }
+        ]
+      },
+      {
+        "id": "ratio",
+        "caption": "Imports as a percentage of exports",
+        "unit": "%",
+        "rowHead": "Partner",
+        "cols": [
+          "2024-25",
+          "2025-26"
+        ],
+        "rows": [
+          {
+            "name": "USA",
+            "cells": [
+              53,
+              61
+            ]
+          },
+          {
+            "name": "China",
+            "cells": [
+              796,
+              676
+            ]
+          },
+          {
+            "name": "UAE",
+            "cells": [
+              173,
+              171
+            ]
+          },
+          {
+            "name": "Saudi Arabia",
+            "cells": [
+              256,
+              299
+            ]
+          },
+          {
+            "name": "Singapore",
+            "cells": [
+              164,
+              204
+            ]
+          }
+        ]
+      }
+    ],
+    "charts": [
+      {
+        "kind": "bar",
+        "data": "exports",
+        "axis": {
+          "max": 100,
+          "step": 20,
+          "label": "US$ billion"
+        },
+        "labels": true
+      },
+      {
+        "kind": "bar",
+        "data": "ratio",
+        "axis": {
+          "max": 800,
+          "step": 100,
+          "label": "%"
+        },
+        "labels": true
+      }
+    ],
+    "questions": [
+      {
+        "stem": "What was India's combined trade deficit in 2025-26 with the four partners with which it had a deficit in that year (in US$ billion)? Give your answer to the nearest integer.",
+        "kind": "tita",
+        "answer": "172",
+        "tol": 0.5,
+        "uses": [],
+        "why": [
+          "Imports in 2025-26 = exports × percentage: China 19.5 × 6.76 = 131.82, UAE 37.4 × 1.71 = 63.95, Saudi Arabia 10.3 × 2.99 = 30.80, Singapore 11.9 × 2.04 = 24.28. The USA's percentage is below 100, so it is a surplus partner.",
+          "Deficits: China 112.32, UAE 26.55, Saudi Arabia 20.50, Singapore 12.38. Sum 171.75, so 172."
+        ]
+      },
+      {
+        "stem": "Among China, UAE, Saudi Arabia and Singapore, with which one did India's trade deficit increase by the largest percentage from 2024-25 to 2025-26?",
+        "kind": "mcq",
+        "options": [
+          "Singapore",
+          "UAE",
+          "China",
+          "Saudi Arabia"
+        ],
+        "answer": 0,
+        "uses": [],
+        "why": [
+          "Deficit = exports × (percentage − 100%). Singapore 8.32 → 12.38 (+49%); China 99.53 → 112.32 (+13%); Saudi Arabia 18.41 → 20.50 (+11%); UAE 26.72 → 26.55 (a small fall).",
+          "China's deficit rose by the most in US$ (12.8 billion), but Singapore's rose by the largest percentage."
+        ]
+      },
+      {
+        "stem": "India's net balance with the five partners together is its total exports to them minus its total imports from them; it was negative in both years. By approximately what percentage did India's net deficit with the five partners together increase from 2024-25 to 2025-26?",
+        "kind": "mcq",
+        "options": [
+          "11%",
+          "23%",
+          "12%",
+          "18%"
+        ],
+        "answer": 1,
+        "uses": [],
+        "why": [
+          "Balances (exports − imports), USA first: 2024-25: +40.66, −99.53, −26.72, −18.41, −8.32, net −112.32. 2025-26: +34.05, −112.32, −26.55, −20.50, −12.38, net −137.70.",
+          "The net deficit rose from 112.32 to 137.70: 25.38 ÷ 112.32 = 22.6%, so 23%.",
+          "12% leaves out the USA, whose surplus shrank; 11% is the growth of total imports alone; 18% divides the rise by the later year's deficit."
+        ]
+      },
+      {
+        "stem": "For how many of the five partners did India's imports rise from 2024-25 to 2025-26 even though imports as a percentage of exports fell?",
+        "kind": "mcq",
+        "options": [
+          "0",
+          "1",
+          "2",
+          "3"
+        ],
+        "answer": 2,
+        "uses": [],
+        "why": [
+          "The percentage fell only for China (796 → 676) and the UAE (173 → 171).",
+          "China's imports: 14.3 × 7.96 = 113.83 → 19.5 × 6.76 = 131.82, up, because exports grew 36%. The UAE's: 36.6 × 1.73 = 63.32 → 37.4 × 1.71 = 63.95, up as well. So 2.",
+          "0 reads a falling percentage as falling imports; the percentage is a ratio, and exports changed too."
+        ]
+      },
+      {
+        "stem": "Had imports from China in 2025-26 been unchanged but the trade deficit with China been 40% lower than it actually was, by approximately what percentage would exports to China have exceeded their actual 2025-26 value?",
+        "kind": "mcq",
+        "options": [
+          "230%",
+          "40%",
+          "70%",
+          "346%"
+        ],
+        "answer": 0,
+        "uses": [],
+        "why": [
+          "Actual deficit 112.32. 40% lower means 112.32 × 0.6 = 67.39. Imports stay 131.82, so exports would be 131.82 − 67.39 = 64.43.",
+          "64.43 ÷ 19.5 = 3.30: exports would be 230% higher.",
+          "70% divides the rise of 44.93 by the new exports (64.43) instead of the actual ones; 346% cuts the deficit to 40% of its size instead of by 40%; 40% applies the cut to exports."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Imports = exports × percentage. 2024-25: USA 45.85, China 113.83, UAE 63.32, Saudi Arabia 30.21, Singapore 21.32. 2025-26: USA 53.25, China 131.82, UAE 63.95, Saudi Arabia 30.80, Singapore 24.28.",
+        "Deficit = imports − exports, or exports × (percentage − 100%). A percentage below 100 is a surplus (the USA).",
+        "The second chart is a ratio: when it falls, imports can still rise if exports rose faster."
+      ]
+    }
+  },
+  {
+    "id": "di-power-capacity",
+    "title": "India's installed power capacity, three years",
+    "type": "di-chart",
+    "difficulty": "medium",
+    "minutes": 14,
+    "source": "original",
+    "since": "2026-11-05",
+    "cite": "Central Electricity Authority, 'Growth of electricity sector in India', as cited in the CERC Market Monitoring Report 2023-24, chapter 1; installed capacity at the end of each financial year. Renewables' shares computed from the same figures. The questions are ours.",
+    "intro": [
+      "The stacked bar chart shows India's installed electricity capacity by source at the end of three financial years, with solar, wind and Other RE (small hydro and bio-power) shown together as renewables. The second chart splits each year's renewable capacity between solar, wind and Other RE.",
+      "Use the figures printed here. Total capacity in a year is the sum of the four parts of its bar. 'Hydro (large)' excludes small hydro. A source's capacity within renewables is the renewable capacity × its share. The shares are rounded, so they may not add up to exactly 100."
+    ],
+    "clues": [],
+    "data": [
+      {
+        "id": "cap",
+        "caption": "Installed capacity",
+        "unit": "GW",
+        "rowHead": "Source",
+        "cols": [
+          "2021-22",
+          "2022-23",
+          "2023-24"
+        ],
+        "rows": [
+          {
+            "name": "Renewables",
+            "cells": [
+              109.89,
+              125.15,
+              143.64
+            ]
+          },
+          {
+            "name": "Hydro (large)",
+            "cells": [
+              46.72,
+              46.85,
+              46.93
+            ]
+          },
+          {
+            "name": "Nuclear",
+            "cells": [
+              6.78,
+              6.78,
+              8.18
+            ]
+          },
+          {
+            "name": "Thermal",
+            "cells": [
+              236.11,
+              237.27,
+              243.22
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mix",
+        "caption": "Share of renewable capacity",
+        "unit": "%",
+        "rowHead": "Source",
+        "cols": [
+          "2021-22",
+          "2022-23",
+          "2023-24"
+        ],
+        "rows": [
+          {
+            "name": "Solar",
+            "cells": [
+              49.1,
+              53.4,
+              57.0
+            ]
+          },
+          {
+            "name": "Wind",
+            "cells": [
+              36.7,
+              34.1,
+              31.9
+            ]
+          },
+          {
+            "name": "Other RE",
+            "cells": [
+              14.1,
+              12.6,
+              11.1
+            ]
+          }
+        ]
+      }
+    ],
+    "charts": [
+      {
+        "kind": "stacked",
+        "data": "cap",
+        "by": "cols",
+        "axis": {
+          "max": 450,
+          "step": 50,
+          "label": "GW"
+        },
+        "labels": true,
+        "colors": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "kind": "bar",
+        "data": "mix",
+        "by": "cols",
+        "axis": {
+          "max": 60,
+          "step": 10,
+          "label": "%"
+        },
+        "labels": true,
+        "colors": [
+          5,
+          6,
+          7
+        ]
+      }
+    ],
+    "questions": [
+      {
+        "stem": "By what percentage did India's solar capacity increase from 2021-22 to 2023-24? Give your answer to the nearest integer.",
+        "kind": "tita",
+        "answer": "52",
+        "tol": 0.5,
+        "uses": [],
+        "why": [
+          "Solar = renewables × solar's share: 2021-22 109.89 × 0.491 = 53.96 GW; 2023-24 143.64 × 0.570 = 81.87 GW.",
+          "81.87 ÷ 53.96 = 1.517, an increase of 51.7%, so 52.",
+          "Dividing the shares alone (57.0 ÷ 49.1, 16%) misses that renewables themselves grew."
+        ]
+      },
+      {
+        "stem": "For how many of the six sources (solar, wind, Other RE, large hydro, nuclear and thermal) did capacity rise in both 2022-23 and 2023-24 while its share of total capacity fell in both years? (Capacity that did not change in a year did not rise.)",
+        "kind": "mcq",
+        "options": [
+          "2",
+          "4",
+          "1",
+          "3"
+        ],
+        "answer": 3,
+        "uses": [],
+        "why": [
+          "Totals: 399.50, 416.05, 441.97. Shares of the total: thermal 59.1% → 57.0% → 55.0%; large hydro 11.7% → 11.3% → 10.6%; Other RE 15.49, 15.77, 15.94 GW, which is 3.88% → 3.79% → 3.61%.",
+          "Solar (13.5% → 16.1% → 18.5%) and wind (10.1% → 10.3% → 10.4%) gained share; nuclear did not grow in 2022-23. So 3: thermal, large hydro and Other RE.",
+          "Other RE is the trap both ways: its share of renewables fell every year, which looks like a fall in capacity, but its capacity rose."
+        ]
+      },
+      {
+        "stem": "Suppose that from 2023-24 onwards, solar capacity adds each year exactly the amount it added in 2023-24, and thermal capacity also adds each year exactly the amount it added in 2023-24. What is the least number of years (after 2023-24) after which solar capacity will exceed thermal capacity?",
+        "kind": "mcq",
+        "options": [
+          "16",
+          "11",
+          "18",
+          "14"
+        ],
+        "answer": 2,
+        "uses": [],
+        "why": [
+          "2023-24 additions: solar 81.87 − 66.83 = 15.04 GW; thermal 243.22 − 237.27 = 5.95 GW. The gap, 243.22 − 81.87 = 161.35 GW, closes by 9.09 GW a year.",
+          "161.35 ÷ 9.09 = 17.7: after 17 years thermal is still ahead, after 18 solar leads. So 18.",
+          "11 ignores thermal's additions; 16 uses the average additions of the two years; 14 uses the 2022-23 additions."
+        ]
+      },
+      {
+        "stem": "Suppose solar capacity in 2023-24 had been the same as in 2021-22, with wind and Other RE as they actually were in 2023-24. What would solar's share of the combined capacity of solar, wind and Other RE have been in 2023-24?",
+        "kind": "mcq",
+        "options": [
+          "13.5%",
+          "19.4%",
+          "37.6%",
+          "46.6%"
+        ],
+        "answer": 3,
+        "uses": [],
+        "why": [
+          "Solar 2021-22 = 53.96 GW. Wind and Other RE in 2023-24: 45.82 + 15.94 = 61.76 GW.",
+          "53.96 ÷ (53.96 + 61.76) = 53.96 ÷ 115.72 = 46.6%.",
+          "37.6% divides by the actual 2023-24 renewables (143.64), which still include the actual solar; 19.4% is the fall in solar as a share of renewables; 13.5% is solar's 2021-22 share of all capacity."
+        ]
+      },
+      {
+        "stem": "With thermal, large hydro and nuclear capacity kept at their 2023-24 levels, what additional capacity (in GW) of solar, wind and Other RE together would make these three exactly 40% of the total installed capacity? Give your answer to the nearest integer.",
+        "kind": "tita",
+        "answer": "55",
+        "tol": 0.5,
+        "uses": [],
+        "why": [
+          "The rest is 243.22 + 46.93 + 8.18 = 298.33 GW, and must be 60% of the new total. So renewables must be 298.33 × 40 ÷ 60 = 198.89 GW.",
+          "198.89 − 143.64 = 55.25, so 55.",
+          "Taking 40% of today's total (441.97) gives 176.79 and 33 GW, but the total grows as renewables are added."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "The two charts link: solar = renewables × solar's share. Solar: 109.89 × 0.491 = 53.96, 125.15 × 0.534 = 66.83, 143.64 × 0.570 = 81.87. Wind: 40.33, 42.68, 45.82. Other RE: 15.49, 15.77, 15.94.",
+        "Totals: 399.50, 416.05 and 441.97 GW.",
+        "A falling share of renewables is not falling capacity: Other RE's share fell every year while its capacity rose, because renewables grew."
+      ]
+    }
   }
 ]

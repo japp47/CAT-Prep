@@ -14,7 +14,8 @@ import { GuideExplorer } from "../components/GuideExplorer";
 import { LrGuideBody } from "../components/LrGuide";
 import { LrThumb } from "../components/LrThumb";
 import { TypeGuideBody } from "../components/TypeGuide";
-import { LR_GUIDES } from "../sections/dilr/guides";
+import { LR_GUIDES, type LrGuide } from "../sections/dilr/guides";
+import { isDi, type LrType } from "../practice/types";
 import { BENCHMARKS, PASSAGE_SOURCES, TOPPERS } from "../data/stories";
 import { phaseOf } from "../data/exam";
 import { dow, todayIso } from "../lib/date";
@@ -110,6 +111,9 @@ function Topic({ t }: { t: TopicData }) {
   );
 }
 
+/** The DILR guides as explorer items: logical reasoning types in the LR half, the DI pictures in the DI half. */
+const guideItems = (gs: LrGuide[]) => gs.map((g) => ({ id: g.id, h: g.h, tag: g.tag, icon: <LrThumb type={g.id} className="size-9" />, body: () => <LrGuideBody g={g} /> }));
+
 function Learn({ id, page, focus, part, setPart, cats }: { id: SectionId; page: PageData; focus: string | null; part: Part; setPart: (p: Part) => void; cats: (keep: (c: Category) => boolean) => ReactNode }) {
   const topics = (p?: Part) => page.topics.filter((t) => t.part === p);
   const both = <div className="flex flex-col gap-3">{topics().map((t) => <Topic key={t.h} t={t} />)}</div>;
@@ -149,8 +153,7 @@ function Learn({ id, page, focus, part, setPart, cats }: { id: SectionId; page: 
             </Block>
             <div className="flex flex-col gap-3">{topics("lr").map((t) => <Topic key={t.h} t={t} />)}</div>
             <Block title="A guide for each set type" description="What to draw, where to start, the method and the traps, then one of our own sets as the worked example, with its solution drawn step by step.">
-              <GuideExplorer label="LR set types" prefKey="guide:dilr" focus={focus}
-                items={LR_GUIDES.map((g) => ({ id: g.id, h: g.h, tag: g.tag, icon: <LrThumb type={g.id} className="size-9" />, body: () => <LrGuideBody g={g} /> }))} />
+              <GuideExplorer label="LR set types" prefKey="guide:dilr" focus={focus} items={guideItems(LR_GUIDES.filter((g) => !isDi(g.id)))} />
             </Block>
             {cats((c) => c.part === "lr")}
           </> : <>
@@ -158,6 +161,9 @@ function Learn({ id, page, focus, part, setPart, cats }: { id: SectionId; page: 
               <TypeTable head={["Picture", "What it asks", "Start with"]} rows={DILR_LEARN.DI_TYPES} />
             </Block>
             <div className="flex flex-col gap-3">{topics("di").map((t) => <Topic key={t.h} t={t} />)}</div>
+            <Block title="A guide for each picture" description="How to read it, where to start, how exactly to calculate and the traps, then one of our own sets as the worked example.">
+              <GuideExplorer label="Data interpretation pictures" prefKey="guide:di" focus={focus} items={guideItems(LR_GUIDES.filter((g) => isDi(g.id)))} />
+            </Block>
             {cats((c) => c.part === "di")}
           </>}
         </section>
@@ -216,7 +222,8 @@ function Live({ sec, page }: { sec: SectionDef; page: PageData }) {
   const focus = sp.get("guide"), askedTab = sp.get("tab");
   const [part, setPart] = usePref<Part>("dilrPart", "lr");
   useEffect(() => {
-    if (focus) { setVtab("learn"); setPart("lr"); }
+    // A guide opens in its own half: the DI pictures in the DI half, every other set type in the LR half.
+    if (focus) { setVtab("learn"); setPart(isDi(focus as LrType) ? "di" : "lr"); }
     else if (askedTab && page.tabs.some((t) => t.id === askedTab)) setVtab(askedTab);
   }, [focus, askedTab, setVtab, setPart, page.tabs]);
   const [pri, setPri] = usePref<"all" | "must">("pri", "all");

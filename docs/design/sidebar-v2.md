@@ -47,7 +47,7 @@ One idea: **the places you use every day, with what is waiting there.**
 - **The active place** sits on one pill of card tone that **slides** to the new place when the page changes (GSAP, transform only; jumps without motion under reduced motion). This is the one moving thing.
 - **Counts only when actionable**: the redo queue's due count; the day's ring on Today (done of planned minutes, from the same plan Today shows).
 - **Sections** are three tiles in a row, since they are siblings of one kind; Quant says "Soon" until it opens.
-- **More** folds the six occasional places; its state is remembered (pref `navMore`). On those pages it opens itself.
+- **More** folds the six occasional places; its state is remembered (pref `navMore`). On those pages it opens itself. Its rows carry icons like every other row (owner, 4 Nov 2026: without them the names sat indented and looked right-aligned).
 
 ### Collapsed (72 px)
 

@@ -256,5 +256,210 @@
         }
       ]
     }
+  },
+  {
+    "id": "di-monsoon-2025",
+    "title": "Monsoon 2025: normal, actual and departure",
+    "type": "di-table",
+    "difficulty": "hard",
+    "minutes": 14,
+    "source": "original",
+    "since": "2026-11-05",
+    "cite": "India Meteorological Department, 'Salient features of the monsoon 2025', rainfall for June to September 2025 by region; normal = long period average. Figures as published. The questions are ours.",
+    "intro": [
+      "The table shows the June to September 2025 rainfall of four regions of India and of India as a whole: the normal (the long-period average), the actual rainfall, and the departure of the actual from the normal. Four entries are hidden.",
+      "The All India row is for the whole country; it is not the sum or the simple average of the four regions."
+    ],
+    "clues": [
+      "Departure = (Actual − Normal) ÷ Normal × 100, published rounded to the nearest whole percent; a value exactly halfway between two whole numbers is rounded away from zero (so +26.5 is shown as +27 and −20.5 as −21).",
+      "Every rainfall figure printed in the table is exact. A hidden value is exact but unknown, and must be consistent with the other numbers in its row.",
+      "A 'minimum possible' or 'smallest' value is the least value consistent with the table. A bound that is approached but never reached counts as reached for answers rounded to the nearest integer."
+    ],
+    "data": [
+      {
+        "id": "rain",
+        "caption": "Rainfall, June to September 2025",
+        "unit": "",
+        "rowHead": "Region",
+        "cols": [
+          "Normal (mm)",
+          "Actual (mm)",
+          "Departure (%)"
+        ],
+        "rows": [
+          {
+            "name": "North West India",
+            "cells": [
+              587.6,
+              null,
+              27
+            ]
+          },
+          {
+            "name": "Central India",
+            "cells": [
+              978.0,
+              1125.3,
+              null
+            ]
+          },
+          {
+            "name": "East & North East India",
+            "cells": [
+              1367.3,
+              null,
+              -20
+            ]
+          },
+          {
+            "name": "South Peninsula",
+            "cells": [
+              null,
+              787.4,
+              10
+            ]
+          },
+          {
+            "name": "All India",
+            "cells": [
+              868.6,
+              937.2,
+              8
+            ]
+          }
+        ]
+      }
+    ],
+    "charts": [
+      {
+        "kind": "table",
+        "data": "rain"
+      }
+    ],
+    "questions": [
+      {
+        "stem": "What is the minimum possible actual rainfall of North West India, in mm? Give your answer to the nearest integer.",
+        "kind": "tita",
+        "answer": "743",
+        "tol": 0.5,
+        "uses": [
+          1,
+          2,
+          3
+        ],
+        "why": [
+          "+27 means the true departure d has 26.5 ≤ d < 27.5 (26.5 is shown as 27, rounding away from zero).",
+          "The actual is least at d = 26.5: 587.6 × 1.265 = 743.31, so 743."
+        ]
+      },
+      {
+        "stem": "Which one of the following CANNOT be the normal rainfall of South Peninsula (in mm)?",
+        "kind": "mcq",
+        "options": [
+          "716",
+          "719",
+          "714",
+          "720"
+        ],
+        "answer": 3,
+        "uses": [
+          1,
+          2
+        ],
+        "why": [
+          "+10 means 9.5 ≤ d < 10.5, so the normal = 787.4 ÷ (1 + d/100) lies in (787.4 ÷ 1.105, 787.4 ÷ 1.095] = (712.58, 719.09].",
+          "720 is outside: it gives a departure of 9.36%, shown as +9. 719 gives 9.51%, shown as +10, so it can be the normal; 714 and 716 are inside too."
+        ]
+      },
+      {
+        "stem": "What is the minimum possible value, to the nearest integer, of the sum of the actual rainfalls (in mm) of North West India, Central India, East & North East India and South Peninsula?",
+        "kind": "mcq",
+        "options": [
+          "3750",
+          "3743",
+          "3757",
+          "3753"
+        ],
+        "answer": 1,
+        "uses": [
+          1,
+          2,
+          3
+        ],
+        "why": [
+          "Only two actuals are hidden. North West is least at 743.31 (question 1). For East & North East, −20 means −20.5 < d ≤ −19.5 (−20.5 would be shown as −21), so its actual approaches 1,367.3 × 0.795 = 1,087.00 without reaching it; clue 3 counts it.",
+          "Sum: 743.31 + 1,125.3 + 1,087.00 + 787.4 = 3,743.0, so 3743.",
+          "3753 takes the printed departures as exact; 3750 lowers only North West; 3757 takes East & North East at −19.5, its largest actual, not its smallest."
+        ]
+      },
+      {
+        "stem": "In how many of the four regions (excluding All India) is the actual rainfall certain to be at least 10% above the normal?",
+        "kind": "mcq",
+        "options": [
+          "3",
+          "2",
+          "4",
+          "1"
+        ],
+        "answer": 1,
+        "uses": [
+          1,
+          2
+        ],
+        "why": [
+          "North West: at least 26.5% above. Central: (1,125.3 − 978.0) ÷ 978.0 = 15.06% above. Both certain.",
+          "South Peninsula's +10 can come from any departure from 9.5% up, so it is not certain. East & North East is below normal. So 2."
+        ]
+      },
+      {
+        "stem": "If East & North East India had received exactly its normal rainfall, by how many mm would its rainfall have been higher than its actual rainfall? Give the smallest possible value, to the nearest integer.",
+        "kind": "tita",
+        "answer": "267",
+        "tol": 0.5,
+        "uses": [
+          1,
+          2,
+          3
+        ],
+        "why": [
+          "The difference is normal − actual, smallest when the actual is largest. −20 allows d up to −19.5 (−19.5 is shown as −20), so the largest actual is 1,367.3 × 0.805 = 1,100.68.",
+          "1,367.3 − 1,100.68 = 266.62, so 267."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "A shown departure is a range: +27 means 26.5 to just under 27.5; −20 means just above −20.5 up to −19.5 (halves round away from zero, clue 1).",
+        "Each hidden value is then a range: North West's actual 743.3 to just under 749.2; Central's departure 15.06%, shown as +15; East & North East's actual above 1,087.0 up to 1,100.7; South Peninsula's normal above 712.6 up to 719.1.",
+        "A 'minimum possible' answer takes each range at its low end, even when the end is only approached (clue 3)."
+      ],
+      "fills": [
+        {
+          "data": "rain",
+          "cells": [
+            [
+              "North West India",
+              "Actual (mm)",
+              "743.3 to 749.2"
+            ],
+            [
+              "Central India",
+              "Departure (%)",
+              "+15 (15.06)"
+            ],
+            [
+              "East & North East India",
+              "Actual (mm)",
+              "above 1,087.0, up to 1,100.7"
+            ],
+            [
+              "South Peninsula",
+              "Normal (mm)",
+              "above 712.6, up to 719.1"
+            ]
+          ]
+        }
+      ]
+    }
   }
 ]
