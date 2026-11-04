@@ -1,5 +1,7 @@
 import type { AppState } from "../lib/state";
+import { LR_CATALOG } from "../practice/catalog.gen";
 import { REDO_SRC } from "../practice/record";
+import { isDi } from "../practice/types";
 import { LIVE_SECTIONS } from "../sections";
 import type { SectionDef } from "../sections/types";
 import { buildDay, budgetFor, markBlockDone, type PlacedBlock } from "./engine";
@@ -20,6 +22,9 @@ export function wanted(name: string): number {
 const VA_TYPES = new Set(["Para jumble", "Para summary", "Odd sentence out", "Sentence insertion"]);
 const DRILL_OF: Record<string, "clue" | "mcc" | "first" | "replay"> = { "/practice/clues": "clue", "/practice/must-could": "mcc", "/practice/first-move": "first", "/practice/replay": "replay" };
 
+/** The data interpretation sets, which tick the DI block rather than the LR one. */
+const DI_SET = new Set(LR_CATALOG.filter((m) => isDi(m.type)).map((m) => m.id));
+
 /**
  * What on-site work that day covers a block, in a few words ("2 LR sets", "RC set, 3 of 4"), or null when the day's
  * work does not cover it (yet).
@@ -38,9 +43,12 @@ export function siteWork(b: Pick<PlacedBlock, "id" | "name" | "ptype" | "go">, s
     const cr = st.crAttempts.filter((a) => a.d === d);
     return cr.length ? `Critical reasoning, ${cr[0].items.filter((i) => i.ok).length} of ${cr[0].items.length} right` : null;
   }
-  if (b.go === "lr-next") {
-    const lr = st.lrAttempts.filter((a) => a.d === d);
-    return lr.length >= need ? (lr.length === 1 ? `LR set, ${3 * lr[0].c - lr[0].w} of ${3 * lr[0].ans.length}` : `${lr.length} LR sets`) : null;
+  if (b.go === "lr-next" || b.go === "di-next") {
+    // The LR block counts logical reasoning sets and the DI block data interpretation sets (D82), so one set never
+    // ticks both.
+    const di = b.go === "di-next", what = di ? "DI" : "LR";
+    const sets = st.lrAttempts.filter((a) => a.d === d && DI_SET.has(a.set) === di);
+    return sets.length >= need ? (sets.length === 1 ? `${what} set, ${3 * sets[0].c - sets[0].w} of ${3 * sets[0].ans.length}` : `${sets.length} ${what} sets`) : null;
   }
   if (b.go && DRILL_OF[b.go]) {
     const run = st.lrDrills.find((r) => r.d === d && r.kind === DRILL_OF[b.go!]);

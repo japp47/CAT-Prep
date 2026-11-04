@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Calculator } from "lucide-react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { CatCalculator } from "../../components/CatCalculator";
 import { ContentGate } from "../../components/Content";
-import { ArrowLink, LinkButton, Meta, Page, PageHeader, Section } from "../../components/kit";
+import { ArrowLink, LinkButton, Meta, Page, PageHeader, Section, TextLink } from "../../components/kit";
 import { TimelineFigure } from "../../components/LrFigures";
+import { PAPERS_PAGE } from "../../data/papers";
 import { mediumDate, todayIso, uid } from "../../lib/date";
 import { useGsap } from "../../lib/motion";
 import type { ArenaGuess, ArenaRound } from "../../lib/state";
@@ -16,7 +19,7 @@ import { LR_CATALOG } from "../../practice/catalog.gen";
 import type { Content } from "../../practice/content";
 import { recordLr } from "../../practice/lrattempt";
 import { fmtSecs } from "../../practice/record";
-import type { LrSet } from "../../practice/types";
+import { isDi, type LrSet } from "../../practice/types";
 import NotFound from "../NotFound";
 import { Confirm, PlayerBar, ScoreCard, Timer, useLeaveConfirmation } from "./common";
 import { answered, blankWork, LrSolve, SetText, type LrWork } from "./LrPlayer";
@@ -41,6 +44,8 @@ interface Draft {
   open: string; from: number; visits: [string, number, number][]; work: Record<string, LrWork>;
   /** Sets the student has opened while looking. */
   seen?: string[];
+  /** The calculator's log by set (D82), kept on each set's attempt as in the player. */
+  calc?: Record<string, string[]>;
 }
 
 function loadDraft(): Draft | null {
@@ -85,7 +90,7 @@ function Deal({ onStart }: { onStart: (d: Draft) => void }) {
   const rules: [string, string][] = [
     ["Five sets, 40 minutes", "As in CAT's DILR section. The clock starts when you deal and keeps running if you leave."],
     ["Look, then pick", "Read the sets, pick the order you would solve them in and leave the ones you would skip. Guess each set's minutes and right answers if you like. Toppers spend three to five minutes here."],
-    ["Then solve", "Switch sets whenever you want. MCQ: +3 right, −1 wrong; typed answers cost nothing when wrong."],
+    ["Then solve", "Switch sets whenever you want. CAT's calculator is in the bar. MCQ: +3 right, −1 wrong; typed answers cost nothing when wrong."],
     ["Afterwards", "Your picks against what happened: where the minutes went and which set cost the most."],
   ];
   return (
@@ -102,11 +107,11 @@ function Deal({ onStart }: { onStart: (d: Draft) => void }) {
           <div className="flex flex-col gap-3">
             {deal.replay
               ? <p className="measure text-base text-muted-foreground">You have met nearly every set. This is a replay round of sets you last saw a month or more ago; it does not count towards your selection score.</p>
-              : <p className="measure text-base text-muted-foreground">Rounds use logical reasoning sets you have not tried. {left} are left. Data interpretation sets join when they arrive.</p>}
+              : <p className="measure text-base text-muted-foreground">{mix(deal.sets)} {left} sets you have not tried are left for rounds.</p>}
             <div><Button size="lg" onClick={start}>Deal the round</Button></div>
           </div>
         ) : (
-          <p className="measure text-base">Every set has been in a round or practice recently, so no round can be dealt today. New sets are added often; a replay round opens a month after you last saw a set.</p>
+          <p className="measure text-base">A round needs at least three logical reasoning sets you have not seen in the last month, beside at most two data interpretation sets, as CAT mixes them. You have tried nearly all of them recently. New sets arrive every week, and a set comes back for a replay round a month after you last saw it. Until then, the DILR section of a <TextLink to={PAPERS_PAGE}>past CAT paper</TextLink> is the real thing.</p>
         )}
       </div>
       {trend && (
@@ -174,6 +179,7 @@ function Round({ start, c }: { start: Draft; c: Content }) {
   const [d, setD] = useState(start);
   const [pane, setPane] = useState<"p" | "q">("p");
   const [confirming, setConfirming] = useState(false);
+  const [calcOpen, setCalcOpen] = useState(false);
   const done = useRef(false);
   const sets = d.sets.map((id) => c.lrById(id)).filter((s): s is LrSet => !!s);
   const byId = (id: string) => sets.find((s) => s.id === id)!;
@@ -204,7 +210,7 @@ function Round({ start, c }: { start: Draft; c: Content }) {
     update((st) => {
       sets.forEach((s) => {
         const w = d.work[s.id];
-        if (attempts[s.id]) recordLr(st, attempts[s.id], s, w.ans, setSecs(round, s.id) || 1, today, w.unsure.flatMap((u, i) => (u ? [i] : [])), now);
+        if (attempts[s.id]) recordLr(st, attempts[s.id], s, w.ans, setSecs(round, s.id) || 1, today, w.unsure.flatMap((u, i) => (u ? [i] : [])), now, { calc: d.calc?.[s.id] });
       });
       st.arenaRounds.push(round);
     });
@@ -226,8 +232,10 @@ function Round({ start, c }: { start: Draft; c: Content }) {
       <Page className="gap-6 lg:gap-8">
         <PlayerBar kicker={`Set Selection Arena, set ${letterOf(asRound(d), d.open)}`} title={byId(d.open).title}>
           <Clock d={d} onEnd={submit} />
+          <Button size="sm" variant="ghost" aria-pressed={calcOpen} onClick={() => setCalcOpen(!calcOpen)}><Calculator aria-hidden />Calculator</Button>
           <Button size="sm" variant="secondary" onClick={() => setConfirming(true)}>Submit the round</Button>
         </PlayerBar>
+        {calcOpen && <CatCalculator onClose={() => setCalcOpen(false)} onLog={(l) => setD((p) => ({ ...p, calc: { ...p.calc, [p.open]: [...(p.calc?.[p.open] ?? []), l].slice(-80) } }))} />}
         <SetBar d={d} sets={sets} workOf={workOf} onPick={(id) => { visit(id); setPane("p"); window.scrollTo(0, 0); }} />
         <LrSolve key={d.open} set={byId(d.open)} work={workOf(d.open)} onChange={(w) => setD((p) => ({ ...p, work: { ...p.work, [p.open]: w } }))} pane={pane} setPane={setPane}
           last={nextOf(d, d.open)
@@ -244,6 +252,13 @@ function Round({ start, c }: { start: Draft; c: Content }) {
 }
 
 const asRound = (d: Draft) => ({ sets: d.sets }) as ArenaRound;
+/** What a round holds, said before the deal: "This round: three logical reasoning sets and two data interpretation sets." */
+const WORD = ["no", "one", "two", "three", "four", "five"];
+function mix(sets: string[]) {
+  const di = sets.filter((id) => { const m = LR_CATALOG.find((x) => x.id === id); return !!m && isDi(m.type); }).length;
+  const plural = (n: number, what: string) => `${WORD[n]} ${what} set${n === 1 ? "" : "s"}`;
+  return di ? `This round: ${plural(sets.length - di, "logical reasoning")} and ${plural(di, "data interpretation")}, about CAT's mix.` : "This round: five logical reasoning sets.";
+}
 /** The bar's order: the picked sets in the student's order, then the rest. */
 const barOrder = (d: Draft) => [...d.order, ...d.sets.filter((id) => !d.order.includes(id))];
 const nextOf = (d: Draft, id: string) => { const o = barOrder(d); return o[o.indexOf(id) + 1]; };

@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -145,8 +145,12 @@ export default function DilrPractice({ next }: { next: LrMeta | undefined }) {
   const lrSets = LR_ORDER.filter((s) => !isDi(s.type)), diSets = LR_ORDER.filter((s) => isDi(s.type));
   const triedOf = (sets: LrMeta[]) => sets.filter((s) => last.has(s.id)).length;
   // Which half the list shows, remembered; it opens on data interpretation when the next set is one.
+  // ?half=di (the plan's DI block) opens the data interpretation half.
   const [savedHalf, setHalf] = usePref<"lr" | "di" | null>("dilrHalf", null);
-  const half: "lr" | "di" = !diSets.length ? "lr" : savedHalf ?? (next && isDi(next.type) ? "di" : "lr");
+  const [sp, setSp] = useSearchParams(), asked = sp.get("half");
+  // Switching halves drops ?half, so the address does not hold the switch on one side.
+  const pickHalf = (h: "lr" | "di") => { setHalf(h); if (asked) setSp((p) => { p.delete("half"); return p; }, { replace: true }); };
+  const half: "lr" | "di" = !diSets.length ? "lr" : asked === "di" || asked === "lr" ? asked : savedHalf ?? (next && isDi(next.type) ? "di" : "lr");
   const dealt = new Set(state.arenaRounds.flatMap((r) => r.sets));
   const arena = arenaTrend(state.arenaRounds, state.lrAttempts);
   // The LR part of the redo queue.
@@ -220,7 +224,7 @@ export default function DilrPractice({ next }: { next: LrMeta | undefined }) {
 
       <Section title="Sets">
         <div className="flex flex-col gap-5">
-          <SwitchTabs label="Logical reasoning or data interpretation" panel="dilr-sets" value={half} onChange={setHalf}
+          <SwitchTabs label="Logical reasoning or data interpretation" panel="dilr-sets" value={half} onChange={pickHalf}
             options={[{ id: "lr", label: "Logical reasoning", short: "LR sets", count: lrSets.length }, ...(diSets.length ? [{ id: "di" as const, label: "Data interpretation", short: "DI sets", count: diSets.length }] : [])]} />
           <div id="dilr-sets" role="tabpanel" aria-label={half === "lr" ? "Logical reasoning sets" : "Data interpretation sets"} className="flex flex-col gap-3">
             <p className="measure text-base text-muted-foreground">

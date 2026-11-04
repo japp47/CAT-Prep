@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { blankState, normalize, type ArenaRound, type LrAttempt } from "../lib/state";
 import { toRecords } from "../lib/sync/records";
-import { ARENA_POOL, ARENA_SETS, arenaTrend, costliest, debrief, freshLeft, pickRound, resultOf, roundScore, selectionAccuracy, visitLanes } from "./arena";
+import { ARENA_POOL, ARENA_SETS, arenaTrend, costliest, debrief, diWanted, freshLeft, pickRound, resultOf, roundScore, selectionAccuracy, visitLanes } from "./arena";
+import { isDi } from "./types";
 import { LR_CATALOG } from "./catalog.gen";
 import type { LrMeta } from "./types";
 
@@ -15,6 +16,20 @@ const meta = (id: string, type = "arrangement", difficulty: LrMeta["difficulty"]
 const metaOf = (ms: LrMeta[]) => (id: string) => ms.find((m) => m.id === id);
 
 describe("Arena deal (F56, D61)", () => {
+  it("deals one or two DI sets a round while DI sets are left, in any position (D82)", () => {
+    const counts = new Map<number, number>(), places = new Set<number>();
+    for (let i = 0; i < 200; i++) {
+      const r = pickRound([], [], "seed-" + i, "2026-11-04")!;
+      const di = r.sets.filter((id) => isDi(ARENA_POOL.find((m) => m.id === id)!.type));
+      counts.set(di.length, (counts.get(di.length) ?? 0) + 1);
+      r.sets.forEach((id, k) => { if (di.includes(id)) places.add(k); });
+    }
+    expect([...counts.keys()].sort()).toEqual([1, 2]);
+    expect(counts.get(1)! / 200).toBeGreaterThan(0.3);
+    expect(places.size).toBe(ARENA_SETS);
+    expect(diWanted(0, "x")).toBe(0);
+    expect(diWanted(1, "x")).toBe(1);
+  });
   it("leaves out sets of separate short puzzles", () => {
     expect(ARENA_POOL.length).toBeGreaterThanOrEqual(30);
     expect(ARENA_POOL.some((m) => m.id === "venn-syllogisms" || m.id === "clk-station-clock")).toBe(false);
@@ -35,6 +50,19 @@ describe("Arena deal (F56, D61)", () => {
     expect(pickRound(lr, [before], "seed-2", "2026-11-02")!.sets).not.toEqual(r.sets);
   });
 
+  it("never deals a third DI set as fresh logical reasoning sets run out: replay, then no round (D82)", () => {
+    const lrSets = ARENA_POOL.filter((m) => !isDi(m.type)), diOf = (ids: string[]) => ids.filter((id) => isDi(ARENA_POOL.find((m) => m.id === id)!.type)).length;
+    for (const keep of [10, 3, 2, 1, 0]) {
+      const recent = lrSets.slice(keep).map((m, i) => att("r" + i, m.id, 1, 0, 60, "2026-11-01"));
+      const r = pickRound(recent, [], "s" + keep, "2026-11-04");
+      if (keep >= 3) { expect(r!.replay, `fresh LR ${keep}`).toBe(false); expect(diOf(r!.sets)).toBeLessThanOrEqual(2); }
+      else expect(r, `fresh LR ${keep}: no round of mostly DI`).toBeUndefined();
+      // A month later the same sets come back as a replay round, still at most two DI.
+      const later = pickRound(recent, [], "s" + keep, "2026-12-15")!;
+      expect(later.replay).toBe(keep < 3);
+      expect(diOf(later.sets)).toBeLessThanOrEqual(2);
+    }
+  });
   it("offers a replay round of sets touched 30 or more days ago when fewer than five are fresh, else nothing", () => {
     const pool = ["p1", "p2", "p3", "p4", "p5", "p6", "p7"].map((id, i) => meta(id, ["arrangement", "venn", "routes"][i % 3]));
     const old = [att("o1", "p1", 1, 0, 60, "2026-10-10"), att("o2", "p2", 1, 0, 60, "2026-10-10")];

@@ -19,7 +19,7 @@ describe("DILR in the timetable (F22, D56)", () => {
     expect(t.base[0].go).toBe("lr-next");
   });
   it("gives a Foundation weekend two sets, a drill and a retake", () => {
-    const t = dilrTemplate("2026-11-07", ctx);
+    const t = dilrTemplate("2026-10-31", ctx);
     expect(t.base.map((b) => b.id)).toEqual(["lrset", "drill", "retake"]);
     expect(t.base[0].name).toBe("Two LR sets");
   });
@@ -38,6 +38,39 @@ describe("DILR in the timetable (F22, D56)", () => {
     const st = blankState();
     const blocks = buildDay(DILR, st, "2026-11-04", budgetFor(DILR, st, "2026-11-04"), { today: "2026-11-04", noCarry: true });
     expect(blocks.map((b) => b.id)).toEqual(["lrset", "drill"]);
+    expect(blocks.reduce((s, b) => s + b.mins, 0)).toBe(30);
+  });
+});
+
+describe("DI in the day plan (D82)", () => {
+  const ids = (d: string) => dilrTemplate(d, ctx).base.map((b) => b.id);
+  it("keeps Foundation weeks 1 to 3 logical reasoning only", () => {
+    ["2026-10-19", "2026-10-28", "2026-11-06"].forEach((d) => expect(ids(d)).not.toContain("diset"));
+  });
+  it("puts a DI set first, beside the LR set, every day of Foundation weeks 4 and 5 (from 7 Nov 2026)", () => {
+    ["2026-11-07", "2026-11-09", "2026-11-12", "2026-11-15", "2026-11-20"].forEach((d) => expect(ids(d).slice(0, 2), d).toEqual(["diset", "lrset"]));
+    const b = dilrTemplate("2026-11-09", ctx).base[0];
+    expect(b.go).toBe("di-next");
+    expect(b.pri).toBe(1);
+  });
+  it("from week 6 to the end of Apply, gives a DI set on Monday, Wednesday and Friday only", () => {
+    // Foundation week 6 starts 21 Nov 2026; Build in Feb 2027; Apply in Jun 2027.
+    for (const [mon, tue] of [["2026-11-23", "2026-11-24"], ["2027-02-08", "2027-02-09"], ["2027-06-07", "2027-06-08"]]) {
+      expect(ids(mon), mon).toEqual(expect.arrayContaining(["lrset", "diset"]));
+      expect(ids(tue), tue).not.toContain("diset");
+    }
+    const week = ["2027-02-08", "2027-02-09", "2027-02-10", "2027-02-11", "2027-02-12", "2027-02-13", "2027-02-14"];
+    expect(week.filter((d) => ids(d).includes("diset"))).toHaveLength(3);
+  });
+  it("gives one LR and one DI set on Mock phase weekdays, and alternates them in the Taper", () => {
+    expect(ids("2027-09-07")).toEqual(["lrset", "diset", "drill"]);
+    const taper = ["2027-11-18", "2027-11-19"].map((d) => ids(d)[0]);
+    expect(new Set(taper)).toEqual(new Set(["lrset", "diset"]));
+  });
+  it("fits a 30-minute DI weekday with nothing lost: the DI set, the LR set and the drill", () => {
+    const st = blankState();
+    const blocks = buildDay(DILR, st, "2026-11-09", budgetFor(DILR, st, "2026-11-09"), { today: "2026-11-09", noCarry: true });
+    expect(blocks.map((b) => b.id)).toEqual(["diset", "lrset", "drill"]);
     expect(blocks.reduce((s, b) => s + b.mins, 0)).toBe(30);
   });
 });

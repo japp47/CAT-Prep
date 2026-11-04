@@ -1,8 +1,8 @@
 import type { ArenaRound, LrAttempt } from "../lib/state";
 import { addDays } from "../lib/date";
 import { LR_CATALOG } from "./catalog.gen";
-import { shuffle } from "./random";
-import type { LrDiagram, LrMeta } from "./types";
+import { hashSeed, shuffle } from "./random";
+import { isDi, type LrDiagram, type LrMeta } from "./types";
 
 /**
  * The Set Selection Arena (F56, docs/design/arena.md): five unseen DILR sets under one 40-minute clock, the order the
@@ -33,33 +33,49 @@ function lastSeen(lr: LrAttempt[], rounds: ArenaRound[]) {
 }
 
 /**
- * Five sets from `cands` in a seeded order: no more than two of a type (so at least three types) and no more than one
- * easy set, so a round always has something worth leaving. If the rules cannot fill five, the rest come in seed order.
+ * How many data interpretation sets a round deals (D82): one or two, by the seed, never more than two, so a round stays
+ * mostly logical reasoning as CAT's do (13 data sets in 35 over the last seven slots, 37%). Two when logical reasoning
+ * sets are too few for four.
+ */
+export const DI_MAX = 2;
+export const diWanted = (diLeft: number, seed: string, lrLeft = ARENA_SETS) =>
+  Math.min(diLeft, DI_MAX, Math.max(hashSeed(seed + ":di") % 2 ? 2 : 1, ARENA_SETS - lrLeft));
+
+/** Whether `cands` can fill a round: enough logical reasoning sets beside at most two DI sets. */
+const canDeal = (cands: LrMeta[]) => { const di = cands.filter((m) => isDi(m.type)).length; return cands.length - di + Math.min(di, DI_MAX) >= ARENA_SETS; };
+
+/**
+ * Five sets from `cands` in a seeded order: first the round's DI sets (diWanted), then logical reasoning sets; no more
+ * than two of a type (so at least three types) and no more than one easy set, so a round always has something worth
+ * leaving. If those rules cannot fill five, more logical reasoning sets come in seed order; never a third DI set.
  */
 function deal(cands: LrMeta[], seed: string): string[] {
   const order = shuffle(cands, seed), out: LrMeta[] = [];
-  for (const m of order) {
+  const di = order.filter((m) => isDi(m.type)), lr = order.filter((m) => !isDi(m.type)), want = diWanted(di.length, seed, lr.length);
+  for (const m of [...di.slice(0, want), ...lr]) {
     if (out.length === ARENA_SETS) break;
     if (out.filter((x) => x.type === m.type).length >= 2) continue;
     if (m.difficulty === "easy" && out.some((x) => x.difficulty === "easy")) continue;
     out.push(m);
   }
-  for (const m of order) if (out.length < ARENA_SETS && !out.includes(m)) out.push(m);
-  return out.map((m) => m.id);
+  for (const m of [...di.slice(0, want), ...lr]) if (out.length < ARENA_SETS && !out.includes(m)) out.push(m);
+  // Shuffled again, so the DI sets do not always come first as sets A and B.
+  return shuffle(out, seed + ":order").map((m) => m.id);
 }
 
 /**
- * The next round: five sets never tried and never dealt. When fewer than five are left, a replay round of sets last
- * touched REPLAY_AFTER or more days ago (fresh ones included), which does not count towards selection accuracy.
- * Undefined when even that cannot fill a round. The same seed deals the same round.
+ * The next round: five sets never tried and never dealt, at most two of them DI. When the fresh logical reasoning sets
+ * are too few, a replay round of sets last touched REPLAY_AFTER or more days ago (fresh ones included), which does not
+ * count towards selection accuracy. Undefined when even that cannot fill a round: a round of mostly DI sets would train
+ * the wrong picking habit. The same seed deals the same round.
  */
 export function pickRound(lr: LrAttempt[], rounds: ArenaRound[], seed: string, today: string, pool: LrMeta[] = ARENA_POOL): { sets: string[]; replay: boolean } | undefined {
   const { seen, tried, dealt } = lastSeen(lr, rounds);
   const fresh = pool.filter((m) => !tried.has(m.id) && !dealt.has(m.id));
-  if (fresh.length >= ARENA_SETS) return { sets: deal(fresh, seed), replay: false };
+  if (canDeal(fresh)) return { sets: deal(fresh, seed), replay: false };
   const cut = addDays(today, -REPLAY_AFTER);
   const stale = pool.filter((m) => !seen.has(m.id) || seen.get(m.id)! <= cut);
-  return stale.length >= ARENA_SETS ? { sets: deal(stale, seed), replay: true } : undefined;
+  return canDeal(stale) ? { sets: deal(stale, seed), replay: true } : undefined;
 }
 
 /** How many fresh sets are left for rounds. */
