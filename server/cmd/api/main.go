@@ -225,5 +225,17 @@ func v1Routes(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger, opt synca
 	rt.Handle("GET /v1/admin/reports", acc.Optional(adm.Require(admin.FeedbackRead, adm.ReportsHandler())))
 	rt.Handle("POST /v1/admin/reports/status", acc.Optional(adm.Require(admin.FeedbackResolve, adm.StatusHandler())))
 	rt.Handle("GET /v1/admin/overview", acc.Optional(adm.Require(admin.StatsRead, adm.OverviewHandler())))
-	return reqinfo.Gate(cfg)(rt)
+	return reqinfo.Gate(cfg)(deadline(10 * time.Second)(rt))
+}
+
+// deadline gives every /v1 call a time limit: a query still running then is cancelled, and the call answers with the
+// usual JSON error, so a slow database cannot pile up waiting requests (docs/design/scale-10k.md, phase 1).
+func deadline(d time.Duration) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			ctx, cancel := context.WithTimeout(r.Context(), d)
+			defer cancel()
+			next.ServeHTTP(w, r.WithContext(ctx))
+		})
+	}
 }

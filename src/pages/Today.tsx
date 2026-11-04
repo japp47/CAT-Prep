@@ -176,29 +176,33 @@ function DayRing({ done, planned, d, today, onPick }: { done: number; planned: n
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className="text-[1.75rem] leading-none font-extrabold tracking-[-0.04em] tabular-nums lg:text-[2.75rem]">{done}</span>
-          <span className="text-sm text-muted-foreground tabular-nums">of {planned} min</span>
+          <span className="hidden text-sm text-muted-foreground tabular-nums lg:block">of {planned} min</span>
+          <span className="text-sm text-muted-foreground lg:hidden">min done</span>
         </div>
       </div>
-      <ol className="grid min-w-0 flex-1 grid-cols-7 gap-0.5 lg:w-full lg:flex-none lg:gap-1" aria-label="This week">
-        {Array.from({ length: 7 }, (_, i) => {
-          const x = addDays(ws, i);
-          const p = phaseOf(x).kind !== "phase" ? 0 : LIVE_SECTIONS.reduce((s, sec) => s + budgetFor(sec, state, x), 0);
-          const dn = doneMinutes(state, x), f = p ? clamp(dn / p, 0, 1) : dn > 0 ? 1 : 0;
-          const c = 2 * Math.PI * 9;
-          return (
-            <li key={x}>
-              <button type="button" onClick={() => onPick(x)} aria-label={`${longDate(x)}, ${p ? p + " minutes planned" : "rest"}, ${dn} done`} aria-current={x === d ? "date" : undefined}
-                className={cn("flex w-full flex-col items-center gap-1 rounded-lg py-1.5 text-sm transition-colors hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none", x === d && "bg-secondary")}>
-                <span className={cn(x === today ? "font-bold text-foreground" : "text-muted-foreground")}>{DOW[dow(x)].slice(0, 1)}</span>
-                <svg viewBox="0 0 24 24" className="size-6 -rotate-90" aria-hidden>
-                  <circle cx="12" cy="12" r="9" className="fill-none stroke-secondary" strokeWidth="4" />
-                  {f > 0 && <circle cx="12" cy="12" r="9" className={cn("fill-none", f >= 1 ? "stroke-success" : "stroke-primary")} strokeWidth="4" strokeDasharray={c} strokeDashoffset={c * (1 - f)} strokeLinecap="round" />}
-                </svg>
-              </button>
-            </li>
-          );
-        })}
-      </ol>
+      <div className="min-w-0 flex-1 lg:w-full">
+        <p className="mb-1 text-sm text-muted-foreground tabular-nums lg:hidden">{planned} min planned</p>
+        <ol className="grid min-w-0 grid-cols-7 gap-0.5 lg:w-full lg:gap-1" aria-label="This week">
+          {Array.from({ length: 7 }, (_, i) => {
+            const x = addDays(ws, i);
+            const p = phaseOf(x).kind !== "phase" ? 0 : LIVE_SECTIONS.reduce((s, sec) => s + budgetFor(sec, state, x), 0);
+            const dn = doneMinutes(state, x), f = p ? clamp(dn / p, 0, 1) : dn > 0 ? 1 : 0;
+            const c = 2 * Math.PI * 9;
+            return (
+              <li key={x}>
+                <button type="button" onClick={() => onPick(x)} aria-label={`${longDate(x)}, ${p ? p + " minutes planned" : "rest"}, ${dn} done`} aria-current={x === d ? "date" : undefined}
+                  className={cn("flex w-full flex-col items-center gap-1 rounded-lg py-1.5 text-sm transition-colors hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none", x === d && "bg-secondary")}>
+                  <span className={cn(x === today ? "font-bold text-foreground" : "text-muted-foreground")}>{DOW[dow(x)].slice(0, 1)}</span>
+                  <svg viewBox="0 0 24 24" className="size-6 -rotate-90" aria-hidden>
+                    <circle cx="12" cy="12" r="9" className="fill-none stroke-secondary" strokeWidth="4" />
+                    {f > 0 && <circle cx="12" cy="12" r="9" className={cn("fill-none", f >= 1 ? "stroke-success" : "stroke-primary")} strokeWidth="4" strokeDasharray={c} strokeDashoffset={c * (1 - f)} strokeLinecap="round" />}
+                  </svg>
+                </button>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
     </div>
   );
 }

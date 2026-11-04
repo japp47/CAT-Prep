@@ -44,7 +44,9 @@ One idea: **the day as a path you walk.** A ring at the top shows how much of to
 ```
  Today                 🔥 4
  Fri 30 Oct · Foundation
- ◐ 25 of 70 min ────────────────
+ ┌───────────────┐
+ │ ◐ 25 min done │ 70 min planned
+ └───────────────┘  M T W T F S S
 
  Up next · VARC · 20 min
  One RC, untimed
@@ -61,7 +63,7 @@ The ring, the next block and the rest of the day all fit the first phone screen.
 ### The parts
 
 1. **Header.** "Today", the date and the phase in one quiet line; the streak badge stays. The phase's long description moves into Plan (one tap on the phase name).
-2. **Day ring.** Minutes done out of minutes planned, as a ring (desktop) or a bar (phone). It fills when the page opens and moves on when a block is ticked. Under the ring, the week as seven small dots: full, partial, missed (never red), or ahead; tapping a dot opens that day, replacing the date arrows.
+2. **Day ring.** Minutes done out of minutes planned, as a ring. On a phone, the ring says `25 min done`, with `70 min planned` beside it above the week; keep the two values separate rather than squeezing `of 70 min` inside the small circle. Desktop keeps `25 of 70 min`. It fills when the page opens and moves on when a block is ticked. The week is seven small dots: full, partial, missed (never red), or ahead; tapping a dot opens that day, replacing the date arrows.
 3. **Up next.** The first unfinished block, core blocks first: section, minutes, name, one line of what to do, and the page's one filled button, which goes straight to the practice that does it on this site (the RC of the day, the drill, the set of the day). Outside links and the focus timer sit beside it, quieter. "Something else" picks the next block instead.
 4. **The rest of today.** One row per block: a tick circle, the section, the name and the minutes. A row opens in place to show its links, the timer and the log form; only one is open at a time. Done blocks move to the bottom, struck through and muted.
 5. **DILR in the plan (F22).** Each day gets DILR blocks from the phase: in Foundation a set of the day (the next set by the practice order) and one drill (the clue translator, or the drill the last post-mortem suggested), from Build on two sets. DILR redo questions, when due, join as their own block. The "coming soon" note goes.

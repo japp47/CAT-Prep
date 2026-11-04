@@ -381,23 +381,23 @@ Research: `docs/research/lr.md`. Set format: `docs/content/lr-format.md`. **LR c
 - **F22, resources and plan blocks.** **Plan blocks built 30 Oct 2026 (D56):** DILR is in the timetable with a day plan per phase (`sections/dilr/plan.ts`): set of the day and a drill on weekdays in Foundation, more sets, retakes and timed past-paper sections later; usual time 30 and 60 minutes. Today v2 (D55) shows it. The free resources in the research note (past papers, topic banks, logic grids, videos, two books), and daily LR blocks with the existing default minutes; templates and grid puzzles in Foundation, CAT-level sets from Build, timed past papers from the Mock phase.
 - **Acceptance.** Every set's answers are checked by tests (and by a solver where the set allows), TITA answers compare as numbers, and the redo queue, report card, History, weekly review and search include LR without new code paths beyond the section's types. 20 sets at launch, 40 by January.
 
-#### F83. Clue translator — Planned (step 4a, after the player)
+#### F83. Clue translator — Built 29 Oct 2026
 **Problem.** Misreading a condition is the most common LR error, and "only if", "unless" and "not both" trip even strong students; no CAT site drills reading clues on its own.
 **What the student gets.** Three minutes a day: an English clue, and the student marks what it means on a small grid or picks the rule ("A only if B": if A then B). Wrong readings are named (reversed, negated, "immediately" read as "somewhere", left and right swapped when facing the centre). Clues come from our sets, so a translated clue later meets the student in a real set.
 **Done when** every clue kind in the research note has at least ten items with checked meanings, and a student's misreadings show as a pattern in Progress.
 **Built 29 Oct 2026 (D47):** 80 clues, 10 of each of eight kinds (only if, unless, if and only if, either/or and not both, exactly/at least/at most, immediately or somewhere, between, left and right when facing in or out), at `/practice/clues`, eight a run, never-seen and missed clues first. Two-part rules are marked on four case tiles; seating clues on a row or a round table. Seventeen named misreadings; the DILR report card shows accuracy per kind and the commonest one.
 
-#### F84. Must, could, cannot — Planned (step 4a)
+#### F84. Must, could, cannot — Built 29 Oct 2026 (grid sets 30 Oct)
 Two or three finished cases of a set shown side by side; the student sorts six statements into must be true, could be true, cannot be true. Trains the question stems that lose solved sets.
 **Done when** each statement's bin is computed from the cases by code, never typed by hand.
 **Built 29 Oct 2026 (D47)** at `/practice/must-could`: five drills on four modelled arrangement sets, 2 or 3 seatings each, six statements; hovering a statement marks who it names in every seating, and after checking, each statement shows where it holds and the values that change between seatings are marked.
 
-#### F85. First move — Planned (step 4a, once 20 sets exist)
+#### F85. First move — Built 29 Oct 2026 (grid sets 30 Oct)
 A set opens on an empty grid; the student picks the clue to start with, or the cell that is now certain. The answer shows how many cases each choice would open (from the solver), so "start with the most restrictive clue" becomes something they see.
 **Done when** the cases per clue come from the set's solver and the best choice is never a guess.
 **Built 29 Oct 2026 (D47)** at `/practice/first-move`: three moves on one of four modelled sets; after each pick every clue shows how many ways it leaves for the people and things named so far (a bar on a log scale), and the board fills in once the clues fix a seating. Linking clues beat new ones, so the lesson shows itself.
 
-#### F86. Set post-mortem — Planned (step 4a, with the player)
+#### F86. Set post-mortem — Built 24 Oct 2026
 After every LR set, two minutes, prompted (self-explanation, `docs/research/lr.md` §4): the first key deduction, where the time went, and the clue misread or case missed (one tap each where possible). Saved with the attempt; feeds the Error log, the redo queue and set selection (F56). Skippable, never a gate.
 **Done when** the prompts take under two minutes on a phone, and History shows the deduction next to the attempt.
 **Built 24 Oct 2026** with the player: three rows of taps in the review (the clue that opened the set, where the time went, what cost an answer and which clue), each saved at once onto the attempt; History shows "Opened with clue N".
@@ -408,7 +408,7 @@ The same solved set with one clue changed or dropped; the student says what move
 #### F88. Draw it first — Planned (step 4b or later)
 60 seconds: choose the right skeleton (line, circle, matrix, points table, timeline, Venn, graph) for a set before solving; the chosen skeleton opens as the scratch grid. Trains representation, the step toppers do first.
 
-#### F89. Skill map — Building (30 Oct 2026, with Progress v2; D63, `docs/design/progress-v2.md`)
+#### F89. Skill map — Built 30 Oct 2026 (with Progress v2; D63, `docs/design/progress-v2.md`)
 **Problem.** Progress has accuracy lists, a report card and the clue-reading pattern, but no single picture of where a student stands across every skill, and nothing that says what to practise from it.
 **What the student gets.** One tile per skill (VARC question types, LR set types, kinds of clue; Quant later), in four states with strict rules: not started; learning (fewer than 8 attempts, no verdict yet); weak (8 or more, under 60%); strong (80% or more, and held on redo a week later). A tap opens that skill's drill or guide. Flat first, on Progress; a 3D "city" may become an optional view of the same data only if the map is used, with a flat fallback (D41).
 **Done when** every tile's state follows from recorded attempts by a tested rule, and no tile shows a verdict on too little data.
@@ -434,7 +434,7 @@ Replay (F57) for tables with missing values: the student fills blanks rule by ru
 #### F94. Can it be answered? — Planned (step 4b)
 From a set's data, statements to sort as "answer it", "cannot be determined" or "needs one more fact", the determinacy questions CAT now asks, trained like must/could/cannot. Bins computed from the data by code.
 
-#### F95. Where the minutes went, by question — Planned (step 4, with F90)
+#### F95. Where the minutes went, by question — Built 1 Nov 2026 with F90 part 1 (minutes per question, calculator log)
 The player already times a set; DI review shows minutes per question and the calculator log: each calculation the student made, with those the options' spacing made unnecessary marked ("options 12 points apart: about 74%"). The Arena debrief uses the same per-question minutes. **Done when** the calculator log and the per-question minutes are recorded with the attempt and synced.
 
 #### F96. Real numbers — Agreed 1 Nov 2026 (D74: three or four sets)
@@ -467,7 +467,7 @@ Before re-solving an RC question from the Error log or the redo queue, a three-l
 ### Thinking practice in DILR and Quant (23 Oct 2026; built with steps 4 and 5)
 These are what make the DILR and Quant sections ours rather than another question bank. Review and reasons: `docs/research/beyond-cat.md`.
 
-#### F56. Set Selection Arena (DILR) — Planned (step 4a.9; design `docs/design/arena.md`, D58 to D62)
+#### F56. Set Selection Arena (DILR) — Built 30 Oct 2026 (design `docs/design/arena.md`, D58 to D62)
 **Problem.** Students who solve sets well still lose marks by picking the wrong ones: a set that looks easy turns into casework, a doable one is skipped. Nothing trains or measures this choice.
 **Revised 30 Oct 2026:** five sets, not four (CAT 2024 and 2025 had five DILR sets per slot); the look is inside the 40 minutes, with a nudge at 4; no "most students" until real aggregates exist; no counterfactual marks, only recorded time. The bullets below are the first version; the design doc wins where they differ.
 **What the student gets.**

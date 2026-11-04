@@ -4,7 +4,7 @@ How a logical reasoning set is stored (F23, research in `docs/research/lr.md`). 
 
 ## Sending sets
 
-Send them in any form (typed text, a document, a photo of handwritten notes). Claude turns each into this JSON and checks the answers by solving the set (by code when the set allows, as below). For each set, say:
+Which sets to write next, and what makes one CAT level: `docs/content/dilr-writing-brief.md`. Send them in any form (typed text, a document, a photo of handwritten notes). Claude turns each into this JSON and checks the answers by solving the set (by code when the set allows, as below). For each set, say:
 1. **Where it came from.** Only sets you wrote, or have the writer's permission for, can go on the site (`source`). Sets copied from CAT papers or coaching material cannot.
 2. The answers and, if you have them, the explanation. Missing explanations are drafted for you to check.
 

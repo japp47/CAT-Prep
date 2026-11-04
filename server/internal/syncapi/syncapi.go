@@ -9,8 +9,8 @@ package syncapi
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -49,6 +49,8 @@ type Service struct {
 	opt   Options
 	kinds map[string]bool
 	rate  *limit.Limiter
+	// synced keeps "last synced" writes to one a minute per device.
+	synced *recent
 }
 
 // New returns the service.
@@ -57,7 +59,8 @@ func New(db *pgxpool.Pool, hash reqinfo.Hasher, log *slog.Logger, opt Options) *
 	for _, kind := range opt.Kinds {
 		k[kind] = true
 	}
-	return &Service{db: db, hash: hash, log: log, opt: opt, kinds: k, rate: limit.New(opt.PerMinute, time.Minute)}
+	return &Service{db: db, hash: hash, log: log, opt: opt, kinds: k, rate: limit.New(opt.PerMinute, time.Minute),
+		synced: newRecent(time.Minute, 200_000)}
 }
 
 // Record is one record as the API sends it.
@@ -162,6 +165,7 @@ func (s *Service) PushHandler() http.Handler {
 		}
 		applied, stale, rejected := []Applied{}, []Record{}, []Rejected{}
 		err := pgx.BeginFunc(r.Context(), s.db, func(tx pgx.Tx) error {
+			applied, stale, rejected = applied[:0], stale[:0], rejected[:0] // a retried transaction starts clean
 			var head struct {
 				rev, count, bytes int64
 			}
@@ -169,67 +173,107 @@ func (s *Service) PushHandler() http.Handler {
 				d.IdentityID).Scan(&head.rev, &head.count, &head.bytes); err != nil {
 				return fmt.Errorf("lock head: %w", err)
 			}
-			wrote := false
+			// The rows these changes touch, read and locked in one query (docs/design/scale-10k.md, phase 1).
+			cur, err := readRows(r.Context(), tx, d.IdentityID, req.Changes, s.rejectReason)
+			if err != nil {
+				return err
+			}
+			// Decide each change in order, by the same rules as one at a time: a new row must fit the limits (updates and
+			// deletions always may go through, so a full identity can still make room); a change equal to what is stored
+			// is applied as it stands; a change based on the current rev is written; anything else is stale.
+			type step struct {
+				c    Change
+				kind int // 0 applied as it stands, 1 insert, 2 update
+				rev  int64
+			}
+			var steps []step
+			var ins, upd []Change
 			for _, c := range req.Changes {
 				if why := s.rejectReason(c); why != "" {
 					rejected = append(rejected, Rejected{c.Kind, c.ID, why})
 					continue
 				}
-				var (
-					cur  Record
-					size int64
-					same bool
-				)
-				err := tx.QueryRow(r.Context(), `
-					select data, deleted, stamp, rev, data_bytes, data is not distinct from $4::jsonb and deleted = $5
-					from sync.records where identity_id = $1 and kind = $2 and rec_id = $3 for update`,
-					d.IdentityID, c.Kind, c.ID, jsonArg(c.Data), c.Deleted).Scan(&cur.Data, &cur.Deleted, &cur.Stamp, &cur.Rev, &size, &same)
+				e, found := cur[rowKey{c.Kind, c.ID}]
 				switch {
-				case errors.Is(err, pgx.ErrNoRows):
-					// A new row must fit the identity's limits; updates and deletions always may go through,
-					// so a full identity can still make room.
+				case !found:
 					if head.count+1 > int64(s.opt.MaxRecords) || head.bytes+int64(len(c.Data)) > s.opt.MaxBytes {
 						rejected = append(rejected, Rejected{c.Kind, c.ID, "over_limit"})
 						continue
 					}
-					var rev, n int64
-					if err := tx.QueryRow(r.Context(), `
-						insert into sync.records (identity_id, kind, rec_id, data, deleted, stamp, device_id)
-						values ($1, $2, $3, $4::jsonb, $5, $6, $7) returning rev, data_bytes`,
-						d.IdentityID, c.Kind, c.ID, jsonArg(c.Data), c.Deleted, c.Stamp, d.DeviceID).Scan(&rev, &n); err != nil {
-						return fmt.Errorf("insert %s:%s: %w", c.Kind, c.ID, err)
-					}
 					head.count++
-					head.bytes += n
-					head.rev = max(head.rev, rev)
-					wrote = true
-					applied = append(applied, Applied{c.Kind, c.ID, rev})
-				case err != nil:
-					return fmt.Errorf("read %s:%s: %w", c.Kind, c.ID, err)
-				case same:
-					applied = append(applied, Applied{c.Kind, c.ID, cur.Rev})
-				case cur.Rev == c.BaseRev:
-					if grow := int64(len(c.Data)) - size; grow > 0 && head.bytes+grow > s.opt.MaxBytes {
+					head.bytes += int64(len(c.Data)) // corrected to the stored size once written
+					ins = append(ins, c)
+					steps = append(steps, step{c: c, kind: 1})
+				case e.same:
+					steps = append(steps, step{c: c, kind: 0, rev: e.rec.Rev})
+				case e.rec.Rev == c.BaseRev:
+					grow := int64(len(c.Data)) - e.size
+					if grow > 0 && head.bytes+grow > s.opt.MaxBytes {
 						rejected = append(rejected, Rejected{c.Kind, c.ID, "over_limit"})
 						continue
 					}
-					var rev, n int64
-					if err := tx.QueryRow(r.Context(), `
-						update sync.records set data = $4::jsonb, deleted = $5, stamp = $6, device_id = $7, rev = nextval('sync.rev')
-						where identity_id = $1 and kind = $2 and rec_id = $3 returning rev, data_bytes`,
-						d.IdentityID, c.Kind, c.ID, jsonArg(c.Data), c.Deleted, c.Stamp, d.DeviceID).Scan(&rev, &n); err != nil {
-						return fmt.Errorf("update %s:%s: %w", c.Kind, c.ID, err)
-					}
-					head.bytes += n - size
-					head.rev = max(head.rev, rev)
-					wrote = true
-					applied = append(applied, Applied{c.Kind, c.ID, rev})
+					head.bytes += int64(len(c.Data)) - e.size // corrected to the stored size once written
+					upd = append(upd, c)
+					steps = append(steps, step{c: c, kind: 2})
 				default:
-					cur.Kind, cur.ID = c.Kind, c.ID
-					stale = append(stale, cur)
+					e.rec.Kind, e.rec.ID = c.Kind, c.ID
+					stale = append(stale, e.rec)
 				}
 			}
-			if wrote {
+			// Write every insert in one statement and every update in another; each returns its rows' revs.
+			revs := map[rowKey]int64{}
+			for _, w := range []struct {
+				list []Change
+				sql  string
+			}{
+				{ins, `insert into sync.records (identity_id, kind, rec_id, data, deleted, stamp, device_id)
+					select $1, x.kind, x.rec_id, x.d::jsonb, x.del, x.st, $7::uuid
+					from unnest($2::text[], $3::text[], $4::text[], $5::bool[], $6::bigint[]) with ordinality as x(kind, rec_id, d, del, st, n)
+					order by x.n
+					returning kind, rec_id, rev, data_bytes`},
+				{upd, `update sync.records r set data = x.d::jsonb, deleted = x.del, stamp = x.st, device_id = $7::uuid, rev = nextval('sync.rev')
+					from unnest($2::text[], $3::text[], $4::text[], $5::bool[], $6::bigint[]) as x(kind, rec_id, d, del, st)
+					where r.identity_id = $1 and r.kind = x.kind and r.rec_id = x.rec_id
+					returning r.kind, r.rec_id, r.rev, r.data_bytes`},
+			} {
+				if len(w.list) == 0 {
+					continue
+				}
+				kinds, idList, datas, dels, stamps := columns(w.list)
+				rows, err := tx.Query(r.Context(), w.sql, d.IdentityID, kinds, idList, datas, dels, stamps, d.DeviceID)
+				if err != nil {
+					return fmt.Errorf("write: %w", err)
+				}
+				for rows.Next() {
+					var k rowKey
+					var rev, n int64
+					if err := rows.Scan(&k.kind, &k.id, &rev, &n); err != nil {
+						rows.Close()
+						return fmt.Errorf("write: %w", err)
+					}
+					revs[k] = rev
+					head.rev = max(head.rev, rev)
+					head.bytes += n // the stored size replaces the estimate made above
+				}
+				rows.Close()
+				if err := rows.Err(); err != nil {
+					return fmt.Errorf("write: %w", err)
+				}
+			}
+			for _, c := range ins {
+				head.bytes -= int64(len(c.Data))
+			}
+			for _, c := range upd {
+				head.bytes -= int64(len(c.Data))
+			}
+			for _, st := range steps {
+				rev := st.rev
+				if st.kind != 0 {
+					rev = revs[rowKey{st.c.Kind, st.c.ID}]
+				}
+				applied = append(applied, Applied{st.c.Kind, st.c.ID, rev})
+			}
+			if len(ins)+len(upd) > 0 {
 				if _, err := tx.Exec(r.Context(), `update sync.heads set rev = $2, record_count = $3, data_bytes = $4 where identity_id = $1`,
 					d.IdentityID, head.rev, head.count, head.bytes); err != nil {
 					return fmt.Errorf("update head: %w", err)
@@ -307,6 +351,9 @@ func (s *Service) allow(w http.ResponseWriter, r *http.Request, d account.Device
 
 // touch notes when this device last synced, at most once a minute.
 func (s *Service) touch(r *http.Request, d account.Device) {
+	if !s.synced.due(d.DeviceID) {
+		return
+	}
 	if _, err := s.db.Exec(r.Context(), `update account.devices set last_synced_at = now()
 		where id = $1 and (last_synced_at is null or last_synced_at < now() - interval '1 minute')`, d.DeviceID); err != nil {
 		s.log.Warn("touch last_synced_at", "error", err)
@@ -328,6 +375,67 @@ func (s *Service) reject(r *http.Request, d account.Device, reason any) {
 func (s *Service) fail(w http.ResponseWriter, r *http.Request, err error) {
 	s.log.Error("sync", "error", err, "request_id", httpx.RequestIDFrom(r.Context()))
 	httpx.WriteError(w, http.StatusInternalServerError, "internal", "Something went wrong on our side. Your progress is safe on this device.")
+}
+
+type rowKey struct{ kind, id string }
+
+// stored is a row a push touches, as the server holds it: the record, its stored size, and whether the change
+// equals it.
+type stored struct {
+	rec  Record
+	size int64
+	same bool
+}
+
+// readRows reads and locks, in one query, every stored row the push's valid changes name.
+func readRows(ctx context.Context, tx pgx.Tx, identity string, changes []Change, reject func(Change) string) (map[rowKey]stored, error) {
+	var valid []Change
+	for _, c := range changes {
+		if reject(c) == "" {
+			valid = append(valid, c)
+		}
+	}
+	out := map[rowKey]stored{}
+	if len(valid) == 0 {
+		return out, nil
+	}
+	kinds, idList, datas, dels, _ := columns(valid)
+	rows, err := tx.Query(ctx, `
+		select x.kind, x.rec_id, r.data, r.deleted, r.stamp, r.rev, r.data_bytes,
+		       r.data is not distinct from x.d::jsonb and r.deleted = x.del
+		from unnest($2::text[], $3::text[], $4::text[], $5::bool[]) as x(kind, rec_id, d, del)
+		join sync.records r on r.identity_id = $1 and r.kind = x.kind and r.rec_id = x.rec_id
+		for update of r`, identity, kinds, idList, datas, dels)
+	if err != nil {
+		return nil, fmt.Errorf("read rows: %w", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var k rowKey
+		var e stored
+		if err := rows.Scan(&k.kind, &k.id, &e.rec.Data, &e.rec.Deleted, &e.rec.Stamp, &e.rec.Rev, &e.size, &e.same); err != nil {
+			return nil, fmt.Errorf("read rows: %w", err)
+		}
+		out[k] = e
+	}
+	return out, rows.Err()
+}
+
+// columns turns changes into the parallel arrays the set-based queries unnest; a deletion's data is a null.
+func columns(cs []Change) (kinds, idList []string, datas []*string, dels []bool, stamps []int64) {
+	for _, c := range cs {
+		kinds = append(kinds, c.Kind)
+		idList = append(idList, c.ID)
+		if c.Data == nil {
+			datas = append(datas, nil)
+		} else {
+			v := string(c.Data)
+			datas = append(datas, &v)
+		}
+		dels = append(dels, c.Deleted)
+		stamps = append(stamps, c.Stamp)
+	}
+	return
 }
 
 // jsonArg passes JSON to Postgres as text (cast to jsonb in SQL), or null for a deletion.
