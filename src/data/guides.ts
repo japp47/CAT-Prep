@@ -8,6 +8,9 @@ export interface Guide {
   parts: GuidePart[];
 }
 
+/** The day every guide was last read through against the site and the exam (the Guides page shows it). */
+export const REVIEWED = "2026-11-04";
+
 export const GUIDES: Guide[] = [
   {
     id: "start-here", tag: "Start", minutes: 4,
@@ -26,9 +29,14 @@ export const GUIDES: Guide[] = [
         "Set your usual time per section in Plan. The defaults are 1 hour on weekdays and 2 hours on Saturday and Sunday.",
         "Busy day? Tap a smaller time on Today and the plan shrinks to the most important blocks. Free evening? Tap a bigger one and extra blocks appear.",
         "Tick blocks as you finish. A missed core task comes back the next day as a catch-up.",
-        "Log every timed set in Progress and every mistake in the Error log. Those two pages tell you what to fix.",
+        "Sets you solve on this site log themselves. Log mocks and sets done elsewhere in Progress, and every mistake in the Error log. Those two pages tell you what to fix.",
       ] },
-      { h: "Your data", p: ["Everything you enter stays in this browser. Use Settings to download a backup and to move it to another device."] },
+      { h: "DILR on this site", ul: [
+        "Logical reasoning first: Today gives an LR set of the day, type by type, with a short drill.",
+        "Data interpretation from week 4 of Foundation: a DI set of the day beside it, with CAT's calculator in the player.",
+        "Set Selection Arena: five sets and 40 minutes, where you practise choosing which sets to solve, the skill that decides a DILR score.",
+      ] },
+      { h: "Your data", p: ["Everything you enter stays in this browser unless you switch on sync. Settings keeps a backup and links your phone and laptop so they stay in step."] },
     ],
   },
   {
@@ -116,6 +124,30 @@ export const GUIDES: Guide[] = [
     ],
   },
   {
+    id: "last-25-days", tag: "Strategy", minutes: 4,
+    title: "The last 25 days before CAT 2026",
+    summary: "For students sitting CAT on 29 November 2026: mocks, analysis and rest, with no new topics.",
+    parts: [
+      { h: "The one rule", p: ["Nothing new now. A new topic in the last month costs more confidence than it gains marks. Every hour goes to mocks, their analysis and your own mistakes."] },
+      { h: "Week by week", ol: [
+        "4 to 15 November: three full mocks a week on the real interface, each analysed the next day. Take the official mock as soon as it is up on iimcat.ac.in. Keep at most three fixes from each mock.",
+        "16 to 24 November: two mocks a week, at your slot's time once the admit card shows it. Sectionals only for your weakest section. Read your Error log every day.",
+        "25 to 28 November: your last full mock on 25 or 26 November. Then short sets, the Error log and formula notes. Print the admit card, check the route to the centre, and sleep at the hours your slot needs.",
+        "29 November: the Exam day checklist, the next guide.",
+      ] },
+      { h: "Section by section", ul: [
+        "VARC: read the passage before the questions, and attempt the TITA para jumbles. Keep to the attempt order your mocks settled.",
+        "DILR: spend the first three to five minutes reading all five sets, pick two or three, and leave a set after five to seven minutes with no way in. Two sets solved fully beats four half done.",
+        "Quant: two rounds, easy questions first, and skip anything that has no first step in a minute. TITA answers have no negative marking.",
+      ] },
+      { h: "On this site", ul: [
+        "Today's plan counts down to CAT 2027. For these 25 days use these instead: Analyse a mock in Progress after every mock, the VARC sectional, Set Selection Arena rounds for DILR picking, and the Error log.",
+        "Log every mock in Progress so the percentile estimator and your report card follow your scores.",
+      ] },
+      { h: "Look after yourself", p: ["Sleep and routine matter more than one more mock. A bad mock in the last week says little about the exam; analyse it, keep one fix and move on."] },
+    ],
+  },
+  {
     id: "exam-day", tag: "Strategy", minutes: 2,
     title: "Exam day checklist",
     summary: "Things to settle before you walk in.",
@@ -124,6 +156,7 @@ export const GUIDES: Guide[] = [
       { h: "In the exam", ul: [
         "Each section is 40 minutes and you cannot switch between sections.",
         "Attempt TITA questions; they have no negative marking.",
+        "In DILR, read all five sets in the first three to five minutes, then solve the two or three that look most direct. Leave a set after five to seven minutes with no way in.",
         "Follow the attempt order and time split you fixed in mocks.",
         "If a section feels hard, it probably feels hard for everyone. Percentiles are relative.",
       ] },

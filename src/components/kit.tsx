@@ -82,10 +82,12 @@ export function Ext({ href, children, className }: { href: string; children: Rea
   return <a className={className} href={href} target="_blank" rel="noopener noreferrer">{children}{NEW_TAB}</a>;
 }
 
-/** An inline text link, inside the app or out of it. */
+/** An inline text link: inside the app, out of it in a new tab, or an email address. */
 export function TextLink({ to, children, className }: { to: string; children: ReactNode; className?: string }) {
   const cls = cn("font-medium text-primary underline underline-offset-4 decoration-primary/40 hover:decoration-primary", className);
-  return to.startsWith("/") ? <RouterLink to={to} className={cls}>{children}</RouterLink> : <Ext href={to} className={cls}>{children}</Ext>;
+  if (to.startsWith("/")) return <RouterLink to={to} className={cls}>{children}</RouterLink>;
+  // An email address opens the mail app in place, not a new tab.
+  return to.startsWith("mailto:") ? <a href={to} className={cls}>{children}</a> : <Ext href={to} className={cls}>{children}</Ext>;
 }
 
 /**
