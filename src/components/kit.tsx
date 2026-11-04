@@ -4,6 +4,7 @@ import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useStore } from "../lib/store";
+import { CONTACT_EMAIL } from "../data/site";
 
 /**
  * The app's building blocks on top of shadcn/ui. Every page is a Page with a PageHeader,
@@ -40,6 +41,22 @@ export function Section({ title, action, description, children, className, id }:
       {description && <p className="measure -mt-2 text-base text-muted-foreground">{description}</p>}
       {children}
     </section>
+  );
+}
+
+/** A quiet, clear invitation to share feedback at the end of an information page. */
+export function FeedbackInvite({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <aside className="flex flex-col gap-3 rounded-2xl bg-muted/60 p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:px-7 sm:py-6">
+      <div className="flex min-w-0 flex-col gap-1.5">
+        <h2 className="text-heading font-semibold">{title}</h2>
+        <p className="measure text-base text-muted-foreground">{children}</p>
+      </div>
+      <a href={`mailto:${CONTACT_EMAIL}`} className="inline-flex min-h-11 w-fit shrink-0 items-center gap-2 rounded-md px-2 text-base font-semibold text-primary underline-offset-4 hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
+        {CONTACT_EMAIL}
+        <ArrowUpRight className="size-4" aria-hidden />
+      </a>
+    </aside>
   );
 }
 
@@ -82,10 +99,12 @@ export function Ext({ href, children, className }: { href: string; children: Rea
   return <a className={className} href={href} target="_blank" rel="noopener noreferrer">{children}{NEW_TAB}</a>;
 }
 
-/** An inline text link, inside the app or out of it. */
+/** An inline text link: inside the app, out of it in a new tab, or an email address. */
 export function TextLink({ to, children, className }: { to: string; children: ReactNode; className?: string }) {
   const cls = cn("font-medium text-primary underline underline-offset-4 decoration-primary/40 hover:decoration-primary", className);
-  return to.startsWith("/") ? <RouterLink to={to} className={cls}>{children}</RouterLink> : <Ext href={to} className={cls}>{children}</Ext>;
+  if (to.startsWith("/")) return <RouterLink to={to} className={cls}>{children}</RouterLink>;
+  // An email address opens the mail app in place, not a new tab.
+  return to.startsWith("mailto:") ? <a href={to} className={cls}>{children}</a> : <Ext href={to} className={cls}>{children}</Ext>;
 }
 
 /**
@@ -138,7 +157,7 @@ export function ErrorText({ children }: { children: ReactNode }) {
 }
 
 /**
- * A switch between two or three halves of a page (logical reasoning or data interpretation), as tabs: equal parts, a
+ * A switch between parts of a page (logical reasoning or data interpretation; exams on the updates page), as tabs: equal parts, a
  * card-toned pill that slides to the chosen one (transform only, still under reduced motion), an optional count
  * beside each label, a short label on a phone (the full one stays for screen readers), and arrow keys to move. The panel it controls has the id `panel`.
  */
@@ -157,11 +176,15 @@ export function SwitchTabs<T extends string>({ value, onChange, options, label, 
         const on = o.id === value;
         return (
           <button key={o.id} type="button" role="tab" aria-selected={on} aria-controls={panel} tabIndex={on ? 0 : -1} onClick={() => onChange(o.id)}
-            className={cn("relative z-[1] flex min-h-11 items-center justify-center gap-2 rounded-lg px-4 text-base transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none motion-reduce:transition-none sm:px-6",
+            className={cn("relative z-[1] flex min-h-11 items-center justify-center rounded-lg text-base transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none motion-reduce:transition-none sm:gap-2 sm:px-6",
+              // Four or more tabs share a phone's width, so each keeps its label whole with less side room.
+              options.length > 3 ? "gap-1.5 px-2" : "gap-2 px-4",
               on ? "font-semibold text-foreground" : "text-muted-foreground hover:text-foreground")}>
             {o.short ? <><span className="truncate sm:hidden" aria-hidden>{o.short}</span><span className="truncate max-sm:sr-only">{o.label}</span></> : <span className="truncate">{o.label}</span>}
             {o.count !== undefined && (
-              <span className={cn("rounded-md px-1.5 text-sm font-semibold tabular-nums transition-colors duration-200", on ? "bg-primary/10 text-primary" : "bg-foreground/[0.06] text-muted-foreground")}>{o.count}</span>
+              <span className={cn("rounded-md px-1.5 text-sm font-semibold tabular-nums transition-colors duration-200", on ? "bg-primary/10 text-primary" : "bg-foreground/[0.06] text-muted-foreground",
+                // With four or more tabs a phone has room for the labels only; the counts come back from the small breakpoint.
+                options.length > 3 && "max-sm:hidden")}>{o.count}</span>
             )}
           </button>
         );
