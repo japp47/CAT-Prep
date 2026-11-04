@@ -88,6 +88,7 @@ export function SetText({ set, lit = [] }: { set: LrSet; lit?: number[] }) {
     <article className="flex flex-col gap-4 rounded-lg bg-card px-5 py-5 sm:px-7 sm:py-6" aria-label="The set">
       {set.intro.map((p, i) => <p key={i} className="text-reading">{p}</p>)}
       {set.charts?.map((c, i) => { const d = set.data?.find((x) => x.id === c.data); return d ? <DiFigure key={i} chart={c} data={d} /> : null; })}
+      {set.cite && <p className="text-sm text-muted-foreground">Source: {set.cite}</p>}
       {set.clues.length > 0 && (
         <ol className="flex flex-col gap-1.5">
           {set.clues.map((c, i) => (

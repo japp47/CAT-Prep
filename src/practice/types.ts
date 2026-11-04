@@ -199,10 +199,17 @@ export interface DiData { id: string; caption: string; unit?: string; rowHead: s
 /**
  * How a DI set draws one of its tables (components/DiChart.tsx). bar: one group per row, one bar per column (or, with
  * by "cols", one group per column); stacked: the same, stacked; line: one line per row across the columns; table: the
- * table itself, blanks shown as "?". axis fixes the value scale; labels prints values on the marks, as a printed exam
- * chart does. Pie, radar and scatter come with the sets that need them.
+ * table itself, blanks shown as "?"; scatter: one point per row, its first column across and its second up (xaxis
+ * fixes the across scale, place moves a point's label off a neighbour); share: a pie of the first column, one slice
+ * per row. axis fixes the value scale; labels prints values on the marks, as a printed exam chart does; colors picks
+ * each series' colour (1 to 7), so one source keeps its colour from one chart to the next. Radar comes with a set that
+ * needs it.
  */
-export interface DiChart { kind: "bar" | "stacked" | "line" | "table"; data: string; title?: string; by?: "rows" | "cols"; axis?: { max: number; step: number; label: string }; labels?: boolean }
+export interface DiChart {
+  kind: "bar" | "stacked" | "line" | "table" | "scatter" | "share"; data: string; title?: string; by?: "rows" | "cols";
+  axis?: { max: number; step: number; label: string }; xaxis?: { max: number; step: number; label: string }; labels?: boolean;
+  colors?: number[]; place?: Record<string, "left" | "right" | "above" | "below">;
+}
 /**
  * The solution as a picture that fills in step by step (F23 review), and the blank layout of the scratch pad.
  * frames[i] is the picture after solution step i: frames[i][row][seat] holds the lines written in that seat, the
@@ -270,8 +277,11 @@ export interface LrSet {
   /** Real data: where it comes from and its licence (F96). */
   cite?: string;
   questions: LrQuestion[];
-  /** fills: a DI table's blanks as [row, column, value], shown in review and proved by the set's check (practice/di/checks.ts). */
-  solution: { steps: string[]; grid?: LrTable; cases?: number; diagram?: LrDiagram; fills?: { data: string; cells: [string, string, number][] }[] };
+  /**
+   * fills: a DI table's blanks as [row, column, value], shown in review and proved by the set's check (practice/di/checks.ts).
+   * A blank the facts pin down only to a range has its range as text ("743.3 to 749.2").
+   */
+  solution: { steps: string[]; grid?: LrTable; cases?: number; diagram?: LrDiagram; fills?: { data: string; cells: [string, string, number | string][] }[] };
 }
 /** apart: each question is its own short puzzle (no shared clues or tables), so the set is not a CAT-style set for the Arena. */
 export interface LrMeta { id: string; title: string; type: LrType; sub?: string; difficulty: Difficulty; minutes: number; questions: number; since: string; v: string; apart?: true }

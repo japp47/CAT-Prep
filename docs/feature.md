@@ -437,8 +437,8 @@ From a set's data, statements to sort as "answer it", "cannot be determined" or 
 #### F95. Where the minutes went, by question — Built 1 Nov 2026 with F90 part 1 (minutes per question, calculator log)
 The player already times a set; DI review shows minutes per question and the calculator log: each calculation the student made, with those the options' spacing made unnecessary marked ("options 12 points apart: about 74%"). The Arena debrief uses the same per-question minutes. **Done when** the calculator log and the per-question minutes are recorded with the attempt and synced.
 
-#### F96. Real numbers — Agreed 1 Nov 2026 (D74: three or four sets)
-Some sets built on real, openly licensed data (World Bank CC BY 4.0; data.gov.in under the Government Open Data Licence), rounded, dated and cited under the chart. The questions stay ours.
+#### F96. Real numbers — Built 4 Nov 2026 (D74, D81: four sets)
+Some sets built on real, openly licensed data (World Bank CC BY 4.0; data.gov.in under the Government Open Data Licence), rounded, dated and cited under the chart. The questions stay ours. Built: six economies (World Bank, scatter), India's trade with five partners (DGCIS, two bar charts), monsoon 2025 (IMD, a table whose hidden entries are ranges) and installed power capacity (CEA, a stacked bar linked to a share chart).
 
 #### F27. One daily budget — moved to step 4 (was step 6)
 Once two sections are live, "I have 90 minutes today" must split itself: by phase, by the weakest section (from the report), and by what is due (redo, focus drill). The student can still set minutes per section.

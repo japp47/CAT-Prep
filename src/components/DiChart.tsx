@@ -10,8 +10,12 @@ import type { DiChart as Chart, DiData } from "../practice/types";
  * sideways in a narrow pane, so no text falls under 14 px. Screen readers get the numbers as a table.
  */
 
-const SERIES = ["var(--series-1)", "var(--series-2)", "var(--series-3)", "var(--series-4)"];
-const fmt = (v: number) => v.toLocaleString("en-IN", { maximumFractionDigits: 2 });
+const SERIES = ["var(--series-1)", "var(--series-2)", "var(--series-3)", "var(--series-4)", "var(--series-5)", "var(--series-6)", "var(--series-7)"];
+/** Series i's colour: the chart's own pick (so one source keeps its colour across charts), else the palette in order. */
+const colorOf = (c: Chart, i: number) => SERIES[(c.colors?.[i] ?? i + 1) - 1];
+const fmt = (v: number, dp = 0) => v.toLocaleString("en-IN", { minimumFractionDigits: dp, maximumFractionDigits: Math.max(dp, 2) });
+/** The decimals a table prints, so 57.0 stays 57.0 beside 53.4 and 399.5 stays 399.50 beside 416.05. */
+const places = (xs: number[]) => Math.max(0, ...xs.map((v) => (String(v).split(".")[1] ?? "").length));
 
 export function DiFigure({ chart, data }: { chart: Chart; data: DiData }) {
   const title = chart.title ?? data.caption;
@@ -22,8 +26,11 @@ export function DiFigure({ chart, data }: { chart: Chart; data: DiData }) {
         {data.unit && chart.kind !== "table" && <span className="text-sm text-muted-foreground">{data.unit}</span>}
       </figcaption>
       {chart.kind === "table" ? <DiTable data={data} /> : <>
-        <Legend names={seriesNames(chart, data)} kind={chart.kind} />
-        <Scroller>{chart.kind === "line" ? <Lines chart={chart} data={data} /> : <Bars chart={chart} data={data} />}</Scroller>
+        <Legend names={seriesNames(chart, data)} chart={chart} />
+        <Scroller>{chart.kind === "line" ? <Lines chart={chart} data={data} />
+          : chart.kind === "scatter" ? <Scatter chart={chart} data={data} />
+          : chart.kind === "share" ? <Share chart={chart} data={data} />
+          : <Bars chart={chart} data={data} />}</Scroller>
         <SrTable data={data} />
       </>}
     </figure>
@@ -52,20 +59,25 @@ function Scroller({ children }: { children: React.ReactNode }) {
   </>;
 }
 
-/** The series a chart colours: its columns (bars grouped by row), or its rows (lines across columns, bars by column). */
+/**
+ * The series a chart colours: its columns (bars grouped by row), or its rows (lines across columns, bars by column, a
+ * pie's slices). A scatter is one series, named by its axes, so it has no legend.
+ */
 function seriesNames(c: Chart, d: DiData): string[] {
-  return c.kind === "line" || c.by === "cols" ? d.rows.map((r) => r.name) : d.cols;
+  if (c.kind === "scatter") return [];
+  return c.kind === "line" || c.kind === "share" || c.by === "cols" ? d.rows.map((r) => r.name) : d.cols;
 }
 
-function Legend({ names, kind }: { names: string[]; kind: Chart["kind"] }) {
+function Legend({ names, chart }: { names: string[]; chart: Chart }) {
+  const kind = chart.kind;
   if (names.length < 2) return null;
   return (
     <ul className="flex flex-wrap gap-x-5 gap-y-1.5" aria-hidden>
       {names.map((n, i) => (
         <li key={n} className="flex items-center gap-2 text-sm text-foreground/85">
           {kind === "line"
-            ? <svg width="22" height="10" className="shrink-0"><line x1="1" y1="5" x2="21" y2="5" stroke={SERIES[i]} strokeWidth="2" strokeLinecap="round" /><circle cx="11" cy="5" r="3.5" fill={SERIES[i]} /></svg>
-            : <span className="size-3 shrink-0 rounded-[3px]" style={{ background: SERIES[i] }} />}
+            ? <svg width="22" height="10" className="shrink-0"><line x1="1" y1="5" x2="21" y2="5" stroke={colorOf(chart, i)} strokeWidth="2" strokeLinecap="round" /><circle cx="11" cy="5" r="3.5" fill={colorOf(chart, i)} /></svg>
+            : <span className="size-3 shrink-0 rounded-[3px]" style={{ background: colorOf(chart, i) }} />}
           {n}
         </li>
       ))}
@@ -110,8 +122,10 @@ function Bars({ chart, data }: { chart: Chart; data: DiData }) {
   const k = groups[0]?.vals.length ?? 1;
   const values = stacked ? groups.map((g) => g.vals.reduce((a, b) => a + b, 0)) : groups.flatMap((g) => g.vals);
   const { max, step } = scale(chart, values);
-  // Bars at most 24 px (dataviz mark spec), spaced so a printed value above each never meets its neighbour's.
-  const barW = 24, gap = stacked ? 0 : 6, groupGap = 30;
+  const dp = places(groups.flatMap((g) => g.vals));
+  // Bars at most 24 px (dataviz mark spec), spaced so a printed value above each never meets its neighbour's. A stacked
+  // segment too thin for its value prints it to the right of the bar, so labelled stacks leave room there.
+  const barW = 24, gap = stacked ? 0 : 6, groupGap = stacked && chart.labels ? 64 : 30;
   const groupW = stacked ? barW + 10 : k * barW + (k - 1) * gap;
   const width = PAD.left + groups.length * (groupW + groupGap) + PAD.right;
   const height = PAD.top + PLOT_H + PAD.bottom;
@@ -130,20 +144,22 @@ function Bars({ chart, data }: { chart: Chart; data: DiData }) {
                 acc += v;
                 return (
                   <g key={si}>
-                    <path d={si === g.vals.length - 1 ? barPath(x0 + 5, top, barW, h) : `M${x0 + 5},${top}h${barW}v${h}h${-barW}Z`} fill={SERIES[si]} />
-                    {chart.labels && h > 18 && <text x={x0 + 5 + barW / 2} y={top + h / 2} dy="0.35em" textAnchor="middle" className="fill-white text-sm font-semibold">{fmt(v)}</text>}
+                    <path d={si === g.vals.length - 1 ? barPath(x0 + 5, top, barW, h) : `M${x0 + 5},${top}h${barW}v${h}h${-barW}Z`} fill={colorOf(chart, si)} />
+                    {chart.labels && (h > 18
+                      ? <text x={x0 + 5 + barW / 2} y={top + h / 2} dy="0.35em" textAnchor="middle" stroke="var(--card)" strokeWidth={3} paintOrder="stroke" className="fill-foreground text-sm font-semibold">{fmt(v, dp)}</text>
+                      : <text x={x0 + 5 + barW + 5} y={top + h / 2} dy="0.35em" className="fill-foreground text-sm">{fmt(v, dp)}</text>)}
                   </g>
                 );
               }
               const x = x0 + si * (barW + gap);
               return (
                 <g key={si}>
-                  <path d={barPath(x, y(v), barW, y(0) - y(v))} fill={SERIES[si]} />
-                  {chart.labels && <text x={x + barW / 2} y={y(v) - 7} textAnchor="middle" className="fill-foreground text-sm">{fmt(v)}</text>}
+                  <path d={barPath(x, y(v), barW, y(0) - y(v))} fill={colorOf(chart, si)} />
+                  {chart.labels && <text x={x + barW / 2} y={y(v) - 7} textAnchor="middle" className="fill-foreground text-sm">{fmt(v, dp)}</text>}
                 </g>
               );
             })}
-            {stacked && chart.labels && <text x={x0 + 5 + barW / 2} y={y(acc) - 7} textAnchor="middle" className="fill-foreground text-sm font-semibold">{fmt(acc)}</text>}
+            {stacked && chart.labels && <text x={x0 + 5 + barW / 2} y={y(acc) - 7} textAnchor="middle" className="fill-foreground text-sm font-semibold">{fmt(acc, dp)}</text>}
             <text x={x0 + groupW / 2} y={PAD.top + PLOT_H + 22} textAnchor="middle" className="fill-foreground text-sm">{g.name}</text>
           </g>
         );
@@ -168,8 +184,8 @@ function Lines({ chart, data }: { chart: Chart; data: DiData }) {
         const pts = r.cells.map((v, j) => (v === null ? null : [x(j), y(v)] as const)).filter((p): p is readonly [number, number] => !!p);
         return (
           <g key={r.name}>
-            <polyline points={pts.map((p) => p.join(",")).join(" ")} fill="none" stroke={SERIES[si]} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
-            {pts.map(([px, py], i) => <circle key={i} cx={px} cy={py} r="4.5" fill={SERIES[si]} stroke="var(--card)" strokeWidth="2" />)}
+            <polyline points={pts.map((p) => p.join(",")).join(" ")} fill="none" stroke={colorOf(chart, si)} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+            {pts.map(([px, py], i) => <circle key={i} cx={px} cy={py} r="4.5" fill={colorOf(chart, si)} stroke="var(--card)" strokeWidth="2" />)}
             {chart.labels && r.cells.map((v, j) => (v === null ? null : <text key={j} x={x(j)} y={y(v) - 10} textAnchor="middle" className="fill-foreground text-sm">{fmt(v)}</text>))}
           </g>
         );
@@ -178,9 +194,72 @@ function Lines({ chart, data }: { chart: Chart; data: DiData }) {
   );
 }
 
+/**
+ * One point per row: its first column across, its second up (further columns are not drawn; a table shows them).
+ * Each point carries its name and, with labels, both its values; place moves a label off a neighbour (right by default).
+ */
+function Scatter({ chart, data }: { chart: Chart; data: DiData }) {
+  const ys = scale(chart, data.rows.map((r) => r.cells[1] ?? 0));
+  const xs = chart.xaxis ?? scale({ kind: "bar", data: "" }, data.rows.map((r) => r.cells[0] ?? 0));
+  const plotW = 370, padB = PAD.bottom + 22;
+  const width = PAD.left + plotW + 30, height = PAD.top + PLOT_H + padB;
+  const x = (v: number) => PAD.left + (v / xs.max) * plotW;
+  const y = (v: number) => PAD.top + PLOT_H - (v / ys.max) * PLOT_H;
+  const xticks = Array.from({ length: Math.floor(xs.max / xs.step + 1e-9) + 1 }, (_, k) => k * xs.step);
+  return (
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="block max-w-none" aria-hidden>
+      <Axis max={ys.max} step={ys.step} width={PAD.left + plotW + PAD.right} />
+      {xticks.map((t) => <text key={t} x={x(t)} y={PAD.top + PLOT_H + 20} textAnchor="middle" className="fill-muted-foreground text-sm">{fmt(t)}</text>)}
+      {xs.label && <text x={PAD.left + plotW / 2} y={height - 6} textAnchor="middle" className="fill-muted-foreground text-sm">{xs.label}</text>}
+      {data.rows.map((r) => {
+        const [vx, vy] = r.cells as number[];
+        const px = x(vx), py = y(vy), at = chart.place?.[r.name] ?? "right", two = !!chart.labels;
+        const anchor = at === "left" ? "end" : at === "right" ? "start" : "middle";
+        const lx = at === "left" ? px - 10 : at === "right" ? px + 10 : px;
+        const ly = at === "above" ? py - (two ? 30 : 12) : at === "below" ? py + 22 : py + (two ? -6 : 5);
+        return (
+          <g key={r.name}>
+            <circle cx={px} cy={py} r="5" fill={colorOf(chart, 0)} stroke="var(--card)" strokeWidth="2" />
+            <text x={lx} y={ly} textAnchor={anchor} className="fill-foreground text-sm font-semibold">{r.name}</text>
+            {two && <text x={lx} y={ly + 17} textAnchor={anchor} className="fill-muted-foreground text-sm">{fmt(vx)}, {fmt(vy)}</text>}
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+/** A pie of the first column, one slice per row from twelve o'clock, a 2 px surface gap between slices, labelled outside. */
+function Share({ chart, data }: { chart: Chart; data: DiData }) {
+  const vals = data.rows.map((r) => r.cells[0] ?? 0), total = vals.reduce((a, b) => a + b, 0) || 1;
+  const R = 96, cx = 190, cy = 130, width = 380, height = 260;
+  let a0 = -Math.PI / 2;
+  return (
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="block max-w-none" aria-hidden>
+      {data.rows.map((r, i) => {
+        const a1 = a0 + (vals[i] / total) * 2 * Math.PI, mid = (a0 + a1) / 2;
+        const p = (a: number, rad = R) => `${cx + rad * Math.cos(a)},${cy + rad * Math.sin(a)}`;
+        const d = `M${cx},${cy}L${p(a0)}A${R},${R} 0 ${a1 - a0 > Math.PI ? 1 : 0} 1 ${p(a1)}Z`;
+        const lx = cx + (R + 14) * Math.cos(mid), ly = cy + (R + 14) * Math.sin(mid);
+        const anchor = Math.abs(Math.cos(mid)) < 0.2 ? "middle" : Math.cos(mid) > 0 ? "start" : "end";
+        a0 = a1;
+        return (
+          <g key={r.name}>
+            <path d={d} fill={colorOf(chart, i)} stroke="var(--card)" strokeWidth="2" strokeLinejoin="round" />
+            <text x={lx} y={ly} dy={Math.sin(mid) > 0.6 ? "0.9em" : Math.sin(mid) < -0.6 ? "-0.4em" : "0.35em"} textAnchor={anchor} className="fill-foreground text-sm">
+              <tspan className="font-semibold">{r.name}</tspan>{chart.labels && ` ${fmt(vals[i])}${data.unit === "%" ? "%" : ""}`}
+            </text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
 /** A data table as the exam prints it: blanks as "?", a total row or column set apart by weight. */
-export function DiTable({ data, filled, className }: { data: DiData; filled?: DiData; className?: string }) {
+export function DiTable({ data, fill, className }: { data: DiData; fill?: (row: string, col: string) => number | string | undefined; className?: string }) {
   const total = (s: string) => /^total$/i.test(s);
+  const dp = data.cols.map((_, j) => places(data.rows.flatMap((r) => (r.cells[j] === null ? [] : [r.cells[j] as number]))));
   return (
     <div className={cn("-mx-1 overflow-x-auto px-1", className)}>
       <table className="w-full min-w-max border-separate border-spacing-0 text-base">
@@ -192,19 +271,19 @@ export function DiTable({ data, filled, className }: { data: DiData; filled?: Di
           </tr>
         </thead>
         <tbody>
-          {data.rows.map((r, i) => (
+          {data.rows.map((r) => (
             <tr key={r.name} className={cn(total(r.name) && "font-semibold")}>
               <th scope="row" className="border-b border-border/60 px-3 py-2 text-left font-semibold">{r.name}</th>
               {r.cells.map((v, j) => {
-                const f = filled?.rows[i].cells[j];
+                const f = fill?.(r.name, data.cols[j]);
                 const blank = v === null;
                 return (
                   <td key={j} className={cn("border-b border-border/60 px-3 py-2 text-right", total(data.cols[j]) && "font-semibold")}>
                     {blank
                       ? f !== undefined && f !== null
-                        ? <span className="rounded-md bg-success-soft px-1.5 py-0.5 font-semibold" title="Worked out from the rules">{fmt(f)}</span>
+                        ? <span className="rounded-md bg-success-soft px-1.5 py-0.5 font-semibold" title="Worked out from the rules">{typeof f === "number" ? fmt(f) : f}</span>
                         : <span className="inline-block min-w-8 rounded-md bg-muted px-1.5 py-0.5 text-center text-muted-foreground" aria-label="missing">?</span>
-                      : fmt(v)}
+                      : fmt(v, dp[j])}
                   </td>
                 );
               })}

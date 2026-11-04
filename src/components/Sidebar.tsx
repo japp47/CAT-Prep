@@ -8,7 +8,7 @@ import { usePref } from "../lib/prefs";
 import { useStore } from "../lib/store";
 import { buildDay, budgetFor, doneMinutes } from "../planner/engine";
 import { LIVE_SECTIONS, SECTIONS } from "../sections";
-import { IconChart, IconClock, IconHistory, IconHome, IconJournal, IconMistake, IconPen, IconRedo, IconToday, IconWeek, IconWords } from "./Icons";
+import { IconBell, IconBook, IconChart, IconClock, IconExam, IconFlag, IconHistory, IconHome, IconJournal, IconMistake, IconPen, IconRedo, IconSliders, IconToday, IconTrophy, IconWeek, IconWords } from "./Icons";
 import { PRACTICE_PATH, SiteNavLink, type SiteNavItem } from "./SiteHeader";
 
 /**
@@ -36,9 +36,11 @@ export const TRACK: Item[] = [
   { to: "/words", label: "Words", Icon: IconWords },
   { to: "/journal", label: "Reading journal", Icon: IconJournal },
 ];
-export const MORE: SiteNavItem[] = [
-  { to: "/updates", label: "Updates" }, { to: "/exams", label: "CAT and other exams" }, { to: "/guides", label: "Guides" },
-  { to: "/stories", label: "Topper stories" }, { to: "/roadmap", label: "What's coming" }, { to: "/settings", label: "Settings and backup" },
+/** The occasional pages. They carry icons like every other row, so their names line up with Track's. */
+export const MORE: Item[] = [
+  { to: "/updates", label: "Updates", Icon: IconBell }, { to: "/exams", label: "CAT and other exams", Icon: IconExam },
+  { to: "/guides", label: "Guides", Icon: IconBook }, { to: "/stories", label: "Topper stories", Icon: IconTrophy },
+  { to: "/roadmap", label: "What's coming", Icon: IconFlag }, { to: "/settings", label: "Settings and backup", Icon: IconSliders },
 ];
 export const SECTION_ITEMS: SiteNavItem[] = SECTIONS.map((s) => ({ to: "/" + s.id, label: s.short, soon: s.status === "soon", end: true }));
 
@@ -142,13 +144,7 @@ export function SidebarNav({ onPick }: { onPick?: () => void }) {
           More<ChevronDown className={cn("size-4 transition-transform duration-200 motion-reduce:transition-none", showMore && "rotate-180")} aria-hidden />
         </button>
         {showMore && (
-          <div id="nav-more" className="flex flex-col gap-0.5">
-            {MORE.map((it) => (
-              <SiteNavLink key={it.to} item={it} onClick={onPick} className={(on) => cn(ROW, "h-10 pl-[3.25rem]", on && "font-semibold text-foreground")}>
-                {it.label}
-              </SiteNavLink>
-            ))}
-          </div>
+          <div id="nav-more" className="flex flex-col gap-0.5">{MORE.map(row)}</div>
         )}
       </div>
     </nav>
