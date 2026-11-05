@@ -14,13 +14,13 @@ import { CAUSES } from "../../data/traps";
 import { readDraft, writeDraft } from "../../lib/draft";
 import { usePref } from "../../lib/prefs";
 import { mediumDate, todayIso, uid } from "../../lib/date";
-import { CAUSE_IDS, type AppState, type Cause, type Mock, type MockQ, type MockReview, type Recommendation, type SectionalAttempt } from "../../lib/state";
+import { CAUSE_IDS, type AppState, type ArenaRound, type Cause, type Mock, type MockQ, type MockReview, type Recommendation, type SectionalAttempt } from "../../lib/state";
 import { useGsap } from "../../lib/motion";
 import { useStore } from "../../lib/store";
 import type { Content } from "../../practice/content";
 import {
   DEFAULT_QUANT_LAYOUT, DILR_SET_LABEL, DILR_SET_TYPES, QUANT_LABEL,
-  findings, gridResult, isTita, fromSectional, layoutFor, loggedAfter, proposeActions, questionsFor, toErrors, toPractice, VA_ORDER, type ActionDraft, type Findings,
+  ARENA_RESULT, arenaResult, findings, fromArena, gridResult, isTita, fromSectional, layoutFor, loggedAfter, proposeActions, questionsFor, toErrors, toPractice, VA_ORDER, type ActionDraft, type Findings,
 } from "../../practice/mockreview";
 import { fmtSecs } from "../../practice/record";
 import { scorePaper } from "../../practice/sectional";
@@ -259,7 +259,29 @@ const Key = ({ k }: { k: string }) => <kbd className="ml-2 hidden rounded bg-bac
  * screen. Each result is one tap or one key (R, T, W, S, N; 1 to 9 for the cause; Y or G for a skip; arrows to move),
  * and after a complete answer it moves on to the next question by itself, unless the student turns that off.
  */
-function Grid({ w, set, sectionalId }: { w: Wiz; set: (p: Partial<Wiz>) => void; sectionalId?: string }) {
+/**
+ * A review filled in on this site (a sectional, or an Arena round, D85): what the grid says first, where each question
+ * can be seen with the student's answer, and a note for a question that needs one.
+ */
+interface Site { intro: string; link: (i: number) => string | null; note: (i: number) => string | null }
+
+function siteOf(src: Source, lr: AppState["lrAttempts"]): Site | undefined {
+  if (src.from === "sectional") return {
+    intro: "Your results are filled in from the sectional. Only the wrong and skipped questions need you: say why each went wrong, and whether a skip was doable. Open a question to see it and your answer.",
+    link: (i) => `/practice/sectional/${src.att.id}?q=${i + 1}&from=mock-review`, note: () => null,
+  };
+  if (src.from !== "arena") return undefined;
+  const r = src.round, at: { id: string; k: number }[] = [];
+  r.sets.forEach((id) => { const n = src.c.lrById(id)?.questions.length ?? 0; for (let k = 0; k < n; k++) at.push({ id, k }); });
+  const letter = (id: string) => String.fromCharCode(65 + r.sets.indexOf(id));
+  return {
+    intro: "Your results are filled in from the round. Only wrong answers and blanks in sets you worked on need you: say why each went wrong, and whether a blank was doable. Sets you left by choice are already settled.",
+    link: (i) => { const p = at[i], att = p && r.attempts[p.id]; return att && lr.some((a) => a.id === att) ? `/practice/lr/${p.id}?review=${att}&q=${p.k + 1}` : null; },
+    note: (i) => { const p = at[i]; return p && !r.order.includes(p.id) && !r.attempts[p.id] ? `You left set ${letter(p.id)} by choice. If you regret it, mark it doable.` : null; },
+  };
+}
+
+function Grid({ w, set, site }: { w: Wiz; set: (p: Partial<Wiz>) => void; site?: Site }) {
   const q = w.qs[w.cur];
   const [auto, setAuto] = usePref("mockAuto", true);
   const [asking, setAsking] = useState(false);
@@ -268,7 +290,7 @@ function Grid({ w, set, sectionalId }: { w: Wiz; set: (p: Partial<Wiz>) => void;
   const unmarked = w.qs.filter((x) => x.st === "unmarked").length;
   const done = w.qs.length - open;
   // A sectional is already marked, so it opens on the questions that still need the student (D44).
-  const [only, setOnly] = useState<"needs" | "all">(sectionalId && open > 0 ? "needs" : "all");
+  const [only, setOnly] = useState<"needs" | "all">(site && open > 0 ? "needs" : "all");
   const shown = (x: MockQ, i: number) => only === "all" || cellOf(x) === "marked" || i === w.cur;
   const go = (i: number) => set({ cur: Math.max(0, Math.min(w.qs.length - 1, i)) });
   const edit = (p: Partial<MockQ>, advance = true) => {
@@ -335,13 +357,13 @@ function Grid({ w, set, sectionalId }: { w: Wiz; set: (p: Partial<Wiz>) => void;
         <Checkbox checked={auto} onCheckedChange={(v) => setAuto(v === true)} />
         Move on after each answer
       </label>
-      {!sectionalId && unmarked > 0 && <Button variant="secondary" className="w-fit" onClick={() => setAsking(true)}>Mark the other {unmarked} right</Button>}
+      {!site && unmarked > 0 && <Button variant="secondary" className="w-fit" onClick={() => setAsking(true)}>Mark the other {unmarked} right</Button>}
     </div>
   );
 
   return (
     <div className="flex flex-col gap-5">
-      <p className="measure text-base">{sectionalId ? "Your results are filled in from the sectional. Only the wrong and skipped questions need you: say why each went wrong, and whether a skip was doable. Open a question to see it and your answer." : "Mark each question from the mock's own solutions; 99ile does not have this paper's questions. Mark the wrong and skipped ones first, then mark the rest right in one go."}</p>
+      <p className="measure text-base">{site ? site.intro : "Mark each question from the mock's own solutions; 99ile does not have this paper's questions. Mark the wrong and skipped ones first, then mark the rest right in one go."}</p>
       {w.migrated && <Meta>Any questions that were previously marked right by default are now unmarked. They count as skipped until you choose a result.</Meta>}
       <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,21rem)]">
         {q && (
@@ -382,8 +404,9 @@ function Grid({ w, set, sectionalId }: { w: Wiz; set: (p: Partial<Wiz>) => void;
             )}
             {q.st === "unmarked" && <Meta>No result yet. Until you choose one, this question counts as skipped.</Meta>}
             {q.st === "unseen" && <Meta>Questions you never reached count as time lost.</Meta>}
-            {sectionalId && (
-              <LinkButton to={`/practice/sectional/${sectionalId}?q=${w.cur + 1}&from=mock-review`} variant="secondary" className="w-fit">
+            {site?.note(w.cur) && <Meta>{site.note(w.cur)}</Meta>}
+            {site?.link(w.cur) && (
+              <LinkButton to={site.link(w.cur)!} variant="secondary" className="w-fit">
                 See this question and your answer
               </LinkButton>
             )}
@@ -574,7 +597,9 @@ function Actions({ w, set, wrong }: { w: Wiz; set: (p: Partial<Wiz>) => void; wr
 
 // ---------------------------------------------------------------------------------------------
 
-type Source = { from: "manual"; mock?: string } | { from: "sectional"; att: SectionalAttempt; c: Content };
+type Source = { from: "manual"; mock?: string } | { from: "sectional"; att: SectionalAttempt; c: Content } | { from: "arena"; round: ArenaRound; c: Content };
+/** The id of the record a review on this site comes from: the sectional or the Arena round (D85). */
+const siteId = (src: Source) => (src.from === "sectional" ? src.att.id : src.from === "arena" ? src.round.id : undefined);
 
 function avgBefore(state: AppState, sec: string, skip?: string) {
   const ms = state.mocks.filter((m) => m.sec === sec && m.id !== skip).sort((a, b) => (a.d < b.d ? -1 : a.d > b.d ? 1 : 0)).slice(-3);
@@ -638,7 +663,7 @@ function Wizard({ src }: { src: Source }) {
   const queryQuestion = Number(search.get("q"));
   const requestedQuestion = Number.isSafeInteger(queryQuestion) && queryQuestion >= 1 ? queryQuestion - 1 : undefined;
   const mockRow = src.from === "manual" && src.mock ? state.mocks.find((m) => m.id === src.mock) : undefined;
-  const key = "mockreview:" + (src.from === "sectional" ? src.att.id : src.mock ?? "new");
+  const key = "mockreview:" + (src.from === "manual" ? src.mock ?? "new" : siteId(src));
   const [w, setW] = useState<Wiz>(() => {
     const saved = readDraft<Wiz>(key);
     if (saved && Array.isArray(saved.qs)) {
@@ -663,6 +688,12 @@ function Wizard({ src }: { src: Source }) {
       const cur = requestedQuestion === undefined ? firstWrong : Math.min(requestedQuestion, Math.max(0, qs.length - 1));
       return { version: 2, step: 1, name: "VARC sectional on this site", d: src.att.d, kind: "VARC sectional", sec: "VARC", planned: "", layout, qs, cur, actions: null, own: "", errors: false };
     }
+    if (src.from === "arena") {
+      const { layout, qs } = fromArena(src.round, state.lrAttempts, src.c.lrById);
+      const firstWrong = Math.max(0, qs.findIndex((q) => q.st === "wrong"));
+      const cur = requestedQuestion === undefined ? firstWrong : Math.min(requestedQuestion, Math.max(0, qs.length - 1));
+      return { version: 2, step: 1, name: ARENA_RESULT, d: src.round.d, kind: "DILR sectional", sec: "DILR", planned: "", layout, qs, cur, actions: null, own: "", errors: false };
+    }
     const sec = mockRow?.sec ?? "VARC";
     const kind = mockRow?.k === "Sectional" ? `${sec} sectional` : mockRow?.k ?? "Full mock";
     const layout = layoutFor(sec);
@@ -683,8 +714,8 @@ function Wizard({ src }: { src: Source }) {
   const hasDoable = parts.some((pt) => pt.qs.some((q) => q.st === "skip" && q.could));
   const wrongAll = parts.reduce((n, pt) => n + pt.qs.filter((q) => q.st === "wrong").length, 0);
   // A sectional on this site has its basics already: the analysis starts on its questions (D44).
-  const steps = STEPS.map((s, i) => ({ s, i })).filter((x) => (x.s !== "Re-solve" || hasDoable) && !(src.from === "sectional" && x.s === "Basics"));
-  const label = (s: string) => (src.from === "sectional" && s === "Questions" ? "Tag your mistakes" : s);
+  const steps = STEPS.map((s, i) => ({ s, i })).filter((x) => (x.s !== "Re-solve" || hasDoable) && !(src.from !== "manual" && x.s === "Basics"));
+  const label = (s: string) => (src.from !== "manual" && s === "Questions" ? "Tag your mistakes" : s);
   const body = useRef<HTMLDivElement>(null);
   useGsap(body, (gsap, el) => { gsap.from(el, { opacity: 0, x: 24, duration: 0.35, ease: "power2.out", clearProps: "all" }); }, [w.step]);
   const at = steps.findIndex((x) => x.i === w.step);
@@ -735,7 +766,7 @@ function Wizard({ src }: { src: Source }) {
   const save = () => {
     if (w.all) { saveWhole(); return; }
     const id = uid(), now = Date.now(), d = w.d || todayIso();
-    const mockId = src.from === "sectional" ? src.att.id + "m" : src.mock ?? id + "m";
+    const mockId = src.from === "manual" ? src.mock ?? id + "m" : siteId(src) + "m";
     const kept = (w.actions ?? []).filter((x) => x.keep && x.text.trim());
     const recs: Recommendation[] = kept.map((x) => ({
       id: uid(), d, updatedAt: now, from: "mock", src: id, sec, skill: x.a.skill, text: x.text.trim(), why: x.a.why, status: "open",
@@ -744,7 +775,7 @@ function Wizard({ src }: { src: Source }) {
     if (w.own.trim()) recs.push({ id: uid(), d, updatedAt: now, from: "mock", src: id, sec, skill: { kind: "cause", key: "own" }, text: w.own.trim(), why: "Your own action.", status: "open" });
     const review: MockReview = {
       id, d, updatedAt: now, mock: mockId, sec, from: src.from, name: w.name.trim(), layout: w.layout, qs: w.qs, recs: recs.map((r) => r.id),
-      ...(src.from === "sectional" ? { att: src.att.id } : {}), ...(planned != null ? { planned } : {}),
+      ...(src.from !== "manual" ? { att: siteId(src) } : {}), ...(planned != null ? { planned } : {}),
     };
     update((st) => {
       if (st.mockReviews.some((r) => r.mock === mockId)) return;
@@ -754,6 +785,10 @@ function Wizard({ src }: { src: Source }) {
         const next = loggedAfter(m, w.qs, { id: mockId, d, sec, n: review.name, k: w.kind }, !!w.sync);
         if (m) Object.assign(m, next); else st.mocks.push(next);
         st.practice.push(...toPractice(review));
+      }
+      // A round from before rounds logged a result logs it now; its answers are already in practice (D85).
+      if (src.from === "arena" && !src.round.replay && !st.mocks.some((m) => m.id === mockId)) {
+        st.mocks.push(arenaResult(src.round, Object.values(src.round.attempts).flatMap((aid) => st.lrAttempts.filter((a) => a.id === aid))));
       }
       if (w.errors) st.errors.push(...toErrors(review));
       st.recs.push(...recs);
@@ -772,6 +807,10 @@ function Wizard({ src }: { src: Source }) {
         <PageHeader title="Your sectional analysis" back={{ to: `/practice/sectional/${src.att.id}?q=${w.cur + 1}`, label: "Back to the sectional review" }}>
           It carries on from your review: say why each wrong answer went wrong, see where the marks went, and choose up to three things to fix.
         </PageHeader>
+      ) : src.from === "arena" ? (
+        <PageHeader title="Your Arena round analysis" back={{ to: `/practice/arena?round=${src.round.id}`, label: "Back to the debrief" }}>
+          The round as a DILR section: say why each wrong answer went wrong, see where the marks went, and choose up to three things to fix. Which sets you picked is judged in the debrief.
+        </PageHeader>
       ) : (
         <PageHeader title={mockRow ? "Analyse a logged mock" : "Analyse a mock"} back={BACK}>
           {mockRow
@@ -785,10 +824,10 @@ function Wizard({ src }: { src: Source }) {
 
         {w.all && stepName !== "Basics" && stepName !== "Actions" && <PartSwitch w={w} set={set} />}
         {stepName === "Basics" && <Basics w={w} set={set} fixed={src.from === "sectional"} allowAll={src.from === "manual" && !mockRow} />}
-        {stepName === "Questions" && <Grid key={w.sec} w={w} set={set} sectionalId={src.from === "sectional" ? src.att.id : undefined} />}
+        {stepName === "Questions" && <Grid key={w.sec} w={w} set={set} site={siteOf(src, state.lrAttempts)} />}
         {stepName === "Re-solve" && (w.qs.some((q) => q.st === "skip" && q.could) ? <Resolve w={w} set={set} /> : <Meta>No doable skips in {sec}. Switch section above.</Meta>)}
         {stepName === "Where the marks went" && w.all && <WholeScore parts={parts} />}
-        {stepName === "Where the marks went" && <Findings f={f} layout={w.layout} sec={sec} planned={w.all ? undefined : planned} before={w.all ? null : avgBefore(state, sec, src.from === "sectional" ? src.att.id + "m" : src.mock)} />}
+        {stepName === "Where the marks went" && <Findings f={f} layout={w.layout} sec={sec} planned={w.all ? undefined : planned} before={w.all ? null : avgBefore(state, sec, src.from === "manual" ? src.mock : siteId(src) + "m")} />}
         {stepName === "Actions" && <Actions w={w} set={set} wrong={wrongAll} />}
         {last && mockRow && <LoggedNote m={mockRow} qs={w.qs} sync={!!w.sync} onSync={(sync) => set({ sync })} />}
         {last && src.from === "manual" && !mockRow && unmarked > 0 && <Meta>{unmarked === 1 ? "1 question has" : `${unmarked} questions have`} no result; saving logs them as skipped.</Meta>}
@@ -829,6 +868,8 @@ function Saved({ id }: { id: string }) {
     <Page>
       {r.from === "sectional" && r.att
         ? <PageHeader title="Your sectional analysis" back={{ to: `/practice/sectional/${r.att}`, label: "Back to the sectional review" }}>Analysed on {mediumDate(r.d)}. Every question and your answer is one tap away in the review.</PageHeader>
+        : r.from === "arena" && r.att
+        ? <PageHeader title="Your Arena round analysis" back={{ to: `/practice/arena?round=${r.att}`, label: "Back to the debrief" }}>Analysed on {mediumDate(r.d)}. Each set's questions and your answers are in its review, linked from the debrief.</PageHeader>
         : <PageHeader title={r.name || "Mock analysis"} back={BACK}>Analysed on {mediumDate(r.d)}{sibs.length > 1 ? `, all three sections: ${total} of ${totalMax} in all` : ""}. The logged result stays in Progress.</PageHeader>}
       {sibs.length > 1 && (
         <nav aria-label="Sections of this mock" className="inline-flex w-fit flex-wrap gap-1 rounded-lg bg-secondary p-1">
@@ -881,6 +922,13 @@ function Saved({ id }: { id: string }) {
   );
 }
 
+function FromArena({ id }: { id: string }) {
+  const { state } = useStore();
+  const round = state.arenaRounds.find((r) => r.id === id);
+  if (!round) return <NotFound />;
+  return <ContentGate need={{ lr: round.sets }}>{(c) => <Wizard src={{ from: "arena", round, c }} />}</ContentGate>;
+}
+
 function FromSectional({ id }: { id: string }) {
   const { state } = useStore();
   const att = state.sectionals.find((s) => s.id === id);
@@ -894,15 +942,16 @@ export default function MockReviewPage() {
   const [q] = useSearchParams();
   const { state } = useStore();
   if (id) return <Saved id={id} />;
-  const sectional = q.get("sectional"), mock = q.get("mock") ?? undefined;
-  const done = state.mockReviews.find((r) => r.mock === (sectional ? sectional + "m" : mock));
+  const sectional = q.get("sectional"), arena = q.get("arena"), mock = q.get("mock") ?? undefined;
+  const done = state.mockReviews.find((r) => r.mock === (sectional ? sectional + "m" : arena ? arena + "m" : mock));
   if (done) return (
     <Page>
-      <PageHeader title={sectional ? "Your sectional analysis" : "Analyse a mock"} back={BACK}>You have already analysed this one.</PageHeader>
+      <PageHeader title={sectional ? "Your sectional analysis" : arena ? "Your Arena round analysis" : "Analyse a mock"} back={BACK}>You have already analysed this one.</PageHeader>
       <div><LinkButton to={`/progress/mock-review/${done.id}`}>Open the review</LinkButton></div>
       <Meta>Or <Link className="underline underline-offset-4" to="/progress/mock-review">analyse another mock</Link>.</Meta>
     </Page>
   );
   if (sectional) return <FromSectional id={sectional} />;
+  if (arena) return <FromArena id={arena} />;
   return <Wizard key={mock ?? "new"} src={{ from: "manual", mock }} />;
 }

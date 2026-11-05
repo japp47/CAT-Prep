@@ -129,6 +129,7 @@
       {
         "stem": "Which port recorded the largest increase in containerised cargo, in million tonnes, from 2023 to 2024?",
         "kind": "mcq",
+        "dk": "read",
         "options": [
           "P",
           "Q",
@@ -146,6 +147,7 @@
       {
         "stem": "By approximately what percentage did the bulk cargo handled by the five ports together increase from 2023 to 2024?",
         "kind": "mcq",
+        "dk": "percent",
         "options": [
           "3.6%",
           "5.7%",
@@ -163,6 +165,7 @@
       {
         "stem": "For how many of the five ports was the percentage change in containerised cargo from 2023 to 2024 greater than the percentage change in the port's total cargo?",
         "kind": "mcq",
+        "dk": "percent",
         "options": [
           "1",
           "2",
@@ -180,6 +183,7 @@
       {
         "stem": "If the containerised cargo of the five ports together is exactly half of their combined cargo in 2025, and the containerised shares of P and T stay at their 2024 levels, what is the minimum possible containerised share of port R in 2025, in per cent, to the nearest integer?",
         "kind": "tita",
+        "dk": "range",
         "answer": "61",
         "tol": 0.5,
         "uses": [],
@@ -193,6 +197,7 @@
       {
         "stem": "What is the smallest number of ports whose containerised share needs to rise for the authority's target to be met?",
         "kind": "tita",
+        "dk": "range",
         "answer": "2",
         "uses": [],
         "why": [
@@ -375,6 +380,7 @@
       {
         "stem": "The combined GDP of all the countries whose GDP per head is below US$ 5,000 is what percentage of China's GDP? Give your answer to the nearest integer.",
         "kind": "tita",
+        "dk": "percent",
         "answer": "32",
         "tol": 0.5,
         "uses": [],
@@ -386,6 +392,7 @@
       {
         "stem": "Call a country a 'catch-up economy' if its growth rate is higher than the growth rate of every country that has a higher GDP per head than it. (The country with the highest GDP per head is not counted.) How many of the six are catch-up economies?",
         "kind": "mcq",
+        "dk": "read",
         "options": [
           "4",
           "1",
@@ -403,6 +410,7 @@
       {
         "stem": "By the end of which year will India's total GDP first be at least one-third of China's total GDP?",
         "kind": "mcq",
+        "dk": "growth",
         "options": [
           "2037",
           "2038",
@@ -420,6 +428,7 @@
       {
         "stem": "By what percentage will Bangladesh's total GDP exceed Vietnam's total GDP at the end of 2028? Give your answer to the nearest integer.",
         "kind": "tita",
+        "dk": "growth",
         "answer": "5",
         "tol": 0.5,
         "uses": [],
@@ -431,6 +440,7 @@
       {
         "stem": "By the end of which year will each of India, Indonesia, Vietnam and Bangladesh have a GDP per head of at least US$ 6,000?",
         "kind": "mcq",
+        "dk": "growth",
         "options": [
           "2039",
           "2038",
@@ -590,6 +600,7 @@
       {
         "stem": "What was India's combined trade deficit in 2025-26 with the four partners with which it had a deficit in that year (in US$ billion)? Give your answer to the nearest integer.",
         "kind": "tita",
+        "dk": "read",
         "answer": "172",
         "tol": 0.5,
         "uses": [],
@@ -601,6 +612,7 @@
       {
         "stem": "Among China, UAE, Saudi Arabia and Singapore, with which one did India's trade deficit increase by the largest percentage from 2024-25 to 2025-26?",
         "kind": "mcq",
+        "dk": "percent",
         "options": [
           "Singapore",
           "UAE",
@@ -617,6 +629,7 @@
       {
         "stem": "India's net balance with the five partners together is its total exports to them minus its total imports from them; it was negative in both years. By approximately what percentage did India's net deficit with the five partners together increase from 2024-25 to 2025-26?",
         "kind": "mcq",
+        "dk": "percent",
         "options": [
           "11%",
           "23%",
@@ -634,6 +647,7 @@
       {
         "stem": "For how many of the five partners did India's imports rise from 2024-25 to 2025-26 even though imports as a percentage of exports fell?",
         "kind": "mcq",
+        "dk": "read",
         "options": [
           "0",
           "1",
@@ -651,6 +665,7 @@
       {
         "stem": "Had imports from China in 2025-26 been unchanged but the trade deficit with China been 40% lower than it actually was, by approximately what percentage would exports to China have exceeded their actual 2025-26 value?",
         "kind": "mcq",
+        "dk": "percent",
         "options": [
           "230%",
           "40%",
@@ -811,6 +826,7 @@
       {
         "stem": "By what percentage did India's solar capacity increase from 2021-22 to 2023-24? Give your answer to the nearest integer.",
         "kind": "tita",
+        "dk": "percent",
         "answer": "52",
         "tol": 0.5,
         "uses": [],
@@ -823,6 +839,7 @@
       {
         "stem": "For how many of the six sources (solar, wind, Other RE, large hydro, nuclear and thermal) did capacity rise in both 2022-23 and 2023-24 while its share of total capacity fell in both years? (Capacity that did not change in a year did not rise.)",
         "kind": "mcq",
+        "dk": "read",
         "options": [
           "2",
           "4",
@@ -840,6 +857,7 @@
       {
         "stem": "Suppose that from 2023-24 onwards, solar capacity adds each year exactly the amount it added in 2023-24, and thermal capacity also adds each year exactly the amount it added in 2023-24. What is the least number of years (after 2023-24) after which solar capacity will exceed thermal capacity?",
         "kind": "mcq",
+        "dk": "growth",
         "options": [
           "16",
           "11",
@@ -857,6 +875,7 @@
       {
         "stem": "Suppose solar capacity in 2023-24 had been the same as in 2021-22, with wind and Other RE as they actually were in 2023-24. What would solar's share of the combined capacity of solar, wind and Other RE have been in 2023-24?",
         "kind": "mcq",
+        "dk": "percent",
         "options": [
           "13.5%",
           "19.4%",
@@ -874,6 +893,7 @@
       {
         "stem": "With thermal, large hydro and nuclear capacity kept at their 2023-24 levels, what additional capacity (in GW) of solar, wind and Other RE together would make these three exactly 40% of the total installed capacity? Give your answer to the nearest integer.",
         "kind": "tita",
+        "dk": "growth",
         "answer": "55",
         "tol": 0.5,
         "uses": [],

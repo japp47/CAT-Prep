@@ -12,8 +12,8 @@ import { SECTIONS, sectionByLabel } from "../sections";
 import { arenaTrend } from "../practice/arena";
 import { useContent } from "../practice/content";
 import { readiness, tracked, trend } from "../practice/recs";
-import { JUDGE_AT, skillMap, startHere, STATE_LABEL, stateCounts, weeklyAccuracy, type Skill, type SkillFamily, type SkillState } from "../practice/skills";
-import type { RcSet } from "../practice/types";
+import { isDiSet, JUDGE_AT, skillMap, startHere, STATE_LABEL, stateCounts, weeklyAccuracy, type Skill, type SkillFamily, type SkillState } from "../practice/skills";
+import type { LrSet, RcSet } from "../practice/types";
 import { Log } from "./tracker/Log";
 import { Mocks } from "./tracker/Mocks";
 import { Report, WhereToFocus } from "./tracker/Report";
@@ -112,8 +112,8 @@ function Answers({ sec }: { sec: string }) {
     q: "Are you exam ready?",
     big: r ? String(r.avg) : undefined,
     // Only VARC has a target band so far (the percentile tables are VARC's); other sections show the average alone.
-    a: r ? `Right answers on average in your last ${r.count === 1 ? "result" : `${r.count} results`}${sec === "VARC" ? `; your target needs ${r.band[0]} to ${r.band[1]}` : ""}.` : "Take a timed section or log a mock to see how practice holds up under time.",
-    link: r ? undefined : [sec === "VARC" ? "/practice/sectional" : "/progress?tab=mocks", sec === "VARC" ? "Take a sectional" : "Log a mock"],
+    a: r ? `Right answers on average in your last ${r.count === 1 ? "result" : `${r.count} results`}${sec === "VARC" ? `; your target needs ${r.band[0]} to ${r.band[1]}` : ""}.${r.arena ? " Arena rounds use our sets, so they show how you handle a section, not your percentile." : ""}` : "Take a timed section or log a mock to see how practice holds up under time.",
+    link: r ? undefined : sec === "VARC" ? ["/practice/sectional", "Take a sectional"] : sec === "DILR" ? ["/practice/arena", "Play an Arena round"] : ["/progress?tab=mocks", "Log a mock"],
   };
 
   return (
@@ -154,11 +154,22 @@ function WeekBars({ weeks }: { weeks: ReturnType<typeof weeklyAccuracy> }) {
 // ---------------------------------------------------------------------------------------------------------------
 // The skill map (F89)
 
-/** VARC's RC kinds need the passages of the sets tried, and only those; everything else is ready at once. */
+/**
+ * VARC's RC kinds need the passages of the sets tried, and DILR's DI kinds the DI sets tried (D84), and only those;
+ * everything else is ready at once.
+ */
 function MapSection({ sec }: { sec: "VARC" | "DILR" }) {
   const { state } = useStore();
   if (sec === "VARC" && state.rcAttempts.length) return <MapWithPassages />;
+  if (sec === "DILR" && state.lrAttempts.some((a) => isDiSet(a.set))) return <MapWithDiSets />;
   return <SkillMap sec={sec} rcById={null} />;
+}
+
+function MapWithDiSets() {
+  const { state } = useStore();
+  const ids = useMemo(() => [...new Set(state.lrAttempts.filter((a) => isDiSet(a.set)).map((a) => a.set))], [state.lrAttempts]);
+  const { content } = useContent({ lr: ids });
+  return <SkillMap sec="DILR" rcById={null} lrById={content ? content.lrById : null} />;
 }
 
 function MapWithPassages() {
@@ -177,9 +188,9 @@ const TONE: Record<SkillState, string> = {
 };
 const WORD: Record<SkillState, string> = { new: "", learning: "", weak: "text-danger", steady: "text-primary", strong: "text-success" };
 
-function SkillMap({ sec, rcById }: { sec: "VARC" | "DILR"; rcById: ((id: string) => RcSet | undefined) | null }) {
+function SkillMap({ sec, rcById, lrById = null }: { sec: "VARC" | "DILR"; rcById: ((id: string) => RcSet | undefined) | null; lrById?: ((id: string) => LrSet | undefined) | null }) {
   const { state } = useStore();
-  const fams = useMemo(() => skillMap(state, sec, todayIso(), rcById), [state, sec, rcById]);
+  const fams = useMemo(() => skillMap(state, sec, todayIso(), rcById, lrById), [state, sec, rcById, lrById]);
   const n = stateCounts(fams);
   const start = startHere(fams);
   const box = useRef<HTMLDivElement>(null);
@@ -192,6 +203,7 @@ function SkillMap({ sec, rcById }: { sec: "VARC" | "DILR"; rcById: ((id: string)
       <div ref={box} className="flex flex-col gap-6">
         {fams.map((f) => <Family key={f.id} f={f} />)}
         {sec === "VARC" && !rcById && state.rcAttempts.length > 0 && <p className="text-base text-muted-foreground" role="status">Loading your RC question kinds…</p>}
+        {sec === "DILR" && !lrById && state.lrAttempts.some((a) => isDiSet(a.set)) && <p className="text-base text-muted-foreground" role="status">Loading your DI question kinds…</p>}
       </div>
       {start ? (
         <div className="flex flex-col items-start gap-3 rounded-lg bg-card p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">

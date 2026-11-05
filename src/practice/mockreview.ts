@@ -1,6 +1,9 @@
 import { CAUSES } from "../data/traps";
 import { uid } from "../lib/date";
-import type { Cause, ErrorEntry, Mock, MockQ, MockReview, PracticeSet, Recommendation, SectionalAttempt } from "../lib/state";
+import type { ArenaRound, Cause, ErrorEntry, LrAttempt, Mock, MockQ, MockReview, PracticeSet, Recommendation, SectionalAttempt } from "../lib/state";
+import { setSecs } from "./arena";
+import { lrRight } from "./lrcheck";
+import type { LrSet, LrType } from "./types";
 import type { Scored } from "./sectional";
 import { VA_KIND, type VaKind } from "./va/build";
 
@@ -71,6 +74,49 @@ export function fromSectional(att: SectionalAttempt, rows: Scored[]): Pick<MockR
     return q;
   });
   return { layout: { rc, va }, qs };
+}
+
+/** A right DILR answer is slow past this: the first question of a set carries its reading (D85). */
+export const SLOW_DILR_SECS = 240;
+/** The name of the result an Arena round logs (D85). */
+export const ARENA_RESULT = "Set Selection Arena round";
+
+/** The result an Arena round logs (D85): right answers and wrong MCQs over the sets answered, as a DILR sectional. */
+export const arenaResult = (r: Pick<ArenaRound, "id" | "d">, scores: { c: number; w: number }[]): Mock =>
+  ({ id: r.id + "m", d: r.d, sec: "DILR", n: ARENA_RESULT, k: "Sectional", c: scores.reduce((s, x) => s + x.c, 0), w: scores.reduce((s, x) => s + x.w, 0) });
+
+/** Our LR set types folded into the review's DILR set labels. */
+export const DILR_SET_OF: Record<LrType, (typeof DILR_SET_TYPES)[number]> = {
+  arrangement: "arrangements", ranking: "arrangements", tournament: "games", distribution: "distribution", selection: "distribution",
+  scheduling: "scheduling", "di-table": "tables", "di-chart": "graphs", caselet: "caselets", routes: "routes", venn: "venn", setmax: "venn",
+  binary: "mixed", directions: "mixed", relations: "mixed", clocks: "mixed", cubes: "mixed", "quant-lr": "mixed", mixed: "mixed",
+};
+
+/**
+ * A review filled in from an Arena round (D85): the five sets in deal order, each question's status and format. A set
+ * left by choice is a good skip, already settled; a picked set never reached is time; a blank in a set the student
+ * worked on asks whether it was doable; a right answer after SLOW_DILR_SECS is slow.
+ */
+export function fromArena(r: ArenaRound, lr: LrAttempt[], setOf: (id: string) => LrSet | undefined): Pick<MockReview, "layout" | "qs"> {
+  const sets: { type: string; n: number }[] = [], qs: MockQ[] = [];
+  r.sets.forEach((id) => {
+    const set = setOf(id);
+    if (!set) return;
+    const att = r.attempts[id] ? lr.find((a) => a.id === r.attempts[id]) : undefined;
+    const left = !r.order.includes(id), worked = setSecs(r, id) > 0 || !!att;
+    const type = DILR_SET_OF[set.type];
+    sets.push({ type, n: set.questions.length });
+    set.questions.forEach((q, i) => {
+      const a = att?.ans[i] ?? null, secs = att?.qs?.[i];
+      const base: MockQ = { st: "unseen", type, format: q.kind, ...(secs ? { secs } : {}) };
+      if (a !== null && a !== "") {
+        const ok = lrRight(q, a);
+        qs.push({ ...base, st: ok ? "right" : "wrong", ...(ok && (secs ?? 0) > SLOW_DILR_SECS ? { slow: true } : {}) });
+      } else if (left && !att) qs.push({ ...base, st: "skip", could: false });
+      else qs.push({ ...base, st: worked ? "skip" : "unseen" });
+    });
+  });
+  return { layout: { rc: [], va: [], sets }, qs };
 }
 
 /** Marks a question cost: an unmarked question counts as skipped; a wrong MCQ costs its 3 and a penalty mark. */

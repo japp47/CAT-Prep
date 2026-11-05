@@ -48,6 +48,13 @@ Foundation started on 17 Oct 2026, so most students are in week 3. The DILR page
 - **Data.** Each DI question carries `dk` (one of the four), checked by a test so no DI question ships without one. The 30 DI questions now in the bank are tagged in this branch.
 - **Verdicts stay honest.** A kind tile judges at eight answers, as every tile does (D51), so a student meets about six DI sets before the kinds say weak or strong. Each tile links to the DI guide that teaches that kind.
 
+### 3a. Refined 5 Nov 2026 (A71 to A74, D84)
+- **No new attempt field.** An LR attempt keeps every answer and the set's version, so the map scores each DI answer against its set once the DI sets the student tried are loaded (as RC kinds wait for the passages). An attempt on a set changed since is skipped.
+- **The tags.** `dk` on each DI question: `read`, `percent`, `growth`, `range`. The 30 questions in the bank: reading 7, percentages 10, growth 5, ranges 8. Rule of thumb when tagging: what the question makes you do last. "Which is largest" and "how many satisfy a condition" are reading, unless the condition is itself a percentage change to compute (percentages); a what-if that adds capacity over years is growth, a what-if that swaps a value is percentages; anything with "minimum possible", "cannot be" or "certain" is a range.
+- **Where a tile goes.** There are two DI guides, not one per kind, so a kind tile opens the DI set with the most questions of that kind, one not tried first ("Work on Growth and projections" opens Six economies). Charts and Tables open their guides.
+- **The redo queue.** A DI miss still waiting after a week holds back both its picture tile and its kind tile from "strong".
+- **Growth is thin.** Each of the six harder sets carries at least two growth questions.
+
 ## As built (4 Nov 2026, branch 1)
 Today on a DI day shows "DI set of the day" first ("Start Containers at five ports", "DI practice" opening the DI half with `?half=di`, "DI guides"), then the LR set and the drill, 30 minutes in all. The ladder is its own module (`sections/dilr/ladder.ts`), so Today does not load every DILR resource for one fallback. The practice page's "next set" falls back to the next DI set once every LR set is tried. Found while building: an LR attempt keeps right and wrong only as totals, so the skill map's question kinds need each attempt to keep which questions were right (branch 2).
 

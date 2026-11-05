@@ -4,7 +4,7 @@ import { VARC } from "../sections/varc";
 import { CR_ITEMS } from "./cr";
 import { LR_SETS } from "./lr";
 import { RC_SETS } from "./rc";
-import { CR_TYPE, CR_TYPES, GENRES, LR_TYPE, RC_PACKS, RC_QTYPE, setWords, SUMMARY_MAX_WORDS, TONES, words, type LrDiagram } from "./types";
+import { CR_TYPE, CR_TYPES, DI_KINDS, GENRES, isDi, LR_TYPE, RC_PACKS, RC_QTYPE, setWords, SUMMARY_MAX_WORDS, TONES, words, type LrDiagram } from "./types";
 import { clockMinutes } from "../components/LrFigures";
 import { VA_PARAS } from "./va/paragraphs";
 
@@ -284,6 +284,13 @@ describe("LR sets (docs/content/lr-format.md)", () => {
       expect(s.questions.length).toBeGreaterThanOrEqual(4);
       expect(s.questions.length).toBeLessThanOrEqual(6);
       expect(s.solution.steps.length).toBeGreaterThan(0);
+    });
+    // Every DI question says what it makes the student do, for the skill map (D84); an LR question never does.
+    it(`${s.id} tags ${isDi(s.type) ? "every question with its DI kind" : "no question with a DI kind"}`, () => {
+      s.questions.forEach((q, i) => {
+        if (isDi(s.type)) expect(DI_KINDS, `${s.id} Q${i + 1}`).toContain(q.dk);
+        else expect(q.dk, `${s.id} Q${i + 1}`).toBeUndefined();
+      });
     });
     if (s.solution.diagram) it(`${s.id} has a picture for every solution step`, () => checkPicture(s.solution.diagram!, s.solution.steps.length));
     s.questions.forEach((q, qi) => {

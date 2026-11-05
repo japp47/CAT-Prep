@@ -4,10 +4,12 @@ import type { AppState, Mock } from "../../lib/state";
 import { useStore } from "../../lib/store";
 import { acrossReviews, findings } from "../../practice/mockreview";
 
-/** Where to analyse a logged result: a sectional on this site is filled in from its record. */
+/** Where to analyse a logged result: a sectional or an Arena round on this site is filled in from its record (D85). */
 export function analyseLink(st: AppState, m: Mock) {
-  const att = m.k === "Sectional" && m.id.endsWith("m") ? st.sectionals.find((s) => s.id === m.id.slice(0, -1)) : undefined;
-  return att ? `/progress/mock-review?sectional=${att.id}` : `/progress/mock-review?mock=${m.id}`;
+  const own = m.k === "Sectional" && m.id.endsWith("m") ? m.id.slice(0, -1) : undefined;
+  if (own && st.sectionals.some((s) => s.id === own)) return `/progress/mock-review?sectional=${own}`;
+  if (own && st.arenaRounds.some((r) => r.id === own)) return `/progress/mock-review?arena=${own}`;
+  return `/progress/mock-review?mock=${m.id}`;
 }
 
 /** Mock reviews on the Mocks tab: results still to analyse, past reviews, and the pattern across them. */

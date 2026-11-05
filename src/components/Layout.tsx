@@ -45,6 +45,7 @@ export function useTheme(): [Theme, (t: Theme) => void] {
   return [theme, setTheme];
 }
 
+// The tab labels grow with the phone's text size up to 15px, so five still fit side by side at 130%.
 const BOTTOM_BAR = "fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t bg-card pb-[env(safe-area-inset-bottom)] lg:hidden"; // taste-skill-ignore: the edge of a fixed bar
 
 // The phone menu loads on first use; loadMenu fetches it early (on idle, or when a finger lands on a menu button).
@@ -171,11 +172,11 @@ export default function Layout() {
 
       <nav aria-label="Quick" className={BOTTOM_BAR}>
         {TABS.map(({ label, Icon, ...it }) => (
-          <SiteNavLink key={it.to} item={it} className={(isActive) => cn("flex h-16 flex-col items-center justify-center gap-1 text-sm font-medium text-muted-foreground [&_svg]:size-6", isActive && "text-primary")}>
+          <SiteNavLink key={it.to} item={it} className={(isActive) => cn("flex h-16 flex-col items-center justify-center gap-1 text-[min(0.875rem,15px)] font-medium text-muted-foreground [&_svg]:size-6", isActive && "text-primary")}>
             <Icon />{label}
           </SiteNavLink>
         ))}
-        <button type="button" aria-expanded={open} onPointerDown={loadMenu} onClick={openMenu} className="flex h-16 flex-col items-center justify-center gap-1 text-sm font-medium text-muted-foreground"><Menu className="size-6" />Menu</button>
+        <button type="button" aria-expanded={open} onPointerDown={loadMenu} onClick={openMenu} className="flex h-16 flex-col items-center justify-center gap-1 text-[min(0.875rem,15px)] font-medium text-muted-foreground"><Menu className="size-6" />Menu</button>
       </nav>
 
       {menuUsed && (

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { blankState } from "../lib/state";
 import { CONTENT } from "./full";
 import { recordCr, recordRc } from "./record";
-import { skillMap, startHere, stateCounts, stateOf, weeklyAccuracy } from "./skills";
+import { diSetFor, skillMap, startHere, stateCounts, stateOf, weeklyAccuracy } from "./skills";
 
 const today = "2026-10-30";
 
@@ -61,9 +61,49 @@ describe("the skill map", () => {
     const st = blankState();
     st.lrAttempts.push({ id: "l", d: "2026-10-20", set: "arr-six-colleagues", ans: [0, 1, null, "13", ""], c: 2, w: 1, secs: 600, updatedAt: 1 });
     const fams = skillMap(st, "DILR", today, null);
-    expect(fams.map((f) => f.id)).toEqual(["lr", "clue"]);
+    expect(fams.map((f) => f.id)).toEqual(["lr", "di", "clue"]);
     expect(fams[0].skills.find((s) => s.key === "lr:arrangement")).toMatchObject({ a: 3, c: 2, state: "learning", to: "/dilr?guide=arrangement" });
-    expect(fams[1].skills.length).toBe(8);
+    expect(fams[0].skills.some((s) => s.key.startsWith("lr:di-"))).toBe(false);
+    expect(fams[2].skills.length).toBe(8);
+  });
+
+  describe("data interpretation (D84)", () => {
+    const port = CONTENT.lrById("di-port-cargo")!, right = port.questions.map((q) => q.answer);
+    // Q1 right (read), Q2 wrong (percent), Q3 right (percent), Q4 blank (range), Q5 right (range).
+    const ans = [right[0], port.questions[1].kind === "mcq" ? ((right[1] as number) + 1) % 4 : "0", right[2], null, right[4]];
+    const tried = (v?: string) => { const st = blankState(); st.lrAttempts.push({ id: "d", d: "2026-11-02", set: port.id, ans, c: 3, w: 1, secs: 800, updatedAt: 1, ...(v ? { v } : {}) }); return st; };
+    const di = (st: ReturnType<typeof blankState>, byId: typeof CONTENT.lrById | null) => skillMap(st, "DILR", today, null, byId).find((f) => f.id === "di")!;
+
+    it("puts Charts and Tables with the four kinds, each answer scored for its kind", () => {
+      const f = di(tried(), CONTENT.lrById);
+      expect(f.skills.map((s) => s.key)).toEqual(["di:di-table", "di:di-chart", "di:read", "di:percent", "di:growth", "di:range"]);
+      expect(f.skills.find((s) => s.key === "di:di-chart")).toMatchObject({ a: 4, c: 3, to: "/dilr?guide=di-chart" });
+      expect(f.skills.find((s) => s.key === "di:read")).toMatchObject({ a: 1, c: 1 });
+      expect(f.skills.find((s) => s.key === "di:percent")).toMatchObject({ a: 2, c: 1 });
+      expect(f.skills.find((s) => s.key === "di:range")).toMatchObject({ a: 1, c: 1 });
+      expect(f.skills.find((s) => s.key === "di:growth")).toMatchObject({ a: 0, state: "new" });
+    });
+
+    it("waits for the DI sets before showing the kinds, and skips an attempt on a set changed since", () => {
+      expect(di(tried(), null).skills.map((s) => s.key)).toEqual(["di:di-table", "di:di-chart"]);
+      expect(di(blankState(), null).skills).toHaveLength(6);
+      expect(di(tried("old"), CONTENT.lrById).skills.find((s) => s.key === "di:percent")!.a).toBe(0);
+    });
+
+    it("holds back both the picture and the kind of an old DI miss still in the redo queue", () => {
+      const st = tried();
+      st.redo.push({ k: `lr:${port.id}:1`, added: "2026-10-01", due: "2026-10-02", box: 0, tries: 1 });
+      const f = di(st, CONTENT.lrById);
+      expect(f.skills.filter((s) => s.waiting).map((s) => s.key)).toEqual(["di:di-chart", "di:percent"]);
+    });
+
+    it("sends a kind tile to the untried DI set with the most questions of that kind", () => {
+      expect(diSetFor("growth", blankState())).toBe("/practice/lr/di-six-economies");
+      const st = blankState();
+      st.lrAttempts.push({ id: "g", d: "2026-11-02", set: "di-six-economies", ans: [], c: 0, w: 0, secs: 1, updatedAt: 1 });
+      expect(diSetFor("growth", st)).toBe("/practice/lr/di-power-capacity");
+      expect(diSetFor("range", blankState())).toBe("/practice/lr/di-monsoon-2025");
+    });
   });
 
   it("starts with the weakest judged skill, weak before steady", () => {

@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { blankState, normalize, type MockQ, type MockReview, type PracticeSet } from "../lib/state";
+import { blankState, normalize, type ArenaRound, type LrAttempt, type MockQ, type MockReview, type PracticeSet } from "../lib/state";
 import { CONTENT } from "./full";
 import {
-  acrossReviews, DEFAULT_LAYOUT, findings, fromSectional, lost, proposeActions, questionsFor, toErrors, toPractice, typesOf,
+  acrossReviews, ARENA_RESULT, arenaResult, DEFAULT_LAYOUT, findings, fromArena, fromSectional, lost, proposeActions, questionsFor, toErrors, toPractice, typesOf,
   gridResult, loggedAfter,
 } from "./mockreview";
 import { resolveExam } from "./redo";
@@ -172,3 +172,47 @@ describe("state", () => {
     expect(bad.recs[0].to).toBeUndefined();
   });
 });
+
+describe("from an Arena round on this site (D85)", () => {
+  const port = CONTENT.lrById("di-port-cargo")!, six = CONTENT.lrById("di-six-economies")!;
+  const ids = ["di-port-cargo", "arr-six-colleagues", "di-monsoon-2025", "di-six-economies", "di-batch-enrolments"];
+  const wrongMcq = (port.questions[1].answer as number + 1) % 4;
+  const lr: LrAttempt[] = [
+    { id: "ap", d: "2026-11-05", set: port.id, ans: [port.questions[0].answer, wrongMcq, null, null, null], c: 1, w: 1, secs: 600, updatedAt: 1, qs: [200, 90, 30, 0, 0] },
+    { id: "as", d: "2026-11-05", set: six.id, ans: [six.questions[0].answer, null, null, null, null], c: 1, w: 0, secs: 500, updatedAt: 1, qs: [300, 0, 0, 0, 0] },
+  ];
+  const r: ArenaRound = {
+    id: "R1", d: "2026-11-05", updatedAt: 1, sets: ids, order: ["di-port-cargo", "di-six-economies", "di-monsoon-2025"], left: ["arr-six-colleagues", "di-batch-enrolments"],
+    guess: {}, look: 200, visits: [["di-port-cargo", 200, 800], ["di-six-economies", 800, 1300]], attempts: { "di-port-cargo": "ap", "di-six-economies": "as" }, secs: 2400,
+  };
+  const { layout, qs } = fromArena(r, lr, CONTENT.lrById);
+  const of = (set: number) => { const from = layout.sets!.slice(0, set).reduce((s, x) => s + x.n, 0); return qs.slice(from, from + layout.sets![set].n); };
+
+  it("lays the sets out in deal order with their review types and formats", () => {
+    expect(layout.sets!.map((x) => x.type)).toEqual(["graphs", "arrangements", "tables", "graphs", "tables"]);
+    expect(qs.length).toBe(layout.sets!.reduce((s, x) => s + x.n, 0));
+    expect(of(0).map((q) => q.format)).toEqual(port.questions.map((q) => q.kind));
+  });
+
+  it("marks answers right or wrong, a slow right answer, and asks only about blanks in a worked set", () => {
+    expect(of(0).map((q) => q.st)).toEqual(["right", "wrong", "skip", "skip", "skip"]);
+    expect(of(0)[2].could).toBeUndefined();
+    expect(of(3)[0]).toMatchObject({ st: "right", slow: true, secs: 300 });
+    expect(of(0)[0].slow).toBeUndefined();
+  });
+
+  it("settles a left set as a good skip and counts a picked set never reached as time", () => {
+    expect(of(1).every((q) => q.st === "skip" && q.could === false)).toBe(true);
+    expect(of(2).every((q) => q.st === "unseen")).toBe(true);
+    const f = findings({ qs, sec: "DILR" });
+    expect(f.groups.find((g) => g.key === "time")!.n).toBe(of(2).length);
+    expect(f.goodSkips).toBe(of(1).length + of(4).length);
+  });
+
+  it("logs the round as a DILR sectional result, and reviews of a round survive a save", () => {
+    expect(arenaResult(r, [{ c: 1, w: 1 }, { c: 1, w: 0 }])).toEqual({ id: "R1m", d: "2026-11-05", sec: "DILR", n: ARENA_RESULT, k: "Sectional", c: 2, w: 1 });
+    const review: MockReview = { id: "v", d: "2026-11-05", updatedAt: 1, mock: "R1m", sec: "DILR", from: "arena", att: "R1", name: ARENA_RESULT, layout, qs, recs: [] };
+    expect(normalize(JSON.parse(JSON.stringify({ mockReviews: [review] }))).mockReviews[0]).toMatchObject({ from: "arena", att: "R1" });
+  });
+});
+

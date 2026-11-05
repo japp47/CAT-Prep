@@ -78,9 +78,9 @@ export default function SiteHeader({ landing, panel, onLoadPanel, open, onOpenCh
       </div>
       {open && panel}
     </header>}
-    <header className="sticky top-0 z-40 flex h-14 items-center justify-between bg-sidebar px-gutter lg:hidden">
-      <Brand />
-      <div className="-mr-2 flex items-center gap-1">
+    <header className="sticky top-0 z-40 flex h-14 items-center justify-between gap-2 bg-sidebar px-gutter lg:hidden">
+      <Brand fit />
+      <div className="-mr-2 flex shrink-0 items-center gap-1">
         <ThemeToggle />
         <button type="button" onClick={onOpenSearch} aria-label="Search" title="Search" aria-keyshortcuts="Meta+K Control+K"
           className="grid size-11 place-items-center rounded-md text-foreground/75 transition-colors hover:bg-card hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"><SearchIcon className="size-5" aria-hidden /></button>
