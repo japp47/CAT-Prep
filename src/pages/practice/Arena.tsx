@@ -19,7 +19,8 @@ import {
 } from "../../practice/arena";
 import { LR_CATALOG } from "../../practice/catalog.gen";
 import type { Content } from "../../practice/content";
-import { recordLr } from "../../practice/lrattempt";
+import { recordLr, scoreLr } from "../../practice/lrattempt";
+import { arenaResult } from "../../practice/mockreview";
 import { fmtSecs } from "../../practice/record";
 import { isDi, type LrSet } from "../../practice/types";
 import NotFound from "../NotFound";
@@ -48,6 +49,8 @@ interface Draft {
   seen?: string[];
   /** The calculator's log by set (D82), kept on each set's attempt as in the player. */
   calc?: Record<string, string[]>;
+  /** Seconds on each question by set, counted only while solving (D85), kept on each set's attempt as in the player. */
+  qt?: Record<string, number[]>;
 }
 
 function loadDraft(): Draft | null {
@@ -190,6 +193,23 @@ function Round({ start, c, ended, onAside }: { start: Draft; c: Content; ended: 
 
   useEffect(() => { if (!done.current) saveDraft(d); }, [d]);
 
+  // Time on each question (D85): the question on screen gathers seconds until the student moves to another question
+  // or set. Time away from the page is not counted against a question.
+  const onQ = useRef<{ set: string; q: number; at: number } | null>(null);
+  const curQ = d.phase === "solve" ? (d.work[d.open]?.cur ?? 0) : -1;
+  const withTime = (p: Draft, was: { set: string; q: number; at: number } | null, now: number): Draft => {
+    const set = was && sets.find((s) => s.id === was.set);
+    if (!was || !set) return p;
+    const qt = [...(p.qt?.[was.set] ?? Array<number>(set.questions.length).fill(0))];
+    qt[was.q] = (qt[was.q] ?? 0) + (now - was.at) / 1000;
+    return { ...p, qt: { ...p.qt, [was.set]: qt } };
+  };
+  useEffect(() => {
+    const now = Date.now(), was = onQ.current;
+    if (was) setD((p) => withTime(p, was, now));
+    onQ.current = d.phase === "solve" ? { set: d.open, q: curQ, at: now } : null;
+  }, [d.open, curQ, d.phase]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const workOf = (id: string) => d.work[id] ?? blankWork(byId(id));
   /** Closes the visit to the set on screen and opens another. */
   const visit = (id: string) => setD((p) => {
@@ -201,7 +221,7 @@ function Round({ start, c, ended, onAside }: { start: Draft; c: Content; ended: 
   const submit = () => {
     if (done.current) return;
     done.current = true;
-    const end = elapsed(d);
+    const end = elapsed(d), timed = withTime(d, onQ.current, Date.now());
     const visits: [string, number, number][] = d.phase === "solve" && end > d.from ? [...d.visits, [d.open, d.from, end]] : d.visits;
     const now = Date.now(), today = todayIso();
     // Ids are made here, not in the update, which React may run twice.
@@ -216,9 +236,11 @@ function Round({ start, c, ended, onAside }: { start: Draft; c: Content; ended: 
     update((st) => {
       sets.forEach((s) => {
         const w = d.work[s.id];
-        if (attempts[s.id]) recordLr(st, attempts[s.id], s, w.ans, setSecs(round, s.id) || 1, today, w.unsure.flatMap((u, i) => (u ? [i] : [])), now, { calc: d.calc?.[s.id] });
+        if (attempts[s.id]) recordLr(st, attempts[s.id], s, w.ans, setSecs(round, s.id) || 1, today, w.unsure.flatMap((u, i) => (u ? [i] : [])), now, { calc: d.calc?.[s.id], qs: timed.qt?.[s.id] });
       });
       st.arenaRounds.push(round);
+      // A round is a DILR section, so it logs a result as a sectional does (D85); a replay of sets tried before does not.
+      if (!d.replay) st.mocks.push(arenaResult(round, sets.flatMap((s) => (attempts[s.id] ? [scoreLr(s, d.work[s.id].ans)] : []))));
     });
     saveDraft(null);
     leave.allowNextNavigation();
@@ -491,6 +513,7 @@ function DebriefOf({ r }: { r: ArenaRound }) {
   const title = (id: string) => META.get(id)?.title ?? id;
   const solvedIn = Object.keys(r.attempts);
   const unsolved = r.sets.filter((id) => !r.attempts[id] && !lr.some((a) => a.set === id));
+  const analysed = state.mockReviews.find((x) => x.mock === r.id + "m");
   const box = useRef<HTMLDivElement>(null);
   useGsap(box, (gsap, el) => {
     gsap.from(el.querySelectorAll(".origin-left"), { scaleX: 0, duration: 0.6, stagger: 0.06, ease: "power2.out" });
@@ -508,6 +531,13 @@ function DebriefOf({ r }: { r: ArenaRound }) {
         ["Time used", fmtSecs(r.secs)],
       ]}>
         {cost && <p className="measure rounded-md bg-highlight-soft px-4 py-3 text-base">The set that cost most: <b className="font-semibold">{letterOf(r, cost.set)}</b>, {Math.round(cost.mins)} minutes for {cost.right} right ({cost.marks} marks).</p>}
+        {/* The round is a whole DILR section, so it can be analysed like one (D85). */}
+        <div className="flex flex-col gap-2">
+          {analysed
+            ? <LinkButton to={`/progress/mock-review/${analysed.id}`} variant="secondary" className="w-fit">Open your analysis</LinkButton>
+            : <LinkButton to={`/progress/mock-review?arena=${r.id}`} className="w-fit">Analyse this round</LinkButton>}
+          {!analysed && <p className="measure text-base text-muted-foreground">Like a sectional: say why each wrong answer went wrong, see where the marks went, and choose up to three things to fix.</p>}
+        </div>
       </ScoreCard>
 
       <Section title="Your 40 minutes" description="One lane per set; each bar is a stretch of time on it. Gaps are where you switched.">
@@ -531,7 +561,7 @@ function DebriefOf({ r }: { r: ArenaRound }) {
           {solvedIn.map((id) => <li key={id}><ArrowLink to={`/practice/lr/${id}?review=${r.attempts[id]}`}>Review {letterOf(r, id)}: {title(id)}</ArrowLink></li>)}
           {unsolved.map((id) => <li key={id}><ArrowLink to={`/practice/lr/${id}`}>Solve {letterOf(r, id)} now: {title(id)}</ArrowLink></li>)}
         </ul>
-        <div className="pt-2"><LinkButton to="/practice/arena">Play another round</LinkButton></div>
+        <div className="pt-2"><LinkButton to="/practice/arena" variant="secondary">Play another round</LinkButton></div>
       </Section>
     </Page>
   );

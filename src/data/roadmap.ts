@@ -12,8 +12,8 @@ export const UPDATED = "2026-11-05";
 export const ROADMAP: RoadGroup[] = [
   { title: "New this month", status: "Live", items: [
     { title: "DILR: logical reasoning", text: "47 original sets in 13 types, from arrangements and tournaments to routes and Venn diagrams, each with a timer, a scratch pad, a solution drawn step by step and a two-minute post-mortem. Drills for reading a clue exactly, telling must from could, and choosing where to start, and DILR replay to watch each deduction narrow the answers." },
-    { title: "DILR: data interpretation", text: "Chart and table sets at CAT level, drawn from their numbers the way the exam draws them, with CAT's calculator in the player and every answer checked in code. Four are built on real data: GDP and growth, India's trade, the 2025 monsoon and power capacity. From week 4 of Foundation, Today gives a DI set of the day." },
-    { title: "Set Selection Arena", text: "Five sets you have not seen and 40 minutes, as in the exam. Read them, pick where to start, solve, then see where the minutes went and whether your picks paid off, round after round." },
+    { title: "DILR: data interpretation", text: "Chart and table sets at CAT level, drawn from their numbers the way the exam draws them, with CAT's calculator in the player and every answer checked in code. Four are built on real data: GDP and growth, India's trade, the 2025 monsoon and power capacity. From week 4 of Foundation, Today gives a DI set of the day, and Progress shows DI by picture and by question kind: reading, percentages, growth and ranges." },
+    { title: "Set Selection Arena", text: "Five sets you have not seen and 40 minutes, as in the exam. Read them, pick where to start, solve, then see where the minutes went and whether your picks paid off. Analyse a round like a sectional: why each answer went wrong and what to fix, with the score counted on Progress." },
     { title: "Fairer timing", text: "Back in a set after more than half an hour, you choose: start fresh for an honest time, or carry on with your answers counted and that set's time left out. In the Arena, start solving with one tap; planning the whole order is optional." },
     { title: "Progress with a skill map", text: "One tile per skill, from RC question kinds to LR set types, each saying not started, learning, weak, steady or strong only once there are enough answers to judge, with the one to start with marked." },
     { title: "The DILR page", text: "How the section works, recent slots set by set, a guide for each LR set type and each DI picture, and past CAT DI sets in the order to try them." },
@@ -33,7 +33,7 @@ export const ROADMAP: RoadGroup[] = [
     ...(SIGNIN_ENABLED ? [{ title: "Optional Google sign-in", text: "Keep using 99ile without an account, or sign in with Google so your synced progress is tied to your account instead of a recovery code." }] : []),
   ] },
   { title: "Next up", status: "November to December", items: [
-    { title: "More DI sets, harder", text: "More chart and table sets through December, harder than the first ones, and data interpretation on the skill map by picture and question kind." },
+    { title: "More DI sets, harder", text: "More chart and table sets through December, harder than the first ones, with more growth and projection questions." },
     { title: "AI feedback", text: "Feedback on your own para summaries, and a plain explanation of why the option you chose was wrong." },
     ...(!API_ENABLED ? [{ title: "Sync between devices", text: "Keep your plan and logs the same on your phone and laptop, without signing up: link a device with a code." }]
       : !SIGNIN_ENABLED ? [{ title: "Optional Google sign-in", text: "Keep using 99ile without an account, or sign in with Google so your synced progress is tied to your account instead of a recovery code." }] : []),

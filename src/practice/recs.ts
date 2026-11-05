@@ -1,5 +1,6 @@
 import { addDays } from "../lib/date";
 import type { AppState, Recommendation } from "../lib/state";
+import { ARENA_RESULT } from "./mockreview";
 import { targetBand } from "./percentile";
 import { accuracy } from "./report";
 
@@ -51,5 +52,6 @@ export function readiness(st: AppState, sec = "VARC") {
   if (!ms.length) return null;
   const band = targetBand(st.targets.varc, 24);
   const avg = ms.reduce((s, m) => s + m.c, 0) / ms.length;
-  return { count: ms.length, avg: Math.round(avg * 10) / 10, band, onTarget: avg >= band[0] };
+  // An Arena round is a DILR section on our sets (D85): it counts, and the card says what it is.
+  return { count: ms.length, avg: Math.round(avg * 10) / 10, band, onTarget: avg >= band[0], arena: ms.some((m) => m.n === ARENA_RESULT) };
 }

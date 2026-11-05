@@ -104,6 +104,7 @@
       {
         "stem": "How many students enrolled in batch D in January?",
         "kind": "tita",
+        "dk": "read",
         "answer": "55",
         "uses": [
           1,
@@ -121,6 +122,7 @@
       {
         "stem": "In how many of the four months did batch E have more enrolments than batch A?",
         "kind": "mcq",
+        "dk": "read",
         "options": [
           "0",
           "1",
@@ -143,6 +145,7 @@
       {
         "stem": "What percentage of all April enrolments was accounted for by batches B and D together, to the nearest integer?",
         "kind": "tita",
+        "dk": "percent",
         "answer": "44",
         "tol": 0.5,
         "uses": [
@@ -159,6 +162,7 @@
       {
         "stem": "Taking each batch's best month, what was the highest share of a batch's own four-month total enrolled in a single month?",
         "kind": "mcq",
+        "dk": "percent",
         "options": [
           "31.3%",
           "33.3%",
@@ -181,6 +185,7 @@
       {
         "stem": "If the information in point 4 were not available, and everything else stayed the same, which of the following could NOT be batch B's enrolment in February?",
         "kind": "mcq",
+        "dk": "range",
         "options": [
           "35",
           "40",
@@ -340,6 +345,7 @@
       {
         "stem": "What is the minimum possible actual rainfall of North West India, in mm? Give your answer to the nearest integer.",
         "kind": "tita",
+        "dk": "range",
         "answer": "743",
         "tol": 0.5,
         "uses": [
@@ -355,6 +361,7 @@
       {
         "stem": "Which one of the following CANNOT be the normal rainfall of South Peninsula (in mm)?",
         "kind": "mcq",
+        "dk": "range",
         "options": [
           "716",
           "719",
@@ -374,6 +381,7 @@
       {
         "stem": "What is the minimum possible value, to the nearest integer, of the sum of the actual rainfalls (in mm) of North West India, Central India, East & North East India and South Peninsula?",
         "kind": "mcq",
+        "dk": "range",
         "options": [
           "3750",
           "3743",
@@ -395,6 +403,7 @@
       {
         "stem": "In how many of the four regions (excluding All India) is the actual rainfall certain to be at least 10% above the normal?",
         "kind": "mcq",
+        "dk": "range",
         "options": [
           "3",
           "2",
@@ -414,6 +423,7 @@
       {
         "stem": "If East & North East India had received exactly its normal rainfall, by how many mm would its rainfall have been higher than its actual rainfall? Give the smallest possible value, to the nearest integer.",
         "kind": "tita",
+        "dk": "range",
         "answer": "267",
         "tol": 0.5,
         "uses": [

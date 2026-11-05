@@ -4,7 +4,8 @@ import { LR_GUIDE_BY_TYPE } from "../sections/dilr/guides";
 import { CR_CATALOG, LR_CATALOG } from "./catalog.gen";
 import { clueReport } from "./lrdrill";
 import { CLUE_KIND, type ClueKind } from "./lrlogic";
-import { CR_TYPE, CR_TYPES, LR_TYPE, LR_TYPES, RC_QTYPE, type CrType, type LrType, type RcQType, type RcSet } from "./types";
+import { lrRight } from "./lrcheck";
+import { CR_TYPE, CR_TYPES, DI_KIND, DI_KINDS, DI_SET_TYPES, isDi, LR_TYPE, LR_TYPES, lrVersion, RC_QTYPE, type CrType, type DiKind, type LrSet, type LrType, type RcQType, type RcSet } from "./types";
 import { VA_KIND, VA_KINDS, type VaKind } from "./va/build";
 import { rcStale } from "./versions";
 
@@ -41,21 +42,45 @@ const count = (m: Tally, k: string, ok: boolean) => { const t = m.get(k) ?? { a:
 
 const CR_OF = new Map(CR_CATALOG.map((c) => [c.id, c.type]));
 const LR_OF = new Map(LR_CATALOG.map((s) => [s.id, s.type]));
+const LR_META = new Map(LR_CATALOG.map((s) => [s.id, s]));
+/** Whether a set id is a DI set. */
+export const isDiSet = (id: string) => { const t = LR_OF.get(id); return !!t && isDi(t); };
 
-/** The skill a redo key belongs to: "rc:<set>:<q>", a VA key such as "pj:bees", "cr:<id>" or "lr:<set>:<q>". */
-function skillOfRedo(k: string, rcById: ((id: string) => RcSet | undefined) | null): string | null {
+/**
+ * The skills a redo key belongs to: "rc:<set>:<q>", a VA key such as "pj:bees", "cr:<id>" or "lr:<set>:<q>". A DI
+ * question belongs to two: its picture and its kind (D84).
+ */
+function skillsOfRedo(k: string, rcById: ((id: string) => RcSet | undefined) | null): string[] {
   const [kind, id, q] = k.split(":");
-  if (kind === "rc") { const t = rcById?.(id)?.questions[+q]?.type; return t ? "rc:" + t : null; }
-  if (kind === "cr") { const t = CR_OF.get(id); return t ? "cr:" + t : null; }
-  if (kind === "lr") { const t = LR_OF.get(id); return t ? "lr:" + t : null; }
-  return kind in VA_KIND ? "va:" + kind : null;
+  if (kind === "rc") { const t = rcById?.(id)?.questions[+q]?.type; return t ? ["rc:" + t] : []; }
+  if (kind === "cr") { const t = CR_OF.get(id); return t ? ["cr:" + t] : []; }
+  if (kind === "lr") {
+    const t = LR_OF.get(id);
+    if (!t) return [];
+    if (!isDi(t)) return ["lr:" + t];
+    const dk = LR_META.get(id)?.dk?.[+q];
+    return ["di:" + t, ...(dk ? ["di:" + dk] : [])];
+  }
+  return kind in VA_KIND ? ["va:" + kind] : [];
 }
 
 /** Skills with a miss added HELD_DAYS or more ago that has not left the redo queue. */
 function unfixedSkills(st: AppState, rcById: ((id: string) => RcSet | undefined) | null, today: string): Set<string> {
   const cut = addDays(today, -HELD_DAYS), out = new Set<string>();
-  st.redo.forEach((r) => { if (!r.cleared && r.added <= cut) { const s = skillOfRedo(r.k, rcById); if (s) out.add(s); } });
+  st.redo.forEach((r) => { if (!r.cleared && r.added <= cut) skillsOfRedo(r.k, rcById).forEach((s) => out.add(s)); });
   return out;
+}
+
+/**
+ * Where a DI kind tile goes (D84): the DI set with the most questions of that kind, one the student has not tried
+ * first; the DI half of practice when no set has the kind.
+ */
+export function diSetFor(kind: DiKind, st: AppState): string {
+  const tried = new Set(st.lrAttempts.map((a) => a.set));
+  const best = LR_CATALOG.filter((m) => m.dk?.includes(kind))
+    .map((m) => ({ id: m.id, n: m.dk!.filter((k) => k === kind).length, fresh: !tried.has(m.id) }))
+    .sort((a, b) => Number(b.fresh) - Number(a.fresh) || b.n - a.n)[0];
+  return best ? "/practice/lr/" + best.id : "/dilr/practice?half=di";
 }
 
 function family(id: string, title: string, keys: string[], label: (k: string) => string, to: (k: string) => string, tally: Tally, unfixed: Set<string>): SkillFamily {
@@ -71,10 +96,11 @@ function family(id: string, title: string, keys: string[], label: (k: string) =>
 }
 
 /**
- * The map for a section. RC question kinds need the passages (`rcById`); without them the RC family is left out, so
- * the page can show the rest at once and add RC when the passages arrive.
+ * The map for a section. RC question kinds need the passages (`rcById`), and DI question kinds the DI sets tried
+ * (`lrById`); without them those tiles are left out, so the page can show the rest at once and add them when the
+ * content arrives.
  */
-export function skillMap(st: AppState, sec: "VARC" | "DILR", today: string, rcById: ((id: string) => RcSet | undefined) | null): SkillFamily[] {
+export function skillMap(st: AppState, sec: "VARC" | "DILR", today: string, rcById: ((id: string) => RcSet | undefined) | null, lrById: ((id: string) => LrSet | undefined) | null = null): SkillFamily[] {
   const tally: Tally = new Map();
   const unfixed = unfixedSkills(st, rcById, today);
   if (sec === "VARC") {
@@ -92,18 +118,26 @@ export function skillMap(st: AppState, sec: "VARC" | "DILR", today: string, rcBy
       family("cr", "Critical reasoning", CR_TYPES, (k) => CR_TYPE[k as CrType].label, (k) => `/practice/cr?type=${k}&n=6`, tally, unfixed),
     ];
   }
-  // DILR: every answered question of an LR set counts for its type; the set's c is how many were right.
+  // DILR: every answered question of a set counts for its type (a DI picture in the DI family); the set's c is how many were right.
   st.lrAttempts.forEach((a) => {
     const t = LR_OF.get(a.set);
     if (!t) return;
     const n = a.ans.filter((x) => x !== null && x !== "").length;
-    const tt = tally.get("lr:" + t) ?? { a: 0, c: 0 };
-    tally.set("lr:" + t, { a: tt.a + n, c: tt.c + Math.min(a.c, n) });
+    const key = (isDi(t) ? "di:" : "lr:") + t, tt = tally.get(key) ?? { a: 0, c: 0 };
+    tally.set(key, { a: tt.a + n, c: tt.c + Math.min(a.c, n) });
+    // A DI answer also counts for its kind, scored against its set; an attempt on a set changed since is skipped.
+    const set = isDi(t) ? lrById?.(a.set) : undefined;
+    if (!set || (a.v && a.v !== lrVersion(set))) return;
+    set.questions.forEach((q, i) => { const x = a.ans[i] ?? null; if (q.dk && x !== null && x !== "") count(tally, "di:" + q.dk, lrRight(q, x)); });
   });
   clueReport(st.lrDrills).kinds.forEach((k) => tally.set("clue:" + k.kind, { a: k.a, c: k.c }));
-  const types = LR_TYPES.filter((t) => LR_CATALOG.some((s) => s.type === t));
+  const types = LR_TYPES.filter((t) => !isDi(t) && LR_CATALOG.some((s) => s.type === t));
+  // The kinds wait for the DI sets only when there are DI answers to score.
+  const kindsReady = !!lrById || !st.lrAttempts.some((a) => isDiSet(a.set));
+  const di = [...DI_SET_TYPES.filter((t) => LR_CATALOG.some((s) => s.type === t)), ...(kindsReady ? DI_KINDS : [])];
   return [
     family("lr", "Set types", types, (k) => LR_TYPE[k as LrType].label, (k) => (LR_GUIDE_BY_TYPE.has(k as LrType) ? `/dilr?guide=${k}` : "/dilr/practice"), tally, unfixed),
+    family("di", "Data interpretation", di, (k) => (k in DI_KIND ? DI_KIND[k as DiKind] : LR_TYPE[k as LrType].label), (k) => (k in DI_KIND ? diSetFor(k as DiKind, st) : `/dilr?guide=${k}`), tally, unfixed),
     family("clue", "Reading clues", Object.keys(CLUE_KIND), (k) => CLUE_KIND[k as ClueKind], (k) => `/practice/clues?kind=${k}`, tally, unfixed),
   ];
 }

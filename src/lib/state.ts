@@ -129,11 +129,11 @@ export const CAUSE_IDS: Cause[] = ["misread", "qualifier", "beyond", "trap", "me
 export interface MockQ { st: "unmarked" | "right" | "wrong" | "skip" | "unseen"; type: string; format?: "mcq" | "tita"; slow?: boolean; cause?: Cause; could?: boolean; solved?: boolean; secs?: number }
 /**
  * A guided review of one mock or sectional (docs/feature.md, F12). mock is the Mock row it explains; att the sectional
- * when it came from this site. layout gives the questions per RC passage, then the VA questions by kind, in grid order.
+ * (or the Arena round, D85) when it came from this site. layout gives the questions per RC passage, then the VA questions by kind, in grid order.
  * recs are the recommendations kept at the end.
  */
 export interface MockReview {
-  id: string; d: string; updatedAt: number; mock: string; sec: string; from: "manual" | "sectional"; att?: string; name: string;
+  id: string; d: string; updatedAt: number; mock: string; sec: string; from: "manual" | "sectional" | "arena"; att?: string; name: string;
   layout: { rc: number[]; va: string[]; sets?: { type: string; n: number }[]; topics?: { type: string; n: number }[] }; planned?: number; qs: MockQ[]; recs: string[];
   /** Shared by the section analyses of one mock analysed whole (D45), so they show together. */
   group?: string;
@@ -348,7 +348,7 @@ export function normalize(raw: unknown): AppState {
     const layout = isObj(x.layout) ? x.layout : {};
     const r: MockReview = {
       id: str(x.id), d: str(x.d), updatedAt: num(x.updatedAt), mock: str(x.mock), sec: str(x.sec) || "VARC",
-      from: x.from === "sectional" ? "sectional" : "manual", name: str(x.name),
+      from: x.from === "sectional" || x.from === "arena" ? x.from : "manual", name: str(x.name),
       layout: {
         rc: Array.isArray(layout.rc) ? layout.rc.map((n: unknown) => clamp(Math.round(num(n)), 1, 10)) : [],
         va: Array.isArray(layout.va) ? layout.va.map(str) : [],

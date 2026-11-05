@@ -185,11 +185,20 @@ export interface LrTable { caption?: string; head: string[]; rows: string[][] }
  * One question. answer is an option index (MCQ) or the text to type (TITA). uses names the clues (from 1) that settle
  * it, highlighted in review. if is an extra condition for this question only ("if additionally…").
  */
-export interface LrQuestion { stem: string; kind: "mcq" | "tita"; options?: string[]; answer: number | string; uses: number[]; why: string[]; if?: string; fig?: LrDiagram; tol?: number }
+export interface LrQuestion { stem: string; kind: "mcq" | "tita"; options?: string[]; answer: number | string; uses: number[]; why: string[]; if?: string; fig?: LrDiagram; tol?: number; dk?: DiKind }
 
 /** The DI types, which show `data` and `charts` (docs/content/lr-format.md, "Data interpretation"). */
 export const DI_SET_TYPES: LrType[] = ["di-table", "di-chart"];
 export const isDi = (t: LrType) => DI_SET_TYPES.includes(t);
+
+/**
+ * What a DI question makes the student do (D84), for the skill map. Every DI question carries one (`dk`); tagged by
+ * what the question asks last: reading off and comparing, a percentage or its base, growth over time or a what-if
+ * addition, or the least, most or possible values when the data leave a range.
+ */
+export const DI_KINDS = ["read", "percent", "growth", "range"] as const;
+export type DiKind = (typeof DI_KINDS)[number];
+export const DI_KIND: Record<DiKind, string> = { read: "Reading and comparing", percent: "Percentages and bases", growth: "Growth and projections", range: "Ranges and extremes" };
 
 /**
  * A table of numbers in a DI set: one row per item, one cell per column; null is a blank the student must work out.
@@ -284,7 +293,8 @@ export interface LrSet {
   solution: { steps: string[]; grid?: LrTable; cases?: number; diagram?: LrDiagram; fills?: { data: string; cells: [string, string, number | string][] }[] };
 }
 /** apart: each question is its own short puzzle (no shared clues or tables), so the set is not a CAT-style set for the Arena. */
-export interface LrMeta { id: string; title: string; type: LrType; sub?: string; difficulty: Difficulty; minutes: number; questions: number; since: string; v: string; apart?: true }
+/** dk: a DI set's question kinds in question order (D84), so the skill map can pick a set for a kind without loading it. */
+export interface LrMeta { id: string; title: string; type: LrType; sub?: string; difficulty: Difficulty; minutes: number; questions: number; since: string; v: string; apart?: true; dk?: DiKind[] }
 
 /**
  * A short fingerprint (32-bit FNV-1a, 8 hex digits) of what decides an answer. Not for security; it only has to change
@@ -322,6 +332,7 @@ export function lrMeta(s: LrSet): LrMeta {
   const m: LrMeta = { id: s.id, title: s.title, type: s.type, difficulty: s.difficulty, minutes: s.minutes, questions: s.questions.length, since: s.since, v: lrVersion(s) };
   if (s.sub) m.sub = s.sub;
   if (!s.clues.length && !s.tables?.length && !s.data?.length) m.apart = true;
+  if (isDi(s.type)) m.dk = s.questions.map((q) => q.dk!);
   return m;
 }
 export const crMeta = (c: CrItem): CrMeta => ({ id: c.id, type: c.type, difficulty: c.difficulty, topic: c.topic, v: contentHash(c) });

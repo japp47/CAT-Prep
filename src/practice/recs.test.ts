@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { blankState, type AppState, type Recommendation } from "../lib/state";
+import { ARENA_RESULT } from "./mockreview";
 import { measure, readiness, tracked, trend } from "./recs";
 
 const rec = (p: Partial<Recommendation> = {}): Recommendation => ({ id: "r", d: "2026-10-01", updatedAt: 1, from: "mock", sec: "VARC", skill: { kind: "type", key: "Para jumble" }, text: "Drill", why: "", status: "open", before: { c: 4, n: 10 }, ...p });
@@ -43,6 +44,11 @@ describe("the three answers", () => {
     expect(readiness(blankState())).toBeNull();
     const st = blankState();
     st.mocks.push({ id: "1", d: "2026-10-01", sec: "VARC", n: "", k: "Full mock", c: 12, w: 2 }, { id: "2", d: "2026-10-08", sec: "VARC", n: "", k: "Full mock", c: 14, w: 2 });
-    expect(readiness(st)).toMatchObject({ count: 2, avg: 13 });
+    expect(readiness(st)).toMatchObject({ count: 2, avg: 13, arena: false });
+  });
+  it("count an Arena round as a DILR result and say so (D85)", () => {
+    const st = blankState();
+    st.mocks.push({ id: "Rm", d: "2026-11-05", sec: "DILR", n: ARENA_RESULT, k: "Sectional", c: 11, w: 3 });
+    expect(readiness(st, "DILR")).toMatchObject({ count: 1, avg: 11, arena: true });
   });
 });
