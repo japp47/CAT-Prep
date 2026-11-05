@@ -25,7 +25,7 @@ import { recordRcSummary, summaryFor, summaryScore } from "../../practice/summar
 import { rcStale } from "../../practice/versions";
 import { GENRES, RC_QTYPE, setWords, SUMMARY_MAX_WORDS, words, type RcSet, type RcSummary } from "../../practice/types";
 import NotFound from "../NotFound";
-import { Choice, ChoiceGroup, QuestionNav, Confirm, ElapsedTimer, TimeUp, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
+import { BreakNote, Choice, ChoiceGroup, ComeBack, QuestionNav, Confirm, ElapsedTimer, TimeUp, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ResumeNote, type Resume, ReviewChoice, ScoreCard, timeShown, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
 
 /** Words too common to be worth saving to flashcards. */
 const COMMON = new Set("the and for are but not you all any can had her was one our out has him his how its may new now old see two way who did get let put say she too use that with have this will your from they know want been good much some time very when come here just like long make many more only over such take than them well were what which their there these those would could should about after other where while being because through between does into also each most even then upon whose".split(" "));
@@ -193,13 +193,23 @@ function SummaryReview({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
   );
 }
 
+/** The set behind its door (D83): after a long break it asks to start fresh or carry on. */
 function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) {
+  return (
+    <ComeBack draftKey={"rc:" + set.id} kicker={`RC practice, ${GENRES[set.genre].toLowerCase()}, ${set.difficulty}`} title={set.title}>
+      {(r) => <Solve set={set} onDone={onDone} resume={r} />}
+    </ComeBack>
+  );
+}
+
+function Solve({ set, onDone, resume }: { set: RcSet; onDone: (id: string) => void; resume: Resume }) {
   const { update } = useStore();
   const leave = useLeaveConfirmation(true);
   const n = set.questions.length;
   const draftKey = "rc:" + set.id;
   const [saved] = useState(() => { const d = readDraft<RcDraft>(draftKey); return d && d.ans?.length === n ? d : null; });
   const [resumed, setResumed] = useState(!!saved);
+  const [away, setAway] = useState(saved ? resume.away ?? 0 : 0);
   const [ans, setAns] = useState<(number | null)[]>(saved?.ans ?? Array(n).fill(null));
   const [marked, setMarked] = useState<boolean[]>(saved?.marked ?? Array(n).fill(false));
   const [unsure, setUnsure] = useState<boolean[]>(saved?.unsure?.length === n ? saved.unsure : Array(n).fill(false));
@@ -244,6 +254,7 @@ function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) 
     firstAt.current = null;
     setStartAt(Date.now());
     setResumed(false);
+    setAway(0);
     setConfirmRestart(false);
   };
 
@@ -259,7 +270,7 @@ function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) 
     const id = uid();
     submitted.current = true;
     writeDraft(draftKey, null);
-    update((st) => recordRc(st, id, set, ans, secs, first, mode, today, unsure.flatMap((u, i) => (u ? [i] : []))));
+    update((st) => recordRc(st, id, set, ans, secs, first, mode, today, unsure.flatMap((u, i) => (u ? [i] : [])), away));
     setConfirming(false);
     leave.allowNextNavigation(); // the review goes into the address (?review=): not a "leave"
     onDone(id);
@@ -281,10 +292,7 @@ function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) 
         <Button size="sm" variant="secondary" onClick={() => setConfirming(true)}>Submit set</Button>
       </PlayerBar>
       <TimeUp key={startAt} startAt={startAt} target={TARGET_SECS} onSubmit={submit} />
-      {resumed && saved && <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-card px-4 py-3">
-        <p className="text-sm text-muted-foreground">Your saved answers are back. The timer paused while you were away ({fmtSecs(saved.secs)} elapsed).</p>
-        <Button variant="ghost" size="sm" onClick={() => setConfirmRestart(true)}>Start over</Button>
-      </div>}
+      <ResumeNote r={resume} restored={resumed && !!saved} onRestart={() => setConfirmRestart(true)} />
 
       <PaneSwitch pane={pane} setPane={setPane} q={`Question ${cur + 1} of ${n}`} />
 
@@ -329,7 +337,7 @@ function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) 
         This clears your saved answers and elapsed time for this set.
       </Confirm>
       <Confirm open={leave.open} onOpenChange={leave.onOpenChange} title="Leave this practice?" action="Leave practice" onAction={leave.onLeave} cancel="Keep practicing" danger actionClassName="!text-white dark:!text-black">
-        Your answers, current question and elapsed time are saved. The timer pauses while you are away. Return within 24 hours to resume.
+        Your answers, current question and elapsed time are saved. The timer pauses while you are away. Back within 30 minutes, you carry on; after longer, you choose to start fresh or carry on with this set's time not counted. Unfinished sets keep for a day.
       </Confirm>
     </Page>
   );
@@ -502,11 +510,12 @@ function Summary({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
     const i = RC_CATALOG.findIndex((x) => x.id === set.id);
     return [...RC_CATALOG.slice(i + 1), ...RC_CATALOG.slice(0, i)].find((x) => !tried.has(x.id)) ?? RC_CATALOG[(i + 1) % RC_CATALOG.length];
   }, [state.rcAttempts, set.id]);
-  const wpm = attempt.first >= 30 ? Math.round(setWords(set) / (attempt.first / 60)) : null;
-  const parts: [string, React.ReactNode][] = [["Correct", s.c], ["Wrong", s.w], ["Skipped", s.skipped], ["Time", fmtSecs(attempt.secs)]];
+  const wpm = !attempt.away && attempt.first >= 30 ? Math.round(setWords(set) / (attempt.first / 60)) : null;
+  const parts: [string, React.ReactNode][] = [["Correct", s.c], ["Wrong", s.w], ["Skipped", s.skipped], ["Time", timeShown(attempt)]];
   if (wpm) parts.push(["Reading pace", `${wpm} wpm`]);
   return (
     <ScoreCard score={(s.marks > 0 ? "+" : "") + s.marks} of={3 * set.questions.length} parts={parts}>
+      <BreakNote away={attempt.away} />
       <p className="text-base text-muted-foreground">Attempted {mediumDate(attempt.d)}. Logged in Progress as an RC practice set. Each wrong option shows its trap: the reason it looked right.</p>
       <div className="flex flex-wrap gap-3">
         {missing.length > 0 && <Button onClick={() => { update((st) => { missing.forEach((i) => st.errors.push(rcError(set, i, attempt.ans[i], todayIso(), !!attempt.unsure?.includes(i), attempt.id))); }); toast(`Added ${missing.length} to your Error log.`); }}>Add {missing.length} to Error log</Button>}

@@ -29,7 +29,7 @@ import { LR_SLIP_LABEL, LR_TIME_LABEL, lrError, lrErrorSrc, recordLr, saveLrPost
 import { fmtSecs, LETTERS } from "../../practice/record";
 import { isDi, LR_TYPE, lrVersion, type LrDiagram, type LrSet, type LrTable } from "../../practice/types";
 import NotFound from "../NotFound";
-import { Choice, ChoiceGroup, QuestionNav, Confirm, ElapsedTimer, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, TimeUp, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
+import { BreakNote, Choice, ChoiceGroup, ComeBack, QuestionNav, Confirm, ElapsedTimer, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ResumeNote, type Resume, ReviewChoice, ScoreCard, timeShown, TimeUp, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
 import { PaneJump, PaneSwitch, showQuestion, Split } from "./RcPlayer";
 
 /**
@@ -205,7 +205,16 @@ export function LrSolve({ set, work, onChange, pane, setPane, last }: {
   );
 }
 
+/** The set behind its door (D83): after a long break it asks to start fresh or carry on. */
 function Attempt({ set, onDone }: { set: LrSet; onDone: (id: string) => void }) {
+  return (
+    <ComeBack draftKey={"lr:" + set.id} kicker={kicker(set, "LR practice")} title={set.title}>
+      {(r) => <Solve set={set} onDone={onDone} resume={r} />}
+    </ComeBack>
+  );
+}
+
+function Solve({ set, onDone, resume }: { set: LrSet; onDone: (id: string) => void; resume: Resume }) {
   const { update } = useStore();
   const leave = useLeaveConfirmation(true);
   const n = set.questions.length;
@@ -250,7 +259,7 @@ function Attempt({ set, onDone }: { set: LrSet; onDone: (id: string) => void }) 
     submitted.current = true;
     writeDraft(draftKey, null);
     tickQ();
-    const extra = { qs: [...qs.current], calc };
+    const extra = { qs: [...qs.current], calc, away: saved ? resume.away ?? 0 : 0 };
     update((st) => recordLr(st, id, set, work.ans, (Date.now() - startAt) / 1000, todayIso(), work.unsure.flatMap((u, i) => (u ? [i] : [])), Date.now(), extra));
     setConfirming(false);
     leave.allowNextNavigation();
@@ -269,7 +278,7 @@ function Attempt({ set, onDone }: { set: LrSet; onDone: (id: string) => void }) 
       </PlayerBar>
       {calcOpen && <CatCalculator onClose={() => setCalcOpen(false)} onLog={(l) => setCalc((x) => [...x, l].slice(-80))} />}
       <TimeUp startAt={startAt} target={target} onSubmit={submit} />
-      {saved && <p className="text-sm text-muted-foreground">Your saved answers and notes are back. The timer paused while you were away ({fmtSecs(saved.secs)} elapsed).</p>}
+      <ResumeNote r={resume} restored={!!saved} />
 
       <LrSolve set={set} work={work} onChange={setWork} pane={pane} setPane={setPane} last={<Button size="sm" onClick={() => setConfirming(true)}>Submit set</Button>} />
 
@@ -277,7 +286,7 @@ function Attempt({ set, onDone }: { set: LrSet; onDone: (id: string) => void }) 
         {blanks ? `${blanks} question${blanks > 1 ? "s are" : " is"} unanswered. Blanks score 0, a wrong MCQ costs 1 mark and a wrong typed answer costs nothing.` : "All questions answered."}
       </Confirm>
       <Confirm open={leave.open} onOpenChange={leave.onOpenChange} title="Leave this set?" action="Leave the set" onAction={leave.onLeave} cancel="Keep solving" danger actionClassName="!text-white dark:!text-black">
-        Your answers, scratch pad and time are saved. The timer pauses while you are away. Come back within 24 hours to carry on.
+        Your answers, scratch pad and time are saved. The timer pauses while you are away. Back within 30 minutes, you carry on; after longer, you choose to start fresh or carry on with this set's time not counted. Unfinished sets keep for a day.
       </Confirm>
     </Page>
   );
@@ -403,10 +412,11 @@ function Score({ set, attempt }: { set: LrSet; attempt: LrAttempt }) {
     return [...LR_CATALOG.slice(i + 1), ...LR_CATALOG.slice(0, i)].find((x) => !tried.has(x.id));
   }, [state.lrAttempts, set.id]);
   const [seed] = useState(uid);
-  const over = attempt.secs > set.minutes * 60;
+  const over = !attempt.away && attempt.secs > set.minutes * 60;
   return (
     <ScoreCard score={(s.marks > 0 ? "+" : "") + s.marks} of={3 * set.questions.length}
-      parts={[["Correct", s.c], ["Wrong", s.w + s.tw], ["Skipped", s.skipped], ["Time", <span key="t" className={cn(over && "text-danger")}>{fmtSecs(attempt.secs)}</span>]]}>
+      parts={[["Correct", s.c], ["Wrong", s.w + s.tw], ["Skipped", s.skipped], ["Time", timeShown(attempt, over)]]}>
+      <BreakNote away={attempt.away} />
       <p className="text-base text-muted-foreground">Attempted {mediumDate(attempt.d)}, target {set.minutes} minutes. Logged in Progress as a DILR practice set. Wrong MCQs cost a mark; wrong typed answers cost nothing.</p>
       <div className="flex flex-wrap gap-3">
         {missing.length > 0 && <Button onClick={() => { update((st) => { missing.forEach((i) => st.errors.push(lrError(set, i, attempt.ans[i], todayIso(), !!attempt.unsure?.includes(i), attempt.id))); }); toast(`Added ${missing.length} to your Error log.`); }}>Add {missing.length} to Error log</Button>}

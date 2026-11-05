@@ -4,7 +4,7 @@
  * failure leaves the page working on this device's own copy.
  */
 
-/** Sync and the API are visible only in builds with VITE_API_ENABLED=1 (on for `npm run dev`, off in production until B5). */
+/** Sync and the API are visible only in builds with VITE_API_ENABLED=1: on for `npm run dev`, and in production through the host's build settings (not a file in the repo). */
 export const API_ENABLED = import.meta.env.VITE_API_ENABLED === "1";
 /** "Sign in with Google" (B7) is shown only when the server has a Google client: VITE_GOOGLE_SIGNIN=1 as well. */
 export const SIGNIN_ENABLED = API_ENABLED && import.meta.env.VITE_GOOGLE_SIGNIN === "1";

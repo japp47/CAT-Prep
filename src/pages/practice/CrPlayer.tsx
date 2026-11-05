@@ -10,10 +10,10 @@ import { useStore } from "../../lib/store";
 import { ContentGate } from "../../components/Content";
 import { Empty, LinkButton, Page } from "../../components/kit";
 import { customCr } from "../../practice/crdrill";
-import { crError, crErrorSrc, fmtSecs, LETTERS, recordCr, scoreCr } from "../../practice/record";
+import { crError, crErrorSrc, LETTERS, recordCr, scoreCr } from "../../practice/record";
 import { crRedoKey } from "../../practice/redo";
 import { CR_TYPE, type CrItem, type CrType } from "../../practice/types";
-import { Choice, ChoiceGroup, Confirm, ElapsedTimer, TimeUp, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
+import { BreakNote, Choice, ChoiceGroup, ComeBack, Confirm, ElapsedTimer, TimeUp, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ResumeNote, type Resume, ReviewChoice, ScoreCard, timeShown, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
 
 const SECS_PER_ITEM = 90;
 
@@ -55,7 +55,16 @@ function Drill({ items, initialAttempt, draftKey }: { items: CrItem[]; initialAt
 
 const kindLabel = (c: CrItem) => CR_TYPE[c.type].label;
 
-function DrillAttempt({ items, draftKey, onDone }: { items: CrItem[]; draftKey: string; onDone: (id: string) => void }) {
+/** The drill behind its door (D83): after a long break it asks to start fresh or carry on. */
+function DrillAttempt(props: { items: CrItem[]; draftKey: string; onDone: (id: string) => void }) {
+  return (
+    <ComeBack draftKey={props.draftKey} width="read" kicker={`Critical reasoning drill, ${props.items.length} questions`} title={kindLabel(props.items[0])}>
+      {(r) => <DrillSolve {...props} resume={r} />}
+    </ComeBack>
+  );
+}
+
+function DrillSolve({ items, draftKey, onDone, resume }: { items: CrItem[]; draftKey: string; onDone: (id: string) => void; resume: Resume }) {
   const { update } = useStore();
   const leave = useLeaveConfirmation(true);
   const [saved] = useState(() => {
@@ -63,6 +72,7 @@ function DrillAttempt({ items, draftKey, onDone }: { items: CrItem[]; draftKey: 
     return d && d.ids?.join() === items.map((i) => i.id).join() ? d : null;
   });
   const [resumed, setResumed] = useState(!!saved);
+  const [away, setAway] = useState(saved ? resume.away ?? 0 : 0);
   const [answers, setAnswers] = useState<(number | null)[]>(saved?.answers ?? items.map(() => null));
   const [cur, setCur] = useState(saved?.cur ?? 0);
   const [unsure, setUnsure] = useState<boolean[]>(saved?.unsure?.length === items.length ? saved.unsure : items.map(() => false));
@@ -97,6 +107,7 @@ function DrillAttempt({ items, draftKey, onDone }: { items: CrItem[]; draftKey: 
     setCur(0);
     setStartAt(Date.now());
     setResumed(false);
+    setAway(0);
     setConfirmRestart(false);
   };
 
@@ -106,7 +117,7 @@ function DrillAttempt({ items, draftKey, onDone }: { items: CrItem[]; draftKey: 
     const id = uid();
     submitted.current = true;
     writeDraft(draftKey, null);
-    update((st) => recordCr(st, id, items, answers, (Date.now() - startAt) / 1000, todayIso(), unsure));
+    update((st) => recordCr(st, id, items, answers, (Date.now() - startAt) / 1000, todayIso(), unsure, away));
     setConfirming(false);
     leave.allowNextNavigation(); // the review goes into the address (?review=): not a "leave"
     onDone(id);
@@ -120,10 +131,7 @@ function DrillAttempt({ items, draftKey, onDone }: { items: CrItem[]; draftKey: 
         <Button size="sm" variant="secondary" onClick={() => setConfirming(true)}>Submit drill</Button>
       </PlayerBar>
       <TimeUp key={startAt} startAt={startAt} target={items.length * SECS_PER_ITEM} onSubmit={submit} />
-      {resumed && saved && <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-card px-4 py-3">
-        <p className="text-sm text-muted-foreground">Your saved answers are back. The timer paused while you were away ({fmtSecs(saved.secs)} elapsed).</p>
-        <Button variant="ghost" size="sm" onClick={() => setConfirmRestart(true)}>Start over</Button>
-      </div>}
+      <ResumeNote r={resume} restored={resumed && !!saved} onRestart={() => setConfirmRestart(true)} />
 
       <div className="flex flex-wrap gap-2" role="group" aria-label="Questions">
         {items.map((it, i) => (
@@ -153,7 +161,7 @@ function DrillAttempt({ items, draftKey, onDone }: { items: CrItem[]; draftKey: 
         This clears your saved answers and elapsed time for this drill.
       </Confirm>
       <Confirm open={leave.open} onOpenChange={leave.onOpenChange} title="Leave this drill?" action="Leave drill" onAction={leave.onLeave} cancel="Keep practicing" danger actionClassName="!text-white dark:!text-black">
-        Your answers, current question and elapsed time are saved. The timer pauses while you are away. Return within 24 hours to resume.
+        Your answers, current question and elapsed time are saved. The timer pauses while you are away. Back within 30 minutes, you carry on; after longer, you choose to start fresh or carry on with this set's time not counted. Unfinished sets keep for a day.
       </Confirm>
       <p className="text-sm text-muted-foreground">Questions are original practice material written for this site. CAT does not ask critical reasoning; XAT does.</p>
     </Page>
@@ -176,8 +184,9 @@ function DrillReview({ items, attempt, onRetake }: { items: CrItem[]; attempt: C
       </PlayerBar>
 
       <ScoreCard score={right} of={items.length} unit="correct" parts={[
-        ["Correct", right], ["Wrong", wrong], ["Blank", attempt.items.length - right - wrong], ["Time", fmtSecs(attempt.secs)],
+        ["Correct", right], ["Wrong", wrong], ["Blank", attempt.items.length - right - wrong], ["Time", timeShown(attempt)],
       ]}>
+        <BreakNote away={attempt.away} />
         <p className="text-base text-muted-foreground">Logged in Progress as critical reasoning. Wrong and blank questions join your redo queue.</p>
         <div className="flex flex-wrap gap-3">
           <LinkButton to={`/practice/cr?type=mix&n=6&seed=${seed}`}>New drill</LinkButton>

@@ -52,6 +52,18 @@ describe("History", () => {
     expect(days[0].items[0].kind).toBe("tests");
   });
 
+  it("keeps an interrupted attempt's answers but leaves its time out of the day (D83)", () => {
+    const st = blankState();
+    recordRc(st, "r1", set, set.questions.map(() => null), 9000, 60, "library", "2026-10-20", [], 7200);
+    recordCr(st, "c1", cr, [cr[0].answer, null], 200, "2026-10-20");
+    expect(st.rcAttempts[0].away).toBe(7200);
+    expect(st.redo.length).toBeGreaterThan(0);
+    const rc = historyItems(st).find((x) => x.icon === "rc")!;
+    expect(rc.secs).toBeUndefined();
+    expect(rc.detail).toContain("time not counted after a break");
+    expect(historyDays(st)[0].minutes).toBe(Math.round(200 / 60));
+  });
+
   it("lists each block ticked on Today by the plan's own name, its minutes and who ticked it", () => {
     const st = sample();
     st.days["2026-10-18"] = { done: { "varc:read": 30, "varc:vocab": 10, "varc:carry:2026-10-17": 20, "varc:gone": 5 }, auto: { "varc:vocab": 1 }, spent: { "varc:read": 30 } };

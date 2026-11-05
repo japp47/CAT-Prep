@@ -52,11 +52,11 @@ export interface PracticeSet { id: string; d: string; sec: string; t: string; a:
  * v is the set's content version when it was taken (practice/types.ts, contentHash); unsure lists the questions marked "Not sure",
  * lucky those of them answered right.
  */
-export interface RcAttempt { id: string; d: string; set: string; mode: "daily" | "library"; ans: (number | null)[]; c: number; w: number; secs: number; first: number; v?: string; unsure?: number[]; lucky?: number[] }
+export interface RcAttempt { id: string; d: string; set: string; mode: "daily" | "library"; ans: (number | null)[]; c: number; w: number; secs: number; first: number; v?: string; unsure?: number[]; lucky?: number[]; away?: number }
 /** One VA drill run. a is what the student entered for each item, pts the marks it earned; v and unsure as for RC, per item. */
-export interface VaAttempt { id: string; d: string; mode: "daily" | "custom"; items: { k: string; a: string; ok: boolean; pts: number; v?: string; unsure?: true }[]; secs: number }
+export interface VaAttempt { id: string; d: string; mode: "daily" | "custom"; items: { k: string; a: string; ok: boolean; pts: number; v?: string; unsure?: true }[]; secs: number; away?: number }
 /** One critical reasoning drill. a is the option index chosen for each item, or null when it was left blank. */
-export interface CrAttempt { id: string; d: string; items: { k: string; a: number | null; ok: boolean; v?: string; unsure?: true }[]; secs: number }
+export interface CrAttempt { id: string; d: string; items: { k: string; a: number | null; ok: boolean; v?: string; unsure?: true }[]; secs: number; away?: number }
 /**
  * One attempt at a logical reasoning set (F23). ans[i] is the chosen option (MCQ) or the typed answer (TITA), null when
  * blank. c counts right answers and w wrong MCQs only (TITA has no negative marking), so 3c - w is the score. pm is the
@@ -66,6 +66,8 @@ export interface LrAttempt {
   id: string; d: string; set: string; ans: (number | string | null)[]; c: number; w: number; secs: number; updatedAt: number; v?: string; unsure?: number[]; pm?: LrPostMortem;
   /** Seconds on each question, and the calculator's finished calculations (the last 80), for the review (F95). */
   qs?: number[]; calc?: string[];
+  /** Seconds of a break over 30 minutes taken mid-set (D83): the answers count, the time does not. */
+  away?: number;
 }
 /** Where the time went in an LR set, and the slip that cost an answer (F86). */
 export const LR_TIME_SINKS = ["reading", "drawing", "cases", "calculation", "stuck"] as const;
@@ -213,6 +215,8 @@ const flags = (o: unknown) => {
 const renamed = (t: string) => (t === "Para completion" ? "Sentence insertion" : t);
 const list = <T,>(arr: unknown, f: (x: Obj) => T): T[] => (Array.isArray(arr) ? arr.filter(isObj).map(f) : []);
 /** The optional per-item fields of VA and CR attempts: the content version and the "Not sure" flag. */
+/** A break over 30 minutes taken mid-set (D83), in whole seconds; absent when there was none. */
+const awayOf = (x: Obj) => (Number.isFinite(x.away) && (x.away as number) > 0 ? { away: Math.round(x.away as number) } : {});
 const extra = (i: Obj) => ({ ...(typeof i.v === "string" && i.v ? { v: i.v } : {}), ...(i.unsure === true ? { unsure: true as const } : {}) });
 
 /** Turns anything read from storage or an imported backup into a valid state. Unknown fields are dropped. */
@@ -270,14 +274,15 @@ export function normalize(raw: unknown): AppState {
     ...(typeof x.v === "string" && x.v ? { v: x.v } : {}),
     ...(Array.isArray(x.unsure) ? { unsure: x.unsure.filter((n: unknown) => Number.isInteger(n)) as number[] } : {}),
     ...(Array.isArray(x.lucky) ? { lucky: x.lucky.filter((n: unknown) => Number.isInteger(n)) as number[] } : {}),
+    ...awayOf(x),
   }));
   b.vaAttempts = list(raw.vaAttempts, (x) => ({
     id: str(x.id), d: str(x.d), mode: x.mode === "daily" ? "daily" : "custom", secs: num(x.secs),
-    items: list(x.items, (i) => ({ k: str(i.k), a: str(i.a), ok: !!i.ok, pts: num(i.pts), ...extra(i) })),
+    items: list(x.items, (i) => ({ k: str(i.k), a: str(i.a), ok: !!i.ok, pts: num(i.pts), ...extra(i) })), ...awayOf(x),
   }));
   b.crAttempts = list(raw.crAttempts, (x) => ({
     id: str(x.id), d: str(x.d), secs: num(x.secs),
-    items: list(x.items, (i) => ({ k: str(i.k), a: typeof i.a === "number" ? i.a : null, ok: !!i.ok, ...extra(i) })),
+    items: list(x.items, (i) => ({ k: str(i.k), a: typeof i.a === "number" ? i.a : null, ok: !!i.ok, ...extra(i) })), ...awayOf(x),
   }));
   b.lrAttempts = list(raw.lrAttempts, (x) => {
     const a: LrAttempt = {
@@ -287,6 +292,7 @@ export function normalize(raw: unknown): AppState {
     if (typeof x.v === "string" && x.v) a.v = x.v;
     if (Array.isArray(x.unsure)) a.unsure = x.unsure.filter((n: unknown) => Number.isInteger(n)) as number[];
     if (Array.isArray(x.qs)) a.qs = x.qs.map((n: unknown) => (Number.isFinite(n) && (n as number) >= 0 ? Math.round(n as number) : 0));
+    Object.assign(a, awayOf(x));
     if (Array.isArray(x.calc)) a.calc = x.calc.filter((l: unknown): l is string => typeof l === "string").slice(-80).map((l) => l.slice(0, 80));
     if (isObj(x.pm)) {
       const p = x.pm, pm: LrPostMortem = {};

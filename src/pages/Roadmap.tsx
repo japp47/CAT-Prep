@@ -4,6 +4,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { cn } from "@/lib/utils";
 import { FeedbackInvite, Page, PageHeader, Section } from "../components/kit";
 import { ROADMAP, UPDATED, type RoadGroup } from "../data/roadmap";
+import { API_ENABLED, SIGNIN_ENABLED } from "../lib/api";
 import { mediumDate } from "../lib/date";
 import { useGsap } from "../lib/motion";
 
@@ -19,7 +20,7 @@ export default function Roadmap() {
   return (
     <Page>
       <PageHeader title="What's coming">
-        The site grows one step at a time. VARC and DILR are live; harder DI sets, AI feedback and optional sign-in come next, then Quant from January. Updated {mediumDate(UPDATED)}.
+        The site grows one step at a time. VARC and DILR are live; harder DI sets, AI feedback{SIGNIN_ENABLED ? "" : API_ENABLED ? " and optional sign-in" : " and sync between devices"} come next, then Quant from January. Updated {mediumDate(UPDATED)}.
       </PageHeader>
 
       <Section title="New this month">

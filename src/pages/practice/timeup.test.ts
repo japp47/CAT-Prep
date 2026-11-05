@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { GRACE_SECS, HARD_STOP, timeUpState } from "./common";
+import { awayText, GRACE_SECS, HARD_STOP, timeUpState } from "./common";
 
 describe("practice clock", () => {
   const T = 420; // an RC set: 7 minutes
@@ -20,5 +20,11 @@ describe("practice clock", () => {
   it("a page left open for hours is long over", () => {
     expect(timeUpState(5 * 3600, T, false).over).toBe(true);
     expect(timeUpState(5 * 3600, T, true).over).toBe(true);
+  });
+});
+
+describe("how long the student was away (D83)", () => {
+  it("says it in minutes, then hours, then days", () => {
+    expect([20, 60, 6 * 60, 59 * 60, 3 * 3600 + 600, 3600, 50 * 3600].map(awayText)).toEqual(["less than a minute", "1 minute", "6 minutes", "59 minutes", "3 hours", "1 hour", "2 days"]);
   });
 });

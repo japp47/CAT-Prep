@@ -1,6 +1,6 @@
 # Coming back to a set, and a lighter pick in the Arena (4 Nov 2026)
 
-Two changes the owner asked for on 4 Nov 2026: a set left for a long while should not quietly carry on with a paused timer, and the Arena should not feel like a form before solving. Findings A68 to A70 and decision D83 in `docs/analyze.md`. Planned, not built.
+Two changes the owner asked for on 4 Nov 2026: a set left for a long while should not quietly carry on with a paused timer, and the Arena should not feel like a form before solving. Findings A68 to A70 and decision D83 in `docs/analyze.md`. Planned 4 Nov 2026, built 5 Nov 2026 (see "As built" at the end).
 
 ## 1. Coming back to an unfinished set
 
@@ -58,3 +58,11 @@ One branch, `feat/resume-and-quick-pick`, about a day and a half:
 - A set reopened after an hour shows the choice; one reopened after five minutes carries on.
 - An interrupted attempt's answers are in the redo queue, and its minutes are nowhere in the time figures.
 - In the Arena, one tap starts solving, and a round with one pick still shows a selection score.
+
+## As built (5 Nov 2026)
+- **The door.** `ComeBack` in `pages/practice/common.tsx` wraps the RC, VA, CR and LR (with DI) players: it reads the draft before the player mounts, so the player loads exactly what was chosen. The draft's `at` (its last save, made on leaving) gives the time away; `comeBack(at, now)` in `lib/draft.ts` holds the 30-minute rule.
+- **Interrupted** is stored as `away` on the attempt: the seconds of the breaks the student carried on after. It stays with the draft through later short breaks and is cleared by Start fresh or Start over. History leaves the attempt's minutes out of the day ("time not counted after a break"); the score card shows "Not counted" and says why; the DI review drops "Where your minutes went"; RC drops the reading pace; the Arena ignores such an attempt as a set's later result, since its result is marks a minute.
+- **A cleared draft** is noted in a second key (`cat-prep-drafts-cleared`, practice drafts only, kept a week) and said once above the set.
+- **Set aside** means the round is never saved: nothing to score, and its sets were never marked seen, so they go back into the deal.
+- **The pick.** "Start with this set" is the look screen's one filled button, with "You have read 2 of the 5 sets" under it; picks, leaving and guesses sit under "Plan the rest (optional)", open once anything is planned. The bar's button is "Start in my order" once a set is picked. `solveOrder` in `practice/arena.ts` makes the saved order: the picks, then the sets gone to while solving, a left set staying left.
+

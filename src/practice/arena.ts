@@ -2,6 +2,7 @@ import type { ArenaRound, LrAttempt } from "../lib/state";
 import { addDays } from "../lib/date";
 import { LR_CATALOG } from "./catalog.gen";
 import { hashSeed, shuffle } from "./random";
+import { timed } from "./record";
 import { isDi, type LrDiagram, type LrMeta } from "./types";
 
 /**
@@ -84,6 +85,16 @@ export const freshLeft = (lr: LrAttempt[], rounds: ArenaRound[], pool: LrMeta[] 
   return pool.filter((m) => !tried.has(m.id) && !dealt.has(m.id)).length;
 };
 
+/**
+ * The order a round is scored by (D83): the sets the student picked, in their order, then the sets they went to
+ * while solving without picking, in the order they first opened them. A set they chose to leave stays left.
+ */
+export function solveOrder(order: string[], left: string[], visits: [string, number, number][]): string[] {
+  const out = [...order];
+  visits.forEach(([id]) => { if (!out.includes(id) && !left.includes(id)) out.push(id); });
+  return out;
+}
+
 /** Seconds spent on a set in the round, from its visits. */
 export const setSecs = (r: ArenaRound, set: string) => r.visits.reduce((s, [id, a, b]) => s + (id === set ? b - a : 0), 0);
 
@@ -102,7 +113,8 @@ export function resultOf(r: ArenaRound, set: string, lr: LrAttempt[]): SetResult
   if (mine) return { right: mine.c, marks: 3 * mine.c - mine.w, mins: (secs || mine.secs) / 60 };
   if (secs >= SPENT) return { right: 0, marks: 0, mins: secs / 60 };
   const inRound = new Set(Object.values(r.attempts));
-  const later = lr.filter((a) => a.set === set && a.d >= r.d && !inRound.has(a.id)).sort((a, b) => (a.d < b.d ? -1 : a.d > b.d ? 1 : 0))[0];
+  // A later attempt broken by a long break has no honest time, and the result is marks a minute (D83).
+  const later = lr.filter((a) => a.set === set && a.d >= r.d && !inRound.has(a.id) && timed(a)).sort((a, b) => (a.d < b.d ? -1 : a.d > b.d ? 1 : 0))[0];
   return later ? { right: later.c, marks: 3 * later.c - later.w, mins: later.secs / 60, later: true } : undefined;
 }
 
