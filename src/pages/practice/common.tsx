@@ -274,6 +274,9 @@ export function PaletteCell({ n, state, current, onClick, label, className }: { 
   );
 }
 
+// The reminder offer loads only on a result screen, and only in builds with the API (F65).
+const ReminderOffer = lazy(() => import("../../components/Reminders").then((m) => ({ default: m.ReminderOffer })));
+
 /**
  * A score with its parts, shown after a set or a test. On arrival the score counts up from 0 and the parts follow one
  * by one (D41); the final text is in the page from the start, so a screen reader and a slow phone read it as is.
@@ -305,6 +308,7 @@ export function ScoreCard({ score, of, unit, parts, children }: { score: ReactNo
         </dl>
       </div>
       {children}
+      {API_ENABLED && <Suspense fallback={null}><ReminderOffer /></Suspense>}
       <KeepHint />
     </div>
   );

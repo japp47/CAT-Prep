@@ -4,6 +4,7 @@ import { useStore } from "@/lib/store";
 import type { AppState } from "@/lib/state";
 import type { SyncIO } from "@/lib/sync/client";
 import { loadLedger, saveLedger } from "@/lib/sync/ledger";
+import { reportReminderVisit } from "@/lib/notify";
 import { poke, start } from "@/lib/sync/runner";
 
 /**
@@ -38,5 +39,7 @@ export default function SyncRunner() {
   }), [transform]);
 
   useEffect(() => start(io), [io]);
+  // A page opened from a reminder is counted once sync is up (docs/design/notifications.md §8).
+  useEffect(() => { if (loadLedger().on) void reportReminderVisit(); }, []);
   return null;
 }

@@ -1,0 +1,19 @@
+{{/* The plain-text half of every email: the same words as layout.html, for clients that show text only. */}}{{.Heading}}
+
+{{range .Body}}{{.}}
+
+{{end}}{{with .Task}}{{.Label}}: {{.Title}}
+{{.Detail}}
+
+{{end}}{{with .Week}}{{range .Tiles}}{{.Value}} {{.Label}}
+{{end}}{{range .Lines}}
+{{.}}
+{{end}}
+{{end}}{{.Button}}: {{.ButtonURL}}
+{{with .Also}}
+{{.Text}} {{.Link}}: {{.URL}}
+{{end}}
+--
+{{.Why}}
+Change reminders: {{.ManageURL}}
+Stop these emails: {{.UnsubscribeURL}}

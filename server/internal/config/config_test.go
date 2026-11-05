@@ -89,8 +89,8 @@ func TestSyncNeedsProxySecretAndIPKeyInProd(t *testing.T) {
 }
 
 func TestShortSecretsAreRefused(t *testing.T) {
-	_, err := load(env(map[string]string{"DATABASE_URL": "postgres://x@db/cat", "PROXY_SECRET": "short", "IP_HASH_KEY": "zz"}))
-	for _, want := range []string{"PROXY_SECRET", "IP_HASH_KEY"} {
+	_, err := load(env(map[string]string{"DATABASE_URL": "postgres://x@db/cat", "PROXY_SECRET": "short", "IP_HASH_KEY": "zz", "NOTIFY_TOKEN_SECRET": "abcd"}))
+	for _, want := range []string{"PROXY_SECRET", "IP_HASH_KEY", "NOTIFY_TOKEN_SECRET"} {
 		if err == nil || !strings.Contains(err.Error(), want) {
 			t.Errorf("want %s error, got %v", want, err)
 		}
@@ -107,5 +107,12 @@ func TestGoogleSignInNeedsBothSettings(t *testing.T) {
 	c, err := load(env(map[string]string{"DATABASE_URL": "postgres://u:p@localhost:5433/cat", "GOOGLE_CLIENT_ID": "x.apps.googleusercontent.com", "GOOGLE_CLIENT_SECRET": "s"}))
 	if err != nil || c.SignInRedirect() != "http://localhost:5173/api/v1/auth/google/callback" {
 		t.Fatalf("%v %q", err, c.SignInRedirect())
+	}
+}
+
+func TestReminderKeys(t *testing.T) {
+	c, err := load(env(map[string]string{"DATABASE_URL": "postgres://x@db/cat", "NOTIFY_TOKEN_SECRET": strings.Repeat("ab", 32), "NOTIFY_VAPID_PUBLIC": "BPub"}))
+	if err != nil || len(c.NotifyTokenKey) != 32 || c.NotifyVAPIDPublic != "BPub" {
+		t.Fatalf("got %d bytes, %q, %v", len(c.NotifyTokenKey), c.NotifyVAPIDPublic, err)
 	}
 }

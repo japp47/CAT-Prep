@@ -2,15 +2,14 @@ package digest
 
 import (
 	"bytes"
-	"crypto/tls"
 	"errors"
 	"fmt"
 	"mime"
 	"mime/quotedprintable"
-	"net"
-	"net/smtp"
 	"strings"
 	"time"
+
+	"github.com/japp47/CAT-Prep/server/internal/mailx"
 )
 
 // Email is the private digest: the same list as the issue, plus every note, for the team's inbox.
@@ -55,57 +54,9 @@ type SMTP struct {
 	Timeout  time.Duration
 }
 
-// Send delivers one plain-text message. It insists on TLS except to the host named localhost (tests).
+// Send delivers one plain-text message (through internal/mailx, which insists on TLS except to localhost).
 func (m SMTP) Send(subject, body string) error {
-	host, _, err := net.SplitHostPort(m.Addr)
-	if err != nil {
-		return err
-	}
-	timeout := m.Timeout
-	if timeout == 0 {
-		timeout = 30 * time.Second
-	}
-	conn, err := net.DialTimeout("tcp", m.Addr, timeout)
-	if err != nil {
-		return err
-	}
-	_ = conn.SetDeadline(time.Now().Add(timeout))
-	c, err := smtp.NewClient(conn, host)
-	if err != nil {
-		conn.Close()
-		return err
-	}
-	defer c.Close()
-	if err := c.Hello("localhost"); err != nil {
-		return err
-	}
-	if ok, _ := c.Extension("STARTTLS"); ok {
-		if err := c.StartTLS(&tls.Config{ServerName: host, MinVersion: tls.VersionTLS12}); err != nil {
-			return err
-		}
-	} else if host != "localhost" {
-		return errors.New("the mail server does not offer TLS; not sending the password")
-	}
-	if err := c.Auth(smtp.PlainAuth("", m.User, m.Password, host)); err != nil {
-		return fmt.Errorf("login: %w", err)
-	}
-	if err := c.Mail(m.User); err != nil {
-		return err
-	}
-	if err := c.Rcpt(m.To); err != nil {
-		return err
-	}
-	w, err := c.Data()
-	if err != nil {
-		return err
-	}
-	if _, err := w.Write(message(m.User, m.To, subject, body)); err != nil {
-		return err
-	}
-	if err := w.Close(); err != nil {
-		return err
-	}
-	return c.Quit()
+	return mailx.Server{Addr: m.Addr, User: m.User, Password: m.Password, Timeout: m.Timeout}.Send(m.To, message(m.User, m.To, subject, body))
 }
 
 // message builds the mail. The subject is ours; only the body holds student text, quoted-printable encoded.

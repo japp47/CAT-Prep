@@ -50,6 +50,7 @@ const SignIn = lazy(() => import("./pages/SignIn"));
 const You = lazy(() => import("./pages/You"));
 const Admin = lazy(() => import("./pages/Admin"));
 const Privacy = lazy(() => import("./pages/Privacy"));
+const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 // Only in builds with the API on: where a scanned link code lands (B4).
 const LinkPage = API_ENABLED ? lazy(() => import("./pages/Link")) : null;
 
@@ -133,6 +134,7 @@ export const router = createBrowserRouter(createRoutesFromElements(
       <Route path="roadmap" element={<Roadmap />} />
       <Route path="settings" element={<Settings />} />
       <Route path="privacy" element={<Privacy />} />
+      <Route path="unsubscribe" element={<Unsubscribe />} />
       {LinkPage && <Route path="link" element={<LinkPage />} />}
       <Route path=":id" element={<Section />} />
       <Route path="*" element={<NotFound />} />

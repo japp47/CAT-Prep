@@ -7,10 +7,12 @@ import { registerServiceWorker, repairViewport } from "./lib/pwa";
 import { StoreProvider } from "./lib/store";
 import { API_ENABLED } from "./lib/api";
 import { whenIdle } from "./lib/idle";
+import { takeReminderVisit } from "./lib/notify";
 import "./index.css";
 
 repairViewport();
 registerServiceWorker();
+if (API_ENABLED) takeReminderVisit();
 
 // Sync runs only in builds with the API on, and loads once the browser is idle, never with the first page.
 const SyncRunner = API_ENABLED ? lazy(() => import("./components/SyncRunner")) : null;

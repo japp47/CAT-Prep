@@ -1,0 +1,42 @@
+# Study reminders (server/cmd/notify, docs/design/notifications.md): every 15 minutes, queue what the rules say and
+# send what is due, by web push and through the team's Gmail. Odd minutes, because GitHub delays scheduled runs most
+# at the top of the hour. A run that pauses a channel after failures in a row fails, so GitHub emails the owner.
+# NOTIFY_DRY=1 (a repository variable) plans and renders without sending: the first week live.
+name: Study reminders
+
+on:
+  schedule:
+    - cron: "7,22,37,52 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: notify
+  cancel-in-progress: false
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: server/go.mod
+          cache-dependency-path: server/go.sum
+      - run: go run ./cmd/notify -for 5m
+        env:
+          MIGRATE_DATABASE_URL: ${{ secrets.MIGRATE_DATABASE_URL }}
+          NOTIFY_TOKEN_SECRET: ${{ secrets.NOTIFY_TOKEN_SECRET }}
+          NOTIFY_VAPID_PUBLIC: ${{ vars.NOTIFY_VAPID_PUBLIC }}
+          NOTIFY_VAPID_PRIVATE: ${{ secrets.NOTIFY_VAPID_PRIVATE }}
+          NOTIFY_SMTP_USER: 99ile.team@gmail.com
+          NOTIFY_SMTP_PASSWORD: ${{ secrets.DIGEST_SMTP_PASSWORD }}
+          NOTIFY_DRY: ${{ vars.NOTIFY_DRY }}
+          NOTIFY_EMAIL: ${{ vars.NOTIFY_EMAIL }}
+          NOTIFY_PUSH: ${{ vars.NOTIFY_PUSH }}

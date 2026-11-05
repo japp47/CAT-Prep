@@ -39,6 +39,9 @@ type Options struct {
 	MaxRecords int      // rows per identity, deletions included
 	MaxBytes   int64    // bytes of data per identity
 	PerMinute  int      // pulls and pushes per device
+	// Practice, when set, runs inside each push that wrote new records, with their kinds: reminders learn from it
+	// that the student practised (internal/notify). An error rolls the push back.
+	Practice func(ctx context.Context, tx pgx.Tx, identity string, kinds []string) error
 }
 
 // Service holds what the handlers share.
@@ -277,6 +280,17 @@ func (s *Service) PushHandler() http.Handler {
 				if _, err := tx.Exec(r.Context(), `update sync.heads set rev = $2, record_count = $3, data_bytes = $4 where identity_id = $1`,
 					d.IdentityID, head.rev, head.count, head.bytes); err != nil {
 					return fmt.Errorf("update head: %w", err)
+				}
+			}
+			if s.opt.Practice != nil && len(ins) > 0 {
+				kinds := make([]string, 0, len(ins))
+				for _, c := range ins {
+					if !c.Deleted {
+						kinds = append(kinds, c.Kind)
+					}
+				}
+				if err := s.opt.Practice(r.Context(), tx, d.IdentityID, kinds); err != nil {
+					return fmt.Errorf("record practice: %w", err)
 				}
 			}
 			return nil

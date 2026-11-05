@@ -535,7 +535,7 @@ Review: `docs/research/beyond-cat.md` §2. Practice counts only when a set, dril
 **Part 1 as designed (24 Oct 2026).**
 - `/you` works for everyone. Signed in: your initial, name, email and "Member since October 2026". Synced with a code: "Not signed in" and Sign in with Google. Sync off: "Your progress is on this device only" and Continue with Google.
 - The account is a clear responsive hero with an account/sync status and one sign-in action when needed. CAT preferences and study stats sit side by side on wide screens and stack on phones; stats are grouped into easy-to-scan tiles.
-- **Your CAT**: "Preparing for CAT 2027" with the expected date, then three choices: target percentile in VARC (the same setting as Progress, Target), **first attempt or taken before**, and **studying or working**. The last two start unset. Kept in the `profile` sync record (`about`), so they sync and work offline. **The exam year is not a choice yet** (D34): every plan, phase and countdown is built for CAT 2027.
+- **Your CAT**: "Preparing for CAT 2027" with the expected date, then three choices: target percentile in VARC (the same setting as Progress, Target), **first attempt or taken before**, and **studying or working**. The last two start unset. Kept in the `profile` sync record (`about`), so they sync and work offline. **The exam year is not a choice yet** (D34): every plan, phase and countdown is built for CAT 2027. It becomes one with the CAT-year work right after the reminders (F82, D87, D88).
 - **Your study so far**: streak, days studied, questions answered and minutes logged, with links to History and Progress.
 - **Account and sync**: the sync card moves here from Settings (D35). Settings keeps one line linking to it, and old `/settings#sync` links open `/you#sync`.
 - Opened from the account menu (the name at the top, and "You") and from the bottom sidebar account icon.
@@ -553,7 +553,15 @@ Review: `docs/research/beyond-cat.md` §2. Practice counts only when a set, dril
   - Reality check: after each mock (F12), the target is compared with what the scores reach (percentile estimator, item 7): "On track", or "At this pace, about the 92nd; here is what closes the gap".
 - **No AI needed**: rules first, written down and tested. The AI coach (F48, step 7) later explains the plan in words; it never makes it.
 **Part 1 (step 4b, Jan 2027, with the personal home F80 and after the daily budget F27 in step 4):** the setup, time and split from the answers, short blocks for working students, and the first-visit flow. **Moved here from part 2 (D51):** the exam year as a real choice, so a CAT 2028 student never gets a CAT 2027 plan, with a preview of what changes before it does (history is never erased); a **weekly target** mode beside the daily plan for students whose days are unpredictable (two styles only); and spare time the plan leaves free. This is when most CAT 2027 students arrive.
-**Part 2 (step 6, Mar 2027):** the exam year as a real choice (phases from any exam date; replaces D34), the commute set, the diagnostic for repeaters, and the reality check after mocks.
+**Your CAT year (D87, owner 5 Nov 2026). Built early, right after the reminders (D88), ahead of the rest of part 1.**
+- **Exams are data, not code.** One list of CAT years (year, date, official or expected, the pattern), and phases computed from the chosen date. A new year is one new row; nothing else in the code names a year or a date (today twelve files read the fixed CAT 2027 dates in `data/exam.ts`).
+- The choice is the next CAT still ahead and the two after it, no more (in January 2027: CAT 2027, 2028, 2029). Unset means the next CAT, so a visitor who never answers sees today's behaviour.
+- Asked on You ("Your CAT") and in the one-minute setup; kept in the `profile` record (`about.exam`), so it works without an account and follows a signed-in student to every device.
+- Today, Home, the plan, the countdown and the phase timeline read it. A year without an official date shows the expected date (last Sunday of November) and says so; the official date replaces it when iimcat.ac.in announces it.
+- Phases count back from the chosen date: Build, Apply, Mock phase and Taper keep their lengths, and Foundation takes the rest. A start too late for the full plan shortens Build and Apply first (rules and numbers in the research note).
+- Changing the year shows a preview of what changes; history and logs are never erased.
+- After exam day, Today says the exam is done, asks "Sitting again?" and moves the default to the next CAT.
+**Part 2 (step 6, Mar 2027):** the commute set, the diagnostic for repeaters, and the reality check after mocks.
 **Data.** The `profile` sync record grows (`about`: exam year, work, time, target per section, level); no new server tables. Works offline and without an account.
 **Research to do first** (`docs/research/personal-plan.md`): how coaching institutes and toppers split time by profile; how many hours working candidates really have; how other apps onboard without losing people (question count, skip rates); the percentile tables per section for DILR and Quant.
 **Done when** two students with different answers get different, explained plans; changing an answer on You changes tomorrow's plan; skipping the setup gives today's plan unchanged; and every rule has a test.
@@ -572,15 +580,82 @@ Review: `docs/research/beyond-cat.md` §2. Practice counts only when a set, dril
 A bell in the header with an unread count. Holds reminders, replies and accepted answers (once F67 and F68 exist), group invites, and the weekly review. Each item opens what it is about. Works with sync on (the server keeps the inbox); with sync off it shows only what this device produced.
 **Done when** each item opens its target, read state syncs across linked devices, and the bell costs nothing on pages that never open it (loaded idle).
 
-#### F65. Study reminders and streak protection — Planned (step 4b)
-**What the student gets** (all off until turned on in Settings):
-- **Daily reminder** at a chosen time, only if today's practice is not done, naming the next step (F41) and opening it.
-- **Streak at risk**: one reminder at most, two hours before the day ends, only with an active streak.
-- **Weekly review ready** (F13) on Sunday.
-- Quiet hours (default 23:00 to 07:00), pause for a week, and at most **one** study reminder a day across all kinds.
-**Channels.** The inbox for everyone with sync on; **web push** for students who allow it (on iPhone only after 99ile is added to the Home Screen, iOS 16.4+, so the screen says so); the existing calendar reminder (`.ics`) as the no-account fallback. Email only after accounts (B7), and only for the weekly review.
-**How.** The server knows practice is done from synced records with today's date. A scheduled job (every 15 minutes) finds students whose reminder time has passed, checks preferences, quiet hours and what was already sent (an idempotency key per student, kind and day), then writes the inbox item and sends the push.
-**Done when** a student who practised gets no reminder, one who did not gets exactly one at their time (checked across two devices), and turning reminders off stops them within 15 minutes.
+#### F65. Reminders by push and email — R1 built 5 Nov 2026 (`feat/reminders`, live once the owner adds the keys); R2 next (D88, D89)
+Research: `docs/research/notifications.md`. This is the functional spec. The email template and how it is built (a notification service: one rule book, a queue, workers, one sender per channel) are in `docs/design/notifications.md`.
+
+**Problem.** A student tries 99ile, means to come back, and forgets. The site cannot reach them: no push, no email, only a calendar reminder they have to add themselves. For a site 20 days old, bringing students back matters more than any new page.
+
+**Who gets reminders.**
+- **Students with sync on**, by Google sign-in or a sync code. The server can only tell who practised today from synced attempts. A student without sync who asks for reminders is offered sign-in ("so we know when you have already practised"); the calendar reminder stays as the no-account choice.
+- **Email** goes only to Google-signed-in students who ticked it. **Push** goes to any device where the student allowed it.
+
+**What they get** (every kind off until the student turns it on):
+
+| Kind | When | Channel | Notes |
+|---|---|---|---|
+| Daily reminder | At the student's time, only if nothing was practised today (on any device) | Push; email too if they chose "email me every reminder day" | Names the day's task: "RC of the day: *The ethics of nudging*, 7 minutes", or the LR or DI set of the day, or the plan's next step (F41), and opens it. With a streak of 3 or more, the streak wording ("Day 12 is waiting") |
+| Missed days | The 2nd, 5th and 12th day in a row without practice, then nothing more | Email if they have it, else push | Replaces that day's daily reminder. Offers a short way back, one RC of the day (10 minutes), and links the restart plan (F66) once it exists. The 12th-day message says it is the last and how to turn reminders on again |
+| Weekly review | Sunday 9:00, only after a week with any practice | Email | The F13 review: days studied, questions, accuracy, weakest kind, next week's focus, one button to start |
+| Exam and new-content news | Later, with the inbox (F64): at most two a month | Email, inbox | Its own consent |
+
+**Rules that always hold** (tested, all in the student's own time zone):
+- At most **one study message a day across all channels**, and never two within 12 hours.
+- Nothing on a day the student practised. Practice on another device counts once it syncs.
+- Nothing in quiet hours (default 23:00 to 07:00), and nothing on days the student switched off.
+- At most three emails a week, unless the student chose the daily email.
+- **Stopping on its own:** after the 12th missed day all reminders pause. They start again, without asking, the next time the student practises.
+- On exam day and the day before: no study reminder. After exam day, reminders pause until the student picks their next CAT (D87).
+- A bounced address or a spam complaint turns email off for that student, and Settings says so.
+- Never on the first day: the first reminder can come the day after the student turns them on.
+- Wording never repeats two days running, never guilt-trips, and promises nothing that is not on the site.
+
+**Turning them on.**
+- **After the first finished set**, on its result screen: "Practise again tomorrow? We'll remind you at 7:30 pm, only if you haven't practised." Below that, two choices, neither ticked in advance: *On this device* and *By email to a…@gmail.com*. Then **Turn on**.
+  - Only that tap opens the browser's permission prompt.
+  - "Not now" asks again after three more finished sets, at most three times in all. Settings always has the switch.
+- **The time** suggested is when the student usually starts practising (the middle of their last 14 days' start times, rounded to 15 minutes), otherwise 7:30 pm. They can change it there and then.
+- **iPhone in Safari:** "On this device" shows the two steps to add 99ile to the Home Screen first. Email works at once.
+- **No sync:** the card offers Sign in with Google, or a calendar reminder.
+
+**Settings, "Reminders" card** (and You, which links to it):
+- on or off;
+- the time, and the days of the week;
+- this device on or off (with how many other devices have push on);
+- email: every reminder day, only when I miss days, or never;
+- weekly review email on or off;
+- quiet hours;
+- pause for a week;
+- a line saying when the last reminder went, and why.
+
+**Every email** has a one-click unsubscribe for its kind and a link to manage all of them. Both work without signing in. A change applies before the next send, within 15 minutes.
+
+**Wording the owner can change without code.**
+- Each kind has two or three wordings, kept as content files in the repo, like the question bank. Each has a subject (at most 50 characters), a preview line, a short body and one button.
+- **Placeholders:** first name, the day's task and its minutes, streak, days missed, the week's figures.
+- A test renders every wording with sample data. It fails on a missing placeholder, an over-long subject, or a missing unsubscribe link. The owner can preview every message, by email and as a push, before it ships.
+- Emails come as plain text plus a simple HTML version in the site's look: logo, one button, no images that track.
+
+**Knowing whether it works**, with no tracking pixels:
+- every link carries the kind (`?from=reminder-daily`);
+- the server counts sent, opened (the site visited from the link), practised within two hours (Duolingo's measure), unsubscribed, bounced and complained, per kind and per wording;
+- the card on the result screen counts shown, accepted and declined;
+- reviewed after two weeks.
+
+**Kill switches:** spam complaints over 0.1% of emails, or more than 1% unsubscribing from a kind, cut that kind's frequency before anything else ships.
+
+**In parts.**
+- **R1 (about two weeks):** the card after the first set, the Settings card, the daily reminder by push and by email, every rule above, unsubscribe, the counts.
+- **R2 (about a week, straight after):** missed days, the weekly review email, rotated wordings and the owner's preview.
+- **Later, with the inbox (F64, January):** the inbox as a third channel, exam and content news, and possibly an evening "half your plan is left" nudge (only if R1's figures say students want more).
+
+**Sending email (D89, owner 5 Nov 2026): through Gmail for now**, from the team account (99ile.team@gmail.com), at most 300 reminder emails a day so the team's own mail keeps about 200 of the account's limit of about 500. When about 250 a day are due, a domain and an email service replace it with a configuration change (`docs/design/notifications.md` §6).
+
+**Done when:**
+- a student who practised gets no reminder; one who did not gets exactly one at their time (checked across two devices);
+- turning a kind off stops it within 15 minutes;
+- the missed-days series stops after the 12th day and restarts on the next practice;
+- every email passes SPF, DKIM and DMARC and has one-click unsubscribe;
+- every rule above has a test.
 
 ### Community: learn together, solve independently
 Review: `docs/research/beyond-cat.md` §2. Needs accounts (B7, Google sign-in): posting is tied to an account, never to an anonymous sync identity. 18 and over, as sync. Text and maths (KaTeX) first; images later.
