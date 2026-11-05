@@ -64,8 +64,11 @@ function Hero({ isNew }: { isNew: boolean }) {
   const [still] = useState(calm);
   const [fine] = useState(() => matchMedia("(pointer: fine)").matches);
   return (
-    <header ref={box} className="grid items-center gap-x-6 gap-y-6 lg:min-h-[calc(100svh-8rem)] lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)]">
-      <div className="relative z-10 flex min-w-0 flex-col gap-7">
+    // On a phone the hero is one screen (between the top bar and the tab bar): the words take what they need and the
+    // field takes the rest, so it is never cut by the tab bar; at a large text size it sits whole below the words.
+    <>
+    <header ref={box} className="flex flex-col gap-6 max-lg:min-h-[calc(100svh-9rem-env(safe-area-inset-bottom))] lg:grid lg:min-h-[calc(100svh-8rem)] lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:items-center lg:gap-x-6">
+      <div className="relative z-10 flex min-w-0 flex-col gap-5 lg:gap-7">
         {/* Keep the exam name together; let the rest of the headline wrap naturally. */}
         <h1 className="max-w-[11ch] text-[clamp(3rem,1rem+5.6vw,7.25rem)] leading-[0.92] font-extrabold tracking-[-0.055em]">Prepare for {EXAM_NAME.replace(/ /g, "\u00a0")}, one day at a time.</h1>
         <p className="max-w-[42ch] text-lg leading-relaxed text-foreground/80">A free CAT coach: a plan that fits your day, original practice, and a reason for every option. No sign-up; your progress stays on this device.</p>
@@ -77,23 +80,34 @@ function Hero({ isNew }: { isNew: boolean }) {
         <StatusLine />
       </div>
       {/* The field runs to the screen's edge on a wide screen, with its caption laid over its foot. */}
-      <figure className="relative flex min-w-0 flex-col gap-3 lg:-mr-[var(--gutter)] lg:-ml-[10%]">
-        <div className="relative aspect-[5/4] w-full lg:aspect-auto lg:h-[min(88vh,58rem)]">
+      <figure className="relative flex min-w-0 flex-1 flex-col gap-3 lg:-mr-[var(--gutter)] lg:-ml-[10%]">
+        <div className="relative min-h-[9rem] w-full flex-1 max-lg:max-h-[24rem] lg:h-[min(88vh,58rem)] lg:flex-none">
           <CurveDrawing className={cn("absolute inset-x-0 bottom-[16%] h-[58%] w-full transition-opacity duration-700 motion-reduce:transition-none", live && "opacity-0")} />
           {want3d && <Suspense fallback={null}><PercentileField track={box} onReady={() => setLive(true)} onFail={() => setLive(false)} /></Suspense>}
         </div>
-        {/* A legend in the picture's own colours, left-aligned where the dots begin, then what the student can do with it. */}
-        <figcaption className="flex max-w-[80ch] flex-col gap-1.5 text-sm text-muted-foreground lg:absolute lg:bottom-5 lg:left-0">
-          <span className="flex flex-wrap gap-x-5 gap-y-1">
-            <span className="inline-flex items-center gap-2"><i className="size-2.5 rounded-full bg-primary/45" aria-hidden />Each dot, a group of CAT takers</span>
-            <span className="inline-flex items-center gap-2"><i className="size-2.5 rounded-full bg-highlight" aria-hidden />The 99th percentile, one in a hundred</span>
-            {live && <span className="inline-flex items-center gap-2"><i className="size-2.5 rounded-full bg-primary" aria-hidden />A climb to the top, as an illustration</span>}
-          </span>
-          {/* The blue dot is never the visitor's percentile (D51); their estimate comes from a logged mock, on Progress. */}
-          <span>{live && !still && <>Scroll to climb.{fine && " Drag to turn the hill; click to send a ripple."} </>}Your own estimate appears in <TextLink to="/progress?tab=mocks">Progress</TextLink> once you log a mock score.</span>
-        </figcaption>
+        {/* On a wide screen the caption lies over the field's foot; on a phone it follows the hero, below the first screen. */}
+        <FieldCaption live={live} still={still} fine={fine} className="hidden lg:absolute lg:bottom-5 lg:left-0 lg:flex" />
       </figure>
     </header>
+    <FieldCaption live={live} still={still} fine={fine} className="-mt-16 lg:hidden" plain />
+    </>
+  );
+}
+
+/** A legend in the picture's own colours, left-aligned where the dots begin, then what the student can do with it. */
+function FieldCaption({ live, still, fine, className, plain }: { live: boolean; still: boolean; fine: boolean; className?: string; plain?: boolean }) {
+  // Outside the figure (the phone's copy) it is a plain block: a figcaption belongs inside its figure.
+  const Tag = plain ? "div" : "figcaption";
+  return (
+    <Tag className={cn("flex max-w-[80ch] flex-col gap-1.5 text-sm text-muted-foreground", className)}>
+      <span className="flex flex-wrap gap-x-5 gap-y-1">
+        <span className="inline-flex items-center gap-2"><i className="size-2.5 rounded-full bg-primary/45" aria-hidden />Each dot, a group of CAT takers</span>
+        <span className="inline-flex items-center gap-2"><i className="size-2.5 rounded-full bg-highlight" aria-hidden />The 99th percentile, one in a hundred</span>
+        {live && <span className="inline-flex items-center gap-2"><i className="size-2.5 rounded-full bg-primary" aria-hidden />A climb to the top, as an illustration</span>}
+      </span>
+      {/* The blue dot is never the visitor's percentile (D51); their estimate comes from a logged mock, on Progress. */}
+      <span>{live && !still && <>Scroll to climb.{fine && " Drag to turn the hill; click to send a ripple."} </>}Your own estimate appears in <TextLink to="/progress?tab=mocks">Progress</TextLink> once you log a mock score.</span>
+    </Tag>
   );
 }
 
