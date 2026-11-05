@@ -1,0 +1,104 @@
+{{/*
+  The one email layout (F65, docs/design/notifications.md). The site's look on paper: a light page, a white sheet,
+  blue ink and one yellow highlighter on the thing that matters. Every message kind fills the same layout; the parts
+  it has no data for are left out. Inline styles throughout, since Gmail drops most <style> rules; the <style> block
+  only adds dark mode and phone widths for the clients that read it (Apple Mail, iOS Mail, Outlook.com).
+  No text under 14px, no capitals-only labels, no tracking images.
+*/}}<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark">
+<title>{{.Subject}}</title>
+<style>
+  @font-face { font-family: "Schibsted Grotesk"; font-weight: 400 900; src: url("{{.SiteURL}}/fonts/schibsted-grotesk-latin.woff2") format("woff2"); }
+  a { color: #2340c8; }
+  @media (max-width: 600px) {
+    .sheet { padding: 28px 20px !important; }
+    .gutter { padding-left: 12px !important; padding-right: 12px !important; }
+    .tile { display: block !important; width: auto !important; margin-bottom: 8px !important; }
+    .spacer { display: none !important; }
+  }
+  @media (prefers-color-scheme: dark) {
+    .page { background: #0e1218 !important; }
+    .sheet { background: #161b24 !important; }
+    .ink { color: #e7ebf2 !important; }
+    .muted { color: #a1abbd !important; }
+    .task, .tile { background: #1f2531 !important; }
+    .hl { background: #3a3214 !important; color: #e7ebf2 !important; }
+    .button { background: #8fa3ff !important; color: #0e1218 !important; }
+    a.link { color: #8fa3ff !important; }
+  }
+</style>
+</head>
+<body class="page" style="margin:0; padding:0; background:#f5f6f8;">
+<div style="display:none; max-height:0; overflow:hidden; opacity:0; color:transparent;">{{.Preview}}&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;</div>
+<table role="presentation" class="page" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f5f6f8;">
+  <tr>
+    <td class="gutter" align="center" style="padding:32px 16px 40px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;">
+        <tr>
+          <td style="padding:0 4px 20px;">
+            <a href="{{.SiteURL}}/?from={{.From}}" style="text-decoration:none;">
+              <img src="{{.SiteURL}}/mail-logo.png" width="32" height="32" alt="" style="vertical-align:middle; border-radius:8px; border:0;">
+              <span class="ink" style="vertical-align:middle; padding-left:8px; font-family:'Schibsted Grotesk', Arial, Helvetica, sans-serif; font-size:20px; font-weight:700; letter-spacing:-0.02em; color:#141a24;">99ile</span>
+            </a>
+          </td>
+        </tr>
+        <tr>
+          <td class="sheet" style="background:#ffffff; border-radius:20px; padding:36px 36px 32px; font-family:'Schibsted Grotesk', Arial, Helvetica, sans-serif;">
+            <h1 class="ink" style="margin:0 0 12px; font-size:26px; line-height:1.15; font-weight:700; letter-spacing:-0.025em; color:#141a24;">{{.Heading}}</h1>
+            {{range .Body}}<p class="ink" style="margin:0 0 14px; font-size:16px; line-height:1.55; color:#2b3342;">{{.}}</p>
+            {{end}}
+            {{with .Task}}
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:10px 0 6px;">
+              <tr>
+                <td class="task" style="background:#f0f2f6; border-radius:14px; padding:18px 20px;">
+                  <p class="muted" style="margin:0 0 6px; font-size:14px; line-height:1.4; color:#586274;">{{.Label}}</p>
+                  <p style="margin:0 0 6px; font-size:19px; line-height:1.35; font-weight:600; letter-spacing:-0.01em;"><span class="hl ink" style="background:#fff4bf; color:#141a24; border-radius:3px; padding:0 3px;">{{.Title}}</span></p>
+                  <p class="muted" style="margin:0; font-size:14px; line-height:1.4; color:#586274;">{{.Detail}}</p>
+                </td>
+              </tr>
+            </table>
+            {{end}}
+            {{with .Week}}
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:10px 0 6px;">
+              <tr>
+                {{range $i, $t := .Tiles}}{{if $i}}<td class="spacer" width="8" style="width:8px; font-size:0; line-height:0;">&nbsp;</td>{{end}}<td class="tile" width="32%" valign="top" style="background:#f0f2f6; border-radius:14px; padding:16px 16px 14px;">
+                  <p class="ink" style="margin:0; font-size:26px; line-height:1.1; font-weight:700; letter-spacing:-0.02em; color:#141a24;">{{$t.Value}}</p>
+                  <p class="muted" style="margin:4px 0 0; font-size:14px; line-height:1.35; color:#586274;">{{$t.Label}}</p>
+                </td>
+                {{end}}
+              </tr>
+            </table>
+            {{range .Lines}}<p class="ink" style="margin:12px 0 0; font-size:16px; line-height:1.5; color:#2b3342;">{{.}}</p>
+            {{end}}
+            {{end}}
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0 0;">
+              <tr>
+                <td class="button" style="background:#2340c8; border-radius:12px;">
+                  <a class="button" href="{{.ButtonURL}}" style="display:inline-block; padding:14px 24px; font-size:16px; line-height:1.2; font-weight:600; color:#ffffff; text-decoration:none; border-radius:12px;">{{.Button}}</a>
+                </td>
+              </tr>
+            </table>
+            {{with .Also}}<p class="muted" style="margin:18px 0 0; font-size:15px; line-height:1.5; color:#586274;">{{.Text}} <a class="link" href="{{.URL}}" style="color:#2340c8; text-decoration:underline;">{{.Link}}</a></p>{{end}}
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:22px 8px 0; font-family:'Schibsted Grotesk', Arial, Helvetica, sans-serif;">
+            <p class="muted" style="margin:0 0 8px; font-size:14px; line-height:1.55; color:#586274;">{{.Why}}</p>
+            <p class="muted" style="margin:0; font-size:14px; line-height:1.55; color:#586274;">
+              <a class="link" href="{{.ManageURL}}" style="color:#2340c8; text-decoration:underline;">Change reminders</a>
+              &nbsp;&nbsp;
+              <a class="link" href="{{.UnsubscribeURL}}" style="color:#2340c8; text-decoration:underline;">Stop these emails</a>
+            </p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>

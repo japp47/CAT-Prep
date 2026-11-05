@@ -31,3 +31,30 @@ self.addEventListener("fetch", (e) => {
     return;
   }
 });
+
+// Study reminders (docs/design/notifications.md §8): the server sends {title, body, url, tag}; a newer reminder
+// replaces an older one with the same tag. A tap opens the page it names, on this site only.
+self.addEventListener("push", (e) => {
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch { /* not ours: show a plain notice */ }
+  e.waitUntil(self.registration.showNotification(d.title || "99ile", {
+    body: d.body || "",
+    tag: d.tag || "reminder",
+    icon: BASE + "icon-192.png",
+    data: { url: d.url || BASE + "today" },
+  }));
+});
+
+self.addEventListener("notificationclick", (e) => {
+  e.notification.close();
+  let url = BASE + "today";
+  try {
+    const u = new URL(e.notification.data && e.notification.data.url, self.location.origin);
+    if (u.origin === self.location.origin) url = u.href;
+  } catch { /* keep Today */ }
+  e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((list) => {
+    const open = list.find((c) => new URL(c.url).origin === self.location.origin && "focus" in c);
+    if (open) return open.navigate(url).then((c) => (c || open).focus());
+    return self.clients.openWindow(url);
+  }));
+});

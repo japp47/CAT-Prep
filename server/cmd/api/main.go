@@ -8,6 +8,7 @@ package main
 
 import (
 	"context"
+	"crypto/rand"
 	"errors"
 	"fmt"
 	"log/slog"
@@ -18,6 +19,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/japp47/CAT-Prep/server/internal/account"
@@ -27,6 +29,7 @@ import (
 	"github.com/japp47/CAT-Prep/server/internal/feedback"
 	"github.com/japp47/CAT-Prep/server/internal/httpx"
 	"github.com/japp47/CAT-Prep/server/internal/limit"
+	"github.com/japp47/CAT-Prep/server/internal/notify"
 	"github.com/japp47/CAT-Prep/server/internal/reqinfo"
 	"github.com/japp47/CAT-Prep/server/internal/store"
 	"github.com/japp47/CAT-Prep/server/internal/syncapi"
@@ -166,7 +169,18 @@ var SyncKinds = []string{"rc", "va", "cr", "lr", "lrDrill", "arena", "speed", "s
 
 // newV1 builds the student API (docs/architecture.md §5, §6), behind reqinfo.Gate.
 func newV1(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger) http.Handler {
-	return v1Routes(cfg, pool, log, syncapi.Options{Kinds: SyncKinds, MaxRecords: 20_000, MaxBytes: 8 << 20, PerMinute: 120})
+	return v1Routes(cfg, pool, log, syncapi.Options{Kinds: SyncKinds, MaxRecords: 20_000, MaxBytes: 8 << 20, PerMinute: 120, Practice: practiceHook()})
+}
+
+// practiceHook tells reminders that a sync push carried a new attempt (internal/notify, F65).
+func practiceHook() func(ctx context.Context, tx pgx.Tx, identity string, kinds []string) error {
+	within := notify.MustPolicy().PractisedWithinHours
+	return func(ctx context.Context, tx pgx.Tx, identity string, kinds []string) error {
+		if !notify.Practised(kinds) {
+			return nil
+		}
+		return notify.RecordPractice(ctx, tx, identity, within)
+	}
 }
 
 // signInProvider is Google when it is configured; tests replace it with a fake provider.
@@ -219,6 +233,23 @@ func v1Routes(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger, opt synca
 	rt.Handle("GET /v1/auth/google/callback", acc.CallbackHandler())
 	rt.Handle("POST /v1/auth/ticket", acc.TicketHandler())
 	rt.Handle("POST /v1/auth/complete", acc.CompleteHandler())
+
+	tokenKey := cfg.NotifyTokenKey
+	if len(tokenKey) == 0 && !cfg.Prod() {
+		// As the IP hash key: a key for this run, so Reminders work on a laptop with no setup. Its unsubscribe links
+		// stop working at the next restart, which only matters for real email.
+		tokenKey = make([]byte, 32)
+		_, _ = rand.Read(tokenKey)
+	}
+	nt := notify.NewAPI(pool, notify.Tokens{Key: tokenKey}, cfg.NotifyVAPIDPublic, cfg.AllowedOrigin, notify.MustPolicy(), log)
+	rt.Handle("GET /v1/notify/prefs", acc.Require(nt.PrefsHandler()))
+	rt.Handle("PUT /v1/notify/prefs", acc.Require(nt.SavePrefsHandler()))
+	rt.Handle("GET /v1/notify/push-key", nt.PushKeyHandler())
+	rt.Handle("POST /v1/notify/push", acc.Require(nt.SubscribeHandler()))
+	rt.Handle("DELETE /v1/notify/push", acc.Require(nt.UnsubscribePushHandler()))
+	rt.Handle("POST /v1/notify/opened", acc.Require(nt.OpenedHandler()))
+	rt.Handle("GET /v1/unsubscribe", nt.UnsubscribeHandler())
+	rt.Handle("POST /v1/unsubscribe", nt.UnsubscribeHandler())
 
 	adm := admin.New(pool, hash, log)
 	rt.Handle("GET /v1/admin/me", acc.Optional(adm.MeHandler()))

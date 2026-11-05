@@ -11,6 +11,8 @@ import { BACKUP_DUE_DAYS, daysAgo, downloadBackup, hasProgress, holds } from "..
 import { googleCalendarUrl, reminderIcs } from "../lib/ics";
 import { MB, storedBytes, WARN_SIZE } from "../lib/keep";
 import KeepHint from "../components/KeepHint";
+import { Card, Row } from "../components/SettingRows";
+import { RemindersCard } from "../components/Reminders";
 import { usePref } from "../lib/prefs";
 import { useInstall, type IosBrowser } from "../lib/pwa";
 import { useStore } from "../lib/store";
@@ -63,6 +65,8 @@ export default function Settings() {
         <Backup syncOn={syncOn} msg={msg} onFile={importData} />
         <KeepHint />
       </div>
+
+      <RemindersCard />
 
       <div className="grid items-start gap-4 lg:grid-cols-2">
         <Card title="How it looks and works">
@@ -173,28 +177,6 @@ function Backup({ syncOn, msg, onFile }: { syncOn: boolean; msg: { ok: boolean; 
 }
 
 /** A group of setting rows on one tone card. */
-function Card({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section aria-label={title} className="flex flex-col gap-6 rounded-2xl bg-card p-5 sm:p-7">
-      <h2 className="text-heading font-semibold">{title}</h2>
-      {children}
-    </section>
-  );
-}
-
-/** One setting: what it is and what it does on the left, its control on the right (below on a phone). */
-function Row({ title, hint, children }: { title: string; hint?: React.ReactNode; children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
-      <div className="flex min-w-0 flex-col gap-1">
-        <h3 className="text-base font-semibold">{title}</h3>
-        {hint && <div className="text-base text-muted-foreground">{hint}</div>}
-      </div>
-      <div className="shrink-0">{children}</div>
-    </div>
-  );
-}
-
 function LooksRows() {
   const [theme, setTheme] = useTheme();
   const [notSure, setNotSure] = usePref("notSure", true);

@@ -65,6 +65,9 @@ internal/limit/     in-memory rate limits
 internal/httpx/     JSON and the error shape, router (JSON 404 and 405), middleware:
                     request id, access log, recover, 64 KB body limit, same-origin check
 internal/store/     Postgres pool (pgx), migrations (goose, with a lock for two instances)
+internal/notify/    study reminders: the rule book, the queue, push and email channels, the wording (templates/)
+internal/mailx/     SMTP with login and TLS, shared by the digest and reminders
+cmd/notify/         plans and sends reminders every 15 minutes (GitHub Actions); -vapid, -preview, -send-test
 migrations/         numbered SQL files, built into the binary; never edit a merged one
 dev/initdb.sql      creates the cat_test database the first time Postgres starts
 ```
@@ -87,6 +90,8 @@ query strings, cookies or headers.
 | `TURNSTILE_SECRET` | none (no bot check in dev) | Cloudflare Turnstile secret key, checked on `POST /v1/identity`. Required in prod for `/v1` |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | none (sign-in off) | "Sign in with Google" (B7). An OAuth client of type Web application; its redirect URI is `ALLOWED_ORIGIN` + `/api/v1/auth/google/callback`. Both or neither. The site shows the button only when Pages also has `VITE_GOOGLE_SIGNIN=1` |
 | `IP_HASH_KEY`, `IP_HASH_KEY_ID` | random per run in dev | Hex key (32+ bytes) for `audit.events.ip_hash`, and which yearly key it is (default 1). Required in prod for `/v1` |
+| `NOTIFY_TOKEN_SECRET` | random per run in dev; none in prod (reminders off) | Hex, 32+ bytes (`openssl rand -hex 32`). Signs one-click unsubscribe links. The same value on Render and in the GitHub secret of the same name |
+| `NOTIFY_VAPID_PUBLIC` | none (push off) | The push public key from `go run ./cmd/notify -vapid`. Without it, notifications are off and email reminders still work. In prod without `NOTIFY_TOKEN_SECRET`, `/v1/notify` answers 503 and the site hides Reminders |
 | `TEST_DATABASE_URL` | none | Integration tests only. Never point it at real data |
 
 Port 5433 is used because 5432 is often taken by another local Postgres.
@@ -167,3 +172,38 @@ update support.feedback set status = 'fixed', handled_at = now(), updated_at = n
 
 The `item_id` names the question: `rc:<set>:<n>` (n counts from 0), a VA key such as `pj:bees`, or `cr:<id>`.
 Each network can send 10 reports an hour.
+
+## Study reminders
+
+Push and email reminders on days a student has not practised (docs/feature.md F65, design and principles in
+docs/design/notifications.md). Choices are saved through `/v1/notify/*`; `.github/workflows/notify.yml` runs
+`cmd/notify` every 15 minutes, which queues what the rules in `internal/notify` say and sends what is due. Email
+goes through the 99ile.team Gmail with the digest's app password, at most 300 a day (`NOTIFY_EMAIL_DAILY_CAP`).
+
+**Turning it on (once):**
+
+1. Migration 12 (schema `notify`) runs by itself: the deploy workflow migrates before Render deploys.
+2. `go run ./cmd/notify -vapid` prints a key pair. Keep the private key only in GitHub.
+3. Render (the API): `NOTIFY_TOKEN_SECRET` (`openssl rand -hex 32`) and `NOTIFY_VAPID_PUBLIC`.
+4. GitHub → Settings → Secrets and variables → Actions:
+   secrets `NOTIFY_TOKEN_SECRET` (the same value) and `NOTIFY_VAPID_PRIVATE`;
+   variables `NOTIFY_VAPID_PUBLIC` and `NOTIFY_DRY` = `1`. `DIGEST_SMTP_PASSWORD` is reused.
+5. Gmail (99ile.team): a filter for `from:mailer-daemon OR subject:unsubscribe` that skips the inbox and labels
+   them "99ile mail" ("Reminders" is a name Gmail keeps for itself): bounces and mailto unsubscribes land there.
+6. A week with `NOTIFY_DRY=1`: each run logs what it would send and sends nothing. Then delete the variable.
+
+**Switches** (repository variables): `NOTIFY_EMAIL=off` or `NOTIFY_PUSH=off` stops a channel from the next run.
+
+**Checking the wording:** `go run ./cmd/notify -preview /tmp/mail` writes every message as HTML and text;
+`NOTIFY_SMTP_USER=99ile.team@gmail.com NOTIFY_SMTP_PASSWORD=… go run ./cmd/notify -send-test you@example.com`
+emails all of them to one address. Wording is `internal/notify/templates/messages.json`, the rules' numbers
+`policy.json`; a test fails on a missing placeholder, a subject over 50 characters or a push over 120.
+
+**When something is wrong:** five failures in a row pause a channel for the run and the run fails, so GitHub
+emails you. The run's log lists sent, skipped (with why), failed and retried. In SQL:
+
+```sql
+select kind, channel, status, reason, count(*) from notify.messages where created_at > now() - interval '1 day' group by 1, 2, 3, 4 order by 5 desc;
+select kind, count(*) filter (where status = 'sent') sent, count(opened_at) opened, count(practised_at) practised from notify.messages group by 1;
+```
+

@@ -1,0 +1,167 @@
+{
+  "_about": "Wording for every reminder (F65, D89). Edit freely: a test renders every variant with sample data and fails on a missing placeholder, a subject over 50 characters or a push over 120. Placeholders: {{.Name}} (may be empty), {{.Streak}}, {{.Missed}}, {{.Task.Label}}, {{.Task.Title}}, {{.Task.Mins}}, {{.Week.Days}}, {{.Week.Questions}}. Each kind has one to three variants; \"to\" says where the button goes (task, the default; today; review) and \"card\": false hides the task card; the same one never goes to a student twice in a row. Plain words, no guilt, no exclamation marks.",
+  "why": {
+    "email": "You get this because you turned on email reminders on 99ile. Reply to this email to reach us.",
+    "weekly": "You get this because you turned on the Sunday review on 99ile. Reply to this email to reach us."
+  },
+  "kinds": {
+    "daily": [
+      {
+        "id": "daily-a",
+        "subject": "Your {{.Task.Label}}, {{.Task.Mins}} minutes",
+        "preview": "You haven't practised yet today. One short set keeps the habit going.",
+        "heading": "Your {{.Task.Label}} is waiting",
+        "body": [
+          "{{if .Name}}{{.Name}}, you{{else}}You{{end}} haven't practised yet today. One short set is enough to keep going."
+        ],
+        "button": "Start it now",
+        "also": {
+          "text": "Want the whole day?",
+          "link": "Open Today"
+        },
+        "push": {
+          "title": "Your {{.Task.Label}} is waiting",
+          "body": "{{.Task.Title}}, about {{.Task.Mins}} minutes."
+        }
+      },
+      {
+        "id": "daily-b",
+        "subject": "{{.Task.Mins}} minutes for your {{.Task.Label}}",
+        "preview": "A short set now, and today counts.",
+        "heading": "A short set, and today counts",
+        "body": [
+          "Your {{.Task.Label}} takes about {{.Task.Mins}} minutes. Do it now, and the rest of the plan can wait."
+        ],
+        "button": "Start it now",
+        "also": {
+          "text": "Want the whole day?",
+          "link": "Open Today"
+        },
+        "push": {
+          "title": "{{.Task.Mins}} minutes, and today counts",
+          "body": "{{.Task.Label}}: {{.Task.Title}}."
+        }
+      }
+    ],
+    "daily-streak": [
+      {
+        "id": "streak-a",
+        "subject": "Day {{.Streak}} is waiting",
+        "preview": "{{.Task.Mins}} minutes keeps your streak going.",
+        "heading": "Day {{.Streak}} is waiting",
+        "body": [
+          "You've practised {{.Streak}} days in a row. Your {{.Task.Label}} keeps it going."
+        ],
+        "button": "Keep the streak",
+        "also": {
+          "text": "Want the whole day?",
+          "link": "Open Today"
+        },
+        "push": {
+          "title": "Day {{.Streak}} is waiting",
+          "body": "{{.Task.Title}}, about {{.Task.Mins}} minutes."
+        }
+      },
+      {
+        "id": "streak-b",
+        "subject": "{{.Streak}} days in a row. One more today?",
+        "preview": "One short set today.",
+        "heading": "{{.Streak}} days in a row",
+        "body": [
+          "One short set today makes it one more. Your {{.Task.Label}} takes about {{.Task.Mins}} minutes."
+        ],
+        "button": "Keep the streak",
+        "also": {
+          "text": "Want the whole day?",
+          "link": "Open Today"
+        },
+        "push": {
+          "title": "{{.Streak}} days in a row",
+          "body": "Your {{.Task.Label}}: about {{.Task.Mins}} minutes."
+        }
+      }
+    ],
+    "missed-2": [
+      {
+        "id": "missed2-a",
+        "subject": "Two days off. Here's a {{.Task.Mins}}-minute way back",
+        "preview": "No catching up needed. Just today's set.",
+        "heading": "A {{.Task.Mins}}-minute way back",
+        "body": [
+          "Two days off happen to everyone. There's nothing to catch up on: do today's set and you're back on track."
+        ],
+        "button": "Start today's set",
+        "push": {
+          "title": "A {{.Task.Mins}}-minute way back",
+          "body": "No catching up needed. Just your {{.Task.Label}}."
+        }
+      },
+      {
+        "id": "missed2-b",
+        "subject": "Your plan kept your place",
+        "preview": "Pick up with one short set.",
+        "heading": "Your plan kept your place",
+        "body": [
+          "You've been away two days. Your plan is where you left it, and one short set is all it takes to start again."
+        ],
+        "button": "Start today's set",
+        "push": {
+          "title": "Your plan kept your place",
+          "body": "One short set to start again: {{.Task.Title}}."
+        }
+      }
+    ],
+    "missed-5": [
+      {
+        "id": "missed5-a",
+        "subject": "Start again with one short set",
+        "preview": "Five days away. Something small is the easiest restart.",
+        "heading": "Start again with one short set",
+        "body": [
+          "It's been five days. Long breaks are easier to end with something small, so here is one short set, about {{.Task.Mins}} minutes."
+        ],
+        "button": "Start the set",
+        "push": {
+          "title": "Start again with one short set",
+          "body": "About {{.Task.Mins}} minutes: {{.Task.Title}}."
+        }
+      }
+    ],
+    "missed-12": [
+      {
+        "id": "missed12-a",
+        "subject": "We'll stop reminding you for now",
+        "preview": "This is the last reminder. Practise once and they start again.",
+        "heading": "This is our last reminder",
+        "body": [
+          "It's been twelve days, so we'll stop reminding you. Nothing is lost: your plan, progress and mistakes are all where you left them.",
+          "Practise once, whenever you're ready, and reminders start again by themselves."
+        ],
+        "button": "Open 99ile",
+        "push": {
+          "title": "This is our last reminder",
+          "body": "Your progress is safe. Practise once and reminders start again."
+        },
+        "to": "today",
+        "card": false
+      }
+    ],
+    "weekly": [
+      {
+        "id": "weekly-a",
+        "subject": "Your week: {{.Week.Days}} days, {{.Week.Questions}} questions",
+        "preview": "What went well, what to work on next week.",
+        "heading": "Your week on 99ile",
+        "body": [
+          "Here is your week, and one thing to work on next."
+        ],
+        "button": "See your week",
+        "push": {
+          "title": "Your week is ready",
+          "body": "{{.Week.Days}} days, {{.Week.Questions}} questions. See what to work on next."
+        },
+        "to": "review"
+      }
+    ]
+  }
+}

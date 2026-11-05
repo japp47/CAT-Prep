@@ -396,10 +396,11 @@ The ⌘K palette and History (F51) read the student's own state in the browser. 
 
 **Solver (D51, D64; F84, F85, then F57, F61; TypeScript, browser).** Built 30 Oct 2026 as `practice/solver.ts`: values to fill, the choices each can take, groups that must differ, and rules tested once what they read is filled. Seating models compile to it; grid models (conditions in JSON, a league helper) cover selection, binary logic and tournaments. It counts the cases left after any set of clues, which is what DILR Replay and the daily puzzle need. Data interpretation (F90, planned 1 Nov 2026, D70 to D72): DI sets are LR sets with `data` (named tables of numbers with units) and `charts` (how to draw them); our own SVG chart components draw them in the player's lazy chunk; each set's answers are recomputed from `data` by a plain TypeScript check in tests, and a table with blanks is a grid model the general solver proves has one fill. DILR Replay (F57, built 1 Nov 2026) adds `practice/replay.ts`: the board as grids, the cells each step settles (listed up to 20,000 cases, tested cell by cell above), counts capped at 200,000, marks, checks and hints; its sets are `content/lrdrill/replay.json`, loaded with the drills. Pure functions with tests; loaded only on DILR drill pages. No server.
 
-**Notifications (F64, F65; Go module `notify`).**
-- Inbox and preferences through `/v1/notify/*`, behind the same `/v1` gate and device cookie as sync.
-- A scheduler (D24) every 15 minutes: students whose reminder time passed in their time zone, sync records show no finished practice today, not in quiet hours, nothing sent yet today (insert into `sends` with a unique key; a conflict means skip). Then write the inbox item and send web push (VAPID keys in Render env, never in the repo). A failed push leaves the inbox item; subscriptions that return 404 or 410 are removed.
-- Frontend: push subscription in the existing service worker; the bell loads idle.
+**Notifications (F64, F65; Go package `internal/notify`; full design in `docs/design/notifications.md`, 5 Nov 2026).**
+- One rule book (`Decide`, pure, tested) decides what each student gets; channels only deliver: Gmail SMTP for email now (the team account, at most 300 a day), web push with VAPID (standard library, no new dependency), the inbox in January.
+- Postgres is the queue (`notify.messages`, unique key per student, kind and local day; claimed with `SKIP LOCKED`) behind a `Queue` interface, so River, Redis or a cloud queue can replace it when the numbers ask.
+- `cmd/notify` plans and sends every 15 minutes from GitHub Actions, like the digest and cleanup jobs; the API may run the same worker in-process; both at once never send twice.
+- Practice is known from `notify.activity`, updated in the sync push transaction. Preferences through `/v1/notify/*`; one-click unsubscribe with signed tokens outside the gate. Wording, layout and the rules' numbers are files in `internal/notify/templates/`.
 
 **Community (F67 to F70; Go module `community`).**
 - Accounts only (B7); every read of a group checks membership in SQL, not by a secret id.

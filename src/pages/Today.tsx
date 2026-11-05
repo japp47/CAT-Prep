@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown, ChevronLeft, ChevronRight, PenLine, Timer as TimerIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { ArticleSummarySheet } from "../components/ArticleSummary";
 import { ErrorText, Ext, Field, LinkButton, LinkButtons, Meta, Page, TextLink } from "../components/kit";
 import SyncPrompt from "../components/SyncPrompt";
+import { API_ENABLED } from "../lib/api";
 import { NativeSelect } from "../components/Select";
 import { StreakBadge } from "../components/StreakBadge";
 import { PHASES, phaseOf } from "../data/exam";
@@ -556,6 +557,10 @@ function NoPlan({ d }: { d: string }) {
   return <div className="flex flex-col gap-1 rounded-2xl bg-card p-6"><p className="text-heading font-semibold">{h}</p>{p && <p className="text-base text-muted-foreground">{p}</p>}</div>;
 }
 
+// The reminder offer loads only for a student who practised today and has not answered it (F65).
+const ReminderOffer = lazy(() => import("../components/Reminders").then((m) => ({ default: m.ReminderOffer })));
+const practisedToday = (st: AppState, today: string) => historyDays(st).some((x) => x.d === today && x.items.some((i) => i.kind === "practice" || i.kind === "tests"));
+
 export default function Today() {
   const today = useToday();
   const [d, setD] = useState(today);
@@ -604,6 +609,7 @@ export default function Today() {
         {isToday && !allDone && <div data-rise><DoneLine d={d} isToday /></div>}
         {/* The sign-in nudge waits until after the plan, so it never stands between the student and the work. */}
         {isToday && <SyncPrompt />}
+        {isToday && API_ENABLED && practisedToday(state, today) && <Suspense fallback={null}><ReminderOffer place="today" /></Suspense>}
         <div data-rise><SetupCard d={d} /></div>
       </div>
     </Page>

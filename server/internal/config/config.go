@@ -40,6 +40,12 @@ type Config struct {
 	// application" whose redirect URI is ALLOWED_ORIGIN + /api/v1/auth/google/callback. Both or neither.
 	GoogleClientID     string
 	GoogleClientSecret string
+	// NotifyTokenKey signs one-click unsubscribe links (NOTIFY_TOKEN_SECRET, 32 bytes or more in hex), and
+	// NotifyVAPIDPublic is the push key browsers subscribe with (NOTIFY_VAPID_PUBLIC, from cmd/notify -vapid). The
+	// reminder job uses the same two values. In prod without the token secret, /v1/notify answers 503 and the site
+	// hides Reminders; in dev the API makes a key for each run. Without the VAPID key, push is off and email works.
+	NotifyTokenKey    []byte
+	NotifyVAPIDPublic string
 	// Commit is the Git commit this build came from. Render sets RENDER_GIT_COMMIT; "dev" elsewhere.
 	// /healthz reports it, so the deploy workflow can tell when the new version is live.
 	Commit string
@@ -118,6 +124,15 @@ func load(get func(string) string) (Config, error) {
 	} else if c.GoogleClientID != "" && !strings.HasSuffix(c.GoogleClientID, ".apps.googleusercontent.com") {
 		errs = append(errs, errors.New("GOOGLE_CLIENT_ID should end in .apps.googleusercontent.com (Google Cloud → Credentials → OAuth client)"))
 	}
+
+	if k := get("NOTIFY_TOKEN_SECRET"); k != "" {
+		b, err := hex.DecodeString(k)
+		if err != nil || len(b) < 32 {
+			errs = append(errs, errors.New("NOTIFY_TOKEN_SECRET must be at least 32 bytes in hex (openssl rand -hex 32)"))
+		}
+		c.NotifyTokenKey = b
+	}
+	c.NotifyVAPIDPublic = get("NOTIFY_VAPID_PUBLIC")
 
 	c.Commit = or(get("RENDER_GIT_COMMIT"), "dev")
 	return c, errors.Join(errs...)

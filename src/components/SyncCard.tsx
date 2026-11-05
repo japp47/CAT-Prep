@@ -16,6 +16,7 @@ const LinkPanel = lazy(() => import("./sync/LinkPanel"));
 const DeviceList = lazy(() => import("./sync/DeviceList"));
 const RecoveryPanel = lazy(() => import("./sync/RecoveryPanel"));
 const SignInStep = lazy(() => import("./sync/SignInStep"));
+const EmailOffer = lazy(() => import("./Reminders").then((m) => ({ default: m.EmailOffer })));
 
 
 
@@ -34,6 +35,8 @@ export default function SyncCard({ onChange }: { onChange?: () => void }) {
   const [view, setView] = useState<"none" | "join" | "link">("none");
   const [recovery, setRecovery] = useState("");
   const [note, setNote] = useState("");
+  // Right after a sign-in, one offer of email reminders (F65).
+  const [signedIn, setSignedIn] = useState(false);
   const [ask, setAsk] = useState<"recovery" | "off" | null>(null);
   const [refresh, setRefresh] = useState(0);
   const [acct, setAcct] = useState<Account | null>(null);
@@ -43,7 +46,7 @@ export default function SyncCard({ onChange }: { onChange?: () => void }) {
   const signin = sp.get("signin");
   useEffect(() => {
     if (!signin) return;
-    if (signin in SIGNIN_WORDS) { setNote(SIGNIN_WORDS[signin]); if (signin === "done") setRefresh((n) => n + 1); }
+    if (signin in SIGNIN_WORDS) { setNote(SIGNIN_WORDS[signin]); if (signin === "done") { setRefresh((n) => n + 1); setSignedIn(true); } }
     else setTicket(signin);
     const next = new URLSearchParams(sp);
     next.delete("signin");
@@ -103,7 +106,7 @@ export default function SyncCard({ onChange }: { onChange?: () => void }) {
       <Box>
         {ticket && (
           <Suspense fallback={null}>
-            <SignInStep ticket={ticket} onDone={(text) => { setTicket(""); setNote(text); setRefresh((n) => n + 1); }} />
+            <SignInStep ticket={ticket} onDone={(text) => { setTicket(""); setNote(text); setRefresh((n) => n + 1); if (text.startsWith("Signed in as")) setSignedIn(true); }} />
           </Suspense>
         )}
         {!on && !ticket && view !== "join" && (
@@ -139,6 +142,7 @@ export default function SyncCard({ onChange }: { onChange?: () => void }) {
         )}
         <div ref={bot} />
         {note && <p className="text-base" role="status">{note}</p>}
+        {signedIn && <Suspense fallback={null}><EmailOffer /></Suspense>}
       </Box>
       {on && (
         <Box>

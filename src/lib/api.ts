@@ -12,7 +12,7 @@ export const SIGNIN_ENABLED = API_ENABLED && import.meta.env.VITE_GOOGLE_SIGNIN 
 export type ApiResult<T> = { ok: true; status: number; data: T } | { ok: false; status: number; code: string; message: string };
 
 export interface CallOptions {
-  method?: "GET" | "POST" | "DELETE";
+  method?: "GET" | "POST" | "PUT" | "DELETE";
   /** Lets a push finish after the tab is hidden or closed (the body must stay under 64 KB). */
   keepalive?: boolean;
   timeoutMs?: number;

@@ -1,0 +1,38 @@
+{
+  "_about": "The numbers behind the reminder rules (F65, docs/design/notifications.md §2). Change them here, not in Go code; the rules' tests read this file. Times are minutes after midnight in the student's own time zone. exams: CAT dates on which, and the day before, no study reminder goes out (until the CAT-year choice, D87, gives each student their own).",
+  "defaultTime": 1170,
+  "timeStep": 15,
+  "quietHours": {
+    "from": 1380,
+    "to": 420
+  },
+  "maxStudyMessagesPerDay": 1,
+  "minHoursBetweenMessages": 12,
+  "maxEmailsPerWeek": 3,
+  "streakWordingFrom": 3,
+  "missedDays": [
+    2,
+    5,
+    12
+  ],
+  "weekly": {
+    "day": "sunday",
+    "time": 540
+  },
+  "noRemindersAroundExam": {
+    "daysBefore": 1
+  },
+  "exams": [
+    "2026-11-29",
+    "2027-11-28"
+  ],
+  "firstReminderAfterDays": 1,
+  "practisedWithinHours": 2,
+  "emailPriority": [
+    "missed",
+    "weekly",
+    "daily"
+  ],
+  "staleAfterHours": 6,
+  "keepMessagesDays": 30
+}
