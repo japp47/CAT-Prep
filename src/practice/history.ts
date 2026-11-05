@@ -4,7 +4,7 @@ import { buildDay, budgetFor } from "../planner/engine";
 import { LIVE_SECTIONS, SECTION_BY_ID } from "../sections";
 import type { SectionId } from "../sections/types";
 import { CR_CATALOG, LR_CATALOG, RC_CATALOG, VA_CATALOG } from "./catalog.gen";
-import { REDO_SRC } from "./record";
+import { REDO_SRC, timed } from "./record";
 import { SECTIONAL_SRC } from "./sectional";
 import { CR_TYPE } from "./types";
 import { VA_KIND, type VaKind } from "./va/build";
@@ -47,6 +47,9 @@ const isAuto = (src: string) => AUTO_SRC.has(src) || src.startsWith("Practice: "
 
 const plural = (n: number, one: string, many = one + "s") => `${n} ${n === 1 ? one : many}`;
 const mins = (secs: number) => (secs < 60 ? "under a minute" : `${Math.round(secs / 60)} min`);
+/** A set's time, left out of the day's minutes when a long break interrupted it (D83). */
+const secsOf = (a: { secs: number; away?: number }) => (timed(a) ? a.secs : undefined);
+const took = (a: { secs: number; away?: number }) => (timed(a) ? mins(a.secs) : "time not counted after a break");
 const right = (c: number, n: number) => `${c} of ${n} right`;
 const list = (xs: string[]) => [...new Set(xs)].join(", ");
 
@@ -87,28 +90,28 @@ export function historyItems(st: AppState): HistoryItem[] {
   st.rcAttempts.forEach((a) => {
     const title = rcTitle.get(a.set) ?? "RC set";
     const n = a.ans.length, skipped = a.ans.filter((x) => x == null).length;
-    add({ id: "rc-" + a.id, d: a.d, kind: "practice", icon: "rc", title, secs: a.secs,
-      detail: `RC${a.mode === "daily" ? " of the day" : ""}, ${right(a.c, n)}${skipped ? `, ${skipped} skipped` : ""}, ${mins(a.secs)}`,
+    add({ id: "rc-" + a.id, d: a.d, kind: "practice", icon: "rc", title, secs: secsOf(a),
+      detail: `RC${a.mode === "daily" ? " of the day" : ""}, ${right(a.c, n)}${skipped ? `, ${skipped} skipped` : ""}, ${took(a)}`,
       href: `/practice/rc/${a.set}?review=${a.id}` });
   });
   st.vaAttempts.forEach((a) => {
     const kinds = list(a.items.map((i) => VA_KIND[i.k.split(":")[0] as VaKind]?.label ?? "VA"));
     const topics = list(a.items.map((i) => vaTopic.get(i.k.split(":")[1]) ?? "")).trim();
-    add({ id: "va-" + a.id, d: a.d, kind: "practice", icon: "va", title: (a.mode === "daily" ? "Daily VA drill" : "VA drill") + ": " + kinds, secs: a.secs,
-      detail: `${right(a.items.filter((i) => i.ok).length, a.items.length)}, ${mins(a.secs)}${topics ? `. ${topics}` : ""}`,
+    add({ id: "va-" + a.id, d: a.d, kind: "practice", icon: "va", title: (a.mode === "daily" ? "Daily VA drill" : "VA drill") + ": " + kinds, secs: secsOf(a),
+      detail: `${right(a.items.filter((i) => i.ok).length, a.items.length)}, ${took(a)}${topics ? `. ${topics}` : ""}`,
       href: `/practice/va?review=${a.id}` });
   });
   st.crAttempts.forEach((a) => {
     const kinds = list(a.items.map((i) => { const m = crMeta.get(i.k.replace(/^cr:/, "")); return m ? CR_TYPE[m.type].label : ""; }).filter(Boolean));
-    add({ id: "cr-" + a.id, d: a.d, kind: "practice", icon: "cr", title: "Critical reasoning" + (kinds ? ": " + kinds : ""), secs: a.secs,
-      detail: `${right(a.items.filter((i) => i.ok).length, a.items.length)}, ${mins(a.secs)}`, href: `/practice/cr?review=${a.id}` });
+    add({ id: "cr-" + a.id, d: a.d, kind: "practice", icon: "cr", title: "Critical reasoning" + (kinds ? ": " + kinds : ""), secs: secsOf(a),
+      detail: `${right(a.items.filter((i) => i.ok).length, a.items.length)}, ${took(a)}`, href: `/practice/cr?review=${a.id}` });
   });
   st.lrAttempts.forEach((a) => {
     const n = a.ans.length, skipped = a.ans.filter((x) => x === null || x === "").length;
     // The post-mortem's key deduction sits next to the attempt (F86).
     const key = a.pm?.key ? `. Opened with clue ${a.pm.key}` : "";
-    add({ id: "lr-" + a.id, d: a.d, kind: "practice", icon: "lr", title: lrTitle.get(a.set) ?? "LR set", secs: a.secs,
-      detail: `LR set, ${right(a.c, n)}${skipped ? `, ${skipped} skipped` : ""}, ${mins(a.secs)}${key}`,
+    add({ id: "lr-" + a.id, d: a.d, kind: "practice", icon: "lr", title: lrTitle.get(a.set) ?? "LR set", secs: secsOf(a),
+      detail: `LR set, ${right(a.c, n)}${skipped ? `, ${skipped} skipped` : ""}, ${took(a)}${key}`,
       href: `/practice/lr/${a.set}?review=${a.id}` });
   });
   // LR drills (F83 to F85): one row a run, leading back to the same drill.

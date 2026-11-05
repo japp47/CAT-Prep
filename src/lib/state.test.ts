@@ -33,3 +33,19 @@ describe("critical reasoning attempts", () => {
     expect(s.crAttempts).toEqual([{ id: "a", d: "2026-10-17", secs: 0, items: [{ k: "cr:CR-01", a: null, ok: true }] }]);
   });
 });
+
+describe("interrupted attempts (D83)", () => {
+  it("keeps a break's seconds on each kind of attempt through a round trip, and drops a bad one", () => {
+    const raw = {
+      rcAttempts: [{ id: "r", d: "2026-11-05", set: "s", mode: "library", ans: [0], c: 1, w: 0, secs: 900, first: 60, away: 7200.4 }],
+      vaAttempts: [{ id: "v", d: "2026-11-05", mode: "custom", secs: 90, items: [], away: 3600 }],
+      crAttempts: [{ id: "c", d: "2026-11-05", secs: 90, items: [], away: -5 }],
+      lrAttempts: [{ id: "l", d: "2026-11-05", set: "s", ans: [], c: 0, w: 0, secs: 900, updatedAt: 1, away: "long" }],
+    };
+    const st = normalize(JSON.parse(JSON.stringify(raw)));
+    expect(st.rcAttempts[0].away).toBe(7200);
+    expect(st.vaAttempts[0].away).toBe(3600);
+    expect(st.crAttempts[0]).not.toHaveProperty("away");
+    expect(st.lrAttempts[0]).not.toHaveProperty("away");
+  });
+});

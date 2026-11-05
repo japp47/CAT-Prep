@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { blankState, normalize, type ArenaRound, type LrAttempt } from "../lib/state";
 import { toRecords } from "../lib/sync/records";
-import { ARENA_POOL, ARENA_SETS, arenaTrend, costliest, debrief, diWanted, freshLeft, pickRound, resultOf, roundScore, selectionAccuracy, visitLanes } from "./arena";
+import { ARENA_POOL, ARENA_SETS, arenaTrend, costliest, debrief, diWanted, freshLeft, pickRound, resultOf, roundScore, selectionAccuracy, solveOrder, visitLanes } from "./arena";
 import { isDi } from "./types";
 import { LR_CATALOG } from "./catalog.gen";
 import type { LrMeta } from "./types";
@@ -99,6 +99,10 @@ describe("Arena results and selection accuracy (D60)", () => {
     expect(selectionAccuracy(flipped, lr)).toEqual({ right: 0, pairs: 3 });
   });
 
+  it("leaves out a later attempt broken by a long break, whose time is not honest (D83)", () => {
+    expect(resultOf(r, "d", [...lr, { ...att("pd", "d", 5, 0, 9000, "2026-11-03"), away: 7200 }])).toBeUndefined();
+  });
+
   it("lets a left set join when it is solved later in practice, and never pairs two left sets", () => {
     const later = [...lr, att("pd", "d", 5, 0, 480, "2026-11-03")];
     expect(resultOf(r, "d", later)).toEqual({ right: 5, marks: 15, mins: 8, later: true });
@@ -159,5 +163,21 @@ describe("Arena rounds in state and sync", () => {
     expect(st.arenaRounds[1].visits).toEqual([]);
     expect(st.arenaRounds[1].guess).toEqual({ a: {} });
     expect(toRecords(st).filter((x) => x.kind === "arena").map((x) => x.id)).toEqual(["r1", "r2"]);
+  });
+});
+
+describe("The order a round is scored by (D83)", () => {
+  it("is the picks, then the sets gone to without a pick in the order first opened, never a left set", () => {
+    const visits: [string, number, number][] = [["a", 60, 600], ["c", 600, 900], ["e", 900, 1000], ["b", 1000, 1500], ["c", 1500, 1600]];
+    expect(solveOrder(["a"], ["e"], visits)).toEqual(["a", "c", "b"]);
+    expect(solveOrder(["b", "a"], [], visits)).toEqual(["b", "a", "c", "e"]);
+  });
+
+  it("gives a selection score to a round started with one tap", () => {
+    const lr = [att("ta", "a", 4, 0, 600), att("tb", "b", 1, 1, 900), att("tc", "c", 2, 0, 300)];
+    const visits: [string, number, number][] = [["a", 60, 660], ["b", 660, 1560], ["c", 1560, 1860]];
+    const r = round({ order: solveOrder(["a"], [], visits), left: ["d", "e"], visits, attempts: { a: "ta", b: "tb", c: "tc" } });
+    expect(r.order).toEqual(["a", "b", "c"]);
+    expect(selectionAccuracy(r, lr)).toEqual({ right: 2, pairs: 3 });
   });
 });

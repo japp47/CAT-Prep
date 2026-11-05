@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Calculator } from "lucide-react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { CatCalculator } from "../../components/CatCalculator";
 import { ContentGate } from "../../components/Content";
@@ -13,7 +15,7 @@ import { useGsap } from "../../lib/motion";
 import type { ArenaGuess, ArenaRound } from "../../lib/state";
 import { useStore } from "../../lib/store";
 import {
-  ARENA_SECS, ARENA_SETS, arenaTrend, costliest, debrief, freshLeft, letterOf, LOOK_NUDGE, pickRound, resultOf, roundScore, selectionAccuracy, setSecs, visitLanes,
+  ARENA_SECS, ARENA_SETS, arenaTrend, costliest, debrief, freshLeft, letterOf, LOOK_NUDGE, pickRound, resultOf, roundScore, selectionAccuracy, setSecs, solveOrder, visitLanes,
 } from "../../practice/arena";
 import { LR_CATALOG } from "../../practice/catalog.gen";
 import type { Content } from "../../practice/content";
@@ -69,8 +71,10 @@ const elapsed = (d: Draft, now = Date.now()) => Math.min(ARENA_SECS, Math.floor(
 
 function Live() {
   const [draft, setDraft] = useState<Draft | null>(() => loadDraft());
+  // Read once on arrival: a round whose 40 minutes ran out while the student was away (D83).
+  const [endedId] = useState(() => (draft && elapsed(draft) >= ARENA_SECS ? draft.id : null));
   if (!draft) return <Deal onStart={(d) => { saveDraft(d); setDraft(d); }} />;
-  return <ContentGate need={{ lr: draft.sets }}>{(c) => <Round start={draft} c={c} />}</ContentGate>;
+  return <ContentGate need={{ lr: draft.sets }}>{(c) => <Round start={draft} c={c} ended={draft.id === endedId} onAside={() => { saveDraft(null); setDraft(null); }} />}</ContentGate>;
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -89,9 +93,9 @@ function Deal({ onStart }: { onStart: (d: Draft) => void }) {
   });
   const rules: [string, string][] = [
     ["Five sets, 40 minutes", "As in CAT's DILR section. The clock starts when you deal and keeps running if you leave."],
-    ["Look, then pick", "Read the sets, pick the order you would solve them in and leave the ones you would skip. Guess each set's minutes and right answers if you like. Toppers spend three to five minutes here."],
+    ["Look, then start", "Read the sets and start with the one you would solve first. Planning the whole order, leaving sets and guessing each set's minutes are there if you want them. Toppers spend three to five minutes here."],
     ["Then solve", "Switch sets whenever you want. CAT's calculator is in the bar. MCQ: +3 right, −1 wrong; typed answers cost nothing when wrong."],
-    ["Afterwards", "Your picks against what happened: where the minutes went and which set cost the most."],
+    ["Afterwards", "Your choices against what happened: where the minutes went and which set cost the most. Sets you did not pick count in the order you went to them."],
   ];
   return (
     <Page>
@@ -172,10 +176,10 @@ function Clock({ d, onEnd }: { d: Draft; onEnd: () => void }) {
   return <Timer over={left <= 300}>{fmtSecs(Math.max(0, left))} left</Timer>;
 }
 
-function Round({ start, c }: { start: Draft; c: Content }) {
+function Round({ start, c, ended, onAside }: { start: Draft; c: Content; ended: boolean; onAside: () => void }) {
   const { update } = useStore();
   const navigate = useNavigate();
-  const leave = useLeaveConfirmation(true);
+  const leave = useLeaveConfirmation(!ended);
   const [d, setD] = useState(start);
   const [pane, setPane] = useState<"p" | "q">("p");
   const [confirming, setConfirming] = useState(false);
@@ -203,8 +207,10 @@ function Round({ start, c }: { start: Draft; c: Content }) {
     // Ids are made here, not in the update, which React may run twice.
     const attempts: Record<string, string> = {};
     sets.forEach((s) => { const w = d.work[s.id]; if (w && answered(w)) attempts[s.id] = uid(); });
+    // Scored by the picks, then the sets gone to without a pick (D83).
+    const order = solveOrder(d.order, d.left, visits);
     const round: ArenaRound = {
-      id: d.id, d: today, updatedAt: now, sets: d.sets, order: d.order, left: d.sets.filter((id) => !d.order.includes(id)),
+      id: d.id, d: today, updatedAt: now, sets: d.sets, order, left: d.sets.filter((id) => !order.includes(id)),
       guess: d.guess, look: d.phase === "solve" ? d.look : end, visits, attempts, secs: end, ...(d.replay ? { replay: true as const } : {}),
     };
     update((st) => {
@@ -220,6 +226,7 @@ function Round({ start, c }: { start: Draft; c: Content }) {
   };
 
   if (sets.length !== ARENA_SETS) return <NotFound />;
+  if (ended) return <Ended answered={sets.some((s) => !!d.work[s.id] && answered(d.work[s.id]))} onDebrief={submit} onAside={onAside} />;
   // Leaving is asked on both screens: the blocker holds every link while a round runs, so the dialog must be there.
   const leaving = (
     <Confirm open={leave.open} onOpenChange={leave.onOpenChange} title="Leave the round?" action="Leave the round" onAction={leave.onLeave} cancel="Stay" danger actionClassName="!text-white dark:!text-black">
@@ -252,6 +259,24 @@ function Round({ start, c }: { start: Draft; c: Content }) {
 }
 
 const asRound = (d: Draft) => ({ sets: d.sets }) as ArenaRound;
+
+/**
+ * A round whose 40 minutes ran out while the student was away (D83). With an answer, it counts as the exam would, and
+ * the debrief is a tap away. With none, it is set aside: never saved, so it is not scored and its sets go back to the deal.
+ */
+function Ended({ answered: any, onDebrief, onAside }: { answered: boolean; onDebrief: () => void; onAside: () => void }) {
+  return (
+    <Page className="gap-6 lg:gap-8">
+      <PlayerBar kicker="Set Selection Arena" title="The 40 minutes ended while you were away" />
+      <section aria-label="This round" className="flex flex-col gap-4 rounded-2xl bg-card p-6 sm:p-8">
+        <p className="measure text-base">{any
+          ? "The clock kept running, as in the exam. Your answers stand as you left them, and the round counts."
+          : "Nothing was answered, so this round is set aside: it does not count towards your selection score, and its five sets go back into the deal."}</p>
+        <div>{any ? <Button onClick={onDebrief}>See the debrief</Button> : <Button onClick={onAside}>Deal a new round</Button>}</div>
+      </section>
+    </Page>
+  );
+}
 /** What a round holds, said before the deal: "This round: three logical reasoning sets and two data interpretation sets." */
 const WORD = ["no", "one", "two", "three", "four", "five"];
 function mix(sets: string[]) {
@@ -307,13 +332,19 @@ function Look({ d, setD, sets, onSubmit }: { d: Draft; setD: (f: (p: Draft) => D
     const first = p.order[0] ?? p.sets[0];
     return { ...p, phase: "solve", look: t, open: first, from: t };
   });
+  // One tap to solve (D83): this set goes first and the clock moves on to solving.
+  const startWith = () => setD((p) => {
+    const t = elapsed(p);
+    return { ...p, order: [open.id, ...p.order.filter((x) => x !== open.id)], left: p.left.filter((x) => x !== open.id), phase: "solve", look: t, open: open.id, from: t };
+  });
+  const read = new Set([...(d.seen ?? []), d.open]).size;
   const looked = elapsed(d, now);
 
   return (
     <Page className="gap-6 lg:gap-8">
-      <PlayerBar kicker="Set Selection Arena, look and pick" title="Pick your order">
+      <PlayerBar kicker="Set Selection Arena, look and pick" title="Where will you start?">
         <Clock d={d} onEnd={onSubmit} />
-        <Button size="sm" onClick={begin} disabled={!d.order.length}>Start solving</Button>
+        {d.order.length > 0 && <Button size="sm" variant="secondary" onClick={begin}>Start in my order</Button>}
       </PlayerBar>
       <PickStrip d={d} sets={sets} onOpen={(id) => setD((p) => ({ ...p, open: id, seen: [...new Set([...(p.seen ?? []), p.open, id])] }))} />
       {looked >= LOOK_NUDGE && <p className="-mt-2 text-base text-muted-foreground">Most toppers start solving by now.</p>}
@@ -333,19 +364,33 @@ function Look({ d, setD, sets, onSubmit }: { d: Draft; setD: (f: (p: Draft) => D
             <h2 className="text-heading font-semibold">Set {letterOf(r, open.id)}</h2>
             <p className="text-base text-muted-foreground">{rank >= 0 ? `Picked ${ORD[rank]}.` : isLeft ? "You are leaving it." : "Not picked yet."}</p>
           </div>
-          <div className="flex flex-wrap gap-2">
-            {rank < 0 && <Button variant="secondary" onClick={pick}>Pick it {ORD[d.order.length]}</Button>}
-            {!isLeft && <Button variant="ghost" onClick={leaveIt}>Leave it</Button>}
-            {(rank >= 0 || isLeft) && <Button variant="ghost" onClick={undo}>Undo</Button>}
-          </div>
           <p className="text-base">{open.questions.length} questions: {mcq} MCQ, {open.questions.length - mcq} typed.</p>
-          {rank >= 0 && (
-            <>
-              <Guess label="Your guess: minutes" value={g.min} options={MIN_CHOICES.map((m) => [m, m === 25 ? "25+" : String(m)])} onChange={(v) => setGuess({ min: v })} />
-              <Guess label="Your guess: right answers" value={g.right} options={Array.from({ length: open.questions.length + 1 }, (_, i) => [i, String(i)])} onChange={(v) => setGuess({ right: v })} />
-              <p className="text-sm text-muted-foreground">Guesses are optional. They make the debrief sharper.</p>
-            </>
+          {!isLeft && (
+            <div className="flex flex-col gap-2">
+              <Button className="self-start" onClick={startWith}>Start with this set</Button>
+              <p className="text-sm text-muted-foreground">{read < ARENA_SETS ? `You have read ${read} of the ${ARENA_SETS} sets.` : `You have read all ${ARENA_SETS} sets.`}</p>
+            </div>
           )}
+          <Collapsible defaultOpen={d.order.length > 0 || d.left.length > 0} className="flex flex-col gap-4">
+            <CollapsibleTrigger className="group flex min-h-11 items-center justify-between gap-3 rounded-md text-left text-base font-semibold hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
+              Plan the rest (optional)
+              <ChevronDown className="size-5 shrink-0 transition-transform group-data-[state=open]:rotate-180 motion-reduce:transition-none" aria-hidden />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="flex flex-col gap-4">
+              <div className="flex flex-wrap gap-2">
+                {rank < 0 && <Button variant="secondary" onClick={pick}>Pick it {ORD[d.order.length]}</Button>}
+                {!isLeft && <Button variant="ghost" onClick={leaveIt}>Leave it</Button>}
+                {(rank >= 0 || isLeft) && <Button variant="ghost" onClick={undo}>Undo</Button>}
+              </div>
+              {rank >= 0 && (
+                <>
+                  <Guess label="Your guess: minutes" value={g.min} options={MIN_CHOICES.map((m) => [m, m === 25 ? "25+" : String(m)])} onChange={(v) => setGuess({ min: v })} />
+                  <Guess label="Your guess: right answers" value={g.right} options={Array.from({ length: open.questions.length + 1 }, (_, i) => [i, String(i)])} onChange={(v) => setGuess({ right: v })} />
+                  <p className="text-sm text-muted-foreground">Guesses make the debrief sharper.</p>
+                </>
+              )}
+            </CollapsibleContent>
+          </Collapsible>
           {next !== open.id && <Button variant="ghost" className="self-start" onClick={() => { setD((p) => ({ ...p, open: next, seen: [...new Set([...(p.seen ?? []), p.open, next])] })); window.scrollTo(0, 0); }}>Next set: {letterOf(r, next)}</Button>}
         </aside>
       </div>

@@ -12,10 +12,10 @@ import { useStore } from "../../lib/store";
 import { ContentGate } from "../../components/Content";
 import { Empty, LinkButton, Page, TextLink } from "../../components/kit";
 import { vaKeysOfDay } from "../../practice/daily";
-import { fmtSecs, LETTERS, recordVa, vaError, vaErrorSrc } from "../../practice/record";
+import { LETTERS, recordVa, vaError, vaErrorSrc } from "../../practice/record";
 import { answerLabel, cleanAnswer, customDrill, parseKey, scoreItem, sentenceAt, sumAt, VA_KIND, type VaItem, type VaKind } from "../../practice/va/build";
 import { paraText, type VaPara } from "../../practice/types";
-import { Choice, ChoiceGroup, Confirm, ElapsedTimer, TimeUp, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ReviewChoice, ScoreCard, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
+import { BreakNote, Choice, ChoiceGroup, ComeBack, Confirm, ElapsedTimer, TimeUp, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ResumeNote, type Resume, ReviewChoice, ScoreCard, timeShown, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
 
 const SECS_PER_ITEM = 90;
 
@@ -62,7 +62,16 @@ function Drill({ items, mode, initialAttempt, draftKey }: { items: VaItem[]; mod
     : <DrillAttempt items={items} mode={mode} draftKey={draftKey} onDone={finish} />;
 }
 
-function DrillAttempt({ items, mode, draftKey, onDone }: { items: VaItem[]; mode: "daily" | "custom"; draftKey: string; onDone: (id: string) => void }) {
+/** The drill behind its door (D83): after a long break it asks to start fresh or carry on. */
+function DrillAttempt(props: { items: VaItem[]; mode: "daily" | "custom"; draftKey: string; onDone: (id: string) => void }) {
+  return (
+    <ComeBack draftKey={props.draftKey} width="read" kicker={`${props.mode === "daily" ? "Today's VA drill" : "Custom VA drill"}, ${props.items.length} questions`} title={VA_KIND[props.items[0].kind].label}>
+      {(r) => <DrillSolve {...props} resume={r} />}
+    </ComeBack>
+  );
+}
+
+function DrillSolve({ items, mode, draftKey, onDone, resume }: { items: VaItem[]; mode: "daily" | "custom"; draftKey: string; onDone: (id: string) => void; resume: Resume }) {
   const { update } = useStore();
   const leave = useLeaveConfirmation(true);
   const [saved] = useState(() => {
@@ -70,6 +79,7 @@ function DrillAttempt({ items, mode, draftKey, onDone }: { items: VaItem[]; mode
     return d && d.keys?.join() === items.map((i) => i.key).join() ? d : null;
   });
   const [resumed, setResumed] = useState(!!saved);
+  const [away, setAway] = useState(saved ? resume.away ?? 0 : 0);
   const [answers, setAnswers] = useState<string[]>(saved?.answers ?? items.map(() => ""));
   const [cur, setCur] = useState(saved?.cur ?? 0);
   const [unsure, setUnsure] = useState<boolean[]>(saved?.unsure?.length === items.length ? saved.unsure : items.map(() => false));
@@ -104,6 +114,7 @@ function DrillAttempt({ items, mode, draftKey, onDone }: { items: VaItem[]; mode
     setCur(0);
     setStartAt(Date.now());
     setResumed(false);
+    setAway(0);
     setConfirmRestart(false);
   };
 
@@ -113,7 +124,7 @@ function DrillAttempt({ items, mode, draftKey, onDone }: { items: VaItem[]; mode
     const id = uid();
     submitted.current = true;
     writeDraft(draftKey, null);
-    update((st) => recordVa(st, id, items, answers, (Date.now() - startAt) / 1000, mode, todayIso(), unsure));
+    update((st) => recordVa(st, id, items, answers, (Date.now() - startAt) / 1000, mode, todayIso(), unsure, away));
     setConfirming(false);
     leave.allowNextNavigation(); // the review goes into the address (?review=): not a "leave"
     onDone(id);
@@ -127,10 +138,7 @@ function DrillAttempt({ items, mode, draftKey, onDone }: { items: VaItem[]; mode
         <Button size="sm" variant="secondary" onClick={() => setConfirming(true)}>Submit drill</Button>
       </PlayerBar>
       <TimeUp key={startAt} startAt={startAt} target={items.length * SECS_PER_ITEM} onSubmit={submit} />
-      {resumed && saved && <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-card px-4 py-3">
-        <p className="text-sm text-muted-foreground">Your saved answers are back. The timer paused while you were away ({fmtSecs(saved.secs)} elapsed).</p>
-        <Button variant="ghost" size="sm" onClick={() => setConfirmRestart(true)}>Start over</Button>
-      </div>}
+      <ResumeNote r={resume} restored={resumed && !!saved} onRestart={() => setConfirmRestart(true)} />
 
       <div className="flex flex-wrap gap-2" role="group" aria-label="Questions">
         {items.map((it, i) => (
@@ -160,7 +168,7 @@ function DrillAttempt({ items, mode, draftKey, onDone }: { items: VaItem[]; mode
         This clears your saved answers and elapsed time for this drill.
       </Confirm>
       <Confirm open={leave.open} onOpenChange={leave.onOpenChange} title="Leave this drill?" action="Leave drill" onAction={leave.onLeave} cancel="Keep practicing" danger actionClassName="!text-white dark:!text-black">
-        Your answers, current question and elapsed time are saved. The timer pauses while you are away. Return within 24 hours to resume.
+        Your answers, current question and elapsed time are saved. The timer pauses while you are away. Back within 30 minutes, you carry on; after longer, you choose to start fresh or carry on with this set's time not counted. Unfinished sets keep for a day.
       </Confirm>
       <p className="text-sm text-muted-foreground">Paragraphs are original practice material written for this site.</p>
     </Page>
@@ -185,8 +193,9 @@ function DrillReview({ items, attempt, onRetake }: { items: VaItem[]; attempt: V
         ["Correct", attempt.items.filter((i) => i.ok).length],
         ["Wrong", attempt.items.filter((i) => !i.ok && cleanAnswer(i.a)).length],
         ["Blank", attempt.items.filter((i) => !cleanAnswer(i.a)).length],
-        ["Time", fmtSecs(attempt.secs)],
+        ["Time", timeShown(attempt)],
       ]}>
+        <BreakNote away={attempt.away} />
         <p className="text-base text-muted-foreground">Para jumbles and odd sentence out are TITA: +3 or 0. Para summary and sentence insertion are MCQs: +3, −1 for a wrong answer, 0 if blank. Logged in Progress by question type. Wrong and blank questions join your <TextLink to="/practice/redo">redo queue</TextLink>.</p>
         <div className="flex flex-wrap gap-3">
           <LinkButton to={`/practice/va?type=mix&n=8&seed=${seed}`}>New custom drill</LinkButton>

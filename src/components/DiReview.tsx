@@ -31,7 +31,8 @@ export function optionSpread(options: string[] | undefined): number | null {
 
 export function DiReview({ set, attempt }: { set: LrSet; attempt: LrAttempt }) {
   const blanks = (set.data ?? []).filter((d) => d.rows.some((r) => r.cells.some((v) => v === null)));
-  const qs = attempt.qs?.length === set.questions.length ? attempt.qs : null;
+  // An attempt a long break interrupted has no honest minutes to show (D83).
+  const qs = !attempt.away && attempt.qs?.length === set.questions.length ? attempt.qs : null;
   const calc = attempt.calc ?? [];
   if (!blanks.length && !qs && !calc.length) return null;
   const longest = qs ? qs.indexOf(Math.max(...qs)) : -1;

@@ -451,7 +451,7 @@ Learn tab with topic weightage, a formula sheet per topic, plan blocks, topic dr
 
 ### Practice clock (24 Oct 2026)
 **Problem.** RC sets and VA and CR drills have a target time, but the clock counted up for ever: a page left open recorded hours, which spoiled time per question, History minutes and the weekly review.
-**Rule.** At the target (7 minutes for an RC set, per item for drills) a bar says "Time is up. Submitting in 60 s" with **Keep going** and **Submit now**. With no answer the set is submitted as it stands. After Keep going, or for a set reopened past its target, the hard stop is three times the target, with the same 60 seconds of warning and no further extension. A set left and reopened later keeps its saved time (the clock pauses while away). The timed sectional is unchanged: 40 minutes, then it submits itself.
+**Rule.** At the target (7 minutes for an RC set, per item for drills) a bar says "Time is up. Submitting in 60 s" with **Keep going** and **Submit now**. With no answer the set is submitted as it stands. After Keep going, or for a set reopened past its target, the hard stop is three times the target, with the same 60 seconds of warning and no further extension. A set left and reopened within 30 minutes keeps its saved time (the clock pauses while away); after longer, the student chooses Start fresh or Continue, and a continued attempt keeps its answers but its time is left out of every time figure (D83). The timed sectional is unchanged: 40 minutes, then it submits itself.
 **Code.** `timeUpState` and `TimeUp` in `pages/practice/common.tsx`, used by the RC, VA and CR players; tested in `timeup.test.ts` and checked in a browser (bar at the target, submitted at the hard stop).
 
 ### Learning loop, next ideas (22 Oct 2026)

@@ -6,6 +6,12 @@ import { answerLabel, scoreItem, sumAt, VA_KIND, VA_KINDS, type VaItem } from ".
 
 export const LETTERS = ["A", "B", "C", "D", "E"];
 
+/** An attempt's break over 30 minutes (D83), kept only when there was one. */
+export const awayField = (away: number) => (away > 0 ? { away: Math.round(away) } : {});
+
+/** Whether an attempt's time is honest: one interrupted by a long break is left out of time figures (D83). */
+export const timed = (a: { away?: number }) => !a.away;
+
 export function scoreRc(set: RcSet, ans: (number | null)[]) {
   let c = 0, w = 0;
   set.questions.forEach((q, i) => { if (ans[i] == null) return; if (ans[i] === q.answer) c++; else w++; });
@@ -17,9 +23,9 @@ export function scoreRc(set: RcSet, ans: (number | null)[]) {
  * Wrong and skipped questions go into the redo queue.
  * The caller makes the id, because a state updater may run more than once.
  */
-export function recordRc(st: AppState, id: string, set: RcSet, ans: (number | null)[], secs: number, first: number, mode: RcAttempt["mode"], d: string, unsure: number[] = []): void {
+export function recordRc(st: AppState, id: string, set: RcSet, ans: (number | null)[], secs: number, first: number, mode: RcAttempt["mode"], d: string, unsure: number[] = [], away = 0): void {
   const { c, w } = scoreRc(set, ans);
-  const a: RcAttempt = { id, d, set: set.id, mode, ans, c, w, secs: Math.round(secs), first: Math.round(first), v: rcVersion(set) };
+  const a: RcAttempt = { id, d, set: set.id, mode, ans, c, w, secs: Math.round(secs), first: Math.round(first), v: rcVersion(set), ...awayField(away) };
   if (unsure.length) {
     a.unsure = [...unsure].sort((x, y) => x - y);
     const lucky = a.unsure.filter((qi) => ans[qi] === set.questions[qi].answer);
@@ -32,9 +38,9 @@ export function recordRc(st: AppState, id: string, set: RcSet, ans: (number | nu
 }
 
 /** Saves a VA run and logs one practice set per question type. Wrong and blank items go into the redo queue. */
-export function recordVa(st: AppState, id: string, items: VaItem[], answers: string[], secs: number, mode: VaAttempt["mode"], d: string, unsure: boolean[] = []): void {
+export function recordVa(st: AppState, id: string, items: VaItem[], answers: string[], secs: number, mode: VaAttempt["mode"], d: string, unsure: boolean[] = [], away = 0): void {
   const rows = items.map((it, i) => { const s = scoreItem(it, answers[i] ?? ""); return { k: it.key, a: answers[i] ?? "", ok: s.ok, pts: s.pts, blank: s.blank, kind: it.kind, v: vaVersion(it.para), unsure: !!unsure[i] }; });
-  st.vaAttempts.push({ id, d, mode, secs: Math.round(secs), items: rows.map(({ k, a, ok, pts, v, unsure: u }) => ({ k, a, ok, pts, v, ...(u ? { unsure: true as const } : {}) })) });
+  st.vaAttempts.push({ id, d, mode, secs: Math.round(secs), items: rows.map(({ k, a, ok, pts, v, unsure: u }) => ({ k, a, ok, pts, v, ...(u ? { unsure: true as const } : {}) })), ...awayField(away) });
   rows.forEach((r) => { if (!r.ok || r.unsure) queueMiss(st, r.k, d); });
   VA_KINDS.forEach((kind) => {
     const done = rows.filter((r) => r.kind === kind && !r.blank);
@@ -46,9 +52,9 @@ export function recordVa(st: AppState, id: string, items: VaItem[], answers: str
 export const scoreCr = (item: CrItem, a: number | null) => ({ blank: a === null, ok: a === item.answer });
 
 /** Saves a critical reasoning drill and logs it as one practice set. Wrong and blank questions go into the redo queue. */
-export function recordCr(st: AppState, id: string, items: CrItem[], answers: (number | null)[], secs: number, d: string, unsure: boolean[] = []): void {
+export function recordCr(st: AppState, id: string, items: CrItem[], answers: (number | null)[], secs: number, d: string, unsure: boolean[] = [], away = 0): void {
   const rows = items.map((it, i) => { const a = answers[i] ?? null; return { k: crRedoKey(it.id), a, ok: scoreCr(it, a).ok, v: contentHash(it), ...(unsure[i] ? { unsure: true as const } : {}) }; });
-  st.crAttempts.push({ id, d, secs: Math.round(secs), items: rows });
+  st.crAttempts.push({ id, d, secs: Math.round(secs), items: rows, ...awayField(away) });
   rows.forEach((r) => { if (!r.ok || r.unsure) queueMiss(st, r.k, d); });
   const done = rows.filter((r) => r.a !== null);
   if (done.length) st.practice.push({ id: id + "cr", d, sec: "VARC", t: "Critical reasoning", a: done.length, c: done.filter((r) => r.ok).length, src: "Critical reasoning drill" });

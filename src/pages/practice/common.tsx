@@ -15,7 +15,9 @@ import { usePref } from "../../lib/prefs";
 import { CAUSE_IDS, type Cause } from "../../lib/state";
 import { useStore } from "../../lib/store";
 import { fmtSecs } from "../../practice/record";
-import { Tnum } from "../../components/kit";
+import { Page, Tnum } from "../../components/kit";
+import { diffDays, iso, mediumDate, todayIso } from "../../lib/date";
+import { addAway, comeBack, dropCleared, peekCleared, readDraftAt, writeDraft } from "../../lib/draft";
 import KeepHint from "../../components/KeepHint";
 
 /** Seconds since the component mounted, ticking once a second while `running`. */
@@ -370,4 +372,79 @@ export function useShownAttempt<T extends { id: string }>(list: T[], initial: st
     setSp((p) => { const q = new URLSearchParams(p); q.set("review", next); drop.forEach((k) => q.delete(k)); return q; }, { replace: true });
   };
   return { attempt, waiting, finish, retake: () => setId(null) };
+}
+
+/** "less than a minute", "6 minutes", "3 hours", "2 days": how long the student was away. */
+export function awayText(secs: number): string {
+  const m = Math.round(secs / 60);
+  if (m < 1) return "less than a minute";
+  if (m < 60) return m === 1 ? "1 minute" : `${m} minutes`;
+  const h = Math.round(m / 60);
+  if (h < 48) return h === 1 ? "1 hour" : `${h} hours`;
+  return `${Math.round(h / 24)} days`;
+}
+
+/**
+ * How a set was opened (D83). gap: seconds since the student left it, when its draft came back. away: the breaks over
+ * 30 minutes the student chose to carry on after, so the attempt is saved as interrupted and its time is not counted.
+ * cleared: when a draft dropped for being a day old was last saved.
+ */
+export interface Resume { gap?: number; away?: number; cleared?: number }
+
+/**
+ * The door to a practice set (D83, docs/design/resume-and-quick-pick.md). Back within 30 minutes, the set carries on.
+ * After longer, it asks first: Start fresh gives an honest time and a clean attempt; Continue brings the work back and
+ * the attempt is saved as interrupted. The set's player mounts only after the choice, so it reads the draft as chosen.
+ */
+export function ComeBack({ draftKey, kicker, title, width, children }: { draftKey: string; kicker: ReactNode; title: ReactNode; width?: "wide" | "read"; children: (r: Resume) => ReactNode }) {
+  const [open] = useState((): { ask: boolean; r: Resume } => {
+    const d = readDraftAt(draftKey), now = Date.now();
+    if (!d) { const cleared = peekCleared(draftKey); return { ask: false, r: cleared ? { cleared } : {} }; }
+    const gap = Math.max(0, (now - d.at) / 1000);
+    return { ask: comeBack(d.at, now) === "ask", r: { gap, ...(d.away ? { away: d.away } : {}) } };
+  });
+  const [r, setR] = useState<Resume | null>(open.ask ? null : open.r);
+  useEffect(() => { if (open.r.cleared) dropCleared(draftKey); }, [draftKey, open.r.cleared]);
+  if (r) return children(r);
+  const gap = open.r.gap ?? 0;
+  return (
+    <Page width={width} className="gap-6 lg:gap-8">
+      <PlayerBar kicker={kicker} title={title} />
+      <section aria-labelledby="come-back" className="flex flex-col gap-4 rounded-2xl bg-card p-6 sm:p-8">
+        <h2 id="come-back" className="text-heading font-semibold">You left this set {awayText(gap)} ago</h2>
+        <p className="measure text-base text-foreground/85">Starting fresh gives you an honest time and a clean attempt. If you carry on, your answers count as usual, but this set's time is left out of your time figures.</p>
+        <div className="flex flex-wrap gap-2 pt-1">
+          <Button onClick={() => { writeDraft(draftKey, null); setR({}); }}>Start fresh</Button>
+          <Button variant="secondary" onClick={() => setR({ gap, away: addAway(draftKey, gap) })}>Continue where I stopped</Button>
+        </div>
+      </section>
+    </Page>
+  );
+}
+
+/** The line above a set that came back: how long the timer paused, a break that keeps its time out, or a draft cleared. */
+export function ResumeNote({ r, restored, onRestart }: { r: Resume; restored: boolean; onRestart?: () => void }) {
+  let text: ReactNode = null;
+  if (restored && r.away) text = <>Your answers are back. You took a break of {awayText(r.away)}, so this set's time will not be counted.</>;
+  else if (restored && r.gap !== undefined) text = <>Your answers are back. The timer paused for {awayText(r.gap)}.</>;
+  else if (!restored && r.cleared) {
+    const days = diffDays(iso(new Date(r.cleared)), todayIso());
+    text = <>Your unfinished attempt from {days === 1 ? "yesterday" : mediumDate(iso(new Date(r.cleared)))} was cleared: an unfinished set keeps for a day.</>;
+  }
+  if (!text) return null;
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-card px-4 py-3">
+      <p className="text-sm text-muted-foreground">{text}</p>
+      {restored && onRestart && <Button variant="ghost" size="sm" onClick={onRestart}>Start over</Button>}
+    </div>
+  );
+}
+
+/** The Time figure on a score card, red past the target; an attempt a long break interrupted has none (D83). */
+export const timeShown = (a: { secs: number; away?: number }, over = false): ReactNode =>
+  a.away ? "Not counted" : <span className={cn(over && "text-danger")}>{fmtSecs(a.secs)}</span>;
+
+/** Under a score card: why an interrupted attempt has no time. */
+export function BreakNote({ away }: { away?: number }) {
+  return away ? <p className="text-base text-muted-foreground">You took a break of {awayText(away)} in this set, so its time is not counted.</p> : null;
 }
