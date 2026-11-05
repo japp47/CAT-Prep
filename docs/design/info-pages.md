@@ -24,3 +24,10 @@ Owner, 4 Nov 2026: "redesign this page also … looks very awful." Before, ten i
 - **More from toppers** and **How each CAT went** side by side, leaving out the interviews already on a card.
 - Sharing a story: write to the team email, in place of "story submissions are on the roadmap".
 - The shared feedback invite uses the same quiet, responsive treatment as the roadmap.
+
+## Settings and backup (`pages/Settings.tsx`), 5 Nov 2026
+Owner, 5 Nov 2026: "a redesign of … settings and backup page." Before, one narrow column with half the desktop empty: theme, Not sure, install and the reminder each a heading, a paragraph and a control, then eight "0" tiles above the backup, three filled buttons, and the backup (the page's job) fifth.
+- **Your backup first**, the one memorable thing and the one filled button: what a backup holds in a sentence ("3 days of study, 1 practice set and 1 mistake logged", `holds` in `lib/backup.ts`, empty parts left out), when the last one was made from this browser (pref `lastBackup`, set on Download), in the highlighter once it is more than 14 days old or there has never been one, then Download and Restore. With sync on (signing in turns it on) the server keeps a copy of every record, so the line says so and is never highlighted: a backup file is only extra safety. Beside it: how full this browser is as a thin bar (red near the 5 MB limit), and whether sync is on, linking to the You page.
+- **Two cards of setting rows** across the full width: "How it looks and works" (theme, the Not sure button) and "On this device" (install, the daily reminder). Each row is its name and what it does on the left, its control on the right; stacked on a phone.
+- **Start over** as the last row, its button in the danger tone, not filled.
+- No motion: a settings page should hold still.

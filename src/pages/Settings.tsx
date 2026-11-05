@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useTheme, type Theme } from "../components/Layout";
-import { Field, Meta, Page, PageHeader, Section, Segmented, Stat } from "../components/kit";
+import { Field, Page, PageHeader, Segmented, TextLink } from "../components/kit";
 import { NativeSelect } from "../components/Select";
-import { todayIso } from "../lib/date";
-import { downloadBackup } from "../lib/backup";
+import { diffDays, todayIso } from "../lib/date";
+import { BACKUP_DUE_DAYS, daysAgo, downloadBackup, hasProgress, holds } from "../lib/backup";
 import { googleCalendarUrl, reminderIcs } from "../lib/ics";
-import { MB, SHOW_SIZE, storedBytes, WARN_SIZE } from "../lib/keep";
+import { MB, storedBytes, WARN_SIZE } from "../lib/keep";
 import KeepHint from "../components/KeepHint";
 import { usePref } from "../lib/prefs";
 import { useInstall, type IosBrowser } from "../lib/pwa";
@@ -21,25 +21,24 @@ import { loadLedger, saveLedger, timeOf } from "../lib/sync/ledger";
 import { mergeBackup } from "../lib/sync/records";
 import { deleteAll, disable } from "../lib/sync/runner";
 
-
-const Panel = ({ children }: { children: React.ReactNode }) => <div className="flex flex-col gap-4 rounded-lg bg-card p-5 sm:p-6">{children}</div>;
-
+/**
+ * Settings and backup, redesigned 5 Nov 2026 (docs/design/info-pages.md). The backup is the page's job, so it comes
+ * first as the one filled button, with what it holds in a sentence, when the last one was made (in the highlighter
+ * once it is two weeks old) and how full this browser is. The settings sit as rows, a label on the left and its
+ * control on the right: how the site looks and works beside what this device does. Start over is the last row.
+ */
 export default function Settings() {
-  const { state, replace, transform, saved } = useStore();
+  const { replace, transform, saved } = useStore();
   // Sync moved to the You page (D35). Old links, bookmarks and sign-ins that return here (?signin=) go on there.
   const loc = useLocation(), nav = useNavigate();
   useEffect(() => { if (API_ENABLED && loc.hash === "#sync") nav("/you" + loc.search + "#sync", { replace: true }); }, [loc, nav]);
   // While sync is on, restoring merges and deleting stays on this device (docs/architecture.md §6.3a).
   const syncOn = API_ENABLED && loadLedger().on;
-  const [theme, setTheme] = useTheme();
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [ask, setAsk] = useState<"restore" | "wipe" | null>(null);
   const [everywhere, setEverywhere] = useState(false);
   const pending = useRef<unknown>(null);
-  const file = useRef<HTMLInputElement>(null);
 
-  const exportData = () => downloadBackup(state);
-  const bytes = storedBytes();
   const importData = async (f: File) => {
     try {
       const raw = JSON.parse(await f.text());
@@ -50,56 +49,38 @@ export default function Settings() {
       setMsg({ ok: false, text: "That file is not a 99ile backup." });
     }
   };
-  const counts = [
-    ["Days with activity", Object.keys(state.days).length],
-    ["Practice sets", state.practice.length],
-    ["Papers and mocks", state.mocks.length],
-    ["VARC sectionals", state.sectionals.length],
-    ["Error log entries", state.errors.length],
-    ["Words", state.vocab.length],
-    ["Resources ticked", Object.keys(state.ticks).length],
-    ["Questions to redo", state.redo.filter((r) => !r.cleared).length],
-  ] as const;
 
   return (
-    <Page width="read">
-      <PageHeader title="Settings and backup">{syncOn ? "Saved in this browser and synced to your other devices." : "Everything you enter is saved in this browser only. Nothing is sent to a server."}</PageHeader>
+    <Page>
+      <PageHeader title="Settings and backup">
+        {syncOn ? "Saved in this browser and synced to your other devices."
+          : API_ENABLED ? "Saved in this browser. Nothing leaves it unless you turn on sync."
+          : "Everything you enter is saved in this browser only. Nothing is sent to a server."}
+      </PageHeader>
       {!saved && <p className="rounded-lg bg-warning-soft px-5 py-4 text-base">This browser is blocking storage, so changes will be lost when you close the tab. Turn off private browsing or allow site data.</p>}
 
-      <Section title="Appearance">
-        <Segmented label="Theme" value={theme} onChange={setTheme} options={(["auto", "light", "dark"] as Theme[]).map((t) => [t, t === "auto" ? "Match device" : t[0].toUpperCase() + t.slice(1)] as [Theme, string])} />
-      </Section>
-
-      <PracticeCard />
-
-      <InstallCard />
-      <ReminderCard />
-
-      <Section title="Your data" description="Download a backup now and then, and use it to move your plan to another device or browser.">
-        <Panel>
-          <div className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4">{counts.map(([k, v]) => <Stat key={k} value={v} label={k} />)}</div>
-          <div className="flex flex-wrap gap-3 pt-2">
-            <Button onClick={exportData}>Download backup</Button>
-            <Button variant="secondary" onClick={() => file.current?.click()}>Restore from backup</Button>
-            <input ref={file} type="file" accept="application/json,.json" hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) importData(f); e.target.value = ""; }} />
-          </div>
-          {msg && <p className={cn("text-base", msg.ok ? "text-success" : "text-danger")} role="status">{msg.text}</p>}
-          {bytes >= WARN_SIZE
-            ? <p className="rounded-lg bg-warning-soft px-5 py-4 text-base">Your progress uses {(bytes / MB).toFixed(1)} MB, close to the 5 MB this browser allows. Download a backup now: once it is full, new progress cannot be saved.</p>
-            : bytes >= SHOW_SIZE && <Meta>Your progress uses {(bytes / MB).toFixed(1)} MB of the 5 MB this browser allows.</Meta>}
-        </Panel>
+      <div className="flex flex-col gap-3">
+        <Backup syncOn={syncOn} msg={msg} onFile={importData} />
         <KeepHint />
-      </Section>
+      </div>
 
-      {API_ENABLED && (
-        <Section id="sync" title="Sync and your account">
-          <p className="text-base">Signing in, sync between devices and your devices are on the <Link to="/you#sync" className="font-medium text-primary underline underline-offset-4">You page</Link>.</p>
-        </Section>
-      )}
+      <div className="grid items-start gap-4 lg:grid-cols-2">
+        <Card title="How it looks and works">
+          <LooksRows />
+        </Card>
+        <Card title="On this device">
+          <InstallRow />
+          <ReminderRow />
+        </Card>
+      </div>
 
-      <Section title="Start over" description="Deletes your time settings, ticks, logs and words from this browser. Download a backup first if you might want them back.">
-        <div><Button variant="destructive" onClick={() => setAsk("wipe")}>Delete all my data</Button></div>
-      </Section>
+      <section aria-labelledby="start-over" className="flex flex-col gap-4 rounded-2xl bg-card p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:px-7 sm:py-6">
+        <div className="flex flex-col gap-1">
+          <h2 id="start-over" className="text-heading font-semibold">Start over</h2>
+          <p className="measure text-base text-muted-foreground">Deletes your time settings, ticks, logs and words from this browser. Download a backup first if you might want them back.</p>
+        </div>
+        <Button variant="destructive" className="shrink-0 self-start sm:self-center" onClick={() => setAsk("wipe")}>Delete all my data</Button>
+      </section>
 
       {syncOn ? (
         <Confirm open={ask === "restore"} onOpenChange={(o) => !o && setAsk(null)} title="Add this backup to your progress?" action="Add to my progress" cancel="Cancel"
@@ -142,25 +123,103 @@ export default function Settings() {
   );
 }
 
-/** Practice options that change what the players show. */
-function PracticeCard() {
-  const [notSure, setNotSure] = usePref("notSure", true);
+/** The backup: what it holds, when the last one was made, download and restore; beside it, storage and sync. */
+function Backup({ syncOn, msg, onFile }: { syncOn: boolean; msg: { ok: boolean; text: string } | null; onFile: (f: File) => void }) {
+  const { state } = useStore();
+  const [last, setLast] = usePref<string | null>("lastBackup", null);
+  const file = useRef<HTMLInputElement>(null);
+  const what = holds(state), progress = hasProgress(state);
+  const ago = last ? diffDays(last, todayIso()) : null;
+  // With sync on the server keeps a copy, so a backup file is extra safety, never overdue.
+  const due = !syncOn && progress && (ago === null || ago > BACKUP_DUE_DAYS);
+  const bytes = storedBytes(), full = Math.min(1, bytes / (5 * MB));
   return (
-    <Section title="Practice" description="A right answer you marked “Not sure” was a lucky guess, so it comes back once in your redo queue.">
-      <Segmented label="Show the Not sure button" value={notSure ? "on" : "off"} onChange={(v) => setNotSure(v === "on")} options={[["on", "Show “Not sure”"], ["off", "Hide it"]]} />
-    </Section>
+    <section aria-labelledby="backup" className="grid gap-x-10 gap-y-6 rounded-2xl bg-card p-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_18rem]">
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <h2 id="backup" className="text-heading font-semibold">Your backup</h2>
+          <p className="measure text-read text-foreground/85">{what ? <>A backup holds {what}. Use it to move your progress to another device or browser, or to get it back.</> : "Nothing to back up yet. Once you practise or tick a block, a backup keeps it safe."}</p>
+        </div>
+        {progress && (syncOn
+          ? <p className="w-fit rounded-lg bg-foreground/[0.05] px-3 py-1.5 text-base">Sync keeps a copy on the 99ile server{ago !== null ? <>; your last backup file was made <b className="font-semibold">{daysAgo(ago)}</b></> : ", so a backup file is only extra safety"}</p>
+          : <p className={cn("w-fit rounded-lg px-3 py-1.5 text-base", due ? "bg-highlight-soft" : "bg-foreground/[0.05]")}>
+            {ago === null ? <><b className="font-semibold">No backup yet</b> from this browser</> : <>Last backup <b className="font-semibold">{daysAgo(ago)}</b>{due ? ", time for a new one" : ""}</>}
+          </p>)}
+        <div className="flex flex-wrap gap-3">
+          <Button onClick={() => { downloadBackup(state); setLast(todayIso()); }} disabled={!progress}>Download backup</Button>
+          <Button variant="secondary" onClick={() => file.current?.click()}>Restore from backup</Button>
+          <input ref={file} type="file" accept="application/json,.json" hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); e.target.value = ""; }} />
+        </div>
+        {msg && <p className={cn("text-base", msg.ok ? "text-success" : "text-danger")} role="status">{msg.text}</p>}
+      </div>
+      <div className="flex flex-col gap-5 lg:pt-1">
+        <div className="flex flex-col gap-2">
+          <span className="text-base font-semibold">Space in this browser</span>
+          <span className="h-2 overflow-hidden rounded-full bg-foreground/[0.08]" aria-hidden>
+            <span className={cn("block h-full rounded-full", bytes >= WARN_SIZE ? "bg-danger" : "bg-primary")} style={{ width: `${Math.max(2, full * 100)}%` }} />
+          </span>
+          <span className="text-sm text-muted-foreground">{bytes < MB / 10 ? "Under 0.1" : (bytes / MB).toFixed(1)} MB of the 5 MB a browser allows</span>
+          {bytes >= WARN_SIZE && <p className="rounded-lg bg-warning-soft px-4 py-3 text-base">Nearly full. Download a backup now: once it is full, new progress cannot be saved.</p>}
+        </div>
+        {API_ENABLED && (
+          <div className="flex flex-col gap-1">
+            <span className="flex items-center gap-2 text-base font-semibold"><span className={cn("size-2 rounded-full", syncOn ? "bg-success" : "bg-muted-foreground/50")} aria-hidden />{syncOn ? "Sync is on" : "Sync is off"}</span>
+            <span className="text-base text-muted-foreground">{syncOn ? "Your progress is also kept on the 99ile server. " : "Keep your progress on your phone and laptop. "}<TextLink to="/you#sync">{syncOn ? "Devices and account" : "Turn on sync"}</TextLink></span>
+          </div>
+        )}
+      </div>
+    </section>
   );
 }
 
-function InstallCard() {
-  const { installed, canPrompt, ios, browser, prompt } = useInstall();
+/** A group of setting rows on one tone card. */
+function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <Section id="install" className="scroll-mt-24" title="Install as an app" description="The installed app opens from your home screen like any other app. After your first visit the site also works without internet, because your plan and logs are stored on this device.">
-      {installed ? <p className="text-base text-success">You are using the installed app.</p>
-        : canPrompt ? <div><Button onClick={prompt}>Install 99ile</Button></div>
-        : ios ? <IosSteps browser={browser} />
-        : <p className="measure text-base">In Chrome or Edge, use the install icon at the right of the address bar, or the browser menu and then <b className="font-semibold">Install</b>. On Android, open the menu and tap <b className="font-semibold">Add to Home screen</b>.</p>}
-    </Section>
+    <section aria-label={title} className="flex flex-col gap-6 rounded-2xl bg-card p-5 sm:p-7">
+      <h2 className="text-heading font-semibold">{title}</h2>
+      {children}
+    </section>
+  );
+}
+
+/** One setting: what it is and what it does on the left, its control on the right (below on a phone). */
+function Row({ title, hint, children }: { title: string; hint?: React.ReactNode; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+      <div className="flex min-w-0 flex-col gap-1">
+        <h3 className="text-base font-semibold">{title}</h3>
+        {hint && <div className="text-base text-muted-foreground">{hint}</div>}
+      </div>
+      <div className="shrink-0">{children}</div>
+    </div>
+  );
+}
+
+function LooksRows() {
+  const [theme, setTheme] = useTheme();
+  const [notSure, setNotSure] = usePref("notSure", true);
+  return (
+    <>
+      <Row title="Theme" hint="Match device follows your phone or laptop.">
+        <Segmented label="Theme" value={theme} onChange={setTheme} options={(["auto", "light", "dark"] as Theme[]).map((t) => [t, t === "auto" ? "Match device" : t[0].toUpperCase() + t.slice(1)] as [Theme, string])} />
+      </Row>
+      <Row title="The “Not sure” button" hint="A right answer you mark “Not sure” was a lucky guess, so it comes back once in your redo queue.">
+        <Segmented label="Show the Not sure button" value={notSure ? "on" : "off"} onChange={(v) => setNotSure(v === "on")} options={[["on", "Show"], ["off", "Hide"]]} />
+      </Row>
+    </>
+  );
+}
+
+function InstallRow() {
+  const { installed, canPrompt, ios, browser, prompt } = useInstall();
+  const hint = installed ? "You are using the installed app." : "Opens from your home screen like any app, and works without internet after your first visit.";
+  if (ios && !installed) return <div id="install" className="scroll-mt-24"><Row title="Install as an app" hint={<IosSteps browser={browser} />}>{null}</Row></div>;
+  return (
+    <div id="install" className="scroll-mt-24">
+      <Row title="Install as an app" hint={canPrompt || installed ? hint : <>{hint} In Chrome or Edge, use the install icon in the address bar; on Android, open the menu and tap <b className="font-semibold text-foreground">Add to Home screen</b>.</>}>
+        {installed ? <span className="text-base font-semibold text-success">Installed</span> : canPrompt ? <Button variant="secondary" onClick={prompt}>Install 99ile</Button> : null}
+      </Row>
+    </div>
   );
 }
 
@@ -178,13 +237,13 @@ function IosSteps({ browser }: { browser: IosBrowser | null }) {
     <div className="measure flex flex-col gap-2 text-base">
       <p>{browser === "other" ? "In this browser" : `In ${name}`} on iPhone or iPad: {where}, then <b className="font-semibold">Add to Home Screen</b>.</p>
       <p>{API_ENABLED
-        ? <>Each browser and the Home Screen app keep their own copy of your progress. To bring it into the app, turn on sync below, then link the app with a code.</>
-        : <>Stay in {name}: each browser keeps its own copy of your progress. The Home Screen app may also start empty, so download a backup below first, and if it opens empty, restore it in the app&rsquo;s Settings.</>}</p>
+        ? <>Each browser and the Home Screen app keep their own copy of your progress. To bring it into the app, turn on sync on the You page, then link the app with a code.</>
+        : <>Stay in {name}: each browser keeps its own copy of your progress. The Home Screen app may also start empty, so download a backup above first, and if it opens empty, restore it in the app&rsquo;s Settings.</>}</p>
     </div>
   );
 }
 
-function ReminderCard() {
+function ReminderRow() {
   const [time, setTime] = usePref("reminderTime", "19:00");
   const [mins, setMins] = usePref("reminderMins", 60);
   const r = { date: todayIso(), time, minutes: mins, url: window.location.origin + import.meta.env.BASE_URL + "today" };
@@ -197,18 +256,16 @@ function ReminderCard() {
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   };
   return (
-    <Section title="Daily study reminder" description="Adds a repeating event to your calendar, so your phone reminds you every day. It links back to Today. Nothing is sent to us.">
-      <Panel>
-        <div className="grid grid-cols-2 gap-4 sm:max-w-md">
-          <Field label="Time"><Input type="time" value={time} onChange={(e) => e.target.value && setTime(e.target.value)} /></Field>
-          <Field label="Length"><NativeSelect value={mins} onChange={(e) => setMins(+e.target.value)}>{[30, 45, 60, 90, 120].map((m) => <option key={m} value={m}>{m} min</option>)}</NativeSelect></Field>
-        </div>
-        <div className="flex flex-wrap gap-3">
-          <Button asChild variant="secondary"><a href={googleCalendarUrl(r)} target="_blank" rel="noopener noreferrer">Add to Google Calendar<span className="sr-only"> (opens in a new tab)</span></a></Button>
-          <Button variant="secondary" onClick={download}>Download for Apple or Outlook</Button>
-        </div>
-        <Meta>The download is an .ics calendar file.</Meta>
-      </Panel>
-    </Section>
+    <div className="flex flex-col gap-4">
+      <Row title="Daily study reminder" hint="A repeating event in your calendar, so your phone reminds you every day. It links back to Today. Nothing is sent to us.">{null}</Row>
+      <div className="grid grid-cols-2 gap-4 sm:max-w-sm">
+        <Field label="Time"><Input type="time" value={time} onChange={(e) => e.target.value && setTime(e.target.value)} /></Field>
+        <Field label="Length"><NativeSelect value={mins} onChange={(e) => setMins(+e.target.value)}>{[30, 45, 60, 90, 120].map((m) => <option key={m} value={m}>{m} min</option>)}</NativeSelect></Field>
+      </div>
+      <div className="flex flex-wrap gap-3">
+        <Button asChild variant="secondary"><a href={googleCalendarUrl(r)} target="_blank" rel="noopener noreferrer">Add to Google Calendar<span className="sr-only"> (opens in a new tab)</span></a></Button>
+        <Button variant="secondary" onClick={download}>Apple or Outlook (.ics)</Button>
+      </div>
+    </div>
   );
 }
