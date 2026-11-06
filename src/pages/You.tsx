@@ -5,9 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import { initial } from "../components/AccountButton";
 import { LinkButton, Page, Section, Segmented, Stat } from "../components/kit";
 import { statusLine, useSyncStatus } from "../components/SyncNav";
-import { EXAM_CONFIRMED, EXAM_ISO, EXAM_NAME } from "../data/exam";
+import { CatYear } from "../components/CatYear";
 import { api, API_ENABLED, SIGNIN_ENABLED } from "../lib/api";
-import { diffDays, longDate, todayIso } from "../lib/date";
+import { todayIso } from "../lib/date";
 import { useStore } from "../lib/store";
 import type { About } from "../lib/state";
 import type { Account } from "../lib/sync/client";
@@ -45,7 +45,6 @@ export default function You() {
   const today = todayIso();
   const streak = useMemo(() => computeStreak(activityDays(state), today), [state, today]);
   const study = useMemo(() => studySoFar(state), [state]);
-  const left = diffDays(today, EXAM_ISO);
   const setAbout = <K extends keyof About>(k: K, v: About[K]) => update((st) => { st.about[k] = v; });
   const hours = study.minutes >= 60 ? `${Math.floor(study.minutes / 60)} h ${study.minutes % 60} min` : `${study.minutes} min`;
 
@@ -85,8 +84,12 @@ export default function You() {
         )}
       </header>
 
+      <Section id="cat" className="scroll-mt-24" title="Your CAT" description="The exam you are preparing for. Your plan, phases and countdown are built back from its date.">
+        <CatYear />
+      </Section>
+
       <div className="grid items-start gap-8 lg:grid-cols-2">
-        <Section title="Your CAT" description={<>{EXAM_NAME}, {EXAM_CONFIRMED ? "on" : "expected on"} {longDate(EXAM_ISO)}{left > 0 && <>, {left} days to go</>}.</>}>
+        <Section title="About your prep">
           <Panel>
             <Choice label="Target percentile in VARC" hint="Used in your plan, Progress and mock chart.">
               <TargetPicker />

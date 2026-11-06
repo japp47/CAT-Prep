@@ -12,7 +12,7 @@ import SyncPrompt from "../components/SyncPrompt";
 import { API_ENABLED } from "../lib/api";
 import { NativeSelect } from "../components/Select";
 import { StreakBadge } from "../components/StreakBadge";
-import { PHASES, phaseOf } from "../data/exam";
+import { phaseCount, phaseIn, phaseNo, roadOf } from "../data/exam";
 import { addDays, clamp, DOW, dow, isWeekend, longDate, mediumDate, shortDate, todayIso, uid, weekStart } from "../lib/date";
 import { useFocus } from "../lib/focus";
 import { useGsap } from "../lib/motion";
@@ -186,7 +186,7 @@ function DayRing({ done, planned, d, today, onPick }: { done: number; planned: n
         <ol className="grid min-w-0 grid-cols-7 gap-0.5 lg:w-full lg:gap-1" aria-label="This week">
           {Array.from({ length: 7 }, (_, i) => {
             const x = addDays(ws, i);
-            const p = phaseOf(x).kind !== "phase" ? 0 : LIVE_SECTIONS.reduce((s, sec) => s + budgetFor(sec, state, x), 0);
+            const p = phaseIn(roadOf(state), x).kind !== "phase" ? 0 : LIVE_SECTIONS.reduce((s, sec) => s + budgetFor(sec, state, x), 0);
             const dn = doneMinutes(state, x), f = p ? clamp(dn / p, 0, 1) : dn > 0 ? 1 : 0;
             const c = 2 * Math.PI * 9;
             return (
@@ -479,7 +479,7 @@ function DayDone({ today }: { today: string }) {
  */
 function SetupCard({ d }: { d: string }) {
   const { state, update } = useStore();
-  const ph = phaseOf(d);
+  const ph = phaseIn(roadOf(state), d);
   const varc = useResources(LIVE_SECTIONS[0]);
   const dilr = useResources(LIVE_SECTIONS[1] ?? LIVE_SECTIONS[0]);
   const [open, setOpen] = useState(false);
@@ -487,7 +487,7 @@ function SetupCard({ d }: { d: string }) {
   const seen = new Set<string>();
   const items = LIVE_SECTIONS.flatMap((sec, i) => {
     const res = i === 0 ? varc : dilr;
-    return (sec.setup?.[ph.phase.id] ?? []).flatMap((id) => {
+    return (sec.setup?.[ph.phase.id || 1] ?? []).flatMap((id) => {
       const r = res?.resources.find((x) => x.id === id);
       // The same link listed by two sections (the official site) is one job.
       if (!r || seen.has(r.u)) return [];
@@ -549,10 +549,11 @@ function DoneLine({ d, isToday }: { d: string; isToday: boolean }) {
 
 /** The day's note when there is no plan: before the phases, exam day, after it, or a rest day. */
 function NoPlan({ d }: { d: string }) {
-  const ph = phaseOf(d);
+  const road = roadOf(useStore().state);
+  const ph = phaseIn(road, d);
   const [h, p]: [string, ReactNode] = ph.kind === "exam" ? ["Exam day.", "Eat well, reach early, and trust your attempt order."]
-    : ph.kind === "after" ? ["CAT 2027 is over.", null]
-    : ph.kind === "pre" ? ["The plan starts on " + mediumDate(PHASES[0].start) + ".", null]
+    : ph.kind === "after" ? [`${road.name} is over.`, <>Sitting the next one? <Link to="/you#cat" className="font-medium text-primary underline-offset-4 hover:underline">Choose your CAT</Link> and the plan starts again.</>]
+    : ph.kind === "pre" ? ["The plan starts on " + mediumDate(road.phases[0]?.start ?? road.start) + ".", null]
     : ["Rest day.", "Nothing is planned. The core task moves to your next session. Pick a time above if you can study after all."];
   return <div className="flex flex-col gap-1 rounded-2xl bg-card p-6"><p className="text-heading font-semibold">{h}</p>{p && <p className="text-base text-muted-foreground">{p}</p>}</div>;
 }
@@ -570,7 +571,8 @@ export default function Today() {
   const { blocks, planned } = dayPlan(state, d, today);
   const done = doneMinutes(state, d);
   const allDone = blocks.length > 0 && blocks.every((x) => state.days[d]?.done?.[x.b.key]);
-  const ph = phaseOf(d);
+  const road = roadOf(state);
+  const ph = phaseIn(road, d);
   // One entrance for the whole page, in reading order.
   useGsap(root, (gsap, el) => { gsap.from(el.querySelectorAll("[data-rise]"), { opacity: 0, y: 14, duration: 0.5, stagger: 0.08, ease: "power3.out", clearProps: "all" }); }, []);
 
@@ -586,7 +588,7 @@ export default function Today() {
             <Button variant="ghost" size="icon-sm" className="-ml-2" aria-label="Previous day" onClick={() => setD(addDays(d, -1))}><ChevronLeft className="size-5" /></Button>
             <span className="font-semibold text-foreground">{longDate(d)}</span>
             <Button variant="ghost" size="icon-sm" aria-label="Next day" onClick={() => setD(addDays(d, 1))}><ChevronRight className="size-5" /></Button>
-            {ph.kind === "phase" && <Link to="/plan" className="rounded-sm underline-offset-4 hover:text-foreground hover:underline">{ph.phase.name}<span className="max-sm:hidden">, phase {ph.phase.id} of {PHASES.length}</span></Link>}
+            {ph.kind === "phase" && <Link to="/plan" className="rounded-sm underline-offset-4 hover:text-foreground hover:underline">{ph.phase.name}<span className="max-sm:hidden">{ph.phase.id > 0 && <>, phase {phaseNo(road, ph.phase)} of {phaseCount(road)}</>}, {road.name}</span></Link>}
             {!isToday && <Button variant="link" size="sm" onClick={() => setD(today)}>Back to today</Button>}
           </div>
         </header>

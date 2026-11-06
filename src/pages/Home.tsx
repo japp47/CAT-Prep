@@ -5,7 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { daysLeft } from "../components/Countdown";
 import { ArrowLink, LinkButton, Page, Section, TextLink } from "../components/kit";
-import { CAT_PATTERN, CHECKED_ON, EXAM_NAME, PHASES, phaseOf } from "../data/exam";
+import { CAT_PATTERN, CHECKED_ON, phaseIn, phaseLabel } from "../data/exam";
+import { useRoad } from "../lib/useRoad";
 import { UPDATES } from "../data/updates";
 import { shortDate, todayIso } from "../lib/date";
 import { calm } from "../lib/motion";
@@ -47,17 +48,19 @@ function CurveDrawing({ className }: { className?: string }) {
 
 /** Days left and the phase, in one line under the hero's button. The full road is its own section below. */
 function StatusLine() {
-  const left = Math.max(daysLeft(), 0);
-  const ph = phaseOf(todayIso());
+  const road = useRoad();
+  const left = Math.max(daysLeft(road), 0);
+  const ph = phaseIn(road, todayIso());
   return (
     <p className="flex items-center gap-2.5 text-base text-muted-foreground">
       <span className="size-2 shrink-0 rounded-full bg-success" aria-hidden />
-      <span><b className="font-semibold text-foreground tabular-nums">{left} days</b> to {EXAM_NAME}{ph.kind === "phase" ? <>. Phase {ph.phase.id} of {PHASES.length}, {ph.phase.name}.</> : "."}</span>
+      <span><b className="font-semibold text-foreground tabular-nums">{left} days</b> to {road.name}{ph.kind === "phase" ? <>. {phaseLabel(road, ph.phase)}.</> : "."}</span>
     </p>
   );
 }
 
 function Hero({ isNew }: { isNew: boolean }) {
+  const road = useRoad();
   const box = useRef<HTMLElement>(null);
   const [want3d] = useState(canDraw3d);
   const [live, setLive] = useState(false);
@@ -70,7 +73,7 @@ function Hero({ isNew }: { isNew: boolean }) {
     <header ref={box} className="flex flex-col gap-6 max-lg:min-h-[calc(100svh-9rem-env(safe-area-inset-bottom))] lg:grid lg:min-h-[calc(100svh-8rem)] lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:items-center lg:gap-x-6">
       <div className="relative z-10 flex min-w-0 flex-col gap-5 lg:gap-7">
         {/* Keep the exam name together; let the rest of the headline wrap naturally. */}
-        <h1 className="max-w-[11ch] text-[clamp(3rem,1rem+5.6vw,7.25rem)] leading-[0.92] font-extrabold tracking-[-0.055em]">Prepare for {EXAM_NAME.replace(/ /g, "\u00a0")}, one day at a time.</h1>
+        <h1 className="max-w-[11ch] text-[clamp(3rem,1rem+5.6vw,7.25rem)] leading-[0.92] font-extrabold tracking-[-0.055em]">Prepare for {road.name.replace(/ /g, "\u00a0")}, one day at a time.</h1>
         <p className="max-w-[42ch] text-lg leading-relaxed text-foreground/80">A free CAT coach: a plan that fits your day, original practice, and a reason for every option. No sign-up; your progress stays on this device.</p>
         <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
           {isNew
@@ -180,6 +183,7 @@ function LatestUpdates() {
 }
 
 export default function Home() {
+  const road = useRoad();
   const { state } = useStore();
   const isNew = activityDays(state).size === 0;
   const total = CAT_PATTERN.reduce((a, s) => ({ q: a.q + s.questions, m: a.m + s.minutes }), { q: 0, m: 0 });
@@ -218,7 +222,7 @@ export default function Home() {
       </div>
 
       <Suspense fallback={<div className="min-h-[30rem]" />}><Statement /></Suspense>
-      <p className="-mt-12 w-full max-w-none text-sm leading-relaxed text-muted-foreground lg:-mt-24">Resources checked on {CHECKED_ON}. The {EXAM_NAME} date is an estimate until the conducting IIM announces it. Score benchmarks come from coaching institutes. Not affiliated with the IIMs or any coaching institute. Avoid pirated book PDFs; the papers and free mocks listed here are legitimately free.</p>
+      <p className="-mt-12 w-full max-w-none text-sm leading-relaxed text-muted-foreground lg:-mt-24">Resources checked on {CHECKED_ON}. {road.exam.confirmed ? "" : `The ${road.name} date is an estimate until the conducting IIM announces it. `}Score benchmarks come from coaching institutes. Not affiliated with the IIMs or any coaching institute. Avoid pirated book PDFs; the papers and free mocks listed here are legitimately free.</p>
       <Suspense fallback={<div className="min-h-[40rem]" />}>
         <Closing to={isNew ? "/guides/start-here" : "/today"} label={isNew ? "Start here" : "Open today's plan"} />
       </Suspense>

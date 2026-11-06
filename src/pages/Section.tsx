@@ -17,7 +17,7 @@ import { TypeGuideBody } from "../components/TypeGuide";
 import { LR_GUIDES, type LrGuide } from "../sections/dilr/guides";
 import { isDi, type LrType } from "../practice/types";
 import { BENCHMARKS, PASSAGE_SOURCES, TOPPERS } from "../data/stories";
-import { phaseOf } from "../data/exam";
+import { phaseIn, roadOf } from "../data/exam";
 import { dow, todayIso } from "../lib/date";
 import { usePref } from "../lib/prefs";
 import { LR_CATALOG, RC_CATALOG } from "../practice/catalog.gen";
@@ -243,8 +243,8 @@ function Live({ sec, page }: { sec: SectionDef; page: PageData }) {
   const loading = <div className="flex flex-col gap-3" role="status"><span className="sr-only">Loading resources…</span><Skeleton className="h-7 w-1/3" /><Skeleton className="h-40" /><Skeleton className="h-40" /></div>;
   const blocksOf = (tab: string | null, keep: (c: Category) => boolean = () => true) =>
     cats.filter((c) => (tab === null || c.tab === tab) && keep(c)).map((c) => ({ c, items: filter(c.id, tab === null) })).filter((x) => x.items.length);
-  const now = phaseOf(todayIso());
-  const nowPhase = now.kind === "phase" ? now.phase.id : 1;
+  const now = phaseIn(roadOf(state), todayIso());
+  const nowPhase = now.kind === "phase" ? now.phase.id || 1 : 1;
   const list = (tab: string | null, emptyMsg: string) => {
     if (!res) return loading;
     const blocks = blocksOf(tab);

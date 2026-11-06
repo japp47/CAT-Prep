@@ -49,3 +49,12 @@ describe("interrupted attempts (D83)", () => {
     expect(st.lrAttempts[0]).not.toHaveProperty("away");
   });
 });
+
+describe("the CAT year in about (D87)", () => {
+  it("keeps a year and drops anything else", () => {
+    expect(normalize({ about: { exam: 2028 } }).about.exam).toBe(2028);
+    expect(normalize({ about: { exam: "2028" } }).about.exam).toBeUndefined();
+    expect(normalize({ about: { exam: 1999 } }).about.exam).toBeUndefined();
+    expect(normalize({ about: { exam: 2027.5 } }).about.exam).toBeUndefined();
+  });
+});

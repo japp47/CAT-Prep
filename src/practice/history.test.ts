@@ -66,6 +66,7 @@ describe("History", () => {
 
   it("lists each block ticked on Today by the plan's own name, its minutes and who ticked it", () => {
     const st = sample();
+    st.since = "2026-10-17"; // a student who started with the plan, so 18 October is on their road
     st.days["2026-10-18"] = { done: { "varc:read": 30, "varc:vocab": 10, "varc:carry:2026-10-17": 20, "varc:gone": 5 }, auto: { "varc:vocab": 1 }, spent: { "varc:read": 30 } };
     const plan = historyDays(st).find((d) => d.d === "2026-10-18")!.items;
     expect(plan.every((x) => x.kind === "plan" && x.icon === "plan")).toBe(true);

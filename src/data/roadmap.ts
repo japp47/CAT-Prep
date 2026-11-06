@@ -7,12 +7,13 @@ export interface RoadGroup { title: string; status: string; items: RoadItem[] }
  * Mirrors the order and dates in docs/plan.md. When a feature ships, move its item up a group and move UPDATED to that
  * day (the page shows it); docs/implement.md's done list asks for this on every feature branch.
  */
-export const UPDATED = "2026-11-05";
+export const UPDATED = "2026-11-06";
 
 export const ROADMAP: RoadGroup[] = [
   { title: "New this month", status: "Live", items: [
     { title: "DILR: logical reasoning", text: "47 original sets in 13 types, from arrangements and tournaments to routes and Venn diagrams, each with a timer, a scratch pad, a solution drawn step by step and a two-minute post-mortem. Drills for reading a clue exactly, telling must from could, and choosing where to start, and DILR replay to watch each deduction narrow the answers." },
     { title: "DILR: data interpretation", text: "Chart and table sets at CAT level, drawn from their numbers the way the exam draws them, with CAT's calculator in the player and every answer checked in code. Four are built on real data: GDP and growth, India's trade, the 2025 monsoon and power capacity. From week 4 of Foundation, Today gives a DI set of the day, and Progress shows DI by picture and by question kind: reading, percentages, growth and ranges." },
+    { title: "Your CAT year", text: "Preparing for CAT 2028 or 2029? Pick your year on You and the plan, phases and countdown are built back from its date, with a light head start when the exam is far away. See your road reshape before you switch." },
     { title: "Study reminders", text: "Pick a time and get a nudge, by notification or email, only on days you haven't practised yet. One a day at most, quiet hours, a week's pause, and an email if you miss two days. Turn them on in Settings, or after you finish a set." },
     { title: "Set Selection Arena", text: "Five sets you have not seen and 40 minutes, as in the exam. Read them, pick where to start, solve, then see where the minutes went and whether your picks paid off. Analyse a round like a sectional: why each answer went wrong and what to fix, with the score counted on Progress." },
     { title: "Fairer timing", text: "Back in a set after more than half an hour, you choose: start fresh for an honest time, or carry on with your answers counted and that set's time left out. In the Arena, start solving with one tap; planning the whole order is optional." },

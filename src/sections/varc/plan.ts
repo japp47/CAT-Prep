@@ -1,4 +1,4 @@
-import { EXAM_ISO, PHASES, phaseOf } from "../../data/exam";
+import { phaseIn } from "../../data/exam";
 import { diffDays, dow, parseIso } from "../../lib/date";
 import type { Block, DayTemplate, Link, PlanCtx } from "../types";
 import { paperPdf } from "../../data/papers";
@@ -26,9 +26,9 @@ type Opt = Partial<Block>;
 const B = (id: string, name: string, m: number, mm: number, pri: number, ord: number, desc: string, links: Link[], x?: Opt): Block =>
   ({ id, name, m, mm, pri, ord, desc, links, ...x });
 
-function readBlock(d: string, m: number, mm: number, pri: number, ord: number, long?: boolean): Block {
-  const g = dow(d), ro = ROTATION[g], ph = phaseOf(d);
-  const early = ph.kind === "phase" && ph.phase.id === 1 && diffDays(PHASES[0].start, d) < 28;
+/** early: the first four weeks of the road, which read easier sources. */
+function readBlock(d: string, early: boolean, m: number, mm: number, pri: number, ord: number, long?: boolean): Block {
+  const g = dow(d), ro = ROTATION[g];
   const src: Link[] = early ? [...EARLY_SRC, ["Bharath's Reading List", L.bharath]] : [...ro.src, ...(g === 0 ? [] : [["Bharath's Reading List", L.bharath] as Link])];
   return B("read", long ? "Long read" : "Read one article", m, mm, pri, ord,
     (early ? "Start with editorials and explainers this month." : ro.genre + ".") + " Afterwards write down: " + ro.out.charAt(0).toLowerCase() + ro.out.slice(1) + ".",
@@ -63,22 +63,23 @@ function practice(id: string, name: string, m: number, mm: number, pri: number, 
 const book = (ord: number): Block => B("x-book", "Book from the reading list", 30, 20, 0, ord, "Read for the habit. No notes needed.", [["Reading list", L.readList]]);
 
 export function varcTemplate(d: string, ctx: PlanCtx): DayTemplate {
-  const info = phaseOf(d);
-  if (info.kind !== "phase" || d === EXAM_ISO) return { base: [], extra: [] };
-  const ph = info.phase.id, g = dow(d), we = g === 0 || g === 6;
+  const info = phaseIn(ctx.road, d);
+  if (info.kind !== "phase") return { base: [], extra: [] };
+  // A head start keeps Foundation's days, at whatever time the student gives it.
+  const ph = info.phase.id || 1, early = ph === 1 && diffDays(ctx.road.start, d) < 28, g = dow(d), we = g === 0 || g === 6;
   const nov = parseIso(d).getMonth() === 10;
   let base: Block[] = [], extra: Block[] = [];
 
   if (ph === 1) {
     if (!we) {
-      base = [readBlock(d, 30, 15, 1, 1),
+      base = [readBlock(d, early, 30, 15, 1, 1),
         practice("rc1", "One RC, untimed", 20, 10, 2, 2, "RC", "Take your time. After answering, write why each wrong option is wrong.", [["Cracku RC bank", L.crRC]]),
         vocabBlock(10, 5, 3, 3, 1)];
     } else {
       const core = ctx.ticks.gejo
         ? B("book1", "Arun Sharma VARC book, next chapter", 45, 25, 1, 1, "Level 1 exercises first, then Level 2. Check every answer and note why the wrong options fail.", [["Find the book", L.arun]])
         : B("course", "Gejo's VARC course, next module", 45, 25, 1, 1, "One module with notes. When all 17 are done, tick the course in VARC, Learn, and this block switches to the prep book.", [["Open the course", L.gejo]]);
-      base = [core, readBlock(d, 40, 20, 2, 2, true),
+      base = [core, readBlock(d, early, 40, 20, 2, 2, true),
         practice("rc3", "Three RCs, untimed", 40, 15, 3, 3, "RC", "Untimed. Before reading the options, say the main idea in one line.", [["Cracku RC bank", L.crRC]]),
         vocabBlock(25, 10, 4, 4, 1)];
     }
@@ -94,17 +95,17 @@ export function varcTemplate(d: string, ctx: PlanCtx): DayTemplate {
         4: practice("drill", "Para summary and odd sentence out", 30, 20, 1, 1, "Para summary", "5 summaries and 5 odd-sentence questions. Paraphrase first, then read the options.", [["Cracku VA bank", L.crVA]]),
         5: practice("drill", "Sentence insertion and one RC", 30, 20, 1, 1, "Sentence insertion", "5 sentence insertion questions, then one RC.", [["Cracku VA bank", L.crVA], ["Cracku RC bank", L.crRC]]),
       };
-      base = [drills[g], readBlock(d, 20, 10, 2, 2), vocabBlock(10, 5, 3, 3, 2)];
+      base = [drills[g], readBlock(d, early, 20, 10, 2, 2), vocabBlock(10, 5, 3, 3, 2)];
     } else if (g === 6 && weekIndex(d) % 2 === 0) {
-      base = [paperBlock(PRACTICE_PAPERS, "Timed paper", 40, 1, 1, ctx), analysisBlock(50, 25, 2, 2), readBlock(d, 40, 20, 3, 3, true), vocabBlock(20, 10, 4, 4, 2)];
+      base = [paperBlock(PRACTICE_PAPERS, "Timed paper", 40, 1, 1, ctx), analysisBlock(50, 25, 2, 2), readBlock(d, early, 40, 20, 3, 3, true), vocabBlock(20, 10, 4, 4, 2)];
     } else if (g === 6) {
       base = [B("book2", "Arun Sharma VARC book, Level 2 or 3 chapter", 45, 25, 1, 1, "Work the exercises timed. Review every wrong option.", [["Find the book", L.arun]]),
         practice("rcset", "Three RCs, 8 minutes each", 40, 25, 2, 2, "RC", "Timed. Review each wrong option afterwards.", [["Cracku RC bank", L.crRC]]),
-        readBlock(d, 40, 20, 3, 3, true), errBlock(25, 10, 4, 4)];
+        readBlock(d, early, 40, 20, 3, 3, true), errBlock(25, 10, 4, 4)];
     } else {
       base = [practice("rcset", "Three RCs, 8 minutes each", 40, 25, 1, 1, "RC", "Timed. Review each wrong option afterwards.", [["Cracku RC bank", L.crRC]]),
         practice("vaset", "VA set, 10 questions", 30, 15, 2, 2, "Para jumble", "Mix all four VA types. Log the type that cost you most.", [["Cracku VA bank", L.crVA]]),
-        readBlock(d, 50, 20, 3, 3, true), errBlock(30, 10, 4, 4)];
+        readBlock(d, early, 50, 20, 3, 3, true), errBlock(30, 10, 4, 4)];
     }
     extra = [practice("x-rc", "Extra RC set", 25, 15, 0, 5, "RC", "Two RCs, timed.", [["Cracku RC bank", L.crRC]]),
       practice("x-pj", "Para jumble drill, 5 questions", 15, 10, 0, 6, "Para jumble", "TITA, so Practice until it is automatic.", [["Cracku VA bank", L.crVA]]),
@@ -119,16 +120,16 @@ export function varcTemplate(d: string, ctx: PlanCtx): DayTemplate {
         4: practice("hard", "VA set, timed", 30, 20, 1, 1, "Odd sentence out", "8 VA questions in 12 minutes, then review.", [["Cracku VA bank", L.crVA]]),
         5: practice("hard", "Critical reasoning and GMAT verbal", 30, 20, 1, 1, "Critical reasoning", "10 critical reasoning questions or one GMAT RC.", [["Drill on this site", "/practice/cr?type=mix&n=10"], ["Cracku CR", L.crCR], ["GMAT starter kit", L.gmat]]),
       };
-      base = [hard[g], readBlock(d, 20, 10, 2, 2), errBlock(10, 5, 3, 3)];
+      base = [hard[g], readBlock(d, early, 20, 10, 2, 2), errBlock(10, 5, 3, 3)];
     } else if (g === 6) {
-      base = [paperBlock(PRACTICE_PAPERS, "Timed paper", 40, 1, 1, ctx), analysisBlock(50, 25, 2, 2), readBlock(d, 40, 20, 3, 3, true), errBlock(20, 10, 4, 4)];
+      base = [paperBlock(PRACTICE_PAPERS, "Timed paper", 40, 1, 1, ctx), analysisBlock(50, 25, 2, 2), readBlock(d, early, 40, 20, 3, 3, true), errBlock(20, 10, 4, 4)];
     } else if (aug) {
       base = [B("paper", "Mock VARC section, timed", 40, 40, 1, 1, "Take the VARC section of a mock from your series, timed.", [["Cracku mocks", L.crMock], ["CL mocks", L.clMock], ["IMS", IMS]], { kind: "paper", paper: "", pkind: "Full mock" }),
-        analysisBlock(50, 25, 2, 2), readBlock(d, 40, 20, 3, 3, true), errBlock(20, 10, 4, 4)];
+        analysisBlock(50, 25, 2, 2), readBlock(d, early, 40, 20, 3, 3, true), errBlock(20, 10, 4, 4)];
     } else {
       base = [practice("hardset", "Hard RC set: three passages", 45, 25, 1, 1, "RC", "Three LSAT or XAT passages, timed.", [["LawHub", L.lawhub], ["XAT papers", L.xat]]),
         practice("vaset", "VA set, 10 questions", 30, 15, 2, 2, "Para jumble", "All four VA types.", [["Cracku VA bank", L.crVA]]),
-        readBlock(d, 45, 20, 3, 3, true), vocabBlock(30, 10, 4, 4, 3)];
+        readBlock(d, early, 45, 20, 3, 3, true), vocabBlock(30, 10, 4, 4, 3)];
     }
     extra = [practice("x-hard", "Extra hard RC", 25, 15, 0, 5, "RC", "One LSAT or XAT passage.", [["LawHub", L.lawhub], ["XAT papers", L.xat]]),
       errBlock(20, 10, 0, 6), book(7)];
@@ -139,14 +140,14 @@ export function varcTemplate(d: string, ctx: PlanCtx): DayTemplate {
         ? practice("pair", "Timed RC pair", 30, 20, 1, 1, "RC", "Two RCs in 16 minutes, then review every option.", [["Cracku RC bank", L.crRC]])
         : B("mockfix", "Finish the weekend analysis", 30, 15, 1, 1, "Complete error log entries for the last mock or paper. If it is done, re-solve one wrong RC from it.", [["Error log", "/errors"]]),
         practice("tita", "TITA drill: para jumbles and odd sentence out", 15, 10, 2, 2, "Para jumble", "6 questions. These are free marks on the day.", [["Cracku VA bank", L.crVA]]),
-        readBlock(d, 15, 10, 3, 3)];
+        readBlock(d, early, 15, 10, 3, 3)];
     } else if (g === 6) {
       base = [B("paper", nov ? "Official IIM mock, or a mock VARC section" : "Mock VARC section, at your slot time", 40, 40, 1, 1,
         (nov ? "If the official mock is out, take it on the real interface first. " : "") + "Sit at the time of day your slot will be.",
         [["Cracku mocks", L.crMock], ["CL mocks", L.clMock], ["iimcat.ac.in", L.iim]], { kind: "paper", paper: "", pkind: nov ? "Official IIM mock" : "Full mock" }),
-        analysisBlock(60, 30, 2, 2), errBlock(20, 10, 3, 3), readBlock(d, 30, 10, 4, 4)];
+        analysisBlock(60, 30, 2, 2), errBlock(20, 10, 3, 3), readBlock(d, early, 30, 10, 4, 4)];
     } else {
-      base = [paperBlock(REAL_PAPERS, "Real paper", 40, 1, 1, ctx), analysisBlock(60, 30, 2, 2), readBlock(d, 30, 10, 3, 3), errBlock(20, 10, 4, 4)];
+      base = [paperBlock(REAL_PAPERS, "Real paper", 40, 1, 1, ctx), analysisBlock(60, 30, 2, 2), readBlock(d, early, 30, 10, 3, 3), errBlock(20, 10, 4, 4)];
     }
     extra = [practice("x-resolve", "Re-solve a wrong past paper RC", 20, 15, 0, 5, "RC", "Pick one from your error log.", [["Error log", "/errors"]]),
       practice("x-tita", "Extra TITA drill", 15, 10, 0, 6, "Odd sentence out", "6 questions.", [["Cracku VA bank", L.crVA]]),

@@ -12,6 +12,8 @@ export const VARC: SectionDef = {
   practiceTypes: ["RC", "Para jumble", "Para summary", "Odd sentence out", "Sentence insertion", "Critical reasoning"],
   errorTypes: ["RC: main idea", "RC: tone or purpose", "RC: inference", "RC: specific detail", "RC: EXCEPT", "RC: strengthen or weaken", "RC: application", "RC: paragraph function", "Para jumble", "Para summary", "Odd sentence out", "Sentence insertion", "Critical reasoning"],
   phaseText: {
+    0: { goal: "A light daily habit while the exam is far away: one good article, one untimed RC and a few words. Foundation's routine at whatever time you give it.",
+      check: "By the end of the head start: reading every day feels normal, and every RC question type has been tried once." },
     1: { goal: "Read dense prose daily without strain, finish Gejo's course, learn word roots, and get used to RC question types untimed.",
       check: "By 31 Jan: 30 minutes of Aeon-level reading feels normal, all 17 Gejo modules done, untimed RC accuracy around 60%." },
     2: { goal: "Learn the method for every question type through daily drills, work through Arun Sharma levels 2 and 3, and start timed sectionals from CAT 2017 to 2022 every two weeks.",
