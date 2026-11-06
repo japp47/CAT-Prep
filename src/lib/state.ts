@@ -189,7 +189,8 @@ export interface AppState {
 }
 
 /** First CAT or taken before; studying or working. Each is absent until the student picks it. */
-export interface About { attempt?: "first" | "repeat"; work?: "studying" | "working" }
+/** exam: the CAT year the student chose (D87); unset means the default for when they started (data/exam.ts). */
+export interface About { attempt?: "first" | "repeat"; work?: "studying" | "working"; exam?: number }
 export const ATTEMPTS = ["first", "repeat"] as const;
 export const WORKS = ["studying", "working"] as const;
 
@@ -406,9 +407,10 @@ export function normalize(raw: unknown): AppState {
   }
   if (isObj(raw.targets) && (TARGET_CHOICES as readonly number[]).includes(Number(raw.targets.varc))) b.targets.varc = Number(raw.targets.varc);
   if (isObj(raw.about)) {
-    const { attempt, work } = raw.about;
+    const { attempt, work, exam } = raw.about;
     if ((ATTEMPTS as readonly unknown[]).includes(attempt)) b.about.attempt = attempt as About["attempt"];
     if ((WORKS as readonly unknown[]).includes(work)) b.about.work = work as About["work"];
+    if (Number.isInteger(exam) && (exam as number) >= 2026 && (exam as number) <= 2100) b.about.exam = exam as number;
   }
   // Saves from before the redo queue have none; it is built from their attempts once the content loads.
   b.redoSeeded = Array.isArray(raw.redo) && raw.redoSeeded !== false;

@@ -1,0 +1,64 @@
+package notify
+
+import (
+	"context"
+	"errors"
+	"log/slog"
+	"time"
+
+	"github.com/jackc/pgx/v5/pgxpool"
+
+	"github.com/japp47/CAT-Prep/server/internal/mailx"
+)
+
+// Settings is what a running pipeline needs from the environment; the API (worker) and cmd/notify read the same
+// NOTIFY_* variables into it.
+type Settings struct {
+	Site                      string // https://99ile.pages.dev
+	TokenKey                  []byte // NOTIFY_TOKEN_SECRET
+	VAPIDPublic, VAPIDPrivate string // push off without both
+	SMTPUser, SMTPPassword    string // email off without both
+	EmailOff, PushOff         bool   // NOTIFY_EMAIL=off, NOTIFY_PUSH=off
+	EmailCap                  int    // emails in a rolling day; 300 when zero
+}
+
+// Gmail is where reminder email goes out (docs/design/notifications.md §6).
+const Gmail = "smtp.gmail.com:587"
+
+// NewService wires the pipeline: the rules, the wording, the Postgres queue and the channels the settings allow.
+func NewService(db *pgxpool.Pool, set Settings, log *slog.Logger) (*Service, error) {
+	if len(set.TokenKey) < 32 {
+		return nil, errors.New("NOTIFY_TOKEN_SECRET must be at least 32 bytes in hex, the same value as the API's")
+	}
+	policy, err := LoadPolicy()
+	if err != nil {
+		return nil, err
+	}
+	r, err := NewRenderer()
+	if err != nil {
+		return nil, err
+	}
+	channels := map[string]Channel{}
+	if set.SMTPUser != "" && set.SMTPPassword != "" && !set.EmailOff {
+		channels[Email] = &EmailChannel{Server: mailx.Server{Addr: Gmail, User: set.SMTPUser, Password: set.SMTPPassword}, Pace: 3 * time.Second, Domain: "99ile.pages.dev"}
+	}
+	if set.VAPIDPublic != "" && set.VAPIDPrivate != "" && !set.PushOff {
+		channels[Push] = PushChannel{Push: WebPush{Keys: VAPID{Public: set.VAPIDPublic, Private: set.VAPIDPrivate, Subject: "mailto:99ile.team@gmail.com"}}}
+	}
+	if set.EmailCap <= 0 {
+		set.EmailCap = 300
+	}
+	return &Service{Policy: policy, Render: r, Queue: PG{DB: db}, Store: Store{DB: db}, Channels: channels,
+		Tokens: Tokens{Key: set.TokenKey}, Site: set.Site, EmailCap: set.EmailCap, Log: log}, nil
+}
+
+// TeamAlert emails the team through the same account, for Worker.Alert.
+func TeamAlert(set Settings) func(ctx context.Context, subject, body string) error {
+	if set.SMTPUser == "" || set.SMTPPassword == "" {
+		return nil
+	}
+	server := mailx.Server{Addr: Gmail, User: set.SMTPUser, Password: set.SMTPPassword}
+	return func(_ context.Context, subject, body string) error {
+		return server.Send(set.SMTPUser, mailx.Plain(set.SMTPUser, "99ile reminders", set.SMTPUser, subject, body, time.Now()))
+	}
+}

@@ -2,19 +2,22 @@ import { describe, expect, it } from "vitest";
 import { blankState, normalize } from "../lib/state";
 import { VARC } from "../sections/varc";
 import { buildDay, carryId, carryInfo, defaultMin, doneKey, markBlockDone, missedDays, skipCarry } from "./engine";
+import { PLAN_START } from "../data/exam";
 
+/** A student who started with the plan, on 17 October 2026: these days fall on their road. */
+const fromStart = () => { const s = blankState(); s.since = PLAN_START; return s; };
 const WEEKDAY = "2026-10-19"; // Monday, Foundation phase
 const SATURDAY = "2026-10-24";
 const sum = (bl: { mins: number }[]) => bl.reduce((s, b) => s + b.mins, 0);
 
 describe("defaults", () => {
   it("uses 1 hour on weekdays and 2 hours at the weekend", () => {
-    const st = blankState();
+    const st = fromStart();
     expect(defaultMin(VARC, st, WEEKDAY)).toBe(60);
     expect(defaultMin(VARC, st, SATURDAY)).toBe(120);
   });
   it("lets a day-of-week override win over the weekday default", () => {
-    const st = blankState();
+    const st = fromStart();
     st.settings.varc.dow[1] = 25;
     expect(defaultMin(VARC, st, WEEKDAY)).toBe(25);
   });
@@ -23,32 +26,32 @@ describe("defaults", () => {
 describe("buildDay", () => {
   const opts = { today: "2026-10-17", noCarry: true };
   it("fills the budget exactly", () => {
-    const st = blankState();
+    const st = fromStart();
     for (const m of [20, 30, 45, 60, 90, 120, 180]) {
       expect(sum(buildDay(VARC, st, WEEKDAY, m, opts))).toBe(m);
       expect(sum(buildDay(VARC, st, SATURDAY, m, opts))).toBe(m);
     }
   });
   it("keeps the core task when time is short", () => {
-    const bl = buildDay(VARC, blankState(), WEEKDAY, 15, opts);
+    const bl = buildDay(VARC, fromStart(), WEEKDAY, 15, opts);
     expect(bl).toHaveLength(1);
     expect(bl[0].pri).toBe(1);
   });
   it("adds extra blocks when there is more time", () => {
-    const bl = buildDay(VARC, blankState(), WEEKDAY, 150, opts);
+    const bl = buildDay(VARC, fromStart(), WEEKDAY, 150, opts);
     expect(bl.some((b) => b.pri === 9)).toBe(true);
   });
   it("plans nothing on a rest day", () => {
-    expect(buildDay(VARC, blankState(), WEEKDAY, 0, opts)).toEqual([]);
+    expect(buildDay(VARC, fromStart(), WEEKDAY, 0, opts)).toEqual([]);
   });
   it("switches the weekend core from the course to the book once the course is ticked", () => {
-    const st = blankState();
+    const st = fromStart();
     expect(buildDay(VARC, st, SATURDAY, 120, opts)[0].id).toBe("course");
     st.ticks.gejo = 1;
     expect(buildDay(VARC, st, SATURDAY, 120, opts)[0].id).toBe("book1");
   });
   it("serves the next unlogged past paper on a Build phase paper Saturday", () => {
-    const st = blankState();
+    const st = fromStart();
     const sat = "2027-02-06";
     const first = buildDay(VARC, st, sat, 120, opts).find((b) => b.id === "paper");
     expect(first?.paper).toBe("CAT 2017 Slot 1");
@@ -59,7 +62,7 @@ describe("buildDay", () => {
 
 describe("carry over", () => {
   it("brings back yesterday's missed core task, and stops once it is done", () => {
-    const st = blankState();
+    const st = fromStart();
     st.since = "2026-10-17";
     const today = "2026-10-20";
     const carry = carryInfo(VARC, st, today);
@@ -72,7 +75,7 @@ describe("carry over", () => {
   // The bug of 30 Oct 2026: finishing one catch-up brought in the next older missed day under the same key, already
   // ticked; skipping that one brought in the next, also ticked.
   it("gives one catch-up a day: once done it stays done, and no older missed day takes its place", () => {
-    const st = blankState();
+    const st = fromStart();
     st.since = "2026-10-17";
     const today = "2026-10-21";
     expect(missedDays(VARC, st, today).map((x) => x.date)).toEqual(["2026-10-20", "2026-10-19", "2026-10-18", "2026-10-17"]);
@@ -88,20 +91,20 @@ describe("carry over", () => {
     expect(st.days["2026-10-22"]?.done?.[next.key]).toBeUndefined();
   });
   it("counts a catch-up ticked before ids carried a date as today's, and shows no other", () => {
-    const st = blankState();
+    const st = fromStart();
     st.since = "2026-10-17";
     st.days["2026-10-21"] = { done: { "varc:carry": 15 } };
     expect(carryInfo(VARC, st, "2026-10-21")).toBeNull();
   });
   it("lets every missed day go when a catch-up is skipped", () => {
-    const st = blankState();
+    const st = fromStart();
     st.since = "2026-10-17";
     skipCarry(st, VARC, "2026-10-21");
     expect(carryInfo(VARC, st, "2026-10-21")).toBeNull();
     expect(missedDays(VARC, st, "2026-10-21")).toEqual([]);
   });
   it("does not carry from a rest day", () => {
-    const st = blankState();
+    const st = fromStart();
     st.since = "2026-10-19";
     st.days["2026-10-19"] = { min: { varc: 0 } };
     expect(carryInfo(VARC, st, "2026-10-20")).toBeNull();

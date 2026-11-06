@@ -249,3 +249,28 @@ cmd/notify/        -plan, -drain, -once (default: plan then drain for up to 5 mi
   - with Postgres: plan and drain, practice cancelling a waiting message, retry then failure, four workers claiming at once;
   - the API end to end as `cat_app`, including one-click unsubscribe and deleting the identity.
 
+## 12. The worker moves into the API (D91, 6 Nov 2026)
+GitHub's schedule ran the job 3 times in its first 12 hours instead of 48, so reminders would have come hours late.
+Of the ways to run it, the API wins for production:
+- **cron-job.org starting the GitHub job:** about a minute late each time, two outside services and a token to keep.
+- **Render's cron jobs:** need a card (D11).
+- **The API itself:** always on (cron-job.org pings it every 5 minutes), free, and nothing new to run or watch.
+
+**How it runs:**
+- `notify.Worker` passes every two minutes: fresh `daily.json` hourly, then plan, then send for up to 1.5 minutes, then old rows forgotten daily. The email connection is closed after each pass.
+- It starts with the API when `NOTIFY_WORKER=1` and stops with it. A message in flight finishes first; one cut off is sent again after its two-minute lease, never twice.
+- Migration 13 gives `cat_app` the queue: insert, the status columns, delete.
+
+**Alerts:** a paused channel emails the team at most every six hours, now that no failed GitHub run does it.
+
+**`cmd/notify`** is one pass of the same worker, and the workflow is a manual button. Running it beside the API is safe, because of `SKIP LOCKED` and the dedupe keys.
+
+**Settings are all on Render:** `NOTIFY_WORKER`, `NOTIFY_TOKEN_SECRET`, `NOTIFY_VAPID_PUBLIC` and `_PRIVATE`, `NOTIFY_SMTP_USER` and `_PASSWORD` (its own app password), `NOTIFY_DRY`, `NOTIFY_EMAIL`, `NOTIFY_PUSH`, `NOTIFY_EMAIL_DAILY_CAP`.
+
+**Tests:**
+- a pass sends once, and a dry pass queues nothing;
+- a broken channel alerts once within the gap;
+- the worker stops with its context;
+- the worker runs as `cat_app` against the real grants;
+- the settings and their errors.
+

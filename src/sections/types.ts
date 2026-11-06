@@ -1,3 +1,4 @@
+import type { Road } from "../data/exam";
 import type { Mock } from "../lib/state";
 
 export type SectionId = "varc" | "dilr" | "quant";
@@ -59,6 +60,8 @@ export interface Block {
 export interface PlanCtx {
   ticks: Record<string, 1>;
   mocks: Mock[];
+  /** The student's road to their CAT (data/exam.ts): which phase a day is in, and the exam day. */
+  road: Road;
 }
 
 export interface DayTemplate {

@@ -1,4 +1,4 @@
-import { PHASES, START_ISO } from "../data/exam";
+import { roadOf, type Road } from "../data/exam";
 import { addDays, dow, isWeekend, shortDate } from "../lib/date";
 import type { AppState } from "../lib/state";
 import type { Block, DayTemplate, PlanCtx, SectionDef } from "../sections/types";
@@ -11,7 +11,7 @@ export interface PlacedBlock extends Block {
 }
 
 export const doneKey = (sec: SectionDef, id: string) => sec.id + ":" + id;
-const ctxOf = (st: AppState): PlanCtx => ({ ticks: st.ticks, mocks: st.mocks });
+const ctxOf = (st: AppState): PlanCtx => ({ ticks: st.ticks, mocks: st.mocks, road: roadOf(st) });
 
 /** Before a section joined the timetable (`liveSince`) it has no blocks and no time, so nothing is owed (D56). */
 const notYet = (sec: SectionDef, d: string) => !!sec.liveSince && d < sec.liveSince;
@@ -41,7 +41,7 @@ const CARRY_KEY = /^[a-z]+:carry(?::(\d{4}-\d{2}-\d{2}))?$/;
 
 /** Core tasks from the last 7 days that had time planned and were not done, caught up or skipped; most recent first. */
 export function missedDays(sec: SectionDef, st: AppState, today: string): { date: string; block: Block }[] {
-  const from = st.since > START_ISO ? st.since : START_ISO;
+  const from = roadOf(st).start;
   const out: { date: string; block: Block }[] = [];
   for (let i = 1; i <= 7; i++) {
     const d = addDays(today, -i);
@@ -120,8 +120,8 @@ export function doneMinutes(st: AppState, d: string, sec?: SectionDef): number {
 }
 
 /** A date inside the phase to preview a typical weekday or Saturday. */
-export function sampleDate(phaseId: number, weekend: boolean, today: string): string {
-  const p = PHASES.find((x) => x.id === phaseId)!;
+export function sampleDate(road: Road, phaseId: number, weekend: boolean, today: string): string {
+  const p = road.phases.find((x) => x.id === phaseId)!;
   const start = p.start > today ? p.start : today <= p.end ? today : p.start;
   for (let i = 0; i < 14; i++) {
     const x = addDays(start, i);

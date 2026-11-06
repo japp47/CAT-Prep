@@ -9,10 +9,12 @@ import (
 	"os"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/japp47/CAT-Prep/server/internal/config"
+	"github.com/japp47/CAT-Prep/server/internal/ids"
 	"github.com/japp47/CAT-Prep/server/internal/notify"
 	"github.com/japp47/CAT-Prep/server/internal/store"
 	"github.com/japp47/CAT-Prep/server/migrations"
@@ -179,4 +181,49 @@ func TestRemindersInDevWithoutKeys(t *testing.T) {
 	if code := d.send("GET", "/v1/notify/push-key", nil, nil); code != http.StatusServiceUnavailable {
 		t.Errorf("push key without VAPID: %d, want 503", code)
 	}
+}
+
+// The worker runs inside the API as cat_app (D91): planning, claiming, sending and forgetting must all be allowed.
+func TestReminderWorkerRunsAsTheAPIRole(t *testing.T) {
+	_, admin := notifyServer(t)
+	ctx := context.Background()
+	app := appPool(t)
+	id := ids.New()
+	for _, q := range []string{
+		`insert into account.identities (id) values ($1)`,
+		`insert into notify.prefs (identity_id, enabled, enabled_at, at_minute, quiet_from, quiet_to) values ($1, true, now() - interval '3 days', 0, 0, 0)`,
+		`insert into notify.activity (identity_id, last_at, last_day, streak) values ($1, now() - interval '1 day', (now() at time zone 'Asia/Kolkata')::date - 1, 1)`,
+	} {
+		if _, err := admin.Exec(ctx, q, id); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if _, err := admin.Exec(ctx, `insert into notify.push_subs (identity_id, endpoint, p256dh, auth) values ($1, $2, repeat('B', 87), repeat('a', 22))`, id, "https://push.example/"+id); err != nil {
+		t.Fatal(err)
+	}
+	svc, err := notify.NewService(app, notify.Settings{Site: "https://99ile.pages.dev", TokenKey: notifyKey}, quiet)
+	if err != nil {
+		t.Fatal(err)
+	}
+	svc.Policy.Exams = nil
+	sent := &countingChannel{}
+	svc.Channels = map[string]notify.Channel{notify.Push: sent}
+	(&notify.Worker{Service: svc, Every: time.Minute, Log: quiet}).Tick(ctx)
+	var status string
+	_ = admin.QueryRow(ctx, `select status from notify.messages where identity_id = $1`, id).Scan(&status)
+	if status != "sent" || sent.n == 0 {
+		t.Fatalf("as cat_app: status %q, %d sent", status, sent.n)
+	}
+	if _, err := svc.Store.Forget(ctx, 30); err != nil {
+		t.Errorf("forgetting old messages as cat_app: %v", err)
+	}
+	_, _ = admin.Exec(ctx, `delete from account.identities where id = $1`, id)
+}
+
+type countingChannel struct{ n int }
+
+func (c *countingChannel) Name() string { return notify.Push }
+func (c *countingChannel) Send(context.Context, notify.Out) (notify.Result, error) {
+	c.n++
+	return notify.Result{}, nil
 }

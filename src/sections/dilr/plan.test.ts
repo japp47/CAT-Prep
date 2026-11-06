@@ -2,15 +2,19 @@ import { describe, expect, it } from "vitest";
 import { blankState, normalize } from "../../lib/state";
 import { buildDay, budgetFor } from "../../planner/engine";
 import { SECTION_BY_ID } from "..";
+import { catByYear, PLAN_START, roadFor } from "../../data/exam";
 import { DILR_PHASE_TEXT, dilrTemplate } from "./plan";
 
-const ctx = { ticks: {}, mocks: [] };
+/** A student who started with the plan, on 17 October 2026: these days fall on their road. */
+const fromStart = () => { const s = blankState(); s.since = PLAN_START; return s; };
+const road = roadFor(catByYear(2027)!, PLAN_START);
+const ctx = { ticks: {}, mocks: [], road };
 const DILR = SECTION_BY_ID.dilr;
 
 describe("DILR in the timetable (F22, D56)", () => {
   it("is live, with a template and a phase text for every phase", () => {
     expect(DILR.status).toBe("live");
-    [1, 2, 3, 4, 5].forEach((p) => expect(DILR_PHASE_TEXT[p].goal.length).toBeGreaterThan(0));
+    [0, 1, 2, 3, 4, 5].forEach((p) => expect(DILR_PHASE_TEXT[p].goal.length).toBeGreaterThan(0));
   });
   it("gives a Foundation weekday one set of the day and one drill, the set as the core block", () => {
     const t = dilrTemplate("2026-11-04", ctx);
@@ -31,11 +35,11 @@ describe("DILR in the timetable (F22, D56)", () => {
     const sats = ["2027-02-06", "2027-02-13", "2027-02-20", "2027-02-27"].map((d) => dilrTemplate(d, ctx).base[0]);
     expect(sats.filter((b) => b.kind === "paper")).toHaveLength(2);
     const paper = sats.find((b) => b.kind === "paper")!;
-    const done = dilrTemplate("2027-02-13", { ticks: {}, mocks: [{ id: "m", d: "2027-02-01", sec: "DILR", n: paper.paper!, k: "Past paper", c: 10, w: 2 }] });
+    const done = dilrTemplate("2027-02-13", { ticks: {}, road, mocks: [{ id: "m", d: "2027-02-01", sec: "DILR", n: paper.paper!, k: "Past paper", c: 10, w: 2 }] });
     expect(done.base[0].paper ?? "").not.toBe(paper.paper);
   });
   it("fits a 30-minute weekday: the set and the drill, nothing lost", () => {
-    const st = blankState();
+    const st = fromStart();
     const blocks = buildDay(DILR, st, "2026-11-04", budgetFor(DILR, st, "2026-11-04"), { today: "2026-11-04", noCarry: true });
     expect(blocks.map((b) => b.id)).toEqual(["lrset", "drill"]);
     expect(blocks.reduce((s, b) => s + b.mins, 0)).toBe(30);
@@ -68,7 +72,7 @@ describe("DI in the day plan (D82)", () => {
     expect(new Set(taper)).toEqual(new Set(["lrset", "diset"]));
   });
   it("fits a 30-minute DI weekday with nothing lost: the DI set, the LR set and the drill", () => {
-    const st = blankState();
+    const st = fromStart();
     const blocks = buildDay(DILR, st, "2026-11-09", budgetFor(DILR, st, "2026-11-09"), { today: "2026-11-09", noCarry: true });
     expect(blocks.map((b) => b.id)).toEqual(["diset", "lrset", "drill"]);
     expect(blocks.reduce((s, b) => s + b.mins, 0)).toBe(30);
@@ -77,7 +81,7 @@ describe("DI in the day plan (D82)", () => {
 
 describe("DILR's first day in the timetable (D56)", () => {
   it("plans no DILR time before it went live, so the first day owes no catch-up", () => {
-    const st = blankState();
+    const st = fromStart();
     st.since = "2026-10-20";
     expect(budgetFor(DILR, st, DILR.liveSince!) > 0).toBe(true);
     expect(budgetFor(DILR, st, "2026-10-29")).toBe(0);
@@ -89,10 +93,10 @@ describe("DILR's first day in the timetable (D56)", () => {
 
 describe("DILR's usual time (D56)", () => {
   it("starts at 30 minutes on weekdays and 60 at weekends", () => {
-    expect(blankState().settings.dilr).toMatchObject({ wd: 30, we: 60 });
+    expect(fromStart().settings.dilr).toMatchObject({ wd: 30, we: 60 });
   });
   it("moves the old untouched 45 and 90 to the new time, and keeps a time the student chose", () => {
-    const old = blankState();
+    const old = fromStart();
     const raw = JSON.parse(JSON.stringify(old));
     raw.settings.dilr = { wd: 45, we: 90, dow: [null, null, null, null, null, null, null] };
     expect(normalize(raw).settings.dilr).toMatchObject({ wd: 30, we: 60 });

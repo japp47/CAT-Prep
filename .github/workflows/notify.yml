@@ -1,12 +1,10 @@
-# Study reminders (server/cmd/notify, docs/design/notifications.md): every 15 minutes, queue what the rules say and
-# send what is due, by web push and through the team's Gmail. Odd minutes, because GitHub delays scheduled runs most
-# at the top of the hour. A run that pauses a channel after failures in a row fails, so GitHub emails the owner.
-# NOTIFY_DRY=1 (a repository variable) plans and renders without sending: the first week live.
+# Study reminders, one pass by hand (server/cmd/notify, docs/design/notifications.md). The API sends reminders itself
+# every two minutes (NOTIFY_WORKER=1 on Render, D91); GitHub's schedule skipped most runs, so it is no longer used.
+# This button is for a pass while the API is down, or to try a change: Actions, Study reminders, Run workflow.
+# Running it beside the API never sends twice (the queue's locks and keys).
 name: Study reminders
 
 on:
-  schedule:
-    - cron: "7,22,37,52 * * * *"
   workflow_dispatch:
 
 permissions:

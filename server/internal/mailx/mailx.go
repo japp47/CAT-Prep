@@ -4,12 +4,17 @@
 package mailx
 
 import (
+	"bytes"
 	"crypto/tls"
 	"errors"
 	"fmt"
+	"mime"
+	"mime/quotedprintable"
 	"net"
+	"net/mail"
 	"net/smtp"
 	"net/textproto"
+	"strings"
 	"time"
 )
 
@@ -125,4 +130,15 @@ func replyCode(err error) int {
 		return te.Code
 	}
 	return 0
+}
+
+// Plain builds a plain-text message with its headers, the body quoted-printable.
+func Plain(from, fromName, to, subject, body string, at time.Time) []byte {
+	var b bytes.Buffer
+	fmt.Fprintf(&b, "From: %s\r\nTo: %s\r\nSubject: %s\r\n", (&mail.Address{Name: fromName, Address: from}).String(), to, mime.QEncoding.Encode("utf-8", subject))
+	fmt.Fprintf(&b, "Date: %s\r\nMIME-Version: 1.0\r\nContent-Type: text/plain; charset=utf-8\r\nContent-Transfer-Encoding: quoted-printable\r\n\r\n", at.Format(time.RFC1123Z))
+	q := quotedprintable.NewWriter(&b)
+	_, _ = q.Write([]byte(strings.ReplaceAll(body, "\n", "\r\n")))
+	_ = q.Close()
+	return b.Bytes()
 }

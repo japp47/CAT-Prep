@@ -116,3 +116,23 @@ func TestReminderKeys(t *testing.T) {
 		t.Fatalf("got %d bytes, %q, %v", len(c.NotifyTokenKey), c.NotifyVAPIDPublic, err)
 	}
 }
+
+func TestReminderWorkerSettings(t *testing.T) {
+	base := map[string]string{"DATABASE_URL": "postgres://x@db/cat", "NOTIFY_WORKER": "1", "NOTIFY_SMTP_USER": "t@example.com", "NOTIFY_SMTP_PASSWORD": "p", "NOTIFY_DRY": "1", "NOTIFY_PUSH": "off"}
+	c, err := load(env(base))
+	if err != nil || !c.NotifyWorker || !c.NotifyDry || !c.NotifyPushOff || c.NotifyEmailOff || c.NotifyEmailCap != 300 || len(c.NotifyTokenKey) != 32 {
+		t.Fatalf("worker settings: %+v, %v", c, err)
+	}
+	prod := map[string]string{"ENV": "prod", "ALLOWED_ORIGIN": "https://99ile.pages.dev", "DATABASE_URL": "postgres://x@db/cat", "NOTIFY_WORKER": "1"}
+	if _, err := load(env(prod)); err == nil || !strings.Contains(err.Error(), "NOTIFY_TOKEN_SECRET") {
+		t.Errorf("a prod worker without the token secret: %v", err)
+	}
+	half := map[string]string{"DATABASE_URL": "postgres://x@db/cat", "NOTIFY_WORKER": "1", "NOTIFY_VAPID_PRIVATE": "k"}
+	if _, err := load(env(half)); err == nil || !strings.Contains(err.Error(), "NOTIFY_VAPID_PUBLIC") {
+		t.Errorf("half a VAPID pair: %v", err)
+	}
+	bad := map[string]string{"DATABASE_URL": "postgres://x@db/cat", "NOTIFY_EMAIL_DAILY_CAP": "lots"}
+	if _, err := load(env(bad)); err == nil {
+		t.Error("a cap that is not a number was accepted")
+	}
+}

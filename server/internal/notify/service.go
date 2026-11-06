@@ -88,7 +88,7 @@ func (s *Service) Drain(ctx context.Context, until time.Time) (Counts, error) {
 	if err != nil {
 		return c, err
 	}
-	failsInARow := map[string]int{}
+	failsInARow, lastErr := map[string]int{}, map[string]error{}
 	const breaker = 5
 	for s.now().Before(until) {
 		batch, err := s.Queue.Claim(ctx, 50, 2*time.Minute)
@@ -189,14 +189,17 @@ func (s *Service) Drain(ctx context.Context, until time.Time) (Counts, error) {
 			if err != nil {
 				return c, err
 			}
+			if sendErr != nil {
+				lastErr[m.Channel] = sendErr
+			}
 			if failsInARow[m.Channel] == breaker {
 				s.Log.Error("channel paused for this run after failures in a row", "channel", m.Channel, "last_error", sendErr)
 			}
 		}
 	}
-	for _, n := range failsInARow {
+	for ch, n := range failsInARow {
 		if n >= breaker {
-			return c, ErrBreaker
+			return c, fmt.Errorf("%w: %s: %v", ErrBreaker, ch, lastErr[ch])
 		}
 	}
 	return c, nil

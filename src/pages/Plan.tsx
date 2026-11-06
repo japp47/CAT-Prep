@@ -6,7 +6,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
 import { ErrorText, Field, Meta, Page, PageHeader, Section, TextLink } from "../components/kit";
 import { NativeSelect } from "../components/Select";
-import { PHASES, phaseOf } from "../data/exam";
+import { phaseIn, phaseNo, roadOf, type Phase } from "../data/exam";
 import { addDays, diffDays, DOW, mediumDate, todayIso } from "../lib/date";
 import { useStore } from "../lib/store";
 import { buildDay, sampleDate } from "../planner/engine";
@@ -137,15 +137,15 @@ function RangeCard() {
   );
 }
 
-function PhaseCard({ id, sec }: { id: number; sec: SectionDef }) {
+function PhaseCard({ p, sec }: { p: Phase; sec: SectionDef }) {
   const { state } = useStore();
   const t = todayIso();
-  const p = PHASES.find((x) => x.id === id)!;
-  const cur = phaseOf(t);
-  const isNow = cur.kind === "phase" && cur.phase.id === id;
+  const road = roadOf(state), id = p.id;
+  const cur = phaseIn(road, t);
+  const isNow = cur.kind === "phase" && cur.phase === p;
   const s = state.settings[sec.id];
-  const wd = buildDay(sec, state, sampleDate(id, false, t), s.wd, { today: t, noCarry: true });
-  const we = buildDay(sec, state, sampleDate(id, true, t), s.we, { today: t, noCarry: true });
+  const wd = buildDay(sec, state, sampleDate(road, id, false, t), s.wd, { today: t, noCarry: true });
+  const we = buildDay(sec, state, sampleDate(road, id, true, t), s.we, { today: t, noCarry: true });
   const text = sec.phaseText?.[id];
   const list = (bl: typeof wd) => bl.length
     ? bl.map((b) => <li key={b.key} className="flex justify-between gap-4 py-1.5"><span>{b.name.replace(/: CAT \d{4} Slot \d$/, "")}</span><span className="text-muted-foreground tabular-nums whitespace-nowrap">{b.mins} min</span></li>)
@@ -153,7 +153,7 @@ function PhaseCard({ id, sec }: { id: number; sec: SectionDef }) {
   return (
     <article className={cn("relative flex flex-col gap-5 overflow-hidden rounded-lg bg-card p-5 sm:p-6", isNow && "before:absolute before:inset-y-0 before:left-0 before:w-1.5 before:bg-highlight")}>
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <h3 className="flex items-center gap-2.5 text-heading font-semibold">{p.id}. {p.name}{isNow && <Badge variant="highlight">Now</Badge>}</h3>
+        <h3 className="flex items-center gap-2.5 text-heading font-semibold">{id > 0 && `${phaseNo(road, p)}. `}{p.name}{isNow && <Badge variant="highlight">Now</Badge>}</h3>
         <Meta>{mediumDate(p.start)} to {mediumDate(p.end)}</Meta>
       </div>
       {text && <p className="measure text-base">{text.goal}</p>}
@@ -167,12 +167,12 @@ function PhaseCard({ id, sec }: { id: number; sec: SectionDef }) {
 }
 
 export default function Plan() {
-  const t = todayIso();
-  const lateStart = phaseOf(t).kind === "phase" && t > PHASES[0].end;
+  const road = roadOf(useStore().state);
+  const numbered = road.phases.filter((p) => p.id > 0).length;
   return (
     <Page>
-      <PageHeader title="Plan and time">Five phases to CAT 2027. Each day's timetable is built from the phase you are in and the time you have that day. Change your usual time here, or change a single day on Today.</PageHeader>
-      {lateStart && <p className="measure rounded-lg bg-warning-soft px-5 py-4 text-base">Starting after January? You join the plan at the current phase. Spend your first two weeks on the Foundation reading routine alongside it, and use the Learn tab to cover the question types you missed.</p>}
+      <PageHeader title="Plan and time">{road.phases.some((p) => p.id === 0) ? "A head start, then five phases" : `${["No", "One", "Two", "Three", "Four", "Five"][numbered] ?? numbered} phases`} to {road.name} (<TextLink to="/you#cat">change it</TextLink>). Each day's timetable is built from the phase you are in and the time you have that day. Change your usual time here, or change a single day on Today.</PageHeader>
+      {road.short && <p className="measure rounded-lg bg-warning-soft px-5 py-4 text-base">You started with less time to {road.name}, so the early phases are shorter: the same steps, in the time there is. Use the Learn tab to cover the question types quickly.</p>}
       <TargetCard />
       {LIVE_SECTIONS.map((s) => <TimeCard key={s.id} sec={s} />)}
       <RangeCard />
@@ -185,7 +185,7 @@ export default function Plan() {
       </Section>
       {LIVE_SECTIONS.map((sec) => (
         <Section key={sec.id} title={`${sec.short} phases`}>
-          <div className="flex flex-col gap-3">{PHASES.map((p) => <PhaseCard key={p.id} id={p.id} sec={sec} />)}</div>
+          <div className="flex flex-col gap-3">{road.phases.map((p) => <PhaseCard key={p.id} p={p} sec={sec} />)}</div>
         </Section>
       ))}
     </Page>

@@ -3,6 +3,7 @@
 package config
 
 import (
+	"crypto/rand"
 	"encoding/hex"
 	"errors"
 	"fmt"
@@ -46,6 +47,16 @@ type Config struct {
 	// hides Reminders; in dev the API makes a key for each run. Without the VAPID key, push is off and email works.
 	NotifyTokenKey    []byte
 	NotifyVAPIDPublic string
+	// NotifyWorker (NOTIFY_WORKER=1) runs the reminder job inside the API every two minutes (D91). It sends push
+	// with NotifyVAPIDPrivate and email through Gmail as NotifySMTPUser with NotifySMTPPassword (an app password);
+	// a channel without its settings, or switched off (NOTIFY_EMAIL=off, NOTIFY_PUSH=off), is left out. NOTIFY_DRY=1
+	// plans and sends nothing. NotifyEmailCap is the emails in a rolling day (NOTIFY_EMAIL_DAILY_CAP, 300).
+	NotifyWorker                   bool
+	NotifyVAPIDPrivate             string
+	NotifySMTPUser, NotifySMTPPass string
+	NotifyDry, NotifyEmailOff      bool
+	NotifyPushOff                  bool
+	NotifyEmailCap                 int
 	// Commit is the Git commit this build came from. Render sets RENDER_GIT_COMMIT; "dev" elsewhere.
 	// /healthz reports it, so the deploy workflow can tell when the new version is live.
 	Commit string
@@ -133,6 +144,29 @@ func load(get func(string) string) (Config, error) {
 		c.NotifyTokenKey = b
 	}
 	c.NotifyVAPIDPublic = get("NOTIFY_VAPID_PUBLIC")
+	if len(c.NotifyTokenKey) == 0 && c.Env == "dev" {
+		// As the IP hash key: a key for this run, so Reminders work on a laptop with no setup.
+		c.NotifyTokenKey = make([]byte, 32)
+		_, _ = rand.Read(c.NotifyTokenKey)
+	}
+	c.NotifyWorker = get("NOTIFY_WORKER") == "1"
+	c.NotifyVAPIDPrivate = get("NOTIFY_VAPID_PRIVATE")
+	c.NotifySMTPUser, c.NotifySMTPPass = get("NOTIFY_SMTP_USER"), get("NOTIFY_SMTP_PASSWORD")
+	c.NotifyDry, c.NotifyEmailOff, c.NotifyPushOff = get("NOTIFY_DRY") == "1", get("NOTIFY_EMAIL") == "off", get("NOTIFY_PUSH") == "off"
+	c.NotifyEmailCap = 300
+	if v := get("NOTIFY_EMAIL_DAILY_CAP"); v != "" {
+		n, err := strconv.Atoi(v)
+		if err != nil || n < 0 {
+			errs = append(errs, fmt.Errorf("NOTIFY_EMAIL_DAILY_CAP must be a whole number, got %q", v))
+		}
+		c.NotifyEmailCap = n
+	}
+	if c.NotifyWorker && len(c.NotifyTokenKey) == 0 {
+		errs = append(errs, errors.New("NOTIFY_WORKER=1 needs NOTIFY_TOKEN_SECRET (the unsubscribe links are signed with it)"))
+	}
+	if (c.NotifyVAPIDPrivate == "") != (c.NotifyVAPIDPublic == "") && c.NotifyWorker {
+		errs = append(errs, errors.New("NOTIFY_VAPID_PUBLIC and NOTIFY_VAPID_PRIVATE go together: set both for push, or neither"))
+	}
 
 	c.Commit = or(get("RENDER_GIT_COMMIT"), "dev")
 	return c, errors.Join(errs...)

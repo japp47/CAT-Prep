@@ -4,7 +4,7 @@ import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ArrowLink, LinkButton } from "../../components/kit";
 import { StreakBadge } from "../../components/StreakBadge";
-import { phaseOf } from "../../data/exam";
+import { phaseIn, roadOf } from "../../data/exam";
 import { addDays, longDate, todayIso, weekStart } from "../../lib/date";
 import { useGsap } from "../../lib/motion";
 import { useStore } from "../../lib/store";
@@ -50,7 +50,7 @@ export function TodayLine() {
   const redo = dueRedo(state.redo, t).length;
   const reviewFor = reviewWeek(t, new Date().getHours());
   const reviewReady = !!reviewFor && !reviewOf(state, reviewFor);
-  const ph = phaseOf(t);
+  const ph = phaseIn(roadOf(state), t);
 
   useGsap(box, (gsap, el) => {
     gsap.from(el.querySelector("[data-rail]"), { scaleY: 0, transformOrigin: "50% 0%", duration: 0.9, ease: "power2.out" });
