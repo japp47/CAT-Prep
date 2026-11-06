@@ -8,7 +8,7 @@ export default function StreakNote({ note, className, children, defaultOpen }: {
       <PopoverTrigger asChild>
         <button type="button" className={className}>{children}</button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-[min(92vw,20rem)] border-0 text-base">{note}</PopoverContent>
+      <PopoverContent align="end" className="w-[min(92vw,20rem)] text-base">{note}</PopoverContent>
     </Popover>
   );
 }
