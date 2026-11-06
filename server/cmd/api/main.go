@@ -125,13 +125,17 @@ func run() error {
 // reminderWorker builds the reminder job from the NOTIFY_* settings (internal/notify, D91).
 func reminderWorker(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger) (*notify.Worker, error) {
 	set := notify.Settings{Site: cfg.AllowedOrigin, TokenKey: cfg.NotifyTokenKey, VAPIDPublic: cfg.NotifyVAPIDPublic, VAPIDPrivate: cfg.NotifyVAPIDPrivate,
-		SMTPUser: cfg.NotifySMTPUser, SMTPPassword: cfg.NotifySMTPPass, EmailOff: cfg.NotifyEmailOff, PushOff: cfg.NotifyPushOff, EmailCap: cfg.NotifyEmailCap}
+		SMTPUser: cfg.NotifySMTPUser, SMTPPassword: cfg.NotifySMTPPass, EmailOff: cfg.NotifyEmailOff, PushOff: cfg.NotifyPushOff, EmailCap: cfg.NotifyEmailCap,
+		GmailClientID: cfg.NotifyGmailID, GmailClientSecret: cfg.NotifyGmailSecret, GmailRefreshToken: cfg.NotifyGmailToken}
 	svc, err := notify.NewService(pool, set, log)
 	if err != nil {
 		return nil, err
 	}
 	if len(svc.Channels) == 0 {
-		return nil, errors.New("no channel: set NOTIFY_VAPID_PRIVATE for push or NOTIFY_SMTP_USER and NOTIFY_SMTP_PASSWORD for email")
+		return nil, errors.New("no channel: set NOTIFY_VAPID_PRIVATE for push, or NOTIFY_SMTP_USER with the three NOTIFY_GMAIL_* settings for email")
+	}
+	if svc.Channels[notify.Email] == nil && cfg.NotifySMTPUser != "" && !cfg.NotifyEmailOff {
+		log.Warn("reminder email is off: set the three NOTIFY_GMAIL_* settings (Render blocks the SMTP ports)")
 	}
 	return &notify.Worker{Service: svc, Every: 2 * time.Minute, Dry: cfg.NotifyDry, Alert: notify.TeamAlert(set), AlertGap: 6 * time.Hour,
 		DailyFrom: notify.SiteDaily(cfg.AllowedOrigin), Log: log}, nil

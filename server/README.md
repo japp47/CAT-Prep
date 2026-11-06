@@ -186,8 +186,19 @@ Email goes through the 99ile.team Gmail with an app password, at most 300 a day 
 1. Migrations 12 and 13 run by themselves: the deploy workflow migrates before Render deploys.
 2. `NOTIFY_TOKEN_SECRET` (`openssl rand -hex 32`) and `NOTIFY_VAPID_PUBLIC`, `NOTIFY_VAPID_PRIVATE` (a pair from
    `go run ./cmd/notify -vapid`; the same values as in GitHub, for the manual button).
-3. `NOTIFY_SMTP_USER` = `99ile.team@gmail.com` and `NOTIFY_SMTP_PASSWORD` = an app password made for Render only
-   (myaccount.google.com/apppasswords, name it "99ile Render"), so it can be revoked without touching the digest's.
+3. Email goes through **Gmail's API over HTTPS** (D92): Render's free plan blocks the mail ports SMTP needs. Once:
+   - Google Cloud console, the project that has the Google sign-in client: APIs & Services → Library → **Gmail API**
+     → Enable. Its OAuth consent screen must say **In production** (it does for sign-in); in Testing, the token
+     would stop after 7 days.
+   - Credentials → Create credentials → OAuth client ID → type **Desktop app**, name "99ile reminders mail". Copy its
+     ID and secret.
+   - On your Mac, in server/: `NOTIFY_GMAIL_CLIENT_ID=… NOTIFY_GMAIL_CLIENT_SECRET=… go run ./cmd/notify -gmail-token`.
+     Open the link it prints, signed in as 99ile.team@gmail.com. Google warns that it has not verified the app (it
+     is yours): Advanced → Go to 99ile → allow "Send email on your behalf". The terminal prints
+     `NOTIFY_GMAIL_REFRESH_TOKEN=…`.
+   - Render: `NOTIFY_SMTP_USER` = `99ile.team@gmail.com`, and `NOTIFY_GMAIL_CLIENT_ID`, `NOTIFY_GMAIL_CLIENT_SECRET`,
+     `NOTIFY_GMAIL_REFRESH_TOKEN`. `NOTIFY_SMTP_PASSWORD` is not used on Render; delete it and revoke that app
+     password. Changing the 99ile.team password ends the token: run `-gmail-token` again.
 4. `NOTIFY_WORKER` = `1`. Render restarts; the log shows "reminder worker started".
 5. Gmail (99ile.team): a filter for `from:mailer-daemon OR subject:unsubscribe` that skips the inbox and labels
    them "99ile mail" ("Reminders" is a name Gmail keeps for itself): bounces and mailto unsubscribes land there.
@@ -198,8 +209,8 @@ Email goes through the 99ile.team Gmail with an app password, at most 300 a day 
 `NOTIFY_WORKER` stops the reminders. Each takes effect when Render restarts, about a minute.
 
 **Checking the wording:** `go run ./cmd/notify -preview /tmp/mail` writes every message as HTML and text;
-`NOTIFY_SMTP_USER=99ile.team@gmail.com NOTIFY_SMTP_PASSWORD=… go run ./cmd/notify -send-test you@example.com`
-emails all of them to one address. Wording is `internal/notify/templates/messages.json`, the rules' numbers
+`go run ./cmd/notify -send-test you@example.com` emails all of them to one address, through Gmail's API with the
+three `NOTIFY_GMAIL_*` settings and `NOTIFY_SMTP_USER` in the environment (or over SMTP with `NOTIFY_SMTP_PASSWORD`). Wording is `internal/notify/templates/messages.json`, the rules' numbers
 `policy.json`; a test fails on a missing placeholder, a subject over 50 characters or a push over 120.
 
 **When something is wrong:** five failures in a row pause a channel for that pass, and the worker emails

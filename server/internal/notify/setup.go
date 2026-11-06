@@ -17,9 +17,11 @@ type Settings struct {
 	Site                      string // https://99ile.pages.dev
 	TokenKey                  []byte // NOTIFY_TOKEN_SECRET
 	VAPIDPublic, VAPIDPrivate string // push off without both
-	SMTPUser, SMTPPassword    string // email off without both
-	EmailOff, PushOff         bool   // NOTIFY_EMAIL=off, NOTIFY_PUSH=off
-	EmailCap                  int    // emails in a rolling day; 300 when zero
+	SMTPUser, SMTPPassword    string // the sending account; the password only for SMTP
+	// Gmail's API over HTTPS (D92): used instead of SMTP when all three are set, as on Render, which blocks mail ports.
+	GmailClientID, GmailClientSecret, GmailRefreshToken string
+	EmailOff, PushOff                                   bool // NOTIFY_EMAIL=off, NOTIFY_PUSH=off
+	EmailCap                                            int  // emails in a rolling day; 300 when zero
 }
 
 // Gmail is where reminder email goes out (docs/design/notifications.md §6).
@@ -39,8 +41,8 @@ func NewService(db *pgxpool.Pool, set Settings, log *slog.Logger) (*Service, err
 		return nil, err
 	}
 	channels := map[string]Channel{}
-	if set.SMTPUser != "" && set.SMTPPassword != "" && !set.EmailOff {
-		channels[Email] = &EmailChannel{Server: mailx.Server{Addr: Gmail, User: set.SMTPUser, Password: set.SMTPPassword}, Pace: 3 * time.Second, Domain: "99ile.pages.dev"}
+	if ch := EmailChannelFor(set); ch != nil && !set.EmailOff {
+		channels[Email] = ch
 	}
 	if set.VAPIDPublic != "" && set.VAPIDPrivate != "" && !set.PushOff {
 		channels[Push] = PushChannel{Push: WebPush{Keys: VAPID{Public: set.VAPIDPublic, Private: set.VAPIDPrivate, Subject: "mailto:99ile.team@gmail.com"}}}
@@ -52,9 +54,39 @@ func NewService(db *pgxpool.Pool, set Settings, log *slog.Logger) (*Service, err
 		Tokens: Tokens{Key: set.TokenKey}, Site: set.Site, EmailCap: set.EmailCap, Log: log}, nil
 }
 
-// TeamAlert emails the team through the same account, for Worker.Alert.
+// GmailAPIFor is Gmail's API for these settings, or nil without its three keys.
+func GmailAPIFor(set Settings) *GmailAPI {
+	if set.GmailClientID == "" || set.GmailClientSecret == "" || set.GmailRefreshToken == "" {
+		return nil
+	}
+	return &GmailAPI{ClientID: set.GmailClientID, ClientSecret: set.GmailClientSecret, RefreshToken: set.GmailRefreshToken}
+}
+
+// EmailChannelFor picks how email goes out: Gmail's API when it is set up, else SMTP with an app password, else none.
+func EmailChannelFor(set Settings) Channel {
+	if set.SMTPUser == "" {
+		return nil
+	}
+	if api := GmailAPIFor(set); api != nil {
+		return &GmailChannel{API: api, From: set.SMTPUser, Pace: 3 * time.Second, Domain: "99ile.pages.dev"}
+	}
+	if set.SMTPPassword != "" {
+		return &EmailChannel{Server: mailx.Server{Addr: Gmail, User: set.SMTPUser, Password: set.SMTPPassword}, Pace: 3 * time.Second, Domain: "99ile.pages.dev"}
+	}
+	return nil
+}
+
+// TeamAlert emails the team through the same account, the same way reminders go, for Worker.Alert.
 func TeamAlert(set Settings) func(ctx context.Context, subject, body string) error {
-	if set.SMTPUser == "" || set.SMTPPassword == "" {
+	if set.SMTPUser == "" {
+		return nil
+	}
+	if api := GmailAPIFor(set); api != nil {
+		return func(ctx context.Context, subject, body string) error {
+			return api.SendRaw(ctx, mailx.Plain(set.SMTPUser, "99ile reminders", set.SMTPUser, subject, body, time.Now()))
+		}
+	}
+	if set.SMTPPassword == "" {
 		return nil
 	}
 	server := mailx.Server{Addr: Gmail, User: set.SMTPUser, Password: set.SMTPPassword}
