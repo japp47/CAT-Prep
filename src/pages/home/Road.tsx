@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { daysLeft, examLine } from "../../components/Countdown";
 import { phaseIn, phaseNo, type Phase } from "../../data/exam";
 import { useRoad } from "../../lib/useRoad";
+import { YearSwitch } from "../../components/YearSwitch";
 import { clamp, diffDays, shortDate, todayIso } from "../../lib/date";
 import { calm, loadScrollTrigger } from "../../lib/motion";
 import { Head } from "./Head";
@@ -24,7 +25,8 @@ function months(first: string, end: string, total: number): { at: number; label:
   for (;;) {
     const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-01`;
     if (iso > end) break;
-    out.push({ at: diffDays(first, iso) / total, label: d.getMonth() === 0 ? `Jan ’${String(d.getFullYear()).slice(2)}` : MON[d.getMonth()] });
+    // A road over about 13 months marks the quarters only, so the labels never run into each other.
+    if (total < 400 || d.getMonth() % 3 === 0) out.push({ at: diffDays(first, iso) / total, label: d.getMonth() === 0 ? `Jan ’${String(d.getFullYear()).slice(2)}` : MON[d.getMonth()] });
     d.setMonth(d.getMonth() + 1);
   }
   return out;
@@ -57,7 +59,8 @@ export function Road() {
         .from(el.querySelectorAll("[data-phase]"), { opacity: 0, y: 10, duration: 0.4, stagger: 0.07 }, "<");
       if (out) { const v = { x: 0 }; tl.to(v, { x: left, duration: 1.1, ease: "power2.out", onUpdate: () => { out.textContent = String(Math.round(v.x)); } }, 0); }
       const st = ScrollTrigger.create({ trigger: el, start: "top 75%", once: true, onEnter: () => tl.play() });
-      kill = () => { st.kill(); tl.kill(); };
+      // Revert, not kill: a road redrawn for another CAT year must not keep the hidden starting state of the old one.
+      kill = () => { st.kill(); tl.revert(); };
     }, () => {});
     return () => { gone = true; kill(); };
   }, [left]);
@@ -70,6 +73,7 @@ export function Road() {
           <p className="text-[clamp(5rem,2.6rem+6.5vw,9.5rem)] leading-[0.82] font-extrabold tracking-[-0.055em] tabular-nums" data-days>{left}</p>
           <p className="text-heading font-semibold">{left === 1 ? "day" : "days"} to go</p>
           <p className="text-base text-muted-foreground">{examLine(road)}.</p>
+          <p className="text-base text-muted-foreground"><YearSwitch align="start">Preparing for a later CAT?</YearSwitch></p>
         </div>
 
         {/* Wide screens: one line to scale. */}
@@ -97,7 +101,8 @@ export function Road() {
               <span key={m.at} className="absolute bottom-0 -translate-x-1/2 text-sm text-muted-foreground" style={{ left: `${m.at * 100}%` }}>{m.label}</span>
             ))}
           </div>
-          <ol className="grid gap-3" style={{ gridTemplateColumns: `repeat(${phases.length}, minmax(0, 1fr))` }}>
+          {/* One row for five phases; a road with a head start goes to two rows of three, so no card is squeezed. */}
+          <ol className="grid gap-3" style={{ gridTemplateColumns: `repeat(${phases.length > 5 ? 3 : phases.length}, minmax(0, 1fr))` }}>
             {phases.map((p) => (
               <li key={p.id} data-phase className={cn("flex flex-col gap-1.5 rounded-xl px-4 py-4", p === cur ? "bg-card" : "")}>
                 <span className={cn("text-sm", p === cur ? "font-semibold text-primary" : "text-muted-foreground")}>{p === cur ? "You are here" : label(p)}</span>
