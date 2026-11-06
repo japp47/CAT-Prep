@@ -54,9 +54,12 @@ type Config struct {
 	NotifyWorker                   bool
 	NotifyVAPIDPrivate             string
 	NotifySMTPUser, NotifySMTPPass string
-	NotifyDry, NotifyEmailOff      bool
-	NotifyPushOff                  bool
-	NotifyEmailCap                 int
+	// NotifyGmail* send email through Gmail's API over HTTPS (NOTIFY_GMAIL_CLIENT_ID, _SECRET, _REFRESH_TOKEN; D92):
+	// Render's free plan blocks the mail ports SMTP needs. All three or none.
+	NotifyGmailID, NotifyGmailSecret, NotifyGmailToken string
+	NotifyDry, NotifyEmailOff                          bool
+	NotifyPushOff                                      bool
+	NotifyEmailCap                                     int
 	// Commit is the Git commit this build came from. Render sets RENDER_GIT_COMMIT; "dev" elsewhere.
 	// /healthz reports it, so the deploy workflow can tell when the new version is live.
 	Commit string
@@ -152,6 +155,10 @@ func load(get func(string) string) (Config, error) {
 	c.NotifyWorker = get("NOTIFY_WORKER") == "1"
 	c.NotifyVAPIDPrivate = get("NOTIFY_VAPID_PRIVATE")
 	c.NotifySMTPUser, c.NotifySMTPPass = get("NOTIFY_SMTP_USER"), get("NOTIFY_SMTP_PASSWORD")
+	c.NotifyGmailID, c.NotifyGmailSecret, c.NotifyGmailToken = get("NOTIFY_GMAIL_CLIENT_ID"), get("NOTIFY_GMAIL_CLIENT_SECRET"), get("NOTIFY_GMAIL_REFRESH_TOKEN")
+	if n := len(nonEmpty(c.NotifyGmailID, c.NotifyGmailSecret, c.NotifyGmailToken)); n != 0 && n != 3 {
+		errs = append(errs, errors.New("NOTIFY_GMAIL_CLIENT_ID, NOTIFY_GMAIL_CLIENT_SECRET and NOTIFY_GMAIL_REFRESH_TOKEN go together: set all three for email through Gmail's API, or none"))
+	}
 	c.NotifyDry, c.NotifyEmailOff, c.NotifyPushOff = get("NOTIFY_DRY") == "1", get("NOTIFY_EMAIL") == "off", get("NOTIFY_PUSH") == "off"
 	c.NotifyEmailCap = 300
 	if v := get("NOTIFY_EMAIL_DAILY_CAP"); v != "" {
@@ -177,4 +184,14 @@ func or(v, fallback string) string {
 		return fallback
 	}
 	return v
+}
+
+func nonEmpty(vs ...string) []string {
+	var out []string
+	for _, v := range vs {
+		if v != "" {
+			out = append(out, v)
+		}
+	}
+	return out
 }

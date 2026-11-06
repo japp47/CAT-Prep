@@ -136,3 +136,14 @@ func TestReminderWorkerSettings(t *testing.T) {
 		t.Error("a cap that is not a number was accepted")
 	}
 }
+
+func TestGmailAPISettingsGoTogether(t *testing.T) {
+	two := map[string]string{"DATABASE_URL": "postgres://x@db/cat", "NOTIFY_GMAIL_CLIENT_ID": "c", "NOTIFY_GMAIL_CLIENT_SECRET": "s"}
+	if _, err := load(env(two)); err == nil || !strings.Contains(err.Error(), "NOTIFY_GMAIL_REFRESH_TOKEN") {
+		t.Errorf("two of three: %v", err)
+	}
+	two["NOTIFY_GMAIL_REFRESH_TOKEN"] = "r"
+	if c, err := load(env(two)); err != nil || c.NotifyGmailToken != "r" {
+		t.Errorf("all three: %v", err)
+	}
+}

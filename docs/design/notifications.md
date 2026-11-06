@@ -274,3 +274,30 @@ Of the ways to run it, the API wins for production:
 - the worker runs as `cat_app` against the real grants;
 - the settings and their errors.
 
+## 13. Email through Gmail's API (D92, 6 Nov 2026)
+The worker's first email timed out: `dial tcp …:587: i/o timeout`. Since September 2025 Render's free web services block outbound SMTP (ports 25, 465, 587); push, over HTTPS, was sent.
+
+**The fix keeps the same account and Google's servers:** `notify.GmailAPI` posts the very message `buildEmail` makes to `gmail.googleapis.com/gmail/v1/users/me/messages/send` over port 443.
+
+**Sign-in:**
+- An OAuth "Desktop app" client in the sign-in project.
+- The `gmail.send` scope only: it cannot read or delete mail.
+- A refresh token from `cmd/notify -gmail-token`: once, on the owner's Mac, with PKCE and a loopback redirect. Google shows its "unverified app" screen to the owner once; nobody else ever signs in to it.
+- The access token renews on its own, one per hour, reused across sends.
+
+**Errors:**
+- A refused refresh token (revoked, or the account's password changed) is permanent. Its message says to run `-gmail-token` again, and the team alert carries it.
+- 429 and 5xx are retried. Other 4xx are permanent.
+- Bounces still arrive in the team inbox, later.
+
+**Which way email goes:** `EmailChannelFor` picks Gmail's API when its three settings are present, else SMTP with an app password (a laptop or GitHub, where the ports are open). The team alert follows the same choice. There is no new dependency: `golang.org/x/oauth2` was already there for sign-in, with Google's endpoints written out.
+
+**Logs:** every message that is not sent gets a warning line: id, kind, channel, attempt, permanent or not, and the error. Never the address.
+
+**Tests:** a fake Google issues one token for two sends and receives the whole message; rate limits and server errors retry; bad requests and a refused token stop; the channel choice; the three settings go together.
+
+**Other ways considered:**
+- cron-job.org starting GitHub for email: two systems and a token.
+- A Render paid instance: a card, $7 a month.
+- An email service sending as @gmail.com: it lands in spam.
+

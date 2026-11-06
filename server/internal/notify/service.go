@@ -191,6 +191,7 @@ func (s *Service) Drain(ctx context.Context, until time.Time) (Counts, error) {
 			}
 			if sendErr != nil {
 				lastErr[m.Channel] = sendErr
+				s.Log.Warn("reminder not sent", "id", m.ID, "kind", m.Kind, "channel", m.Channel, "attempt", m.Attempts, "permanent", IsPermanent(sendErr), "error", sendErr)
 			}
 			if failsInARow[m.Channel] == breaker {
 				s.Log.Error("channel paused for this run after failures in a row", "channel", m.Channel, "last_error", sendErr)
