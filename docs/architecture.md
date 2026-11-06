@@ -399,7 +399,7 @@ The ⌘K palette and History (F51) read the student's own state in the browser. 
 **Notifications (F64, F65; Go package `internal/notify`; full design in `docs/design/notifications.md`, 5 Nov 2026).**
 - One rule book (`Decide`, pure, tested) decides what each student gets; channels only deliver: Gmail SMTP for email now (the team account, at most 300 a day), web push with VAPID (standard library, no new dependency), the inbox in January.
 - Postgres is the queue (`notify.messages`, unique key per student, kind and local day; claimed with `SKIP LOCKED`) behind a `Queue` interface, so River, Redis or a cloud queue can replace it when the numbers ask.
-- `cmd/notify` plans and sends every 15 minutes from GitHub Actions, like the digest and cleanup jobs; the API may run the same worker in-process; both at once never send twice.
+- The API runs the worker every two minutes (`NOTIFY_WORKER=1`, D91); GitHub's schedule skipped most runs. `cmd/notify` is the same pass by hand; both at once never send twice.
 - Practice is known from `notify.activity`, updated in the sync push transaction. Preferences through `/v1/notify/*`; one-click unsubscribe with signed tokens outside the gate. Wording, layout and the rules' numbers are files in `internal/notify/templates/`.
 
 **Community (F67 to F70; Go module `community`).**

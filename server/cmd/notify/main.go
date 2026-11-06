@@ -1,6 +1,6 @@
-// Command notify plans and sends study reminders (internal/notify, docs/design/notifications.md). Run every 15
-// minutes by .github/workflows/notify.yml as the owner (MIGRATE_DATABASE_URL): it queues what the rules say, then
-// sends what is due for up to -for, and removes messages older than 30 days.
+// Command notify makes one pass of the study reminders (internal/notify, docs/design/notifications.md) as the owner
+// (MIGRATE_DATABASE_URL): it queues what the rules say, then sends what is due for up to -for. The API's worker does
+// the same every two minutes (NOTIFY_WORKER=1, D91); this is the manual way, from .github/workflows/notify.yml.
 //
 // Settings (environment):
 //
@@ -66,7 +66,7 @@ func site() string {
 }
 
 func gmail() mailx.Server {
-	return mailx.Server{Addr: "smtp.gmail.com:587", User: os.Getenv("NOTIFY_SMTP_USER"), Password: os.Getenv("NOTIFY_SMTP_PASSWORD")}
+	return mailx.Server{Addr: notify.Gmail, User: os.Getenv("NOTIFY_SMTP_USER"), Password: os.Getenv("NOTIFY_SMTP_PASSWORD")}
 }
 
 func run(log *slog.Logger, dry bool, runFor time.Duration) error {
@@ -74,18 +74,11 @@ func run(log *slog.Logger, dry bool, runFor time.Duration) error {
 	if dsn == "" {
 		return errors.New("MIGRATE_DATABASE_URL is required: the owner's connection")
 	}
-	key, err := hex.DecodeString(os.Getenv("NOTIFY_TOKEN_SECRET"))
-	if err != nil || len(key) < 32 {
-		return errors.New("NOTIFY_TOKEN_SECRET must be at least 32 bytes in hex, the same value as the API's")
-	}
-	policy, err := notify.LoadPolicy()
-	if err != nil {
-		return err
-	}
-	r, err := notify.NewRenderer()
-	if err != nil {
-		return err
-	}
+	key, _ := hex.DecodeString(os.Getenv("NOTIFY_TOKEN_SECRET"))
+	emailCap, _ := strconv.Atoi(os.Getenv("NOTIFY_EMAIL_DAILY_CAP"))
+	set := notify.Settings{Site: site(), TokenKey: key, VAPIDPublic: os.Getenv("NOTIFY_VAPID_PUBLIC"), VAPIDPrivate: os.Getenv("NOTIFY_VAPID_PRIVATE"),
+		SMTPUser: os.Getenv("NOTIFY_SMTP_USER"), SMTPPassword: os.Getenv("NOTIFY_SMTP_PASSWORD"),
+		EmailOff: os.Getenv("NOTIFY_EMAIL") == "off", PushOff: os.Getenv("NOTIFY_PUSH") == "off", EmailCap: emailCap}
 	ctx, cancel := context.WithTimeout(context.Background(), runFor+2*time.Minute)
 	defer cancel()
 	db, err := store.Open(ctx, dsn)
@@ -93,44 +86,15 @@ func run(log *slog.Logger, dry bool, runFor time.Duration) error {
 		return err
 	}
 	defer db.Close()
-
-	channels := map[string]notify.Channel{}
-	var email *notify.EmailChannel
-	if mail := gmail(); mail.User != "" && mail.Password != "" && os.Getenv("NOTIFY_EMAIL") != "off" {
-		email = &notify.EmailChannel{Server: mail, Pace: 3 * time.Second, Domain: "99ile.pages.dev"}
-		defer email.Close()
-		channels[notify.Email] = email
-	}
-	if pub, priv := os.Getenv("NOTIFY_VAPID_PUBLIC"), os.Getenv("NOTIFY_VAPID_PRIVATE"); pub != "" && priv != "" && os.Getenv("NOTIFY_PUSH") != "off" {
-		channels[notify.Push] = notify.PushChannel{Push: notify.WebPush{Keys: notify.VAPID{Public: pub, Private: priv, Subject: "mailto:99ile.team@gmail.com"}}}
-	}
-	emailCap := 300
-	if v, err := strconv.Atoi(os.Getenv("NOTIFY_EMAIL_DAILY_CAP")); err == nil && v >= 0 {
-		emailCap = v
-	}
-	daily, err := notify.FetchDaily(ctx, nil, site())
+	s, err := notify.NewService(db, set, log)
 	if err != nil {
-		log.Warn("no daily.json; messages point at Today", "error", err)
+		return err
 	}
-	s := &notify.Service{Policy: policy, Render: r, Queue: notify.PG{DB: db}, Store: notify.Store{DB: db}, Channels: channels,
-		Tokens: notify.Tokens{Key: key}, Site: site(), Daily: daily, EmailCap: emailCap, Log: log}
-
-	planned, queued, err := s.Plan(ctx, dry)
-	if err != nil {
-		return fmt.Errorf("plan: %w", err)
-	}
-	log.Info("planned", "planned", planned, "queued", queued, "dry", dry, "email", channels[notify.Email] != nil, "push", channels[notify.Push] != nil)
-	if dry {
-		return nil
-	}
-	c, drainErr := s.Drain(ctx, time.Now().Add(runFor))
-	log.Info("sent", "sent", c.Sent, "skipped", c.Skipped, "skips", c.Skips, "failed", c.Failed, "retried", c.Retried, "dead", c.Dead, "released", c.Released)
-	if n, err := s.Store.Forget(ctx, policy.KeepMessagesDays); err != nil {
-		log.Warn("forget old messages", "error", err)
-	} else if n > 0 {
-		log.Info("forgot old messages", "rows", n)
-	}
-	return drainErr // a paused channel fails the run, so GitHub tells the owner
+	// The same pass the API's worker makes every two minutes (D91); this command is the manual way to run one.
+	w := &notify.Worker{Service: s, Every: runFor, Dry: dry, DailyFrom: notify.SiteDaily(site()), Log: log}
+	log.Info("one pass", "dry", dry, "email", s.Channels[notify.Email] != nil, "push", s.Channels[notify.Push] != nil)
+	w.Tick(ctx)
+	return nil
 }
 
 func printVAPID() error {

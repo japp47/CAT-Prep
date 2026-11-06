@@ -176,31 +176,35 @@ Each network can send 10 reports an hour.
 ## Study reminders
 
 Push and email reminders on days a student has not practised (docs/feature.md F65, design and principles in
-docs/design/notifications.md). Choices are saved through `/v1/notify/*`; `.github/workflows/notify.yml` runs
-`cmd/notify` every 15 minutes, which queues what the rules in `internal/notify` say and sends what is due. Email
-goes through the 99ile.team Gmail with the digest's app password, at most 300 a day (`NOTIFY_EMAIL_DAILY_CAP`).
+docs/design/notifications.md). Choices are saved through `/v1/notify/*`. **The API sends them itself** (D91): with
+`NOTIFY_WORKER=1` a worker inside it plans and sends every two minutes, so a reminder for 7:30 goes out by about
+7:32. (GitHub's schedule skipped most runs; `.github/workflows/notify.yml` is now a manual button for one pass.)
+Email goes through the 99ile.team Gmail with an app password, at most 300 a day (`NOTIFY_EMAIL_DAILY_CAP`).
 
-**Turning it on (once):**
+**Turning it on (once), all on Render (the API service, Environment):**
 
-1. Migration 12 (schema `notify`) runs by itself: the deploy workflow migrates before Render deploys.
-2. `go run ./cmd/notify -vapid` prints a key pair. Keep the private key only in GitHub.
-3. Render (the API): `NOTIFY_TOKEN_SECRET` (`openssl rand -hex 32`) and `NOTIFY_VAPID_PUBLIC`.
-4. GitHub → Settings → Secrets and variables → Actions:
-   secrets `NOTIFY_TOKEN_SECRET` (the same value) and `NOTIFY_VAPID_PRIVATE`;
-   variables `NOTIFY_VAPID_PUBLIC` and `NOTIFY_DRY` = `1`. `DIGEST_SMTP_PASSWORD` is reused.
+1. Migrations 12 and 13 run by themselves: the deploy workflow migrates before Render deploys.
+2. `NOTIFY_TOKEN_SECRET` (`openssl rand -hex 32`) and `NOTIFY_VAPID_PUBLIC`, `NOTIFY_VAPID_PRIVATE` (a pair from
+   `go run ./cmd/notify -vapid`; the same values as in GitHub, for the manual button).
+3. `NOTIFY_SMTP_USER` = `99ile.team@gmail.com` and `NOTIFY_SMTP_PASSWORD` = an app password made for Render only
+   (myaccount.google.com/apppasswords, name it "99ile Render"), so it can be revoked without touching the digest's.
+4. `NOTIFY_WORKER` = `1`. Render restarts; the log shows "reminder worker started".
 5. Gmail (99ile.team): a filter for `from:mailer-daemon OR subject:unsubscribe` that skips the inbox and labels
    them "99ile mail" ("Reminders" is a name Gmail keeps for itself): bounces and mailto unsubscribes land there.
-6. A week with `NOTIFY_DRY=1`: each run logs what it would send and sends nothing. Then delete the variable.
+6. To watch first without sending, add `NOTIFY_DRY` = `1`: each pass logs "would_queue" and sends nothing. Remove it
+   to send.
 
-**Switches** (repository variables): `NOTIFY_EMAIL=off` or `NOTIFY_PUSH=off` stops a channel from the next run.
+**Switches** (Render environment): `NOTIFY_EMAIL=off` or `NOTIFY_PUSH=off` stops a channel; removing
+`NOTIFY_WORKER` stops the reminders. Each takes effect when Render restarts, about a minute.
 
 **Checking the wording:** `go run ./cmd/notify -preview /tmp/mail` writes every message as HTML and text;
 `NOTIFY_SMTP_USER=99ile.team@gmail.com NOTIFY_SMTP_PASSWORD=… go run ./cmd/notify -send-test you@example.com`
 emails all of them to one address. Wording is `internal/notify/templates/messages.json`, the rules' numbers
 `policy.json`; a test fails on a missing placeholder, a subject over 50 characters or a push over 120.
 
-**When something is wrong:** five failures in a row pause a channel for the run and the run fails, so GitHub
-emails you. The run's log lists sent, skipped (with why), failed and retried. In SQL:
+**When something is wrong:** five failures in a row pause a channel for that pass, and the worker emails
+99ile.team ("99ile: reminders need attention", with the error), at most every six hours while it lasts. Render's log
+has a "reminders" line for every pass that did anything: queued, sent, skipped (with why), failed, retried. In SQL:
 
 ```sql
 select kind, channel, status, reason, count(*) from notify.messages where created_at > now() - interval '1 day' group by 1, 2, 3, 4 order by 5 desc;

@@ -16,6 +16,7 @@ import (
 	"os"
 	"os/signal"
 	"strconv"
+	"sync"
 	"syscall"
 	"time"
 
@@ -79,6 +80,17 @@ func run() error {
 		IdleTimeout:       60 * time.Second,
 	}
 
+	// The reminder job runs here, on the API's clock (D91); it stops with the server and finishes its message first.
+	var work sync.WaitGroup
+	if cfg.NotifyWorker {
+		if w, err := reminderWorker(cfg, pool, log); err != nil {
+			log.Error("reminder worker not started", "error", err)
+		} else {
+			work.Add(1)
+			go w.Run(ctx, &work)
+		}
+	}
+
 	serverErrors := make(chan error, 1)
 	go func() {
 		log.Info("API server listening", "addr", server.Addr, "env", cfg.Env, "commit", cfg.Commit, "sync", cfg.SyncReady())
@@ -96,10 +108,33 @@ func run() error {
 
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	if err := server.Shutdown(shutdownCtx); err != nil {
+	err = server.Shutdown(shutdownCtx)
+	stopped := make(chan struct{})
+	go func() { work.Wait(); close(stopped) }()
+	select {
+	case <-stopped:
+	case <-shutdownCtx.Done():
+		log.Warn("reminder worker still busy at shutdown; its message is sent again after the lease (no double send)")
+	}
+	if err != nil {
 		return fmt.Errorf("shut down server: %w", err)
 	}
 	return nil
+}
+
+// reminderWorker builds the reminder job from the NOTIFY_* settings (internal/notify, D91).
+func reminderWorker(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger) (*notify.Worker, error) {
+	set := notify.Settings{Site: cfg.AllowedOrigin, TokenKey: cfg.NotifyTokenKey, VAPIDPublic: cfg.NotifyVAPIDPublic, VAPIDPrivate: cfg.NotifyVAPIDPrivate,
+		SMTPUser: cfg.NotifySMTPUser, SMTPPassword: cfg.NotifySMTPPass, EmailOff: cfg.NotifyEmailOff, PushOff: cfg.NotifyPushOff, EmailCap: cfg.NotifyEmailCap}
+	svc, err := notify.NewService(pool, set, log)
+	if err != nil {
+		return nil, err
+	}
+	if len(svc.Channels) == 0 {
+		return nil, errors.New("no channel: set NOTIFY_VAPID_PRIVATE for push or NOTIFY_SMTP_USER and NOTIFY_SMTP_PASSWORD for email")
+	}
+	return &notify.Worker{Service: svc, Every: 2 * time.Minute, Dry: cfg.NotifyDry, Alert: notify.TeamAlert(set), AlertGap: 6 * time.Hour,
+		DailyFrom: notify.SiteDaily(cfg.AllowedOrigin), Log: log}, nil
 }
 
 // newLogger writes JSON logs in prod (Render shows them) and readable text on a laptop.
@@ -236,8 +271,7 @@ func v1Routes(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger, opt synca
 
 	tokenKey := cfg.NotifyTokenKey
 	if len(tokenKey) == 0 && !cfg.Prod() {
-		// As the IP hash key: a key for this run, so Reminders work on a laptop with no setup. Its unsubscribe links
-		// stop working at the next restart, which only matters for real email.
+		// config.Load makes a dev key; this covers a Config built by hand, as the tests do.
 		tokenKey = make([]byte, 32)
 		_, _ = rand.Read(tokenKey)
 	}
