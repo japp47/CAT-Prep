@@ -115,10 +115,11 @@ export function RemindersCard() {
                     </div>
                   </Row>
                   <Row title="Quiet hours" hint="Nothing arrives between these times.">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <Input type="time" step={900} className="w-32" aria-label="Quiet from" value={toClock(prefs.quietFrom)} onChange={(e) => { const m = fromClock(e.target.value); if (m != null) void r.save({ ...prefs, quietFrom: m }); }} />
+                    {/* A native time input is wider than it looks, so the pair shares the row and shrinks instead of wrapping. */}
+                      <div className="flex w-full max-w-sm items-center gap-2">
+                      <Input type="time" step={900} className="min-w-0 flex-1 sm:w-36 sm:flex-none" aria-label="Quiet from" value={toClock(prefs.quietFrom)} onChange={(e) => { const m = fromClock(e.target.value); if (m != null) void r.save({ ...prefs, quietFrom: m }); }} />
                       <span className="text-base text-muted-foreground">to</span>
-                      <Input type="time" step={900} className="w-32" aria-label="Quiet until" value={toClock(prefs.quietTo)} onChange={(e) => { const m = fromClock(e.target.value); if (m != null) void r.save({ ...prefs, quietTo: m }); }} />
+                      <Input type="time" step={900} className="min-w-0 flex-1 sm:w-36 sm:flex-none" aria-label="Quiet until" value={toClock(prefs.quietTo)} onChange={(e) => { const m = fromClock(e.target.value); if (m != null) void r.save({ ...prefs, quietTo: m }); }} />
                     </div>
                   </Row>
                   {!paused && (

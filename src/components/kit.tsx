@@ -201,7 +201,8 @@ export function Segmented<T extends string>({ value, onChange, options, label, c
         const [v, l] = Array.isArray(o) ? o : [o, o];
         return (
           <button key={v} type="button" aria-pressed={value === v} onClick={() => onChange(v)}
-            className={cn("h-9 rounded-md px-3.5 text-base text-muted-foreground transition-colors hover:text-foreground", value === v && "bg-card font-semibold text-primary ring-1 ring-inset ring-primary/40")}>
+            // min-h, not h: a label that wraps in a narrow column used to spill out of its pill.
+            className={cn("min-h-9 rounded-md px-3.5 py-1.5 text-base text-muted-foreground transition-colors hover:text-foreground", value === v && "bg-card font-semibold text-primary ring-1 ring-inset ring-primary/40")}>
             {l}
           </button>
         );
