@@ -128,9 +128,13 @@ export function ArrowLink({ to, children, className }: { to: string; children: R
  */
 export function LinkButton({ to, children, variant = "default", size = "default", className, arrow }: { to: string; children: ReactNode; arrow?: boolean } & Pick<ComponentProps<typeof Button>, "variant" | "size" | "className">) {
   const inside = to.startsWith("/");
+  // An email address opens the mail app in place, so it is neither a route nor a new tab (as in TextLink).
+  const mail = to.startsWith("mailto:");
   return (
     <Button asChild variant={variant} size={size} className={className}>
-      {inside ? <RouterLink to={to}>{children}</RouterLink> : <a href={to} target="_blank" rel="noopener noreferrer">{children}{arrow && <ArrowUpRight aria-hidden />}{NEW_TAB}</a>}
+      {inside ? <RouterLink to={to}>{children}</RouterLink>
+        : mail ? <a href={to}>{children}</a>
+        : <a href={to} target="_blank" rel="noopener noreferrer">{children}{arrow && <ArrowUpRight aria-hidden />}{NEW_TAB}</a>}
     </Button>
   );
 }

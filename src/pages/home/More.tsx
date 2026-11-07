@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState, type PointerEvent, type ReactNode } from "react";
-import { Check, X } from "lucide-react";
+import { ArrowUpRight, Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Ext, LinkButton, Segmented } from "../../components/kit";
-import { REPO_URL } from "../../data/site";
+import { LinkButton, Segmented } from "../../components/kit";
+import { INSTAGRAM_HANDLE, INSTAGRAM_URL } from "../../data/site";
+import { IconInstagram } from "../../components/Icons";
 import { todayIso } from "../../lib/date";
 import { calm, loadGsap, loadScrollTrigger, useGsap, type Gsap } from "../../lib/motion";
 import { useStore } from "../../lib/store";
@@ -373,7 +374,22 @@ export function Statement() {
           </div>
         ))}
       </dl>
-      <p className="text-base text-muted-foreground">The name is the goal, the 99th percentile. The code is open on <Ext href={REPO_URL} className="font-semibold text-foreground underline decoration-foreground/25 decoration-1 underline-offset-4 transition-colors hover:decoration-foreground">GitHub</Ext>.</p>
+      <p className="text-base text-muted-foreground">The name is the goal, the 99th percentile.</p>
+
+      {/* The build, posted as it happens. One block, the handle set large: the page's one invitation to come along. */}
+      <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer"
+        className="group flex flex-col gap-5 rounded-2xl bg-card p-6 transition-colors hover:bg-accent active:bg-primary/15 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none motion-reduce:transition-none sm:flex-row sm:items-center sm:justify-between sm:gap-10 sm:p-8">
+        <span className="flex min-w-0 flex-col gap-2">
+          <span className="text-[clamp(1.5rem,0.9rem+1.8vw,2.5rem)] leading-[1.1] font-extrabold tracking-[-0.03em]">{INSTAGRAM_HANDLE}</span>
+          <span className="measure text-base text-muted-foreground">Every new set, every redesign and what broke on the way, posted as it happens. Tell us what to build next &mdash; let&rsquo;s build it together.</span>
+        </span>
+        <span className="inline-flex shrink-0 items-center gap-2 text-base font-semibold text-primary">
+          <span className="[&_svg]:size-5" aria-hidden><IconInstagram /></span>
+          Follow on Instagram
+          <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none" aria-hidden />
+          <span className="sr-only"> (opens in a new tab)</span>
+        </span>
+      </a>
     </section>
   );
 }

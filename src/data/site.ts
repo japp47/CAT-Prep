@@ -18,3 +18,14 @@ export function reportUrl(what: string, page: string): string {
 
 /** Where privacy questions, requests and complaints go (the DPDP grievance contact on /privacy). */
 export const CONTACT_EMAIL = "99ile.team@gmail.com";
+
+/** The Instagram page, where the build is posted. */
+export const INSTAGRAM_HANDLE = "@the99ile";
+export const INSTAGRAM_URL = "https://www.instagram.com/the99ile/";
+
+/** A mailto with the subject already written, so a message arrives sorted and nobody has to invent a heading. */
+export function mailTo(subject: string, body?: string): string {
+  const parts = [`subject=${encodeURIComponent(subject)}`];
+  if (body) parts.push(`body=${encodeURIComponent(body)}`);
+  return `mailto:${CONTACT_EMAIL}?${parts.join("&")}`;
+}

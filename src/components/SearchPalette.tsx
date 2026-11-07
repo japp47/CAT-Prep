@@ -44,6 +44,7 @@ const PAGES = [
   { title: "What's coming", href: "/roadmap", keywords: "roadmap future" },
   { title: "Settings and backup", href: "/settings", keywords: "install export restore data" },
   { title: "About 99ile", href: "/#about", keywords: "about mission" },
+  { title: "Contact us", href: "/contact", keywords: "contact support help message email complain complaint issue problem suggestion feedback idea instagram reach team" },
   { title: "Privacy", href: "/privacy", keywords: "privacy data delete export contact grievance cookies stored" },
   { title: "You: your CAT and your study", href: "/you", keywords: "you profile me account target percentile first attempt repeat working studying student member streak days questions" },
   { title: "History", href: "/history", keywords: "history past days calendar did done yesterday week log timeline what i did passages attempts" },

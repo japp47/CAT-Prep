@@ -97,7 +97,7 @@ export default function Layout() {
   useTheme();
   const [sidebarCollapsed, setSidebarCollapsed] = usePref<boolean>("sidebar-collapsed", false);
   const landing = loc.pathname === "/";
-  const showFooter = landing || loc.pathname.replace(/\/+$/, "") === "/privacy";
+  const showFooter = landing || ["/privacy", "/contact"].includes(loc.pathname.replace(/\/+$/, ""));
   useEffect(() => {
     const onShortcut = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
