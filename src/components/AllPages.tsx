@@ -96,12 +96,15 @@ export default function AllPages({ onClose }: { onClose: () => void }) {
   return (
     <div ref={ref} id="all-pages" className="absolute inset-x-0 top-full px-gutter pt-3 pb-6">
       {/* The page behind dims, so the panel stands apart by tone; a click on it closes the panel. */}
-      <div data-scrim aria-hidden onClick={onClose} className="fixed inset-x-0 top-[4.5rem] bottom-0 -z-10 bg-foreground/15 backdrop-blur-[2px] dark:bg-black/40" />
+      <div data-scrim aria-hidden onClick={onClose} className="fixed inset-x-0 top-[4.5rem] bottom-0 -z-10 bg-scrim backdrop-blur-[2px]" />
       <div className="mx-auto flex w-full max-w-[1440px] justify-end">
-        <nav aria-label="All pages" className="grid w-full max-w-[1180px] grid-cols-[19rem_minmax(0,1.15fr)_minmax(0,1fr)_minmax(0,0.9fr)] gap-3 rounded-3xl bg-card p-3 xl:gap-5">
+        <nav aria-label="All pages" className="glass grid w-full max-w-[1180px] grid-cols-[19rem_minmax(0,1.15fr)_minmax(0,1fr)_minmax(0,0.9fr)] gap-3 rounded-3xl p-3 xl:gap-5"
+          /* A popover is small and floats over flat text; this panel covers the hero's display type, which
+             ghosted through the stock 74% pour. Same glass, denser. */
+          style={{ backgroundColor: "color-mix(in oklab, var(--popover) 94%, transparent)" }}>
           <div data-col className="flex flex-col gap-3 rounded-2xl bg-secondary/70 p-4">
             <div className="flex flex-col">
-              <h2 className="text-base font-semibold">Sections</h2>
+              <h2 className="text-sm font-medium text-muted-foreground">Sections</h2>
               <p className="text-sm text-muted-foreground">{t.own ? `Your answers, last 30 days. A block is ${t.unit === 1 ? "one answer" : `${t.unit} answers`}.` : `Sets to practise. A block is ${t.unit === 1 ? "one set" : `${t.unit} sets`}.`}</p>
             </div>
             <div className="h-52">
@@ -136,12 +139,7 @@ export default function AllPages({ onClose }: { onClose: () => void }) {
           </div>
           <div data-col className="flex flex-col gap-0.5 py-2">
             {head("More")}
-            {MORE.map((it) => (
-              <SiteNavLink key={it.to} item={it} onClick={onClose}
-                className={(on) => cn("flex min-h-11 items-center rounded-lg px-3 py-2 text-base font-medium text-foreground/75 transition-colors duration-150 hover:bg-secondary hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none motion-reduce:transition-none", on && "bg-secondary font-semibold text-foreground")}>
-                {it.label}
-              </SiteNavLink>
-            ))}
+            {MORE.map((it) => row(it))}
           </div>
         </nav>
       </div>

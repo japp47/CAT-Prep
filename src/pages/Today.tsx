@@ -510,7 +510,9 @@ function SetupCard({ d }: { d: string }) {
         {all && <Button variant="ghost" size="sm" onClick={() => setOpen(!open)} aria-expanded={open}>{open ? "Hide" : "Show"}</Button>}
       </div>
       <div className="h-1.5 overflow-hidden rounded-full bg-secondary" aria-hidden>
-        <div className={cn("h-full rounded-full transition-[width] duration-500 motion-reduce:transition-none", all ? "bg-success" : "bg-primary")} style={{ width: `${(doneN / items.length) * 100}%` }} />
+        {/* Scaled, not widened: width is a layout property and animating it reflows on every frame. The track
+            clips and rounds the ends, so the fill needs no radius of its own to distort. */}
+        <div className={cn("h-full w-full origin-left transition-transform duration-500 motion-reduce:transition-none", all ? "bg-success" : "bg-primary")} style={{ transform: `scaleX(${doneN / Math.max(1, items.length)})` }} />
       </div>
       {show && (
         <ul className="flex flex-col gap-1">

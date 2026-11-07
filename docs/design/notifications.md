@@ -301,3 +301,46 @@ The worker's first email timed out: `dial tcp …:587: i/o timeout`. Since Septe
 - A Render paid instance: a card, $7 a month.
 - An email service sending as @gmail.com: it lands in spam.
 
+
+## 14. The site's own screens: one promise, two channels (7 Nov 2026)
+
+Owner, 7 Nov 2026: the Settings card "looks too much, like we are asking for a lot", and on a phone it "looks so
+much filled"; a bell somewhere in the header or sidebar could hold the time and the two toggles, with the rest in
+Settings.
+
+**What was wrong.** The card (F65) asked seven questions at once — on/off, time, days, this device, email, quiet
+hours, pause — each as a title, a one- or two-sentence hint and a control. On a 390px phone the control drops below
+the text, so one decision ("nudge me to study") ran about five screens of grey prose. Everything carried the same
+weight, there were three time fields, and reminders could be on with no channel switched on, which the card showed
+as a perfectly healthy state while nothing would ever arrive.
+
+**The shape now.**
+1. **The promise, then the switch.** The card opens with what will actually happen — "Around *7:30 pm*, every day,
+   if you haven't practised yet." — beside one switch. The time in that sentence is a button: it opens the details
+   and lands on the time field, so the sentence is also the control. Off, the sentence says what reminders would do.
+2. **Where they go**, one row per channel, set apart by tone: this device, email (with "If I miss days" or
+   "Every day" under it), and the weekly review, which F65 asks for and the old card never showed. Each row is one
+   switch, not a pair of On/Off words for what is one decision.
+3. **Time, days and quiet hours** sit behind a disclosure, closed by default and remembered per browser. Days are a
+   seven-column grid that fills a phone's width instead of wrapping.
+4. **Nothing arrives, said plainly.** Reminders on with no channel shows a line on the warning tone; a pause shows
+   on the highlighter, with "Resume now" in it.
+
+**The bell** (`components/ReminderBell.tsx`, panel in `components/ReminderPanel.tsx`) sits with the sidebar's bottom
+controls, beside the theme, install and account buttons, and holds the promise sentence, the switch and the channel
+rows — the same rows as the card (`components/ReminderControls.tsx`), so the two cannot drift. "Time, days and quiet
+hours" links to `/settings#reminders`. It is **not** in the phone header: that header already carries five 44px
+buttons and a sixth overflows a 360px screen. On a phone, reminders stay in Settings (search finds "reminders"
+too), and the offers after practice remain the way most students turn them on. The panel and its request load on
+the first tap, and the bell is absent from builds without the API, so it never opens on nothing. The sidebar's
+Updates row took a megaphone, since the bell now means study reminders.
+
+**Also.** Settings' calendar `.ics` row is now "Calendar reminder", not "Daily study reminder": two things called a
+study reminder on one page read as a contradiction when one needs sync and the other does not.
+
+**When the server holds no push key** (`pushReady` false, which is `NOTIFY_VAPID_PUBLIC` unset: `notify/handler.go`),
+"On this device" is not shown at all. It used to read "Not switched on yet", which sounded like something the
+student had left off, when in fact nobody could switch it on. The card's existing rule now covers the row too:
+students never see a feature the server has not switched on, and a development build says why it is missing and
+names `go run ./cmd/notify -vapid`. Email and the weekly review still show, and "nothing will arrive yet" still
+appears if no channel is on.

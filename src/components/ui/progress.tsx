@@ -18,7 +18,9 @@ function Progress({
     >
       <ProgressPrimitive.Indicator
         data-slot="progress-indicator"
-        className="h-full w-full flex-1 bg-primary transition-[width]"
+        // The indicator moves with translateX, so the transition has to name transform: on width it animated a
+        // property that never changes, and the bar jumped. Transform also keeps the bar off the layout path.
+        className="h-full w-full flex-1 bg-primary transition-transform motion-reduce:transition-none"
         style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
       />
     </ProgressPrimitive.Root>

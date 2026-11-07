@@ -61,6 +61,8 @@
   --sidebar: #eef0f4;
   /* Floating layers (glass): the hairline round the edge, the light on its top edge, and its shadow. */
   --glass-edge: rgb(20 26 36 / 0.09); --glass-shine: rgb(255 255 255 / 0.65); --glass-shadow: rgb(20 26 36 / 0.16);
+  /* The dim behind an open panel. Ink in light, true black in dark, where ink would lighten the page. */
+  --scrim: rgb(20 26 36 / 0.22);
   /* Chart series (DI sets): the dataviz skill's validated categorical order, checked on --card in each mode. */
   --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a; --series-4: #eda100; --series-5: #e87ba4; --series-6: #008300; --series-7: #6250d6;
   color-scheme: light;
@@ -74,7 +76,7 @@
     --ring: #8fa3ff; --highlight: #f2d04f; --highlight-foreground: #241c00; --highlight-soft: #3a3214;
     --success: #4cc380; --success-soft: #153322; --danger: #ff8a7a; --danger-soft: #3a1d1a;
     --warning: #f2c35b; --warning-soft: #3a2f12; --mark: #b49bff; --sidebar: #12161e;
-    --glass-edge: rgb(255 255 255 / 0.1); --glass-shine: rgb(255 255 255 / 0.07); --glass-shadow: rgb(0 0 0 / 0.55);
+    --glass-edge: rgb(255 255 255 / 0.1); --glass-shine: rgb(255 255 255 / 0.07); --glass-shadow: rgb(0 0 0 / 0.55); --scrim: rgb(0 0 0 / 0.55);
     --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-5: #d55181; --series-6: #008300; --series-7: #9085e9;
     color-scheme: dark;
   }
@@ -87,7 +89,7 @@
   --ring: #8fa3ff; --highlight: #f2d04f; --highlight-foreground: #241c00; --highlight-soft: #3a3214;
   --success: #4cc380; --success-soft: #153322; --danger: #ff8a7a; --danger-soft: #3a1d1a;
   --warning: #f2c35b; --warning-soft: #3a2f12; --mark: #b49bff; --sidebar: #12161e;
-  --glass-edge: rgb(255 255 255 / 0.1); --glass-shine: rgb(255 255 255 / 0.07); --glass-shadow: rgb(0 0 0 / 0.55);
+  --glass-edge: rgb(255 255 255 / 0.1); --glass-shine: rgb(255 255 255 / 0.07); --glass-shadow: rgb(0 0 0 / 0.55); --scrim: rgb(0 0 0 / 0.55);
   --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-5: #d55181; --series-6: #008300; --series-7: #9085e9;
   color-scheme: dark;
 }
@@ -122,6 +124,7 @@
   --color-warning-soft: var(--warning-soft);
   --color-mark: var(--mark);
   --color-sidebar: var(--sidebar);
+  --color-scrim: var(--scrim);
 }
 
 @theme {

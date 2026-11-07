@@ -86,8 +86,8 @@ function Hero({ isNew }: { isNew: boolean }) {
         <p className="max-w-[42ch] text-lg leading-relaxed text-foreground/80">A free CAT coach: a plan that fits your day, original practice, and a reason for every option. No sign-up; your progress stays on this device.</p>
         <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
           {isNew
-            ? <><LinkButton to="/guides/start-here" size="lg" className="min-w-44">Start here</LinkButton><ArrowLink to="/today">Open today's plan</ArrowLink></>
-            : <><LinkButton to="/today" size="lg" className="min-w-48">Open today's plan</LinkButton><ArrowLink to="/guides/start-here">Start here</ArrowLink></>}
+            ? <><LinkButton to="/guides/start-here" size="lg" className="min-w-44">Start here</LinkButton><ArrowLink to="/today">Open today’s plan</ArrowLink></>
+            : <><LinkButton to="/today" size="lg" className="min-w-48">Open today’s plan</LinkButton><ArrowLink to="/guides/start-here">Start here</ArrowLink></>}
         </div>
         <StatusLine />
       </div>
@@ -233,7 +233,7 @@ export default function Home() {
       <Suspense fallback={<div className="min-h-[30rem]" />}><Statement /></Suspense>
       <p className="-mt-12 w-full max-w-none text-sm leading-relaxed text-muted-foreground lg:-mt-24">Resources checked on {CHECKED_ON}. {road.exam.confirmed ? "" : `The ${road.name} date is an estimate until the conducting IIM announces it. `}Score benchmarks come from coaching institutes. Not affiliated with the IIMs or any coaching institute. Avoid pirated book PDFs; the papers and free mocks listed here are legitimately free.</p>
       <Suspense fallback={<div className="min-h-[40rem]" />}>
-        <Closing to={isNew ? "/guides/start-here" : "/today"} label={isNew ? "Start here" : "Open today's plan"} />
+        <Closing to={isNew ? "/guides/start-here" : "/today"} label={isNew ? "Start here" : "Open today’s plan"} />
       </Suspense>
     </Page>
   );
