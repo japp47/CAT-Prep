@@ -17,16 +17,20 @@ export function ChannelRow({ icon, title, state, control, children }: {
   icon: ReactNode; title: string; state?: ReactNode; control?: ReactNode; children?: ReactNode;
 }) {
   return (
-    <div className="flex items-start gap-3 rounded-xl bg-background p-3">
-      <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-card text-primary [&_svg]:size-5" aria-hidden>{icon}</span>
-      <div className="flex min-w-0 flex-1 flex-col gap-1 py-1">
-        <span className="text-base font-semibold">{title}</span>
-        {state && <span className="text-sm text-muted-foreground">{state}</span>}
-        {children}
+    <div className="flex flex-col gap-2 rounded-xl bg-background p-3">
+      <div className="flex items-start gap-3">
+        <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-card text-primary [&_svg]:size-5" aria-hidden>{icon}</span>
+        <div className="flex min-w-0 flex-1 flex-col gap-1 py-1">
+          <span className="text-base font-semibold">{title}</span>
+          {state && <span className="text-sm text-muted-foreground">{state}</span>}
+        </div>
+        {/* The slot is held open even with no control in it, so a row without a switch keeps the same text column
+            as the rows with one and they read as one list rather than three differently shaped blocks. */}
+        <div className="-mr-1 flex w-12 shrink-0 justify-end">{control}</div>
       </div>
-      {/* The slot is held open even with no control in it, so a row without a switch keeps the same text column
-          as the rows with one and they read as one list rather than three differently shaped blocks. */}
-      <div className="-mr-1 flex w-12 shrink-0 justify-end">{control}</div>
+      {/* A choice under the row takes the row's whole width, not the text column: inside it, a phone left about
+          220px and the two labels wrapped and spilled out of their pills. Indented to the text on a wide screen. */}
+      {children && <div className="sm:pl-12">{children}</div>}
     </div>
   );
 }
@@ -77,7 +81,7 @@ function EmailRow({ r, prefs }: { r: Reminders; prefs: ReminderPrefs }) {
       control={<Switch label="Reminders by email" checked={on} onChange={(next) => void r.save({ ...prefs, email: next ? "missed" : "off" })} />}>
       {/* A phone leaves the row about 220px, where the two choices wrap: there they become two full-width lines. */}
       {on && (
-        <Segmented className="mt-1 max-sm:w-full max-sm:[&>button]:flex-1" label="When to email" value={prefs.email as Exclude<EmailMode, "off">}
+        <Segmented className="w-full sm:w-fit" label="When to email" value={prefs.email as Exclude<EmailMode, "off">}
           options={[["missed", "If I miss days"], ["daily", "Every day"]]}
           onChange={(email) => void r.save({ ...prefs, email })} />
       )}
