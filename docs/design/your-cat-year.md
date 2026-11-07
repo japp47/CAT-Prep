@@ -65,3 +65,26 @@ The rules come from F82's "Your CAT year" in `docs/feature.md`. This note covers
   - Pick 2028: the bar stretches (41 frames, 87 → 123 days for Foundation) and the list of changes appears.
   - Switch: Home says "Prepare for CAT 2028" and Today says "Head start, CAT 2028".
   - Reduced motion: no tween.
+
+## Finding it (D93, 6 Nov 2026)
+**The gap:** the student who needs the choice most, someone aiming for CAT 2028 or 2029, met "Prepare for CAT 2027" on Home and never opened You. Returning students should not be asked at all.
+
+**The year is the switch wherever it shows** (`components/YearSwitch.tsx`):
+- **Home, under the buttons:** "387 days to **CAT 2027 ⌄**".
+- **Home, the road section:** under the days count, "**Preparing for a later CAT?** ⌄", for the student reading the road.
+- **Today's header:** "Foundation, **CAT 2027 ⌄**", on phones too. The phase still opens Plan.
+
+**How it behaves:**
+- **A small panel opens:** "Which CAT are you preparing for?", three rows (year, date, announced or expected, days to go), the current one ticked.
+- **A tap saves.** Days already studied never change, so there is nothing to confirm. "Compare the roads first" leads to You for anyone who wants the preview.
+- **The new year rolls into Home's headline** (GSAP, 0.6 s; never on arrival, never under reduced motion), and a toast says "Your plan now leads to CAT 2028" with "See your road".
+- **No banners and no popups.** The dotted underline and the chevron are the only signs.
+
+**Seen while building:**
+- **The road's entrance animation left the old phases hidden** after a switch: it was killed half-way instead of reverted. It now reverts.
+- **A two-year road** marks quarters only (Jan, Apr, Jul, Oct), so month labels no longer collide, and its six phase cards sit in two rows of three.
+
+**Checked:** desktop light and dark, phone light and dark. Home: open, pick, the headline rolls, the toast. The road after a switch, every phase visible. Today on a phone: open, pick 2029, the header reads "Head start, CAT 2029".
+
+**Measure:** `about.exam` is in the synced profile, so the share of students on 2028 or 2029 can be counted on the server.
+

@@ -113,6 +113,11 @@ Green and red appear only for right and wrong answers and scores. Surfaces are s
 - No monospace outside code.
 - No thin divider lines or outlined boxes, except form fields, tables and the CAT exam palette, which copies the real exam's look.
 - No shadows on things at rest; only menus, sheets and dialogs float.
+- **Glass for what floats (owner, 6 Nov 2026, after macOS Sequoia):**
+  - **What gets it:** dropdowns, menus and popovers use the `glass` utility (`src/index.css`): the popover colour at 74%, the page blurred 24px with more colour behind, a hairline edge, a faint top highlight and a soft shadow. These are the only edges and shadows on the site: a layer over any content cannot be set apart by tone alone.
+  - **When it turns solid:** where the browser cannot blur, and under the system's reduced transparency.
+  - **Rows inside** hover with a tint of the text colour, not an opaque fill, so the glass shows through.
+  - **Applied once,** in `ui/popover.tsx` and `ui/select.tsx`, so every dropdown matches.
 - No gradients, glass or decorative shapes.
 - No numbered markers unless the content really is a sequence (method steps are).
 - Motion only answers the student's action: opening, confirming, moving to the next question.

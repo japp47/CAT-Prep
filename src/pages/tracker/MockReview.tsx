@@ -328,7 +328,7 @@ function Grid({ w, set, site }: { w: Wiz; set: (p: Partial<Wiz>) => void; site?:
           <span className="text-base font-semibold">{done} of {w.qs.length} done</span>
           {open > 0 && <span className="text-sm text-muted-foreground">{open} to go</span>}
         </div>
-        <span className="h-1.5 overflow-hidden rounded-full bg-secondary" aria-hidden><span className="block h-full rounded-full bg-primary transition-[width] duration-500" style={{ width: `${(100 * done) / Math.max(1, w.qs.length)}%` }} /></span>
+        <span className="h-1.5 overflow-hidden rounded-full bg-secondary" aria-hidden><span className="block h-full w-full origin-left bg-primary transition-transform duration-500 motion-reduce:transition-none" style={{ transform: `scaleX(${done / Math.max(1, w.qs.length)})` }} /></span>
       </div>
       <Segmented label="Which questions" value={only} onChange={setOnly} options={[["needs", `Need you (${open})`], ["all", `All ${w.qs.length}`]]} />
       <div className="flex flex-col gap-4">

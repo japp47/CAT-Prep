@@ -85,7 +85,9 @@ function GridDemo() {
             ))}
           </tbody>
         </table>
-        <p className="text-sm text-muted-foreground">Step {step + 1} of {GRID_STEPS.length}. The sets on the site solve this way, with a seat plan, a grid or a bracket.</p>
+        {/* Where the loop has got to, not a caption explaining the picture: the tile's own line already says
+            seats, grids and brackets fill in step by step. */}
+        <p className="text-sm text-muted-foreground">Step {step + 1} of {GRID_STEPS.length}</p>
     </div>
   );
 }
@@ -145,7 +147,8 @@ function PlanDemo() {
         <div className="flex flex-col gap-3">
           <p className="text-base">How much time do you have for VARC today?</p>
           <Segmented label="Minutes today" value={mins} onChange={setMins} options={[["30", "30 min"], ["60", "1 hour"], ["90", "1½ hours"], ["120", "2 hours"]]} />
-          <p className="text-sm text-muted-foreground">This is today's real plan. The core task comes first, and one you miss comes back tomorrow as a catch-up.</p>
+          {/* The honest note stays (this is the real timetable, not a mock-up); the catch-up rule is the next tile's. */}
+          <p className="text-sm text-muted-foreground">This is today&rsquo;s real plan, with the core task first.</p>
         </div>
         <div className="flex flex-col gap-5">
         <div className="flex h-12 w-full gap-1 overflow-hidden rounded-lg" aria-hidden>
@@ -174,7 +177,13 @@ function Tile({ lead, rest, className, children }: { lead: string; rest: string;
   return (
     <article onPointerMove={move} className={cn("group relative flex flex-col gap-7 overflow-hidden rounded-2xl bg-card p-6 sm:p-8", className)}>
       <span className="pointer-events-none absolute inset-0 bg-[radial-gradient(26rem_circle_at_var(--mx,50%)_var(--my,0%),color-mix(in_oklab,var(--primary)_9%,transparent),transparent_70%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100 motion-reduce:transition-none" aria-hidden />
-      <h3 className="relative max-w-[36ch] text-heading leading-snug font-bold">{lead} <span className="font-semibold text-muted-foreground">{rest}</span></h3>
+      {/* The two-tone head is the page's section device (docs/design/home-v2.md, from Stripe). At tile size it made
+          four chunky two- and three-line headings in one screen, so a tile keeps the claim as its title and puts the
+          detail on its own line: the device stays special where the type is big enough to carry it. */}
+      <div className="relative flex max-w-[40ch] flex-col gap-1.5">
+        <h3 className="text-heading leading-snug font-bold">{lead.replace(/\.$/, "")}</h3>
+        <p className="text-base text-muted-foreground">{rest}</p>
+      </div>
       <div className="relative flex flex-1 flex-col">{children}</div>
     </article>
   );
@@ -343,7 +352,7 @@ const STATEMENT = "99ile is a free CAT coach built on one idea: a little every d
 
 /** About: the idea as one statement that lights up as it is read, over four short points. */
 export function Statement() {
-  const p = useRef<HTMLParagraphElement>(null);
+  const p = useRef<HTMLHeadingElement>(null);
   useReadAlong(p);
   const points: [string, string][] = [
     ["A plan that fits your day", "Tell it 30 minutes or 3 hours. The timetable reshapes, and a missed core task comes back as a catch-up."],
@@ -353,8 +362,9 @@ export function Statement() {
   ];
   return (
     <section id="about" aria-labelledby="about-h" className="flex scroll-mt-24 flex-col gap-12 lg:gap-16">
-      <h2 id="about-h" className="text-base font-semibold text-muted-foreground">About 99ile</h2>
-      <p ref={p} className="-mt-6 max-w-[34ch] text-[clamp(1.75rem,0.9rem+2.6vw,3.5rem)] leading-[1.12] font-extrabold tracking-[-0.035em] lg:-mt-10">{words(STATEMENT)}</p>
+      {/* The statement is the heading. A small grey "About 99ile" above it named what came next and nothing more,
+          which is the eyebrow every generated page opens a section with; the sentence itself says it better. */}
+      <h2 id="about-h" ref={p} className="max-w-[34ch] text-[clamp(1.75rem,0.9rem+2.6vw,3.5rem)] leading-[1.12] font-extrabold tracking-[-0.035em]">{words(STATEMENT)}</h2>
       <dl className="grid gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
         {points.map(([title, detail]) => (
           <div key={title} className="flex flex-col gap-2 border-t border-border pt-5">

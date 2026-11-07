@@ -11,6 +11,7 @@ import { AutoTicker } from "./AutoTicker";
 import FocusBar from "./FocusBar";
 import InstallButton from "./InstallButton";
 import { IconChart, IconHome, IconPen, IconToday } from "./Icons";
+import ReminderBell from "./ReminderBell";
 import Brand from "./Brand";
 import SiteFooter from "./SiteFooter";
 import { DataNote, SyncNavRow } from "./SyncNav";
@@ -151,6 +152,7 @@ export default function Layout() {
         <div className={cn("mt-auto flex", sidebarCollapsed ? "flex-col gap-2" : "items-center gap-2 px-1")}>
           <ThemeToggle />
           <InstallButton hideWhenInstalled />
+          <ReminderBell />
           <SyncNavRow collapsed />
         </div>
         {!sidebarCollapsed && <p className="px-3 text-sm text-muted-foreground"><DataNote /></p>}

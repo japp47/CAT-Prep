@@ -100,11 +100,11 @@ export function Ext({ href, children, className }: { href: string; children: Rea
 }
 
 /** An inline text link: inside the app, out of it in a new tab, or an email address. */
-export function TextLink({ to, children, className }: { to: string; children: ReactNode; className?: string }) {
+export function TextLink({ to, children, className, onClick }: { to: string; children: ReactNode; className?: string; onClick?: () => void }) {
   const cls = cn("font-medium text-primary underline underline-offset-4 decoration-primary/40 hover:decoration-primary", className);
-  if (to.startsWith("/")) return <RouterLink to={to} className={cls}>{children}</RouterLink>;
+  if (to.startsWith("/")) return <RouterLink to={to} className={cls} onClick={onClick}>{children}</RouterLink>;
   // An email address opens the mail app in place, not a new tab.
-  return to.startsWith("mailto:") ? <a href={to} className={cls}>{children}</a> : <Ext href={to} className={cls}>{children}</Ext>;
+  return to.startsWith("mailto:") ? <a href={to} className={cls} onClick={onClick}>{children}</a> : <Ext href={to} className={cls}>{children}</Ext>;
 }
 
 /**
@@ -170,7 +170,7 @@ export function SwitchTabs<T extends string>({ value, onChange, options, label, 
     <div role="tablist" aria-label={label}
       onKeyDown={(e) => { if (e.key === "ArrowRight") { e.preventDefault(); move(1); } else if (e.key === "ArrowLeft") { e.preventDefault(); move(-1); } }}
       className={cn("relative grid w-full rounded-xl bg-secondary p-1 sm:w-fit", className)} style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}>
-      <span aria-hidden className="absolute inset-y-1 left-1 rounded-lg bg-card shadow-[0_1px_2px_rgb(0_0_0/0.06)] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+      <span aria-hidden className="absolute inset-y-1 left-1 rounded-lg bg-card shadow-xs transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
         style={{ width: `calc((100% - 0.5rem) / ${options.length})`, transform: `translateX(${i * 100}%)` }} />
       {options.map((o) => {
         const on = o.id === value;
@@ -207,6 +207,26 @@ export function Segmented<T extends string>({ value, onChange, options, label, c
         );
       })}
     </div>
+  );
+}
+
+/**
+ * One thing on or off, where On and Off as words would be two choices for what is really one decision (reminders,
+ * a channel). The track is 48 by 44 px, so a thumb stays easy to hit on a phone. The thumb's colour carries the
+ * state in both themes: a grey dot on a pale track when off, the button's own ink on blue when on.
+ */
+export function Switch({ checked, onChange, label, disabled, describedBy }: {
+  checked: boolean; onChange: (on: boolean) => void; label: string; disabled?: boolean; describedBy?: string;
+}) {
+  return (
+    <button type="button" role="switch" aria-checked={checked} aria-label={label} aria-describedby={describedBy} disabled={disabled}
+      onClick={() => onChange(!checked)}
+      className="group grid h-11 w-12 shrink-0 cursor-pointer place-items-center rounded-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:cursor-default disabled:opacity-50">
+      <span aria-hidden className={cn("flex h-7 w-12 items-center rounded-full p-1 transition-colors duration-200 motion-reduce:transition-none", checked ? "bg-primary" : "bg-foreground/15 group-hover:bg-foreground/25")}>
+        {/* The thumb answers the press by shrinking: a transform, so reduced motion simply skips the ease. */}
+        <span className={cn("size-5 rounded-full transition-transform duration-200 group-active:scale-90 motion-reduce:transition-none", checked ? "translate-x-5 bg-primary-foreground" : "bg-foreground/45")} />
+      </span>
+    </button>
   );
 }
 

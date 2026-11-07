@@ -74,7 +74,7 @@ export default function Settings() {
         </Card>
         <Card title="On this device">
           <InstallRow />
-          <ReminderRow />
+          <CalendarRow />
         </Card>
       </div>
 
@@ -225,7 +225,11 @@ function IosSteps({ browser }: { browser: IosBrowser | null }) {
   );
 }
 
-function ReminderRow() {
+/**
+ * A repeating calendar event, which needs no sync and no account. Named "Calendar reminder" (7 Nov 2026) so it is not
+ * a second thing called a study reminder beside the "Study reminders" card above, which the server sends.
+ */
+function CalendarRow() {
   const [time, setTime] = usePref("reminderTime", "19:00");
   const [mins, setMins] = usePref("reminderMins", 60);
   const r = { date: todayIso(), time, minutes: mins, url: window.location.origin + import.meta.env.BASE_URL + "today" };
@@ -239,7 +243,7 @@ function ReminderRow() {
   };
   return (
     <div className="flex flex-col gap-4">
-      <Row title="Daily study reminder" hint="A repeating event in your calendar, so your phone reminds you every day. It links back to Today. Nothing is sent to us.">{null}</Row>
+      <Row title="Calendar reminder" hint="A repeating event in your own calendar, so your phone reminds you without sync or an account. It links back to Today, and nothing is sent to us.">{null}</Row>
       <div className="grid grid-cols-2 gap-4 sm:max-w-sm">
         <Field label="Time"><Input type="time" value={time} onChange={(e) => e.target.value && setTime(e.target.value)} /></Field>
         <Field label="Length"><NativeSelect value={mins} onChange={(e) => setMins(+e.target.value)}>{[30, 45, 60, 90, 120].map((m) => <option key={m} value={m}>{m} min</option>)}</NativeSelect></Field>

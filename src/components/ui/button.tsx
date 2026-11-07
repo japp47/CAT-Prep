@@ -10,7 +10,9 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
-        secondary: "bg-accent text-accent-foreground hover:bg-primary/15",
+        // In dark the accent fill (#222b45) stands only 1.23:1 off a card (#161b24), so the button read as part of
+        // the surface or as switched off. Light has the separation already; dark gets a hairline of the brand ink.
+        secondary: "bg-accent text-accent-foreground hover:bg-primary/15 dark:ring-1 dark:ring-inset dark:ring-primary/30",
         outline: "bg-card text-foreground ring-1 ring-inset ring-input hover:bg-muted",
         ghost: "text-foreground hover:bg-secondary",
         destructive: "bg-danger-soft text-danger hover:bg-danger-soft/70",

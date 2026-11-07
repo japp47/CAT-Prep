@@ -49,6 +49,7 @@ const PAGES = [
   { title: "History", href: "/history", keywords: "history past days calendar did done yesterday week log timeline what i did passages attempts" },
   // Only in builds with sync (B4); found by the words people use for it, and each action by its own name.
   ...(API_ENABLED ? [
+    { title: "Study reminders", href: "/settings#reminders", keywords: "reminder reminders notification notifications push alert bell email nudge remind me daily time quiet hours pause weekly review unsubscribe" },
     { title: "Sync between devices", href: "/you#sync", keywords: "sync link code qr scan devices phone laptop recovery move transfer progress another device cloud backup online account sign in login google gmail" },
     { title: "Sign in", href: "/signin", keywords: "sign in login log in google gmail account email sync save progress sign out logout" },
     { title: "Link a device", href: "/you#sync", keywords: "sync add phone laptop tablet qr code scan join connect another device" },

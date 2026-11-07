@@ -1,4 +1,5 @@
 import { api, type ApiResult } from "./api";
+import { DOW } from "./date";
 
 /**
  * Study reminders from the site's side (docs/feature.md F65, docs/design/notifications.md §8): the student's choices,
@@ -58,7 +59,43 @@ export function spokenTime(m: number): string {
   return `${h % 12 || 12}${mm ? ":" + String(mm).padStart(2, "0") : ""} ${h < 12 ? "am" : "pm"}`;
 }
 
+/** "Mon, Wed and Fri": plain words, never a bare list. */
+const spoken = (parts: string[]) => (parts.length > 1 ? parts.slice(0, -1).join(", ") + " and " + parts[parts.length - 1] : parts[0] ?? "");
+
+/** The reminder days as a student would say them: "every day", "on weekdays", "on Mon, Wed and Fri". */
+export function daysLine(days: number[]): string {
+  const d = [...new Set(days.filter((n) => Number.isInteger(n) && n >= 0 && n <= 6))].sort((a, b) => a - b);
+  if (!d.length) return "on no days";
+  if (d.length === 7) return "every day";
+  if (d.length === 5 && [1, 2, 3, 4, 5].every((x) => d.includes(x))) return "on weekdays";
+  if (d.length === 2 && d.includes(0) && d.includes(6)) return "at the weekend";
+  if (d.length === 6) return `every day except ${DOW[[0, 1, 2, 3, 4, 5, 6].find((x) => !d.includes(x)) as number]}`;
+  return "on " + spoken(d.map((x) => DOW[x].slice(0, 3)));
+}
+
+/** What a reminder promises, in one sentence: when it comes and the one condition. */
+export const whenLine = (p: ReminderPrefs) => `Around ${spokenTime(p.at)}, ${daysLine(p.days)}, if you haven't practised yet.`;
+
+/**
+ * Where reminders actually go right now, or "" when nothing is switched on. Reminders can be on with no channel —
+ * push refused, email never chosen — and then nothing arrives, so the card and the panel say so instead of looking fine.
+ */
+export function whereLine(p: ReminderPrefs): string {
+  const others = Math.max(0, p.pushDevices - (p.thisDevice ? 1 : 0));
+  const parts: string[] = [];
+  if (p.thisDevice) parts.push("this device");
+  if (others) parts.push(`${others} other ${others === 1 ? "device" : "devices"}`);
+  if (p.email !== "off" && p.emailAddress) parts.push(p.emailAddress);
+  return spoken(parts);
+}
+
+/** Whether reminders are on hold, and until when. */
+export const pausedUntil = (p: ReminderPrefs) => (p.pausedUntil && new Date(p.pausedUntil) > new Date() ? p.pausedUntil : null);
+
 export type PushSupport = "yes" | "install" | "no";
+
+/** Notifications work only when this browser can show them and the server can send them. */
+export const pushHere = (p: ReminderPrefs): PushSupport => (p.pushReady ? pushSupport() : "no");
 
 /** Whether this browser can show reminders: on iPhone and iPad only once 99ile is on the Home Screen (iOS 16.4+). */
 export function pushSupport(): PushSupport {

@@ -13,6 +13,8 @@ export const IconWeek = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"
 export const IconWords = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><path d="M3 19l5-14 5 14M4.8 14h6.4" /><path d="M20 19v-5.5a2.5 2.5 0 00-5 0M15 16.5a2.5 2.5 0 105 0" /></svg>;
 export const IconJournal = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><rect x="5" y="3" width="15" height="18" rx="2" /><path d="M9 8h7M9 12h7M9 16h4" /><path d="M5 7H3M5 12H3M5 17H3" /></svg>;
 export const IconBell = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><path d="M6 16v-5a6 6 0 0112 0v5l2 2H4z" /><path d="M10 21h4" /></svg>;
+/** Updates: site news. A bell would now say "study reminders", which the sidebar's bell button means (7 Nov 2026). */
+export const IconMegaphone = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><path d="M4 10v4l12 5V5z" /><path d="M16 9h2a3 3 0 010 6h-2" /><path d="M7 15v4h3" /></svg>;
 export const IconExam = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2" /><path d="M9 2.5h6v3H9z" /><path d="M9 13l2 2 4-4" /></svg>;
 export const IconTrophy = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><path d="M8 4h8v6a4 4 0 01-8 0z" /><path d="M8 6H5v1a3 3 0 003 3M16 6h3v1a3 3 0 01-3 3" /><path d="M12 14v4M8 20h8" /></svg>;
 export const IconFlag = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><path d="M5 21V4" /><path d="M5 4h12l-2.5 4L17 12H5" /></svg>;

@@ -8,7 +8,7 @@ import { usePref } from "../lib/prefs";
 import { useStore } from "../lib/store";
 import { buildDay, budgetFor, doneMinutes } from "../planner/engine";
 import { LIVE_SECTIONS, SECTIONS } from "../sections";
-import { IconBell, IconBook, IconChart, IconClock, IconExam, IconFlag, IconHistory, IconHome, IconJournal, IconMistake, IconPen, IconRedo, IconSliders, IconToday, IconTrophy, IconWeek, IconWords } from "./Icons";
+import { IconBook, IconChart, IconClock, IconExam, IconFlag, IconHistory, IconHome, IconJournal, IconMegaphone, IconMistake, IconPen, IconRedo, IconSliders, IconToday, IconTrophy, IconWeek, IconWords } from "./Icons";
 import { PRACTICE_PATH, SiteNavLink, type SiteNavItem } from "./SiteHeader";
 
 /**
@@ -38,7 +38,7 @@ export const TRACK: Item[] = [
 ];
 /** The occasional pages. They carry icons like every other row, so their names line up with Track's. */
 export const MORE: Item[] = [
-  { to: "/updates", label: "Updates", Icon: IconBell }, { to: "/exams", label: "CAT and other exams", Icon: IconExam },
+  { to: "/updates", label: "Updates", Icon: IconMegaphone }, { to: "/exams", label: "CAT and other exams", Icon: IconExam },
   { to: "/guides", label: "Guides", Icon: IconBook }, { to: "/stories", label: "Topper stories", Icon: IconTrophy },
   { to: "/roadmap", label: "What's coming", Icon: IconFlag }, { to: "/settings", label: "Settings and backup", Icon: IconSliders },
 ];

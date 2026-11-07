@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { ArticleSummarySheet } from "../components/ArticleSummary";
 import { ErrorText, Ext, Field, LinkButton, LinkButtons, Meta, Page, TextLink } from "../components/kit";
 import SyncPrompt from "../components/SyncPrompt";
+import { YearSwitch } from "../components/YearSwitch";
 import { API_ENABLED } from "../lib/api";
 import { NativeSelect } from "../components/Select";
 import { StreakBadge } from "../components/StreakBadge";
@@ -36,7 +37,7 @@ import { useResources } from "../sections/useResources";
  * the tick and the finished-day sweep; nothing moves under reduced motion.
  */
 
-const POP = "flex w-[min(92vw,22rem)] flex-col gap-4 rounded-lg border-0 bg-popover p-4 shadow-xl"; // taste-skill-ignore: a popover floats
+const POP = "flex w-[min(92vw,22rem)] flex-col gap-4 rounded-2xl p-4";
 const CHIP_MINS = [0, 30, 45, 60, 90, 120, 150, 180];
 
 function useToday() {
@@ -509,7 +510,9 @@ function SetupCard({ d }: { d: string }) {
         {all && <Button variant="ghost" size="sm" onClick={() => setOpen(!open)} aria-expanded={open}>{open ? "Hide" : "Show"}</Button>}
       </div>
       <div className="h-1.5 overflow-hidden rounded-full bg-secondary" aria-hidden>
-        <div className={cn("h-full rounded-full transition-[width] duration-500 motion-reduce:transition-none", all ? "bg-success" : "bg-primary")} style={{ width: `${(doneN / items.length) * 100}%` }} />
+        {/* Scaled, not widened: width is a layout property and animating it reflows on every frame. The track
+            clips and rounds the ends, so the fill needs no radius of its own to distort. */}
+        <div className={cn("h-full w-full origin-left transition-transform duration-500 motion-reduce:transition-none", all ? "bg-success" : "bg-primary")} style={{ transform: `scaleX(${doneN / Math.max(1, items.length)})` }} />
       </div>
       {show && (
         <ul className="flex flex-col gap-1">
@@ -588,7 +591,7 @@ export default function Today() {
             <Button variant="ghost" size="icon-sm" className="-ml-2" aria-label="Previous day" onClick={() => setD(addDays(d, -1))}><ChevronLeft className="size-5" /></Button>
             <span className="font-semibold text-foreground">{longDate(d)}</span>
             <Button variant="ghost" size="icon-sm" aria-label="Next day" onClick={() => setD(addDays(d, 1))}><ChevronRight className="size-5" /></Button>
-            {ph.kind === "phase" && <Link to="/plan" className="rounded-sm underline-offset-4 hover:text-foreground hover:underline">{ph.phase.name}<span className="max-sm:hidden">{ph.phase.id > 0 && <>, phase {phaseNo(road, ph.phase)} of {phaseCount(road)}</>}, {road.name}</span></Link>}
+            {ph.kind === "phase" && <span><Link to="/plan" className="rounded-sm underline-offset-4 hover:text-foreground hover:underline">{ph.phase.name}<span className="max-sm:hidden">{ph.phase.id > 0 && <>, phase {phaseNo(road, ph.phase)} of {phaseCount(road)}</>}</span></Link>, <YearSwitch className="font-medium text-muted-foreground hover:text-foreground" /></span>}
             {!isToday && <Button variant="link" size="sm" onClick={() => setD(today)}>Back to today</Button>}
           </div>
         </header>

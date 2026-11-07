@@ -1,4 +1,4 @@
-import { lazy, Suspense, useRef, useState } from "react";
+import { lazy, Suspense, useLayoutEffect, useRef, useState } from "react";
 import SyncPrompt from "../components/SyncPrompt";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
@@ -9,7 +9,8 @@ import { CAT_PATTERN, CHECKED_ON, phaseIn, phaseLabel } from "../data/exam";
 import { useRoad } from "../lib/useRoad";
 import { UPDATES } from "../data/updates";
 import { shortDate, todayIso } from "../lib/date";
-import { calm } from "../lib/motion";
+import { calm, loadGsap } from "../lib/motion";
+import { YearSwitch } from "../components/YearSwitch";
 import { useStore } from "../lib/store";
 import { activityDays } from "../practice/streak";
 import { SECTIONS } from "../sections";
@@ -54,13 +55,21 @@ function StatusLine() {
   return (
     <p className="flex items-center gap-2.5 text-base text-muted-foreground">
       <span className="size-2 shrink-0 rounded-full bg-success" aria-hidden />
-      <span><b className="font-semibold text-foreground tabular-nums">{left} days</b> to {road.name}{ph.kind === "phase" ? <>. {phaseLabel(road, ph.phase)}.</> : "."}</span>
+      <span><b className="font-semibold text-foreground tabular-nums">{left} days</b> to <YearSwitch />{ph.kind === "phase" ? <>. {phaseLabel(road, ph.phase)}.</> : "."}</span>
     </p>
   );
 }
 
 function Hero({ isNew }: { isNew: boolean }) {
   const road = useRoad();
+  // A new year rolls into the headline, so the switch is seen to land (D93); nothing moves on arrival or when calm.
+  const year = useRef<HTMLSpanElement>(null), shown = useRef(road.name);
+  useLayoutEffect(() => {
+    if (shown.current === road.name) return;
+    shown.current = road.name;
+    const el = year.current;
+    if (el && !calm()) void loadGsap().then((g) => g.fromTo(el, { yPercent: 55, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.6, ease: "power3.out", clearProps: "transform,opacity" }));
+  }, [road.name]);
   const box = useRef<HTMLElement>(null);
   const [want3d] = useState(canDraw3d);
   const [live, setLive] = useState(false);
@@ -73,12 +82,12 @@ function Hero({ isNew }: { isNew: boolean }) {
     <header ref={box} className="flex flex-col gap-6 max-lg:min-h-[calc(100svh-9rem-env(safe-area-inset-bottom))] lg:grid lg:min-h-[calc(100svh-8rem)] lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:items-center lg:gap-x-6">
       <div className="relative z-10 flex min-w-0 flex-col gap-5 lg:gap-7">
         {/* Keep the exam name together; let the rest of the headline wrap naturally. */}
-        <h1 className="max-w-[11ch] text-[clamp(3rem,1rem+5.6vw,7.25rem)] leading-[0.92] font-extrabold tracking-[-0.055em]">Prepare for {road.name.replace(/ /g, "\u00a0")}, one day at a time.</h1>
+        <h1 className="max-w-[11ch] text-[clamp(3rem,1rem+5.6vw,7.25rem)] leading-[0.92] font-extrabold tracking-[-0.055em]">Prepare for <span ref={year} className="inline-block">{road.name.replace(/ /g, "\u00a0")},</span> one day at a time.</h1>
         <p className="max-w-[42ch] text-lg leading-relaxed text-foreground/80">A free CAT coach: a plan that fits your day, original practice, and a reason for every option. No sign-up; your progress stays on this device.</p>
         <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
           {isNew
-            ? <><LinkButton to="/guides/start-here" size="lg" className="min-w-44">Start here</LinkButton><ArrowLink to="/today">Open today's plan</ArrowLink></>
-            : <><LinkButton to="/today" size="lg" className="min-w-48">Open today's plan</LinkButton><ArrowLink to="/guides/start-here">Start here</ArrowLink></>}
+            ? <><LinkButton to="/guides/start-here" size="lg" className="min-w-44">Start here</LinkButton><ArrowLink to="/today">Open today’s plan</ArrowLink></>
+            : <><LinkButton to="/today" size="lg" className="min-w-48">Open today’s plan</LinkButton><ArrowLink to="/guides/start-here">Start here</ArrowLink></>}
         </div>
         <StatusLine />
       </div>
@@ -224,7 +233,7 @@ export default function Home() {
       <Suspense fallback={<div className="min-h-[30rem]" />}><Statement /></Suspense>
       <p className="-mt-12 w-full max-w-none text-sm leading-relaxed text-muted-foreground lg:-mt-24">Resources checked on {CHECKED_ON}. {road.exam.confirmed ? "" : `The ${road.name} date is an estimate until the conducting IIM announces it. `}Score benchmarks come from coaching institutes. Not affiliated with the IIMs or any coaching institute. Avoid pirated book PDFs; the papers and free mocks listed here are legitimately free.</p>
       <Suspense fallback={<div className="min-h-[40rem]" />}>
-        <Closing to={isNew ? "/guides/start-here" : "/today"} label={isNew ? "Start here" : "Open today's plan"} />
+        <Closing to={isNew ? "/guides/start-here" : "/today"} label={isNew ? "Start here" : "Open today’s plan"} />
       </Suspense>
     </Page>
   );
