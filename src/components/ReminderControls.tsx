@@ -79,9 +79,9 @@ function EmailRow({ r, prefs }: { r: Reminders; prefs: ReminderPrefs }) {
   return (
     <ChannelRow icon={<Mail />} title="By email" state={state}
       control={<Switch label="Reminders by email" checked={on} onChange={(next) => void r.save({ ...prefs, email: next ? "missed" : "off" })} />}>
-      {/* A phone leaves the row about 220px, where the two choices wrap: there they become two full-width lines. */}
+      {/* On a phone, the two options share the full row width evenly instead of leaving a blank tail. */}
       {on && (
-        <Segmented className="w-full sm:w-fit" label="When to email" value={prefs.email as Exclude<EmailMode, "off">}
+        <Segmented className="w-full sm:w-fit [&>button]:flex-1 sm:[&>button]:flex-none" label="When to email" value={prefs.email as Exclude<EmailMode, "off">}
           options={[["missed", "If I miss days"], ["daily", "Every day"]]}
           onChange={(email) => void r.save({ ...prefs, email })} />
       )}
