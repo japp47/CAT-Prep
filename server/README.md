@@ -17,7 +17,9 @@ student API under `/v1` (docs/architecture.md §5, §6):
 Every kind of progress syncs (`SyncKinds` in `cmd/api/main.go`, checked against the browser's list by a test). In
 prod, `/v1` answers 503 until `PROXY_SECRET`, `IP_HASH_KEY` and `TURNSTILE_SECRET` are set, so the live server runs
 before sync is switched on. `cmd/cleanup` deletes expired link codes, devices removed over 90 days ago and audit
-events over 400 days old; `.github/workflows/cleanup.yml` runs it daily (or `make cleanup-prod`).
+events over 400 days old; `.github/workflows/cleanup.yml` runs it daily (or `make cleanup-prod`). Each scheduled
+job (cleanup, digest, notify) retries the database for about twenty seconds before giving up: the free database's
+pooler sometimes answers more slowly than one ping allows, and a job that dies there waits a whole day.
 
 Needs Go 1.27 and Docker.
 

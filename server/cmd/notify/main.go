@@ -38,6 +38,10 @@ import (
 	"github.com/japp47/CAT-Prep/server/internal/store"
 )
 
+// dbTries is how often a scheduled job retries the database before giving up, about twenty seconds in all. The free
+// database's pooler sometimes takes longer than a single ping allows, and a daily job can afford to wait.
+const dbTries = 8
+
 func main() {
 	vapid := flag.Bool("vapid", false, "print a new push key pair and stop")
 	gmailToken := flag.Bool("gmail-token", false, "sign in to Gmail once and print the refresh token for NOTIFY_GMAIL_REFRESH_TOKEN")
@@ -86,7 +90,7 @@ func run(log *slog.Logger, dry bool, runFor time.Duration) error {
 		GmailClientID: os.Getenv("NOTIFY_GMAIL_CLIENT_ID"), GmailClientSecret: os.Getenv("NOTIFY_GMAIL_CLIENT_SECRET"), GmailRefreshToken: os.Getenv("NOTIFY_GMAIL_REFRESH_TOKEN")}
 	ctx, cancel := context.WithTimeout(context.Background(), runFor+2*time.Minute)
 	defer cancel()
-	db, err := store.Open(ctx, dsn)
+	db, err := store.OpenWithRetry(ctx, dsn, dbTries, log)
 	if err != nil {
 		return err
 	}

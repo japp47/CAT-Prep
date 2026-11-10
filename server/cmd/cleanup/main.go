@@ -12,6 +12,10 @@ import (
 	"github.com/japp47/CAT-Prep/server/internal/store"
 )
 
+// dbTries is how often a scheduled job retries the database before giving up, about twenty seconds in all. The free
+// database's pooler sometimes takes longer than a single ping allows, and a daily job can afford to wait.
+const dbTries = 8
+
 func main() {
 	log := slog.New(slog.NewTextHandler(os.Stdout, nil))
 	if err := run(log); err != nil {
@@ -26,7 +30,7 @@ func run(log *slog.Logger) error {
 		return errors.New("MIGRATE_DATABASE_URL is required: the owner's connection")
 	}
 	ctx := context.Background()
-	db, err := store.Open(ctx, dsn)
+	db, err := store.OpenWithRetry(ctx, dsn, dbTries, log)
 	if err != nil {
 		return err
 	}

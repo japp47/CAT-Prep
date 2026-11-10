@@ -19,6 +19,10 @@ import (
 	"github.com/japp47/CAT-Prep/server/internal/store"
 )
 
+// dbTries is how often a scheduled job retries the database before giving up, about twenty seconds in all. The free
+// database's pooler sometimes takes longer than a single ping allows, and a daily job can afford to wait.
+const dbTries = 8
+
 func main() {
 	dry := flag.Bool("dry", false, "print the digest; do not post it or mark reports seen")
 	flag.Parse()
@@ -51,7 +55,7 @@ func run(log *slog.Logger, dry bool) error {
 		ist = time.FixedZone("IST", 5*3600+1800)
 	}
 	ctx := context.Background()
-	db, err := store.Open(ctx, dsn)
+	db, err := store.OpenWithRetry(ctx, dsn, dbTries, log)
 	if err != nil {
 		return err
 	}
