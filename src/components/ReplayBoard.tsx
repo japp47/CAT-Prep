@@ -51,7 +51,9 @@ export function ReplayBoard({ model, groups, view, onTap }: { model: GridModel; 
     if (cells.length) gsap.from(cells, { scale: 0.7, opacity: 0, duration: 0.32, stagger: 0.025, ease: "back.out(2)", clearProps: "all" });
   }, [fresh]);
   return (
-    <div ref={ref} className="flex flex-wrap gap-4">
+    <div ref={ref} className="flex flex-col gap-4">
+      {onTap && <BoardKey league={groups.some((g) => g.perRow)} column={groups.some((g) => g.distinct)} />}
+      <div className="flex flex-wrap gap-4">
       {groups.map((g) => (
         <section key={g.title} aria-label={g.title || "Board"} className="flex min-w-0 flex-1 basis-[22rem] flex-col gap-2 rounded-2xl bg-card p-4 sm:p-5">
           {g.title && <h3 className="text-base font-semibold">{g.title}</h3>}
@@ -87,6 +89,26 @@ export function ReplayBoard({ model, groups, view, onTap }: { model: GridModel; 
           )}
         </section>
       ))}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * What a tap does, above any board the student marks. Without it, "On your own" gave no clue that one tap crosses,
+ * two tick and three clear (owner, 11 Nov 2026). The chips look like the cells they describe.
+ */
+function BoardKey({ league, column }: { league: boolean; column: boolean }) {
+  const chip = (tone: string, icon: React.ReactNode) => <span className={cn("inline-grid size-8 shrink-0 place-items-center rounded-md", tone)} aria-hidden>{icon}</span>;
+  return (
+    <div role="note" aria-label="How to mark the board" className="flex flex-col gap-2.5 rounded-2xl bg-card px-4 py-3.5 text-base sm:px-5">
+      <p className="font-semibold">Tap a cell to mark it</p>
+      <ul className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-x-6">
+        <li className="flex items-center gap-2">{chip("bg-muted/40 text-muted-foreground", <X className="size-4.5" strokeWidth={2.5} />)}Once: ruled out</li>
+        <li className="flex items-center gap-2">{chip("bg-primary text-primary-foreground", <Check className="size-5" strokeWidth={2.75} />)}Twice: {league ? "the result" : "the answer"}</li>
+        <li className="flex items-center gap-2">{chip("bg-muted/70", null)}Three times: empty again</li>
+      </ul>
+      <p className="text-muted-foreground">A tick crosses out the rest of its row{column ? " and column" : ""} for you.</p>
     </div>
   );
 }

@@ -216,7 +216,7 @@ export interface DiData { id: string; caption: string; unit?: string; rowHead: s
  */
 export interface DiChart {
   kind: "bar" | "stacked" | "line" | "table" | "scatter" | "share"; data: string; title?: string; by?: "rows" | "cols";
-  axis?: { max: number; step: number; label: string }; xaxis?: { max: number; step: number; label: string }; labels?: boolean;
+  axis?: { min?: number; max: number; step: number; label: string }; xaxis?: { max: number; step: number; label: string }; labels?: boolean;
   colors?: number[]; place?: Record<string, "left" | "right" | "above" | "below">;
 }
 /**

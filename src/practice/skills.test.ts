@@ -98,10 +98,13 @@ describe("the skill map", () => {
     });
 
     it("sends a kind tile to the untried DI set with the most questions of that kind", () => {
-      expect(diSetFor("growth", blankState())).toBe("/practice/lr/di-six-economies");
+      // Growth questions per set: streaming 4; six economies and equity funds 3 each (the earlier set first); power 2.
+      expect(diSetFor("growth", blankState())).toBe("/practice/lr/di-streaming-growth");
       const st = blankState();
-      st.lrAttempts.push({ id: "g", d: "2026-11-02", set: "di-six-economies", ans: [], c: 0, w: 0, secs: 1, updatedAt: 1 });
-      expect(diSetFor("growth", st)).toBe("/practice/lr/di-power-capacity");
+      st.lrAttempts.push({ id: "g", d: "2026-11-02", set: "di-streaming-growth", ans: [], c: 0, w: 0, secs: 1, updatedAt: 1 });
+      expect(diSetFor("growth", st)).toBe("/practice/lr/di-six-economies");
+      st.lrAttempts.push({ id: "h", d: "2026-11-02", set: "di-six-economies", ans: [], c: 0, w: 0, secs: 1, updatedAt: 1 });
+      expect(diSetFor("growth", st)).toBe("/practice/lr/di-equity-funds");
       expect(diSetFor("range", blankState())).toBe("/practice/lr/di-monsoon-2025");
     });
   });

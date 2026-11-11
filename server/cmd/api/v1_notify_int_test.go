@@ -88,6 +88,7 @@ func TestRemindersEndToEnd(t *testing.T) {
 		"off the quarter hour": func(m map[string]any) { m["at"] = 1171 },
 		"unknown zone":         func(m map[string]any) { m["timeZone"] = "Mars/Olympus" },
 		"day 7":                func(m map[string]any) { m["days"] = []int{7} },
+		"on with no days":      func(m map[string]any) { m["days"] = []int{} },
 		"email without google": func(m map[string]any) { m["email"] = "missed" },
 		"unknown email mode":   func(m map[string]any) { m["email"] = "hourly" },
 	} {

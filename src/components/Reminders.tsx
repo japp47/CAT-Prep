@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { API_ENABLED } from "../lib/api";
 import { DOW, mediumDate } from "../lib/date";
-import { browserZone, daysLine, fromClock, loadReminders, pausedUntil, pushHere, pushSupport, saveReminders, spokenTime, toClock, turnOnPush, whereLine, type EmailMode, type ReminderPrefs } from "../lib/notify";
+import { browserZone, daysLine, fromClock, loadReminders, pausedUntil, pushHere, pushSupport, saveReminders, spokenTime, toClock, toggleDay, turnOnPush, whereLine, type EmailMode, type ReminderPrefs } from "../lib/notify";
 import { usePref } from "../lib/prefs";
 import { useReminderPrefs } from "../lib/reminders";
 import { loadLedger } from "../lib/sync/ledger";
@@ -99,13 +99,14 @@ export function RemindersCard() {
                     <Input ref={time} type="time" step={900} className="w-36" aria-label="Reminder time" value={toClock(prefs.at)}
                       onChange={(e) => { const m = fromClock(e.target.value); if (m != null) void r.save({ ...prefs, at: m }); }} />
                   </Row>
-                  <Row title="Days" hint="No reminders on the days you leave out.">
+                  <Row title="Days" hint={prefs.days.length === 1 ? "At least one day. To stop reminders, turn them off above." : "No reminders on the days you leave out."}>
                     <div role="group" aria-label="Days reminders can arrive" className="grid grid-cols-7 gap-1 rounded-lg bg-secondary p-1 sm:inline-flex sm:w-fit">
                       {DOW.map((day, i) => {
                         const on = prefs.days.includes(i);
+                        const next = toggleDay(prefs.days, i);
                         return (
-                          <button key={day} type="button" aria-pressed={on}
-                            onClick={() => void r.save({ ...prefs, days: on ? prefs.days.filter((x) => x !== i) : [...prefs.days, i].sort((a, b) => a - b) })}
+                          <button key={day} type="button" aria-pressed={on} aria-disabled={next ? undefined : true}
+                            onClick={() => { if (next) void r.save({ ...prefs, days: next }); }}
                             className={cn("min-h-11 rounded-md text-base font-normal transition-[color,background-color,transform] active:scale-95 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none motion-reduce:transition-none sm:px-3",
                               on ? "bg-card font-semibold text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground")}>
                             <span aria-hidden>{day.slice(0, 3)}</span><span className="sr-only">{day}</span>

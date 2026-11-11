@@ -9,7 +9,7 @@ A written DILR solution shows the final table, not how anyone got there. Student
 ## Research behind the shape
 
 - **Worked examples, then fading.** Studying worked examples beats unaided problem solving for novices, and removing steps one at a time ("fading") with a prompt to explain each step carries learners to solving alone (Renkl and Atkinson; the worked-example effect). So three modes, from most help to least: **Watch** (the worked example), **Step by step** (each step's clues named, the student marks what they settle, then the worked step is shown), **On your own** (all clues, as in the exam). The first two sets a student opens start step by step; later ones start alone. Watch is always one tap away.
-- **Three marks per cell.** Logic-grid apps use empty, ruled out and confirmed; a tick crosses the rest of its row (and its column in a one-each grid) automatically, so students spend taps on deductions, not bookkeeping.
+- **Three marks per cell.** Logic-grid apps use empty, ruled out and confirmed; a tick crosses the rest of its row (and its column in a one-each grid) automatically, so students spend taps on deductions, not bookkeeping. A key above every board the student marks says what one, two and three taps do (owner, 11 Nov 2026: "On your own" gave no hint that one tap crosses and a second ticks).
 - **Hints check first.** Nothing safe follows from a wrong mark, so a hint shows wrong marks before it names the next step's clues. It never fills a cell.
 - **Anchor first.** CAT guides advise starting scheduling sets from the clue with a fixed reference, and tournament sets from the structure (matches, points). The worked steps follow that order, not the clue numbers.
 

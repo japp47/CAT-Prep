@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import { Pause, Play } from "lucide-react";
+import { Clapperboard, Pause, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { shortDate, todayIso, uid } from "../../lib/date";
@@ -29,6 +29,23 @@ export default function ReplayPlayer() {
         return <Player key={p.id} p={p} all={all} back={backTo(sp.get("back"))} />;
       }}
     </ContentGate>
+  );
+}
+
+// The clip panel (F101) draws and encodes video, so it loads on the first tap and never with the page (D94).
+const ReplayClip = lazy(() => import("../../components/ReplayClip"));
+const preloadClip = () => void import("../../components/ReplayClip");
+
+function ClipButton({ p, m, groups, trail }: { p: ReplayPuzzle; m: GridModel; groups: BoardGroup[]; trail: TrailStep[] }) {
+  const [open, setOpen] = useState(false);
+  const [used, setUsed] = useState(false);
+  return (
+    <>
+      <Button variant="ghost" onClick={() => { setUsed(true); setOpen(true); }} onPointerEnter={preloadClip} onFocus={preloadClip}>
+        <Clapperboard aria-hidden /> Make a clip
+      </Button>
+      {used && <Suspense fallback={null}><ReplayClip p={p} m={m} groups={groups} trail={trail} open={open} onOpenChange={setOpen} /></Suspense>}
+    </>
   );
 }
 
@@ -186,6 +203,7 @@ function Watch({ p, m, groups, trail, next, setLit, setUsed }: WorkProps & { set
           )}
           <Button variant="ghost" onClick={() => { setPlaying(false); setAt(Math.max(0, at - 1)); }} disabled={!at}>Previous</Button>
           {at === last && <Button variant="ghost" onClick={() => setAt(0)}>Watch again</Button>}
+          <ClipButton p={p} m={m} groups={groups} trail={trail} />
         </div>
       </Panel>
       <ReplayBoard model={m} groups={groups} view={settledView(trail[at])} />
@@ -237,7 +255,7 @@ function Steps({ p, m, groups, answer, trail, next, back, setLit, setUsed, save,
         {!result ? (
           <div className="flex flex-col gap-1.5">
             <h2 className="text-heading font-semibold">Step {k} of {last}: use {cluesWord(step.use)}</h2>
-            <p className="measure text-base text-muted-foreground">With what is already on the board, tick what {step.use.length === 1 ? "this clue settles" : "these clues settle"} and cross what {step.use.length === 1 ? "it rules" : "they rule"} out. Tap a cell once for a cross, twice for a tick.</p>
+            <p className="measure text-base text-muted-foreground">With what is already on the board, tick what {step.use.length === 1 ? "this clue settles" : "these clues settle"} and cross what {step.use.length === 1 ? "it rules" : "they rule"} out.</p>
           </div>
         ) : (
           <div className="flex flex-col gap-2">
@@ -339,6 +357,7 @@ function Done({ h, p, m, groups, trail, next, back, onWatch, line }: { h: string
           {back ? <LinkButton to={back}>Back to the set</LinkButton> : next ? <LinkButton to={`/practice/replay/${next.id}`}>Next replay set</LinkButton> : <LinkButton to="/dilr/practice">DILR practice</LinkButton>}
           <Button variant="secondary" onClick={onWatch}>Watch the replay</Button>
           <LinkButton to="/practice/replay" variant="ghost">All replay sets</LinkButton>
+          <ClipButton p={p} m={m} groups={groups} trail={trail} />
         </div>
       </Panel>
       <ReplayBoard model={m} groups={groups} view={settledView({ ...trail[last], fresh: [] })} />

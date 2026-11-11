@@ -156,6 +156,9 @@ func (a *API) SavePrefsHandler() http.Handler {
 			days |= 1 << x
 		}
 		switch {
+		case in.On && days == 0: // on with no days would look healthy and never send anything
+			bad("Pick at least one day, or turn reminders off.")
+			return
 		case in.At < 0 || in.At > 1439 || in.At%a.Policy.TimeStep != 0:
 			bad("Pick a reminder time on a quarter hour.")
 			return

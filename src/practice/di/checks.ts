@@ -21,11 +21,19 @@ export const dataOf = (s: LrSet, id: string): DiData => {
 };
 
 /** A table with blanks: the facts a fill must meet, each reading the filled table through `v(row, col)`. */
-export interface Fact { test: (v: (row: string, col: string) => number) => boolean; /** The fact that sets the values a blank may take: the domain, so it cannot be dropped to test it. */ domain?: true }
+export interface Fact {
+  test: (v: (row: string, col: string) => number) => boolean;
+  /** The fact that sets the values a blank may take: the domain, so it cannot be dropped to test it. */
+  domain?: true;
+  /** The cells the fact reads, so the search tests it as soon as they are filled; without it, on a full table. */
+  cells?: [row: string, col: string][];
+}
 
 /**
  * Every way to fill a table's blanks from `domain` that keeps its "Total" row and column right and meets `facts`
- * (up to `cap`). Totals prune the search as soon as a row or column is complete; facts are tested on a full table.
+ * (up to `cap`). Totals prune the search as soon as a row or column is complete; a fact is tested once the cells it
+ * names are filled (all of them if it names none). A Total left blank is not a rule: it is worked out from the fill and
+ * returned with it, so a fill covers every blank in the table.
  */
 export function fills(d: DiData, domain: number[], facts: Fact[], cap = 100): Map<string, number>[] {
   const key = (r: string, c: string) => `${r}|${c}`;
@@ -36,15 +44,24 @@ export function fills(d: DiData, domain: number[], facts: Fact[], cap = 100): Ma
   const totalCol = d.cols.find((c) => /^total$/i.test(c)), totalRow = d.rows.find((r) => /^total$/i.test(r.name));
   if (totalCol) body.forEach((r) => {
     const deps = cols.map((c) => key(r.name, c)).filter((k) => blanks.includes(k));
-    if (deps.length) rules.push({ deps, test: (g) => cols.reduce((s, c) => s + value(g, r.name, c), 0) === cellOf(d, r.name, totalCol) });
+    if (deps.length && !Number.isNaN(cellOf(d, r.name, totalCol))) rules.push({ deps, test: (g) => cols.reduce((s, c) => s + value(g, r.name, c), 0) === cellOf(d, r.name, totalCol) });
   });
   if (totalRow) cols.forEach((c) => {
     const deps = body.map((r) => key(r.name, c)).filter((k) => blanks.includes(k));
-    if (deps.length) rules.push({ deps, test: (g) => body.reduce((s, r) => s + value(g, r.name, c), 0) === cellOf(d, totalRow.name, c) });
+    if (deps.length && !Number.isNaN(cellOf(d, totalRow.name, c))) rules.push({ deps, test: (g) => body.reduce((s, r) => s + value(g, r.name, c), 0) === cellOf(d, totalRow.name, c) });
   });
-  facts.forEach((f) => rules.push({ deps: blanks, test: (g) => f.test((r, c) => value(g, r, c)) }));
+  facts.forEach((f) => rules.push({
+    deps: f.cells ? f.cells.map(([r, c]) => key(r, c)).filter((k) => blanks.includes(k)) : blanks,
+    test: (g) => f.test((r, c) => value(g, r, c)),
+  }));
   const csp: Csp = { vars: blanks.map((name) => ({ name, domain })), distinct: [], rules };
-  return allCases(csp, cap) as Map<string, number>[];
+  return (allCases(csp, cap) as Map<string, number>[]).map((m) => {
+    const v = (r: string, c: string) => { const x = cellOf(d, r, c); return Number.isNaN(x) ? m.get(key(r, c))! : x; };
+    if (totalCol) body.forEach((r) => { if (Number.isNaN(cellOf(d, r.name, totalCol))) m.set(key(r.name, totalCol), sum(cols.map((c) => v(r.name, c)))); });
+    if (totalRow) cols.forEach((c) => { if (Number.isNaN(cellOf(d, totalRow.name, c))) m.set(key(totalRow.name, c), sum(body.map((r) => v(r.name, c)))); });
+    if (totalRow && totalCol && Number.isNaN(cellOf(d, totalRow.name, totalCol))) m.set(key(totalRow.name, totalCol), sum(body.flatMap((r) => cols.map((c) => v(r.name, c)))));
+    return m;
+  });
 }
 
 export interface Checked {
@@ -184,5 +201,149 @@ export const CHECKS: Record<string, (s: LrSet) => Checked> = {
     const rest = total(ys[2]) - cellOf(cap, "Renewables", ys[2]);
     const q5 = (rest * 40) / 60 - cellOf(cap, "Renewables", ys[2]);
     return { answers: [q1, q2, q3, q4, q5] };
+  },
+
+  // The six harder sets (owner's batch, 11 Nov 2026; D95).
+  "di-streaming-growth": (s) => {
+    const g = dataOf(s, "growth"), base = dataOf(s, "base"), years = g.cols, ps = g.rows.map((r) => r.name);
+    // Subscribers by platform, 2019 then each year, from a table of rates that a what-if may change.
+    const run = (rate: (p: string, y: string) => number) => Object.fromEntries(ps.map((p) => {
+      const xs = [cellOf(base, p, "2019")];
+      years.forEach((y) => xs.push(xs[xs.length - 1] * (1 + rate(p, y) / 100)));
+      return [p, xs];
+    })) as Record<string, number[]>;
+    const actual = run((p, y) => cellOf(g, p, y));
+    const scenario = run((p, y) => (p === "Bhava" && y === "2022" ? 8 : p === "Chitra" && y === "2023" ? 15 : cellOf(g, p, y)));
+    const all = (S: Record<string, number[]>, i: number) => sum(ps.map((p) => S[p][i]));
+    const q1 = String(ps.reduce((n, p) => n + years.filter((_, i) => actual[p][i + 1] - actual[p][i] >= 10).length, 0));
+    const moved = ps.map((p) => Math.abs(actual[p][5] / all(actual, 5) - actual[p][0] / all(actual, 0)));
+    const q2 = ps[moved.indexOf(Math.min(...moved))];
+    const q3 = String(years.filter((y, i) => all(actual, i + 1) / all(actual, i) - 1 > sum(ps.map((p) => cellOf(g, p, y))) / 300).length);
+    const q4 = pct(all(scenario, 5), all(actual, 5)) - 100;
+    const q5 = `${Math.round(pct(scenario.Chitra[5] - scenario.Chitra[0], all(scenario, 5) - all(scenario, 0)))}%`;
+    return { answers: [q1, q2, q3, q4, q5] };
+  },
+
+  "di-group-segments": (s) => {
+    const share = dataOf(s, "share"), seg = dataOf(s, "seg"), names = seg.rows.map((r) => r.name);
+    const [growth, m25, m24] = seg.cols;
+    // The one rupee figure: Finance's 2025 profit of ₹ 4,320 crore (intro), with its margin and share, sizes the group.
+    const group25 = 4320 / (cellOf(seg, "Finance", m25) / 100) / (cellOf(share, "Finance", "Share") / 100);
+    const r25 = (n: string) => (group25 * cellOf(share, n, "Share")) / 100, r24 = (n: string) => r25(n) / (1 + cellOf(seg, n, growth) / 100);
+    const p25 = (n: string) => (r25(n) * cellOf(seg, n, m25)) / 100, p24 = (n: string) => (r24(n) * cellOf(seg, n, m24)) / 100;
+    const all = (f: (n: string) => number) => sum(names.map(f));
+    const q1 = pct(all(r25), all(r24)) - 100;
+    const q2 = all((n) => (r25(n) * (cellOf(seg, n, m25) - cellOf(seg, n, m24))) / 100);
+    const q3 = pct(all(p25) - p25("Media"), all(r25) - r25("Media"));
+    const q4 = `+${(pct(all(p25), all(p24)) - 100).toFixed(1)}%`;
+    const energy = r24("Energy") - r25("Energy");
+    const q5 = `${pct(all(p25) + (energy * cellOf(seg, "Energy", m25)) / 100, all(r25) + energy).toFixed(1)}%`;
+    return {
+      answers: [q1, q2, q3, q4, q5],
+      // The volume part and the margin part add up to the whole rise, as the explanation says.
+      extra: () => {
+        const volume = all((n) => ((r25(n) - r24(n)) * cellOf(seg, n, m24)) / 100);
+        if (Math.abs(volume + q2 - (all(p25) - all(p24))) > 1e-6) throw new Error("volume + margin parts do not add up to the rise");
+      },
+    };
+  },
+
+  "di-car-zones": (s) => {
+    const d = dataOf(s, "cars");
+    const models = ["Model P", "Model Q", "Model R", "Model S"], zones = ["North", "South", "East", "West"];
+    const domain = Array.from({ length: 39 }, (_, k) => 10 + 5 * k);
+    const row = (m: string) => zones.map((z) => [m, z] as [string, string]), col = (z: string) => models.map((m) => [m, z] as [string, string]);
+    const tot = (v: (r: string, c: string) => number, m: string) => sum(zones.map((z) => v(m, z)));
+    const ztot = (v: (r: string, c: string) => number, z: string) => sum(models.map((m) => v(m, z)));
+    const facts: Fact[] = [
+      // 1: the domain (multiples of 5, at least 10; 200 is above anything the totals allow).
+      { domain: true, test: (v) => models.every((m) => zones.every((z) => v(m, z) % 5 === 0 && v(m, z) >= 10)) },
+      // 2: East's total is North's + 10.
+      { cells: [...col("East"), ...col("North")], test: (v) => ztot(v, "East") === ztot(v, "North") + 10 },
+      // 3: Q in West is 25% more than P in West.
+      { cells: [["Model Q", "West"], ["Model P", "West"]], test: (v) => v("Model Q", "West") * 4 === v("Model P", "West") * 5 },
+      // 4: R in South is the average of R in North and R in East.
+      { cells: [["Model R", "South"], ["Model R", "North"], ["Model R", "East"]], test: (v) => 2 * v("Model R", "South") === v("Model R", "North") + v("Model R", "East") },
+      // 5: Q and S have equal totals.
+      { cells: [...row("Model Q"), ...row("Model S")], test: (v) => tot(v, "Model Q") === tot(v, "Model S") },
+      // 6: no entry exceeds P in East.
+      { test: (v) => models.every((m) => zones.every((z) => v(m, z) <= v("Model P", "East"))) },
+      // 7: P's total is R's + 45.
+      { cells: [...row("Model P"), ...row("Model R")], test: (v) => tot(v, "Model P") === tot(v, "Model R") + 45 },
+    ];
+    const [f] = fills(d, domain, facts, 2);
+    const v = (r: string, c: string) => { const x = cellOf(d, r, c); return Number.isNaN(x) ? f.get(`${r}|${c}`)! : x; };
+    const rLow = [...zones].sort((a, b) => v("Model R", a) - v("Model R", b)).slice(0, 2);
+    const q1 = String(sum(rLow.map((z) => v("Model P", z) + v("Model R", z))));
+    const zt = zones.map((z) => ztot(v, z)), top = Math.max(...zt);
+    const q2 = `${Math.round(pct(top, (sum(zt) - top) / 3) - 100)}%`;
+    const q3 = String(sum(zones.map((z, i) => models.filter((m) => v(m, z) > zt[i] / 4).length)));
+    const sTop = zones.filter((z) => v("Model S", z) === Math.max(...models.map((m) => v(m, z))));
+    const q4 = pct(0.3 * sum(sTop.map((z) => v("Model S", z))), tot(v, "Model S"));
+    const ratio = models.map((m) => { const xs = zones.map((z) => v(m, z)).sort((a, b) => b - a); return xs[0] / (sum(xs.slice(1)) / 3); });
+    const q5 = models[ratio.indexOf(Math.max(...ratio))];
+    return { answers: [q1, q2, q3, q4, q5], table: { data: d, domain, facts } };
+  },
+
+  "di-sales-funnel": (s) => {
+    const leads = dataOf(s, "leads"), funnel = dataOf(s, "funnel"), rs = leads.rows.map((r) => r.name);
+    const [convCol, dealCol] = funnel.cols;
+    const L = (r: string) => cellOf(leads, r, "Leads"), C = (r: string) => cellOf(funnel, r, convCol), D = (r: string) => cellOf(funnel, r, dealCol);
+    const rev = (r: string, l = L(r), c = C(r)) => (l * c * D(r)) / 10;
+    const rank = (f: (r: string) => number) => (r: string) => 1 + rs.filter((x) => f(x) > f(r)).length;
+    const byLeads = rank(L), byRev = rank((r) => rev(r));
+    const q1 = String(rs.filter((r) => Math.abs(byLeads(r) - byRev(r)) >= 2).length);
+    const overall = sum(rs.map((r) => L(r) * C(r))) / sum(rs.map(L)), avgDeal = sum(rs.map(D)) / rs.length;
+    const q2 = sum(rs.filter((r) => C(r) > overall && D(r) < avgDeal).map((r) => rev(r)));
+    // The rate a region needs for ₹ 150 crore, capped at 3 points more.
+    const q3 = sum(rs.filter((r) => rev(r) < 150).map((r) => 150 - rev(r, L(r), Math.min((150 * 10) / (L(r) * D(r)), C(r) + 3))));
+    const L2 = (r: string) => (r === "North-East" ? 2 * L(r) : L(r)), C2 = (r: string) => (r === "North-East" ? C(r) - 1 : C(r));
+    const q4 = `${(sum(rs.map((r) => L2(r) * C2(r))) / sum(rs.map(L2))).toFixed(2)}%`;
+    const perLead = (r: string) => (C(r) * D(r)) / 10, order = [...rs].sort((a, b) => perLead(a) - perLead(b));
+    const low = order[0], [second, first] = order.slice(-2);
+    const q5 = 6 * (perLead(first) - perLead(low)) + 4 * (perLead(second) - perLead(low));
+    return { answers: [q1, q2, q3, q4, q5] };
+  },
+
+  "di-food-delivery": (s) => {
+    const d = dataOf(s, "cities"), cs = d.rows.map((r) => r.name);
+    const [ORD, AOV, COM, DEL, MKT, FIX] = d.cols;
+    const x = (c: string, col: string) => cellOf(d, c, col);
+    const profit = (c: string, o: { del?: number; com?: number; mkt?: number; orders?: number } = {}) =>
+      x(c, ORD) * (o.orders ?? 1) * ((x(c, AOV) * (x(c, COM) + (o.com ?? 0))) / 100 - x(c, DEL) * (o.del ?? 1) - (x(c, MKT) + (o.mkt ?? 0))) - x(c, FIX);
+    const base = cs.map((c) => profit(c));
+    const q1 = pct(base[0], sum(base.filter((p) => p > 0)));
+    let q2 = 0;
+    while (cs.filter((c) => profit(c, { del: 1 + q2 / 100 }) < 0).length !== 3) q2++;
+    // Jaipur: x points more commission, 3% of the orders lost per point; the lowest rate with profit not negative.
+    const jaipur = (k: number) => profit("Jaipur", { com: k, orders: 1 - 0.03 * k });
+    let lo = 0, hi = 5;
+    for (let i = 0; i < 60; i++) { const mid = (lo + hi) / 2; if (jaipur(mid) < 0) lo = mid; else hi = mid; }
+    const q3 = x("Jaipur", COM) + hi;
+    const q4 = `+₹ ${Math.round(sum(cs.map((c) => profit(c, { mkt: -5, orders: 0.94 }))) - sum(base))} lakh`;
+    const q5 = sum(cs.map((c) => profit(c, { del: 1.15, com: 1.5, orders: 0.97 })));
+    return { answers: [q1, String(q2), q3, q4, q5] };
+  },
+
+  "di-equity-funds": (s) => {
+    const d = dataOf(s, "returns"), years = d.cols, funds = d.rows.map((r) => r.name).filter((n) => n !== "Index");
+    const r = (f: string, y: string) => cellOf(d, f, y);
+    const rank = (f: string, y: string) => 1 + funds.filter((g) => r(g, y) > r(f, y)).length;
+    const grow = (f: string, ys = years) => ys.reduce((v, y) => v * (1 + r(f, y) / 100), 1);
+    const q1 = String(funds.filter((f) => years.filter((y) => rank(f, y) <= 3).length >= 3 && years.filter((y) => rank(f, y) >= 5).length >= 3).length);
+    const q2 = [...funds].sort((a, b) => grow(b) - grow(a))[1];
+    const q3 = String(funds.filter((f) => grow(f) > grow("Index") && years.filter((y) => r(f, y) > r("Index", y)).length < 4).length);
+    const early = years.slice(0, 3), late = years.slice(3);
+    const q4 = (100000 * grow("Contra", early) * (grow("Contra", late) - 0.985 * grow("Dividend Yield", late))) / 1000;
+    const climbs = (f: string) => years.slice(1).map((y, i) => rank(f, y) < rank(f, years[i]));
+    const q5 = String(funds.filter((f) => climbs(f).some((_, i, c) => c[i] && c[i + 1] && c[i + 2])).length);
+    return {
+      answers: [q1, q2, q3, q4, q5],
+      extra: () => {
+        // No two funds tie in a year, as the intro says, and the stem's index return is right.
+        years.forEach((y) => { if (new Set(funds.map((f) => r(f, y))).size !== funds.length) throw new Error(`a tie in ${y}`); });
+        if ((grow("Index") * 100 - 100).toFixed(1) !== "68.2") throw new Error("the index's six-year return is not 68.2%");
+      },
+    };
   },
 };

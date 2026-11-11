@@ -73,6 +73,15 @@ export function daysLine(days: number[]): string {
   return "on " + spoken(d.map((x) => DOW[x].slice(0, 3)));
 }
 
+/**
+ * The days after tapping one, in week order, or null when the tap would leave no day: reminders on "on no days"
+ * would look healthy and never arrive, so turning reminders off stays the main switch's job.
+ */
+export function toggleDay(days: number[], day: number): number[] | null {
+  const next = days.includes(day) ? days.filter((x) => x !== day) : [...days, day].sort((a, b) => a - b);
+  return next.length ? next : null;
+}
+
 /** What a reminder promises, in one sentence: when it comes and the one condition. */
 export const whenLine = (p: ReminderPrefs) => `Around ${spokenTime(p.at)}, ${daysLine(p.days)}, if you haven't practised yet.`;
 
