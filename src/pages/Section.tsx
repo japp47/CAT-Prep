@@ -1,6 +1,6 @@
 import { useDeferredValue, useEffect, useState, type ReactNode } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import { ChevronDown, Search } from "lucide-react";
+import { CalendarRange, ChevronDown, ListChecks, Search } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,8 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { CategoryBlock } from "../components/Resources";
+import { Explainer, FortyMinutes, ReadingMinutes } from "../components/Explainer";
+import { Fold, Lead, Note, Split, Stages, Steps, Timeline, Two } from "../components/blocks";
 import { Empty, Ext, LinkButton, Page, PageHeader, Section as Block, SwitchTabs, TextLink } from "../components/kit";
 import { GuideExplorer } from "../components/GuideExplorer";
 import { LrGuideBody } from "../components/LrGuide";
@@ -39,7 +41,7 @@ const TR = "border-t align-top"; // taste-skill-ignore: rows of a real table
  * Learn tab has two halves behind a switch (`parts`), and its Practice tab groups categories by phase (`groups`).
  */
 interface PageData {
-  tabs: { id: string; label: string }[]; notes: Record<string, string[]>; format: [string, string][]; topics: TopicData[];
+  tabs: { id: string; label: string }[]; notes: Record<string, [string, string][]>; format: [string, string][]; topics: TopicData[];
   parts?: typeof DILR_LEARN.PARTS; groups?: typeof DILR_LEARN.GROUPS;
 }
 type Part = "lr" | "di";
@@ -77,9 +79,8 @@ function Table({ head, rows, num = [] }: { head: string[]; rows: ReactNode[][]; 
  * A three-column reference table that stays a table from a tablet up and becomes stacked rows on a phone, where three
  * narrow columns of sentences grow taller than the screen.
  */
-function TypeTable({ head, rows }: { head: [string, string, string]; rows: [ReactNode, ReactNode, ReactNode][] }) {
-  return <>
-    <div className="max-sm:hidden"><Table head={head} rows={rows.map(([a, b, c]) => [<b key="a" className="font-semibold">{a}</b>, b, c])} /></div>
+function TypeTable({ head, rows, fold }: { head: [string, string, string]; rows: [ReactNode, ReactNode, ReactNode][]; fold?: string }) {
+  const list = (
     <ul className="flex flex-col gap-px overflow-hidden rounded-lg bg-background sm:hidden">
       {rows.map(([a, b, c], i) => (
         <li key={i} className="flex flex-col gap-1 bg-card px-4 py-3.5">
@@ -89,6 +90,57 @@ function TypeTable({ head, rows }: { head: [string, string, string]; rows: [Reac
         </li>
       ))}
     </ul>
+  );
+  // `fold`: on a phone the stacked rows fold away under this label, since the guides below show each type too.
+  return <>
+    <div className="max-sm:hidden"><Table head={head} rows={rows.map(([a, b, c]) => [<b key="a" className="font-semibold">{a}</b>, b, c])} /></div>
+    {fold ? <Fold label={fold} className="sm:hidden">{list}</Fold> : list}
+  </>;
+}
+
+/**
+ * DILR's Learn tab, top (F102): the section as a stepped picture of the 40 minutes, how to start as
+ * stages along a road like the home page's, and the recent slots as their one-line conclusion with the table folded.
+ */
+function DilrLearnTop({ format }: { format: [string, string][] }) {
+  const L = DILR_LEARN, s = L.START;
+  return <>
+    <Explainer id="dilr-forty-h" title="How the 40 minutes go" steps={format} picture={(n) => <FortyMinutes step={n} />} />
+    <Block title="How to start">
+      <Two lead={s.intro} rest={s.introMore} className="-mt-1" />
+      <Stages rows={s.rows} className="mt-2" />
+    </Block>
+    <Block title="Recent slots, set by set">
+      <Two lead={L.SLOTS_LINE} className="-mt-1" />
+      <Fold label="The seven slots from 2021 to 2025" className="-mt-2">
+        <p className="measure text-base text-muted-foreground">Read set by set from the papers.</p>
+        <TypeTable head={["Slot", "Data sets", "Logic sets"]}
+          rows={L.SLOTS.map((r) => [r.slot, r.data.length ? `${r.data.length}, ${r.data.join("; ")}` : "none", `${r.logic.length}, ${r.logic.join("; ")}`])} />
+      </Fold>
+    </Block>
+  </>;
+}
+
+/**
+ * VARC's Learn tab, top (F102), in the same shape as DILR's: the section as a stepped picture of the 40 minutes, how
+ * to start from zero as stages, and the VA mix as its one-line conclusion with the table folded.
+ */
+function VarcLearnTop({ format }: { format: [string, string][] }) {
+  const s = VARC_LEARN.START;
+  return <>
+    <Explainer id="varc-forty-h" title="How the 40 minutes go" steps={format} picture={(n) => <ReadingMinutes step={n} />} />
+    <Block title="Starting from zero">
+      <Two lead={s.intro} rest={s.introMore} className="-mt-1" />
+      <Stages rows={s.rows} className="mt-2 xl:grid-cols-3" />
+    </Block>
+    <Block title="VA questions per slot, by year">
+      <Two lead={VARC_LEARN.MIX_LINE} className="-mt-1" />
+      <Fold label="The five years, type by type" className="-mt-2">
+        <p className="measure text-base text-muted-foreground">From IMS, Cracku and Careers360 slot analyses. A few slot reports differ by one question.</p>
+        <Table head={["Year", "Para summary", "Sentence insertion", "Odd sentence out", "Para jumble", "Note"]} num={[1, 2, 3, 4]}
+          rows={VA_MIX.map((r) => [r.year, r.ps || "–", r.si || "–", r.oso || "–", r.pj || "–", <span key="n" className="whitespace-nowrap text-muted-foreground">{r.note ?? ""}</span>])} />
+      </Fold>
+    </Block>
   </>;
 }
 
@@ -116,19 +168,11 @@ const guideItems = (gs: LrGuide[]) => gs.map((g) => ({ id: g.id, h: g.h, tag: g.
 
 function Learn({ id, page, focus, part, setPart, cats }: { id: SectionId; page: PageData; focus: string | null; part: Part; setPart: (p: Part) => void; cats: (keep: (c: Category) => boolean) => ReactNode }) {
   const topics = (p?: Part) => page.topics.filter((t) => t.part === p);
-  const both = <div className="flex flex-col gap-3">{topics().map((t) => <Topic key={t.h} t={t} />)}</div>;
+  const both = topics().length > 0 && <div className="flex flex-col gap-3">{topics().map((t) => <Topic key={t.h} t={t} />)}</div>;
   return (
     <div className="flex flex-col gap-12">
-      <Block title="The section">
-        <dl className="grid gap-x-8 gap-y-5 rounded-lg bg-card p-5 sm:grid-cols-[9rem_minmax(0,1fr)] sm:p-6">
-          {page.format.map(([k, v]) => <div key={k} className="contents"><dt className="text-base font-semibold">{k}</dt><dd className="measure text-base text-foreground/85">{v}</dd></div>)}
-        </dl>
-      </Block>
+      {id === "dilr" ? <DilrLearnTop format={page.format} /> : <VarcLearnTop format={page.format} />}
       {id === "varc" && <>
-        <Block title="VA questions per slot, by year" description="From IMS, Cracku and Careers360 slot analyses. A few slot reports differ by one question.">
-          <Table head={["Year", "Para summary", "Sentence insertion", "Odd sentence out", "Para jumble", "Note"]} num={[1, 2, 3, 4]}
-            rows={VA_MIX.map((r) => [r.year, r.ps || "–", r.si || "–", r.oso || "–", r.pj || "–", <span key="n" className="whitespace-nowrap text-muted-foreground">{r.note ?? ""}</span>])} />
-        </Block>
         {both}
         <Block title="A guide for each question type" description="Method, common traps, a worked example to try, and three links: a written guide, a video and a free question bank.">
           <GuideExplorer label="VARC question types" prefKey="guide:varc" focus={focus}
@@ -136,10 +180,6 @@ function Learn({ id, page, focus, part, setPart, cats }: { id: SectionId; page: 
         </Block>
       </>}
       {id === "dilr" && page.parts && <>
-        <Block title="Recent slots, set by set" description="Seven slots from 2021 to 2025, read from the papers. The number of data sets swings from none to four, so neither half can be skipped.">
-          <TypeTable head={["Slot", "Data sets", "Logic sets"]}
-            rows={DILR_LEARN.SLOTS.map((r) => [r.slot, r.data.length ? `${r.data.length}, ${r.data.join("; ")}` : "none", `${r.logic.length}, ${r.logic.join("; ")}`])} />
-        </Block>
         {both}
         {cats((c) => !c.part)}
         <section id="dilr-half" role="tabpanel" aria-label={page.parts.find((p) => p.id === part)!.label} className="flex flex-col gap-10">
@@ -149,7 +189,7 @@ function Learn({ id, page, focus, part, setPart, cats }: { id: SectionId; page: 
           </div>
           {part === "lr" ? <>
             <Block title="Logical reasoning set types" description="What each type looks like, and what to draw before you solve. CAT dresses the same types in new stories: trains, ratings, trade, chairs.">
-              <TypeTable head={["Type", "Looks like", "Draw"]} rows={DILR_LEARN.SET_TYPES} />
+              <TypeTable head={["Type", "Looks like", "Draw"]} rows={DILR_LEARN.SET_TYPES} fold="The ten types at a glance" />
             </Block>
             <div className="flex flex-col gap-3">{topics("lr").map((t) => <Topic key={t.h} t={t} />)}</div>
             <Block title="A guide for each set type" description="What to draw, where to start, the method and the traps, then one of our own sets as the worked example, with its solution drawn step by step.">
@@ -158,7 +198,7 @@ function Learn({ id, page, focus, part, setPart, cats }: { id: SectionId; page: 
             {cats((c) => c.part === "lr")}
           </> : <>
             <Block title="Data interpretation pictures" description="What each picture asks, and where to start before any question. Sets often join a picture to rules, which makes them logic sets with numbers.">
-              <TypeTable head={["Picture", "What it asks", "Start with"]} rows={DILR_LEARN.DI_TYPES} />
+              <TypeTable head={["Picture", "What it asks", "Start with"]} rows={DILR_LEARN.DI_TYPES} fold="The seven pictures at a glance" />
             </Block>
             <div className="flex flex-col gap-3">{topics("di").map((t) => <Topic key={t.h} t={t} />)}</div>
             <Block title="A guide for each picture" description="How to read it, where to start, how exactly to calculate and the traps, then one of our own sets as the worked example.">
@@ -214,6 +254,87 @@ function Toppers() {
   );
 }
 
+type Group = NonNullable<PageData["groups"]>[string];
+
+/**
+ * A phase's lists on the Practice tab. The phase the student is in stays open, in ink; the others fold to their heading
+ * in muted ink with what they are for and how many links they hold, so a student in Foundation is not scrolling past
+ * the mock phase (F102). No box: a later phase reads as not yet, not as a different kind of thing.
+ */
+function PhaseGroup({ head, now, lists, links, children }: { head: Group; now: boolean; lists: number; links: number; children: ReactNode }) {
+  const [open, setOpen] = useState(now);
+  const intro = (muted: boolean) => <>
+    <span className={cn("text-title font-extrabold", muted && "text-muted-foreground transition-colors group-hover:text-foreground")}>{head.h}</span>
+    <span className="measure block text-base font-normal text-pretty text-muted-foreground">{head.note}</span>
+  </>;
+  if (now) return (
+    <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-1">
+        <h2 className="text-title font-extrabold">{head.h}<span className="ml-3 align-middle text-base font-semibold text-primary">You are here</span></h2>
+        <p className="measure text-base text-pretty text-muted-foreground">{head.note}</p>
+      </div>
+      {children}
+    </div>
+  );
+  return (
+    <Collapsible open={open} onOpenChange={setOpen} className="flex flex-col gap-8">
+      <h2>
+        <CollapsibleTrigger className="group -mx-3 flex w-[calc(100%+1.5rem)] flex-col gap-3 rounded-xl px-3 py-3 text-left transition-colors hover:bg-muted/60 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:flex-row sm:items-start sm:justify-between sm:gap-8">
+          <span className="flex min-w-0 flex-col gap-1">{intro(true)}</span>
+          <span className="flex shrink-0 items-center gap-1.5 text-base font-medium text-primary sm:mt-2.5">
+            {open ? "Hide" : `${lists} ${lists === 1 ? "list" : "lists"}, ${links} links`}
+            <ChevronDown className={cn("size-4 transition-transform motion-reduce:transition-none", open && "rotate-180")} aria-hidden />
+          </span>
+        </CollapsibleTrigger>
+      </h2>
+      <CollapsibleContent className="flex flex-col gap-8">{children}</CollapsibleContent>
+    </Collapsible>
+  );
+}
+
+/** The tab's one main thing: what the site itself gives for DILR practice, and the one filled button. */
+function DilrOnSite() {
+  return (
+    <Lead id="dilr-onsite-h" lead={`${LR_CATALOG.length} logic and data sets written for this site.`}
+      rest="Each on a timer with CAT's calculator, then a solution drawn step by step and a two-minute post-mortem."
+      note="Plus drills on reading clues, choosing where to start and replaying the deductions. More DI sets arrive through December; until then, the DI lists below."
+      action={<LinkButton to="/dilr/practice">Open DILR practice</LinkButton>} />
+  );
+}
+
+/** The routine in the margin: how to practise, and which past papers to use when. */
+function DilrRoutine() {
+  const r = DILR_LEARN.PRACTICE;
+  return <>
+    <Note title="How to practise" icon={<ListChecks />}><Steps steps={r.steps} /></Note>
+    <Note title="Past papers, by year" icon={<CalendarRange />}>
+      <Timeline rows={r.papers.map(([when, what]) => ({ when, what }))} />
+      <Two lead={r.papersWhy} className="text-muted-foreground" />
+    </Note>
+  </>;
+}
+
+/** VARC Practice's one main thing, in the same shape as DILR's: what the site gives, and the one filled button. */
+function VarcOnSite() {
+  return (
+    <Lead id="varc-onsite-h" lead={`${RC_CATALOG.length} RC sets written for this site.`}
+      rest="Each with an explanation for every option."
+      note="Plus a daily VA drill, drills by type, a timed sectional, a redo queue for mistakes and a reading speed test. Your scores go straight into Progress."
+      action={<div className="flex flex-wrap gap-3"><LinkButton to="/varc/practice">Open VARC practice</LinkButton><LinkButton to="/practice/va" variant="secondary">Today's VA drill</LinkButton></div>} />
+  );
+}
+
+/** VARC Practice's margin: which past papers to use when. */
+function VarcRoutine() {
+  const r = VARC_LEARN.PRACTICE;
+  return (
+    <Note title="Past papers, by year" icon={<CalendarRange />}>
+      <Timeline rows={r.papers.map(([when, what]) => ({ when, what }))} />
+      <Two lead={r.more} className="text-muted-foreground" />
+    </Note>
+  );
+}
+
 function Live({ sec, page }: { sec: SectionDef; page: PageData }) {
   const { state } = useStore();
   const [vtab, setVtab] = usePref("vtab", "learn");
@@ -254,45 +375,25 @@ function Live({ sec, page }: { sec: SectionDef; page: PageData }) {
     const order = [...new Set(blocks.map((x) => x.c.group ?? ""))];
     return order.map((g) => {
       const head = g ? page.groups![g] : undefined;
-      return (
-        <div key={g || "rest"} className="flex flex-col gap-8">
-          {head && (
-            <div className="flex flex-col gap-1">
-              <h2 className="text-title font-extrabold">{head.h}{head.phases.includes(nowPhase) && <span className="ml-3 align-middle text-base font-semibold text-primary">You are here</span>}</h2>
-              <p className="measure text-base text-muted-foreground">{head.note}</p>
-            </div>
-          )}
-          {blocks.filter((x) => (x.c.group ?? "") === g).map(({ c, items }) => <CategoryBlock key={c.id} cat={c} items={items} all={all} />)}
-        </div>
-      );
+      const mine = blocks.filter((x) => (x.c.group ?? "") === g);
+      const body = mine.map(({ c, items }) => <CategoryBlock key={c.id} cat={c} items={items} all={all} />);
+      if (!head) return <div key="rest" className="flex flex-col gap-8">{body}</div>;
+      return <PhaseGroup key={g} head={head} now={head.phases.includes(nowPhase)} lists={mine.length} links={mine.reduce((n, x) => n + x.items.length, 0)}>{body}</PhaseGroup>;
     });
   };
   // The Learn tab's lists, placed by Learn itself (DILR shows each half's lists under its switch).
   const learnCats = (keep: (c: Category) => boolean) => (!res ? loading : <div className="flex flex-col gap-10">{blocksOf("learn", keep).map(({ c, items }) => <CategoryBlock key={c.id} cat={c} items={items} all={all} />)}</div>);
   const learnInside = !!page.parts;
+  const emptyMsg = "Everything here is ticked or filtered out. Switch off Hide done or Must-do only.";
   const tabValid = page.tabs.some((t) => t.id === vtab) ? vtab : "learn";
 
   const extra = (id: string) => (
     <>
-      {id === "practice" && sec.id === "dilr" && (
-        <div className="flex flex-col gap-3 rounded-lg bg-card p-5 sm:p-6">
-          <h3 className="text-heading font-semibold">Practice on this site</h3>
-          <p className="measure text-base text-foreground/85">{LR_CATALOG.length} original sets, logical reasoning and now data interpretation, each with a timer, CAT's calculator, a step-by-step solution and a two-minute post-mortem, plus drills on reading clues, choosing where to start and replaying the deductions. More DI sets arrive through December; for more now, use the DI sets by topic and the past CAT DI sets below.</p>
-          <div className="flex flex-wrap gap-3"><LinkButton to="/dilr/practice">Open DILR practice</LinkButton></div>
-        </div>
-      )}
-      {id === "practice" && sec.id === "varc" && (
-        <div className="flex flex-col gap-3 rounded-lg bg-card p-5 sm:p-6">
-          <h3 className="text-heading font-semibold">Practice on this site</h3>
-          <p className="measure text-base text-foreground/85">{RC_CATALOG.length} original RC sets with an explanation for every option, a daily VA drill, custom drills by type, a timed sectional, a redo queue for mistakes and a reading speed test. Your scores go straight into Progress.</p>
-          <div className="flex flex-wrap gap-3"><LinkButton to="/varc/practice">Open VARC practice</LinkButton><LinkButton to="/practice/va" variant="secondary">Today's VA drill</LinkButton></div>
-        </div>
-      )}
       {id === "read" && <Rotation />}
       {id === "toppers" && sec.id === "varc" && <Toppers />}
       {page.notes[id] && (
-        <div className="measure flex flex-col gap-3 text-base text-foreground/85">
-          {page.notes[id].map((p, i) => <p key={i}>{p}</p>)}
+        <div className="measure flex flex-col gap-3 text-base">
+          {page.notes[id].map(([lead, rest], i) => <Two key={i} lead={lead} rest={rest} />)}
           {id === "vocab" && <p><TextLink to="/words">Open your flashcards</TextLink></p>}
         </div>
       )}
@@ -311,9 +412,9 @@ function Live({ sec, page }: { sec: SectionDef; page: PageData }) {
           <Search className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-muted-foreground" aria-hidden />
           <Input type="search" placeholder={"Search all " + sec.short + " resources"} aria-label={"Search all " + sec.short + " resources"} autoComplete="off" value={q} onChange={(e) => setQ(e.target.value)} className="bg-card pl-10" />
         </div>
-        <ToggleGroup type="single" value={pri} onValueChange={(v) => v && setPri(v as "all" | "must")} className="rounded-lg bg-secondary p-1" aria-label="Priority filter">
-          <ToggleGroupItem value="all" className="h-9 rounded-md px-3.5 text-base data-[state=on]:bg-card data-[state=on]:font-semibold">All</ToggleGroupItem>
-          <ToggleGroupItem value="must" className="h-9 rounded-md px-3.5 text-base data-[state=on]:bg-card data-[state=on]:font-semibold">Must-do only</ToggleGroupItem>
+        <ToggleGroup type="single" value={pri} onValueChange={(v) => v && setPri(v as "all" | "must")} className="rounded-xl bg-secondary p-1" aria-label="Priority filter">
+          <ToggleGroupItem value="all" className="h-9 rounded-lg px-3.5 text-base data-[state=on]:bg-card data-[state=on]:font-semibold data-[state=on]:shadow-xs dark:data-[state=on]:shadow-none">All</ToggleGroupItem>
+          <ToggleGroupItem value="must" className="h-9 rounded-lg px-3.5 text-base data-[state=on]:bg-card data-[state=on]:font-semibold data-[state=on]:shadow-xs dark:data-[state=on]:shadow-none">Must-do only</ToggleGroupItem>
         </ToggleGroup>
         <label className="inline-flex items-center gap-2.5 text-base"><Checkbox checked={hideDone} onCheckedChange={(v) => setHideDone(v === true)} />Hide done</label>
       </div>
@@ -327,9 +428,14 @@ function Live({ sec, page }: { sec: SectionDef; page: PageData }) {
           </div>
           {page.tabs.map((t) => (
             <TabsContent key={t.id} value={t.id} className="flex flex-col gap-12">
-              {t.id === "learn" && <Learn id={sec.id} page={page} focus={focus} part={part} setPart={setPart} cats={learnCats} />}
-              {extra(t.id)}
-              {!(t.id === "learn" && learnInside) && <div className="flex flex-col gap-14">{list(t.id, "Everything here is ticked or filtered out. Switch off Hide done or Must-do only.")}</div>}
+              {t.id === "practice" ? (
+                sec.id === "dilr" ? <Split lead={<DilrOnSite />} margin={<DilrRoutine />}>{list(t.id, emptyMsg)}</Split>
+                  : <Split lead={<VarcOnSite />} margin={<VarcRoutine />}>{list(t.id, emptyMsg)}</Split>
+              ) : <>
+                {t.id === "learn" && <Learn id={sec.id} page={page} focus={focus} part={part} setPart={setPart} cats={learnCats} />}
+                {extra(t.id)}
+                {!(t.id === "learn" && learnInside) && <div className="flex flex-col gap-14">{list(t.id, emptyMsg)}</div>}
+              </>}
             </TabsContent>
           ))}
         </Tabs>

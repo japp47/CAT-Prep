@@ -3,6 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { useStore } from "../lib/store";
 import type { Category, Resource } from "../sections/types";
+import { Two } from "./blocks";
 import { Ext } from "./kit";
 
 /** One link: tick it when done. Must-do links carry the highlighter; optional ones say so quietly. */
@@ -22,8 +23,7 @@ function Row({ x }: { x: Resource }) {
           {x.p === "must" && <span className="text-sm font-medium text-highlight-foreground dark:text-highlight">Must-do</span>}
           {x.p === "opt" && <span className="text-sm text-muted-foreground">Optional</span>}
         </div>
-        <p className="measure text-base text-foreground/80">{x.w}</p>
-        <p className="text-sm text-muted-foreground">{x.t}{x.alt && <>. <Ext href={x.alt.u} className="underline underline-offset-4 hover:text-foreground">{x.alt.l}</Ext></>}</p>
+        <p className="measure text-base text-foreground/85">{x.w} <span className="text-muted-foreground">{x.t}.{x.alt && <> <Ext href={x.alt.u} className="underline underline-offset-4 hover:text-foreground">{x.alt.l}</Ext></>}</span></p>
       </div>
     </li>
   );
@@ -39,7 +39,7 @@ export function CategoryBlock({ cat, items, all }: { cat: Category; items: Resou
         <h3 className="text-heading font-semibold">{cat.n}</h3>
         <span className="text-sm text-muted-foreground tabular-nums">{done} of {inCat.length} done</span>
       </div>
-      {cat.note && <p className="measure -mt-1 text-base text-muted-foreground">{cat.note}</p>}
+      {cat.note && <Two className="-mt-1" lead={cat.note} rest={cat.why} />}
       <ul className="flex flex-col rounded-lg bg-card p-1.5">{items.map((x) => <Row key={x.id} x={x} />)}</ul>
     </section>
   );

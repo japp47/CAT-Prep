@@ -5,12 +5,32 @@ import type { Topic } from "../varc/learn";
  * (D37); data interpretation has its starting guides here (docs/research/di.md) and its first sets from 1 Nov 2026. Figures
  * are ranges from coaching analyses, not IIM data.
  */
+/**
+ * The section as the captions of a stepped picture, "How the 40 minutes go" (F102, components/Explainer.tsx): each
+ * step in ink, its detail muted. Holds every fact of the old format table: 22 questions in 5 sets since CAT 2024, the
+ * marking and TITA, the opening minutes, when to leave a set, and the 99 estimate.
+ */
 export const FORMAT: [string, string][] = [
-  ["Format", "22 questions in 40 minutes since CAT 2024, in 5 sets: three of 4 questions and two of 5. Most sets are logical reasoning or reasoning with numbers; pure data interpretation is shrinking."],
-  ["Marking", "3 marks for a correct answer, minus 1 for a wrong MCQ. About half the questions are TITA (you type the answer) with no negative marking, so attempt every TITA in a set you have solved."],
-  ["99 target", "About 10 to 13 right answers: estimates for CAT 2025 run from 30 to 38 marks. Two sets solved completely is the usual route; one full set alone is around the 85th percentile."],
-  ["Time split", "Spend the first 3 to 5 minutes reading every set without solving, then attempt the 2 or 3 that look most direct. Leave a set after 5 to 7 minutes with no way in."],
+  ["22 questions, 40 minutes, 5 sets.", "Three sets of 4 questions and two of 5, since CAT 2024."],
+  ["Read all five first, in 3 to 5 minutes.", "Solve nothing yet. Look for clues that are plain facts."],
+  ["Pick the 2 or 3 most direct.", "A long set with plain clues is often the easiest."],
+  ["No way in after 5 to 7 minutes? Leave it.", "Minutes already spent are no reason to stay."],
+  ["Solve two sets completely.", "+3 a right answer, −1 a wrong MCQ. About half are TITA (you type the answer), with no minus mark: answer every one."],
+  ["10 to 13 right is about a 99.", "CAT 2025 estimates: 30 to 38 marks. One set alone is about the 85th percentile."],
 ];
+
+/** How to start, as a timeline: one line a stage, its detail one tap away. */
+export const START: { intro: string; introMore: string; rows: { when: string; what: string; more: string }[] } = {
+  intro: "Solve, then study your own solution.",
+  introMore: "A set takes 30 to 45 minutes at first, and 15 to 20 after about 100 sets solved and studied (r/CATpreparation).",
+  rows: [
+    { when: "Weeks 1 to 3", what: "LR basics, untimed.", more: "One course, grid puzzles, how to draw each type; ten minutes a day of DI calculation." },
+    { when: "Weeks 4 and 5", what: "DI basics, untimed.", more: "A chart type a day, then a set a day. Keep one LR set a day going." },
+    { when: "Weeks 6 to 12", what: "Past CAT sets, timed.", more: "One or two LR sets a day in 15 to 20 minutes and a DI set in 12; as long again on each solution." },
+    { when: "Build phase", what: "A timed section weekly.", more: "2017 to 2022 papers; pick two or three sets." },
+  ],
+};
+export const SLOTS_LINE = "Most sets are logic, or logic with numbers. Data sets per slot swing from none to four, so neither half can be skipped.";
 
 /** LR set types: what they look like and what to draw. The same types as the set format (docs/content/lr-format.md). */
 export const SET_TYPES: [string, string, string][] = [
@@ -52,14 +72,6 @@ export const SLOTS: { slot: string; data: string[]; logic: string[] }[] = [
 ];
 
 export const TOPICS: Topic[] = [
-  { h: "How to start: logical reasoning and data interpretation together", open: true,
-    p: ["Logical reasoning is learned by solving and then studying your own solution. Templates come first, then real CAT sets, then timed sections.", "Expect a set to take 30 to 45 minutes at first. Students on r/CATpreparation report 15 to 20 minutes after about 100 sets solved and studied."],
-    ol: [
-      "Weeks 1 to 3: logical reasoning basics. One LR course (Quantifiers or Rodha) and logic grid puzzles, untimed. Learn to draw each set type in the Logical reasoning half below. Ten minutes a day on the calculation tools in the Data interpretation half.",
-      "Weeks 4 and 5: data interpretation basics. The DI starter kit, one chart type a day, then Cracku's DI basics page, one set a day, untimed. Keep one LR set a day going.",
-      "Weeks 6 to 12: past CAT sets by topic. One or two LR sets a day at 15 to 20 minutes and a DI set at 12, with as long again studying each solution. From week 7, the past CAT DI sets in order, two a week.",
-      "From the Build phase: a timed DILR section once a week from the 2017 to 2022 papers. Read all five sets first and pick two or three; do not attempt them all.",
-    ] },
   { h: "Read every condition exactly", part: "lr",
     p: ["Most lost marks in LR come from a misread clue, not from hard logic. Translate each clue before you place anything."],
     ul: [
@@ -149,8 +161,25 @@ export const TABS = [
   { id: "toppers", label: "Toppers" },
 ];
 
-export const TAB_NOTES: Record<string, string[]> = {
-  practice: ["One or two CAT-level sets a day, timed at 15 to 20 minutes, with as long again to study the solution. Pick two sources and finish them; a folder of unopened PDFs teaches nothing.", "Keep CAT 2017 to 2022 for timed sections in the Build and Apply phases, and save 2023 to 2026 as real papers for the mock phase. The past DI sets below borrow eight sets from 2023 to 2025 because they show DI as CAT asks it now; a set you have seen is one of five in its slot, so the paper still works as a mock."],
-  watch: ["Prefer channels that solve a set live, so you see where the solver starts and how cases are cut, over videos that show a finished solution. Pause before each step and try it yourself."],
-  toppers: ["Two things repeat in every topper account: hundreds of sets solved and studied honestly, and leaving a stuck set early."],
+/**
+ * The Practice tab's routine, as blocks (F102): how to practise as steps, which past papers to use when as a timeline,
+ * and the reasoning behind each one tap away.
+ */
+export const PRACTICE: { steps: { text: string; why?: string }[]; papers: [string, string][]; papersWhy: string } = {
+  steps: [
+    { text: "One or two CAT-level sets a day, timed at 15 to 20 minutes." },
+    { text: "Study each solution for as long as the set took." },
+    { text: "Pick two sources and finish them.", why: "A folder of unopened PDFs teaches nothing." },
+  ],
+  papers: [
+    ["2017 to 2022", "Timed sections, in the Build and Apply phases."],
+    ["2023 to 2026", "Real papers, saved for the mock phase."],
+  ],
+  papersWhy: "The past DI sets below borrow eight sets from 2023 to 2025, because they show DI as CAT asks it now. A set you have seen is one of five in its slot, so the paper still works as a mock.",
+};
+
+/** Notes under a tab, as two-tone pairs: what to do in ink, the reason muted (F102). */
+export const TAB_NOTES: Record<string, [string, string][]> = {
+  watch: [["Pick channels that solve a set live, and pause before each step to try it yourself.", "You see where the solver starts and how cases are cut, which a video of a finished solution hides."]],
+  toppers: [["Two things repeat in every topper account:", "hundreds of sets solved and studied honestly, and leaving a stuck set early."]],
 };

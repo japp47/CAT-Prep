@@ -197,16 +197,16 @@ export function SwitchTabs<T extends string>({ value, onChange, options, label, 
   );
 }
 
-/** A row of mutually exclusive choices, such as VARC, DILR and Quant. */
+/** A row of mutually exclusive choices, such as VARC, DILR and Quant: the same look as the tabs and the LR/DI switch, a card-toned pill on a soft track. */
 export function Segmented<T extends string>({ value, onChange, options, label, className }: { value: T; onChange: (v: T) => void; options: (T | [T, ReactNode])[]; label: string; className?: string }) {
   return (
-    <div role="group" aria-label={label} className={cn("inline-flex w-fit flex-wrap gap-1 rounded-lg bg-secondary p-1", className)}>
+    <div role="group" aria-label={label} className={cn("inline-flex w-fit flex-wrap gap-1 rounded-xl bg-secondary p-1", className)}>
       {options.map((o) => {
         const [v, l] = Array.isArray(o) ? o : [o, o];
         return (
           <button key={v} type="button" aria-pressed={value === v} onClick={() => onChange(v)}
             // min-h, not h: a label that wraps in a narrow column used to spill out of its pill.
-            className={cn("min-h-9 rounded-md px-3.5 py-1.5 text-base text-muted-foreground transition-colors hover:text-foreground", value === v && "bg-card font-semibold text-primary ring-1 ring-inset ring-primary/40")}>
+            className={cn("min-h-9 rounded-lg px-3.5 py-1.5 text-base text-muted-foreground transition-colors duration-200 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none", value === v && "bg-card font-semibold text-foreground shadow-xs dark:shadow-none")}>
             {l}
           </button>
         );

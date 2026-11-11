@@ -38,7 +38,7 @@ Browser (React 19 SPA, PWA)                       Cloudflare Pages (static, free
 | Layer | Folder | Rule |
 |---|---|---|
 | Pages | `src/pages`, `src/pages/practice`, `src/pages/tracker` | One lazy route each (`App.tsx`). Compose components; little logic |
-| Components | `src/components`, `src/components/ui` | Page building blocks in `kit.tsx`; shadcn in `ui/`. Tokens in `src/index.css` |
+| Components | `src/components`, `src/components/ui` | Page building blocks in `kit.tsx`; readable-content blocks (Two, Lead, Note, Steps, Timeline, Stages, Fold, Split) in `blocks.tsx`, loaded only by content pages (F102); shadcn in `ui/`. Tokens in `src/index.css` |
 | Domain | `src/practice`, `src/planner`, `src/sections`, `src/data` | Pure TypeScript: scoring (`record.ts`), redo (`redo.ts`), report (`report.ts`), summaries, streak, percentile, the day planner (`planner/engine.ts`). Tested with Vitest. No React here where avoidable |
 | State | `src/lib/state.ts`, `src/lib/store.tsx` | One `AppState` object; every read from storage or a backup goes through `normalize()`; writes through `update(fn)` |
 | Content | `content/*.json`, `src/practice/rc|va|cr`, `scripts/catalog.ts` | Written by the owner, checked by tests, split per file (below) |
