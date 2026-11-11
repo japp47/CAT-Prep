@@ -911,5 +911,658 @@
         "A falling share of renewables is not falling capacity: Other RE's share fell every year while its capacity rose, because renewables grew."
       ]
     }
+  },
+  {
+    "id": "di-streaming-growth",
+    "title": "Three streaming platforms: subscriber growth",
+    "type": "di-chart",
+    "difficulty": "hard",
+    "minutes": 12,
+    "source": "original",
+    "since": "2026-11-12",
+    "intro": [
+      "The line chart shows the year-on-year growth, in per cent, in the subscribers of three streaming platforms, Aarav, Bhava and Chitra, in each year from 2020 to 2024. The table gives each platform's subscribers, in millions, in 2019.",
+      "A platform's subscribers in a year = its subscribers in the previous year × (1 + that year's growth rate). Use the printed rates exactly."
+    ],
+    "clues": [],
+    "data": [
+      {
+        "id": "growth",
+        "caption": "Year-on-year growth in subscribers",
+        "unit": "%",
+        "rowHead": "Platform",
+        "cols": [
+          "2020",
+          "2021",
+          "2022",
+          "2023",
+          "2024"
+        ],
+        "rows": [
+          {
+            "name": "Aarav",
+            "cells": [
+              30,
+              25,
+              18,
+              12,
+              8
+            ]
+          },
+          {
+            "name": "Bhava",
+            "cells": [
+              10,
+              12,
+              -4,
+              6,
+              9
+            ]
+          },
+          {
+            "name": "Chitra",
+            "cells": [
+              64,
+              44,
+              32,
+              22,
+              15
+            ]
+          }
+        ]
+      },
+      {
+        "id": "base",
+        "caption": "Subscribers in 2019",
+        "unit": "Million",
+        "rowHead": "Platform",
+        "cols": [
+          "2019"
+        ],
+        "rows": [
+          {
+            "name": "Aarav",
+            "cells": [
+              40
+            ]
+          },
+          {
+            "name": "Bhava",
+            "cells": [
+              55
+            ]
+          },
+          {
+            "name": "Chitra",
+            "cells": [
+              25
+            ]
+          }
+        ]
+      }
+    ],
+    "charts": [
+      {
+        "kind": "line",
+        "data": "growth",
+        "axis": {
+          "min": -10,
+          "max": 70,
+          "step": 10,
+          "label": "%"
+        },
+        "labels": true,
+        "colors": [
+          1,
+          2,
+          3
+        ],
+        "place": {
+          "Aarav": "right",
+          "Bhava": "below"
+        }
+      },
+      {
+        "kind": "table",
+        "data": "base"
+      }
+    ],
+    "questions": [
+      {
+        "stem": "In how many of the 15 platform-years (three platforms in each of the five years from 2020 to 2024) did a platform add at least 10 million subscribers over the previous year?",
+        "kind": "mcq",
+        "dk": "growth",
+        "options": [
+          "11",
+          "8",
+          "9",
+          "7"
+        ],
+        "answer": 1,
+        "uses": [],
+        "why": [
+          "Subscribers added each year, in millions, 2020 to 2024: Aarav 12.0, 13.0, 11.7, 9.2, 6.9; Bhava 5.5, 7.3, −2.7, 3.9, 6.2; Chitra 16.0, 18.0, 18.9, 17.1, 14.3.",
+          "At least 10 million: Aarav's first three years and all five of Chitra's, so 8.",
+          "Counting growth rates of 10% or more gives 11 instead: a high rate on a small base adds few subscribers."
+        ]
+      },
+      {
+        "stem": "Between 2019 and 2024, whose share of the three platforms' combined subscribers changed the least, in percentage points, whichever way it moved?",
+        "kind": "mcq",
+        "dk": "percent",
+        "options": [
+          "Bhava and Chitra, by the same amount",
+          "Bhava",
+          "Aarav",
+          "Chitra"
+        ],
+        "answer": 2,
+        "uses": [],
+        "why": [
+          "Subscribers in 2024: Aarav 92.8, Bhava 75.2, Chitra 109.3 million, 277.3 in all (120 in 2019).",
+          "Shares, 2019 to 2024: Aarav 33.3% to 33.5%, Bhava 45.8% to 27.1%, Chitra 20.8% to 39.4%. Aarav moves by 0.1 points, Bhava by 18.7 and Chitra by 18.6.",
+          "Aarav grew 2.32 times, almost exactly as fast as the three together (2.31 times), so its share hardly moved."
+        ]
+      },
+      {
+        "stem": "In how many of the five years from 2020 to 2024 was the growth rate of the three platforms' combined subscribers higher than the simple average of their three growth rates that year?",
+        "kind": "mcq",
+        "dk": "growth",
+        "options": [
+          "2",
+          "3",
+          "1",
+          "0"
+        ],
+        "answer": 0,
+        "uses": [],
+        "why": [
+          "The combined rate is an average weighted by each platform's subscribers at the start of the year, so it beats the simple average only when the faster growers are the larger ones.",
+          "Combined against simple average: 2020 27.92% against 34.67%; 2021 24.95% against 27.00%; 2022 14.54% against 15.33%; 2023 13.77% against 13.33%; 2024 10.94% against 10.67%.",
+          "Higher in 2023 and 2024 only: by then Chitra, the fastest grower, is the largest platform."
+        ]
+      },
+      {
+        "stem": "Suppose Bhava's growth in 2022 had been +8% instead of −4%, and Chitra's growth in 2023 had been +15% instead of +22%, with every other rate unchanged. By what percentage would the three platforms' combined subscribers in 2024 have differed from the actual figure? Enter a positive number if higher and a negative one if lower, correct to one decimal place.",
+        "kind": "tita",
+        "dk": "growth",
+        "answer": "1.1",
+        "tol": 0.05,
+        "uses": [],
+        "why": [
+          "A changed rate scales that year's figure and every later one by the same factor. Bhava's 2024 figure × (1.08 ÷ 0.96 = 1.125): 75.16 to 84.55 million. Chitra's × (1.15 ÷ 1.22 = 0.9426): 109.34 to 103.07.",
+          "Aarav stays at 92.78. Combined: 280.40 against 277.27, 1.13% higher, so 1.1.",
+          "Adding the changes in percentage points (+12 and −7) cannot work: the two changes act on different bases."
+        ]
+      },
+      {
+        "stem": "In the same case (Bhava +8% in 2022, Chitra +15% in 2023, every other rate unchanged), Chitra's net addition of subscribers from 2019 to 2024 would have been what percentage of the three platforms' combined net addition over the same years?",
+        "kind": "mcq",
+        "dk": "growth",
+        "options": [
+          "44%",
+          "54%",
+          "37%",
+          "49%"
+        ],
+        "answer": 3,
+        "uses": [],
+        "why": [
+          "In that case Chitra reaches 103.07 million, a net addition of 78.07; the three together reach 280.40, a net addition of 160.40.",
+          "78.07 ÷ 160.40 = 48.7%, so 49%.",
+          "54% is the actual share, without the changes; 37% is Chitra's share of the combined 2024 total, not of the additions."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Build each platform's subscribers year by year from 2019, multiplying by 1 + the year's rate. 2024: Aarav 92.78, Bhava 75.16, Chitra 109.34 million.",
+        "A combined growth rate needs the subscribers, not the rates: it is weighted by each platform's size.",
+        "In a what-if, a changed rate rescales that year and every later year by the new factor ÷ the old one."
+      ]
+    }
+  },
+  {
+    "id": "di-group-segments",
+    "title": "A diversified group: segment revenue and profit",
+    "type": "di-chart",
+    "difficulty": "hard",
+    "minutes": 10,
+    "source": "original",
+    "since": "2026-11-12",
+    "intro": [
+      "A diversified group has five segments. The pie chart shows each segment's share of the group's revenue in 2025. The table shows each segment's revenue growth from 2024 to 2025 and its operating margin in each of the two years.",
+      "The Finance segment's operating profit in 2025 was ₹ 4,320 crore. The pie's shares are exact.",
+      "A segment's operating profit = its revenue × its operating margin; a negative margin is a loss. The group's operating margin = its total operating profit ÷ its total revenue."
+    ],
+    "clues": [],
+    "data": [
+      {
+        "id": "share",
+        "caption": "Share of the group's 2025 revenue",
+        "unit": "%",
+        "rowHead": "Segment",
+        "cols": [
+          "Share"
+        ],
+        "rows": [
+          {
+            "name": "Retail",
+            "cells": [
+              34
+            ]
+          },
+          {
+            "name": "Telecom",
+            "cells": [
+              25
+            ]
+          },
+          {
+            "name": "Energy",
+            "cells": [
+              20
+            ]
+          },
+          {
+            "name": "Media",
+            "cells": [
+              12
+            ]
+          },
+          {
+            "name": "Finance",
+            "cells": [
+              9
+            ]
+          }
+        ]
+      },
+      {
+        "id": "seg",
+        "caption": "Revenue growth and operating margin",
+        "unit": "%",
+        "rowHead": "Segment",
+        "cols": [
+          "Revenue growth, 2025 over 2024",
+          "Operating margin, 2025",
+          "Operating margin, 2024"
+        ],
+        "rows": [
+          {
+            "name": "Retail",
+            "cells": [
+              20,
+              8,
+              10
+            ]
+          },
+          {
+            "name": "Telecom",
+            "cells": [
+              20,
+              35,
+              32
+            ]
+          },
+          {
+            "name": "Energy",
+            "cells": [
+              -20,
+              12,
+              15
+            ]
+          },
+          {
+            "name": "Media",
+            "cells": [
+              60,
+              -5,
+              -12
+            ]
+          },
+          {
+            "name": "Finance",
+            "cells": [
+              8,
+              40,
+              38
+            ]
+          }
+        ]
+      }
+    ],
+    "charts": [
+      {
+        "kind": "share",
+        "data": "share",
+        "labels": true,
+        "colors": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "kind": "table",
+        "data": "seg"
+      }
+    ],
+    "questions": [
+      {
+        "stem": "By what percentage did the group's total revenue grow from 2024 to 2025? Give your answer correct to one decimal place.",
+        "kind": "tita",
+        "dk": "growth",
+        "answer": "11.1",
+        "tol": 0.05,
+        "uses": [],
+        "why": [
+          "Finance's 2025 revenue = 4,320 ÷ 0.40 = ₹ 10,800 crore, which is 9% of the group: the group's 2025 revenue = 10,800 ÷ 0.09 = ₹ 1,20,000 crore.",
+          "Segments in 2025: Retail 40,800, Telecom 30,000, Energy 24,000, Media 14,400, Finance 10,800. Dividing each by 1 + its growth gives 2024: 34,000, 25,000, 30,000, 9,000 and 10,000, which is 1,08,000 in all.",
+          "Growth = 12,000 ÷ 1,08,000 = 11.11%, so 11.1."
+        ]
+      },
+      {
+        "stem": "The group's operating profit rose from 2024 to 2025. Split the rise into two parts. The volume part is the sum, over the segments, of (the change in the segment's revenue) × (its 2024 margin). The margin part is the sum, over the segments, of (its 2025 revenue) × (the change in its margin from 2024 to 2025). What was the margin part, in ₹ crore? Give your answer to the nearest integer.",
+        "kind": "tita",
+        "dk": "percent",
+        "answer": "588",
+        "tol": 0.5,
+        "uses": [],
+        "why": [
+          "Margin part, segment by segment (2025 revenue × change in margin): Retail 40,800 × −2% = −816; Telecom 30,000 × 3% = 900; Energy 24,000 × −3% = −720; Media 14,400 × 7% = 1,008; Finance 10,800 × 2% = 216. Sum: 588.",
+          "Check: the volume part is 1,036, and 1,036 + 588 = 1,624, the whole rise in operating profit.",
+          "Using 2024 revenue in the margin part gives 0, and the two parts then no longer add up to the rise."
+        ]
+      },
+      {
+        "stem": "Leave the Media segment out altogether, both its revenue and its loss. What would the operating margin of the other four segments together have been in 2025, in per cent? Give your answer to the nearest integer.",
+        "kind": "tita",
+        "dk": "percent",
+        "answer": "20",
+        "tol": 0.5,
+        "uses": [],
+        "why": [
+          "2025 operating profit, ₹ crore: Retail 3,264, Telecom 10,500, Energy 2,880, Finance 4,320, and Media −720, a loss.",
+          "Without Media: 20,964 of profit on 1,20,000 − 14,400 = 1,05,600 of revenue, a margin of 19.85%, so 20.",
+          "With Media the group's margin is 16.9%: leaving out a loss-making segment raises the margin through both profit and revenue."
+        ]
+      },
+      {
+        "stem": "By what percentage did the group's total operating profit change from 2024 to 2025?",
+        "kind": "mcq",
+        "dk": "growth",
+        "options": [
+          "−0.4%",
+          "+8.7%",
+          "+6.4%",
+          "+11.1%"
+        ],
+        "answer": 1,
+        "uses": [],
+        "why": [
+          "2024 operating profit, ₹ crore: Retail 3,400, Telecom 8,000, Energy 4,500, Media −1,080, Finance 3,800; 18,620 in all. 2025: 20,244.",
+          "Change = 1,624 ÷ 18,620 = 8.72%, so +8.7%.",
+          "Revenue grew 11.1%, but margins moved: the group's margin fell from 17.2% to 16.9%, so profit grew more slowly."
+        ]
+      },
+      {
+        "stem": "Suppose the Energy segment's 2025 revenue had stayed at its 2024 level, with its 2025 margin and every other segment unchanged. What would the group's 2025 operating margin have been?",
+        "kind": "mcq",
+        "dk": "percent",
+        "options": [
+          "16.6%",
+          "16.1%",
+          "16.9%",
+          "17.4%"
+        ],
+        "answer": 0,
+        "uses": [],
+        "why": [
+          "Energy's revenue would be 30,000 instead of 24,000, and its profit 12% × 30,000 = 3,600 instead of 2,880.",
+          "The group: 20,964 of profit on 1,26,000 of revenue, a margin of 16.64%, so 16.6%.",
+          "16.1% keeps Energy's old profit with its new revenue."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Start from the one figure in rupees: Finance's profit and margin give its revenue, and its 9% share gives the group's, ₹ 1,20,000 crore in 2025.",
+        "The shares give each segment's 2025 revenue; dividing by 1 + growth gives 2024; × the margins gives the profits in both years.",
+        "The margin of a total is its profit ÷ its revenue, never an average of the segments' margins."
+      ]
+    }
+  },
+  {
+    "id": "di-sales-funnel",
+    "title": "Six regions: leads, conversion and deal size",
+    "type": "di-chart",
+    "difficulty": "hard",
+    "minutes": 12,
+    "source": "original",
+    "since": "2026-11-12",
+    "intro": [
+      "The bar chart shows the number of sales leads, in thousands, that a company generated in each of six regions in a year. The scatter chart shows, for each region, its conversion rate (the percentage of leads that became deals, across) and its average deal size (up), in ₹ lakh.",
+      "Deals = leads × conversion rate. Revenue = deals × average deal size. As 1 crore = 100 lakh, a region's revenue in ₹ crore = leads (thousand) × conversion rate (%) × deal size (₹ lakh) ÷ 10."
+    ],
+    "clues": [],
+    "data": [
+      {
+        "id": "leads",
+        "caption": "Leads generated",
+        "unit": "Thousand",
+        "rowHead": "Region",
+        "cols": [
+          "Leads"
+        ],
+        "rows": [
+          {
+            "name": "North",
+            "cells": [
+              60
+            ]
+          },
+          {
+            "name": "South",
+            "cells": [
+              45
+            ]
+          },
+          {
+            "name": "East",
+            "cells": [
+              30
+            ]
+          },
+          {
+            "name": "West",
+            "cells": [
+              52
+            ]
+          },
+          {
+            "name": "Central",
+            "cells": [
+              38
+            ]
+          },
+          {
+            "name": "North-East",
+            "cells": [
+              22
+            ]
+          }
+        ]
+      },
+      {
+        "id": "funnel",
+        "caption": "Conversion rate and average deal size",
+        "rowHead": "Region",
+        "cols": [
+          "Conversion rate (%)",
+          "Average deal size (₹ lakh)"
+        ],
+        "rows": [
+          {
+            "name": "North",
+            "cells": [
+              4,
+              5
+            ]
+          },
+          {
+            "name": "South",
+            "cells": [
+              6,
+              6
+            ]
+          },
+          {
+            "name": "East",
+            "cells": [
+              8,
+              4
+            ]
+          },
+          {
+            "name": "West",
+            "cells": [
+              5,
+              8
+            ]
+          },
+          {
+            "name": "Central",
+            "cells": [
+              7,
+              7
+            ]
+          },
+          {
+            "name": "North-East",
+            "cells": [
+              9,
+              9
+            ]
+          }
+        ]
+      }
+    ],
+    "charts": [
+      {
+        "kind": "bar",
+        "data": "leads",
+        "axis": {
+          "max": 70,
+          "step": 10,
+          "label": "Thousand"
+        },
+        "labels": true
+      },
+      {
+        "kind": "scatter",
+        "data": "funnel",
+        "axis": {
+          "max": 10,
+          "step": 2,
+          "label": "Average deal size (₹ lakh)"
+        },
+        "xaxis": {
+          "max": 10,
+          "step": 2,
+          "label": "Conversion rate (%)"
+        },
+        "labels": true,
+        "place": {
+          "North-East": "left"
+        }
+      }
+    ],
+    "questions": [
+      {
+        "stem": "Rank the six regions by leads (1 for the most) and again by revenue (1 for the highest). For how many regions do the two ranks differ by 2 or more?",
+        "kind": "mcq",
+        "dk": "read",
+        "options": [
+          "3",
+          "2",
+          "6",
+          "4"
+        ],
+        "answer": 0,
+        "uses": [],
+        "why": [
+          "Revenue, ₹ crore: North 120.0, South 162.0, East 96.0, West 208.0, Central 186.2, North-East 178.2.",
+          "Ranks by leads: North 1, West 2, South 3, Central 4, East 5, North-East 6. By revenue: West 1, Central 2, North-East 3, South 4, North 5, East 6.",
+          "Gaps: North 4, North-East 3, Central 2; South, East and West 1 each. So 3."
+        ]
+      },
+      {
+        "stem": "Take the regions whose conversion rate is above the company's overall conversion rate (its total deals ÷ its total leads) and whose average deal size is below the simple average of the six regions' deal sizes. What was their combined revenue, in ₹ crore? Give your answer correct to one decimal place.",
+        "kind": "tita",
+        "dk": "percent",
+        "answer": "258.0",
+        "tol": 0.05,
+        "uses": [],
+        "why": [
+          "Deals: North 2,400, South 2,700, East 2,400, West 2,600, Central 2,660, North-East 1,980; 14,740 on 2,47,000 leads, an overall rate of 5.97%.",
+          "Above 5.97%: South (6), East (8), Central (7) and North-East (9). The average deal size is ₹ 6.5 lakh; below it, of these: South (6) and East (4).",
+          "Revenue: 162.0 + 96.0 = 258.0. The simple average of the six rates (6.5%) would drop South and give 96.0."
+        ]
+      },
+      {
+        "stem": "The company wants every region to earn at least ₹ 150 crore. Leads and deal sizes cannot change; a region below ₹ 150 crore may raise its conversion rate as far as it needs, but by at most 3 percentage points. After that, what is the total shortfall below ₹ 150 crore across the regions, in ₹ crore? Give your answer to the nearest integer.",
+        "kind": "tita",
+        "dk": "range",
+        "answer": "18",
+        "tol": 0.5,
+        "uses": [],
+        "why": [
+          "Below ₹ 150 crore: North (120.0) and East (96.0).",
+          "North needs a rate of 150 × 10 ÷ (60 × 5) = 5.0%, one point more: it reaches 150, no shortfall.",
+          "East needs 12.5%, 4.5 points more, but may add only 3: at 11.0% it earns 30 × 11 × 4 ÷ 10 = 132.0, 18 short. The total shortfall is 18."
+        ]
+      },
+      {
+        "stem": "Suppose North-East had doubled its leads, to 44 thousand, while its conversion rate fell by 1 percentage point, to 8%, with every other region unchanged. What would the company's overall conversion rate (total deals ÷ total leads) have been?",
+        "kind": "mcq",
+        "dk": "percent",
+        "options": [
+          "6.22%",
+          "5.97%",
+          "6.05%",
+          "6.33%"
+        ],
+        "answer": 2,
+        "uses": [],
+        "why": [
+          "North-East's deals: 44,000 × 8% = 3,520 instead of 1,980. The others: 2,400 + 2,700 + 2,400 + 2,600 + 2,660 = 12,760.",
+          "In all: 16,280 deals on 2,69,000 leads = 6.05%.",
+          "Keeping North-East at 9% gives 6.22%; the simple average of the six new rates is 6.33%."
+        ]
+      },
+      {
+        "stem": "The company moves 10 thousand leads out of the region with the lowest revenue per lead. The region with the highest revenue per lead can take at most 6 thousand of them; the other 4 thousand go to the region with the second-highest revenue per lead. Each region keeps its conversion rate and deal size. By how many ₹ crore does the company's revenue rise? Give your answer correct to one decimal place.",
+        "kind": "tita",
+        "dk": "range",
+        "answer": "48.2",
+        "tol": 0.05,
+        "uses": [],
+        "why": [
+          "Revenue per thousand leads, ₹ crore (conversion × deal size ÷ 10): North 2.0, South 3.6, East 3.2, West 4.0, Central 4.9, North-East 8.1.",
+          "From North (2.0): 6 thousand to North-East (8.1) and 4 thousand to Central (4.9).",
+          "Gain = 6 × 6.1 + 4 × 2.9 = 36.6 + 11.6 = 48.2."
+        ]
+      }
+    ],
+    "solution": {
+      "steps": [
+        "Neither chart answers alone: revenue = leads (bar) × conversion × deal size (scatter) ÷ 10.",
+        "A company-wide rate is total deals ÷ total leads, weighted by leads; it is not the average of the six rates.",
+        "Revenue per lead (conversion × deal size) decides where an extra lead earns the most."
+      ]
+    }
   }
 ]

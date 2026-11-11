@@ -388,6 +388,7 @@ Additions for anonymous identity:
 | 21 Oct 2026 | Go 1.27 in `go.mod` and the builder | Decided (support policy) |
 | 21 Oct 2026 | Link devices by a QR scanned inside 99ile (the camera app opens Safari on iPhone); typed code as the other way | Decided |
 | 23 Oct 2026 | Owner's proposals adopted as F56 to F78 in the order of D18; community needs accounts (D19); reminders through the inbox first (D23) | Proposed, owner to confirm |
+| 11 Nov 2026 | Replay clips are drawn on a canvas and encoded in the browser (WebCodecs H.264, own MP4 writer, `MediaRecorder` fallback); no server, no new dependency, one lazy chunk (D94) | Decided |
 
 ## 13a. Search and History stay in the browser (D26, 24 Oct 2026)
 The ⌘K palette and History (F51) read the student's own state in the browser. Sync already puts the same state on every linked device, so neither needs an endpoint, and both work offline. Per-student data is bounded by the sync limits (20,000 records, 8 MB), so in-browser search stays fast as students grow; the number of students does not matter because each browser searches only its own data. Server search arrives with shared content: community posts (F67, F68) get a Postgres `tsvector` column and a GIN index in the `community` schema.

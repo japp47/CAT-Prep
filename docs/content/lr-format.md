@@ -82,7 +82,9 @@ Types `di-chart` (charts) and `di-table` (tables and missing data), one file eac
 - Real data: `cite` names the source, the rounding and the licence, shown under the charts (F96).
 - MCQ options that are labels and also letters clash with A to D: write "Batch B", not "B".
 
-**Checks.** `practice/di/checks.ts` has one function per set that recomputes every answer from `data`; `checks.test.ts` compares them with the key, and for a table with blanks the general solver must find exactly one fill, equal to `solution.fills`, with every fact needed. **Then two independent solvers** (owner, 1 Nov 2026): two agents in parallel solve the student's text without the key; any disagreement, ambiguity, giveaway option or answer near a rounding boundary is fixed and the set solved again. The first two sets were solved twice this way on 1 Nov 2026.
+**Checks.** `practice/di/checks.ts` has one function per set that recomputes every answer from `data`; `checks.test.ts` compares them with the key, and for a table with blanks the general solver must find exactly one fill, equal to `solution.fills`, with every fact needed. **Then two independent solvers** (owner, 1 Nov 2026): two agents in parallel solve the student's text without the key; any disagreement, ambiguity, giveaway option or answer near a rounding boundary is fixed and the set solved again. The first two sets were solved twice this way on 1 Nov 2026; the six harder sets of 11 Nov 2026 too (both solvers matched every key; one option changed, D95).
+
+**Added 11 Nov 2026 (D95).** A Total cell may be blank: the solver skips it as a rule, works it out from the fill, and `solution.fills` lists it like any blank. A fact may name the cells it reads (`cells` in `Fact`), so the search tests it as soon as they are filled; without it a fact waits for a full table. A line chart's `axis` may take a `min` below zero, and `place` puts a line's values `below` or `right` of its points so close lines keep their numbers apart. A pie (`share`) prints its values in its legend, so it fits a phone. A table wider than its pane says it scrolls, as a chart does.
 
 ## Example (original, checked by brute force)
 

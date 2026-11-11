@@ -26,7 +26,7 @@ export function DiFigure({ chart, data }: { chart: Chart; data: DiData }) {
         {data.unit && chart.kind !== "table" && <span className="text-sm text-muted-foreground">{data.unit}</span>}
       </figcaption>
       {chart.kind === "table" ? <DiTable data={data} /> : <>
-        <Legend names={seriesNames(chart, data)} chart={chart} />
+        <Legend names={seriesNames(chart, data)} chart={chart} data={data} />
         <Scroller>{chart.kind === "line" ? <Lines chart={chart} data={data} />
           : chart.kind === "scatter" ? <Scatter chart={chart} data={data} />
           : chart.kind === "share" ? <Share chart={chart} data={data} />
@@ -68,9 +68,11 @@ function seriesNames(c: Chart, d: DiData): string[] {
   return c.kind === "line" || c.kind === "share" || c.by === "cols" ? d.rows.map((r) => r.name) : d.cols;
 }
 
-function Legend({ names, chart }: { names: string[]; chart: Chart }) {
+function Legend({ names, chart, data }: { names: string[]; chart: Chart; data: DiData }) {
   const kind = chart.kind;
   if (names.length < 2) return null;
+  // A pie's values live in its legend ("Retail 34%"): labels round the pie would make it too wide for a phone.
+  const value = (i: number) => (kind === "share" && chart.labels ? ` ${fmt(data.rows[i].cells[0] ?? 0)}${data.unit === "%" ? "%" : ""}` : "");
   return (
     <ul className="flex flex-wrap gap-x-5 gap-y-1.5" aria-hidden>
       {names.map((n, i) => (
@@ -78,7 +80,7 @@ function Legend({ names, chart }: { names: string[]; chart: Chart }) {
           {kind === "line"
             ? <svg width="22" height="10" className="shrink-0"><line x1="1" y1="5" x2="21" y2="5" stroke={colorOf(chart, i)} strokeWidth="2" strokeLinecap="round" /><circle cx="11" cy="5" r="3.5" fill={colorOf(chart, i)} /></svg>
             : <span className="size-3 shrink-0 rounded-[3px]" style={{ background: colorOf(chart, i) }} />}
-          {n}
+          {n}{value(i)}
         </li>
       ))}
     </ul>
@@ -89,9 +91,9 @@ const PAD = { top: 26, right: 8, bottom: 34, left: 44 };
 const PLOT_H = 220;
 
 /** The value axis: gridlines at each step and their values, recessive. */
-function Axis({ max, step, width }: { max: number; step: number; width: number }) {
-  const ticks = Array.from({ length: Math.floor(max / step + 1e-9) + 1 }, (_, k) => k * step);
-  const y = (v: number) => PAD.top + PLOT_H - (v / max) * PLOT_H;
+function Axis({ max, step, width, min = 0 }: { max: number; step: number; width: number; min?: number }) {
+  const ticks = Array.from({ length: Math.floor((max - min) / step + 1e-9) + 1 }, (_, k) => min + k * step);
+  const y = (v: number) => PAD.top + PLOT_H - ((v - min) / (max - min)) * PLOT_H;
   return <>
     {ticks.map((t) => (
       <g key={t}>
@@ -125,8 +127,11 @@ function Bars({ chart, data }: { chart: Chart; data: DiData }) {
   const dp = places(groups.flatMap((g) => g.vals));
   // Bars at most 24 px (dataviz mark spec), spaced so a printed value above each never meets its neighbour's. A stacked
   // segment too thin for its value prints it to the right of the bar, so labelled stacks leave room there.
-  const barW = 24, gap = stacked ? 0 : 6, groupGap = stacked && chart.labels ? 64 : 30;
+  const barW = 24, gap = stacked ? 0 : 6;
   const groupW = stacked ? barW + 10 : k * barW + (k - 1) * gap;
+  // Groups sit far enough apart that their names under the axis never meet ("Central" beside "North-East"): about
+  // 8 px a character at 14 px.
+  const groupGap = Math.max(stacked && chart.labels ? 64 : 30, Math.max(...groups.map((g) => g.name.length)) * 8 + 12 - groupW);
   const width = PAD.left + groups.length * (groupW + groupGap) + PAD.right;
   const height = PAD.top + PLOT_H + PAD.bottom;
   const y = (v: number) => PAD.top + PLOT_H - (v / max) * PLOT_H;
@@ -170,15 +175,17 @@ function Bars({ chart, data }: { chart: Chart; data: DiData }) {
 
 function Lines({ chart, data }: { chart: Chart; data: DiData }) {
   const n = data.cols.length;
+  // A line may dip below zero (a year of falling subscribers), so its axis can start below zero: the set's axis says so.
   const { max, step } = scale(chart, data.rows.flatMap((r) => r.cells.map((v) => v ?? 0)));
+  const min = chart.axis?.min ?? 0;
   const slot = 76;
   const width = PAD.left + n * slot + PAD.right;
   const height = PAD.top + PLOT_H + PAD.bottom;
   const x = (j: number) => PAD.left + slot / 2 + j * slot;
-  const y = (v: number) => PAD.top + PLOT_H - (v / max) * PLOT_H;
+  const y = (v: number) => PAD.top + PLOT_H - ((v - min) / (max - min)) * PLOT_H;
   return (
     <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="block max-w-none" aria-hidden>
-      <Axis max={max} step={step} width={width} />
+      <Axis max={max} step={step} width={width} min={min} />
       {data.cols.map((c, j) => <text key={c} x={x(j)} y={PAD.top + PLOT_H + 22} textAnchor="middle" className="fill-foreground text-sm">{c}</text>)}
       {data.rows.map((r, si) => {
         const pts = r.cells.map((v, j) => (v === null ? null : [x(j), y(v)] as const)).filter((p): p is readonly [number, number] => !!p);
@@ -186,7 +193,14 @@ function Lines({ chart, data }: { chart: Chart; data: DiData }) {
           <g key={r.name}>
             <polyline points={pts.map((p) => p.join(",")).join(" ")} fill="none" stroke={colorOf(chart, si)} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
             {pts.map(([px, py], i) => <circle key={i} cx={px} cy={py} r="4.5" fill={colorOf(chart, si)} stroke="var(--card)" strokeWidth="2" />)}
-            {chart.labels && r.cells.map((v, j) => (v === null ? null : <text key={j} x={x(j)} y={y(v) - 10} textAnchor="middle" className="fill-foreground text-sm">{fmt(v)}</text>))}
+            {/* Values sit above their point unless the set places a line's labels below it or beside it, so lines that
+                run close together keep their numbers apart. */}
+            {chart.labels && r.cells.map((v, j) => {
+              if (v === null) return null;
+              const at = chart.place?.[r.name] ?? "above";
+              const lx = at === "right" ? x(j) + 10 : at === "left" ? x(j) - 10 : x(j), ly = at === "below" ? y(v) + 22 : at === "above" ? y(v) - 10 : y(v) + 5;
+              return <text key={j} x={lx} y={ly} textAnchor={at === "right" ? "start" : at === "left" ? "end" : "middle"} stroke="var(--card)" strokeWidth={3} paintOrder="stroke" className="fill-foreground text-sm">{fmt(v)}</text>;
+            })}
           </g>
         );
       })}
@@ -229,28 +243,19 @@ function Scatter({ chart, data }: { chart: Chart; data: DiData }) {
   );
 }
 
-/** A pie of the first column, one slice per row from twelve o'clock, a 2 px surface gap between slices, labelled outside. */
+/** A pie of the first column, one slice per row from twelve o'clock, with a 2 px surface gap between slices; the legend names them. */
 function Share({ chart, data }: { chart: Chart; data: DiData }) {
   const vals = data.rows.map((r) => r.cells[0] ?? 0), total = vals.reduce((a, b) => a + b, 0) || 1;
-  const R = 96, cx = 190, cy = 130, width = 380, height = 260;
+  const R = 100, cx = 104, cy = 104, size = 208;
   let a0 = -Math.PI / 2;
   return (
-    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="block max-w-none" aria-hidden>
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="block max-w-none" aria-hidden>
       {data.rows.map((r, i) => {
-        const a1 = a0 + (vals[i] / total) * 2 * Math.PI, mid = (a0 + a1) / 2;
-        const p = (a: number, rad = R) => `${cx + rad * Math.cos(a)},${cy + rad * Math.sin(a)}`;
+        const a1 = a0 + (vals[i] / total) * 2 * Math.PI;
+        const p = (a: number) => `${cx + R * Math.cos(a)},${cy + R * Math.sin(a)}`;
         const d = `M${cx},${cy}L${p(a0)}A${R},${R} 0 ${a1 - a0 > Math.PI ? 1 : 0} 1 ${p(a1)}Z`;
-        const lx = cx + (R + 14) * Math.cos(mid), ly = cy + (R + 14) * Math.sin(mid);
-        const anchor = Math.abs(Math.cos(mid)) < 0.2 ? "middle" : Math.cos(mid) > 0 ? "start" : "end";
         a0 = a1;
-        return (
-          <g key={r.name}>
-            <path d={d} fill={colorOf(chart, i)} stroke="var(--card)" strokeWidth="2" strokeLinejoin="round" />
-            <text x={lx} y={ly} dy={Math.sin(mid) > 0.6 ? "0.9em" : Math.sin(mid) < -0.6 ? "-0.4em" : "0.35em"} textAnchor={anchor} className="fill-foreground text-sm">
-              <tspan className="font-semibold">{r.name}</tspan>{chart.labels && ` ${fmt(vals[i])}${data.unit === "%" ? "%" : ""}`}
-            </text>
-          </g>
-        );
+        return <path key={r.name} d={d} fill={colorOf(chart, i)} stroke="var(--card)" strokeWidth="2" strokeLinejoin="round" />;
       })}
     </svg>
   );
@@ -260,8 +265,21 @@ function Share({ chart, data }: { chart: Chart; data: DiData }) {
 export function DiTable({ data, fill, className }: { data: DiData; fill?: (row: string, col: string) => number | string | undefined; className?: string }) {
   const total = (s: string) => /^total$/i.test(s);
   const dp = data.cols.map((_, j) => places(data.rows.flatMap((r) => (r.cells[j] === null ? [] : [r.cells[j] as number]))));
+  // A table wider than its pane scrolls sideways; like a chart, it then says so, so no column goes unseen.
+  const ref = useRef<HTMLDivElement>(null);
+  const [wide, setWide] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const check = () => setWide(el.scrollWidth > el.clientWidth + 1);
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   return (
-    <div className={cn("-mx-1 overflow-x-auto px-1", className)}>
+    <div className={cn("flex flex-col gap-2", className)}>
+    <div ref={ref} className="-mx-1 overflow-x-auto px-1">
       <table className="w-full min-w-max border-separate border-spacing-0 text-base">
         {data.unit && <caption className="pb-2 text-left text-sm text-muted-foreground">{data.unit === "%" ? "In per cent" : data.unit}</caption>}
         <thead>
@@ -291,6 +309,8 @@ export function DiTable({ data, fill, className }: { data: DiData; fill?: (row: 
           ))}
         </tbody>
       </table>
+    </div>
+    {wide && <p className="text-sm text-muted-foreground">Scroll the table sideways to see all of it.</p>}
     </div>
   );
 }

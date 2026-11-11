@@ -416,7 +416,7 @@ The same solved set with one clue changed or dropped; the student says what move
 ### Data interpretation (step 4, Dec 2026 to Jan 2027; research `docs/research/di.md`, planned 1 Nov 2026)
 DI joins the LR player rather than becoming a separate section: CAT mixes DI and LR in one section and its data sets increasingly need reasoning (D70). Levels, pictures and question kinds are in the research note, §2. Every DI answer is computed from the set's own numbers in tests.
 
-#### F90. DI sets with real charts — Part 1 built 1 Nov 2026 (`docs/design/di-sets.md`): format, charts, calculator, checks, two sets
+#### F90. DI sets with real charts — Part 1 built 1 Nov 2026 (`docs/design/di-sets.md`): format, charts, calculator, checks, two sets; six harder sets added 11 Nov 2026 (D95), 12 in all
 **Problem.** DILR has 47 LR sets and no data sets; every slot has one or two, and students call them "the safe set".
 **What the student gets.** DI sets in the LR player: the data drawn as the exam draws it (bar, stacked bar, line, cumulative or step line, shares, radar, scatter, tables, tables with blanks), from the set's numbers, with no hover values while solving. CAT level only (owner, 1 Nov 2026): medium (a slot's doable set) to CAT+; about half the answers TITA; every set solved by two independent agents before it ships. Review adds the completed table (blanks filled), the formula behind each answer, and the trap each wrong option sets.
 **Data.** A set carries `data` (named tables of numbers with units) and `charts` (how to draw them); the questions are as for LR sets. Each answer is recomputed from `data` in tests; a missing-value table is a grid model that the general solver proves has one fill.
@@ -488,6 +488,12 @@ These are what make the DILR and Quant sections ours rather than another questio
 - After solving, **Replay** plays the chain of deductions in order; the step that cut the most is highlighted.
 **How.** Each set in these formats is stored as constraints; a small solver (TypeScript, tested) computes the remaining arrangements after each clue, proves the set has one answer, and drives the replay. The same solver powers the Arcade's puzzles (F61).
 **Done when** every set in the three formats has a solver test proving a unique answer, and the replay shows the arrangement count after each clue.
+
+#### F101. Replay clips — Built 11 Nov 2026 (design `docs/design/replay-clips.md`, D94)
+**Problem.** The Replay's falling count is 99ile's clearest proof of method, but it lives only on the page: nothing to post, nothing to send a friend.
+**What the student gets.** "Make a clip" on any replay set: a 9:16 video (1080 × 1920, MP4) of the count falling step by step on the board, with each step's clues and worked line, or a picture of the last frame. By default it stops one step short ("4 ways left. One clue finishes it.") with the set's link; it can also show the answer. Share from the phone or save.
+**How.** Frames drawn on a canvas from the solver's trail, encoded in the browser (WebCodecs H.264 and a small MP4 writer; `MediaRecorder` where that is missing). Nothing saved, nothing sent; one lazy chunk.
+**Done when** every replay set makes a playable MP4 in Chrome of the length the timeline says, the picture works everywhere, and the first download is unchanged.
 
 #### F58. Quant Debugger — Planned (step 5)
 **Problem.** Quant practice starts from "get the answer". Students who get it wrong rarely find where their reasoning broke, so the same slip comes back.
@@ -619,7 +625,7 @@ Research: `docs/research/notifications.md`. This is the functional spec. The ema
 
 **Settings, "Reminders" card** (and You, which links to it):
 - on or off;
-- the time, and the days of the week;
+- the time, and the days of the week (at least one: the last day cannot be switched off, and the server refuses reminders on with no days, since that would look on and never send; turning reminders off is the main switch's job; 11 Nov 2026);
 - this device on or off (with how many other devices have push on);
 - email: every reminder day, only when I miss days, or never;
 - weekly review email on or off;

@@ -376,6 +376,23 @@ Full entries are written here when a step comes within two steps of being built:
 ### 4a. Logical reasoning first (D37)
 **4a.1 LR set format and content, built 24 Oct 2026** on `feat/lr-sets`: `LrSet` and `LR_TYPE` in `practice/types.ts`; `content/lr/<type>.json` (one file per type) joined in `practice/lr/index.ts`; `loadLrFile` in `bank.ts`; `Need.lr` and `Content.lrSets` in `content.ts`; `LR_CATALOG` and `LR_FILE` from `npm run catalog`; `titaMatches` and `lrRight` in `practice/lrcheck.ts`. Tests: every set's shape and answers (`content.test.ts`), file and catalog agreement, the import guard, typed-answer matching. One original example set (`arr-round-table`).
 
+### 4d-2. Six harder DI sets (feature F90, D95), built 11 Nov 2026
+`feat/replay-clips-and-di-sets` · `feat: add six harder DI sets, with blank totals, line charts below zero and pies that fit a phone`
+Why: DI had six sets; the plan asks for 12 by December, at CAT level.
+Data: three sets in `content/lr/di-chart.json`, three in `content/lr/di-table.json`; no new record.
+Files: `src/practice/di/checks.ts` (a check per set; `fills` takes blank totals and facts with cells), `src/components/DiChart.tsx` (axis min, line labels, pie legend, bar spacing, wide-table line), `src/practice/types.ts` (axis `min`), `src/practice/skills.test.ts` (growth counts), `docs/content/lr-format.md`.
+Tasks: [x] recompute the owner's keys · [x] convert and check by code · [x] two blind solvers · [x] screens at 390 and 1440, both themes.
+Done when: as in F90; every check and both solvers agree.
+
+### 4r. Replay clips (feature F101, D94)
+`feat/replay-clips` · `feat: turn a DILR replay into a shareable video or picture, drawn and encoded in the browser`
+Why: the Replay's falling count, as a 9:16 clip for Instagram and for students to send (`docs/design/replay-clips.md`).
+Data: none (nothing saved or synced).
+Files: new `src/lib/mp4.ts` (MP4 writer), `src/practice/clip.ts` (timeline, layout, drawing), `src/components/ReplayClip.tsx` (panel, encoder, lazy); changed `src/pages/practice/ReplayPlayer.tsx` (the button).
+Tasks: [x] MP4 writer with tests · [x] timeline with tests · [x] frame drawing · [x] WebCodecs encoder with `MediaRecorder` fallback and picture · [x] panel and button · [x] end-to-end check in Chrome (every set plays, right length and size) · [x] 390 and 1440, both themes.
+Tests: `mp4.test.ts` reads the boxes back (sizes, sample table, offsets); `clip.test.ts` checks scene lengths, the two endings and the state at chosen times for every replay set.
+Done when: as in F101.
+
 ### 2x. AI and technology RC content, built 24 Oct 2026
 `feat/rc-ai-technology` · `feat: add five AI and technology RC sets`
 - Add five original sets to `content/rc/ai&technology.json`; join them in `practice/rc/index.ts` so the catalog and RC dropdown include all 50 sets. Add a dedicated `technology` genre, displayed as "AI and technology". Teach `scripts/size.mjs` to count the Vite-sanitized `ai_technology` chunk.

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { daysLine, fromClock, spokenTime, toClock, whenLine, whereLine, type ReminderPrefs } from "./notify";
+import { daysLine, fromClock, spokenTime, toClock, toggleDay, whenLine, whereLine, type ReminderPrefs } from "./notify";
 
 describe("reminder times", () => {
   it("round to the quarter hour the server keeps", () => {
@@ -43,6 +43,16 @@ describe("the reminder days in plain words", () => {
   it("says so when no day is left, and ignores days that are not days", () => {
     expect(daysLine([])).toBe("on no days");
     expect(daysLine([1, 1, 9, -2, 1.5])).toBe("on Mon");
+  });
+});
+
+describe("tapping a reminder day", () => {
+  it("adds or removes it, keeping week order", () => {
+    expect(toggleDay([1, 5], 3)).toEqual([1, 3, 5]);
+    expect(toggleDay([1, 3, 5], 3)).toEqual([1, 5]);
+  });
+  it("never leaves no day: the last one stays", () => {
+    expect(toggleDay([2], 2)).toBeNull();
   });
 });
 

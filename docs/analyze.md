@@ -77,6 +77,26 @@ Thinking practice (Arcade, Manager Lab, DILR and Quant ideas), community, and re
 
 ## 3. Consistency check: spec vs plan vs code
 
+### 11 Nov 2026, six harder DI sets (D95)
+The owner's agent wrote six sets (streaming growth, group segments, car sales with blank totals, sales funnel, food delivery, equity funds). Recomputed in code here (30 of 30 keys right; the car table has exactly one fill and every clue is needed), converted to the site's format with a code check each, then solved blind by two agents, one by hand and one in code: both matched every key.
+
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A95 | The plan (A74, D86, A94) asked for two growth questions in every one of these sets; three have none or one (car sales, sales funnel, food delivery) | The rule exists so "Growth and projections" reaches a verdict, which needs 8 answers; there were 5 | Owner, 11 Nov 2026: the rule is per batch, not per set. The batch adds 10 growth questions (15 in all) |
+| A96 | The table solver read a blank Total cell as a broken rule, so a table with blank totals had no fill | The car-sales set could not be checked | `fills` skips blank totals and works them out from the fill; facts may name their cells so the search stays fast |
+| A97 | Line charts started at zero (Bhava −4% fell below the axis), close lines printed their values on top of each other, a pie's labels were cut off on a phone, a bar chart's names ran together, and a wide table hid columns without saying so | Misread or hidden numbers | `DiChart.tsx`: axis `min`, line labels below or beside, values in the pie's legend, bar spacing by name length, a scroll line under wide tables |
+| A98 | Blind solver: Q27 asks for the second-highest fund but the highest (Dividend Yield) was not an option, so the twist was never tested | A student who misread "second" still scored | Dividend Yield replaces Bluechip as an option |
+
+### 11 Nov 2026, Replay clips (D94; `docs/design/replay-clips.md`)
+Built while the six harder DI sets are written (owner, 11 Nov 2026), after the strategy research (`reports/Standing out in AI learning.md`) named shareable Replays as the first thing to build for Instagram.
+
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A91 | The Replay page draws its count and board in HTML with GSAP; nothing can be exported, and a screen recording would differ by window, theme and font | No clip without a second renderer | Draw frames on a canvas from `trailOf`, the same data the page uses (D94) |
+| A92 | WebCodecs gives encoded H.264 chunks, not a file; `mp4-muxer` is deprecated, its successor is a new dependency | Needs a container writer | A small tested MP4 writer in `src/lib/mp4.ts`, no dependency (D94) |
+| A93 | A full replay shows the answer, and one replay (archery) is an LR set students are asked to solve first (D49) | A clip would spoil the set for anyone who sees it | The clip leaves the last step for the viewer unless "Show the answer" is chosen (D94) |
+| A94 | The six harder DI sets being written must carry at least two growth questions each, one weighted-average or changing-base question and one mixed DI-LR set (A74, D86) | Easy to miss in sets written outside this repo | Checked when the sets come in, before the two-solver check |
+
 ### 5 Nov 2026, two outside reviews checked (D86)
 The owner shared two reviews written by another assistant: one of the GitHub code and docs, one of the live site through a browser tool (4 Nov 2026). Each claim was checked against the code, the docs and the live site before anything was planned.
 
