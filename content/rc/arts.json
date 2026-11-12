@@ -22,6 +22,9 @@
           3,
           4
         ],
+        "lines": [
+          "Perspective is neither a mirror of nature nor a mere habit of the eye: it is a convention that happens to be unusually persuasive because it harnesses the geometry of light."
+        ],
         "options": [
           {
             "t": "Linear perspective was a genuine discovery of Florentine painters, who at length learned to depict the world precisely as the human eye perceives it.",
@@ -50,6 +53,9 @@
         "stem": "It can be inferred from the second paragraph that a visitor looking at a perspectival picture in a gallery:",
         "proof": [
           1
+        ],
+        "lines": [
+          "A perspectival picture is therefore strictly correct only when viewed from one position with one eye, a condition that no visitor to a gallery fulfils."
         ],
         "options": [
           {
@@ -112,6 +118,9 @@
           2,
           3
         ],
+        "lines": [
+          "Yet the constructivist position can be pressed too far."
+        ],
         "options": [
           {
             "t": "dismissive, on the ground that it takes no account of the mathematical sophistication of Renaissance painters.",
@@ -140,6 +149,9 @@
         "stem": "Which of the following, if true, would most strengthen the view that perspective is a 'symbolic form'?",
         "proof": [
           2
+        ],
+        "lines": [
+          "Perspective, he argued in an essay of 1927, is a 'symbolic form': not a transcript of vision but a convention that expresses a particular conception of space as infinite, continuous and uniform."
         ],
         "options": [
           {
@@ -215,6 +227,9 @@
           2,
           3
         ],
+        "lines": [
+          "Acoustics can tell designers how to avoid the gravest faults; it cannot yet guarantee sublimity."
+        ],
         "options": [
           {
             "t": "Acoustic science has taught designers to avoid grave faults, but a hall's quality also depends on factors it cannot yet capture.",
@@ -244,6 +259,9 @@
         "proof": [
           2
         ],
+        "lines": [
+          "Conversely, the Berlin Philharmonie, completed in 1963, abandoned the shoebox for a plan in which the audience is arranged in terraces around the orchestra, and it has been admired and imitated, although it departs from the model that the science seemed to favour."
+        ],
         "options": [
           {
             "t": "show that a design departing from the favoured model can nevertheless be acclaimed.",
@@ -272,6 +290,9 @@
         "stem": "The remark that 'a hall praised in advance may well be heard as warmer' implies that:",
         "proof": [
           3
+        ],
+        "lines": [
+          "Preferences in sound are not purely physical: they are conditioned by the repertoire one knows, by the halls in which one first heard it, and by the reputation of the building."
         ],
         "options": [
           {
@@ -331,6 +352,10 @@
         "stem": "Which of the following, if true, would most strengthen the author's claim that reputation conditions what listeners hear?",
         "proof": [
           3
+        ],
+        "lines": [
+          "Preferences in sound are not purely physical: they are conditioned by the repertoire one knows, by the halls in which one first heard it, and by the reputation of the building.",
+          "A hall praised in advance may well be heard as warmer."
         ],
         "options": [
           {
@@ -407,6 +432,10 @@
           2,
           3
         ],
+        "lines": [
+          "Why should knowledge of a picture's origin change our estimate of it?",
+          "The first seems to make a picture's worth depend upon facts invisible in it; the second cannot explain why the discovery of deceit felt like more than a revision of a market price."
+        ],
         "options": [
           {
             "t": "Han van Meegeren's forgeries demonstrate that expert connoisseurs cannot be trusted to distinguish authentic masterpieces from skilful imitations of the work of the old masters.",
@@ -435,6 +464,9 @@
         "stem": "The author's statement that the experts were deceived 'by their own expectations' suggests that:",
         "proof": [
           2
+        ],
+        "lines": [
+          "His fakes succeeded partly because they filled a gap in the story that scholars wished to tell, namely that the young Vermeer had painted religious subjects, so that the experts were deceived less by the quality of the forgery than by their own expectations."
         ],
         "options": [
           {
@@ -465,6 +497,9 @@
         "proof": [
           1
         ],
+        "lines": [
+          "Nelson Goodman added a subtler argument: even if two pictures now look identical, a trained eye might later learn to discriminate them, and the knowledge that a difference exists may therefore properly alter how we look."
+        ],
         "options": [
           {
             "t": "offer a more refined defence of the view that knowing a work's origin can properly affect how it is appreciated.",
@@ -493,6 +528,9 @@
         "stem": "Which of the following would proponents of the first view most likely regard as analogous to a forged Vermeer?",
         "proof": [
           1
+        ],
+        "lines": [
+          "A forgery, however accomplished, records nothing of the kind, and what it appears to say about its maker is false."
         ],
         "options": [
           {
@@ -598,6 +636,9 @@
           2,
           3
         ],
+        "lines": [
+          "Photography did not kill the painter's old task and thereby free him; it unsettled a settled arrangement, and painters and photographers alike spent the following decades renegotiating what each could claim as their own."
+        ],
         "options": [
           {
             "t": "Photography brought to an end the traditional purpose of painting, which explains why Impressionism and abstraction arose, in the decades that followed, as responses to the camera.",
@@ -628,6 +669,9 @@
           0,
           1
         ],
+        "lines": [
+          "Painting, according to the story, had existed chiefly to record appearances; the camera did so more quickly and exactly; painters, relieved of the burden of resemblance, were therefore liberated to pursue colour, feeling and finally abstraction."
+        ],
         "options": [
           {
             "t": "Painters' notebooks of the 1840s repeatedly cite the camera's accuracy as their reason for abandoning realism.",
@@ -657,6 +701,9 @@
         "proof": [
           3
         ],
+        "lines": [
+          "That the renegotiation is still in progress may be inferred from the fact that photorealist painting, which flourished in the 1970s, deliberately reproduced the look of photographs, a feat its admirers found remarkable precisely because a camera could have done it faster."
+        ],
         "options": [
           {
             "t": "show that painting has declined into the mere imitation of photographs since the nineteenth century.",
@@ -685,6 +732,9 @@
         "stem": "It can be inferred from the second paragraph that Pictorialist photographers:",
         "proof": [
           1
+        ],
+        "lines": [
+          "A good many, in the movement known as Pictorialism, sought to prove that photography was itself an art by imitating the soft focus and the allegorical themes of painting."
         ],
         "options": [
           {
@@ -789,6 +839,9 @@
           2,
           3
         ],
+        "lines": [
+          "Context shapes what we see in a face, and editors exploit that fact daily; but the strong claim that montage can create emotion from nothing rests on a story as much as on a demonstration."
+        ],
         "options": [
           {
             "t": "The Kuleshov effect, long cited as proof of montage, rests on thin evidence, though later research supports a weaker form.",
@@ -817,6 +870,9 @@
         "stem": "The statement that the failed recreation is 'hard to interpret' implies that:",
         "proof": [
           1
+        ],
+        "lines": [
+          "Such a failure is hard to interpret, since the stimuli, the audiences and the wording of the questions all differed from those of the original."
         ],
         "options": [
           {
@@ -847,6 +903,9 @@
         "proof": [
           2
         ],
+        "lines": [
+          "Later studies, using more carefully controlled designs and larger numbers of participants, have been kinder to the legend."
+        ],
         "options": [
           {
             "t": "qualify the sceptical evidence of the second paragraph with findings that partly vindicate the effect.",
@@ -875,6 +934,9 @@
         "stem": "Which of the following, if true, would most strengthen the claim that 'expressive faces appear to resist a context that contradicts them'?",
         "proof": [
           2
+        ],
+        "lines": [
+          "It does not follow, however, that the face contributes nothing: expressive faces appear to resist a context that contradicts them."
         ],
         "options": [
           {
@@ -980,6 +1042,9 @@
           1,
           4
         ],
+        "lines": [
+          "Continuity often lies less in an object's exact appearance than in a chain of judgement and skill: how a pattern is balanced, how a material is handled, or how a maker decides that a piece is finished."
+        ],
         "answer": 1,
         "options": [
           {
@@ -1009,6 +1074,9 @@
         "proof": [
           1
         ],
+        "lines": [
+          "Continuity often lies less in an object's exact appearance than in a chain of judgement and skill: how a pattern is balanced, how a material is handled, or how a maker decides that a piece is finished."
+        ],
         "answer": 2,
         "options": [
           {
@@ -1037,6 +1105,9 @@
         "stem": "The author acknowledges the benefits of commercial demand primarily in order to:",
         "proof": [
           3
+        ],
+        "lines": [
+          "The problem begins when the market's preferred image of tradition is treated as the tradition itself."
         ],
         "answer": 0,
         "options": [

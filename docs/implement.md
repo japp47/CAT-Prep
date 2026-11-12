@@ -376,6 +376,13 @@ Full entries are written here when a step comes within two steps of being built:
 ### 4a. Logical reasoning first (D37)
 **4a.1 LR set format and content, built 24 Oct 2026** on `feat/lr-sets`: `LrSet` and `LR_TYPE` in `practice/types.ts`; `content/lr/<type>.json` (one file per type) joined in `practice/lr/index.ts`; `loadLrFile` in `bank.ts`; `Need.lr` and `Content.lrSets` in `content.ts`; `LR_CATALOG` and `LR_FILE` from `npm run catalog`; `titaMatches` and `lrRight` in `practice/lrcheck.ts`. Tests: every set's shape and answers (`content.test.ts`), file and catalog agreement, the import guard, typed-answer matching. One original example set (`arr-round-table`).
 
+### 14. Prove it from the passage (feature F103, D99), built 13 Nov 2026
+`feat/prove-it` · `feat: let students prove an RC answer by tapping the line that settles it, with deciding lines for 203 questions`.
+- `practice/sentences.ts` (`sentences`, `findLine`, `lineVerdict`), `practice/types.ts` (`RcQuestion.lines`), `lib/state.ts` (`RcAttempt.lines`, normalised), `practice/record.ts` (`recordRc` keeps the marked lines), `pages/practice/RcPlayer.tsx` (the Prove it control, the line-aware passage, the review verdict, the summary count).
+- `content/rc/*.json`: `lines` on 203 of 251 questions. Two blind markers per question (scratchpad worksheets cut by the same sentence rule): 186 agreed exactly, 15 shared a line (kept), 43 both none; of 7 disagreements, two were given two lines on reading, five stayed none (a main idea or "least likely" with no single settling line).
+- Tests: `practice/sentences.test.ts` (the rule, no text lost, every key line is one sentence of its passage, coverage, the verdicts).
+- By hand: open an RC set, answer a question, Prove it, tap a line, submit, Skip to the answers: the summary counts lines, each question says That's the line / Right paragraph / That line doesn't settle it, and the passage marks the deciding line. On a phone the passage pane opens for the tap and closes after it.
+
 ### 4d-2. Six harder DI sets (feature F90, D95), built 11 Nov 2026
 `feat/replay-clips-and-di-sets` · `feat: add six harder DI sets, with blank totals, line charts below zero and pies that fit a phone`
 Why: DI had six sets; the plan asks for 12 by December, at CAT level.

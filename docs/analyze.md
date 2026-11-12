@@ -77,6 +77,28 @@ Thinking practice (Arcade, Manager Lab, DILR and Quant ideas), community, and re
 
 ## 3. Consistency check: spec vs plan vs code
 
+### 13 Nov 2026, prove it from the passage (D99; `docs/design/prove-it.md`)
+
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A113 | Review highlights the paragraphs that settle a question, never the line, and nothing asks the student to find it | Students distrust VARC explanations and skip the habit that decides close options | An optional tap on the deciding line while solving, a verdict in review, and the deciding line always shown |
+| A114 | Line-level answers need a fixed idea of a "line" | A tap target and a key that drift apart would mark right taps wrong | One sentence rule (`practice/sentences.ts`) and a content test holding every key line to one sentence |
+| A115 | 251 questions need deciding lines | A wrong key line would teach the wrong habit | Two blind markers per question; agreement kept, disagreement read and decided |
+
+**D99.** Prove it ships for library and daily RC: optional, score-neutral, one tap on a whole sentence, checked by code against stored deciding lines; trap lines and contesting answers follow.
+
+### 13 Nov 2026, puzzle games (D98; `reports/Puzzle games for CAT reasoning.md`)
+Owner: puzzles that train how CAT thinks, a premium personalised layer later; researched from five angles (cognition, the student's mind, product, game design, engineering).
+
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A109 | Training transfers to the practised structure and close relatives, almost never to general ability | Generic Sudoku or Queens would not raise DILR; students say puzzle books "did not help me understand CAT sets" | Every game is a CAT structure with verbal clues, a built board and CAT question stems (F61 re-plan) |
+| A110 | Generating a daily puzzle from a seed on the device ties the puzzle to the generator's code | A code change would give two students different puzzles | A graded, hand-checked bank keyed by an IST puzzle number, tested as content |
+| A111 | A profile of a minor's play is close to "behavioural monitoring" under DPDP (core rules about May 2027) | Server-side skill profiles of under-18s need verified parental consent | Raw play on the device; summaries sync only for adults who opt in |
+| A112 | No study shows CAT-shaped puzzles raise exam scores | Any claim would be unsupported (FTC, ASCI, CCPA) | A randomised study against an active control on unseen sets before any claim; premium only if it is positive |
+
+**D98.** The Thinking Arcade is re-planned as CAT sets in game form with a shared deduction vocabulary, a hand-checked daily bank, two games in step 4b and eight in step 8, play data on the device, a randomised study before claims, and a premium season pass only after that study.
+
 ### 12 Nov 2026, reminders R2 (D97; `docs/design/notifications.md` §15)
 Owner: plan R2. Found that the missed-day series, rotated wordings and the preview were built in R1, so R2 is the weekly email, bounces and the owner's panel.
 

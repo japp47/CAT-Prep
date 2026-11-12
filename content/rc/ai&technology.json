@@ -20,6 +20,9 @@
           2,
           3
         ],
+        "lines": [
+          "Seen in this light, what ought to be demanded of automated systems is less a view of their interior than a framework of accountability: records of what was decided, systematic testing of outcomes for accuracy and fairness, and a genuine route of appeal."
+        ],
         "options": [
           {
             "t": "Automated decisions should be used only when each affected person can receive a faithful account of the factors that determined the outcome.",
@@ -48,6 +51,9 @@
         "stem": "The author would most probably agree that an explanation which sounds plausible but misdescribes how a model reached its verdict:",
         "proof": [
           1
+        ],
+        "lines": [
+          "An account that is fluent and plausible but unfaithful to the process it purports to describe is arguably worse than silence, because it confers the reassurance of reasons without their substance, and so invites people to trust a system at the very moment when scrutiny is most needed."
         ],
         "options": [
           {
@@ -78,6 +84,9 @@
         "proof": [
           2
         ],
+        "lines": [
+          "The rejoinder, however, mistakes what explanations are for."
+        ],
         "options": [
           {
             "t": "demonstrate that human judgments can be shaped by unconscious influences that are absent from automated decisions.",
@@ -106,6 +115,9 @@
         "stem": "Which one of the following, if true, would most strengthen the author's closing suggestion?",
         "proof": [
           3
+        ],
+        "lines": [
+          "A system that is opaque yet accountable in these ways may deserve more confidence than one that is interpretable and answerable to nobody."
         ],
         "options": [
           {
@@ -183,6 +195,9 @@
           2,
           3
         ],
+        "lines": [
+          "Rather, it suggests that the dispute is less about whether the machine may learn than about who should capture the value created from a common inheritance."
+        ],
         "options": [
           {
             "t": "Using copyrighted work for model training is unjustified unless creators have consented to that use or received compensation.",
@@ -211,6 +226,9 @@
         "stem": "The author contrasts photographing a stranger with cataloguing every stranger in order to suggest that:",
         "proof": [
           2
+        ],
+        "lines": [
+          "Moral permissibility can alter with scale: to photograph a stranger in a public street is unremarkable, whereas to catalogue every stranger on every street by means of such photographs is a different act altogether, though it consists of nothing but photographs of the permitted kind."
         ],
         "options": [
           {
@@ -271,6 +289,10 @@
           1,
           2
         ],
+        "lines": [
+          "The analogy deserves more respect than its critics allow.",
+          "Such an account is available, though it rests on differences of degree rather than of kind."
+        ],
         "options": [
           {
             "t": "full endorsement, because the analogy establishes that model training is simply another form of ordinary cultural learning.",
@@ -299,6 +321,9 @@
         "stem": "Which one of the following most closely parallels the contrast the author draws in the third paragraph between the apprentice and the model?",
         "proof": [
           2
+        ],
+        "lines": [
+          "A model assimilates a corpus that no person could read in many lifetimes, and can then generate unlimited output at negligible cost, in the very markets in which the authors of its training material earn their living."
         ],
         "options": [
           {
@@ -376,6 +401,10 @@
           2,
           3
         ],
+        "lines": [
+          "Where automation is imperfect and its errors are costly, the competence it displaces is precisely the competence required to oversee it, so that the loss, far from being harmless, erodes the very safeguard on which the whole arrangement depends.",
+          "A more promising course is to design systems that keep the human actively engaged: requiring her to form her own judgement before the machine's is displayed, for example, or returning control to her at intervals so that practice is not lost."
+        ],
         "options": [
           {
             "t": "show that the decline in operators' skills has erased the overall safety gains made by automation.",
@@ -404,6 +433,9 @@
         "stem": "Which of the following skills would the author be most willing to see surrendered?",
         "proof": [
           2
+        ],
+        "lines": [
+          "A skill may be safely surrendered when the tool that replaces it is dependable and always at hand, and when nobody is obliged to judge whether the tool has erred."
         ],
         "options": [
           {
@@ -462,6 +494,9 @@
         "stem": "Which one of the following, if true, would most strengthen the author's claim that asking humans to watch an automated system attentively is an unsatisfactory remedy?",
         "proof": [
           3
+        ],
+        "lines": [
+          "Nor do they lie in the common expedient of asking the human to watch attentively, since experiments have repeatedly shown that sustained vigilance over a system which rarely errs is a task that people perform poorly."
         ],
         "options": [
           {
@@ -538,6 +573,10 @@
           2,
           3
         ],
+        "lines": [
+          "In this way the dilemma is not dissolved but softened: knowledge is gathered while intervention remains cheap.",
+          "It follows that the quality of oversight depends less on the particular rule adopted than on the institutional capacity that stands behind it."
+        ],
         "options": [
           {
             "t": "Adaptive regulation resolves the timing problem by allowing regulators to gather evidence before imposing broad restrictions.",
@@ -567,6 +606,9 @@
         "proof": [
           1
         ],
+        "lines": [
+          "The precautionary stance treats the status quo as a safe baseline, as though declining to adopt a technology carried no cost, whereas delay in, say, medical diagnosis may kill as surely as a faulty device."
+        ],
         "options": [
           {
             "t": "treats uncertainty about a technology as sufficient reason to presume that its adoption will cause harm.",
@@ -595,6 +637,9 @@
         "stem": "The comparison of the regulator to a student marking her own examination suggests that:",
         "proof": [
           2
+        ],
+        "lines": [
+          "An agency obliged to rely upon the developers' own reports and tests will find itself in the position of a student marking her own examination, and will be liable, over time, to what economists call capture, in which the regulator comes to share the outlook of the regulated."
         ],
         "options": [
           {
@@ -653,6 +698,9 @@
         "stem": "Which one of the following is the best example of the 'capture' described in the third paragraph?",
         "proof": [
           2
+        ],
+        "lines": [
+          "An agency obliged to rely upon the developers' own reports and tests will find itself in the position of a student marking her own examination, and will be liable, over time, to what economists call capture, in which the regulator comes to share the outlook of the regulated."
         ],
         "options": [
           {
@@ -759,6 +807,9 @@
         "proof": [
           1
         ],
+        "lines": [
+          "Photographs came to function as evidence not because they could not lie but because of institutions that stood behind them: newspapers whose reputations depended on accuracy, archives that preserved original negatives, and courts that developed rules for establishing where, when and by whom an image had been made."
+        ],
         "options": [
           {
             "t": "show that image manipulation originated in authoritarian settings where the reputations of public figures were at stake.",
@@ -788,6 +839,9 @@
         "proof": [
           3
         ],
+        "lines": [
+          "A system that certifies the signed may, by implication, discredit the unsigned, and the people most likely to hold crucial unsigned evidence, such as a bystander in a distant town with an inexpensive handset, are those least able to obtain approved equipment."
+        ],
         "options": [
           {
             "t": "A news agency declines to publish a signed photograph because it doubts the competence of the photographer.",
@@ -816,6 +870,10 @@
         "stem": "Which one of the following best describes the author's view of efforts to build ever better detection software?",
         "proof": [
           2
+        ],
+        "lines": [
+          "If that is right, the contest between forgers and detection software, to which so much effort is presently devoted, is badly chosen.",
+          "Detection is an arms race in which defenders must be right every time and forgers only once, and each improvement in the detector supplies the forger with his next lesson."
         ],
         "options": [
           {

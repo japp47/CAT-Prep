@@ -48,6 +48,9 @@
         "proof": [
           1
         ],
+        "lines": [
+          "A subsidy tied to location would vanish with departure; what survives departure looks more like accumulated skill."
+        ],
         "options": [
           {
             "t": "suggest that urban rents are best understood as payment for an education that universities have failed to provide.",
@@ -106,6 +109,9 @@
         "stem": "Which of the following, if true, would most weaken the author's suggestion that restrictions on building act as a tax on acquiring skill?",
         "proof": [
           3
+        ],
+        "lines": [
+          "Restricting construction in productive places would then act as a tax on acquiring skill, one whose burden falls on those with least to spare and whose proceeds are collected by owners of existing property."
         ],
         "options": [
           {
@@ -180,6 +186,10 @@
           1,
           3
         ],
+        "lines": [
+          "Its target is narrower: the assumption that an economy's willingness to save will automatically be matched by its willingness to invest.",
+          "The paradox can therefore explain why austerity in a slump may defeat its own purpose, without guaranteeing that the remedy it recommends will be withdrawn when its work is done."
+        ],
         "options": [
           {
             "t": "The paradox of thrift shows that saving by households is harmful and should be discouraged by public policy whenever incomes across the economy are falling.",
@@ -208,6 +218,9 @@
         "stem": "The author regards the objection that the paradox 'proves too much' as:",
         "proof": [
           2
+        ],
+        "lines": [
+          "This is a fair objection, and it explains why much of the dispute has concerned duration rather than direction."
         ],
         "options": [
           {
@@ -266,6 +279,9 @@
         "stem": "The author's attitude towards the policy conclusion drawn from the paradox is best described as:",
         "proof": [
           3
+        ],
+        "lines": [
+          "The paradox can therefore explain why austerity in a slump may defeat its own purpose, without guaranteeing that the remedy it recommends will be withdrawn when its work is done."
         ],
         "options": [
           {
@@ -340,6 +356,9 @@
           2,
           3
         ],
+        "lines": [
+          "Independence resolves one problem by creating another: the power to set interest rates, which affect the livelihoods of millions, is handed to officials whom no electorate can dismiss, and their legitimacy rests on a presumption that technical and political questions can be cleanly separated."
+        ],
         "options": [
           {
             "t": "Central banks should be bound by fixed rules, since the case for discretion collapses once the public anticipates how officials will behave.",
@@ -369,6 +388,9 @@
         "proof": [
           0,
           1
+        ],
+        "lines": [
+          "Inflation settles at a higher level and employment gains nothing, since the surprise on which the gain depended has been anticipated."
         ],
         "options": [
           {
@@ -427,6 +449,9 @@
         "stem": "Which of the following developments would most strengthen the author's concern about the legitimacy of independent central banks?",
         "proof": [
           3
+        ],
+        "lines": [
+          "When central banks buy government debt on a vast scale, or hold rates near zero for years, their choices have distributional effects that look very like fiscal policy, and critics ask, with some justice, why the unelected should be making them."
         ],
         "options": [
           {
@@ -501,6 +526,9 @@
           2,
           3
         ],
+        "lines": [
+          "The insight is less a prediction of vanished markets than a demonstration that markets function only when someone has paid to make information believable, and that the payment, borne in the end by buyers and sellers alike, is rarely recorded as a cost of doing business."
+        ],
         "options": [
           {
             "t": "Markets in which sellers know more than buyers survive through costly devices that make information believable, and those costs usually go unrecorded.",
@@ -529,6 +557,9 @@
         "stem": "The author refers to 'an industry in fake ratings' in order to:",
         "proof": [
           2
+        ],
+        "lines": [
+          "Worse, the signals themselves invite imitation: where ratings carry weight, an industry in fake ratings appears, and the information that was supposed to reduce suspicion becomes one more thing to be suspicious of."
         ],
         "options": [
           {
@@ -588,6 +619,10 @@
         "stem": "Which of the following situations is the closest parallel to the process described in the first paragraph?",
         "proof": [
           0
+        ],
+        "lines": [
+          "Wary, the buyer will pay no more than the price of an average car, and this offer insults the owners of better-than-average ones, who withdraw.",
+          "The average quality of the cars still for sale then declines, the offer falls, and the process repeats."
         ],
         "options": [
           {
@@ -662,6 +697,10 @@
           2,
           3
         ],
+        "lines": [
+          "The study did not show that minimum wages are harmless; it showed that the question is an empirical one whose answer depends on the market in which it is asked.",
+          "The sensible inference is neither that the floor is costless nor that it is costly, but that economists who confidently claimed to know in advance were claiming more than the theory entitled them to."
+        ],
         "options": [
           {
             "t": "The New Jersey study overturned the textbook view by showing that moderate increases in the minimum wage leave employment unchanged.",
@@ -690,6 +729,9 @@
         "stem": "The author would regard the claim that 'a minimum wage of any size can be imposed without loss of jobs' as:",
         "proof": [
           3
+        ],
+        "lines": [
+          "Studies of moderate increases have, in the main, found little effect on jobs, which is what the second description predicts, but they are silent about increases far outside the range of experience, where the first description presumably reasserts itself."
         ],
         "options": [
           {
@@ -720,6 +762,9 @@
         "proof": [
           0
         ],
+        "lines": [
+          "The conclusion owed its authority less to evidence than to the coherence of the theory from which it came, and results that sat awkwardly with it were more often blamed on flaws in the data than on flaws in the theory."
+        ],
         "options": [
           {
             "t": "criticise treating the competitive model's conclusion as settled whatever the data showed.",
@@ -748,6 +793,9 @@
         "stem": "Which of the following, if true, would most weaken the author's explanation of why employment did not fall in New Jersey?",
         "proof": [
           2
+        ],
+        "lines": [
+          "If, on the other hand, a few firms dominate local hiring, so that workers who ask for more can be replaced only at some inconvenience and have few places to go, the firm pays less than a worker's labour is worth, and a modest increase can raise pay without any loss of employment, because it takes from profit what it gives to wages."
         ],
         "options": [
           {
@@ -823,6 +871,10 @@
           1,
           3
         ],
+        "lines": [
+          "His answer, that users will take until the resource is ruined, followed from the assumptions with the rigour of a theorem, and it would be wrong to think that Elinor Ostrom, whose work is usually offered as its refutation, ever disputed the logic.",
+          "She replaced a choice between two remedies with a question about institutions: under what rules, framed by whom, and enforced how, does a resource survive its users?"
+        ],
         "options": [
           {
             "t": "She showed that Hardin's analysis of open-access resources was mistaken and that communities may therefore be trusted to manage resources without outside rules.",
@@ -851,6 +903,9 @@
         "stem": "The author's distinction between a 'commons' and an 'open-access resource' implies that:",
         "proof": [
           1
+        ],
+        "lines": [
+          "Hardin's herdsmen inhabit a pasture without boundaries, without monitors and without any means of punishing a trespasser, which is to say a pasture that is not a commons at all but an open-access resource, a distinction that his essay blurred and that she insisted upon."
         ],
         "options": [
           {
@@ -909,6 +964,9 @@
         "stem": "Which of the following, if true, would most strengthen the author's reservation about applying Ostrom's regularities to global problems?",
         "proof": [
           3
+        ],
+        "lines": [
+          "Her regularities describe small groups whose members know one another, can watch one another and expect to deal with one another again; they offer little purchase on the atmosphere or the oceans, where these conditions do not hold."
         ],
         "options": [
           {
@@ -985,6 +1043,9 @@
           0,
           4
         ],
+        "lines": [
+          "The lesson is that a measure should retain the status of evidence rather than acquire the status of an unquestionable objective."
+        ],
         "answer": 0,
         "options": [
           {
@@ -1014,6 +1075,10 @@
         "proof": [
           1
         ],
+        "lines": [
+          "Over time, the platform's score becomes less informative about broad job competence and more informative about familiarity with the test.",
+          "The measure has not necessarily become worse at measuring task speed; rather, the institution has quietly expanded the meaning of the score."
+        ],
         "answer": 2,
         "options": [
           {
@@ -1042,6 +1107,9 @@
         "stem": "The hospital example is included primarily to show that:",
         "proof": [
           2
+        ],
+        "lines": [
+          "A proxy can reshape decisions even when nobody cheats."
         ],
         "answer": 1,
         "options": [
@@ -1073,6 +1141,9 @@
           1,
           2,
           4
+        ],
+        "lines": [
+          "What began as one useful clue has become a substitute for a much wider judgement."
         ],
         "answer": 3,
         "options": [

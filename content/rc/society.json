@@ -20,6 +20,10 @@
           2,
           4
         ],
+        "lines": [
+          "The truth is that consistency is valuable.",
+          "It is that every automated decision embodies choices made by people about what data to use, what to predict and what is to count as success."
+        ],
         "options": [
           {
             "t": "Automated decisions may be more consistent than human ones, yet are not neutral, since they embody human choices about data and fairness.",
@@ -48,6 +52,9 @@
         "stem": "According to the passage, a model may reproduce bias even when it is never told a candidate's background because:",
         "proof": [
           2
+        ],
+        "lines": [
+          "Should earlier decisions have favoured candidates from particular universities or districts, the model will reproduce the pattern, and may do so even if it is never informed of a candidate's background, because other attributes serve as proxies for it."
         ],
         "options": [
           {
@@ -78,6 +85,9 @@
         "proof": [
           3
         ],
+        "lines": [
+          "To choose among them is to make a judgement of value, which no refinement of the mathematics can make on our behalf."
+        ],
         "options": [
           {
             "t": "is a technical problem which researchers have by now resolved through refinements of the mathematics.",
@@ -107,6 +117,9 @@
         "proof": [
           3
         ],
+        "lines": [
+          "A rule may be applied with perfect regularity and remain unjust if the rule was ill-conceived at the outset."
+        ],
         "options": [
           {
             "t": "A loan officer, weary at the close of a long afternoon, approves similar applications differently according to her mood on the day on which each is read.",
@@ -135,6 +148,9 @@
         "stem": "The author mentions the postcode and the gap in employment in order to:",
         "proof": [
           2
+        ],
+        "lines": [
+          "Should earlier decisions have favoured candidates from particular universities or districts, the model will reproduce the pattern, and may do so even if it is never informed of a candidate's background, because other attributes serve as proxies for it."
         ],
         "options": [
           {
@@ -240,6 +256,9 @@
         "proof": [
           1
         ],
+        "lines": [
+          "Firms that permit it can recruit from a far larger pool, and workers with disabilities or caring responsibilities, for whom a daily commute was a barrier, have gained access to jobs that were formerly closed to them."
+        ],
         "options": [
           {
             "t": "Bus drivers and cooks whose employers have allowed them to carry out part of their duties from home.",
@@ -270,6 +289,9 @@
           1,
           2
         ],
+        "lines": [
+          "There is something in the forecast."
+        ],
         "options": [
           {
             "t": "entirely mistaken, since it ignores the large majority of workers who cannot perform their jobs at home.",
@@ -299,6 +321,9 @@
         "proof": [
           3
         ],
+        "lines": [
+          "There are also indications that distance exacts costs which do not show at once."
+        ],
         "options": [
           {
             "t": "point to less obvious drawbacks of remote work, which emerge only gradually and are easily overlooked.",
@@ -327,6 +352,9 @@
         "stem": "Which of the following, if true, would most strengthen the concluding suggestion that outcomes depend less on technology than on choices?",
         "proof": [
           4
+        ],
+        "lines": [
+          "Whether that hybrid disperses opportunity or concentrates it will depend less on technology than on choices: who is permitted to work flexibly, how new recruits are trained, and whether small towns possess the broadband and services that remote workers require."
         ],
         "options": [
           {
@@ -403,6 +431,10 @@
           2,
           4
         ],
+        "lines": [
+          "The sentiment is sincere; the diagnosis it implies is, however, doubtful, and the economics of repair supplies a less moralising account.",
+          "Their more realistic ambition is to stop design from making repair harder than the economics already does, and to give people a choice."
+        ],
         "options": [
           {
             "t": "People now discard broken goods because they prize novelty above care, a change in values which the law can do little to reverse.",
@@ -431,6 +463,9 @@
         "stem": "The comparison with haircuts and live music suggests that:",
         "proof": [
           1
+        ],
+        "lines": [
+          "Economists, following William Baumol, observe the same pattern in many services, from haircuts to live music, where productivity grows slowly and costs therefore rise relative to everything else."
         ],
         "options": [
           {
@@ -490,6 +525,9 @@
         "proof": [
           4
         ],
+        "lines": [
+          "Their more realistic ambition is to stop design from making repair harder than the economics already does, and to give people a choice."
+        ],
         "options": [
           {
             "t": "dismissive, since the economics of repair make the whole exercise pointless and the laws futile in practice.",
@@ -518,6 +556,9 @@
         "stem": "The author's remark that laws can at most stop design from making repair 'harder than the economics already does' implies that:",
         "proof": [
           4
+        ],
+        "lines": [
+          "Laws alone are unlikely to restore the corner repair shop if a new kettle remains cheaper than an hour of a technician's time."
         ],
         "options": [
           {
@@ -592,6 +633,10 @@
           2,
           3
         ],
+        "lines": [
+          "These results have made cash a benchmark.",
+          "Cash is not a panacea."
+        ],
         "options": [
           {
             "t": "Aid in kind is invariably wasteful, and the agencies that supply it ought now to abandon it in favour of cash.",
@@ -620,6 +665,9 @@
         "stem": "Recipients in the studies were often chosen by lottery in order to:",
         "proof": [
           1
+        ],
+        "lines": [
+          "In programmes in Kenya, Malawi, Uganda and elsewhere, researchers compared households that received cash with similar households that did not, often selecting recipients by lottery so that the two groups differed only in the transfer."
         ],
         "options": [
           {
@@ -650,6 +698,9 @@
         "proof": [
           2
         ],
+        "lines": [
+          "A training scheme that costs as much per person as a year's income, for example, must show that it raises earnings by more than the money itself would have done."
+        ],
         "options": [
           {
             "t": "A scheme costing a year's income per person that raises recipients' earnings by less than that amount.",
@@ -678,6 +729,9 @@
         "stem": "The final sentence of the passage implies that:",
         "proof": [
           3
+        ],
+        "lines": [
+          "Programmes that decide on behalf of the poor what they should have must now explain why the poor could not have chosen better for themselves."
         ],
         "options": [
           {
@@ -811,6 +865,9 @@
         "proof": [
           1
         ],
+        "lines": [
+          "A street with a mixture of homes, shops, workplaces and bars has people upon it from morning to night; a street of offices alone is busy at noon and deserted, and therefore more menacing, after dark."
+        ],
         "options": [
           {
             "t": "less safe after dark, since few people would be present to watch it or deter trouble.",
@@ -900,6 +957,9 @@
         "proof": [
           3
         ],
+        "lines": [
+          "The lively neighbourhoods that Jacobs admired have become some of the most expensive places to live, and the residents who once supplied the 'eyes' have often been priced out."
+        ],
         "options": [
           {
             "t": "Busy mixed-use streets in several cities recorded fewer street robberies than streets that were lined with offices alone.",
@@ -974,6 +1034,9 @@
           2,
           3
         ],
+        "lines": [
+          "But the shift reflects a sober conclusion from the backfire debate: the problem was never that facts are useless, only that a single correction is a weak tool against a story told a thousand times."
+        ],
         "options": [
           {
             "t": "Correcting a false belief usually makes people hold it more firmly, so fact-checking does more harm than good in politics.",
@@ -1002,6 +1065,9 @@
         "stem": "Which finding would most support the explanation offered at the end of the second paragraph for the 2010 result?",
         "proof": [
           1
+        ],
+        "lines": [
+          "The earlier result may have reflected particular questions on which respondents held fervent convictions, small samples, or the noise that arises when many effects are tested and only the striking ones are reported."
         ],
         "options": [
           {
@@ -1032,6 +1098,9 @@
         "proof": [
           2
         ],
+        "lines": [
+          "People may also accept the correction of a specific claim while retaining the broader attitude it supported, much as one might concede that a particular statistic was mistaken without altering one's view of the policy it was adduced to defend."
+        ],
         "options": [
           {
             "t": "a correction can succeed on its narrow point without altering the wider attitude behind it.",
@@ -1060,6 +1129,9 @@
         "stem": "Which one of the following is an example of prebunking as the passage describes it?",
         "proof": [
           3
+        ],
+        "lines": [
+          "Rather than chasing each false claim, they teach people in advance to recognise the techniques common to many of them, such as false dilemmas, emotional language or fake experts."
         ],
         "options": [
           {
@@ -1166,6 +1238,10 @@
           2,
           4
         ],
+        "lines": [
+          "Renaming can therefore alter the public hierarchy of memory.",
+          "Yet the symbolic act is most consequential when it is accompanied by work that makes the newly visible history accessible: school materials, local exhibitions, oral-history projects, and archives that do not require specialist knowledge to navigate."
+        ],
         "answer": 1,
         "options": [
           {
@@ -1195,6 +1271,9 @@
         "proof": [
           1
         ],
+        "lines": [
+          "Replacing the sign can withdraw an honour; it cannot, on its own, recover those other histories."
+        ],
         "answer": 3,
         "options": [
           {
@@ -1223,6 +1302,9 @@
         "stem": "Which of the following can be inferred from the passage?",
         "proof": [
           3
+        ],
+        "lines": [
+          "The relevant question is not whether change has costs, but whether the city acknowledges them and makes the transition reasonably fair."
         ],
         "answer": 0,
         "options": [
