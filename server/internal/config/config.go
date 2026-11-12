@@ -22,7 +22,7 @@ type Config struct {
 	Port int
 	// DatabaseURL is a Postgres connection string.
 	DatabaseURL string
-	// AllowedOrigin is the site's origin, such as https://99ile.pages.dev. Requests that change data
+	// AllowedOrigin is the site's origin, such as https://99ile.in. Requests that change data
 	// from any other origin are refused (CSRF).
 	AllowedOrigin string
 	// LogLevel is debug, info, warn or error.
@@ -105,7 +105,7 @@ func load(get func(string) string) (Config, error) {
 		c.AllowedOrigin = "http://localhost:5173"
 	}
 	if u, err := url.Parse(c.AllowedOrigin); c.AllowedOrigin == "" || err != nil || u.Host == "" || u.Path != "" {
-		errs = append(errs, fmt.Errorf("ALLOWED_ORIGIN must be an origin such as https://99ile.pages.dev, got %q", c.AllowedOrigin))
+		errs = append(errs, fmt.Errorf("ALLOWED_ORIGIN must be an origin such as https://99ile.in, got %q", c.AllowedOrigin))
 	} else if c.Prod() && u.Scheme != "https" {
 		errs = append(errs, errors.New("ALLOWED_ORIGIN must use https in prod"))
 	}

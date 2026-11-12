@@ -56,7 +56,7 @@ type Rendered struct {
 
 // Links are the per-message parts of every address in a message.
 type Links struct {
-	Site      string // https://99ile.pages.dev
+	Site      string // https://99ile.in
 	MessageID int64
 	Token     string // signed unsubscribe token for this student and kind
 }

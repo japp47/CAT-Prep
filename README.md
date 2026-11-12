@@ -2,7 +2,7 @@
 
 # 99ile: a free CAT coach that learns from every mistake
 
-**[99ile.pages.dev](https://99ile.pages.dev)** · free, no sign-up, works offline, on a phone or a laptop.
+**[99ile.in](https://99ile.in)** · free, no sign-up, works offline, on a phone or a laptop.
 
 99ile helps students prepare for CAT, India's entrance exam for the IIMs and other MBA schools. It plans each day around the time you actually have, gives you exam-style practice where every option is explained, and keeps bringing your own mistakes back until they stop happening.
 
@@ -113,7 +113,7 @@ flowchart TD
 - **Two tabs at once** never overwrite each other's work.
 - **Sync between devices, no sign-up.** Turn it on, then link your phone by scanning a QR code or typing an 8-character code. Everything syncs: attempts, logs, words, ticks, settings. A recovery code brings it all back on a new device. See your devices, remove one, or turn sync off on one device only.
 - **Download what the server has, or delete it everywhere**, from Settings.
-- **Privacy in plain words** at [/privacy](https://99ile.pages.dev/privacy): what is stored, where, for how long, and your rights.
+- **Privacy in plain words** at [/privacy](https://99ile.in/privacy): what is stored, where, for how long, and your rights.
 
 ---
 
@@ -132,7 +132,7 @@ flowchart TD
 | **Google sign-in (optional)** | Your synced progress tied to your Google account instead of a recovery code |
 | **DILR and Quant** | Concepts, set types, a set player with MCQ and TITA questions, timed drills and their own plans |
 
-Later: a daily RC leaderboard, flashcards from mistakes, a working-professional mode, a past-paper catalogue by question type, a B-school calculator, Hindi explanations. The live list is on the [roadmap page](https://99ile.pages.dev/roadmap).
+Later: a daily RC leaderboard, flashcards from mistakes, a working-professional mode, a past-paper catalogue by question type, a B-school calculator, Hindi explanations. The live list is on the [roadmap page](https://99ile.in/roadmap).
 
 ---
 

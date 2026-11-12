@@ -146,7 +146,7 @@ Go API (Render free, Singapore)
    ├── Resend (verify + reset emails)
    └── Cloudflare Turnstile (bot check for guests + signup)
 ```
-The proxy is why we need no custom domain: the cookie stays first-party on `*.pages.dev`. It is a Pages Function at `functions/api/[[path]].ts` that forwards to the Render URL (`https://nine9ile-api.onrender.com`).
+The proxy keeps the cookie first-party: the browser only ever talks to the site's own address, so no CORS is needed. (The site began on `99ile.pages.dev` and moved to `99ile.in` on 12 Nov 2026; see docs/architecture.md, "The address".) It is a Pages Function at `functions/api/[[path]].ts` that forwards to the Render URL (`https://nine9ile-api.onrender.com`).
 
 ### 2B. Two modes
 | | Guest (default) | Signed in |

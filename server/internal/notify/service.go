@@ -18,7 +18,7 @@ type Service struct {
 	Store    Store
 	Channels map[string]Channel // by name; a channel left out is switched off
 	Tokens   Tokens
-	Site     string // https://99ile.pages.dev
+	Site     string // https://99ile.in
 	Daily    Daily
 	EmailCap int // emails in a rolling day, across every run
 	Log      *slog.Logger

@@ -108,8 +108,8 @@ The server stores records as opaque JSON (it does not need to understand an RC a
 Browser (React PWA, local-first)
   │  fetch("/api/v1/...")  same origin, cookie
   ▼
-Cloudflare Pages Function  functions/api/[[path]].ts   (proxy: keeps the cookie first-party on *.pages.dev,
-  │                                                      no custom domain, CSP stays 'self')
+Cloudflare Pages Function  functions/api/[[path]].ts   (proxy: keeps the cookie first-party on the site's
+  │                                                      own address, CSP stays 'self')
   ▼
 Go API on Render free, Singapore (one instance, kept awake by a ping)   ── one modular service, not microservices
   ├── internal/identity   anonymous identity, devices, recovery and link codes; accounts later
@@ -408,3 +408,21 @@ The ⌘K palette and History (F51) read the student's own state in the browser. 
 - The spoiler gate is checked on the server: a thread's posts are returned only if the identity has a synced attempt of that question (or the student says they did it on another device without sync, which unlocks it locally only).
 - Text and KaTeX source stored; rendered in the browser with HTML escaped. Rate limits per account, link holding for new accounts, hide on three reports.
 - Size: text only, about 1 KB a post; 100,000 posts is about 100 MB, inside the free database with sync.
+
+## The address (12 Nov 2026)
+
+The site moved from `99ile.pages.dev` to **99ile.in**, bought at GoDaddy with its nameservers on Cloudflare, where the
+Pages project holds `99ile.in` and `www.99ile.in` as custom domains (`www` redirects to the apex).
+
+- **One variable carries it on the server.** `ALLOWED_ORIGIN=https://99ile.in` on Render decides which origin may change
+  data (`httpx.SameOrigin`, one value only), the Google redirect (`ALLOWED_ORIGIN` + `/api/v1/auth/google/callback`),
+  and every link and Message-ID in reminder email (`notify.Settings.Site`; `mailDomain` takes the host from it).
+- **Three places outside the code must list it:** the Google OAuth client's redirect URI and the consent screen's
+  authorized domains, and the Turnstile widget's hostnames.
+- **The old address only redirects.** Pages cannot switch `*.pages.dev` off, so `src/main.tsx` sends the exact host
+  `99ile.pages.dev` to `99ile.in` with path, query and hash kept (`src/lib/domain.ts`), before the app or its service
+  worker starts. A client redirect, not a Pages Function: a Function on every request would count every page view
+  against the free quota, and a Function cannot be limited to one host. Preview deployments are left alone.
+- **Progress is kept per address** (localStorage, the service worker, push permission, the device cookie), so the move
+  was made while no one had data on the old address. Anyone who did would have needed a backup or a sync sign-in.
+- **Search engines:** each page sets `<link rel="canonical">` to its `99ile.in` address (`canonicalUrl`).

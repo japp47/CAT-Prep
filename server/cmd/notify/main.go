@@ -12,7 +12,7 @@
 //	NOTIFY_EMAIL=off, NOTIFY_PUSH=off         switch a channel off at once
 //	NOTIFY_DRY=1                              plan and render, send nothing (the first week live)
 //	NOTIFY_EMAIL_DAILY_CAP                    emails in a rolling day (300)
-//	NOTIFY_SITE                               https://99ile.pages.dev
+//	NOTIFY_SITE                               https://99ile.in
 //
 // Other uses: -vapid prints a new key pair; -gmail-token signs in to Gmail once and prints a refresh token; -preview DIR writes every wording as HTML and text;
 // -send-test ADDRESS emails every wording to one address.
@@ -74,7 +74,7 @@ func site() string {
 	if s := os.Getenv("NOTIFY_SITE"); s != "" {
 		return s
 	}
-	return "https://99ile.pages.dev"
+	return "https://99ile.in"
 }
 
 func run(log *slog.Logger, dry bool, runFor time.Duration) error {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"log/slog"
+	"net/url"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -14,7 +15,7 @@ import (
 // Settings is what a running pipeline needs from the environment; the API (worker) and cmd/notify read the same
 // NOTIFY_* variables into it.
 type Settings struct {
-	Site                      string // https://99ile.pages.dev
+	Site                      string // https://99ile.in
 	TokenKey                  []byte // NOTIFY_TOKEN_SECRET
 	VAPIDPublic, VAPIDPrivate string // push off without both
 	SMTPUser, SMTPPassword    string // the sending account; the password only for SMTP
@@ -74,10 +75,10 @@ func EmailChannelFor(set Settings) Channel {
 		return nil
 	}
 	if api := GmailAPIFor(set); api != nil {
-		return &GmailChannel{API: api, From: set.SMTPUser, Pace: 3 * time.Second, Domain: "99ile.pages.dev"}
+		return &GmailChannel{API: api, From: set.SMTPUser, Pace: 3 * time.Second, Domain: mailDomain(set.Site)}
 	}
 	if set.SMTPPassword != "" {
-		return &EmailChannel{Server: mailx.Server{Addr: Gmail, User: set.SMTPUser, Password: set.SMTPPassword}, Pace: 3 * time.Second, Domain: "99ile.pages.dev"}
+		return &EmailChannel{Server: mailx.Server{Addr: Gmail, User: set.SMTPUser, Password: set.SMTPPassword}, Pace: 3 * time.Second, Domain: mailDomain(set.Site)}
 	}
 	return nil
 }
@@ -99,4 +100,13 @@ func TeamAlert(set Settings) func(ctx context.Context, subject, body string) err
 	return func(_ context.Context, subject, body string) error {
 		return server.Send(set.SMTPUser, mailx.Plain(set.SMTPUser, "99ile reminders", set.SMTPUser, subject, body, time.Now()))
 	}
+}
+
+// mailDomain is the right-hand side of each Message-ID: the site's own host, so a change of address (99ile.pages.dev to
+// 99ile.in, 12 Nov 2026) is one environment variable and no code. An unusable site falls back to 99ile.in.
+func mailDomain(site string) string {
+	if u, err := url.Parse(site); err == nil && u.Hostname() != "" {
+		return u.Hostname()
+	}
+	return "99ile.in"
 }

@@ -21,7 +21,7 @@ import (
 type EmailChannel struct {
 	Server mailx.Server
 	Pace   time.Duration // gap between messages; 3 seconds is 20 a minute
-	Domain string        // for Message-IDs: 99ile.pages.dev
+	Domain string        // for Message-IDs: 99ile.in
 	conn   *mailx.Conn
 	last   time.Time
 }
