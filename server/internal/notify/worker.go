@@ -22,11 +22,15 @@ type Worker struct {
 	AlertGap time.Duration
 	// DailyFrom fetches the site's daily.json (the day's RC) every hour; nil leaves Service.Daily as it is.
 	DailyFrom func(ctx context.Context) (Daily, error)
-	Log       *slog.Logger
+	// Bounces reads the team inbox's bounce label once an hour (R2, §15.2); nil when email is not on Gmail's API.
+	Bounces *BounceReader
+	Log     *slog.Logger
 
-	alerted time.Time
-	fetched time.Time
-	forgot  time.Time
+	alerted      time.Time
+	fetched      time.Time
+	forgot       time.Time
+	bounced      time.Time
+	bounceWarned time.Time
 }
 
 // Run ticks until ctx ends; a tick in progress finishes its message first. done is closed on return.
@@ -93,7 +97,46 @@ func (w *Worker) Tick(ctx context.Context) {
 				w.Log.Info("reminders: forgot old messages", "rows", n)
 			}
 		}
+		if n, err := s.Store.ForgetOld(ctx); err != nil {
+			w.Log.Warn("reminders: forget old weeks and bounces", "error", err)
+		} else if n > 0 {
+			w.Log.Info("reminders: forgot old practice days, weeks and bounces", "rows", n)
+		}
 	}
+	if w.Bounces != nil && !w.Dry && now.Sub(w.bounced) >= time.Hour {
+		w.bounced = now
+		w.checkBounces(ctx)
+	}
+}
+
+// checkBounces marks the students whose address a new bounce names. A token without the header scope or a missing
+// label is said once a day in the log, and sending carries on regardless.
+func (w *Worker) checkBounces(ctx context.Context) {
+	s := w.Service
+	got, err := w.Bounces.Read(ctx, s.Store.SeenBounces)
+	marked := 0
+	for _, b := range got {
+		n, e := s.Store.RecordBounce(ctx, b)
+		if e != nil {
+			err = errors.Join(err, e)
+			break
+		}
+		marked += n
+	}
+	if len(got) > 0 {
+		w.Log.Info("reminders: bounces read", "new", len(got), "students_marked", marked)
+	}
+	if err == nil {
+		return
+	}
+	if errors.Is(err, ErrBounceScope) || errors.Is(err, ErrNoBounceLabel) {
+		if time.Since(w.bounceWarned) >= 24*time.Hour {
+			w.bounceWarned = time.Now()
+			w.Log.Warn("reminders: bounce check is off", "why", err.Error())
+		}
+		return
+	}
+	w.Log.Warn("reminders: bounce check", "error", err)
 }
 
 func (w *Worker) alert(ctx context.Context, err error) {

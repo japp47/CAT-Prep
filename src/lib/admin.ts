@@ -18,6 +18,27 @@ export const listReports = (state: "open" | "closed") => api<{ reports: Report[]
 export const setStatus = (ids: number[], status: Exclude<ReportStatus, "new">) => api<{ changed: number }>("/admin/reports/status", { ids, status });
 export const overview = () => api<Overview>("/admin/overview");
 
+/** The Reminders panel (F65 R2, D97): counts only, and the owner's two actions. */
+export interface ReminderStats {
+  setup: { worker: boolean; dry: boolean; email: boolean; push: boolean; bounceCheck: boolean; emailCap: number };
+  emailsLastDay: number;
+  students: { remindersOn: number; weeklyOn: number; emailOn: number; pushDevices: number; bounced: number; paused: number };
+  kinds: { kind: string; channel: "email" | "push"; sent: number; skipped: number; failed: number; practised: number }[] | null;
+  days: { day: string; sent: number }[] | null;
+  skips: { reason: string; n: number }[] | null;
+  bounces: { read: number; matched: number };
+  unsubscribes: { reminders: number; weekly: number };
+  wordings: { kind: string; ids: string[] }[] | null;
+}
+export const reminderStats = () => api<ReminderStats>("/admin/reminders");
+export const sendTestReminder = (kind: string, id: string) => api<{ channels: string[]; to: string }>("/admin/reminders/test", { kind, id });
+export const markBounced = (email: string) => api<{ marked: number }>("/admin/reminders/bounced", { email });
+/** Plain names for the reminder kinds the server sends. */
+export const REMINDER_KIND: Record<string, string> = {
+  daily: "Daily nudge", "daily-streak": "Daily nudge, on a streak", "missed-2": "Two days missed", "missed-5": "Five days missed",
+  "missed-12": "Twelve days missed", weekly: "Weekly review",
+};
+
 /** Remembered for the session, so the account menu asks once, not on every open. */
 let staff: Promise<StaffMe | null> | null = null;
 export function isStaff(): Promise<StaffMe | null> {

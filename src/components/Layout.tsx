@@ -5,13 +5,16 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useFocus } from "../lib/focus";
 import { whenIdle } from "../lib/idle";
+import { API_ENABLED } from "../lib/api";
 import { usePref } from "../lib/prefs";
 import { RedoSeeder } from "./Content";
 import { AutoTicker } from "./AutoTicker";
 import FocusBar from "./FocusBar";
 import InstallButton from "./InstallButton";
 import { IconChart, IconHome, IconPen, IconToday } from "./Icons";
-import ReminderBell from "./ReminderBell";
+import ReminderBell, { ReminderLink } from "./ReminderBell";
+
+const WeekMailer = lazy(() => import("./WeekMailer"));
 import Brand from "./Brand";
 import SiteFooter from "./SiteFooter";
 import { DataNote, SyncNavRow } from "./SyncNav";
@@ -119,6 +122,8 @@ export default function Layout() {
   // A toast raised before then is not lost: the Toaster replays active toasts when it mounts. A first tap or key press
   // mounts it at once, since toasts follow actions.
   const [idle, setIdle] = useState(false);
+  // While the weekly review is on, this week's figures are kept current for its email (D97); remembered per browser.
+  const [weeklyReview] = usePref<boolean>("weeklyReview", false);
   useEffect(() => {
     const ready = () => setIdle(true);
     window.addEventListener("pointerdown", ready, { once: true });
@@ -171,6 +176,7 @@ export default function Layout() {
       <RedoSeeder />
       <AutoTicker />
       {idle && <Suspense fallback={null}><Toaster /></Suspense>}
+      {idle && API_ENABLED && weeklyReview && <Suspense fallback={null}><WeekMailer /></Suspense>}
 
       <nav aria-label="Quick" className={BOTTOM_BAR}>
         {TABS.map(({ label, Icon, ...it }) => (
@@ -183,7 +189,11 @@ export default function Layout() {
 
       {menuUsed && (
         <Suspense fallback={null}>
-          <MenuSheet open={open} onOpenChange={setOpen} title={<Brand />}><SyncNavRow onPick={() => setOpen(false)} /><SidebarNav onPick={() => setOpen(false)} /></MenuSheet>
+          <MenuSheet open={open} onOpenChange={setOpen} title={<Brand />}>
+            {/* The account row, with the reminders bell beside it: the phone header has no room for a sixth button (D97). */}
+            <div className="flex items-center gap-2"><div className="min-w-0 flex-1"><SyncNavRow onPick={() => setOpen(false)} /></div><ReminderLink onPick={() => setOpen(false)} /></div>
+            <SidebarNav onPick={() => setOpen(false)} />
+          </MenuSheet>
         </Suspense>
       )}
       {searchUsed && <Suspense fallback={null}><SearchPalette open={searchOpen} onOpenChange={setSearchOpen} onNavigate={navigateFromSearch} /></Suspense>}

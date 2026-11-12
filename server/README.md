@@ -185,7 +185,7 @@ Email goes through the 99ile.team Gmail with an app password, at most 300 a day 
 
 **Turning it on (once), all on Render (the API service, Environment):**
 
-1. Migrations 12 and 13 run by themselves: the deploy workflow migrates before Render deploys.
+1. Migrations 12 to 15 run by themselves: the deploy workflow migrates before Render deploys.
 2. `NOTIFY_TOKEN_SECRET` (`openssl rand -hex 32`) and `NOTIFY_VAPID_PUBLIC`, `NOTIFY_VAPID_PRIVATE` (a pair from
    `go run ./cmd/notify -vapid`; the same values as in GitHub, for the manual button).
 3. Email goes through **Gmail's API over HTTPS** (D92): Render's free plan blocks the mail ports SMTP needs. Once:
@@ -196,16 +196,34 @@ Email goes through the 99ile.team Gmail with an app password, at most 300 a day 
      ID and secret.
    - On your Mac, in server/: `NOTIFY_GMAIL_CLIENT_ID=… NOTIFY_GMAIL_CLIENT_SECRET=… go run ./cmd/notify -gmail-token`.
      Open the link it prints, signed in as 99ile.team@gmail.com. Google warns that it has not verified the app (it
-     is yours): Advanced → Go to 99ile → allow "Send email on your behalf". The terminal prints
-     `NOTIFY_GMAIL_REFRESH_TOKEN=…`.
+     is yours): Advanced → Go to 99ile → allow "Send email on your behalf" and "View your email message metadata"
+     (headers only, never a body: the bounce check reads one header). The terminal prints
+     `NOTIFY_GMAIL_REFRESH_TOKEN=…`. A token made before R2 (12 Nov 2026) can only send: run this once more and replace
+     it on Render, or the log says once a day "bounce check is off" while sending carries on.
    - Render: `NOTIFY_SMTP_USER` = `99ile.team@gmail.com`, and `NOTIFY_GMAIL_CLIENT_ID`, `NOTIFY_GMAIL_CLIENT_SECRET`,
      `NOTIFY_GMAIL_REFRESH_TOKEN`. `NOTIFY_SMTP_PASSWORD` is not used on Render; delete it and revoke that app
      password. Changing the 99ile.team password ends the token: run `-gmail-token` again.
 4. `NOTIFY_WORKER` = `1`. Render restarts; the log shows "reminder worker started".
-5. Gmail (99ile.team): a filter for `from:mailer-daemon OR subject:unsubscribe` that skips the inbox and labels
-   them "99ile mail" ("Reminders" is a name Gmail keeps for itself): bounces and mailto unsubscribes land there.
+5. Gmail (99ile.team), two filters that skip the inbox ("Reminders" is a label name Gmail keeps for itself):
+   - `from:mailer-daemon` → label **`99ile-bounces`**, exactly that name: the worker reads it once an hour (below).
+   - `subject:unsubscribe` → label "99ile mail": mailto unsubscribes. (Before R2 one filter put both under "99ile
+     mail"; split it so the bounce check never sees anything but bounces.)
 6. To watch first without sending, add `NOTIFY_DRY` = `1`: each pass logs "would_queue" and sends nothing. Remove it
    to send.
+
+**Bounces (R2, D97):** once an hour the worker lists the `99ile-bounces` label and reads only each bounce's
+`X-Failed-Recipients` header. A student whose Google address it names stops getting email (the Settings card says
+the address bounced) until they turn email on again. Each bounce is handled once (`notify.bounces`, kept 60 days, no
+address). If Google's bounce lacks that header, mark the address by hand on the admin page (Reminders).
+
+**The weekly review (R2, D97):** Sundays at 9:00 in each student's zone, for students who switched it on. The
+figures come from the student's own browser (`PUT /v1/notify/week`, `notify.weeks`); the server never reads synced
+records. Before it goes to students, leave `NOTIFY_DRY=1` over one Sunday and check the log's "would queue weekly".
+
+**The admin page's Reminders tab:** counts (who has what on, the last 14 days by message, skip reasons, bounces,
+unsubscribes, today's email budget) for staff with `stats.read`; "Send me a test" (any wording with sample figures,
+to your own address and devices, marked Test, ten an hour) and "Mark an address bounced" for admins
+(`reminders.manage`, migration 15). Both actions are in the audit log, without addresses.
 
 **Switches** (Render environment): `NOTIFY_EMAIL=off` or `NOTIFY_PUSH=off` stops a channel; removing
 `NOTIFY_WORKER` stops the reminders. Each takes effect when Render restarts, about a minute.

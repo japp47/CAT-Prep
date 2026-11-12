@@ -344,3 +344,131 @@ student had left off, when in fact nobody could switch it on. The card's existin
 students never see a feature the server has not switched on, and a development build says why it is missing and
 names `go run ./cmd/notify -vapid`. Email and the weekly review still show, and "nothing will arrive yet" still
 appears if no channel is on.
+
+## 15. R2 planned (12 Nov 2026, D97)
+
+**What is already built** (R1, and §11 to §14): the daily reminder, the missed-day series (2nd, 5th and 12th day, then
+stop), rotated wordings (`NextVariant`, never the same wording twice in a row), the owner's preview
+(`cmd/notify -preview`), push and email, one-click unsubscribe, the Settings card and the bell. **What R2 adds:**
+
+### 15.1 The weekly review email (the switch the card already shows)
+The Settings card and the bell offer "Weekly review", and `notify.prefs.weekly` saves it, but nothing plans or sends
+it: a promise not kept. The wording (`weekly-a`) and the `Week` block in the layout exist; the rule and the data do
+not.
+
+- **What it says.** The same week the site's weekly review shows (`practice/week.ts`, `weekFacts`), so the email and
+  `/review` never disagree: days practised, questions and accuracy, minutes against the plan, the best move and the
+  one that slipped, the trap that cost most, redo cleared and due, and last week's focus with how it went. Then one
+  button, "See your week", to `/review`, where the student picks next week's focus. Research (§15.6): the weekly
+  emails that bring people back show the student's own progress and one next step, and suit a product used most weeks.
+- **Where the numbers come from.** The server keeps synced records without reading them (`sync.records`), and that
+  stays true. The browser, which already computes the week, sends one small summary to its own endpoint,
+  `PUT /v1/notify/week`, kept in its own table, `notify.weeks` (as built: not a synced record kind, so the sync store's
+  promise has no exception), with only the figures above (counts, two type names and a trap name, each from the site's
+  fixed lists; no answers, no text the student wrote), and only while the weekly review is switched on. It is resent
+  when the figures change after practice, so by Sunday it holds the week. Every field is checked against a fixed list
+  and the body is at most 2 KB. Turning the weekly review off, in Settings or by the email's unsubscribe link, deletes
+  the figures; the data export lists them.
+- **When the browser was not opened this week.** The server also counts practice days itself: the practice hook
+  (`RecordPractice`) adds a row to `notify.days` (identity, local day), kept eight weeks. With no `weekMail` for the
+  week, the email uses those days only, in a shorter wording.
+- **The rule** (`Decide`, from `policy.json`): Sunday at 9:00 in the student's time zone; weekly on, not paused, not in
+  quiet hours, email good or a device for push; within `maxEmailsPerWeek` (3), with `emailPriority` putting a missed
+  -day email first. One weekly message a week (key `student:weekly:monday`). **A quiet week** (no practice days) gets
+  the "quiet week" wording, pointing at Today's restart, only if the student practised in the last 28 days; a student
+  quiet for longer has had the missed-day series, which stops at the 12th day, and the weekly email stops with it
+  rather than restarting nudges they have stopped answering. No reminders on the exam day or the day before, as now.
+- **Wordings** (`messages.json`): a good week, a light week, a quiet week, each with a push version; the subject
+  carries the student's own numbers ("Your week: 5 days, 64 questions"). Rotation as for the other kinds.
+- **Measured** as the rest of F65 (`notify.stats`): sent, skipped by reason, practised within two hours, and for the
+  weekly email also practised within two days; unsubscribes from the weekly scope. No tracking pixels.
+
+### 15.2 Bounces, read without reading the inbox
+Gmail's API accepts any address; a bad one comes back later as a mailer-daemon email in the team inbox, and today
+only the owner sees it. R2 marks the student's email state `bounced` (the card already explains it: "Emails to … came
+back, so email stopped").
+- **Least access.** Not IMAP and not `gmail.readonly`, both of which open the whole inbox. Instead a Gmail filter
+  (owner, once) labels mail from `mailer-daemon` as `99ile-bounces`, and the worker lists that label with the
+  `gmail.metadata` scope, reading headers only (`X-Failed-Recipients`), never a body. The owner runs
+  `go run ./cmd/notify -gmail-token` once more to grant `gmail.send` and `gmail.metadata` together.
+- **Then** each listed bounce is matched to an account address and marked `bounced`; email stops for that student
+  until they turn it on again. The worker checks hourly and remembers the last message it read.
+- **Checked before relying on it:** send one email to an address that does not exist and confirm the header is there;
+  if Google's bounce lacks it, fall back to the owner marking bounces from the admin panel (15.3).
+
+### 15.3 The owner's Reminders panel (admin page)
+- The last 14 days from `notify.stats`, by kind and channel: sent, skipped (with the top reasons), failed, practised
+  within two hours, unsubscribed, bounced; today's email budget left; whether the worker is dry or a channel paused.
+- **Send me a test**: any kind and wording, rendered with sample figures and sent to the signed-in admin's own
+  address and devices, so a new wording is seen in a real inbox before a student gets it.
+
+### 15.4 The bell on a phone
+The phone header has no room (§14), so the bell goes in the menu sheet, beside the account row at its top. It opens
+Settings at the reminders card (`/settings#reminders`), where the same controls are. It is absent from builds without
+the API, as on desktop.
+
+### 15.5 Not in R2
+The inbox (64, step 4b) as a third channel; WhatsApp or SMS; per-student send times learnt from when they practise.
+
+### 15.6 Research (12 Nov 2026)
+- Evidence that weekly progress emails help is real but thin: vendor case studies (Lifesum reports 74.8% of users
+  start a session after its weekly report; Braze), a 2024 e-learning study in which only the groups shown their own
+  progress or their standing completed the course (TEAP 2024 poster), and practitioners' advice to send weekly reports
+  only for a product used most weeks (boldstart.vc). So: the student's own numbers, one next step, and a stop rule.
+- Render's free plan blocks outbound SMTP ports 25, 465 and 587 (changelog, Sept 2025); nothing found on 993, which
+  is one more reason to read bounces through Gmail's API over HTTPS.
+- Bounces from Google arrive from `mailer-daemon` with the failed address in a header; `gmail.readonly` is a
+  restricted scope and IMAP needs full mail access, so a label plus `gmail.metadata` is the least access that works.
+
+## 16. As built, R2.1 to R2.3 (12 Nov 2026, `feat/reminders-r2`)
+
+- **Phone bell:** `components/ReminderBell.tsx` (`ReminderLink`) in the menu sheet beside the account row
+  (`components/Layout.tsx`). Also `components/Reminders.tsx`: arriving at `/settings#reminders` from an email (a
+  cold load) scrolls to the card, which the layout's scroll could not do before the lazy page drew it.
+- **Server:** migration `00014_notify_week.sql` (`notify.days`, `notify.weeks`, grants; `cat_readonly` sees when a
+  week was written, not its figures); `internal/notify/week.go` (`WeekMail` and its `Check`, `WeekHandler`,
+  `mondayOf`, `ForgetWeeks`, `WeeklyVariant`, `Renderer.Week`, `duration`); `rules.go` (`Decide` asks `weekly` first,
+  then `study`; the key is `student:weekly:monday`, one a week whatever the channel); `store.go` (the week's days and
+  figures per student, in their own time zone); `service.go` (the weekly wording and figures at planning time);
+  `activity.go` (the practice hook adds the day); `worker.go` (the daily cleanup forgets eight-week-old rows);
+  `handler.go` (weekly off, or its unsubscribe, deletes the figures); `policy.json` (`weekly.quietWithinDays`: 28);
+  `messages.json` (four wordings, `weekly-good`, `-light`, `-quiet`, `-days`, and the `week` tile and line
+  templates); `cmd/api/main.go` (the route); `internal/syncapi` (the data export gains a `reminders` section: settings,
+  push devices, last practice, practice days and weekly figures, which it lacked); `cmd/notify -preview` builds each
+  weekly wording from sample figures as the planner does.
+- **Site:** `lib/weekmail.ts` (`weekMail` from `weekFacts`, names only from `TRAPS` and VARC's practice types),
+  `components/WeekMailer.tsx` (mounted on idle while the weekly review is on; sends five seconds after the figures
+  change, once per change), `lib/reminders.ts` (remembers the weekly switch per browser; forgets the last sent figures
+  when it goes off).
+- **Changed from §15.1:** an endpoint and table instead of a synced kind (above); the weekly email goes even after an
+  earlier nudge that Sunday (a reminder time before 9:00 must not cost the review), and once it has gone the day's
+  other nudges wait; the days tile reads "N of M" with M at least N, since the server may have counted a later day.
+- **Tests:** `week_test.go` (18 rule cases, the key, Monday, the field checks, the wording choice, the figures, every
+  weekly wording rendered), `week_int_test.go` (plan with figures, days only, a long-quiet student, weekly off, no
+  repeat, the cleanup), `cmd/api/v1_notify_week_int_test.go` (off stores nothing, on stores, rewrites, refusals, the day
+  recorded by a sync push, the export, off and unsubscribe delete, the identity takes everything),
+  `lib/weekmail.test.ts` (the review page's numbers, only fixed-list names, an empty week).
+
+## 17. As built, R2.4 and R2.5 (12 Nov 2026, `feat/reminders-r2`): R2 is complete
+
+- **Bounces** (`internal/notify/bounce.go`): `BounceReader` lists the `99ile-bounces` label and reads only the
+  `X-Failed-Recipients` header of each new bounce (`format=metadata`; the `gmail.metadata` scope cannot search or open
+  a body, so the label does the finding). `Store.RecordBounce` marks matching account addresses `bounced` and keeps the
+  bounce id with a count, never the address (`notify.bounces`, 60 days). The worker runs it hourly; a token from before
+  R2 or a missing label is said once a day in the log and sending carries on (`ErrBounceScope`, `ErrNoBounceLabel`).
+  `cmd/notify -gmail-token` now asks for `gmail.send` and `gmail.metadata` together.
+- **The owner's panel** (`internal/admin/reminders.go`, `pages/admin/RemindersView.tsx`, the admin page's Reminders
+  tab): `GET /v1/admin/reminders` (counts only: setup, students by switch, the last 14 days by kind and channel with
+  practice within two hours, sent per day, top skip reasons, bounces, unsubscribes; `stats.read`);
+  `POST /v1/admin/reminders/test` (any wording with `Renderer.SampleVars`, to the staff member's own address and
+  devices, subject "Test: …", ten an hour, audited; `notify.Tester`); `POST /v1/admin/reminders/bounced` (the fallback
+  of §15.2, audited with the count only). Both actions need `reminders.manage`, seeded to admins in migration 15.
+- **Unsubscribes counted** without identity (`notify.unsubscribes`, per day and scope), from the one-click handler.
+  There was no `notify.stats` table (§5 planned one); the panel reads the message log, which keeps 30 days.
+- **Changed from §15:** the panel's figures come from `notify.messages` rather than a rolled-up `notify.stats`; the
+  Gmail filter is split in two so the bounce label holds bounces only (server/README.md, Study reminders).
+- **Tests:** `bounce_test.go` (only new bounces are opened, lower-case addresses, a scope-less token and a missing
+  label say why, the test send reaches only the staff address), `bounce_int_test.go` (the worker marks the right
+  student, a bounce without the header is kept unmatched, nothing is read twice, the manual mark ignores case),
+  `cmd/api/v1_admin_reminders_int_test.go` (404 without a role, a moderator sees counts only, no address in the panel,
+  the manual mark and its audit), `admin_test.go` (permissions seeded by any migration).

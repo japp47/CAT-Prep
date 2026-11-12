@@ -148,20 +148,87 @@
     ],
     "weekly": [
       {
-        "id": "weekly-a",
+        "id": "weekly-good",
         "subject": "Your week: {{.Week.Days}} days, {{.Week.Questions}} questions",
-        "preview": "What went well, what to work on next week.",
+        "preview": "What moved this week, and one thing to work on next.",
         "heading": "Your week on 99ile",
         "body": [
-          "Here is your week, and one thing to work on next."
+          "{{if .Name}}{{.Name}}, here{{else}}Here{{end}} is your week. Open it to pick the one thing to work on next week."
         ],
         "button": "See your week",
+        "to": "review",
+        "card": false,
         "push": {
           "title": "Your week is ready",
-          "body": "{{.Week.Days}} days, {{.Week.Questions}} questions. See what to work on next."
-        },
-        "to": "review"
+          "body": "{{.Week.Days}} days, {{.Week.Questions}} questions. Pick next week's focus."
+        }
+      },
+      {
+        "id": "weekly-light",
+        "subject": "A lighter week: {{.Week.Days}} days",
+        "preview": "That happens. Here is what you did get done.",
+        "heading": "A lighter week",
+        "body": [
+          "Busy weeks happen. Here is what you did get done.",
+          "If next week looks busy too, lower your minutes in Plan, so the timetable stays doable."
+        ],
+        "button": "See your week",
+        "to": "review",
+        "card": false,
+        "push": {
+          "title": "A lighter week",
+          "body": "{{.Week.Days}} days this week. See your week and set next week's pace."
+        }
+      },
+      {
+        "id": "weekly-quiet",
+        "subject": "A quiet week. One block is enough to begin",
+        "preview": "Nothing to catch up on. Start with a single block.",
+        "heading": "A quiet week",
+        "body": [
+          "No practice this week. That happens to everyone.",
+          "There is nothing to catch up on: one block is enough to begin again."
+        ],
+        "button": "Start today's set",
+        "push": {
+          "title": "A quiet week",
+          "body": "Nothing to catch up on. One block is enough to begin again."
+        }
+      },
+      {
+        "id": "weekly-days",
+        "subject": "Your week: {{.Week.Days}} days of practice",
+        "preview": "What moved, and one thing for next week, on 99ile.",
+        "heading": "Your week on 99ile",
+        "body": [
+          "You practised on {{.Week.Days}} {{if eq .Week.Days 1}}day{{else}}days{{end}} this week. Open your week to see what moved and pick one thing to work on next."
+        ],
+        "button": "See your week",
+        "to": "review",
+        "card": false,
+        "push": {
+          "title": "Your week is ready",
+          "body": "{{.Week.Days}} days of practice. See what moved this week."
+        }
       }
     ]
+  },
+  "week": {
+    "_about": "The weekly email's figures (R2, D97): tile labels and line templates, filled by notify.Renderer.Week from the browser's summary. Missing values are errors.",
+    "tiles": {
+      "days": "days studied",
+      "questions": "questions{{with .Acc}}, {{.}}% right{{end}}",
+      "minutes": "of {{.Planned}} planned",
+      "minutesOnly": "studied",
+      "daysOnly": "days with practice"
+    },
+    "lines": {
+      "improved": "Most improved: {{.Name}}, {{.Before}}% to {{.After}}%.",
+      "slipped": "Slipped: {{.Name}}, {{.Before}}% to {{.After}}%.",
+      "trap": "The trap that cost most: {{.Name}}, {{.N}} times.",
+      "redo": "Redo queue: {{.Cleared}} cleared, {{.Due}} still due.",
+      "focus": "Last week's focus, {{.Name}}: {{.N}} questions{{with .Acc}}, {{.}}% right{{end}}.",
+      "focusNone": "Last week's focus, {{.Name}}: not practised this week."
+    }
   }
 }

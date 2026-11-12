@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { API_ENABLED } from "./api";
 import { browserZone, loadReminders, pushHere, saveReminders, turnOffPush, turnOnPush, type ReminderPrefs } from "./notify";
+import { usePref } from "./prefs";
 import { loadLedger } from "./sync/ledger";
 
 /**
@@ -10,12 +11,22 @@ import { loadLedger } from "./sync/ledger";
  */
 export type ReminderPhase = "no-sync" | "loading" | "unavailable" | "ready";
 
+/** Where this browser keeps the weekly figures it last sent (lib/weekmail.ts); forgotten when the weekly review goes off. */
+export const WEEKMAIL_SENT = "cat-prep-weekmail-sent";
+
 export function useReminderPrefs(enabled = true) {
   const syncOn = API_ENABLED && loadLedger().on;
   const [phase, setPhase] = useState<ReminderPhase>(enabled && !syncOn ? "no-sync" : "loading");
   const [prefs, setPrefs] = useState<ReminderPrefs | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // This browser remembers whether the weekly review is on, so the layout knows to keep the week's figures current
+  // (D97) without asking the server on every page. Off, it forgets what it sent: the server has deleted the figures.
+  const [, setWeekly] = usePref("weeklyReview", false);
+  const noteWeekly = useCallback((on: boolean) => {
+    setWeekly(on);
+    if (!on) try { localStorage.removeItem(WEEKMAIL_SENT); } catch { /* ignore */ }
+  }, [setWeekly]);
 
   useEffect(() => {
     if (!enabled) return;
@@ -23,23 +34,23 @@ export function useReminderPrefs(enabled = true) {
     let live = true;
     void loadReminders().then((r) => {
       if (!live) return;
-      if (r.ok) { setPrefs(r.data); setPhase("ready"); } else { setMsg(r.message); setPhase("unavailable"); }
+      if (r.ok) { setPrefs(r.data); setPhase("ready"); noteWeekly(r.data.weekly); } else { setMsg(r.message); setPhase("unavailable"); }
     });
     return () => { live = false; };
-  }, [enabled, syncOn]);
+  }, [enabled, syncOn, noteWeekly]);
 
   const save = useCallback(async (next: ReminderPrefs) => {
     setPrefs(next);
     setMsg(null);
     const r = await saveReminders({ ...next, timeZone: browserZone() });
-    if (r.ok) setPrefs(r.data);
+    if (r.ok) { setPrefs(r.data); noteWeekly(r.data.weekly); }
     else {
       setMsg(r.message);
       const back = await loadReminders();
       if (back.ok) setPrefs(back.data);
     }
     return r.ok;
-  }, []);
+  }, [noteWeekly]);
 
   /**
    * Reminders on or off. A tap is the only moment a browser lets us ask for notifications, so turning them on asks

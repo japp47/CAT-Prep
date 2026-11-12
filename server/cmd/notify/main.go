@@ -115,18 +115,18 @@ func printVAPID() error {
 	return nil
 }
 
-// samples renders every kind and wording with made-up data, as the content test does.
+// samples renders every kind and wording with the sample data the admin panel's test send uses.
 func samples(each func(kind, id string, m notify.Rendered) error) error {
 	r, err := notify.NewRenderer()
 	if err != nil {
 		return err
 	}
-	v := notify.Vars{Name: "Aarav", Streak: 12, Missed: 5,
-		Task: &notify.Task{Label: "RC of the day", Title: "The ethics of nudging", Detail: "4 questions, about 7 minutes", Path: "/practice/rc/rc-ethics-nudging", Mins: 7},
-		Week: &notify.Week{Days: 5, Questions: 62, Tiles: []notify.Tile{{Value: "5 of 7", Label: "days you practised"}, {Value: "62", Label: "questions answered"}, {Value: "71%", Label: "right first time"}},
-			Lines: []string{"Strongest: para summary, 9 of 10 right.", "Work on next: para jumbles, 4 of 10 right."}}}
 	for _, kind := range r.Kinds() {
 		for _, id := range r.Variants(kind) {
+			v, err := r.SampleVars(id)
+			if err != nil {
+				return err
+			}
 			m, err := r.Render(kind, id, v, notify.Links{Site: site(), MessageID: 1, Token: "preview"})
 			if err != nil {
 				return err
@@ -180,7 +180,7 @@ func sendTests(to string) error {
 // this machine, which reads the code once and closes. Only the send permission is asked for.
 func gmailSignIn() error {
 	conf := &oauth2.Config{ClientID: os.Getenv("NOTIFY_GMAIL_CLIENT_ID"), ClientSecret: os.Getenv("NOTIFY_GMAIL_CLIENT_SECRET"),
-		Endpoint: notify.GoogleOAuth, Scopes: []string{notify.GmailScope}}
+		Endpoint: notify.GoogleOAuth, Scopes: []string{notify.GmailScope, notify.GmailMetadataScope}}
 	if conf.ClientID == "" || conf.ClientSecret == "" {
 		return errors.New("set NOTIFY_GMAIL_CLIENT_ID and NOTIFY_GMAIL_CLIENT_SECRET (a Desktop app OAuth client; server/README.md, Study reminders)")
 	}
@@ -192,7 +192,7 @@ func gmailSignIn() error {
 	conf.RedirectURL = "http://" + l.Addr().String() + "/"
 	state, verifier := oauth2.GenerateVerifier(), oauth2.GenerateVerifier()
 	url := conf.AuthCodeURL(state, oauth2.AccessTypeOffline, oauth2.ApprovalForce, oauth2.S256ChallengeOption(verifier))
-	fmt.Printf("Open this in a browser signed in as 99ile.team@gmail.com and allow \"Send email on your behalf\":\n\n%s\n\nWaiting for Google...\n", url)
+	fmt.Printf("Open this in a browser signed in as 99ile.team@gmail.com and allow \"Send email on your behalf\" and \"View your email message metadata\" (headers only, for bounces):\n\n%s\n\nWaiting for Google...\n", url)
 	got := make(chan string, 1)
 	srv := &http.Server{ReadHeaderTimeout: 10 * time.Second, Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Query().Get("state") != state {

@@ -2,6 +2,7 @@ package notify
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -34,8 +35,13 @@ func (s Store) Students(ctx context.Context, ids []string, now time.Time) ([]Fac
 			(select max(m.sent_at) from notify.messages m where m.identity_id = p.identity_id and m.status = 'sent'
 				and (m.sent_at at time zone p.tz)::date < ($2::timestamptz at time zone p.tz)::date),
 			(select count(*) from notify.messages m where m.identity_id = p.identity_id and m.channel = 'email' and m.status = 'sent'
-				and m.sent_at > $2::timestamptz - interval '7 days')
+				and m.sent_at > $2::timestamptz - interval '7 days'),
+			p.weekly,
+			(select count(*) from notify.days d where d.identity_id = p.identity_id and d.day between t.monday and t.today),
+			(select w.data from notify.weeks w where w.identity_id = p.identity_id and w.monday = t.monday)
 		from notify.prefs p
+		cross join lateral (select ($2::timestamptz at time zone p.tz)::date as today) l
+		cross join lateral (select l.today as today, l.today - (extract(isodow from l.today)::int - 1) as monday) t
 		join account.identities i on i.id = p.identity_id and i.status = 'active'
 		left join account.users u on u.identity_id = p.identity_id
 		left join notify.activity a on a.identity_id = p.identity_id
@@ -47,9 +53,18 @@ func (s Store) Students(ctx context.Context, ids []string, now time.Time) ([]Fac
 		var f Facts
 		var tz string
 		var paused, enabledAt, lastBefore *time.Time
+		var week []byte
 		err := r.Scan(&f.Identity, &f.Enabled, &f.At, &f.Days, &tz, &f.QuietFrom, &f.QuietTo, &f.EmailMode,
 			&paused, &enabledAt, &f.EmailOK, &f.Email, &f.Name, &f.LastDay, &f.Streak, &f.PushDevices,
-			&f.SentTodayKind, &lastBefore, &f.EmailsThisWeek)
+			&f.SentTodayKind, &lastBefore, &f.EmailsThisWeek, &f.Weekly, &f.WeekDays, &week)
+		if len(week) > 0 {
+			var m WeekMail
+			if json.Unmarshal(week, &m) == nil {
+				f.Week = &m
+				// Days practised before R2 reached the server, or offline, are in the browser's count only.
+				f.WeekDays = max(f.WeekDays, m.Studied)
+			}
+		}
 		for _, x := range []struct {
 			from *time.Time
 			to   *time.Time

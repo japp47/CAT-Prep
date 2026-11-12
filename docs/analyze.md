@@ -77,6 +77,20 @@ Thinking practice (Arcade, Manager Lab, DILR and Quant ideas), community, and re
 
 ## 3. Consistency check: spec vs plan vs code
 
+### 12 Nov 2026, reminders R2 (D97; `docs/design/notifications.md` §15)
+Owner: plan R2. Found that the missed-day series, rotated wordings and the preview were built in R1, so R2 is the weekly email, bounces and the owner's panel.
+
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A103 | The Settings card and the bell offer "Weekly review" and save it, but no rule plans it | A promise the site makes and does not keep | The weekly email in R2 (§15.1) |
+| A104 | The server keeps synced records without reading them, and the weekly email needs the week's figures | Reading attempts would break that promise | The browser sends one small summary a week to `PUT /v1/notify/week`, kept in `notify.weeks`, only while the weekly review is on, with a fixed field list (§15.1, as built in §16) |
+| A108 | The data export (`/v1/me/export`) held devices and records, but none of the reminder data | The right to access was incomplete before R2 added more | The export gains a `reminders` section (§16) |
+| A105 | A student who has not opened the site all week has no `weekMail` | No figures for the email | `notify.days` counted from the practice hook; a shorter wording with days only |
+| A106 | Bounces reach only the team inbox; the API cannot see them | Email keeps going to dead addresses, which hurts the sender's standing with Gmail | A Gmail label read with `gmail.metadata`, headers only (§15.2); fall back to marking from the admin panel if the header is missing |
+| A107 | The bell is on desktop only | Phone students find reminders only through Settings or search | A bell in the phone's menu sheet, beside the account row, to `/settings#reminders` (§15.4) |
+
+**D97.** R2 is the weekly review email (browser-computed `weekMail`, server-counted days as the fallback, Sunday 9:00, a quiet-week wording only within 28 days of the last practice), bounces through a labelled folder read by headers only, and the owner's Reminders panel with a test send; plus the phone bell. About a week.
+
 ### 11 Nov 2026, readable pages (D96; `docs/design/readable-pages.md`)
 Student feedback via the owner: too much to read, in Learn and elsewhere; desktop half empty, phone a long wall.
 

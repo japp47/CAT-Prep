@@ -37,6 +37,13 @@ func RecordPractice(ctx context.Context, tx pgx.Tx, identity string, withinHours
 			last_at = excluded.last_at`, identity); err != nil {
 		return err
 	}
+	// The day, for the weekly review's count (R2, D97); the cleanup forgets it after eight weeks.
+	if _, err := tx.Exec(ctx, `
+		insert into notify.days (identity_id, day)
+		select $1, (now() at time zone coalesce((select tz from notify.prefs where identity_id = $1), 'Asia/Kolkata'))::date
+		on conflict do nothing`, identity); err != nil {
+		return err
+	}
 	_, err := tx.Exec(ctx, `
 		update notify.messages set practised_at = now()
 		where id = (select id from notify.messages where identity_id = $1 and status = 'sent' and practised_at is null

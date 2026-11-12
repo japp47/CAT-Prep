@@ -40,6 +40,16 @@ func NewService(db *pgxpool.Pool, set Settings, log *slog.Logger) (*Service, err
 	if err != nil {
 		return nil, err
 	}
+	channels := ChannelsFor(set)
+	if set.EmailCap <= 0 {
+		set.EmailCap = 300
+	}
+	return &Service{Policy: policy, Render: r, Queue: PG{DB: db}, Store: Store{DB: db}, Channels: channels,
+		Tokens: Tokens{Key: set.TokenKey}, Site: set.Site, EmailCap: set.EmailCap, Log: log}, nil
+}
+
+// ChannelsFor is every channel these settings switch on, by name.
+func ChannelsFor(set Settings) map[string]Channel {
 	channels := map[string]Channel{}
 	if ch := EmailChannelFor(set); ch != nil && !set.EmailOff {
 		channels[Email] = ch
@@ -47,11 +57,7 @@ func NewService(db *pgxpool.Pool, set Settings, log *slog.Logger) (*Service, err
 	if set.VAPIDPublic != "" && set.VAPIDPrivate != "" && !set.PushOff {
 		channels[Push] = PushChannel{Push: WebPush{Keys: VAPID{Public: set.VAPIDPublic, Private: set.VAPIDPrivate, Subject: "mailto:99ile.team@gmail.com"}}}
 	}
-	if set.EmailCap <= 0 {
-		set.EmailCap = 300
-	}
-	return &Service{Policy: policy, Render: r, Queue: PG{DB: db}, Store: Store{DB: db}, Channels: channels,
-		Tokens: Tokens{Key: set.TokenKey}, Site: set.Site, EmailCap: set.EmailCap, Log: log}, nil
+	return channels
 }
 
 // GmailAPIFor is Gmail's API for these settings, or nil without its three keys.

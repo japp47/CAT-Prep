@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,8 @@ import { CR_CATALOG, RC_CATALOG, VA_CATALOG } from "../practice/catalog.gen";
 import { VA_KIND, type VaKind } from "../practice/va/build";
 import NotFound from "./NotFound";
 
+const RemindersView = lazy(() => import("./admin/RemindersView"));
+
 /**
  * The admin page (docs/feature.md F79, B8): problem reports grouped by question, and counts. Only staff get here;
  * everyone else sees the normal "Page not found" (D33). No student's answers are shown (D14).
@@ -20,18 +22,20 @@ export default function Admin() {
   const [me, setMe] = useState<StaffMe | null | undefined>(undefined);
   useEffect(() => { if (API_ENABLED) void isStaff().then(setMe); else setMe(null); }, []);
   const can = (p: string) => !!me?.permissions.includes(p);
-  const tabs = [can("feedback.read") && "reports", can("stats.read") && "overview"].filter(Boolean) as ("reports" | "overview")[];
-  const [tab, setTab] = useState<"reports" | "overview">("reports");
+  type Tab = "reports" | "overview" | "reminders";
+  const tabs = [can("feedback.read") && "reports", can("stats.read") && "overview", can("stats.read") && "reminders"].filter(Boolean) as Tab[];
+  const [tab, setTab] = useState<Tab>("reports");
   const shown = tabs.includes(tab) ? tab : tabs[0];
 
   if (me === undefined) return <Page width="read"><Skeleton className="h-10 w-48" /><Skeleton className="h-40 w-full" /></Page>;
   if (me === null) return <NotFound />;
   return (
     <Page width="read">
-      <PageHeader title="Admin">Signed in as {me.email}. Problem reports and counts; no student&rsquo;s answers are ever shown here.</PageHeader>
-      {tabs.length > 1 && <Segmented label="Admin view" value={shown} onChange={setTab} options={[["reports", "Reports"], ["overview", "Overview"]]} />}
+      <PageHeader title="Admin">Signed in as {me.email}. Problem reports, counts and reminders; no student&rsquo;s answers are ever shown here.</PageHeader>
+      {tabs.length > 1 && <Segmented label="Admin view" value={shown} onChange={setTab} options={([["reports", "Reports"], ["overview", "Overview"], ["reminders", "Reminders"]] as [Tab, string][]).filter(([t]) => tabs.includes(t))} />}
       {shown === "reports" && <Reports canResolve={can("feedback.resolve")} />}
       {shown === "overview" && <OverviewView />}
+      {shown === "reminders" && <Suspense fallback={<Skeleton className="h-64 w-full" />}><RemindersView canManage={can("reminders.manage")} /></Suspense>}
     </Page>
   );
 }
