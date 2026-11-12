@@ -52,7 +52,7 @@ export interface PracticeSet { id: string; d: string; sec: string; t: string; a:
  * v is the set's content version when it was taken (practice/types.ts, contentHash); unsure lists the questions marked "Not sure",
  * lucky those of them answered right.
  */
-export interface RcAttempt { id: string; d: string; set: string; mode: "daily" | "library"; ans: (number | null)[]; c: number; w: number; secs: number; first: number; v?: string; unsure?: number[]; lucky?: number[]; away?: number }
+export interface RcAttempt { id: string; d: string; set: string; mode: "daily" | "library"; ans: (number | null)[]; c: number; w: number; secs: number; first: number; v?: string; unsure?: number[]; lucky?: number[]; away?: number; /** Prove it (F103): the line marked per question, [paragraph, sentence], or null. */ lines?: ([number, number] | null)[] }
 /** One VA drill run. a is what the student entered for each item, pts the marks it earned; v and unsure as for RC, per item. */
 export interface VaAttempt { id: string; d: string; mode: "daily" | "custom"; items: { k: string; a: string; ok: boolean; pts: number; v?: string; unsure?: true }[]; secs: number; away?: number }
 /** One critical reasoning drill. a is the option index chosen for each item, or null when it was left blank. */
@@ -275,6 +275,7 @@ export function normalize(raw: unknown): AppState {
     ...(typeof x.v === "string" && x.v ? { v: x.v } : {}),
     ...(Array.isArray(x.unsure) ? { unsure: x.unsure.filter((n: unknown) => Number.isInteger(n)) as number[] } : {}),
     ...(Array.isArray(x.lucky) ? { lucky: x.lucky.filter((n: unknown) => Number.isInteger(n)) as number[] } : {}),
+    ...(Array.isArray(x.lines) ? { lines: x.lines.map((l: unknown) => (Array.isArray(l) && l.length === 2 && l.every((n) => Number.isInteger(n) && n >= 0) ? [l[0], l[1]] as [number, number] : null)) } : {}),
     ...awayOf(x),
   }));
   b.vaAttempts = list(raw.vaAttempts, (x) => ({

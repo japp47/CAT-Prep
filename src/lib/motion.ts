@@ -7,7 +7,15 @@ import { useEffect, type DependencyList, type RefObject } from "react";
 export type Gsap = typeof import("gsap").gsap;
 
 let gsapP: Promise<Gsap> | null = null;
-export const loadGsap = (): Promise<Gsap> => (gsapP ??= import("gsap").then((m) => m.gsap));
+/**
+ * GSAP, loaded once. Many animations run on lists that are empty on purpose (newly placed cells when none are new,
+ * bars on an empty chart), and GSAP warns "target not found" for each; the warning is turned off, since an empty
+ * list there is never a mistake.
+ */
+export const loadGsap = (): Promise<Gsap> => (gsapP ??= import("gsap").then((m) => {
+  m.gsap.config({ nullTargetWarn: false });
+  return m.gsap;
+}));
 
 export type ScrollTriggerT = typeof import("gsap/ScrollTrigger").ScrollTrigger;
 let stP: Promise<{ gsap: Gsap; ScrollTrigger: ScrollTriggerT }> | null = null;

@@ -23,9 +23,11 @@ export function scoreRc(set: RcSet, ans: (number | null)[]) {
  * Wrong and skipped questions go into the redo queue.
  * The caller makes the id, because a state updater may run more than once.
  */
-export function recordRc(st: AppState, id: string, set: RcSet, ans: (number | null)[], secs: number, first: number, mode: RcAttempt["mode"], d: string, unsure: number[] = [], away = 0): void {
+export function recordRc(st: AppState, id: string, set: RcSet, ans: (number | null)[], secs: number, first: number, mode: RcAttempt["mode"], d: string, unsure: number[] = [], away = 0, lines: ([number, number] | null)[] = []): void {
   const { c, w } = scoreRc(set, ans);
   const a: RcAttempt = { id, d, set: set.id, mode, ans, c, w, secs: Math.round(secs), first: Math.round(first), v: rcVersion(set), ...awayField(away) };
+  // Prove it (F103): kept only when the student marked at least one line; it never changes the score.
+  if (lines.some((l) => l !== null)) a.lines = set.questions.map((_, qi) => lines[qi] ?? null);
   if (unsure.length) {
     a.unsure = [...unsure].sort((x, y) => x - y);
     const lucky = a.unsure.filter((qi) => ans[qi] === set.questions[qi].answer);

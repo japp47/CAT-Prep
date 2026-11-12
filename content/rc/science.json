@@ -49,6 +49,9 @@
         "proof": [
           2
         ],
+        "lines": [
+          "The Chicago collection is prized partly because the manner of gathering its birds altered little across the period, which makes a collecting artefact an unlikely explanation."
+        ],
         "options": [
           {
             "t": "It measured birds that were still alive, so that the conditions of their growth could be observed directly by the researchers.",
@@ -77,6 +80,9 @@
         "stem": "Which of the following, if true, would most call into question the claim that warming caused the decline in body size?",
         "proof": [
           2
+        ],
+        "lines": [
+          "Body size is influenced by food supply, which a changing climate may also alter, and by conditions during growth: a smaller adult may reflect nothing more than a lean season in the nest, and not any heritable change."
         ],
         "options": [
           {
@@ -107,6 +113,9 @@
         "proof": [
           4
         ],
+        "lines": [
+          "A smaller body may assist an animal in coping with heat while leaving it with fewer reserves against cold snaps, storms or long flights, and changes in size may alter the predators and prey it encounters."
+        ],
         "options": [
           {
             "t": "can bring disadvantages as well as help an animal to cope with heat.",
@@ -135,6 +144,9 @@
         "stem": "The author discusses two explanations of the longer wings chiefly in order to:",
         "proof": [
           3
+        ],
+        "lines": [
+          "The data in hand cannot easily discriminate between these readings, and the choice between them bears on how the trend is to be understood."
         ],
         "options": [
           {
@@ -210,6 +222,10 @@
           3,
           4
         ],
+        "lines": [
+          "A number of researchers have since argued that the popular account ran well ahead of its evidence.",
+          "Fungal connections are real, and transfers of carbon and nitrogen along them may well occur."
+        ],
         "options": [
           {
             "t": "Researchers have demonstrated that the idea of a wood wide web is a myth which ought to be discarded by ecologists.",
@@ -268,6 +284,9 @@
         "proof": [
           3
         ],
+        "lines": [
+          "They observed too that, from the fungus's standpoint, any transfer between trees might serve the fungus's interests rather than the trees', which makes talk of cooperation and nurture at best a metaphor and at worst a misdescription."
+        ],
         "options": [
           {
             "t": "fungi are parasites that harm the trees to which they attach and gain nothing in exchange for the water they supply.",
@@ -297,6 +316,9 @@
         "proof": [
           4
         ],
+        "lines": [
+          "Correcting the story need not mean surrendering the wonder that drew people to it; it means accepting that a forest may be remarkable for reasons less sentimental than those we were first told."
+        ],
         "options": [
           {
             "t": "contemptuous of the scientists who first proposed the idea and of the journalists who later popularised it for readers.",
@@ -325,6 +347,9 @@
         "stem": "The final paragraph is chiefly intended to:",
         "proof": [
           4
+        ],
+        "lines": [
+          "A finding enters the world hedged with caveats, and the caveats are the first baggage to be discarded."
         ],
         "options": [
           {
@@ -429,6 +454,9 @@
         "proof": [
           1
         ],
+        "lines": [
+          "Many conditions remit of their own accord, and people tend to enrol in trials when their symptoms are at their worst, so that some recovery is to be expected whatever is done; statisticians call this regression to the mean."
+        ],
         "options": [
           {
             "t": "show that placebos are useless as a means of treating the symptoms for which patients commonly seek relief.",
@@ -458,6 +486,9 @@
         "proof": [
           3
         ],
+        "lines": [
+          "Analyses of antidepressant and pain trials have found that patients receiving placebos improved more in recent decades than in earlier ones, making it harder for new drugs to demonstrate an advantage."
+        ],
         "options": [
           {
             "t": "Recent drugs for pain and depression are less effective than the older drugs which they were designed to replace in the clinic.",
@@ -486,6 +517,9 @@
         "stem": "Which finding would most support the claim that expectation has 'genuine physiological consequences'?",
         "proof": [
           3
+        ],
+        "lines": [
+          "Expectation, it appears, has genuine physiological consequences, at least for symptoms such as pain and nausea that the brain itself regulates; it would be rash to extend the finding to conditions for which no such pathway has been demonstrated."
         ],
         "options": [
           {
@@ -589,6 +623,9 @@
           2,
           3
         ],
+        "lines": [
+          "A therapy founded on an understood mechanism is a different kind of thing from a supplement sold on the strength of a correlation, and for most other conditions the microbiome remains a promising field of research rather than a source of proven cures."
+        ],
         "options": [
           {
             "t": "Gut microbes matter, but most claimed health effects have not been shown to be causal, with a few well-understood exceptions.",
@@ -617,6 +654,9 @@
         "stem": "The author's point about comparing the microbes of sick and healthy people is that such studies:",
         "proof": [
           1
+        ],
+        "lines": [
+          "Many of these links, however, rested on comparing the microbes of sick and healthy people, a design that shows the two groups to differ but not which difference came first."
         ],
         "options": [
           {
@@ -647,6 +687,9 @@
         "proof": [
           2
         ],
+        "lines": [
+          "When germ-free mice received gut microbes from obese people, some gained more fat than mice given microbes from lean people."
+        ],
         "options": [
           {
             "t": "Mice raised in the ordinary way carry microbes that differ in several respects from those carried by human beings.",
@@ -676,6 +719,10 @@
         "proof": [
           3
         ],
+        "lines": [
+          "Patients with recurrent infection by the bacterium Clostridioides difficile, often following courses of antibiotics, recover in most cases when given stool from a healthy donor, which restores a diverse community able to hold the bacterium in check.",
+          "The treatment works because the cause is well understood."
+        ],
         "options": [
           {
             "t": "it uses antibiotics to kill every bacterium in the gut so that the infection is removed together with its host.",
@@ -704,6 +751,9 @@
         "stem": "The author discusses the treatment of Clostridioides difficile in order to:",
         "proof": [
           3
+        ],
+        "lines": [
+          "A therapy founded on an understood mechanism is a different kind of thing from a supplement sold on the strength of a correlation, and for most other conditions the microbiome remains a promising field of research rather than a source of proven cures."
         ],
         "options": [
           {
@@ -807,6 +857,9 @@
         "proof": [
           2
         ],
+        "lines": [
+          "Because the corrections depend on observations of the Earth's rotation, they are announced only months in advance and cannot be programmed ahead of time, as leap years can."
+        ],
         "options": [
           {
             "t": "they depend on observations of the Earth's rotation, and are announced only a few months ahead of time.",
@@ -835,6 +888,9 @@
         "stem": "The author mentions the variation of the sun's position at noon across a time zone in order to:",
         "proof": [
           3
+        ],
+        "lines": [
+          "Few people will notice, since the sun's position at noon already varies by far more than that across a single time zone."
         ],
         "options": [
           {
@@ -865,6 +921,9 @@
         "proof": [
           3
         ],
+        "lines": [
+          "For most users, though, the decision exchanges a symbolic connection for practical reliability."
+        ],
         "options": [
           {
             "t": "It is a reckless choice that will throw navigation and astronomy into confusion for generations to come.",
@@ -893,6 +952,9 @@
         "stem": "Which of the following would be a consequence of the 'smearing' described in the third paragraph?",
         "proof": [
           3
+        ],
+        "lines": [
+          "Some companies have taken to 'smearing' the extra second across a day, slowing their clocks imperceptibly, a remedy that keeps their systems running but leaves them briefly at odds with official time, and with one another when different firms smear differently."
         ],
         "options": [
           {
@@ -967,6 +1029,10 @@
           2,
           3
         ],
+        "lines": [
+          "The decisive evidence came from north-eastern China in the 1990s.",
+          "Most palaeontologists now regard birds not merely as descendants of dinosaurs but as dinosaurs themselves, the one lineage to survive the asteroid impact of sixty-six million years ago."
+        ],
         "options": [
           {
             "t": "Fossil evidence, above all the feathered dinosaurs of China, overturned older doubts and showed that birds are living dinosaurs.",
@@ -995,6 +1061,9 @@
         "stem": "The wishbone was once an obstacle to the idea that birds descended from dinosaurs because:",
         "proof": [
           1
+        ],
+        "lines": [
+          "The Danish artist and naturalist Gerhard Heilmann had argued in the 1920s that dinosaurs lacked the wishbone, the fused collarbones characteristic of birds, and the objection proved durable; another was the general picture of dinosaurs as sluggish, cold-blooded giants, unlike any bird."
         ],
         "options": [
           {
@@ -1025,6 +1094,9 @@
         "proof": [
           2
         ],
+        "lines": [
+          "It became clear that feathers had probably first evolved for other purposes, such as insulation or display, and were only later pressed into service for flight."
+        ],
         "options": [
           {
             "t": "these dinosaurs were descended from ancestors that could fly but had later lost the ability to do so.",
@@ -1053,6 +1125,9 @@
         "stem": "The statement that the extinction 'did not end the dinosaurs; it ended most of them' depends on the idea that:",
         "proof": [
           3
+        ],
+        "lines": [
+          "Most palaeontologists now regard birds not merely as descendants of dinosaurs but as dinosaurs themselves, the one lineage to survive the asteroid impact of sixty-six million years ago."
         ],
         "options": [
           {
@@ -1186,6 +1261,9 @@
         "proof": [
           0
         ],
+        "lines": [
+          "Stable and harmless at ground level, CFCs drift into the stratosphere, where ultraviolet light breaks them apart and releases chlorine, which destroys ozone."
+        ],
         "options": [
           {
             "t": "they are poisonous at ground level and are carried upward by winds into the layer in which the ozone is found.",
@@ -1244,6 +1322,9 @@
         "proof": [
           3
         ],
+        "lines": [
+          "It is often held up as a model for climate action, though the comparison has limits, since carbon dioxide comes from almost every part of the economy rather than from a few factories."
+        ],
         "options": [
           {
             "t": "no substitutes exist for any of the greenhouse gases which are responsible for the warming of the climate.",
@@ -1272,6 +1353,9 @@
         "stem": "The author mentions the rise in new CFC emissions detected in the 2010s in order to:",
         "proof": [
           2
+        ],
+        "lines": [
+          "In the 2010s scientists detected a rise in new CFC emissions, traced it to factories in eastern China, and saw it fall once the source was found."
         ],
         "options": [
           {
@@ -1348,6 +1432,9 @@
           0,
           4
         ],
+        "lines": [
+          "It is to treat replication as an investigation rather than a verdict."
+        ],
         "answer": 2,
         "options": [
           {
@@ -1378,6 +1465,10 @@
           2,
           3
         ],
+        "lines": [
+          "Instruments can be calibrated; tacit procedures can be documented; rival explanations can be tested.",
+          "A mismatch may arise from an overfitted analysis, an unreported feature of the sample, a changed instrument, or a genuine weakness in the original claim."
+        ],
         "answer": 0,
         "options": [
           {
@@ -1406,6 +1497,9 @@
         "stem": "The example of the cooling procedure primarily serves to:",
         "proof": [
           1
+        ],
+        "lines": [
+          "The first team's notes may describe the cooling procedure as “standard,” but that word can conceal a sequence of small judgements: how long a sample is left on the bench, how a sensor is positioned, or how a technician recognises that a machine has stabilised."
         ],
         "answer": 3,
         "options": [
@@ -1436,6 +1530,9 @@
         "proof": [
           3,
           4
+        ],
+        "lines": [
+          "It is to treat replication as an investigation rather than a verdict."
         ],
         "answer": 1,
         "options": [
@@ -1513,6 +1610,9 @@
           2,
           4
         ],
+        "lines": [
+          "A defensible restoration plan should make its goals explicit."
+        ],
         "answer": 3,
         "options": [
           {
@@ -1541,6 +1641,9 @@
         "stem": "Why does the author discuss fire and grazing in the grassland example?",
         "proof": [
           1
+        ],
+        "lines": [
+          "If those processes no longer occur, the same shrub may return even after repeated removal."
         ],
         "answer": 1,
         "options": [
@@ -1572,6 +1675,9 @@
           2,
           4
         ],
+        "lines": [
+          "If managers state what they are trying to recover and explain the trade-offs, success becomes open to public scrutiny rather than resting on the reassuring but vague claim that nature has been put back as it was."
+        ],
         "answer": 2,
         "options": [
           {
@@ -1601,6 +1707,9 @@
         "proof": [
           3,
           4
+        ],
+        "lines": [
+          "Without a clear reference point, a project can declare success simply because a chosen indicator has improved."
         ],
         "answer": 0,
         "options": [

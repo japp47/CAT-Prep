@@ -521,7 +521,25 @@ The Chrome extension (F53) grows from articles to tables: a points table, a resu
 ### Habit: the inbox, reminders and the restart plan
 Review: `docs/research/beyond-cat.md` §2. Practice counts only when a set, drill, timed session or mistake review is finished; opening the app is not studying.
 
-#### F61. Thinking Arcade: one daily puzzle — Planned (step 4b, four kinds; more in step 8)
+#### F103. Prove it from the passage — Built 13 Nov 2026 (D99, `docs/design/prove-it.md`)
+**Problem.** Students distrust VARC explanations and skip the habit that decides close options: going back to the line before committing. The review highlighted the settling paragraphs, never the line.
+**What the student gets.** While solving a library set or the RC of the day, after choosing an option, an optional "Prove it: tap the line": one tap marks a sentence. The review says "That's the line", "Right paragraph" or "That line doesn't settle it", always shows the deciding line, and the summary counts deciding lines found. Score-neutral; questions with no single deciding line (most paragraph-function and EXCEPT questions) do not offer it.
+**How.** `RcQuestion.lines` holds one or two exact sentences, cut by one rule (`practice/sentences.ts`) and held to it by a content test; two blind markers chose each question's line. The marked line is stored on the attempt and synced.
+**Next.** Trap lines (the sentence that makes a wrong option tempting) and contesting an answer with public counts and re-review.
+
+#### F61. Thinking Arcade: one daily puzzle — Planned (step 4b, two kinds first; the rest in step 8). Re-planned 13 Nov 2026 (D98) from `reports/Puzzle games for CAT reasoning.md`
+
+**Re-plan (D98), which overrides the text below where they differ.** Puzzles train the practised structure and things close to it, almost never general ability (Simons et al. 2016; Sala and Gobet; Lumosity's FTC case), so every game is a CAT set in game form: conditions in sentences, a board the student builds, must, could and cannot questions, typed answers.
+- **A shared vocabulary of about a dozen named deductions** (fixed total, forced by elimination, case split and so on) used by the games, DILR Replay, hints, error causes and new technique tiles on the skill map (F89's rule stands: no verdict under 8 attempts).
+- **The daily puzzle is content, not a seed:** a pre-generated, graded, hand-checked bank keyed by puzzle number (one IST day), shipped through the catalog pipeline and tested like content. Seeded generation only for the practice pool.
+- **First release, two games:** Rebuild the Table (tournaments) and Round Table with Clue Smith chips (arrangements, condition reading). Then Clue Smith, Shift Board (scheduling) and Zones (placement in regions, clues in sentences from level 3; the word "Queens" is another product's); then Residual (quant-based LR), Overlap (Venn), Missing Cells (DI tables), Two Voices (truth-tellers) and First Look (daily set triage that feeds the Arena). Sudoku and chess stay out.
+- **Every mistake is read:** a human-style solver logs each deduction in order; the first wrong move is compared with the deductions available then; a correct but unforced move is a lucky guess; hints climb from naming the technique to showing the step.
+- **The bridge goes to a real set in a different story**, with the link stated, and a two-story compare when a technique is first taught.
+- **Private and forgiving:** raw play stays on the device (30 days); only per-attempt summaries sync, for adults who opt in (DPDP: under 18 is a child); a repairable streak, no global leaderboard (comparison with a study group or college only).
+- **Measured before claimed:** a randomised study against an active control (the same minutes on real sets), scored on unseen sets at one and four weeks, before any claim. No "boosts IQ" or percentile claims (ASCI, CCPA 2024).
+- **Premium, only if the study is positive:** everything free today stays free, with the daily puzzle, practice pool, hints and on-device tiles; a later season pass (about ₹299 to ₹699, one payment, no auto-renew) would sell a training block, a cross-game report and "why you missed this" notes.
+
+**As first planned (24 Oct 2026):**
 **Problem.** Students want a light way to start the day; generic brain games do not train CAT skills and are everywhere already.
 **What the student gets.**
 - **One daily puzzle**, the same for everyone, 3 to 5 minutes, from four kinds that are DILR formats: **tournament table** (rebuild results from clues), **schedule shuffle** (place events under rules), **Queens** (one per row, column and region), and a **number grid** (KenKen-style sums and products).

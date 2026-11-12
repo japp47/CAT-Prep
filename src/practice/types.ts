@@ -38,6 +38,11 @@ export interface RcQuestion {
   stem: string;
   /** Paragraphs (0-based) that settle the answer, highlighted in review */
   proof: number[];
+  /**
+   * The one or two exact sentences that settle it, for "Prove it from the passage" (F103, practice/sentences.ts).
+   * Absent when no line or two do (most paragraph-function and EXCEPT questions); then Prove it is not offered.
+   */
+  lines?: string[];
   options: RcOption[];
   answer: number;
 }

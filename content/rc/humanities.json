@@ -19,6 +19,10 @@
           2,
           3
         ],
+        "lines": [
+          "There is no transparent translation, only translations whose interpretive decisions are concealed from the reader with more or less skill.",
+          "Two translations of the same novel may differ on nearly every page and both be faithful, since faithfulness belongs not to individual words but to the relationship between a whole work and the readers it finds."
+        ],
         "options": [
           {
             "t": "Since every translation sacrifices some feature of the original, translators should be as literal as possible and supply commentary wherever meaning would otherwise be lost.",
@@ -47,6 +51,9 @@
         "stem": "The author refers to Nabokov's translation of Onegin chiefly in order to:",
         "proof": [
           1
+        ],
+        "lines": [
+          "Vladimir Nabokov, who held that anything short of the literal was a betrayal, produced an Onegin so burdened with footnotes that the poem is scarcely legible without them, and demonstrated chiefly that literalism is also a choice, with casualties of its own."
         ],
         "options": [
           {
@@ -77,6 +84,9 @@
         "proof": [
           2
         ],
+        "lines": [
+          "There is no transparent translation, only translations whose interpretive decisions are concealed from the reader with more or less skill."
+        ],
         "options": [
           {
             "t": "English-language publishers should commission translations that deliberately sound foreign to their readers in every case.",
@@ -105,6 +115,9 @@
         "stem": "Which of the following, if true, would most weaken the author's claim that faithfulness belongs to the relationship between a whole work and its readers, and not to individual words?",
         "proof": [
           3
+        ],
+        "lines": [
+          "Two translations of the same novel may differ on nearly every page and both be faithful, since faithfulness belongs not to individual words but to the relationship between a whole work and the readers it finds."
         ],
         "options": [
           {
@@ -179,6 +192,9 @@
           2,
           3
         ],
+        "lines": [
+          "What fiction offers is perhaps less a moral training than a form of knowledge, a detailed sense of how a life looks from the inside, available from no other art in quite the same way, and valuable even if it improves no one."
+        ],
         "options": [
           {
             "t": "Free indirect style proves that fiction makes readers more empathetic, because it obliges them to share the thoughts of characters whose views they would otherwise reject.",
@@ -207,6 +223,9 @@
         "stem": "The author's remark that 'a skilful manipulator understands his victims very well' is intended to show that:",
         "proof": [
           3
+        ],
+        "lines": [
+          "Understanding another mind is not the same as caring about it: a skilful manipulator understands his victims very well, and a reader can relish a character's inner life while remaining indifferent to the people around her."
         ],
         "options": [
           {
@@ -237,6 +256,9 @@
         "proof": [
           1
         ],
+        "lines": [
+          "The pronouns remain those of the third person and the verbs those of the past tense, but the judgment and the exasperated question are the character's own, and no quotation marks announce the transfer."
+        ],
         "options": [
           {
             "t": "Mr Hale's generosity was, of course, beyond question. Who else in the parish would have thought to lend the curate his own carriage?",
@@ -265,6 +287,9 @@
         "stem": "Which of the following findings, if true, would most strengthen the claim that reading literary fiction improves our ability to ascribe beliefs and desires to others?",
         "proof": [
           3
+        ],
+        "lines": [
+          "Some psychologists have proposed that fiction of this kind exercises our capacity to ascribe beliefs and desires to others, and an influential experiment reported that reading a few pages of literary fiction improved performance on tests of that capacity."
         ],
         "options": [
           {
@@ -339,6 +364,9 @@
           2,
           3
         ],
+        "lines": [
+          "There is another possibility: that what the audience feels is not a mixture of pain and pleasure but a single response to suffering that has been given form."
+        ],
         "options": [
           {
             "t": "Aristotle's account of catharsis, correctly understood, resolves the paradox of tragedy, and later accounts merely restate his solution in different words.",
@@ -367,6 +395,9 @@
         "stem": "The author's criticism of Hume's account is that it:",
         "proof": [
           2
+        ],
+        "lines": [
+          "His account cannot easily explain why a clumsy tragedy merely bores us instead of distressing us less, as though pleasure and pain had been drawn from a single source and withdrawn together."
         ],
         "options": [
           {
@@ -397,6 +428,9 @@
         "proof": [
           3
         ],
+        "lines": [
+          "This would explain why audiences do not seek out tragedies in order to be consoled, which a happy ending would do more efficiently, and why the form has migrated, in ways Aristotle could not have foreseen, to the novel, the film and the television drama that ends badly."
+        ],
         "options": [
           {
             "t": "show that Aristotle's theory of catharsis has been applied successfully to modern forms of drama and fiction.",
@@ -425,6 +459,9 @@
         "stem": "Which of the following, if true, would most weaken the author's own account of the appeal of tragedy?",
         "proof": [
           3
+        ],
+        "lines": [
+          "Tragedy arranges suffering so that it appears to follow from character and circumstance, to have been foreshadowed and to mean something, and we respond to the arrangement rather than to the pain."
         ],
         "options": [
           {
@@ -530,6 +567,9 @@
         "proof": [
           1
         ],
+        "lines": [
+          "European explorers depended on local guides, merchants and informants for almost everything they recorded, and much of the information that appeared on European maps had been gathered, and sometimes drawn, by people whom the maps then rendered invisible."
+        ],
         "options": [
           {
             "t": "European mapmakers deliberately invented regions that did not exist in order to justify annexing them later.",
@@ -587,6 +627,9 @@
         "stem": "Which one of the following would the author be most likely to accept?",
         "proof": [
           3
+        ],
+        "lines": [
+          "What maps did was to make some divisions precise, and thereby harder to negotiate, in places where life had previously gone on in the shades between them."
         ],
         "options": [
           {
@@ -662,6 +705,9 @@
           3,
           4
         ],
+        "lines": [
+          "This is a sound conclusion, but it is also a comfortable one, since a thesis that attributes outcomes to everything is difficult to refute and correspondingly difficult to test."
+        ],
         "options": [
           {
             "t": "The objections of recent historians show that the printing press had little influence on European society during the first century after Gutenberg's invention.",
@@ -690,6 +736,9 @@
         "stem": "The author's remark that the chronological objection 'risks proving too little' implies that:",
         "proof": [
           1
+        ],
+        "lines": [
+          "The objection is a sound one, though it risks proving too little: slow transformations are transformations nonetheless, and a process that takes a century may be as profound as one that takes a decade."
         ],
         "options": [
           {
@@ -720,6 +769,9 @@
         "proof": [
           2
         ],
+        "lines": [
+          "This is persuasive, but it is worth noticing what it concedes: that without print the achievement would have lacked a medium in which to occur."
+        ],
         "options": [
           {
             "t": "show that Johns's objection to Eisenstein's thesis is invalid and should be set aside by serious historians.",
@@ -748,6 +800,9 @@
         "stem": "Which of the following, if true, would most strengthen the author's suggestion in the fourth paragraph that technology alone cannot account for outcomes?",
         "proof": [
           3
+        ],
+        "lines": [
+          "The comparison suggests that technology cannot by itself account for outcomes."
         ],
         "options": [
           {
@@ -821,6 +876,10 @@
           2,
           3
         ],
+        "lines": [
+          "That is why Snow's achievement lies less in his map than in his method.",
+          "It was accepted only in the following decades, as further outbreaks, the work of others and eventually the identification of the cholera bacillus made the waterborne theory difficult to resist."
+        ],
         "options": [
           {
             "t": "Snow's removal of a pump handle ended the 1854 cholera outbreak and at once demonstrated the superiority of the waterborne theory of the disease.",
@@ -849,6 +908,9 @@
         "stem": "The author suggests that the cluster of deaths around the Broad Street pump:",
         "proof": [
           2
+        ],
+        "lines": [
+          "A cluster around a pump is also what the miasma theory would predict if the pump stood in the foulest part of a foul district, and the map, which has since become the emblem of Snow's argument, could not by itself distinguish between the two."
         ],
         "options": [
           {
@@ -879,6 +941,9 @@
         "proof": [
           1
         ],
+        "lines": [
+          "The exceptions strengthened his case: workers at a nearby brewery, who drank beer and water from the brewery's own well, were largely spared, while a woman who lived miles away, but had water from the Broad Street pump delivered because she liked its taste, died."
+        ],
         "options": [
           {
             "t": "were cases that the water theory predicted and that the miasma theory could not readily explain.",
@@ -908,6 +973,9 @@
         "proof": [
           2,
           3
+        ],
+        "lines": [
+          "The rejection was not irrational."
         ],
         "options": [
           {
@@ -983,6 +1051,9 @@
           2,
           3
         ],
+        "lines": [
+          "The difficulty with 'Silk Road' is less that it is false than that it is too tidy, and a name invented by a railway surveyor reflects the ambitions of the nineteenth century at least as much as the past it claims to describe."
+        ],
         "options": [
           {
             "t": "the popular image of the Silk Road misleads about the kind of network it was, though the connections it names were real.",
@@ -1011,6 +1082,9 @@
         "stem": "The example of the Roman matron wearing Chinese silk is used to show that:",
         "proof": [
           1
+        ],
+        "lines": [
+          "Goods moved in relays, changing hands many times between local merchants who knew only their own stretch of a web of routes through oases, passes and, increasingly, sea lanes."
         ],
         "options": [
           {
@@ -1070,6 +1144,9 @@
         "stem": "Which of the following, if true, would most support the author's suggestion that the most important exchanges were those that local societies adopted and adapted?",
         "proof": [
           2
+        ],
+        "lines": [
+          "The exchanges that mattered most were those that were adopted and adapted by local societies, not those that merely passed through them, and the history of the networks is therefore as much a history of the places that received what travelled as of the routes along which it came."
         ],
         "options": [
           {
@@ -1144,6 +1221,10 @@
           2,
           3
         ],
+        "lines": [
+          "The Parry-Lord thesis does not settle when or how the poems were fixed.",
+          "What it does establish is that the oral composition of long poems is possible, and that memorisation and authorial invention are not the only alternatives."
+        ],
         "options": [
           {
             "t": "The Iliad and the Odyssey were composed by Balkan singers whose songs were later carried to Greece and adapted by Homer himself.",
@@ -1172,6 +1253,9 @@
         "stem": "The singers' insistence that they sang a song 'the same' each time shows that:",
         "proof": [
           2
+        ],
+        "lines": [
+          "For the singers, sameness meant the same story, the same heroes and the same events, not the identical sequence of words that print has trained us to expect."
         ],
         "options": [
           {
@@ -1202,6 +1286,9 @@
         "proof": [
           3
         ],
+        "lines": [
+          "The Balkan songs are far shorter than Homer's epics, and those who sang them were, for the most part, unlettered, whereas the Homeric poems may have been set down in writing, perhaps even dictated, at a moment when the art of the oral singer was at its height; some scholars suspect that the great length and unity of the poems are signs of writing's influence and not of its absence."
+        ],
         "options": [
           {
             "t": "Many of the Balkan singers who were recorded could read and write, and had learned some of their songs from printed collections.",
@@ -1231,6 +1318,9 @@
         "proof": [
           2,
           3
+        ],
+        "lines": [
+          "It also shows how readily a scholar trained by print will assume that a poem must exist in one authoritative form, and how little warrant there is for the assumption."
         ],
         "options": [
           {
@@ -1305,6 +1395,10 @@
           2,
           3
         ],
+        "lines": [
+          "Both are stories about order.",
+          "Many modern crime novels borrow from both, setting a fair-play mystery inside a portrait of a troubled place, which may explain why the genre has outlived every announcement of its decline."
+        ],
         "options": [
           {
             "t": "Golden-age detective fiction was badly written, and the hard-boiled tradition rightly replaced it as the only serious kind of crime writing.",
@@ -1333,6 +1427,9 @@
         "stem": "The author's observation that the fairness of golden-age stories 'consisted largely in the display of clues' suggests that:",
         "proof": [
           0
+        ],
+        "lines": [
+          "The claim is usually accepted at face value, and it is worth noticing how often the books honour it only in the letter: the fairness consisted largely in the display of clues, and the conclusions drawn from them could depend on knowledge of an unusual poison, an obscure railway timetable or the habits of a particular social class."
         ],
         "options": [
           {
@@ -1363,6 +1460,9 @@
         "proof": [
           1
         ],
+        "lines": [
+          "W. H. Auden, who confessed to reading such stories addictively, argued that their appeal lay in a fantasy of innocence: the community is disturbed by a murder, the guilty party is identified and expelled, and the rest are restored to a state of grace."
+        ],
         "options": [
           {
             "t": "offer realistic portraits of crime as it actually happens in the streets of modern industrial cities.",
@@ -1391,6 +1491,9 @@
         "stem": "Which of the following novels best fits the author's description of many modern crime novels?",
         "proof": [
           3
+        ],
+        "lines": [
+          "Many modern crime novels borrow from both, setting a fair-play mystery inside a portrait of a troubled place, which may explain why the genre has outlived every announcement of its decline."
         ],
         "options": [
           {
@@ -1495,6 +1598,9 @@
         "proof": [
           1
         ],
+        "lines": [
+          "Ten days were deleted, so that Thursday 4 October was followed by Friday 15 October, and the rule for leap years was refined: century years were to be leap years only if divisible by 400."
+        ],
         "options": [
           {
             "t": "2000",
@@ -1523,6 +1629,9 @@
         "stem": "The fact that the October Revolution is commemorated in November implies that:",
         "proof": [
           2
+        ],
+        "lines": [
+          "Russia did not change until after the revolution of 1917, which is why the October Revolution is commemorated in November."
         ],
         "options": [
           {

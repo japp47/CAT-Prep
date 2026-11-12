@@ -23,7 +23,8 @@ import { rcOfDay } from "../../practice/daily";
 import { fmtSecs, LETTERS, rcError, rcErrorSrc, recordRc, scoreRc } from "../../practice/record";
 import { recordRcSummary, summaryFor, summaryScore } from "../../practice/summary";
 import { rcStale } from "../../practice/versions";
-import { GENRES, RC_QTYPE, setWords, SUMMARY_MAX_WORDS, words, type RcSet, type RcSummary } from "../../practice/types";
+import { GENRES, RC_QTYPE, setWords, SUMMARY_MAX_WORDS, words, type RcQuestion, type RcSet, type RcSummary } from "../../practice/types";
+import { findLine, lineVerdict, sentences, type LineRef } from "../../practice/sentences";
 import NotFound from "../NotFound";
 import { BreakNote, Choice, ChoiceGroup, ComeBack, QuestionNav, Confirm, ElapsedTimer, TimeUp, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ResumeNote, type Resume, ReviewChoice, ScoreCard, timeShown, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
 
@@ -88,7 +89,7 @@ export function PaneJump({ onClick, children }: { onClick: () => void; children:
 /** Shows the question pane from the top, for screens that keep their question near the top. */
 export const showQuestion = (setPane: (p: "p" | "q") => void) => { setPane("q"); window.scrollTo(0, 0); };
 
-interface RcDraft { ans: (number | null)[]; marked: boolean[]; cur: number; secs: number; first: number | null; unsure?: boolean[] }
+interface RcDraft { ans: (number | null)[]; marked: boolean[]; cur: number; secs: number; first: number | null; unsure?: boolean[]; lines?: (LineRef | null)[] }
 
 /** One RC set: answering it, then reviewing it on the same page. */
 function Player({ set, reviewId }: { set: RcSet; reviewId: string | null }) {
@@ -214,6 +215,9 @@ function Solve({ set, onDone, resume }: { set: RcSet; onDone: (id: string) => vo
   const [marked, setMarked] = useState<boolean[]>(saved?.marked ?? Array(n).fill(false));
   const [unsure, setUnsure] = useState<boolean[]>(saved?.unsure?.length === n ? saved.unsure : Array(n).fill(false));
   const [cur, setCur] = useState(saved?.cur ?? 0);
+  // Prove it (F103): the line marked for each question, and whether the passage is taking a tap now.
+  const [lines, setLines] = useState<(LineRef | null)[]>(saved?.lines?.length === n ? saved.lines : Array(n).fill(null));
+  const [picking, setPicking] = useState(false);
   const [pane, setPane] = useState<"p" | "q">("p");
   const [confirming, setConfirming] = useState(false);
   const [confirmRestart, setConfirmRestart] = useState(false);
@@ -228,14 +232,14 @@ function Solve({ set, onDone, resume }: { set: RcSet; onDone: (id: string) => vo
   const submitted = useRef(false);
 
   const first = firstAt.current === null ? null : (firstAt.current - startAt) / 1000;
-  const draft: RcDraft = { ans, marked, cur, secs: (Date.now() - startAt) / 1000, first, unsure };
+  const draft: RcDraft = { ans, marked, cur, secs: (Date.now() - startAt) / 1000, first, unsure, lines };
   const draftRef = useRef(draft);
   draftRef.current = draft;
 
   // Persist once per state change; pagehide and unmount flush the latest snapshot.
   useEffect(() => {
-    if (!submitted.current) writeDraft(draftKey, { ans, marked, cur, secs: (Date.now() - startAt) / 1000, first, unsure } satisfies RcDraft);
-  }, [draftKey, ans, marked, cur, startAt, first, unsure]);
+    if (!submitted.current) writeDraft(draftKey, { ans, marked, cur, secs: (Date.now() - startAt) / 1000, first, unsure, lines } satisfies RcDraft);
+  }, [draftKey, ans, marked, cur, startAt, first, unsure, lines]);
   useEffect(() => {
     const keep = () => {
       if (submitted.current) return;
@@ -250,6 +254,8 @@ function Solve({ set, onDone, resume }: { set: RcSet; onDone: (id: string) => vo
     setAns(Array(n).fill(null));
     setMarked(Array(n).fill(false));
     setUnsure(Array(n).fill(false));
+    setLines(Array(n).fill(null));
+    setPicking(false);
     setCur(0);
     firstAt.current = null;
     setStartAt(Date.now());
@@ -270,13 +276,17 @@ function Solve({ set, onDone, resume }: { set: RcSet; onDone: (id: string) => vo
     const id = uid();
     submitted.current = true;
     writeDraft(draftKey, null);
-    update((st) => recordRc(st, id, set, ans, secs, first, mode, today, unsure.flatMap((u, i) => (u ? [i] : [])), away));
+    update((st) => recordRc(st, id, set, ans, secs, first, mode, today, unsure.flatMap((u, i) => (u ? [i] : [])), away, lines));
     setConfirming(false);
     leave.allowNextNavigation(); // the review goes into the address (?review=): not a "leave"
     onDone(id);
   };
   const blanks = ans.filter((a) => a === null).length;
-  const go = (i: number) => { setCur(i); setPane("q"); };
+  const go = (i: number) => { setCur(i); setPane("q"); setPicking(false); };
+  const q = set.questions[cur];
+  const canProve = !!q.lines?.length && ans[cur] !== null;
+  const startPick = () => { setPicking(true); setPane("p"); };
+  const tapLine = (r: LineRef) => { setLines((l) => l.map((x, i) => (i === cur ? r : x))); setPicking(false); setPane("q"); };
   useEffect(() => {
     if (pane !== "q" || !jumpToQuestion.current) return;
     jumpToQuestion.current = false;
@@ -298,7 +308,9 @@ function Solve({ set, onDone, resume }: { set: RcSet; onDone: (id: string) => vo
 
       <Split pane={pane}>
         <>
-          <Passage set={set} highlight={[]} wordMode={false} />
+          <Passage set={set} highlight={[]} wordMode={false}
+            lines={{ tap: picking ? tapLine : undefined, mine: lines[cur],
+              prompt: picking && <><span>Tap the line that proves your answer to question {cur + 1}.</span><Button variant="ghost" size="sm" onClick={() => { setPicking(false); setPane("q"); }}>Cancel</Button></> }} />
         </>
         <>
           <div className="flex flex-wrap gap-2" role="group" aria-label="Questions">
@@ -313,6 +325,8 @@ function Solve({ set, onDone, resume }: { set: RcSet; onDone: (id: string) => vo
             <ChoiceGroup label={"Options for question " + (cur + 1)}>
               {set.questions[cur].options.map((o, i) => <Choice key={i} mark={LETTERS[i]} checked={ans[cur] === i} onClick={() => choose(i)}>{o.t}</Choice>)}
             </ChoiceGroup>
+            {canProve && <ProveIt line={lines[cur] ? sentences(set.paras[lines[cur]![0]])[lines[cur]![1]] : null} picking={picking}
+              onPick={startPick} onRemove={() => setLines((l) => l.map((x, i) => (i === cur ? null : x)))} />}
             <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
               <div className="flex flex-wrap gap-2">
                 <Button variant="ghost" size="sm" onClick={() => setAns((a) => a.map((x, i) => (i === cur ? null : x)))} disabled={ans[cur] === null}>Clear</Button>
@@ -383,7 +397,8 @@ function FullReview({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
       <div ref={el} className="scroll-mt-24"><PaneSwitch pane={pane} setPane={setPane} q={`Question ${cur + 1} of ${n}`} /></div>
 
       <Split pane={pane}>
-        <Passage set={set} highlight={set.questions[cur].proof} wordMode />
+        <Passage set={set} highlight={set.questions[cur].proof} wordMode
+          lines={set.questions[cur].lines?.length ? { key: set.questions[cur].lines!.map((l) => findLine(set.paras, l)).filter((r): r is LineRef => r !== null), mine: attempt.lines?.[cur] ?? null } : undefined} />
         <>
           <div className="flex flex-wrap gap-2" role="group" aria-label="Questions">
             {set.questions.map((q, i) => {
@@ -391,7 +406,7 @@ function FullReview({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
               return <PaletteCell key={i} n={i + 1} state={s} current={i === cur} onClick={() => { setCur(i); setPane("q"); }} label={`Question ${i + 1}, ${s === "right" ? "correct" : s === "wrong" ? "wrong" : "skipped"}`} />;
             })}
           </div>
-          <ReviewQuestion set={set} qi={cur} chosen={ans[cur]} att={attempt.id} />
+          <ReviewQuestion set={set} qi={cur} chosen={ans[cur]} att={attempt.id} mine={attempt.lines?.[cur] ?? null} />
           <QuestionNav cur={cur} n={n} onGo={setCur} />
         </>
       </Split>
@@ -401,7 +416,47 @@ function FullReview({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
   );
 }
 
-export function Passage({ set, highlight, wordMode }: { set: RcSet; highlight: number[]; wordMode: boolean }) {
+/**
+ * Prove it (F103) on the passage: `tap` turns each sentence into a button that marks it; `mine` is the student's line
+ * (an accent tint while solving, an underline in review when it is not the deciding one); `key` are the deciding lines,
+ * on the highlighter inside the paragraph that settles the question; `prompt` sits above the passage while picking.
+ */
+export interface PassageLines { tap?: (r: LineRef) => void; mine?: LineRef | null; key?: LineRef[]; prompt?: ReactNode }
+
+/** Prove it under the options: mark the line that proves the answer; optional, and it never changes the score. */
+function ProveIt({ line, picking, onPick, onRemove }: { line: string | null; picking: boolean; onPick: () => void; onRemove: () => void }) {
+  if (picking) return <p className="text-base text-muted-foreground" role="status">Tap the line in the passage that proves your answer.</p>;
+  if (!line) return (
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+      <Button variant="secondary" size="sm" onClick={onPick}>Prove it: tap the line</Button>
+      <span className="text-sm text-muted-foreground">Optional. It does not change your score.</span>
+    </div>
+  );
+  return (
+    <div className="flex flex-col gap-2 rounded-lg bg-accent px-4 py-3 text-accent-foreground">
+      <p className="text-base"><b className="font-semibold">Your line:</b> “{line}”</p>
+      <div className="flex gap-1">
+        <Button variant="ghost" size="sm" onClick={onPick}>Change</Button>
+        <Button variant="ghost" size="sm" onClick={onRemove}>Remove</Button>
+      </div>
+    </div>
+  );
+}
+
+/** The review's word on the student's line, and the deciding line itself (F103). */
+function ProofVerdict({ set, q, mine }: { set: RcSet; q: RcQuestion; mine: LineRef | null }) {
+  const deciding = (q.lines ?? []).join(" ");
+  const v = mine ? lineVerdict(set.paras, q.lines ?? [], q.proof, mine) : null;
+  const head = v === "proves" ? "That's the line." : v === "near" ? "Right paragraph." : v === "off" ? "That line doesn't settle it." : "The line that settles it:";
+  return (
+    <div className={cn("flex flex-col gap-1.5 rounded-lg px-4 py-3", v === "proves" ? "bg-success-soft" : "bg-muted")} role="note">
+      <p className="text-base"><b className="font-semibold">{head}</b>{v === "proves" ? " You found what settles this question." : v ? " The deciding line, highlighted in the passage:" : ""}</p>
+      {v !== "proves" && <p className="measure text-base">“{deciding}”</p>}
+    </div>
+  );
+}
+
+export function Passage({ set, highlight, wordMode, lines }: { set: RcSet; highlight: number[]; wordMode: boolean; lines?: PassageLines }) {
   const [pick, setPick] = useState<string | null>(null);
   const [typed, setTyped] = useState("");
   const onClick = (e: MouseEvent) => {
@@ -409,16 +464,32 @@ export function Passage({ set, highlight, wordMode }: { set: RcSet; highlight: n
     if (w) setPick(w);
   };
   const word = typed.trim().replace(/[^A-Za-z'-]/g, "");
+  const tokens = (text: string) => wordMode ? text.split(/(\s+)/).map((tok, k) => {
+    const clean = tok.replace(/^[^A-Za-z]+|[^A-Za-z'-]+$/g, "").replace(/'s$/, "");
+    return clean.length >= 3 && /^[A-Za-z][A-Za-z'-]*$/.test(clean) && !COMMON.has(clean.toLowerCase())
+      ? <span key={k} className="cursor-pointer rounded-sm hover:bg-accent hover:text-accent-foreground" data-w={clean}>{tok}</span> : tok;
+  }) : text;
+  const same = (a: LineRef | null | undefined, pi: number, si: number) => !!a && a[0] === pi && a[1] === si;
+  const line = (text: string, pi: number, si: number) => {
+    const isKey = !!lines?.key?.some((r) => same(r, pi, si)), isMine = same(lines?.mine, pi, si);
+    const cls = cn("rounded-sm box-decoration-clone",
+      isKey && "bg-highlight/70 text-foreground dark:bg-highlight/45",
+      isMine && !lines?.key && "bg-accent text-accent-foreground",
+      isMine && lines?.key && !isKey && "underline decoration-primary decoration-2 underline-offset-[5px]");
+    // A span, not a button: browsers draw a button as a block of its own, and a line must flow inside its paragraph.
+    return lines?.tap
+      ? <span key={si} role="button" tabIndex={0} onClick={() => lines.tap!([pi, si])}
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); lines.tap!([pi, si]); } }}
+          className={cn(cls, "cursor-pointer transition-colors hover:bg-primary/12 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none motion-reduce:transition-none")}>{text}</span>
+      : <span key={si} className={cls}>{tokens(text)}</span>;
+  };
   return (
     <>
+      {lines?.prompt && <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-lg bg-accent px-4 py-2.5 text-base text-accent-foreground" role="status">{lines.prompt}</div>}
       <article className="flex flex-col gap-4 rounded-lg bg-card px-5 py-5 sm:px-7 sm:py-6" aria-label="Passage" onClick={wordMode ? onClick : undefined}>
         {set.paras.map((p, i) => (
           <p key={i} className={cn("text-reading", highlight.includes(i) && "-mx-3 rounded-md bg-highlight-soft px-3 py-1")}>
-            {wordMode ? p.split(/(\s+)/).map((tok, k) => {
-              const clean = tok.replace(/^[^A-Za-z]+|[^A-Za-z'-]+$/g, "").replace(/'s$/, "");
-              return clean.length >= 3 && /^[A-Za-z][A-Za-z'-]*$/.test(clean) && !COMMON.has(clean.toLowerCase())
-                ? <span key={k} className="cursor-pointer rounded-sm hover:bg-accent hover:text-accent-foreground" data-w={clean}>{tok}</span> : tok;
-            }) : p}
+            {lines ? sentences(p).flatMap((x, k) => (k ? [" ", line(x, i, k)] : [line(x, i, k)])) : tokens(p)}
           </p>
         ))}
         <p className="text-sm text-muted-foreground">{setWords(set)} words</p>
@@ -470,7 +541,7 @@ function WordSheet({ word, source, onClose }: { word: string | null; source: str
   );
 }
 
-export function ReviewQuestion({ set, qi, chosen, att }: { set: RcSet; qi: number; chosen: number | null; att?: string }) {
+export function ReviewQuestion({ set, qi, chosen, att, mine = null }: { set: RcSet; qi: number; chosen: number | null; att?: string; mine?: LineRef | null }) {
   const { state, update } = useStore();
   const q = set.questions[qi];
   const ok = chosen === q.answer;
@@ -490,7 +561,8 @@ export function ReviewQuestion({ set, qi, chosen, att }: { set: RcSet; qi: numbe
           </ReviewChoice>
         ))}
       </ul>
-      <p className="text-sm text-muted-foreground">The highlighted paragraph{q.proof.length > 1 ? "s settle" : " settles"} this question.</p>
+      {q.lines?.length ? <ProofVerdict set={set} q={q} mine={mine} />
+        : <p className="text-sm text-muted-foreground">The highlighted paragraph{q.proof.length > 1 ? "s settle" : " settles"} this question.</p>}
       {!ok && (inLog
         ? <ErrorCause src={rcErrorSrc(set, qi)} />
         : <Button variant="secondary" size="sm" className="self-start" onClick={() => { update((st) => { st.errors.push(rcError(set, qi, chosen, todayIso(), false, att)); }); toast("Added to your Error log."); }}>Add to Error log</Button>)}
@@ -511,12 +583,15 @@ function Summary({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
     return [...RC_CATALOG.slice(i + 1), ...RC_CATALOG.slice(0, i)].find((x) => !tried.has(x.id)) ?? RC_CATALOG[(i + 1) % RC_CATALOG.length];
   }, [state.rcAttempts, set.id]);
   const wpm = !attempt.away && attempt.first >= 30 ? Math.round(setWords(set) / (attempt.first / 60)) : null;
+  const marks = (attempt.lines ?? []).map((m, qi) => (m && set.questions[qi]?.lines?.length ? lineVerdict(set.paras, set.questions[qi].lines!, set.questions[qi].proof, m) : null)).filter((v) => v !== null);
+  const proved = marks.length ? { marked: marks.length, found: marks.filter((v) => v === "proves").length } : null;
   const parts: [string, React.ReactNode][] = [["Correct", s.c], ["Wrong", s.w], ["Skipped", s.skipped], ["Time", timeShown(attempt)]];
   if (wpm) parts.push(["Reading pace", `${wpm} wpm`]);
   return (
     <ScoreCard score={(s.marks > 0 ? "+" : "") + s.marks} of={3 * set.questions.length} parts={parts}>
       <BreakNote away={attempt.away} />
       <p className="text-base text-muted-foreground">Attempted {mediumDate(attempt.d)}. Logged in Progress as an RC practice set. Each wrong option shows its trap: the reason it looked right.</p>
+      {proved && <p className="text-base"><b className="font-semibold">Lines: {proved.found} of {proved.marked}</b> <span className="text-muted-foreground">of the lines you marked are the ones that settle their questions.</span></p>}
       <div className="flex flex-wrap gap-3">
         {missing.length > 0 && <Button onClick={() => { update((st) => { missing.forEach((i) => st.errors.push(rcError(set, i, attempt.ans[i], todayIso(), !!attempt.unsure?.includes(i), attempt.id))); }); toast(`Added ${missing.length} to your Error log.`); }}>Add {missing.length} to Error log</Button>}
         <Button asChild variant="secondary" className="h-auto min-h-10 max-w-full shrink whitespace-normal py-2 text-left"><Link to={`/practice/rc/${next.id}`}>Next set: {next.title}</Link></Button>

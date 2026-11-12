@@ -49,6 +49,9 @@
         "proof": [
           1
         ],
+        "lines": [
+          "In the first case we track the form and course of a process, in the second the stuff of which a thing is made, and neither practice is mistaken."
+        ],
         "options": [
           {
             "t": "demonstrate that continuity of matter is a poorer criterion of identity than continuity of form.",
@@ -78,6 +81,9 @@
         "proof": [
           0,
           1
+        ],
+        "lines": [
+          "The ship is troubling not because it exposes a gap in our knowledge but because it drives the criteria apart and compels us to say which we meant, something our usage never obliged us to decide."
         ],
         "options": [
           {
@@ -136,6 +142,9 @@
         "stem": "The final sentence, 'The ship, it seems, carries a heavier cargo than its builders intended', most nearly suggests that:",
         "proof": [
           4
+        ],
+        "lines": [
+          "The puzzle acquires more than antiquarian interest when transferred to persons, whose constituent matter is renewed at differing rates, whose memories are reconstituted rather than preserved, and whose characters alter beyond easy recognition over decades."
         ],
         "options": [
           {
@@ -240,6 +249,9 @@
         "proof": [
           2
         ],
+        "lines": [
+          "Among the varieties Nagel distinguishes are luck in outcomes, as in the case of the drivers; luck in circumstances, since many of the blameless would have disgraced themselves had history tested them, and many of the condemned would have passed unnoticed in gentler times; and luck in constitution, the temperament and dispositions that no one elects."
+        ],
         "options": [
           {
             "t": "It affects only those who are later condemned, and never those who lead blameless lives.",
@@ -268,6 +280,9 @@
         "stem": "The example of the lorry driver is introduced in order to:",
         "proof": [
           4
+        ],
+        "lines": [
+          "It indicates, rather, that our relation to our actions cannot be exhausted by the vocabulary of control."
         ],
         "options": [
           {
@@ -298,6 +313,9 @@
         "proof": [
           3
         ],
+        "lines": [
+          "The first, rationalist in spirit, holds that the drivers are equally culpable and that our harsher reaction to the first is an error: understandable as the product of grief and of the need to find someone answerable for a death, but indefensible as a judgement of character."
+        ],
         "options": [
           {
             "t": "the strength of public anger at a killing is a reliable index of the offender's character.",
@@ -326,6 +344,9 @@
         "stem": "Which of the following, if true, would most strengthen the final paragraph's suggestion that regret and blame may be separable?",
         "proof": [
           4
+        ],
+        "lines": [
+          "Whether this vindicates moral luck, or merely shows that regret and blame are separable, is a question the example cannot settle."
         ],
         "options": [
           {
@@ -401,6 +422,9 @@
           2,
           4
         ],
+        "lines": [
+          "The appropriate attitude is thus neither deference nor suspicion but something more exacting: calibrated trust, proportioned to such evidence of reliability as a non-specialist can actually observe."
+        ],
         "options": [
           {
             "t": "Because laypersons cannot examine the evidence directly, they are justified in deferring to specialists on every question within the specialists' fields.",
@@ -430,6 +454,9 @@
         "proof": [
           1
         ],
+        "lines": [
+          "Hence the person who disdains experts does not thereby become more rational; he merely exchanges the judgement of identifiable specialists for that of whoever he happens to find congenial, and he does so, as a rule, without registering the exchange."
+        ],
         "options": [
           {
             "t": "acquires a more reliable method of forming beliefs, at the cost of holding fewer of them.",
@@ -458,6 +485,9 @@
         "stem": "By the tests described in the third paragraph, which of the following claims should a layperson treat with the most caution?",
         "proof": [
           2
+        ],
+        "lines": [
+          "Is the claim made within the speaker's competence, or is a physicist pronouncing on monetary policy?"
         ],
         "options": [
           {
@@ -516,6 +546,9 @@
         "stem": "Which of the following can be inferred from the fourth paragraph?",
         "proof": [
           3
+        ],
+        "lines": [
+          "Healthy institutions anticipate these defects with peer review, replication, the publication of data and the shielding of awkward critics, devices which, notably, work by making experts answerable to one another and not to the public at large."
         ],
         "options": [
           {
@@ -621,6 +654,9 @@
         "proof": [
           1
         ],
+        "lines": [
+          "Contemplating our own task, we construct a narrative of the steps required, in which each step proceeds more or less as designed."
+        ],
         "options": [
           {
             "t": "regards the classmate as less capable than himself, and so expects correspondingly poorer results from him.",
@@ -650,6 +686,9 @@
         "proof": [
           2
         ],
+        "lines": [
+          "The outside view disregards particulars and asks a plainer question: how long have projects of this kind, taken together, actually required?"
+        ],
         "options": [
           {
             "t": "A contractor lists every task in a new project and allows a generous margin for each of them.",
@@ -678,6 +717,9 @@
         "stem": "The 'institutional counterpart' of the planning fallacy differs from the individual error chiefly in that it:",
         "proof": [
           3
+        ],
+        "lines": [
+          "The planning fallacy has, accordingly, an institutional counterpart, in which errors of individual judgement are reinforced by the incentives of the people around them, and in which the person who forecasts honestly is penalised for doing so."
         ],
         "options": [
           {
@@ -781,6 +823,9 @@
           0,
           4
         ],
+        "lines": [
+          "Remembering appears to resemble the reconstruction of a scene from fragments far more than the playing of a tape, the lacunae being filled by general knowledge, expectation and even the phrasing of the questions we are asked."
+        ],
         "options": [
           {
             "t": "Confidently held memories are unreliable, and eyewitness testimony should therefore be excluded from legal proceedings altogether.",
@@ -809,6 +854,9 @@
         "stem": "In the film experiment, subjects asked about cars that 'smashed' into each other:",
         "proof": [
           1
+        ],
+        "lines": [
+          "Subjects who watched a film of a collision and were asked how fast the cars were going when they 'smashed' into each other offered higher estimates, and were likelier to report broken glass that had not been present, than subjects asked about cars that 'hit' each other."
         ],
         "options": [
           {
@@ -839,6 +887,9 @@
         "proof": [
           2
         ],
+        "lines": [
+          "The sense of vividness, it appears, is a poor guide to fidelity, and the confidence with which a memory is held cannot be treated as evidence of its truth."
+        ],
         "options": [
           {
             "t": "Memories of shocking public events are less accurate than memories of ordinary ones.",
@@ -868,6 +919,10 @@
         "proof": [
           4
         ],
+        "lines": [
+          "It would nonetheless be an error to conclude that memory is simply defective.",
+          "Reconstruction allows us to generalise from experience, to imagine the future with the same machinery we use to recall the past, and to make sense of events in place of merely retaining them."
+        ],
         "options": [
           {
             "t": "reject the earlier findings by showing that reconstruction is in fact a rare feature of memory.",
@@ -896,6 +951,9 @@
         "stem": "Which one of the following reforms would the passage most directly support?",
         "proof": [
           3
+        ],
+        "lines": [
+          "Many convictions later overturned by DNA analysis had rested on confident but mistaken identification, and researchers have proposed reforms to the conduct of line-ups and to the questioning of witnesses, so that the procedure does not itself supply the details which the witness subsequently remembers."
         ],
         "options": [
           {
@@ -970,6 +1028,9 @@
           2,
           3
         ],
+        "lines": [
+          "Asked why we chose something, we may be reporting not a reason that drove the choice but a plausible story composed after the fact."
+        ],
         "options": [
           {
             "t": "showing that explanations of choices may be composed after the fact, and so, though not worthless, must be distinguished from causes.",
@@ -1028,6 +1089,9 @@
         "proof": [
           0
         ],
+        "lines": [
+          "More striking still, volunteers went on to justify a preference for a face they had not chosen, sometimes citing features, such as earrings, which only the rejected face possessed."
+        ],
         "options": [
           {
             "t": "indicate that volunteers generally favoured faces which were adorned with some kind of jewellery or ornament.",
@@ -1057,6 +1121,9 @@
         "proof": [
           2
         ],
+        "lines": [
+          "In the 1970s Richard Nisbett and Timothy Wilson had shown that subjects readily gave confident reasons for behaviour which experiments traced to quite different causes."
+        ],
         "options": [
           {
             "t": "A confident account of one's reasons does not show that those reasons produced the choice.",
@@ -1085,6 +1152,9 @@
         "stem": "The author's closing remark about diaries and interviews implies that:",
         "proof": [
           3
+        ],
+        "lines": [
+          "Its practical lesson may be modest but is worth heeding: surveys, interviews and even our own diaries record what people say about their choices, which is not the same thing as why they made them."
         ],
         "options": [
           {
@@ -1158,6 +1228,9 @@
           2,
           3
         ],
+        "lines": [
+          "The tale is not simply one of a theory overturned."
+        ],
         "options": [
           {
             "t": "cautiously sceptical: the evidence proved weaker than supposed, though the matter is not wholly closed.",
@@ -1187,6 +1260,9 @@
         "proof": [
           2
         ],
+        "lines": [
+          "In 2016 a consortium of more than twenty laboratories ran the same carefully specified depletion task and found an effect close to zero; the laboratories had agreed the protocol and registered their plan before collecting any data, which left no scope for flexible analysis."
+        ],
         "options": [
           {
             "t": "allowed each laboratory to choose its own task and found a small but reliable effect in most of them.",
@@ -1215,6 +1291,9 @@
         "stem": "Which of the following, if true, would most support the suggestion in the last paragraph that depletion is shaped by expectation?",
         "proof": [
           3
+        ],
+        "lines": [
+          "If so, fatigue after effort may be real but shaped by expectation and not by a fuel gauge in the brain."
         ],
         "options": [
           {
@@ -1347,6 +1426,9 @@
           2,
           3
         ],
+        "lines": [
+          "Parfit called this the non-identity problem, and he inferred that our moral thinking cannot rest wholly on the interests of particular persons."
+        ],
         "options": [
           {
             "t": "Parfit demonstrated that we owe nothing to future generations, because those who will live under our policies cannot be made worse off by them.",
@@ -1375,6 +1457,9 @@
         "stem": "The second paragraph chiefly serves to establish that:",
         "proof": [
           1
+        ],
+        "lines": [
+          "Within a few generations the individuals who exist under one policy will be wholly different from those who would have existed under the other; the two futures may share a population in number, but not in persons."
         ],
         "options": [
           {
@@ -1405,6 +1490,9 @@
         "proof": [
           2
         ],
+        "lines": [
+          "Had we chosen conservation, these particular people would never have existed, and since their lives are worth living, our choice has made none of them worse off."
+        ],
         "options": [
           {
             "t": "they would not have existed under the alternative policy, and their lives are nonetheless worth living.",
@@ -1434,6 +1522,9 @@
         "proof": [
           3
         ],
+        "lines": [
+          "In debates about climate policy, where decisions taken now will determine both how future people live and which people there will be, the argument that posterity cannot complain, since it owes its very existence to our choices, is a position someone could seriously advance, and one which an adequate ethics must be able to answer."
+        ],
         "options": [
           {
             "t": "We need not curb emissions, since future people will be wealthy enough to repair whatever damage we leave behind.",
@@ -1462,6 +1553,10 @@
         "stem": "The author mentions that 'some philosophers have defended person-affecting accounts' chiefly in order to indicate that:",
         "proof": [
           3
+        ],
+        "lines": [
+          "The inference is not forced upon us: some philosophers have defended person-affecting accounts, and others have questioned whether bringing someone into a worse life can be harmless merely because the alternative was non-existence.",
+          "But the difficulty is practical as well as academic."
         ],
         "options": [
           {
@@ -1537,6 +1632,9 @@
           2,
           3
         ],
+        "lines": [
+          "But the question for law is not whether we are certain; it is how strong the evidence must be before reasonable care is owed."
+        ],
         "options": [
           {
             "t": "Crabs, lobsters and octopuses have been proved to feel pain, and the law has rightly been changed to reflect that proof.",
@@ -1595,6 +1693,9 @@
         "proof": [
           1
         ],
+        "lines": [
+          "Hermit crabs subjected to mild shocks within their shells, for instance, abandoned poor shells more readily than good ones, as though trading the discomfort against the value of the dwelling."
+        ],
         "options": [
           {
             "t": "left their shells every time they were shocked, which shows that shocks are unpleasant to them.",
@@ -1624,6 +1725,9 @@
         "proof": [
           3
         ],
+        "lines": [
+          "The episode models a form of reasoning under uncertainty with a range well beyond lobsters."
+        ],
         "options": [
           {
             "t": "draw from the case a general principle about acting under uncertainty.",
@@ -1652,6 +1756,9 @@
         "stem": "Which one of the following would the author be most likely to endorse?",
         "proof": [
           3
+        ],
+        "lines": [
+          "Where the cost of precaution is small, as in stunning an animal before killing it, and the cost of error is great suffering, the demand for proof that may never arrive is itself a decision, and not obviously the cautious one."
         ],
         "options": [
           {
@@ -1757,6 +1864,9 @@
         "proof": [
           1
         ],
+        "lines": [
+          "German judges of long standing, who rolled loaded dice before recommending a sentence for a shoplifter, proposed longer terms after high throws."
+        ],
         "options": [
           {
             "t": "decide at random which sentence each judge would recommend for the shoplifter.",
@@ -1785,6 +1895,9 @@
         "stem": "According to the second explanation in the third paragraph, a buyer shown a very low asking price for a house would tend to:",
         "proof": [
           2
+        ],
+        "lines": [
+          "On the second, the anchor quietly summons information consistent with itself: contemplating a high price makes a house's merits more vivid, and a low price its defects."
         ],
         "options": [
           {
@@ -1815,6 +1928,9 @@
         "proof": [
           3
         ],
+        "lines": [
+          "The most reliable remedy appears to be deliberate consideration of the opposite: asking why the anchor might be mistaken and generating reasons for a very different answer."
+        ],
         "options": [
           {
             "t": "Reminding oneself repeatedly that the anchor is irrelevant to the question.",
@@ -1843,6 +1959,9 @@
         "stem": "If the second explanation in the third paragraph is correct, which of the following is most likely to be true?",
         "proof": [
           3
+        ],
+        "lines": [
+          "The two are not merely academic rivals, for they suggest different remedies: the first implies that people might be induced to adjust further, whereas the second implies that the damage is done at the moment the anchor is encountered, so that urging further adjustment would achieve little."
         ],
         "options": [
           {
@@ -1918,6 +2037,10 @@
           2,
           3
         ],
+        "lines": [
+          "None of this shows that self-control is unimportant, or that Mischel's research was worthless; he himself warned against treating the test as a measure of fixed character.",
+          "Read in the light of later findings, it suggests that the capacity to wait depends heavily on whether waiting has ever paid off, a reading with the further merit of being actionable, since it directs attention to the conditions in which children grow up and not to the dispositions with which they are said to begin."
+        ],
         "options": [
           {
             "t": "The marshmallow test has been discredited, since studies with larger samples found no relation between waiting and later achievement of any kind.",
@@ -1946,6 +2069,9 @@
         "stem": "Compared with the original follow-ups, the 2018 study:",
         "proof": [
           1
+        ],
+        "lines": [
+          "Waiting longer was again associated with later achievement, but the association was about half as strong as before, and it shrank much further once the researchers allowed for the children's family background, home environment and early cognitive abilities."
         ],
         "options": [
           {
@@ -1976,6 +2102,9 @@
         "proof": [
           2
         ],
+        "lines": [
+          "For a child whose experience has taught that promises are often broken, taking the sweet at once is not a failure of willpower but a rational wager."
+        ],
         "options": [
           {
             "t": "lacking the capacity for self-control that other children possess.",
@@ -2005,6 +2134,9 @@
         "proof": [
           3
         ],
+        "lines": [
+          "None of this shows that self-control is unimportant, or that Mischel's research was worthless; he himself warned against treating the test as a measure of fixed character."
+        ],
         "options": [
           {
             "t": "respectful, while critical of the way in which the test was popularly interpreted.",
@@ -2033,6 +2165,9 @@
         "stem": "Which of the following, if true, would most support the view in the third paragraph that waiting reflects a judgement about the environment?",
         "proof": [
           3
+        ],
+        "lines": [
+          "The researchers inferred that the decision to wait is in part a judgement about the environment."
         ],
         "options": [
           {
