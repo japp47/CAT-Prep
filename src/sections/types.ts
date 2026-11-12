@@ -30,7 +30,10 @@ export interface Category {
   id: string;
   tab: string;
   n: string;
+  /** One or two lines: what the list is for and how to use it. */
   note: string;
+  /** The reasons and details behind the note, one tap away (F102). */
+  why?: string;
   /** DILR's Learn tab: the half it belongs to (logical reasoning or data interpretation); none shows in both. */
   part?: "lr" | "di";
   /** A heading the category sits under on its tab, in the plan's phases (the page's GROUPS). */

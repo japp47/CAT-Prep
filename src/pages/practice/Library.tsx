@@ -92,8 +92,8 @@ export default function Library() {
               <option value="tried">Practised</option>
               <option value="untried">Not practised</option>
             </NativeSelect>
-            <ToggleGroup type="single" value={diff} onValueChange={(v) => v && setDiff(v as typeof diff)} className="rounded-lg bg-secondary p-1" aria-label="Difficulty">
-              {(["all", "easy", "medium", "hard"] as const).map((d) => <ToggleGroupItem key={d} value={d} className="h-9 rounded-md px-3.5 text-base data-[state=on]:bg-card data-[state=on]:font-semibold">{d === "all" ? "Any level" : d[0].toUpperCase() + d.slice(1)}</ToggleGroupItem>)}
+            <ToggleGroup type="single" value={diff} onValueChange={(v) => v && setDiff(v as typeof diff)} className="rounded-xl bg-secondary p-1" aria-label="Difficulty">
+              {(["all", "easy", "medium", "hard"] as const).map((d) => <ToggleGroupItem key={d} value={d} className="h-9 rounded-lg px-3.5 text-base data-[state=on]:bg-card data-[state=on]:font-semibold data-[state=on]:shadow-xs dark:data-[state=on]:shadow-none">{d === "all" ? "Any level" : d[0].toUpperCase() + d.slice(1)}</ToggleGroupItem>)}
             </ToggleGroup>
           </div>
           {lib.length

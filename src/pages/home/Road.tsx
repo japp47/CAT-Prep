@@ -10,7 +10,7 @@ import { Head } from "./Head";
 
 /**
  * The road to the exam (D42): the days left, large, and the five phases on one line to scale, with month marks, a pin
- * for today and a flag for the exam, each phase saying what it is for. It draws itself once when it scrolls into view.
+ * for today and a flag for the exam, each phase saying what it is for. The line draws itself once when it scrolls into view; the text never waits for it.
  * On a phone the line turns vertical.
  */
 
@@ -46,21 +46,43 @@ export function Road() {
   const label = (p: Phase) => (p.id === 0 ? "To start with" : `Phase ${phaseNo(road, p)}`);
   const head = phases.some((p) => p.id === 0) ? "A light head start, then five phases to the exam." : `${["No", "One", "Two", "Three", "Four", "Five"][phases.length] ?? phases.length} phases from now to the exam.`;
 
+  // The bars draw and the pins drop once the line itself is on screen, and the days count up once the number is. The
+  // phases are text and are never hidden, and each part is set to its start state only at the moment it plays, so a
+  // slow load, a quick scroll or a later CAT year (1,000+ days) never leaves an empty road.
   useEffect(() => {
     const el = box.current;
     if (!el || calm()) return;
     let gone = false, kill = () => {};
     loadScrollTrigger().then(({ gsap, ScrollTrigger }) => {
       if (gone) return;
+      // The parts of whichever road is showing (the wide line or the phone's bar).
+      const shown = (sel: string) => [...el.querySelectorAll<HTMLElement>(sel)].filter((x) => x.offsetParent);
+      const segs = shown("[data-seg]"), pins = shown("[data-pin]");
+      // The days count up from 0 once the number is on screen, always in the same 1.2 s, so 1,110 days takes no longer
+      // than 380. Until then the number shows its real value, so a scroll that has not reached it never sees a 0.
       const out = el.querySelector<HTMLElement>("[data-days]");
-      const tl = gsap.timeline({ paused: true });
-      tl.from(el.querySelectorAll("[data-seg]"), { scaleX: 0, transformOrigin: "0% 50%", duration: 0.6, stagger: 0.12, ease: "power2.out" })
-        .from(el.querySelectorAll("[data-pin]"), { y: -18, opacity: 0, duration: 0.5, ease: "back.out(2)" }, "-=0.3")
-        .from(el.querySelectorAll("[data-phase]"), { opacity: 0, y: 10, duration: 0.4, stagger: 0.07 }, "<");
-      if (out) { const v = { x: 0 }; tl.to(v, { x: left, duration: 1.1, ease: "power2.out", onUpdate: () => { out.textContent = String(Math.round(v.x)); } }, 0); }
-      const st = ScrollTrigger.create({ trigger: el, start: "top 75%", once: true, onEnter: () => tl.play() });
-      // Revert, not kill: a road redrawn for another CAT year must not keep the hidden starting state of the old one.
-      kill = () => { st.kill(); tl.revert(); };
+      let count: { kill: () => void } | null = null;
+      const days = out && left > 1 ? ScrollTrigger.create({
+        trigger: out, start: "top 90%", once: true,
+        onEnter: () => {
+          const v = { x: 0 };
+          out.textContent = "0";
+          count = gsap.to(v, { x: left, duration: 1.2, ease: "power3.out", onUpdate: () => { out.textContent = String(Math.round(v.x)); } });
+        },
+      }) : null;
+      const stopDays = () => { days?.kill(); count?.kill(); if (out) out.textContent = String(left); };
+      if (!segs.length) { kill = stopDays; return; }
+      let tl: ReturnType<typeof gsap.timeline> | null = null;
+      const st = ScrollTrigger.create({
+        trigger: segs[0], start: "top 85%", once: true,
+        onEnter: () => {
+          tl = gsap.timeline();
+          tl.from(segs, { scaleX: 0, transformOrigin: "0% 50%", duration: 0.6, stagger: 0.12, ease: "power2.out" });
+          if (pins.length) tl.from(pins, { y: -18, opacity: 0, duration: 0.5, ease: "back.out(2)" }, "-=0.3");
+        },
+      });
+      // Revert, not kill: a road redrawn for another CAT year must not keep the old one's half-drawn state.
+      kill = () => { st.kill(); tl?.revert(); stopDays(); };
     }, () => {});
     return () => { gone = true; kill(); };
   }, [left]);

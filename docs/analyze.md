@@ -77,6 +77,16 @@ Thinking practice (Arcade, Manager Lab, DILR and Quant ideas), community, and re
 
 ## 3. Consistency check: spec vs plan vs code
 
+### 11 Nov 2026, readable pages (D96; `docs/design/readable-pages.md`)
+Student feedback via the owner: too much to read, in Learn and elsewhere; desktop half empty, phone a long wall.
+
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A99 | Section pages run 1,250 to 1,930 words and 9 to 14 phone screens (DILR Practice 1,930 words, 12.1 screens; an arrangement guide 14.2 screens) | Students scan, read little, and miss the advice that matters | Layer cake: a heading and a one-line action per section, detail in a "Why" expander (D96) |
+| A100 | Sequences, numeric rules and comparisons are written as paragraphs (the papers rule is a 54-word paragraph) | The reader digs out a structure the writer already had | Kit blocks: Key line, Steps, Fact strip, Do and don't, Timeline, Compare, Why |
+| A101 | Text is capped at a readable line but nothing uses the rest of the 1,056 px column | Desktop pages are tall and half empty | Two columns from `lg`: the readable main column and a glance column |
+| A102 | Guides explain visual methods in words only | Slower to grasp; nothing to share | Stepped animated scenes, written as data (a picture, steps with captions), stepped by the student or played; still with captions under reduced motion; exportable as clips (F101). Ten scenes first, DILR and DI before VARC |
+
 ### 11 Nov 2026, six harder DI sets (D95)
 The owner's agent wrote six sets (streaming growth, group segments, car sales with blank totals, sales funnel, food delivery, equity funds). Recomputed in code here (30 of 30 keys right; the car table has exactly one fill and every clue is needed), converted to the site's format with a code check each, then solved blind by two agents, one by hand and one in code: both matched every key.
 
