@@ -460,8 +460,8 @@ func jsonArg(b json.RawMessage) any {
 	return string(b)
 }
 
-// ExportHandler is GET /v1/me/export: everything the server holds for this progress (the DPDP right to access),
-// as a download. The browser turns the records into a backup file the existing restore can read.
+// ExportHandler is GET /v1/me/export: everything the server holds for this progress, reminders included (the DPDP
+// right to access), as a download. The browser turns the records into a backup file the existing restore can read.
 func (s *Service) ExportHandler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		d, _ := account.FromContext(r.Context())
@@ -502,6 +502,20 @@ func (s *Service) ExportHandler() http.Handler {
 			s.fail(w, r, fmt.Errorf("export: %w", err))
 			return
 		}
+		// Study reminders: the choices, last practice, practice days and the weekly review's figures (F65, D97).
+		var reminders json.RawMessage
+		if err := s.db.QueryRow(r.Context(), `select json_build_object(
+			'settings', (select json_build_object('on', enabled, 'at', at_minute, 'days', days, 'timeZone', tz, 'quietFrom', quiet_from,
+				'quietTo', quiet_to, 'email', email_mode, 'weekly', weekly, 'pausedUntil', paused_until, 'emailState', email_state)
+				from notify.prefs where identity_id = $1),
+			'pushDevices', (select count(*) from notify.push_subs where identity_id = $1),
+			'lastPractice', (select json_build_object('at', last_at, 'day', last_day, 'streak', streak) from notify.activity where identity_id = $1),
+			'practiceDays', (select coalesce(json_agg(to_char(day, 'YYYY-MM-DD') order by day), '[]'::json) from notify.days where identity_id = $1),
+			'weeklyFigures', (select coalesce(json_agg(json_build_object('monday', to_char(monday, 'YYYY-MM-DD'), 'figures', data) order by monday), '[]'::json)
+				from notify.weeks where identity_id = $1))`, d.IdentityID).Scan(&reminders); err != nil {
+			s.fail(w, r, fmt.Errorf("export: %w", err))
+			return
+		}
 		h, k := s.hash.Hash(reqinfo.IP(r.Context()))
 		if err := audit.Write(r.Context(), s.db, audit.Event{Action: "data.exported", ActorType: audit.Device, ActorIdentity: d.IdentityID,
 			ActorDevice: d.DeviceID, SubjectIdentity: d.IdentityID, RequestID: httpx.RequestIDFrom(r.Context()), IPHash: h, IPKey: k,
@@ -514,6 +528,7 @@ func (s *Service) ExportHandler() http.Handler {
 			"identity":   map[string]any{"id": d.IdentityID, "createdAt": created},
 			"devices":    devices,
 			"records":    recs,
+			"reminders":  reminders,
 		})
 	})
 }

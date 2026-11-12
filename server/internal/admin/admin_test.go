@@ -10,11 +10,19 @@ import (
 
 // Every permission this package checks is seeded, so a typo in a key can never lock staff out (or in).
 func TestPermissionKeysAreSeeded(t *testing.T) {
-	b, err := fs.ReadFile(migrations.FS, "00011_access.sql")
+	// The seed is 00011_access.sql and any later migration that adds a permission (00015: reminders.manage).
+	names, err := fs.Glob(migrations.FS, "*.sql")
 	if err != nil {
 		t.Fatal(err)
 	}
-	seed := string(b)
+	var seed string
+	for _, n := range names {
+		b, err := fs.ReadFile(migrations.FS, n)
+		if err != nil {
+			t.Fatal(err)
+		}
+		seed += string(b)
+	}
 	for _, k := range Used {
 		if !strings.Contains(seed, "('"+k+"', '") {
 			t.Errorf("permission %q is not in the seed", k)

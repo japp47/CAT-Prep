@@ -83,6 +83,7 @@ type variant struct {
 type wording struct {
 	Why   map[string]string    `json:"why"`
 	Kinds map[string][]variant `json:"kinds"`
+	Week  weekWording          `json:"week"`
 }
 
 // Renderer holds the parsed layout and wording.
@@ -117,6 +118,13 @@ func NewRenderer() (*Renderer, error) {
 				if _, err := ttmpl.New("").Parse(s); err != nil {
 					return nil, fmt.Errorf("messages.json: %s: %w", v.ID, err)
 				}
+			}
+		}
+	}
+	for _, part := range []map[string]string{r.w.Week.Tiles, r.w.Week.Lines} {
+		for key, src := range part {
+			if _, err := ttmpl.New("").Parse(src); err != nil {
+				return nil, fmt.Errorf("messages.json: week %s: %w", key, err)
 			}
 		}
 	}
@@ -192,6 +200,8 @@ func (r *Renderer) Render(kind, variantID string, vars Vars, l Links) (Rendered,
 	switch {
 	case v.To == "review":
 		button = link("/review", "")
+	case v.To == "today":
+		button = link("/today", "")
 	case v.To == "" || v.To == "task":
 		if vars.Task != nil && vars.Task.Path != "" {
 			button = link(vars.Task.Path, "")

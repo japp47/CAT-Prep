@@ -30,9 +30,10 @@ type Policy struct {
 	StreakWordingFrom       int   `json:"streakWordingFrom"`
 	MissedDays              []int `json:"missedDays"`
 	Weekly                  struct {
-		Day  string `json:"day"`
-		Time int    `json:"time"`
-	} `json:"weekly"` // the Sunday review, built in R2
+		Day             string `json:"day"`             // lower-case English weekday
+		Time            int    `json:"time"`            // minutes after local midnight
+		QuietWithinDays int    `json:"quietWithinDays"` // a week with no practice is still reviewed if the last practice is this recent
+	} `json:"weekly"` // the Sunday review (R2, D97)
 	Exams                 []string `json:"exams"`
 	NoRemindersAroundExam struct {
 		DaysBefore int `json:"daysBefore"`
@@ -66,6 +67,8 @@ func MustPolicy() Policy {
 	return p
 }
 
+var weekdays = map[string]bool{"sunday": true, "monday": true, "tuesday": true, "wednesday": true, "thursday": true, "friday": true, "saturday": true}
+
 func (p Policy) check() error {
 	var errs []error
 	minute := func(name string, v int) {
@@ -78,6 +81,13 @@ func (p Policy) check() error {
 	minute("quietHours.to", p.QuietHours.To)
 	if p.TimeStep <= 0 || 1440%p.TimeStep != 0 || p.DefaultTime%p.TimeStep != 0 {
 		errs = append(errs, errors.New("timeStep must divide a day, and defaultTime must be on a step"))
+	}
+	minute("weekly.time", p.Weekly.Time)
+	if _, ok := weekdays[p.Weekly.Day]; !ok {
+		errs = append(errs, fmt.Errorf("weekly.day: %q is not a lower-case weekday", p.Weekly.Day))
+	}
+	if p.Weekly.QuietWithinDays < 1 {
+		errs = append(errs, errors.New("weekly.quietWithinDays must be positive"))
 	}
 	if p.MaxStudyMessagesPerDay != 1 {
 		errs = append(errs, errors.New("maxStudyMessagesPerDay: only 1 is built (D89)"))

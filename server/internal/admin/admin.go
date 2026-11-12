@@ -8,12 +8,15 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/japp47/CAT-Prep/server/internal/account"
 	"github.com/japp47/CAT-Prep/server/internal/audit"
 	"github.com/japp47/CAT-Prep/server/internal/httpx"
+	"github.com/japp47/CAT-Prep/server/internal/limit"
+	"github.com/japp47/CAT-Prep/server/internal/notify"
 	"github.com/japp47/CAT-Prep/server/internal/reqinfo"
 )
 
@@ -22,10 +25,11 @@ const (
 	FeedbackRead    = "feedback.read"
 	FeedbackResolve = "feedback.resolve"
 	StatsRead       = "stats.read"
+	RemindersManage = "reminders.manage"
 )
 
 // Used lists every key this package checks.
-var Used = []string{FeedbackRead, FeedbackResolve, StatsRead}
+var Used = []string{FeedbackRead, FeedbackResolve, StatsRead, RemindersManage}
 
 // Staff is the signed-in staff member making a request.
 type Staff struct {
@@ -42,11 +46,15 @@ type Service struct {
 	db   *pgxpool.Pool
 	hash reqinfo.Hasher
 	log  *slog.Logger
+
+	remSetup ReminderSetup
+	tester   *notify.Tester
+	tests    *limit.Limiter
 }
 
 // New returns the service.
 func New(db *pgxpool.Pool, hash reqinfo.Hasher, log *slog.Logger) *Service {
-	return &Service{db: db, hash: hash, log: log}
+	return &Service{db: db, hash: hash, log: log, tests: limit.New(10, time.Hour)}
 }
 
 // notFound is every refusal: no device, no account, no grant, or not this permission.

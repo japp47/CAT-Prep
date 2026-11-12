@@ -55,6 +55,13 @@ func (s *Service) Plan(ctx context.Context, dry bool) (planned, queued int, err 
 			task := s.Daily.Task(in.Day)
 			v.Task = &task
 			variant := s.Render.NextVariant(in.Kind, last[[2]string{f.Identity, in.Kind}])
+			if in.Kind == "weekly" {
+				// The weekly wording follows what the week was, and carries its figures (R2, D97).
+				variant = WeeklyVariant(f.Week, f.WeekDays)
+				if v.Week, err = s.Render.Week(f.Week, f.WeekDays); err != nil {
+					return len(ms), 0, fmt.Errorf("weekly for %s: %w", f.Identity, err)
+				}
+			}
 			if _, err := s.Render.Render(in.Kind, variant, v, Links{Site: s.Site}); err != nil {
 				return len(ms), 0, fmt.Errorf("%s for %s: %w", in.Kind, f.Identity, err) // a wording that cannot render stops the run
 			}

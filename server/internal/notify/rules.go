@@ -3,6 +3,7 @@ package notify
 import (
 	"fmt"
 	"slices"
+	"strings"
 	"time"
 )
 
@@ -38,6 +39,9 @@ type Student struct {
 	SentTodayKind      string    // the kind already sent on today's local date, "" if none
 	LastSentBefore     time.Time // the last message sent on an earlier local day
 	EmailsThisWeek     int       // emails sent in the last 7 days
+	Weekly             bool      // the weekly review is switched on
+	WeekDays           int       // days with practice in this local week (Monday to today), server-counted or the browser's, the larger
+	Week               *WeekMail // the browser's summary of this week, nil when it sent none
 }
 
 // Intent is one message the rules want sent: a kind on a channel, with its dedupe key.
@@ -58,6 +62,51 @@ func (p Policy) Decide(s Student, now time.Time) []Intent {
 	if !s.Enabled || s.Loc == nil || s.EnabledAt.IsZero() || now.Before(s.PausedUntil) {
 		return nil
 	}
+	if w := p.weekly(s, now); w != nil {
+		return w
+	}
+	return p.study(s, now)
+}
+
+// weekly is the Sunday review (R2, D97, docs/design/notifications.md §15.1): on the policy's day and time, once a
+// week (keyed by the week's Monday), by email when the address is good and under the weekly cap, else by push.
+// It goes whether or not the student practised today, and even after an earlier nudge that day (a reminder time
+// before the weekly one must not cost a student their review); once it has gone, the "one study message a day"
+// rule keeps any later nudge that day back. A week with no practice gets the quiet-week wording
+// only within QuietWithinDays of the last practice; a student quiet for longer has had the missed-day series,
+// which has stopped, and this stops with it.
+func (p Policy) weekly(s Student, now time.Time) []Intent {
+	if !s.Weekly {
+		return nil
+	}
+	local := now.In(s.Loc)
+	today := local.Format(time.DateOnly)
+	minute := local.Hour()*60 + local.Minute()
+	if strings.ToLower(local.Weekday().String()) != p.Weekly.Day || minute < p.Weekly.Time || quiet(minute, s.QuietFrom, s.QuietTo) || p.nearExam(today) {
+		return nil
+	}
+	if daysBetween(s.EnabledAt.In(s.Loc).Format(time.DateOnly), today) < p.FirstReminderAfterDays {
+		return nil
+	}
+	if s.WeekDays == 0 && daysBetween(s.LastDay, today) > p.Weekly.QuietWithinDays {
+		return nil
+	}
+	monday := mondayOf(local)
+	in := func(channel string) []Intent {
+		return []Intent{{Kind: "weekly", Channel: channel, Key: fmt.Sprintf("%s:weekly:%s", s.Identity, monday),
+			Priority: p.priority("weekly"), Streak: s.Streak, Day: today}}
+	}
+	switch {
+	case s.EmailOK && s.EmailsThisWeek < p.MaxEmailsPerWeek:
+		return in(Email)
+	case s.PushDevices > 0:
+		return in(Push)
+	}
+	return nil
+}
+
+// study is the daily nudge and the missed-day series.
+func (p Policy) study(s Student, now time.Time) []Intent {
 	local := now.In(s.Loc)
 	today := local.Format(time.DateOnly)
 	minute := local.Hour()*60 + local.Minute()

@@ -124,9 +124,7 @@ func run() error {
 
 // reminderWorker builds the reminder job from the NOTIFY_* settings (internal/notify, D91).
 func reminderWorker(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger) (*notify.Worker, error) {
-	set := notify.Settings{Site: cfg.AllowedOrigin, TokenKey: cfg.NotifyTokenKey, VAPIDPublic: cfg.NotifyVAPIDPublic, VAPIDPrivate: cfg.NotifyVAPIDPrivate,
-		SMTPUser: cfg.NotifySMTPUser, SMTPPassword: cfg.NotifySMTPPass, EmailOff: cfg.NotifyEmailOff, PushOff: cfg.NotifyPushOff, EmailCap: cfg.NotifyEmailCap,
-		GmailClientID: cfg.NotifyGmailID, GmailClientSecret: cfg.NotifyGmailSecret, GmailRefreshToken: cfg.NotifyGmailToken}
+	set := notifySettings(cfg)
 	svc, err := notify.NewService(pool, set, log)
 	if err != nil {
 		return nil, err
@@ -138,7 +136,14 @@ func reminderWorker(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger) (*n
 		log.Warn("reminder email is off: set the three NOTIFY_GMAIL_* settings (Render blocks the SMTP ports)")
 	}
 	return &notify.Worker{Service: svc, Every: 2 * time.Minute, Dry: cfg.NotifyDry, Alert: notify.TeamAlert(set), AlertGap: 6 * time.Hour,
-		DailyFrom: notify.SiteDaily(cfg.AllowedOrigin), Log: log}, nil
+		DailyFrom: notify.SiteDaily(cfg.AllowedOrigin), Bounces: notify.BounceReaderFor(set), Log: log}, nil
+}
+
+// notifySettings reads the NOTIFY_* settings the worker and the admin panel share.
+func notifySettings(cfg config.Config) notify.Settings {
+	return notify.Settings{Site: cfg.AllowedOrigin, TokenKey: cfg.NotifyTokenKey, VAPIDPublic: cfg.NotifyVAPIDPublic, VAPIDPrivate: cfg.NotifyVAPIDPrivate,
+		SMTPUser: cfg.NotifySMTPUser, SMTPPassword: cfg.NotifySMTPPass, EmailOff: cfg.NotifyEmailOff, PushOff: cfg.NotifyPushOff, EmailCap: cfg.NotifyEmailCap,
+		GmailClientID: cfg.NotifyGmailID, GmailClientSecret: cfg.NotifyGmailSecret, GmailRefreshToken: cfg.NotifyGmailToken}
 }
 
 // newLogger writes JSON logs in prod (Render shows them) and readable text on a laptop.
@@ -282,6 +287,7 @@ func v1Routes(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger, opt synca
 	nt := notify.NewAPI(pool, notify.Tokens{Key: tokenKey}, cfg.NotifyVAPIDPublic, cfg.AllowedOrigin, notify.MustPolicy(), log)
 	rt.Handle("GET /v1/notify/prefs", acc.Require(nt.PrefsHandler()))
 	rt.Handle("PUT /v1/notify/prefs", acc.Require(nt.SavePrefsHandler()))
+	rt.Handle("PUT /v1/notify/week", acc.Require(nt.WeekHandler()))
 	rt.Handle("GET /v1/notify/push-key", nt.PushKeyHandler())
 	rt.Handle("POST /v1/notify/push", acc.Require(nt.SubscribeHandler()))
 	rt.Handle("DELETE /v1/notify/push", acc.Require(nt.UnsubscribePushHandler()))
@@ -290,10 +296,29 @@ func v1Routes(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger, opt synca
 	rt.Handle("POST /v1/unsubscribe", nt.UnsubscribeHandler())
 
 	adm := admin.New(pool, hash, log)
+	// The Reminders panel (R2): its setup, and a test sender when email or push is on here.
+	nset := notifySettings(cfg)
+	nset.TokenKey = tokenKey
+	channels := notify.ChannelsFor(nset)
+	var tester *notify.Tester
+	if len(channels) > 0 {
+		if r, err := notify.NewRenderer(); err == nil {
+			tester = &notify.Tester{Render: r, Channels: channels, Tokens: notify.Tokens{Key: tokenKey}, Store: notify.Store{DB: pool}, Site: cfg.AllowedOrigin}
+		}
+	}
+	emailCap := cfg.NotifyEmailCap
+	if emailCap <= 0 {
+		emailCap = 300
+	}
+	adm.WithReminders(admin.ReminderSetup{Worker: cfg.NotifyWorker, Dry: cfg.NotifyDry, Email: channels[notify.Email] != nil, Push: channels[notify.Push] != nil,
+		BounceCheck: notify.BounceReaderFor(nset) != nil, EmailCap: emailCap}, tester)
 	rt.Handle("GET /v1/admin/me", acc.Optional(adm.MeHandler()))
 	rt.Handle("GET /v1/admin/reports", acc.Optional(adm.Require(admin.FeedbackRead, adm.ReportsHandler())))
 	rt.Handle("POST /v1/admin/reports/status", acc.Optional(adm.Require(admin.FeedbackResolve, adm.StatusHandler())))
 	rt.Handle("GET /v1/admin/overview", acc.Optional(adm.Require(admin.StatsRead, adm.OverviewHandler())))
+	rt.Handle("GET /v1/admin/reminders", acc.Optional(adm.Require(admin.StatsRead, adm.RemindersHandler())))
+	rt.Handle("POST /v1/admin/reminders/test", acc.Optional(adm.Require(admin.RemindersManage, adm.RemindersTestHandler())))
+	rt.Handle("POST /v1/admin/reminders/bounced", acc.Optional(adm.Require(admin.RemindersManage, adm.RemindersBouncedHandler())))
 	return reqinfo.Gate(cfg)(deadline(10 * time.Second)(rt))
 }
 

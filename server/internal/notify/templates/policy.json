@@ -17,7 +17,8 @@
   ],
   "weekly": {
     "day": "sunday",
-    "time": 540
+    "time": 540,
+    "quietWithinDays": 28
   },
   "noRemindersAroundExam": {
     "daysBefore": 1

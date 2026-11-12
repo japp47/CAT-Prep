@@ -199,6 +199,13 @@ func (a *API) SavePrefsHandler() http.Handler {
 			a.fail(w, r, err)
 			return
 		}
+		// The weekly figures exist only for the weekly review: switching it off deletes them (D97).
+		if !in.Weekly {
+			if _, err := a.DB.Exec(r.Context(), `delete from notify.weeks where identity_id = $1`, d.IdentityID); err != nil {
+				a.fail(w, r, err)
+				return
+			}
+		}
 		p, err := a.load(r, d)
 		if err != nil {
 			a.fail(w, r, err)
@@ -323,11 +330,18 @@ func (a *API) UnsubscribeHandler() http.Handler {
 		}
 		q := `update notify.prefs set email_mode = 'off' where identity_id = $1`
 		if scope == ScopeWeekly {
-			q = `update notify.prefs set weekly = false where identity_id = $1`
+			// Off, and its figures with it (D97), in one statement.
+			q = `with off as (update notify.prefs set weekly = false where identity_id = $1)
+				delete from notify.weeks where identity_id = $1`
 		}
 		if _, err := a.DB.Exec(r.Context(), q, identity); err != nil {
 			a.fail(w, r, err)
 			return
+		}
+		// Counted for the owner's panel, with no identity (R2, §15.3). A failed count does not undo the unsubscribe.
+		if _, err := a.DB.Exec(r.Context(), `insert into notify.unsubscribes (day, scope, n) values (current_date, $1, 1)
+			on conflict (day, scope) do update set n = notify.unsubscribes.n + 1`, scope); err != nil {
+			a.Log.Warn("count unsubscribe", "error", err)
 		}
 		httpx.WriteJSON(w, http.StatusOK, map[string]any{"done": true, "scope": scope})
 	})

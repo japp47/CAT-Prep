@@ -38,6 +38,16 @@ export function RemindersCard() {
     wanted.current = false;
     time.current?.focus();
   }, [open]);
+  // Arriving at /settings#reminders from outside (every reminder email's "manage" link, a cold load), the layout's
+  // scroll runs before this lazy page has drawn the card; so the card brings itself into view once, like the sync card.
+  const landed = useRef(false);
+  useEffect(() => {
+    if (landed.current || location.hash !== "#reminders") return;
+    const el = document.getElementById("reminders");
+    if (!el) return;
+    landed.current = true;
+    requestAnimationFrame(() => el.scrollIntoView());
+  }, [phase]);
   // Students never see a feature the server has not switched on; a development build says why it is missing.
   if (!API_ENABLED || (phase === "unavailable" && !import.meta.env.DEV)) return null;
   const paused = prefs && pausedUntil(prefs);
