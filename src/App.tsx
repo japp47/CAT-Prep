@@ -4,6 +4,7 @@ import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import { canonicalUrl } from "./lib/domain";
+import { setDescription } from "./lib/meta";
 import { whenIdle } from "./lib/idle";
 import { API_ENABLED } from "./lib/api";
 
@@ -67,6 +68,7 @@ function Title() {
   useEffect(() => {
     const t = TITLES[pathname] ?? (pathname.startsWith("/guides/") ? "Guide" : pathname.startsWith("/practice/rc/") ? "RC practice" : pathname.startsWith("/practice/lr/") ? "LR practice" : pathname.startsWith("/progress/mock-review/") ? "Mock review" : pathname.startsWith("/review/") ? "Weekly review" : "");
     document.title = t && pathname !== "/" ? t + " · 99ile" : TITLES["/"];
+    setDescription(); // back to the site's own; a page that has its own (a guide) sets it after this runs
     // One address per page for search engines, whichever address it was reached by (99ile.in is the only real one).
     let link = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (!link) { link = document.createElement("link"); link.rel = "canonical"; document.head.appendChild(link); }

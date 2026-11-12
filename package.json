@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "catalog": "vite-node scripts/catalog.ts",
-    "build": "vite-node scripts/catalog.ts && tsc -b && vite build && vite-node scripts/daily.ts",
+    "build": "vite-node scripts/catalog.ts && tsc -b && vite build && vite-node scripts/daily.ts && vite-node scripts/sitemap.ts",
     "preview": "vite preview",
     "typecheck": "tsc -b",
     "test": "vitest run",
