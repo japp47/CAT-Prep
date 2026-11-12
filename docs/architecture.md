@@ -426,3 +426,13 @@ Pages project holds `99ile.in` and `www.99ile.in` as custom domains (`www` redir
 - **Progress is kept per address** (localStorage, the service worker, push permission, the device cookie), so the move
   was made while no one had data on the old address. Anyone who did would have needed a backup or a sync sign-in.
 - **Search engines:** each page sets `<link rel="canonical">` to its `99ile.in` address (`canonicalUrl`).
+
+## Search (12 Nov 2026)
+
+A new domain with an empty `<div id="root">` gave a search engine nothing to read. What it is told now:
+
+- **`public/robots.txt`** allows everything but `/api/` and names the sitemap. Before this, `/robots.txt` and `/sitemap.xml` fell through the SPA fallback and came back as the home page's HTML.
+- **`dist/sitemap.xml`** is written after the build by `scripts/sitemap.ts` from `src/lib/seo.ts`: the public pages and one entry per guide. Personal pages (Today, Progress, Settings…), the players and `/quant` (not open yet) are left out, and so is the CAT 2026 guide (owner's decision: nothing is promoted around the current exam). No `<lastmod>`.
+- **`index.html`** carries Open Graph and Twitter tags with `public/og.png` (1200×630: the logo, the home headline and the hill of dots), JSON-LD naming 99ile as a `WebSite` and `Organization` (so it is read as a brand, not a typo for "99th percentile"), and a `<noscript>` block with the site's words and main links for a reader that runs no scripts. There is no `og:url`: a shared deep link keeps its own address. The JSON-LD is a data block, so the CSP's `script-src 'self'` does not touch it (checked in a browser with the real `_headers`).
+- **Per page:** the router sets the title and a `<link rel="canonical">` on every move and puts the site's description back; a guide then sets its own title and a description from its summary (`guideDescription`, at most 160 characters).
+- **Not done:** the pages are still drawn by the browser, so Google reads them in its second, rendering pass. Pre-rendering them at build time would remove that wait; it is the next step if indexing is slow.

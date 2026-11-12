@@ -4,7 +4,9 @@ import { cn } from "@/lib/utils";
 import { Page, PageHeader } from "../components/kit";
 import { GUIDES, REVIEWED, type Guide } from "../data/guides";
 import { diffDays, mediumDate, todayIso } from "../lib/date";
+import { setDescription } from "../lib/meta";
 import { useGsap } from "../lib/motion";
+import { guideDescription } from "../lib/seo";
 import NotFound from "./NotFound";
 
 /**
@@ -97,6 +99,13 @@ export function GuidePage() {
   const i = GUIDES.findIndex((g) => g.id === id);
   const article = useRef<HTMLElement>(null);
   const read = useReading(article, i < 0 ? 0 : GUIDES[i].parts.length);
+  // Its own title and description, so a result reads "How to analyse a mock", not "Guide" (the router set the generic one first).
+  const guide = i < 0 ? null : GUIDES[i];
+  useEffect(() => {
+    if (!guide) return;
+    document.title = guide.title + " · 99ile";
+    setDescription(guideDescription(guide));
+  }, [guide]);
   if (i < 0) return <NotFound />;
   const g = GUIDES[i], next = GUIDES[(i + 1) % GUIDES.length];
   const soon = g.id === CAT26.id && todayIso() <= CAT26.exam ? diffDays(todayIso(), CAT26.exam) : null;
