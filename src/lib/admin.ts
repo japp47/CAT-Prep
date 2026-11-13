@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { api } from "./api";
 
 /**
@@ -46,6 +47,21 @@ export function isStaff(): Promise<StaffMe | null> {
   return staff;
 }
 export const forgetStaff = () => { staff = null; };
+
+/**
+ * Whether this signed-in person is staff, for the Admin links (account menu, You page). Asked once a session and only
+ * when signed in: no one else can be staff (D33).
+ */
+export function useIsStaff(signedIn: boolean): boolean {
+  const [yes, setYes] = useState(false);
+  useEffect(() => {
+    if (!signedIn) { setYes(false); return; }
+    let live = true;
+    void isStaff().then((m) => { if (live) setYes(!!m); });
+    return () => { live = false; };
+  }, [signedIn]);
+  return yes;
+}
 
 export const KIND_LABEL: Record<ReportKind, string> = { answer_key: "Wrong answer key", unclear: "Unclear", typo: "Typo", other: "Something else" };
 

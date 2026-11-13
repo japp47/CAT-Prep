@@ -1,11 +1,12 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, UserRound } from "lucide-react";
+import { ArrowRight, ShieldCheck, UserRound } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { initial } from "../components/AccountButton";
 import { LinkButton, Page, Section, Segmented, Stat } from "../components/kit";
 import { statusLine, useSyncStatus } from "../components/SyncNav";
 import { CatYear } from "../components/CatYear";
+import { useIsStaff } from "../lib/admin";
 import { api, API_ENABLED, SIGNIN_ENABLED } from "../lib/api";
 import { todayIso } from "../lib/date";
 import { useStore } from "../lib/store";
@@ -30,9 +31,16 @@ const monthYear = (t: string) => {
  * You (docs/feature.md F81, part 1): who you are on 99ile, what you are preparing for, and your study so far, with
  * the account and sync in one place. Works for everyone: signed in, syncing with a code, or on this device only.
  */
+/**
+ * The header's one action (Sign in, or Admin for staff). The secondary button is the accent tone, the same as the
+ * header card, so here it takes the card surface to stand apart by tone.
+ */
+const HEAD_ACTION = "col-span-2 w-fit justify-self-start bg-card hover:bg-background sm:col-span-1 lg:col-span-1 dark:ring-0";
+
 export default function You() {
   const { state, update } = useStore();
   const s = useSyncStatus();
+  const staff = useIsStaff(!!s.account);
   const [since, setSince] = useState("");
   // "Member since" is not kept on the device: ask once when signed in.
   useEffect(() => {
@@ -78,8 +86,14 @@ export default function You() {
           </div>
         </div>
         {!s.account && API_ENABLED && (
-          <LinkButton to={SIGNIN_ENABLED ? "/signin?then=%2Fyou" : "/you#sync"} variant="secondary" className="col-span-2 w-fit justify-self-start sm:col-span-1 lg:col-span-1">
+          <LinkButton to={SIGNIN_ENABLED ? "/signin?then=%2Fyou" : "/you#sync"} variant="secondary" className={HEAD_ACTION}>
             {SIGNIN_ENABLED ? "Sign in" : "Set up sync"} <ArrowRight data-icon="inline-end" />
+          </LinkButton>
+        )}
+        {/* Staff reach the admin page from here too, in the slot a signed-out student's Sign in uses (D33). */}
+        {staff && (
+          <LinkButton to="/admin" variant="secondary" className={HEAD_ACTION}>
+            <ShieldCheck data-icon="inline-start" /> Admin
           </LinkButton>
         )}
       </header>

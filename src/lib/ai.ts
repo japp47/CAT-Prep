@@ -45,5 +45,9 @@ export interface SummaryFeedback { checks: SummaryVerdict[]; key: string; cached
 /** The student's ticks are not sent: the second opinion is formed without them. */
 export const checkSummary = (m: { set: string; v: string; text: string }) => api<SummaryFeedback>("/ai/summary", m);
 
+/** The smallest edit of the student's own summary that meets all four checks, or tooFar when a small edit would not do (F36b). */
+export interface SummaryFix { fixed?: string; tooFar: boolean; key: string; cached: boolean }
+export const fixSummary = (m: { set: string; v: string; text: string }) => api<SummaryFix>("/ai/summary/fix", m);
+
 /** Marks an explanation or summary verdict as wrong; three students' flags drop it from the cache. */
 export const flagAi = (key: string) => api<null>("/ai/flag", { key });

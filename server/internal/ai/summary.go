@@ -184,31 +184,8 @@ func (s *Service) SummaryHandler() http.Handler {
 			return
 		}
 		d, _ := account.FromContext(r.Context())
-		r.Body = http.MaxBytesReader(w, r.Body, 2048)
-		var in struct {
-			Set  string `json:"set"`
-			V    string `json:"v"`
-			Text string `json:"text"`
-		}
-		if !httpx.DecodeJSON(w, r, &in, false) {
-			return
-		}
-		text := spaces.ReplaceAllString(strings.TrimSpace(in.Text), " ")
-		if n := len(strings.Fields(text)); n < summaryMinWords || n > summaryMaxWords || len(text) > summaryMaxChars {
-			httpx.WriteError(w, http.StatusBadRequest, "bad_request", fmt.Sprintf("A summary is %d to %d words.", summaryMinWords, summaryMaxWords))
-			return
-		}
-		set, err := s.Content.Set(r.Context(), in.Set)
-		switch {
-		case err != nil:
-			s.Log.Warn("ai: content", "error", err)
-			httpx.WriteError(w, http.StatusServiceUnavailable, "ai_busy", "This is not available just now. Your own ticks still count.")
-			return
-		case set == nil || set.Summary == nil:
-			httpx.WriteError(w, http.StatusNotFound, "not_found", "That set has no model summary.")
-			return
-		case in.V != set.V:
-			httpx.WriteError(w, http.StatusConflict, "stale", "This set was rewritten; compare with the model summary instead.")
+		set, text, ok := s.summaryRequest(w, r)
+		if !ok {
 			return
 		}
 		f, err := s.CheckSummary(r.Context(), d.IdentityID, reqinfo.IP(r.Context()), set, text)
@@ -218,4 +195,37 @@ func (s *Service) SummaryHandler() http.Handler {
 		}
 		httpx.WriteJSON(w, http.StatusOK, f)
 	})
+}
+
+// summaryRequest reads {set, v, text} for the summary endpoints and holds the text to the site's limits before
+// anything is spent on it; on a refusal it has already answered.
+func (s *Service) summaryRequest(w http.ResponseWriter, r *http.Request) (*Set, string, bool) {
+	r.Body = http.MaxBytesReader(w, r.Body, 2048)
+	var in struct {
+		Set  string `json:"set"`
+		V    string `json:"v"`
+		Text string `json:"text"`
+	}
+	if !httpx.DecodeJSON(w, r, &in, false) {
+		return nil, "", false
+	}
+	text := spaces.ReplaceAllString(strings.TrimSpace(in.Text), " ")
+	if n := len(strings.Fields(text)); n < summaryMinWords || n > summaryMaxWords || len(text) > summaryMaxChars {
+		httpx.WriteError(w, http.StatusBadRequest, "bad_request", fmt.Sprintf("A summary is %d to %d words.", summaryMinWords, summaryMaxWords))
+		return nil, "", false
+	}
+	set, err := s.Content.Set(r.Context(), in.Set)
+	switch {
+	case err != nil:
+		s.Log.Warn("ai: content", "error", err)
+		httpx.WriteError(w, http.StatusServiceUnavailable, "ai_busy", "This is not available just now. Your own ticks still count.")
+		return nil, "", false
+	case set == nil || set.Summary == nil:
+		httpx.WriteError(w, http.StatusNotFound, "not_found", "That set has no model summary.")
+		return nil, "", false
+	case in.V != set.V:
+		httpx.WriteError(w, http.StatusConflict, "stale", "This set was rewritten; compare with the model summary instead.")
+		return nil, "", false
+	}
+	return set, text, true
 }

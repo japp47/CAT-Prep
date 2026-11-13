@@ -80,6 +80,7 @@ Ground rule kept: **local-first.** The site works fully with no account and no i
 34. **AI: article → RC set.**
 35. **AI: "Explain my mistake"**, built 13 Nov 2026 for RC (D100, `docs/design/explain-mistake.md`): why your option looked right, the line that settles it and what to check next time, from ids only, checked by code and cached per mistake on `openai/gpt-oss-20b`.
 36. **AI: summary feedback**, built 13 Nov 2026 for RC (D101, `docs/design/explain-mistake.md`): after you tick your own four checks, a second opinion from `openai/gpt-oss-120b` judges the same four without seeing your ticks, quotes your words and says what to change; it never rewrites. Every AI call now needs a Google account and passes a per-address limit and an atomic cap and budget.
+   **36b** (D103): a wrong tone is explained with the passage line that shows the author's tone and whether the pick was a close call (written per set, no AI); after the verdicts the student revises their own summary once and it is checked again; only after that, "Show the smallest fix" edits as few of their words as possible, with the changes marked. Never a fresh rewrite: the model summary is already there.
 37. Shared daily leaderboard for the RC of the day.
 38. Accountability partner: a read-only progress link for a friend or mentor.
 39. Feedback inbox. Later, a story submission form.

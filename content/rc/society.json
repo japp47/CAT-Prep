@@ -202,7 +202,9 @@
       "model": "Algorithms can be more consistent than people but are never neutral: they embody human choices about data and fairness, which should be open to challenge.",
       "tone": "critical",
       "claim": "embody human choices about data and fairness",
-      "qualifier": "can be more consistent than people"
+      "qualifier": "can be more consistent than people",
+      "toneCue": "The defence contains a truth and conceals a confusion",
+      "toneWhy": "The author finds fault with the claim that algorithms are neutral, while granting that consistency has value."
     }
   },
   {
@@ -406,7 +408,9 @@
       "model": "Remote work brings real benefits, but mostly to already privileged desk workers and with hidden costs, so its effect on opportunity remains uncertain.",
       "tone": "cautionary",
       "claim": "mostly to already privileged desk workers",
-      "qualifier": "remains uncertain"
+      "qualifier": "remains uncertain",
+      "toneCue": "Experience so far counsels circumspection",
+      "toneWhy": "The author grants the benefits but warns of uneven gains and hidden costs."
     }
   },
   {
@@ -610,7 +614,9 @@
       "model": "Repair declined mainly because labour grew dear relative to goods and design obstructed it, not changing values; laws can restore choice, not the repair shop.",
       "tone": "analytical",
       "claim": "labour grew dear relative to goods",
-      "qualifier": "mainly"
+      "qualifier": "mainly",
+      "toneCue": "The sentiment is sincere; the diagnosis it implies is, however, doubtful",
+      "toneWhy": "The author tests a popular explanation against economics and weighs both sides of the repair debate."
     }
   },
   {
@@ -812,7 +818,9 @@
       "model": "Evidence that the poor spend cash well has made it the benchmark for aid, though it cannot replace every other kind of help.",
       "tone": "appreciative",
       "claim": "made it the benchmark for aid",
-      "qualifier": "cannot replace every other kind of help"
+      "qualifier": "cannot replace every other kind of help",
+      "toneCue": "These results have made cash a benchmark.",
+      "toneWhy": "The author credits careful studies for overturning an old prejudice, while marking what cash cannot do."
     }
   },
   {
@@ -1010,7 +1018,9 @@
       "model": "Jacobs's view that busy, mixed streets are safer became influential, but evidence is mixed and such neighbourhoods may price out their watchful residents.",
       "tone": "appreciative",
       "claim": "busy, mixed streets are safer",
-      "qualifier": "evidence is mixed"
+      "qualifier": "evidence is mixed",
+      "toneCue": "Many of her ideas have since become orthodox.",
+      "toneWhy": "The author admires Jacobs's insight and its influence, then notes where the evidence and her critics push back."
     }
   },
   {
@@ -1213,7 +1223,9 @@
       "model": "Corrections rarely backfire, yet their effects are modest and fade, so some researchers now teach people to recognise manipulation in advance.",
       "tone": "analytical",
       "claim": "Corrections rarely backfire",
-      "qualifier": "modest and fade"
+      "qualifier": "modest and fade",
+      "toneCue": "Later research was more reassuring.",
+      "toneWhy": "The author weighs a disputed finding against later evidence and draws a measured conclusion."
     }
   },
   {
@@ -1386,7 +1398,9 @@
       "model": "Renaming a street changes whom a city honours, but it recovers neglected history only when wider teaching and archives go with it.",
       "tone": "analytical",
       "claim": "changes whom a city honours",
-      "qualifier": "only when wider teaching and archives go with it"
+      "qualifier": "only when wider teaching and archives go with it",
+      "toneCue": "This does not mean that renaming is merely theatrical.",
+      "toneWhy": "The author reframes a two-sided dispute and weighs what renaming can and cannot do."
     }
   }
 ]

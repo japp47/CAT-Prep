@@ -196,7 +196,9 @@
       "model": "Identity puzzles show 'same' covers several criteria that usually agree; for persons, their split may unsettle the concern and responsibility we attach to selves.",
       "tone": "analytical",
       "claim": "'same' covers several criteria",
-      "qualifier": "may unsettle"
+      "qualifier": "may unsettle",
+      "toneCue": "That temptation deserves resistance.",
+      "toneWhy": "The author examines a puzzle, explains where it comes from and weighs a radical conclusion against its critics."
     }
   },
   {
@@ -398,7 +400,9 @@
       "model": "Judging people by outcomes they could not control clashes with the principle that blame requires control; whether such moral luck is genuine remains unsettled.",
       "tone": "analytical",
       "claim": "clashes with the principle that blame requires control",
-      "qualifier": "remains unsettled"
+      "qualifier": "remains unsettled",
+      "toneCue": "is a question the example cannot settle",
+      "toneWhy": "The author sets out the tension and both responses to it, and leaves the question open rather than taking sides."
     }
   },
   {
@@ -600,7 +604,9 @@
       "model": "Relying on experts is unavoidable and rational, but only when trust is calibrated to signs of reliability a non-specialist can actually check.",
       "tone": "analytical",
       "claim": "Relying on experts is unavoidable and rational",
-      "qualifier": "only when trust is calibrated"
+      "qualifier": "only when trust is calibrated",
+      "toneCue": "The ideal is noble; it is also, in the conditions of modern knowledge, unattainable.",
+      "toneWhy": "The author weighs self-reliance against deference and argues for a reasoned middle course."
     }
   },
   {
@@ -800,7 +806,9 @@
       "model": "We underestimate our own projects because we reason from their particulars, helped by incentives to be optimistic; comparing similar past projects generally forecasts better.",
       "tone": "analytical",
       "claim": "we reason from their particulars",
-      "qualifier": "generally"
+      "qualifier": "generally",
+      "toneCue": "Cognitive optimism is not the sole mechanism.",
+      "toneWhy": "The author explains a bias, examines its causes and evaluates remedies, rather than only describing it."
     }
   },
   {
@@ -1005,7 +1013,9 @@
       "model": "Memory rebuilds rather than replays the past: confidence is no proof of accuracy, yet the flexibility is not simply a defect.",
       "tone": "analytical",
       "claim": "rebuilds rather than replays the past",
-      "qualifier": "not simply a defect"
+      "qualifier": "not simply a defect",
+      "toneCue": "It would nonetheless be an error to conclude that memory is simply defective.",
+      "toneWhy": "The author weighs the evidence of memory's flaws and resists a one-sided conclusion."
     }
   },
   {
@@ -1206,7 +1216,9 @@
       "model": "Our reasons for choices may be stories composed afterwards, so stated reasons, though not worthless, should be checked rather than taken as causes.",
       "tone": "cautionary",
       "claim": "stories composed afterwards",
-      "qualifier": "though not worthless"
+      "qualifier": "though not worthless",
+      "toneCue": "Its practical lesson may be modest but is worth heeding",
+      "toneWhy": "The author warns readers not to take stated reasons at face value, while not dismissing them."
     }
   },
   {
@@ -1403,7 +1415,9 @@
       "model": "The idea that willpower is a limited fuel spread far beyond its evidence, which later checks weakened, though fatigue after effort may still be real.",
       "tone": "sceptical",
       "claim": "spread far beyond its evidence",
-      "qualifier": "may still be real"
+      "qualifier": "may still be real",
+      "toneCue": "Doubts grew as psychology began to scrutinise its own methods.",
+      "toneWhy": "The author doubts a popular theory because the evidence behind it weakened when it was checked."
     }
   },
   {
@@ -1608,7 +1622,9 @@
       "model": "Because our choices decide who will exist, harm to particular people cannot fully explain our duties to future generations; an adequate ethics must answer this.",
       "tone": "analytical",
       "claim": "harm to particular people",
-      "qualifier": "cannot fully"
+      "qualifier": "cannot fully",
+      "toneCue": "The inference is not forced upon us",
+      "toneWhy": "The author sets out an argument, names the alternatives and weighs what an adequate answer must do."
     }
   },
   {
@@ -1810,7 +1826,9 @@
       "model": "Where evidence of feeling is indirect but convergent, care need not wait for certainty, especially when precaution is cheap and wrongly withheld care costs suffering.",
       "tone": "persuasive",
       "claim": "care need not wait for certainty",
-      "qualifier": "especially when precaution is cheap"
+      "qualifier": "especially when precaution is cheap",
+      "toneCue": "To insist on certainty before extending care is to assign the entire risk of our ignorance to the creature least able to bear it.",
+      "toneWhy": "The author argues for a course of action and presses the reader to accept it, not just to weigh it."
     }
   },
   {
@@ -2013,7 +2031,9 @@
       "model": "A first number, even an irrelevant one, pulls later estimates toward it, often unnoticed; considering the opposite seems to help more than warnings.",
       "tone": "analytical",
       "claim": "pulls later estimates toward it",
-      "qualifier": "even an irrelevant one"
+      "qualifier": "even an irrelevant one",
+      "toneCue": "Two explanations have been proposed, and both may be correct.",
+      "toneWhy": "The author explains an effect, weighs rival accounts of it and evaluates remedies."
     }
   },
   {
@@ -2219,7 +2239,9 @@
       "model": "The marshmallow test's link to later success shrank in larger studies; waiting reflects children's circumstances as much as fixed self-control, though self-control still matters.",
       "tone": "critical",
       "claim": "waiting reflects children's circumstances",
-      "qualifier": "as much as"
+      "qualifier": "as much as",
+      "toneCue": "a vivid experiment may carry a message larger than its evidence",
+      "toneWhy": "The author finds fault with how a famous result was read, while granting what remains of it."
     }
   }
 ]

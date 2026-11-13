@@ -169,7 +169,9 @@
       "model": "Translation interprets rather than moves a fixed meaning; loss is real, but faithfulness lies in how the whole work meets new readers.",
       "tone": "analytical",
       "claim": "interprets rather than moves a fixed meaning",
-      "qualifier": "loss is real"
+      "qualifier": "loss is real",
+      "toneCue": "The complaint is just, but it assumes that a translation could choose to be transparent",
+      "toneWhy": "The author grants each view its due, then examines the assumption behind it to reach a position of their own."
     }
   },
   {
@@ -341,7 +343,9 @@
       "model": "Free indirect style lets readers share a character's view while seeing around it; its sure value is knowledge of inner life, not necessarily kinder readers.",
       "tone": "sceptical",
       "claim": "its sure value is knowledge of inner life",
-      "qualifier": "not necessarily"
+      "qualifier": "not necessarily",
+      "toneCue": "Attempts to reproduce the result gave mixed findings, and the effect, if it exists, appears small and short-lived.",
+      "toneWhy": "The author doubts the popular claim that fiction makes readers kinder, pointing to weak evidence."
     }
   },
   {
@@ -513,7 +517,9 @@
       "model": "Theories of tragic pleasure assume pain and pleasure are separate feelings; perhaps instead audiences respond to suffering given meaningful form.",
       "tone": "analytical",
       "claim": "respond to suffering given meaningful form",
-      "qualifier": "perhaps"
+      "qualifier": "perhaps",
+      "toneCue": "Each of these accounts, whatever its merits, preserves the assumption of two feelings.",
+      "toneWhy": "The author surveys the theories, names the assumption they share and proposes an alternative."
     }
   },
   {
@@ -681,7 +687,9 @@
       "model": "Colonial maps served power as well as knowledge, partly by erasing local contributors, but their effects were more complicated than simple imposed control.",
       "tone": "analytical",
       "claim": "served power as well as knowledge",
-      "qualifier": "more complicated than simple imposed control"
+      "qualifier": "more complicated than simple imposed control",
+      "toneCue": "it has since become orthodoxy, perhaps too comfortably",
+      "toneWhy": "The author accepts the critique of colonial maps but tests where it holds and where the picture is more complicated."
     }
   },
   {
@@ -854,7 +862,9 @@
       "model": "Historians' qualifications of the print revolution are largely sound: print mattered in combination, not alone; yet that many-factor view is hard to test.",
       "tone": "analytical",
       "claim": "print mattered in combination, not alone",
-      "qualifier": "largely"
+      "qualifier": "largely",
+      "toneCue": "This is persuasive, but it is worth noticing what it concedes",
+      "toneWhy": "The author weighs each objection, granting what is sound and noting what it leaves out."
     }
   },
   {
@@ -1027,7 +1037,9 @@
       "model": "Snow's real achievement was a method of reasoning from comparisons and awkward exceptions, not the map, and his correct theory won acceptance only slowly.",
       "tone": "analytical",
       "claim": "reasoning from comparisons and awkward exceptions",
-      "qualifier": "only slowly"
+      "qualifier": "only slowly",
+      "toneCue": "The story is usually told as a triumph, but the truth is less tidy.",
+      "toneWhy": "The author checks a famous story against the evidence and locates the real achievement more precisely."
     }
   },
   {
@@ -1198,7 +1210,9 @@
       "model": "The popular Silk Road image misleads: trade moved in relays along many mostly regional routes, yet the connections were real, just untidier than the name.",
       "tone": "analytical",
       "claim": "The popular Silk Road image misleads",
-      "qualifier": "yet the connections were real"
+      "qualifier": "yet the connections were real",
+      "toneCue": "Yet it would be an overcorrection to conclude that the name should simply be abandoned.",
+      "toneWhy": "The author corrects a popular image without throwing it away, weighing what is false against what is real."
     }
   },
   {
@@ -1372,7 +1386,9 @@
       "model": "Living oral traditions show long poems can be composed in performance, not memorised, which reshapes views of Homer without settling how his epics were fixed.",
       "tone": "analytical",
       "claim": "long poems can be composed in performance",
-      "qualifier": "without settling how his epics were fixed"
+      "qualifier": "without settling how his epics were fixed",
+      "toneCue": "It would be rash, however, to treat the analogy as proof.",
+      "toneWhy": "The author explains a theory, credits what it shows and marks what it cannot settle."
     }
   },
   {
@@ -1545,7 +1561,9 @@
       "model": "Puzzle and hard-boiled crime fiction are less opposed than they seem: both are stories about order, which may explain why modern writers blend them.",
       "tone": "analytical",
       "claim": "both are stories about order",
-      "qualifier": "less opposed than they seem"
+      "qualifier": "less opposed than they seem",
+      "toneCue": "their opposition is less complete than it appears",
+      "toneWhy": "The author sets out two traditions and their critics, then finds what they share instead of taking a side."
     }
   },
   {
@@ -1712,7 +1730,9 @@
       "model": "A tiny calendar drift prompted a sound reform, slowed by religious politics; the famous tale of riots over it is probably myth.",
       "tone": "analytical",
       "claim": "slowed by religious politics",
-      "qualifier": "probably"
+      "qualifier": "probably",
+      "toneCue": "As arithmetic the reform was excellent.",
+      "toneWhy": "The author judges the reform on two grounds and tests a popular legend against the evidence."
     }
   }
 ]

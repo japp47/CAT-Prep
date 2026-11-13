@@ -81,8 +81,9 @@ describe("saved summaries", () => {
 
   it("keep everything through a save and a restore", () => {
     const st = blankState();
-    recordRcSummary(st, "s1", set, "a1", "Cities may partly teach skills.", "analytical", [true, false, true, false], "2026-10-20", 5, [true, true, false, false]);
+    recordRcSummary(st, "s1", set, "a1", "Cities may partly teach skills.", "analytical", [true, false, true, false], "2026-10-20", 5, [true, true, false, false], " Cities may partly teach skills, so limits tax learning. ");
     expect(st.summaries[0].ai).toEqual([true, true, false, false]);
+    expect(st.summaries[0].revised).toBe("Cities may partly teach skills, so limits tax learning.");
     st.summaries.push({ id: "s2", d: "2026-10-20", src: "article", text: "A long read.", tone: "", checks: [true, true, true, true], words: 3, updatedAt: 6, from: "Aeon", url: "https://aeon.co/x" });
     expect(normalize(JSON.parse(JSON.stringify(st))).summaries).toEqual(st.summaries);
   });

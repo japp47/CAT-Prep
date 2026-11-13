@@ -4,7 +4,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
 import { markPhrases, SUMMARY_CHECKS, summaryScore } from "../practice/summary";
-import { SUMMARY_MAX_WORDS, TONES, words, type RcSummary } from "../practice/types";
+import { TONE_MEANS, toneVerdict } from "../practice/tone";
+import { SUMMARY_MAX_WORDS, TONES, words, type RcSummary, type Tone } from "../practice/types";
 
 // Summary writing (docs/plan.md, step 2e). Used after RC sets and, later, on Today's reading block and the journal.
 // Only pages that load on demand import this file, so it stays out of the main script.
@@ -50,9 +51,34 @@ export function ModelSummary({ s }: { s: RcSummary }) {
   );
 }
 
+/**
+ * The author's tone against the student's pick (F36b, D103). A match is confirmed with the line that shows it; a miss
+ * or no pick gets what the two tones mean, whether it was a close call, and that line with the reason.
+ */
+function ToneNote({ tone, model }: { tone: string; model: RcSummary }) {
+  const v = toneVerdict(tone, model.tone);
+  const cue = model.toneCue && <>In the passage: <q>{model.toneCue}</q>{model.toneWhy ? ` ${model.toneWhy}` : ""}</>;
+  if (v === "same") return (
+    <div className="flex flex-col gap-1">
+      <p className="text-sm text-muted-foreground">Tone: {cap(model.tone)}, <span className="text-success">the same as yours</span>.</p>
+      {cue && <p className="text-sm text-muted-foreground">{cue}</p>}
+    </div>
+  );
+  return (
+    <div className="mt-1 flex flex-col gap-1.5 rounded-md bg-muted px-3 py-2.5">
+      <p className="text-base"><b className="font-semibold">Tone: {cap(model.tone)}.</b>{" "}
+        {v === "none" ? "You did not pick one." : v === "close" ? `You chose ${tone}: a close call.` : `You chose ${tone}: a different reading.`}</p>
+      <p className="text-base">
+        {v !== "none" && tone in TONE_MEANS && <>{cap(tone)} {TONE_MEANS[tone as Tone]}; </>}
+        {v === "none" ? cap(model.tone) : model.tone} {TONE_MEANS[model.tone]}.
+      </p>
+      {cue && <p className="text-base text-muted-foreground">{cue}</p>}
+    </div>
+  );
+}
+
 /** Yours above the model, each with its tone. */
 export function SummaryPair({ text, tone, model }: { text: string; tone: string; model: RcSummary }) {
-  const same = tone && tone === model.tone;
   return (
     <div className="flex flex-col gap-3">
       <section className="flex flex-col gap-1.5 rounded-lg bg-secondary p-4" aria-label="Your summary">
@@ -63,7 +89,7 @@ export function SummaryPair({ text, tone, model }: { text: string; tone: string;
       <section className="flex flex-col gap-1.5 rounded-lg bg-card p-4 ring-1 ring-inset ring-border" aria-label="Model summary">
         <h3 className="text-sm font-medium text-muted-foreground">Model</h3>
         <ModelSummary s={model} />
-        <p className="text-sm text-muted-foreground">Tone: {cap(model.tone)}{tone && <span className={same ? "text-success" : ""}>{same ? ", the same as yours" : `, you chose ${tone}`}</span>}</p>
+        <ToneNote tone={tone} model={model} />
       </section>
     </div>
   );

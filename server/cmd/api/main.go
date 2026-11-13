@@ -320,6 +320,7 @@ func v1Routes(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger, opt synca
 	rt.Handle("POST /v1/ai/explain", acc.Require(aiSvc.ExplainHandler()))
 	rt.Handle("POST /v1/ai/flag", acc.Require(aiSvc.FlagHandler()))
 	rt.Handle("POST /v1/ai/summary", acc.Require(aiSvc.SummaryHandler()))
+	rt.Handle("POST /v1/ai/summary/fix", acc.Require(aiSvc.FixHandler()))
 
 	adm := admin.New(pool, hash, log)
 	// The Reminders panel (R2): its setup, and a test sender when email or push is on here.

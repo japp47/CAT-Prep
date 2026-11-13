@@ -14,11 +14,16 @@ export const SUMMARY_CHECKS = [
 
 export const summaryScore = (checks: boolean[]) => checks.filter(Boolean).length;
 
+/** Each check's short name, where a verdict stands beside it ("Qualifier: not yet") rather than the student's "I kept…". */
+export const SUMMARY_SHORT = ["Main claim", "Qualifier", "No examples", "Nothing added"] as const;
+
 /** Saves a summary of an RC set. The caller makes the id, because a state updater may run more than once. */
-export function recordRcSummary(st: AppState, id: string, set: RcSet, att: string, text: string, tone: string, checks: boolean[], d: string, now: number, ai?: boolean[]): void {
+export function recordRcSummary(st: AppState, id: string, set: RcSet, att: string, text: string, tone: string, checks: boolean[], d: string, now: number, ai?: boolean[], revised?: string): void {
   const t = text.trim();
   const e: SummaryEntry = { id, d, src: "rc", set: set.id, att, text: t, tone, checks: checks.slice(0, 4), words: words(t), updatedAt: now };
+  // The first verdicts are kept for habits: they show what the student misses before any help.
   if (ai?.length === 4) e.ai = ai.slice();
+  if (revised?.trim() && revised.trim() !== t) e.revised = revised.trim();
   st.summaries.push(e);
 }
 

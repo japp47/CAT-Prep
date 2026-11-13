@@ -46,7 +46,15 @@ func (f *fakeModel) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	_ = json.Unmarshal(b, &body)
 	user := body.Messages[1].Content
 	var reply string
-	if m := summaryRe.FindStringSubmatch(user); m != nil {
+	if strings.Contains(user, "Edit the summary above") {
+		// The smallest fix: one word added, or (bad) the model summary itself, which is too far to count as an edit.
+		text := user[strings.Index(user, "<summary>")+len("<summary>") : strings.Index(user, "</summary>")]
+		fixed := "Mostly, " + text
+		if f.bad.Load() {
+			fixed = "Cheap land at the edge, not cars, mainly drove the growth."
+		}
+		reply = fmt.Sprintf(`{"fixed":%q}`, fixed)
+	} else if m := summaryRe.FindStringSubmatch(user); m != nil {
 		quote := m[1]
 		if f.bad.Load() {
 			quote = "words the student never wrote"
@@ -331,13 +339,42 @@ func TestSummaryFeedback(t *testing.T) {
 	}
 }
 
+func TestTheSmallestFix(t *testing.T) {
+	srv, model, admin := aiServer(t, aiOpts{perStudent: 10, budget: 100000})
+	d := student(t, srv, admin)
+	send := func(text string) (int, ai.Fix) {
+		var f ai.Fix
+		return d.send("POST", "/v1/ai/summary/fix", map[string]any{"set": "s1", "v": "v1", "text": text}, &f), f
+	}
+	text := "Cars and cheap land at the edge drove the growth of cities."
+	if code, f := send(text); code != http.StatusOK || f.TooFar || f.Fixed != "Mostly, "+text || f.Cached {
+		t.Fatalf("fix: %d %+v", code, f)
+	}
+	if code, f := send(text); code != http.StatusOK || !f.Cached || model.calls.Load() != 1 {
+		t.Errorf("replay: %d %+v, %d calls", code, f, model.calls.Load())
+	}
+	model.bad.Store(true)
+	if code, f := send("Growth in cities came from cheap land at the edge, not cars."); code != http.StatusOK || !f.TooFar || f.Fixed != "" {
+		t.Errorf("a reply that copies the model: %d %+v", code, f)
+	}
+	model.bad.Store(false)
+	if code, _ := send("Too short."); code != http.StatusBadRequest {
+		t.Errorf("limits: %d", code)
+	}
+	var kinds int
+	_ = admin.QueryRow(context.Background(), `select count(*) from ai.cache where kind = 'summary_fix'`).Scan(&kinds)
+	if kinds != 2 {
+		t.Errorf("%d fixes cached, want 2", kinds)
+	}
+}
+
 func TestAIOffByDefault(t *testing.T) {
 	srv, _ := notifyServer(t)
 	var st struct{ On bool }
 	if code := newDevice(t, srv).get("/v1/ai", &st); code != http.StatusOK || st.On {
 		t.Errorf("status %d on=%v; AI must be off without AI_ENABLED", code, st.On)
 	}
-	for _, path := range []string{"/v1/ai/explain", "/v1/ai/summary"} {
+	for _, path := range []string{"/v1/ai/explain", "/v1/ai/summary", "/v1/ai/summary/fix"} {
 		if code := newDevice(t, srv).turnOn().send("POST", path, map[string]any{"set": "s1", "v": "v1", "q": 0, "chosen": 0}, nil); code != http.StatusServiceUnavailable {
 			t.Errorf("%s with AI off: %d", path, code)
 		}

@@ -203,7 +203,9 @@
       "model": "Linear perspective is neither a mirror of how we see nor an arbitrary code, but probably a convention made persuasive by the geometry of light.",
       "tone": "analytical",
       "claim": "a convention made persuasive by the geometry of light",
-      "qualifier": "probably"
+      "qualifier": "probably",
+      "toneCue": "The most defensible conclusion is probably an intermediate one.",
+      "toneWhy": "The author weighs two rival views and settles, tentatively, between them."
     }
   },
   {
@@ -407,7 +409,9 @@
       "model": "Acoustic science helps designers avoid the worst faults, but a hall's quality also depends on taste and expectation that science cannot yet capture.",
       "tone": "analytical",
       "claim": "also depends on taste and expectation",
-      "qualifier": "cannot yet"
+      "qualifier": "cannot yet",
+      "toneCue": "What these episodes illustrate is not that science is irrelevant but that it is incomplete.",
+      "toneWhy": "The author sets out evidence on both sides and reaches a measured verdict on what science can do."
     }
   },
   {
@@ -612,7 +616,9 @@
       "model": "Whether a forgery is worth less than an original perhaps turns on what appreciation is; each rival answer leaves something unexplained.",
       "tone": "analytical",
       "claim": "each rival answer leaves something unexplained",
-      "qualifier": "perhaps"
+      "qualifier": "perhaps",
+      "toneCue": "Neither position is entirely comfortable.",
+      "toneWhy": "The author lays out two answers and the weakness of each, without choosing a side."
     }
   },
   {
@@ -815,7 +821,9 @@
       "model": "Photography did not simply free painters from realism; it changed what painting claimed for itself, in an exchange both arts are still renegotiating.",
       "tone": "analytical",
       "claim": "changed what painting claimed for itself",
-      "qualifier": "did not simply"
+      "qualifier": "did not simply",
+      "toneCue": "The story has an appealing economy, but historians have found it too tidy.",
+      "toneWhy": "The author tests a familiar story against the evidence and refines it, neither praising nor dismissing it."
     }
   },
   {
@@ -1017,7 +1025,9 @@
       "model": "The famous proof that editing alone creates emotion rests on thin evidence; context does shape how faces are read, but only modestly.",
       "tone": "sceptical",
       "claim": "rests on thin evidence",
-      "qualifier": "only modestly"
+      "qualifier": "only modestly",
+      "toneCue": "The evidence, however, is oddly thin.",
+      "toneWhy": "The author doubts a famous claim because the evidence behind it is weak, while granting a modest version of it."
     }
   },
   {
@@ -1190,7 +1200,9 @@
       "model": "Treating authenticity as an unchanging look burdens artisans, though commerce can sustain crafts when makers keep the freedom to adapt.",
       "tone": "critical",
       "claim": "burdens artisans",
-      "qualifier": "though commerce can sustain crafts"
+      "qualifier": "though commerce can sustain crafts",
+      "toneCue": "That implication creates a peculiar burden for artisans.",
+      "toneWhy": "The author finds fault with how the market frames authenticity, while granting the counterargument its due."
     }
   }
 ]
