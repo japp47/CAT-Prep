@@ -25,6 +25,7 @@ import (
 
 	"github.com/japp47/CAT-Prep/server/internal/account"
 	"github.com/japp47/CAT-Prep/server/internal/admin"
+	"github.com/japp47/CAT-Prep/server/internal/ai"
 	"github.com/japp47/CAT-Prep/server/internal/auth"
 	"github.com/japp47/CAT-Prep/server/internal/config"
 	"github.com/japp47/CAT-Prep/server/internal/feedback"
@@ -52,6 +53,12 @@ func run() error {
 	}
 	log := newLogger(cfg)
 	slog.SetDefault(log)
+	if cfg.AIEnabled {
+		// A bad models.json, an unknown name in AI_EXPLAIN or AI_SUMMARY, or a task with no key stops the start here.
+		if _, err := ai.LoadRouter(cfg.AICatalog, cfg.AIOrders, os.Getenv, log); err != nil {
+			return fmt.Errorf("AI settings: %w", err)
+		}
+	}
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
@@ -295,6 +302,25 @@ func v1Routes(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger, opt synca
 	rt.Handle("GET /v1/unsubscribe", nt.UnsubscribeHandler())
 	rt.Handle("POST /v1/unsubscribe", nt.UnsubscribeHandler())
 
+	// AI (F35, D100): off unless AI_ENABLED=1 with a model; the site then keeps its written notes.
+	// New generations need a Google account, room under the address's hourly limit, the student's cap and the day's
+	// budget (internal/ai/guard.go).
+	aiSvc := &ai.Service{DB: pool, DailyBudget: cfg.AIDailyTokens, PerStudent: cfg.AIPerStudent, IPs: limit.New(cfg.AIPerAddress, time.Hour), Log: log}
+	if cfg.AIEnabled {
+		// run() has already checked the catalog, so an error here only happens in tests; AI then stays off.
+		if r, err := ai.LoadRouter(cfg.AICatalog, cfg.AIOrders, os.Getenv, log); err != nil {
+			log.Error("ai: off", "error", err)
+		} else {
+			r.Record = aiSvc.RecordCall
+			aiSvc.Router = r
+			aiSvc.Content = &ai.Content{URL: cfg.AIContentURL, TTL: time.Hour}
+		}
+	}
+	rt.Handle("GET /v1/ai", acc.Optional(aiSvc.StatusHandler()))
+	rt.Handle("POST /v1/ai/explain", acc.Require(aiSvc.ExplainHandler()))
+	rt.Handle("POST /v1/ai/flag", acc.Require(aiSvc.FlagHandler()))
+	rt.Handle("POST /v1/ai/summary", acc.Require(aiSvc.SummaryHandler()))
+
 	adm := admin.New(pool, hash, log)
 	// The Reminders panel (R2): its setup, and a test sender when email or push is on here.
 	nset := notifySettings(cfg)
@@ -316,6 +342,7 @@ func v1Routes(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger, opt synca
 	rt.Handle("GET /v1/admin/reports", acc.Optional(adm.Require(admin.FeedbackRead, adm.ReportsHandler())))
 	rt.Handle("POST /v1/admin/reports/status", acc.Optional(adm.Require(admin.FeedbackResolve, adm.StatusHandler())))
 	rt.Handle("GET /v1/admin/overview", acc.Optional(adm.Require(admin.StatsRead, adm.OverviewHandler())))
+	rt.Handle("GET /v1/admin/ai", acc.Optional(adm.Require(admin.StatsRead, aiSvc.AdminHandler())))
 	rt.Handle("GET /v1/admin/reminders", acc.Optional(adm.Require(admin.StatsRead, adm.RemindersHandler())))
 	rt.Handle("POST /v1/admin/reminders/test", acc.Optional(adm.Require(admin.RemindersManage, adm.RemindersTestHandler())))
 	rt.Handle("POST /v1/admin/reminders/bounced", acc.Optional(adm.Require(admin.RemindersManage, adm.RemindersBouncedHandler())))

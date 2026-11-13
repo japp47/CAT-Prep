@@ -60,6 +60,21 @@ type Config struct {
 	NotifyDry, NotifyEmailOff                          bool
 	NotifyPushOff                                      bool
 	NotifyEmailCap                                     int
+	// AI (F35, F36, D100 to D102, docs/design/explain-mistake.md). AIEnabled (AI_ENABLED=1) is the kill switch;
+	// without it /v1/ai answers 503 and the site keeps the written notes. Models live in internal/ai/models.json
+	// (AICatalog, AI_CATALOG, replaces it with another file); AIOrders changes a task's order without a deploy
+	// (AI_EXPLAIN, AI_SUMMARY: catalog names, comma separated). Keys come from the variable each provider names
+	// there (GROQ_API_KEYS). AIDailyTokens is the total budget a day (AI_DAILY_TOKENS, 150000), AIPerStudent the new
+	// answers a student may ask for a day (AI_PER_STUDENT, 10).
+	AIEnabled                   bool
+	AICatalog                   string
+	AIOrders                    map[string][]string
+	AIDailyTokens, AIPerStudent int
+	// AIPerAddress is new generations per network address and hour (AI_PER_ADDRESS, 30): a household or a hostel, not a script.
+	AIPerAddress int
+	// AIContentURL is where the published content is read (AI_CONTENT_URL; default ALLOWED_ORIGIN + /ai/rc.json, which
+	// the dev server does not serve: point it at a preview build or the live site on a laptop).
+	AIContentURL string
 	// Commit is the Git commit this build came from. Render sets RENDER_GIT_COMMIT; "dev" elsewhere.
 	// /healthz reports it, so the deploy workflow can tell when the new version is live.
 	Commit string
@@ -173,6 +188,29 @@ func load(get func(string) string) (Config, error) {
 	}
 	if (c.NotifyVAPIDPrivate == "") != (c.NotifyVAPIDPublic == "") && c.NotifyWorker {
 		errs = append(errs, errors.New("NOTIFY_VAPID_PUBLIC and NOTIFY_VAPID_PRIVATE go together: set both for push, or neither"))
+	}
+
+	c.AIEnabled = get("AI_ENABLED") == "1"
+	c.AICatalog = get("AI_CATALOG")
+	c.AIOrders = map[string][]string{}
+	for task, name := range map[string]string{"explain": "AI_EXPLAIN", "summary": "AI_SUMMARY"} {
+		for _, m := range strings.Split(get(name), ",") {
+			if m = strings.TrimSpace(m); m != "" {
+				c.AIOrders[task] = append(c.AIOrders[task], m)
+			}
+		}
+	}
+	c.AIDailyTokens, c.AIPerStudent = 150000, 10
+	c.AIContentURL = or(get("AI_CONTENT_URL"), c.AllowedOrigin+"/ai/rc.json")
+	c.AIPerAddress = 30
+	for name, dst := range map[string]*int{"AI_DAILY_TOKENS": &c.AIDailyTokens, "AI_PER_STUDENT": &c.AIPerStudent, "AI_PER_ADDRESS": &c.AIPerAddress} {
+		if v := get(name); v != "" {
+			n, err := strconv.Atoi(v)
+			if err != nil || n < 0 {
+				errs = append(errs, fmt.Errorf("%s must be a whole number, got %q", name, v))
+			}
+			*dst = n
+		}
 	}
 
 	c.Commit = or(get("RENDER_GIT_COMMIT"), "dev")

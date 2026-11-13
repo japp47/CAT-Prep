@@ -29,6 +29,7 @@ var Rules = []Rule{
 		  and not exists (select 1 from account.users u where u.identity_id = i.id)
 		  and not exists (select 1 from account.devices d where d.identity_id = i.id and d.revoked_at is null)`},
 	{"problem reports closed over a year ago", `delete from support.feedback where status in ('fixed', 'wont_fix') and handled_at < now() - interval '365 days'`},
+	{"AI request counts over 14 days old (F35)", `delete from ai.daily where day < current_date - 14`},
 }
 
 // Run applies every rule and returns how many rows each removed.

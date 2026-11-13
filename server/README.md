@@ -175,6 +175,37 @@ update support.feedback set status = 'fixed', handled_at = now(), updated_at = n
 The `item_id` names the question: `rc:<set>:<n>` (n counts from 0), a VA key such as `pj:bees`, or `cr:<id>`.
 Each network can send 10 reports an hour.
 
+## AI explanations and summary feedback
+
+"Why did I pick this?" on a wrong RC answer (F35, D100) and "Get a second opinion" on a summary's four ticks (F36,
+D101); see docs/design/explain-mistake.md. For explanations the browser sends ids only; for a summary, its text (5 to
+25 words). The API builds the prompt from the site's `/ai/rc.json` (written at build), checks the reply, and caches it
+in schema `ai` (migration 16), so a repeat costs nothing.
+
+Every new generation passes one gate (`internal/ai/guard.go`): a verified Google account, `AI_PER_ADDRESS` new ones per
+network address an hour (30), the student's daily seat (`AI_PER_STUDENT`) taken atomically, and 2,500 tokens of the
+day's budget reserved on the `ai.usage` row `all` before the call, then settled to what it used.
+
+**Turning it on (Render, the API service, Environment):**
+1. Make a key at console.groq.com (free tier: about 1,000 requests and 200K tokens a day, per model).
+2. `AI_ENABLED` = `1`, `GROQ_API_KEYS` = the key (or `key1,key2`: the second is a spare for a revoked key; Groq's
+   limits are per account and per model, so more keys in one account add no quota). `AI_DAILY_TOKENS` (150000) is the
+   whole day's budget across models (each has its own 200K at Groq, so it can go up to about 500000 once you trust
+   it); `AI_PER_STUDENT` (10) is new explanations and summary checks a student a day. Removing `AI_ENABLED` hides both
+   buttons at once (the site keeps its written notes and ticks). A bad setting stops the API at start with the reason.
+
+**Models.** `internal/ai/models.json` lists the providers, the models with their settings, and the order each task
+tries them: explanations `gpt-oss-20b`, then `qwen3.8-27b`, then `gpt-oss-120b`; summaries `gpt-oss-120b` first. A
+model over its limit (429) rests for as long as Groq's `Retry-After` says and the next one answers; a refused key
+(401/403) rests for an hour and the next key is used; a missing model (404) or a refused request rests and is logged
+as an error. To switch without a deploy, set `AI_EXPLAIN` or `AI_SUMMARY` on Render to catalog names
+(`qwen3.8-27b,gpt-oss-20b`); a new model or provider is a change to `models.json` (any OpenAI-compatible API, its
+keys in the variable it names). Admin → AI shows each model's state, the keys that work (as counts) and seven days
+per model; in SQL, `select * from ai.model_usage order by day desc, model;`.
+3. In SQL: `select day, kind, generations, tokens from ai.usage order by day desc limit 14;` (kind `all` is the day's
+   total against the budget; `explain` and `summary` are the split) and flagged ones:
+   `select kind, flags, output from ai.cache where flags > 0;` (three flags drop an explanation; the next request remakes it).
+
 ## Study reminders
 
 Push and email reminders on days a student has not practised (docs/feature.md F65, design and principles in

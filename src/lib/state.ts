@@ -111,11 +111,12 @@ export interface RedoItem { k: string; added: string; due: string; box: number; 
 /**
  * One written summary. src "rc" is a summary of a set on this site (set and att name it); "article" is one of an outside
  * article from the Today reading block (from, title and url describe it). checks are the four self-checks in
- * practice/summary.ts, ticked or not; the score is how many are ticked. updatedAt is for sync (docs/plan.md, 2D).
+ * practice/summary.ts, ticked or not; the score is how many are ticked. ai is AI's verdict on the same four, when the
+ * student asked for a second opinion (F36). updatedAt is for sync (docs/plan.md, 2D).
  */
 export interface SummaryEntry {
   id: string; d: string; src: "rc" | "article"; text: string; tone: string; checks: boolean[]; words: number; updatedAt: number;
-  set?: string; att?: string; from?: string; title?: string; url?: string;
+  set?: string; att?: string; from?: string; title?: string; url?: string; ai?: boolean[];
 }
 
 /** What happened to the student on a question they got wrong. Labels are in data/traps.ts (CAUSES). */
@@ -344,6 +345,7 @@ export function normalize(raw: unknown): AppState {
       checks: [0, 1, 2, 3].map((i) => Array.isArray(x.checks) && x.checks[i] === true), words: num(x.words), updatedAt: num(x.updatedAt),
     };
     (["set", "att", "from", "title", "url"] as const).forEach((k) => { const v = x[k]; if (typeof v === "string" && v) e[k] = v; });
+    if (Array.isArray(x.ai) && x.ai.length === 4) e.ai = x.ai.map((v: unknown) => v === true);
     return e;
   }).filter((e) => e.id && e.text.trim() && isIsoDate(e.d));
   b.mockReviews = list(raw.mockReviews, (x) => {
