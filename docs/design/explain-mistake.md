@@ -1,7 +1,13 @@
-# Explain my mistake (F35), planned 13 Nov 2026
+# Explain my mistake (F35), planned 13 Nov 2026; removed the same day (D105)
 
-Decision D100 in `docs/analyze.md`. The first AI feature (step 3b, AI v1), and the plumbing every later one reuses
-(summary feedback F36, article to RC F34, the extension F53).
+**Removed on 13 Nov 2026 (D105).** For the library's fixed questions, "why this option looked right" is the same
+for every student who picks it, so live AI only re-wrote, for each new student, what could be written once into the
+content, at the cost of a sign-in, a wait, a daily cap and an unchecked answer. The button, the endpoint, the explain
+model order and the questions in `/ai/rc.json` are gone. If the idea returns it will be content: a "why it looked
+right" line per wrong option, drafted once, reviewed and tested, shown to everyone. The plumbing built for it (the
+gate, the router, the cache, flags, the admin view) serves the summary features below and article to RC (F34).
+
+Decision D100 in `docs/analyze.md`. The sections up to "Data" describe the removed feature and are kept as the record.
 
 ## What it adds over what exists
 Every RC option already has a written note on why it is wrong and its trap, and since F103 every question with one

@@ -4,21 +4,20 @@ import { RC_SETS } from "./rc";
 import { sentences } from "./sentences";
 import { rcVersion } from "./types";
 
-describe("the AI service's copy of the RC sets (F35, D100)", () => {
+describe("the AI service's copy of the RC sets (F36, D105)", () => {
   const pack = aiPack(RC_SETS);
-  it("carries every set and question, with the version the browser sends", () => {
-    expect(pack.sets.length).toBe(RC_SETS.length);
+  it("carries every set with a model summary, with the version the browser sends", () => {
+    const want = RC_SETS.filter((s) => s.summary);
+    expect(pack.sets.map((s) => s.id)).toEqual(want.map((s) => s.id));
     pack.sets.forEach((s, i) => {
-      expect(s.v).toBe(rcVersion(RC_SETS[i]));
-      expect(s.questions.length).toBe(RC_SETS[i].questions.length);
-      expect(s.paras).toEqual(RC_SETS[i].paras.map(sentences));
+      expect(s.v).toBe(rcVersion(want[i]));
+      expect(s.paras).toEqual(want[i].paras.map(sentences));
+      expect(s.summary.model).toBe(want[i].summary!.model);
     });
   });
-  it("keeps every deciding line, as a reference to that exact sentence", () => {
-    pack.sets.forEach((s, i) => s.questions.forEach((q, qi) => {
-      const want = RC_SETS[i].questions[qi].lines ?? [];
-      expect(q.lines.length, `${s.id} Q${qi}`).toBe(want.length);
-      q.lines.forEach(([p, n], k) => expect(s.paras[p][n]).toBe(want[k]));
-    }));
+  it("publishes no questions or answer keys", () => {
+    const json = JSON.stringify(pack);
+    expect(json).not.toContain('"questions"');
+    expect(json).not.toContain('"answer"');
   });
 });

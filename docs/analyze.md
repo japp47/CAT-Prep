@@ -77,6 +77,30 @@ Thinking practice (Arcade, Manager Lab, DILR and Quant ideas), community, and re
 
 ## 3. Consistency check: spec vs plan vs code
 
+### 13 Nov 2026, "Explain my mistake" removed (D105; `docs/design/explain-mistake.md`)
+
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A140 | For a fixed library question, "why this option looked right" is the same for everyone who picks it | Live AI re-wrote content for each student, behind a sign-in, a wait and a cap, unchecked | Removed the button, `POST /v1/ai/explain`, the explain models and the questions in `/ai/rc.json` |
+| A141 | `/ai/rc.json` published every question's key and notes for the explain prompt | Answer keys in one public file | The file now holds only passages and model summaries |
+| A142 | The design never asked whether AI was needed | A feature built on the wrong tool | Every AI design states, per output, whether it is content, code or live AI, and why |
+
+**D105.** "Explain my mistake" is removed. Live AI is used only where the input is new each time (the student's own words, a new article, a free question); an answer that is the same for every student is written once into the content.
+
+### 13 Nov 2026, article to RC and the extension (D104; `docs/design/article-to-rc.md`)
+
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A133 | "Quiz any page" extensions already exist (TakaQuiz, Refresher AI, Quizizz AI) | A generic quiz adds nothing | CAT question types with traps, a blind second model that drops questions it misses, deciding lines, the error log and journal, and an on-device "good CAT read" check |
+| A134 | F53 planned a side-panel player inside the extension | A second player that drifts from the site's, and data outside the site's store | The extension only reads and hands over; practice happens in 99ile's RC player, which is also closer to the exam's plain passage |
+| A135 | Extensions do not run on phones, where most students study | The feature would miss most of them | The paste page on the site comes first; Android share next (iPhone Safari has no share target) |
+| A136 | Chrome grants page access (`activeTab`) only on a direct click, not from a side panel | A side-panel design could not read the page | The popup's click reads the page; right-click on a selection for the rest |
+| A137 | Sending article text through an address or from the extension to our API | Text in history and logs; a token kept in the extension | Hand-off through `externally_connectable` by a random id; the extension never calls the API and holds no account |
+| A138 | Generated keys can be wrong | One wrong key costs trust in every set | A different model answers blind; misses are dropped; under three questions, no set |
+| A139 | Making a set takes longer than a request may (10 s here, 30 s on Render) | Timeouts | A job: start, then poll; the result is kept 24 hours |
+
+**D104.** Article to RC is a site feature first (paste, every device), then a Chrome extension that only reads the page, judges whether it is a good CAT read and hands it to 99ile; the server checks every set with a blind second model and keeps no article text.
+
 ### 13 Nov 2026, tone, revise and the smallest fix (D103; `docs/design/explain-mistake.md`)
 
 | # | Finding | Impact | Fix (where) |

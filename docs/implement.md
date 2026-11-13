@@ -376,6 +376,13 @@ Full entries are written here when a step comes within two steps of being built:
 ### 4a. Logical reasoning first (D37)
 **4a.1 LR set format and content, built 24 Oct 2026** on `feat/lr-sets`: `LrSet` and `LR_TYPE` in `practice/types.ts`; `content/lr/<type>.json` (one file per type) joined in `practice/lr/index.ts`; `loadLrFile` in `bank.ts`; `Need.lr` and `Content.lrSets` in `content.ts`; `LR_CATALOG` and `LR_FILE` from `npm run catalog`; `titaMatches` and `lrRight` in `practice/lrcheck.ts`. Tests: every set's shape and answers (`content.test.ts`), file and catalog agreement, the import guard, typed-answer matching. One original example set (`arr-round-table`).
 
+### 3b-5. "Explain my mistake" removed (D105), 13 Nov 2026
+`fix/remove-explain-mistake` · `refactor: remove the AI "Explain my mistake" button and endpoint, and stop publishing answer keys in /ai/rc.json`.
+- Site: `pages/practice/RcPlayer.tsx` (no `ExplainMine`, no `explain` prop), `lib/ai.ts`, `pages/admin/AiView.tsx`, `practice/aipack.ts` and its test (passages and model summaries only), `scripts/aipack.ts`.
+- Server: `internal/ai/explain.go` removed; its shared parts moved to `service.go` (service, cache, generate, refusals, on switch, status, flags); `content.go` (no questions), `router.go` and `models.json` (no explain task), `config` (no `AI_EXPLAIN`), route removed.
+- Tests: `ai_test.go` (explain tests removed; the router and catalog tests use the summary task), `v1_ai_int_test.go` (`TestAICacheCapAndFlags` and the gate tests now go through `/v1/ai/summary`; the explain route answers 404).
+- By hand: a wrong RC answer's review shows the option notes and traps and no "Why did I pick this?"; `/ai/rc.json` after a build has no `questions`.
+
 ### 3b-1. Explain my mistake (feature F35, D100), built 13 Nov 2026
 `feat/explain-mistake` · `feat: explain a wrong RC answer with AI, from ids and published content, checked by code and cached per mistake`.
 - Site: `practice/aipack.ts` and `scripts/aipack.ts` (`dist/ai/rc.json` at build: sentences, notes, traps, deciding lines as references), `lib/ai.ts`, `pages/practice/RcPlayer.tsx` (`ExplainMine` in the review, wrong answers only, when the server says AI is on and the browser syncs), `public/robots.txt` (`/ai/` out of search).

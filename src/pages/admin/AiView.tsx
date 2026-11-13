@@ -7,13 +7,13 @@ import { aiPanel, type AiModelStatus, type AiPanel } from "../../lib/admin";
 const n = (x: number) => x.toLocaleString("en-IN");
 const N = ({ v }: { v: number }) => <Tnum>{n(v)}</Tnum>;
 const time = (iso?: string) => (iso ? new Date(iso).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }) : "");
-const TASK: Record<string, string> = { explain: "Explain my mistake", summary: "Summary second opinion" };
+const TASK: Record<string, string> = { summary: "Summary second opinion and the smallest fix" };
 const TR = "border-t align-top"; // taste-skill-ignore: rows of a real table
 
 /**
  * AI on the admin page (D102, docs/design/explain-mistake.md, "Models and keys"): which model each task tries first,
  * which are resting after a limit or an error, how many keys work, and the last seven days per model. Counts only.
- * Read-only: the order is changed on Render (AI_EXPLAIN, AI_SUMMARY), the models in server/internal/ai/models.json.
+ * Read-only: the order is changed on Render (AI_SUMMARY), the models in server/internal/ai/models.json.
  */
 export default function AiView() {
   const [s, setS] = useState<AiPanel | null>(null);
@@ -42,7 +42,7 @@ export default function AiView() {
               </div>
             ))}
           </div>
-          <p className="text-sm text-muted-foreground">To change the order, set AI_EXPLAIN or AI_SUMMARY on Render (names from server/internal/ai/models.json, comma separated). Render restarts the API with it.</p>
+          <p className="text-sm text-muted-foreground">To change the order, set AI_SUMMARY on Render (names from server/internal/ai/models.json, comma separated). Render restarts the API with it.</p>
         </Section>
       )}
 

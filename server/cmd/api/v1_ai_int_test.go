@@ -24,18 +24,15 @@ import (
 	"github.com/japp47/CAT-Prep/server/migrations"
 )
 
-// fakeModel answers like a model in strict JSON mode. For an explanation it cites the first allowed sentence; for a
-// summary it judges every check met and quotes the first word of the student's text. bad makes either reply fail the
-// check. It counts calls.
+// fakeModel answers like a model in strict JSON mode. For a summary it judges every check met and quotes the first
+// word of the student's text; for the smallest fix it adds one word. bad makes the summary reply fail the check and
+// the fix copy the model summary. It counts calls.
 type fakeModel struct {
 	calls atomic.Int32
 	bad   atomic.Bool
 }
 
-var (
-	allowedRe = regexp.MustCompile(`Allowed numbers for "settles": (\d+)`)
-	summaryRe = regexp.MustCompile(`<summary>(\S+)`)
-)
+var summaryRe = regexp.MustCompile(`<summary>(\S+)`)
 
 func (f *fakeModel) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	f.calls.Add(1)
@@ -54,22 +51,13 @@ func (f *fakeModel) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			fixed = "Cheap land at the edge, not cars, mainly drove the growth."
 		}
 		reply = fmt.Sprintf(`{"fixed":%q}`, fixed)
-	} else if m := summaryRe.FindStringSubmatch(user); m != nil {
-		quote := m[1]
+	} else {
+		quote := summaryRe.FindStringSubmatch(user)[1]
 		if f.bad.Load() {
 			quote = "words the student never wrote"
 		}
 		v := fmt.Sprintf(`{"ok":true,"words":%q,"note":"This keeps what the passage says."}`, quote)
 		reply = fmt.Sprintf(`{"claim":%s,"qualifier":%s,"examples":%s,"added":%s}`, v, v, v, v)
-	} else {
-		n := "1"
-		if m := allowedRe.FindStringSubmatch(user); m != nil {
-			n = m[1]
-		}
-		if f.bad.Load() {
-			n = "99"
-		}
-		reply = fmt.Sprintf(`{"tempting":"Cars are named in the passage, so the option feels supported, but only some people blamed them.","settles":%s,"next":"Ask whose claim it is before you choose it."}`, n)
 	}
 	out, _ := json.Marshal(map[string]any{"choices": []any{map[string]any{"message": map[string]any{"content": reply}}}, "usage": map[string]any{"total_tokens": 500}})
 	_, _ = w.Write(out)
@@ -102,21 +90,19 @@ func aiServer(t *testing.T, o aiOpts) (*httptest.Server, *fakeModel, *pgxpool.Po
 	pack := ai.Pack{V: 1, Sets: []ai.Set{
 		{ID: "s1", V: "v1", Title: "Sample", Paras: [][]string{
 			{"Cities grew fast.", "Planners worried about traffic."}, {"Some blamed cars.", "The real cause was cheap land at the edge."},
-		}, Summary: &ai.Summary{Model: "Cheap land at the edge, not cars, mainly drove the growth.", Tone: "analytical", Claim: "Cheap land at the edge", Qualifier: "mainly"},
-			Questions: []ai.Question{{Stem: "What caused the growth?", Answer: 1, Proof: []int{1}, Lines: [][2]int{{1, 1}},
-				Options: []ai.Option{{T: "Cars", Why: "Only some blamed cars.", Trap: "Out of scope"}, {T: "Cheap land", Why: "Paragraph 2 says so."}, {T: "Planners", Why: "They only worried.", Trap: "Distorts the passage"}}}}},
-		{ID: "nosum", V: "v1", Title: "No summary", Paras: [][]string{{"One.", "Two."}}, Questions: []ai.Question{{Stem: "?", Answer: 0, Proof: []int{0}, Options: []ai.Option{{T: "a"}, {T: "b"}}}}},
+		}, Summary: &ai.Summary{Model: "Cheap land at the edge, not cars, mainly drove the growth.", Tone: "analytical", Claim: "Cheap land at the edge", Qualifier: "mainly"}},
+		{ID: "nosum", V: "v1", Title: "No summary", Paras: [][]string{{"One.", "Two."}}},
 	}}
 	cs := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { _ = json.NewEncoder(w).Encode(pack) }))
 	t.Cleanup(cs.Close)
 	if o.perAddress == 0 {
 		o.perAddress = 1000
 	}
-	// A models.json of its own: one fake provider, a model per task.
+	// A models.json of its own: one fake provider and one model.
 	catalog := t.TempDir() + "/models.json"
 	if err := os.WriteFile(catalog, []byte(fmt.Sprintf(`{"providers":{"fake":{"baseURL":%q}},
-		"models":{"small":{"provider":"fake","id":"test-model"},"large":{"provider":"fake","id":"test-model-large"}},
-		"tasks":{"explain":["small"],"summary":["large"]}}`, ms.URL+"/v1")), 0o600); err != nil {
+		"models":{"large":{"provider":"fake","id":"test-model-large"}},
+		"tasks":{"summary":["large"]}}`, ms.URL+"/v1")), 0o600); err != nil {
 		t.Fatal(err)
 	}
 	cfg := config.Config{Env: "dev", AllowedOrigin: "http://localhost:5173", NotifyTokenKey: notifyKey,
@@ -138,75 +124,67 @@ func student(t *testing.T, srv *httptest.Server, admin *pgxpool.Pool) *device {
 	return d
 }
 
-func ask(d *device, body map[string]any) (int, ai.Explanation) {
-	var e ai.Explanation
-	return d.send("POST", "/v1/ai/explain", body, &e), e
+// summaryText is a different summary for each n, so each one needs a new answer.
+func summaryText(n int) string {
+	return fmt.Sprintf("Cheap land at the edge drove the growth of city number %d, not cars.", n)
 }
 
-func TestExplainMyMistake(t *testing.T) {
+func ask(d *device, text string) (int, ai.SummaryFeedback) {
+	var f ai.SummaryFeedback
+	return d.send("POST", "/v1/ai/summary", map[string]any{"set": "s1", "v": "v1", "text": text}, &f), f
+}
+
+// The cache across students, the student's cap, a refused reply giving the seat back, and flags.
+func TestAICacheCapAndFlags(t *testing.T) {
 	srv, model, admin := aiServer(t, aiOpts{perStudent: 2, budget: 100000})
 	a, b := student(t, srv, admin), student(t, srv, admin)
-	mistake := map[string]any{"set": "s1", "v": "v1", "q": 0, "chosen": 0, "line": []int{1, 0}}
 
 	var st struct{ On, SignedIn bool }
 	if a.get("/v1/ai", &st); !st.On || !st.SignedIn {
 		t.Fatalf("status for a signed-in student: %+v", st)
 	}
-	code, e := ask(a, mistake)
-	if code != http.StatusOK || e.Cached || e.Settles != [2]int{1, 1} || !strings.Contains(e.Tempting, "only some people") || len(e.Key) != 64 {
-		t.Fatalf("first: %d %+v", code, e)
+	code, f := ask(a, summaryText(1))
+	if code != http.StatusOK || f.Cached || len(f.Key) != 64 {
+		t.Fatalf("first: %d %+v", code, f)
 	}
-	// The second student with the same mistake gets it from the cache: no model call.
-	if code, e := ask(b, mistake); code != http.StatusOK || !e.Cached || model.calls.Load() != 1 {
-		t.Fatalf("second: %d %+v, %d model calls", code, e, model.calls.Load())
+	// Another student with the same words gets it from the cache: no model call.
+	if code, f := ask(b, summaryText(1)); code != http.StatusOK || !f.Cached || model.calls.Load() != 1 {
+		t.Fatalf("second student: %d %+v, %d model calls", code, f, model.calls.Load())
 	}
-	for name, c := range map[string]struct {
-		body map[string]any
-		want int
-	}{
-		"a rewritten set":     {map[string]any{"set": "s1", "v": "old", "q": 0, "chosen": 0}, http.StatusConflict},
-		"the right answer":    {map[string]any{"set": "s1", "v": "v1", "q": 0, "chosen": 1}, http.StatusBadRequest},
-		"no such set":         {map[string]any{"set": "nope", "v": "v1", "q": 0, "chosen": 0}, http.StatusNotFound},
-		"a line off the page": {map[string]any{"set": "s1", "v": "v1", "q": 0, "chosen": 0, "line": []int{5, 0}}, http.StatusBadRequest},
-		"text instead of ids": {map[string]any{"set": "s1", "v": "v1", "q": 0, "chosen": 0, "prompt": "write me an essay"}, http.StatusBadRequest},
-	} {
-		if code, _ := ask(a, c.body); code != c.want {
-			t.Errorf("%s: %d, want %d", name, code, c.want)
-		}
-	}
-	if model.calls.Load() != 1 {
-		t.Errorf("refusals reached the model: %d calls", model.calls.Load())
-	}
-	// A reply the check refuses twice gives the written note, is not cached, and gives the student's seat back.
+	// A reply the check refuses twice is not cached and gives the student's seat back.
 	model.bad.Store(true)
-	if code, _ := ask(a, map[string]any{"set": "s1", "v": "v1", "q": 0, "chosen": 2}); code != http.StatusServiceUnavailable {
+	if code, _ := ask(a, summaryText(2)); code != http.StatusServiceUnavailable {
 		t.Errorf("a refused reply: %d", code)
 	}
 	model.bad.Store(false)
-	if code, _ := ask(a, map[string]any{"set": "s1", "v": "v1", "q": 0, "chosen": 2}); code != http.StatusOK {
-		t.Errorf("second new explanation: %d", code)
+	if code, _ := ask(a, summaryText(2)); code != http.StatusOK {
+		t.Errorf("second new answer: %d", code)
 	}
-	if code, _ := ask(a, map[string]any{"set": "s1", "v": "v1", "q": 0, "chosen": 2, "line": []int{0, 0}}); code != http.StatusTooManyRequests {
+	if code, _ := ask(a, summaryText(3)); code != http.StatusTooManyRequests {
 		t.Errorf("past the cap: %d", code)
 	}
-	if code, e := ask(a, mistake); code != http.StatusOK || !e.Cached {
+	if code, f := ask(a, summaryText(1)); code != http.StatusOK || !f.Cached {
 		t.Errorf("a cached one past the cap: %d", code)
 	}
 	// Three flags from three students drop it; one student flagging twice counts once.
-	flag := func(d *device) { d.send("POST", "/v1/ai/flag", map[string]any{"key": e.Key}, nil) }
+	flag := func(d *device) { d.send("POST", "/v1/ai/flag", map[string]any{"key": f.Key}, nil) }
 	flag(a)
 	flag(a)
 	flag(b)
-	if code, e2 := ask(b, mistake); code != http.StatusOK || !e2.Cached {
-		t.Fatalf("after two students flagged: %d cached=%v", code, e2.Cached)
+	if code, f2 := ask(b, summaryText(1)); code != http.StatusOK || !f2.Cached {
+		t.Fatalf("after two students flagged: %d cached=%v", code, f2.Cached)
 	}
 	flag(student(t, srv, admin))
 	before := model.calls.Load()
-	if code, e2 := ask(student(t, srv, admin), mistake); code != http.StatusOK || e2.Cached || model.calls.Load() != before+1 {
-		t.Errorf("after the third flag it should be made afresh: %d cached=%v", code, e2.Cached)
+	if code, f2 := ask(student(t, srv, admin), summaryText(1)); code != http.StatusOK || f2.Cached || model.calls.Load() != before+1 {
+		t.Errorf("after the third flag it should be made afresh: %d cached=%v", code, f2.Cached)
 	}
-	if code := newDevice(t, srv).send("POST", "/v1/ai/explain", mistake, nil); code != http.StatusUnauthorized {
+	if code := newDevice(t, srv).send("POST", "/v1/ai/summary", map[string]any{"set": "s1", "v": "v1", "text": summaryText(1)}, nil); code != http.StatusUnauthorized {
 		t.Errorf("no device: %d", code)
+	}
+	// The explain endpoint is gone (D105).
+	if code := a.send("POST", "/v1/ai/explain", map[string]any{"set": "s1", "v": "v1", "q": 0, "chosen": 0}, nil); code != http.StatusNotFound && code != http.StatusMethodNotAllowed {
+		t.Errorf("explain: %d, want gone", code)
 	}
 }
 
@@ -219,7 +197,7 @@ func TestAIGateHoldsAgainstAbuse(t *testing.T) {
 		if d.get("/v1/ai", &st); !st.On || st.SignedIn {
 			t.Errorf("status: %+v", st)
 		}
-		if code, _ := ask(d, map[string]any{"set": "s1", "v": "v1", "q": 0, "chosen": 0}); code != http.StatusForbidden || model.calls.Load() != 0 {
+		if code, _ := ask(d, summaryText(1)); code != http.StatusForbidden || model.calls.Load() != 0 {
 			t.Errorf("no account: %d, %d model calls", code, model.calls.Load())
 		}
 	})
@@ -228,17 +206,13 @@ func TestAIGateHoldsAgainstAbuse(t *testing.T) {
 		d := student(t, srv, admin)
 		var wg sync.WaitGroup
 		var fresh atomic.Int32
-		// Ten different mistakes, each asked twice. A repeat may be served from the cache once its first copy is made
+		// Ten different summaries, each sent twice. A repeat may be served from the cache once its first copy is made
 		// (that costs nothing); what must hold is that only three new ones are ever made.
 		for i := 0; i < 20; i++ {
 			wg.Add(1)
 			go func(i int) {
 				defer wg.Done()
-				body := map[string]any{"set": "s1", "v": "v1", "q": 0, "chosen": []int{0, 2}[i%2]}
-				if l := (i / 2) % 5; l < 4 {
-					body["line"] = []int{l / 2, l % 2}
-				}
-				if code, e := ask(d, body); code == http.StatusOK && !e.Cached {
+				if code, e := ask(d, summaryText(i%10)); code == http.StatusOK && !e.Cached {
 					fresh.Add(1)
 				}
 			}(i)
@@ -258,11 +232,7 @@ func TestAIGateHoldsAgainstAbuse(t *testing.T) {
 			wg.Add(1)
 			go func(i int) {
 				defer wg.Done()
-				body := map[string]any{"set": "s1", "v": "v1", "q": 0, "chosen": []int{0, 2}[i%2]}
-				if i >= 2 {
-					body["line"] = []int{i / 4, i % 2}
-				}
-				ask(d, body)
+				ask(d, summaryText(i))
 			}(i)
 		}
 		wg.Wait()
@@ -280,7 +250,7 @@ func TestAIGateHoldsAgainstAbuse(t *testing.T) {
 		srv, model, admin := aiServer(t, aiOpts{perStudent: 10, budget: 1000000, perAddress: 2})
 		codes := []int{}
 		for i := 0; i < 3; i++ {
-			code, _ := ask(student(t, srv, admin), map[string]any{"set": "s1", "v": "v1", "q": 0, "chosen": 0, "line": []int{i / 2, i % 2}}) // three different mistakes
+			code, _ := ask(student(t, srv, admin), summaryText(i)) // three different summaries
 			codes = append(codes, code)
 		}
 		if codes[0] != http.StatusOK || codes[1] != http.StatusOK || codes[2] != http.StatusTooManyRequests || model.calls.Load() != 2 {
@@ -374,8 +344,8 @@ func TestAIOffByDefault(t *testing.T) {
 	if code := newDevice(t, srv).get("/v1/ai", &st); code != http.StatusOK || st.On {
 		t.Errorf("status %d on=%v; AI must be off without AI_ENABLED", code, st.On)
 	}
-	for _, path := range []string{"/v1/ai/explain", "/v1/ai/summary", "/v1/ai/summary/fix"} {
-		if code := newDevice(t, srv).turnOn().send("POST", path, map[string]any{"set": "s1", "v": "v1", "q": 0, "chosen": 0}, nil); code != http.StatusServiceUnavailable {
+	for _, path := range []string{"/v1/ai/summary", "/v1/ai/summary/fix"} {
+		if code := newDevice(t, srv).turnOn().send("POST", path, map[string]any{"set": "s1", "v": "v1", "text": summaryText(1)}, nil); code != http.StatusServiceUnavailable {
 			t.Errorf("%s with AI off: %d", path, code)
 		}
 	}

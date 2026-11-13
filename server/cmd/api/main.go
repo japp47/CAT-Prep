@@ -54,7 +54,7 @@ func run() error {
 	log := newLogger(cfg)
 	slog.SetDefault(log)
 	if cfg.AIEnabled {
-		// A bad models.json, an unknown name in AI_EXPLAIN or AI_SUMMARY, or a task with no key stops the start here.
+		// A bad models.json, an unknown name in AI_SUMMARY, or a task with no key stops the start here.
 		if _, err := ai.LoadRouter(cfg.AICatalog, cfg.AIOrders, os.Getenv, log); err != nil {
 			return fmt.Errorf("AI settings: %w", err)
 		}
@@ -302,7 +302,7 @@ func v1Routes(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger, opt synca
 	rt.Handle("GET /v1/unsubscribe", nt.UnsubscribeHandler())
 	rt.Handle("POST /v1/unsubscribe", nt.UnsubscribeHandler())
 
-	// AI (F35, D100): off unless AI_ENABLED=1 with a model; the site then keeps its written notes.
+	// AI (F36, D100 to D105): off unless AI_ENABLED=1 with a model; the site then keeps its written notes.
 	// New generations need a Google account, room under the address's hourly limit, the student's cap and the day's
 	// budget (internal/ai/guard.go).
 	aiSvc := &ai.Service{DB: pool, DailyBudget: cfg.AIDailyTokens, PerStudent: cfg.AIPerStudent, IPs: limit.New(cfg.AIPerAddress, time.Hour), Log: log}
@@ -317,7 +317,6 @@ func v1Routes(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger, opt synca
 		}
 	}
 	rt.Handle("GET /v1/ai", acc.Optional(aiSvc.StatusHandler()))
-	rt.Handle("POST /v1/ai/explain", acc.Require(aiSvc.ExplainHandler()))
 	rt.Handle("POST /v1/ai/flag", acc.Require(aiSvc.FlagHandler()))
 	rt.Handle("POST /v1/ai/summary", acc.Require(aiSvc.SummaryHandler()))
 	rt.Handle("POST /v1/ai/summary/fix", acc.Require(aiSvc.FixHandler()))
