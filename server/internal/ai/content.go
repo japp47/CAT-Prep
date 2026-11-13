@@ -1,6 +1,6 @@
-// Package ai is 99ile's AI service (F35, D100, docs/design/explain-mistake.md): one OpenAI-compatible model client,
-// prompts built from published content and ids only, every output checked by code, explanations cached per mistake,
-// and budgets per student and per day. Students never send text to it, so it is not an open model for anyone.
+// Package ai is 99ile's AI service (F36, D100 to D105, docs/design/explain-mistake.md): summary feedback and the
+// smallest fix, with prompts built from published content, every output checked by code, answers cached, and a
+// gate per account, address, student and day. The only text a student sends is their own summary, 5 to 25 words.
 package ai
 
 import (
@@ -13,30 +13,14 @@ import (
 	"time"
 )
 
-// Set is one RC set as the site publishes it for this service (src/practice/aipack.ts, dist/ai/rc.json).
+// Set is one RC set as the site publishes it for this service (src/practice/aipack.ts, dist/ai/rc.json): the passage
+// and the model summary, no questions or answer keys.
 type Set struct {
-	ID        string     `json:"id"`
-	V         string     `json:"v"`
-	Title     string     `json:"title"`
-	Paras     [][]string `json:"paras"` // sentences per paragraph
-	Summary   *Summary   `json:"summary,omitempty"`
-	Questions []Question `json:"questions"`
-}
-
-// Question is one RC question with its notes and deciding lines.
-type Question struct {
-	Stem    string   `json:"stem"`
-	Answer  int      `json:"answer"`
-	Proof   []int    `json:"proof"`
-	Lines   [][2]int `json:"lines"` // deciding lines as [paragraph, sentence]
-	Options []Option `json:"options"`
-}
-
-// Option is one answer choice with its written note and, on a wrong option, its trap.
-type Option struct {
-	T    string `json:"t"`
-	Why  string `json:"why"`
-	Trap string `json:"trap,omitempty"`
+	ID      string     `json:"id"`
+	V       string     `json:"v"`
+	Title   string     `json:"title"`
+	Paras   [][]string `json:"paras"` // sentences per paragraph
+	Summary *Summary   `json:"summary,omitempty"`
 }
 
 // Pack is the whole published file.

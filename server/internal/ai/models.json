@@ -1,5 +1,5 @@
 {
-  "_about": "Which AI models 99ile may use, and the order each task tries them in (docs/design/explain-mistake.md, 'Models and keys'). No secrets here: a provider names the environment variable that holds its keys. Change a task's order on Render without a deploy with AI_EXPLAIN / AI_SUMMARY (names from 'models', comma separated). A whole other file: AI_CATALOG=path.",
+  "_about": "Which AI models 99ile may use, and the order each task tries them in (docs/design/explain-mistake.md, 'Models and keys'). No secrets here: a provider names the environment variable that holds its keys. Change the summary order on Render without a deploy with AI_SUMMARY (names from 'models', comma separated). A whole other file: AI_CATALOG=path.",
   "providers": {
     "groq": { "baseURL": "https://api.groq.com/openai/v1", "keysEnv": "GROQ_API_KEYS" },
     "ollama": { "baseURL": "http://localhost:11434/v1" }
@@ -23,7 +23,6 @@
     }
   },
   "tasks": {
-    "explain": ["gpt-oss-20b", "qwen3.8-27b", "gpt-oss-120b"],
     "summary": ["gpt-oss-120b", "qwen3.8-27b", "gpt-oss-20b"]
   }
 }

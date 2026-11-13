@@ -25,7 +25,7 @@ import { fmtSecs, LETTERS, rcError, rcErrorSrc, recordRc, scoreRc } from "../../
 import { recordRcSummary, SUMMARY_CHECKS, SUMMARY_SHORT, summaryFor, summaryScore } from "../../practice/summary";
 import { rcStale } from "../../practice/versions";
 import { GENRES, RC_QTYPE, rcVersion, setWords, SUMMARY_MAX_WORDS, words, type RcQuestion, type RcSet, type RcSummary } from "../../practice/types";
-import { checkSummary, explainMistake, fixSummary, flagAi, useAi, type Explanation, type SummaryFix, type SummaryVerdict } from "../../lib/ai";
+import { checkSummary, fixSummary, flagAi, useAi, type SummaryFix, type SummaryVerdict } from "../../lib/ai";
 import { diffWords } from "../../practice/wordDiff";
 import { startSignIn } from "../../lib/sync/runner";
 import { findLine, lineVerdict, sentences, type LineRef } from "../../practice/sentences";
@@ -416,7 +416,7 @@ function FullReview({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
               return <PaletteCell key={i} n={i + 1} state={s} current={i === cur} onClick={() => { setCur(i); setPane("q"); }} label={`Question ${i + 1}, ${s === "right" ? "correct" : s === "wrong" ? "wrong" : "skipped"}`} />;
             })}
           </div>
-          <ReviewQuestion set={set} qi={cur} chosen={ans[cur]} att={attempt.id} mine={attempt.lines?.[cur] ?? null} explain />
+          <ReviewQuestion set={set} qi={cur} chosen={ans[cur]} att={attempt.id} mine={attempt.lines?.[cur] ?? null} />
           <QuestionNav cur={cur} n={n} onGo={setCur} />
         </>
       </Split>
@@ -449,41 +449,6 @@ function ProveIt({ line, picking, onPick, onRemove }: { line: string | null; pic
         <Button variant="ghost" size="sm" onClick={onPick}>Change</Button>
         <Button variant="ghost" size="sm" onClick={onRemove}>Remove</Button>
       </div>
-    </div>
-  );
-}
-
-/**
- * "Why did I pick this?" (F35, D100): an AI explanation of this student's wrong answer, after it is revealed, from ids
- * only. The settling line is shown from our content, never quoted by the model; a wrong explanation can be flagged.
- */
-function ExplainMine({ set, qi, chosen, mine }: { set: RcSet; qi: number; chosen: number; mine: LineRef | null }) {
-  const ai = useAi();
-  const [state, setState] = useState<{ phase: "idle" | "busy" | "done" | "failed"; e?: Explanation; msg?: string; flagged?: boolean }>({ phase: "idle" });
-  if (ai === "none") return null;
-  if (ai === "signin") return <SignInForAi>to ask AI why this option looked right</SignInForAi>;
-  const ask = async () => {
-    setState({ phase: "busy" });
-    const r = await explainMistake({ set: set.id, v: rcVersion(set), q: qi, chosen, line: mine });
-    setState(r.ok ? { phase: "done", e: r.data } : { phase: "failed", msg: r.message });
-  };
-  if (state.phase === "idle" || state.phase === "busy") return (
-    <Button variant="secondary" size="sm" className="self-start" onClick={ask} disabled={state.phase === "busy"}>{state.phase === "busy" ? "Thinking…" : "Why did I pick this?"}</Button>
-  );
-  if (state.phase === "failed") return <p className="text-base text-muted-foreground" role="status">{state.msg}</p>;
-  const e = state.e!;
-  const line = set.paras[e.settles[0]] ? sentences(set.paras[e.settles[0]])[e.settles[1]] : null;
-  return (
-    <div className="flex flex-col gap-2.5 rounded-lg bg-accent px-4 py-3.5 text-accent-foreground" role="note">
-      <p className="text-base"><b className="font-semibold">Why it looked right:</b> {e.tempting}</p>
-      {/* With a deciding line, the verdict below already shows it; without one, the model's pick from the proof paragraphs is new. */}
-      {line && !set.questions[qi].lines?.length && <p className="text-base"><b className="font-semibold">The line that settles it:</b> “{line}”</p>}
-      <p className="text-base"><b className="font-semibold">Next time:</b> {e.next}</p>
-      <p className="flex flex-wrap items-center gap-x-3 text-sm opacity-80">
-        <span>Written by AI from this question&rsquo;s notes; the line is checked against the passage.</span>
-        {state.flagged ? <span>Thanks, noted.</span>
-          : <button type="button" className="underline underline-offset-4" onClick={() => { void flagAi(e.key); setState({ ...state, flagged: true }); }}>This is wrong</button>}
-      </p>
     </div>
   );
 }
@@ -763,7 +728,7 @@ function WordSheet({ word, source, onClose }: { word: string | null; source: str
   );
 }
 
-export function ReviewQuestion({ set, qi, chosen, att, mine = null, explain = false }: { set: RcSet; qi: number; chosen: number | null; att?: string; mine?: LineRef | null; explain?: boolean }) {
+export function ReviewQuestion({ set, qi, chosen, att, mine = null }: { set: RcSet; qi: number; chosen: number | null; att?: string; mine?: LineRef | null }) {
   const { state, update } = useStore();
   const q = set.questions[qi];
   const ok = chosen === q.answer;
@@ -783,7 +748,6 @@ export function ReviewQuestion({ set, qi, chosen, att, mine = null, explain = fa
           </ReviewChoice>
         ))}
       </ul>
-      {explain && !ok && chosen !== null && <ExplainMine key={`${qi}:${chosen}`} set={set} qi={qi} chosen={chosen} mine={mine} />}
       {q.lines?.length ? <ProofVerdict set={set} q={q} mine={mine} />
         : <p className="text-sm text-muted-foreground">The highlighted paragraph{q.proof.length > 1 ? "s settle" : " settles"} this question.</p>}
       {!ok && (inLog

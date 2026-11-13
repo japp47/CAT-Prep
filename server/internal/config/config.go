@@ -60,10 +60,10 @@ type Config struct {
 	NotifyDry, NotifyEmailOff                          bool
 	NotifyPushOff                                      bool
 	NotifyEmailCap                                     int
-	// AI (F35, F36, D100 to D102, docs/design/explain-mistake.md). AIEnabled (AI_ENABLED=1) is the kill switch;
+	// AI (F36, D100 to D105, docs/design/explain-mistake.md). AIEnabled (AI_ENABLED=1) is the kill switch;
 	// without it /v1/ai answers 503 and the site keeps the written notes. Models live in internal/ai/models.json
 	// (AICatalog, AI_CATALOG, replaces it with another file); AIOrders changes a task's order without a deploy
-	// (AI_EXPLAIN, AI_SUMMARY: catalog names, comma separated). Keys come from the variable each provider names
+	// (AI_SUMMARY: catalog names, comma separated). Keys come from the variable each provider names
 	// there (GROQ_API_KEYS). AIDailyTokens is the total budget a day (AI_DAILY_TOKENS, 150000), AIPerStudent the new
 	// answers a student may ask for a day (AI_PER_STUDENT, 10).
 	AIEnabled                   bool
@@ -193,7 +193,7 @@ func load(get func(string) string) (Config, error) {
 	c.AIEnabled = get("AI_ENABLED") == "1"
 	c.AICatalog = get("AI_CATALOG")
 	c.AIOrders = map[string][]string{}
-	for task, name := range map[string]string{"explain": "AI_EXPLAIN", "summary": "AI_SUMMARY"} {
+	for task, name := range map[string]string{"summary": "AI_SUMMARY"} {
 		for _, m := range strings.Split(get(name), ",") {
 			if m = strings.TrimSpace(m); m != "" {
 				c.AIOrders[task] = append(c.AIOrders[task], m)

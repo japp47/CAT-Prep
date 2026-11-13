@@ -3,9 +3,9 @@ import { api, API_ENABLED, SIGNIN_ENABLED } from "./api";
 import { loadLedger } from "./sync/ledger";
 
 /**
- * The AI service from the site's side (F35, F36, D100, D101, docs/design/explain-mistake.md). The browser sends ids,
- * and for a summary its own words; the server builds the prompt from published content, checks the reply and caches
- * it. A new answer needs a Google account: the server caps answers per student and per day, and a free sync identity
+ * The AI service from the site's side (F36, D100 to D105, docs/design/explain-mistake.md): the summary second
+ * opinion and the smallest fix. The browser sends the set's id and the student's own words; the server builds the
+ * prompt from published content, checks the reply and caches it. A new answer needs a Google account: the server caps answers per student and per day, and a free sync identity
  * would let one person bring many caps.
  */
 export interface AiStatus { on: boolean; signedIn: boolean }
@@ -33,11 +33,6 @@ export function useAi(): "ask" | "signin" | "none" {
   return !s.on ? "none" : s.signedIn ? "ask" : SIGNIN_ENABLED ? "signin" : "none";
 }
 
-export interface Explanation { tempting: string; settles: [number, number]; next: string; key: string; cached: boolean }
-
-export const explainMistake = (m: { set: string; v: string; q: number; chosen: number; line: [number, number] | null }) =>
-  api<Explanation>("/ai/explain", m);
-
 /** One check's verdict on a summary: met or not, the student's own words that show it ("" when none), one line. */
 export interface SummaryVerdict { id: string; ok: boolean; words: string; note: string }
 export interface SummaryFeedback { checks: SummaryVerdict[]; key: string; cached: boolean }
@@ -49,5 +44,5 @@ export const checkSummary = (m: { set: string; v: string; text: string }) => api
 export interface SummaryFix { fixed?: string; tooFar: boolean; key: string; cached: boolean }
 export const fixSummary = (m: { set: string; v: string; text: string }) => api<SummaryFix>("/ai/summary/fix", m);
 
-/** Marks an explanation or summary verdict as wrong; three students' flags drop it from the cache. */
+/** Marks a summary verdict or fix as wrong; three students' flags drop it from the cache. */
 export const flagAi = (key: string) => api<null>("/ai/flag", { key });

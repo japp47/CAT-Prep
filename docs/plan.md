@@ -77,8 +77,8 @@ Ground rule kept: **local-first.** The site works fully with no account and no i
 
 ### 1G. Needs the backend (Part 2)
 33. Accounts and sync, phone ↔ laptop.
-34. **AI: article → RC set.**
-35. **AI: "Explain my mistake"**, built 13 Nov 2026 for RC (D100, `docs/design/explain-mistake.md`): why your option looked right, the line that settles it and what to check next time, from ids only, checked by code and cached per mistake on `openai/gpt-oss-20b`.
+34. **AI: article → RC set**, planned 13 Nov 2026, moved up from step 7 (D104, `docs/design/article-to-rc.md`): paste any article (or send it from the extension, 53) and get a CAT-style set practised in the normal RC player; a second model answers blind and questions it misses are dropped. Order: paste page on the site (phones too), then the Chrome extension, then Android share.
+35. ~~AI: "Explain my mistake"~~, built and removed 13 Nov 2026 (D105): for fixed questions the answer is the same for every student, so it belongs in the content (a "why it looked right" line per wrong option), not in a live model. Not scheduled.
 36. **AI: summary feedback**, built 13 Nov 2026 for RC (D101, `docs/design/explain-mistake.md`): after you tick your own four checks, a second opinion from `openai/gpt-oss-120b` judges the same four without seeing your ticks, quotes your words and says what to change; it never rewrites. Every AI call now needs a Google account and passes a per-address limit and an atomic cap and budget.
    **36b** (D103): a wrong tone is explained with the passage line that shows the author's tone and whether the pick was a close call (written per set, no AI); after the verdicts the student revises their own summary once and it is checked again; only after that, "Show the smallest fix" edits as few of their words as possible, with the changes marked. Never a fresh rewrite: the model summary is already there.
 37. Shared daily leaderboard for the RC of the day.
@@ -295,7 +295,7 @@ Total running cost: ₹0 at launch. A custom domain (about ₹800 a year) is opt
 | 5 | Jan–Mar 2027 | Quant (24–26), with **Quant Debugger (58)**, **estimate first (59)** and **why this method (60)** built into the player |
 | 6 | Mar 2027 | Mock upgrade (28), calendar export (30), flashcards (17), did the fix hold? (100), a plan that fits you, part 2 (82: commute set, diagnostic for repeaters, reality check after mocks; absorbs professional mode 16) |
 | 6b | Apr–May 2027 | **Community, needs B7 accounts:** safety and moderation first (70), the public side of profiles (81), then discuss this question (67), the doubt forum (68), then study groups (69), which replace the global leaderboard (37) and partner link (38). A legal check of the IT Rules duties before launch |
-| 7 | Apr 2027 | **Reality to DILR (63)** in the extension after article → RC. **AI v2:** article → RC set (34), and the AI coach and weekly narrator (48) reading the computed review |
+| 7 | Apr 2027 | **Reality to DILR (63)** in the extension after article → RC. **AI v2:** the AI coach and weekly narrator (48) reading the computed review. (Article → RC (34) and the extension (53) moved up to Nov 2026, D104.) |
 | 8 | May–Jun 2027 | Catalogue (8), filters (9), SEO (10), share card (18), more Arcade kinds (61), Data Detective (62) |
 | 9 | Jun–Jul 2027 | Burnout check (19). Leaderboard and partner link moved into study groups (69); feedback (39) is in step 3; the bookmarklet (40) became the extension (53) |
 | 10 | Oct 2027 → | B-school calculator (31), exam calendar (32). **Manager track, season 1 (Dec 2027–Mar 2028):** brief (72), PI prep (76), GD (77), mini case (74). **Season 2 (Apr–Jun 2028):** MBA-ready basics (78), daily dilemma (73), founder simulator (75), each only if the season before was used. Public communities (71) only if moderation keeps up. Hindi when there is help |

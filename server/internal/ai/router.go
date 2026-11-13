@@ -24,13 +24,10 @@ import (
 //go:embed models.json
 var builtinCatalog []byte
 
-// Tasks the site asks for.
-const (
-	TaskExplain = "explain"
-	TaskSummary = "summary"
-)
+// Tasks the site asks for. (The explain task was removed with "Explain my mistake", D105.)
+const TaskSummary = "summary"
 
-var tasks = []string{TaskExplain, TaskSummary}
+var tasks = []string{TaskSummary}
 
 // Catalog is the shape of models.json.
 type Catalog struct {
@@ -94,8 +91,7 @@ type Router struct {
 	providers []*provider
 }
 
-// LoadRouter reads a catalog (path "" is the built-in models.json), applies any task orders given (AI_EXPLAIN,
-// AI_SUMMARY), and reads each provider's keys with env. It fails when a task has no model it can use, so a bad
+// LoadRouter reads a catalog (path "" is the built-in models.json), applies any task order given (AI_SUMMARY), and reads each provider's keys with env. It fails when a task has no model it can use, so a bad
 // setting stops the server at start rather than at a student's first question.
 func LoadRouter(path string, orders map[string][]string, env func(string) string, log *slog.Logger) (*Router, error) {
 	raw := builtinCatalog
