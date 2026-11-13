@@ -7,20 +7,29 @@ import (
 	"time"
 )
 
-// thisSunday is the Sunday ending the current week in India, at 10:00: the planner's clock for weekly tests. A
-// practice recorded now falls inside its week.
-func thisSunday() time.Time {
+// sundayOf is the Sunday ending the week that holds t in India, at 10:00: the planner's clock for weekly tests.
+func sundayOf(t time.Time) time.Time {
 	kolkata, _ := time.LoadLocation("Asia/Kolkata")
-	now := time.Now().In(kolkata)
+	now := t.In(kolkata)
 	d := now.AddDate(0, 0, (7-int(now.Weekday()))%7)
 	return time.Date(d.Year(), d.Month(), d.Day(), 10, 0, 0, 0, kolkata)
 }
 
+// TestWeeklyPlan runs the weekly review once for each weekday the test could be run on. The planner's clock is a Sunday,
+// anywhere from today to six days ahead, so how many days a student has "missed" by then used to depend on the weekday:
+// the test passed on a Thursday and failed every Friday (missed-2, missed-5) and Tuesday. Each run below pretends to be
+// one weekday and must give the same answer.
 func TestWeeklyPlan(t *testing.T) {
+	for i := 0; i < 7; i++ {
+		at := time.Now().AddDate(0, 0, i)
+		t.Run("as_"+at.Weekday().String(), func(t *testing.T) { weeklyPlan(t, sundayOf(at)) })
+	}
+}
+
+func weeklyPlan(t *testing.T, sunday time.Time) {
 	db := testDB(t)
 	ctx := context.Background()
 	s := service(t, db, &fakeChannel{name: Push}, &fakeChannel{name: Email})
-	sunday := thisSunday()
 	s.Now = func() time.Time { return sunday }
 	monday := mondayOf(sunday)
 	exec := func(sql string, args ...any) {
@@ -46,10 +55,23 @@ func TestWeeklyPlan(t *testing.T) {
 	// c: weekly on, last practised 40 days ago, nothing this week.
 	c := student(t, db, EmailMissed, 0)
 	weekly(c)
-	exec(`update notify.activity set last_day = current_date - 40 where identity_id = $1`, c)
 	// d: practised this week, weekly off.
 	d := student(t, db, EmailMissed, 0)
 	practise(t, db, d)
+
+	// The students were made "now", but the clock is a Sunday up to six days on. The rules count days from the last
+	// practice and from the day reminders were turned on, so both move onto the clock, keeping the same gaps they have
+	// in real time (turned on three days before, practised on the day itself; c last practised 40 days before). Without
+	// this the weekday the test runs on decides whether a `missed-N` message falls due.
+	all := []string{a, b, c, d}
+	t.Cleanup(func() { // back to "turned on three days ago", as student() makes them, so the next testDB sweep clears them and their messages
+		_, _ = db.Exec(context.Background(), `update notify.prefs set enabled_at = now() - interval '3 days' where identity_id = any($1::uuid[])`, all)
+	})
+	clockDay := sunday.Format(time.DateOnly)
+	exec(`update notify.prefs set enabled_at = $2::timestamptz - interval '3 days' where identity_id = any($1::uuid[])`, all, sunday)
+	exec(`update notify.activity set last_day = $2::date where identity_id = any($1::uuid[])`, []string{a, b, d}, clockDay)
+	exec(`update notify.activity set last_day = $2::date - 40 where identity_id = $1`, c, clockDay)
+	exec(`update notify.days set day = $2::date where identity_id = any($1::uuid[])`, []string{a, b, d}, monday)
 
 	if _, _, err := s.Plan(ctx, false); err != nil {
 		t.Fatal(err)
