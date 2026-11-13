@@ -171,7 +171,9 @@
       "model": "Opaque automated decisions may be acceptable when public records, fairness testing and appeal make them accountable.",
       "tone": "analytical",
       "claim": "public records, fairness testing and appeal make them accountable",
-      "qualifier": "may"
+      "qualifier": "may",
+      "toneCue": "Yet the demand is harder to satisfy than its advocates concede.",
+      "toneWhy": "The author grants the demand its force, then tests where it fails, weighing it rather than simply backing or attacking it."
     }
   },
   {
@@ -377,7 +379,9 @@
       "model": "Human and machine learning differ chiefly in scale; the dispute concerns who should share the value created from cultural inheritance.",
       "tone": "analytical",
       "claim": "the dispute concerns who should share the value created from cultural inheritance",
-      "qualifier": "chiefly"
+      "qualifier": "chiefly",
+      "toneCue": "The analogy deserves more respect than its critics allow.",
+      "toneWhy": "The author tests each side's argument in turn and settles on a qualified view, not a verdict for either side."
     }
   },
   {
@@ -550,7 +554,9 @@
       "model": "Automation can erode the human skills needed to supervise fallible systems, so design should keep people actively engaged.",
       "tone": "cautionary",
       "claim": "design should keep people actively engaged",
-      "qualifier": "can"
+      "qualifier": "can",
+      "toneCue": "That temptation, rather than any technical obstacle, is the chief threat to the safe use of automation.",
+      "toneWhy": "The author warns of a danger and says how to guard against it, without rejecting automation."
     }
   },
   {
@@ -754,7 +760,9 @@
       "model": "Adaptive regulation may soften the timing dilemma, but effective oversight depends more on independent institutional capacity than on any particular rule.",
       "tone": "analytical",
       "claim": "effective oversight depends more on independent institutional capacity than on any particular rule",
-      "qualifier": "may"
+      "qualifier": "may",
+      "toneCue": "Each has an air of common sense, and each rests upon an assumption seldom examined.",
+      "toneWhy": "The author examines the hidden assumption behind each approach instead of championing one."
     }
   },
   {
@@ -927,7 +935,9 @@
       "model": "Synthetic media's deeper harm may be that genuine evidence is denied; provenance can help, but must protect source privacy.",
       "tone": "cautionary",
       "claim": "provenance can help, but must protect source privacy",
-      "qualifier": "may"
+      "qualifier": "may",
+      "toneCue": "Provenance is not a panacea, however.",
+      "toneWhy": "Even the remedy the author favours comes with a warning: the passage keeps pointing to dangers to guard against."
     }
   }
 ]

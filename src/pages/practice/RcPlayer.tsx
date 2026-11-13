@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState, type MouseEvent, type ReactNode } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight, Check, ChevronDown, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
@@ -21,10 +22,11 @@ import { Checklist, ModelSummary, SummaryPair, WriteCard } from "../../component
 import { RC_CATALOG } from "../../practice/catalog.gen";
 import { rcOfDay } from "../../practice/daily";
 import { fmtSecs, LETTERS, rcError, rcErrorSrc, recordRc, scoreRc } from "../../practice/record";
-import { recordRcSummary, SUMMARY_CHECKS, summaryFor, summaryScore } from "../../practice/summary";
+import { recordRcSummary, SUMMARY_CHECKS, SUMMARY_SHORT, summaryFor, summaryScore } from "../../practice/summary";
 import { rcStale } from "../../practice/versions";
 import { GENRES, RC_QTYPE, rcVersion, setWords, SUMMARY_MAX_WORDS, words, type RcQuestion, type RcSet, type RcSummary } from "../../practice/types";
-import { checkSummary, explainMistake, flagAi, useAi, type Explanation, type SummaryVerdict } from "../../lib/ai";
+import { checkSummary, explainMistake, fixSummary, flagAi, useAi, type Explanation, type SummaryFix, type SummaryVerdict } from "../../lib/ai";
+import { diffWords } from "../../practice/wordDiff";
 import { startSignIn } from "../../lib/sync/runner";
 import { findLine, lineVerdict, sentences, type LineRef } from "../../practice/sentences";
 import NotFound from "../NotFound";
@@ -125,6 +127,7 @@ function SummaryStep({ set, model, attempt, onDone }: { set: RcSet; model: RcSum
   const [comparing, setComparing] = useState(false);
   const [checks, setChecks] = useState([false, false, false, false]);
   const [aiChecks, setAiChecks] = useState<boolean[] | null>(null);
+  const [revised, setRevised] = useState("");
   const [pane, setPane] = useState<"p" | "q">("q");
   const [id] = useState(uid);
   useEffect(() => { if (!comparing) writeDraft(key, text.trim() || tone ? ({ text, tone } satisfies SummaryDraft) : null); }, [key, text, tone, comparing]);
@@ -133,7 +136,7 @@ function SummaryStep({ set, model, attempt, onDone }: { set: RcSet; model: RcSum
   const compare = () => { setComparing(true); setPane("q"); window.scrollTo(0, 0); };
   const finish = (save: boolean) => {
     writeDraft(key, null);
-    if (save) update((st) => { if (!summaryFor(st, attempt.id)) recordRcSummary(st, id, set, attempt.id, text, tone, checks, todayIso(), Date.now(), aiChecks ?? undefined); });
+    if (save) update((st) => { if (!summaryFor(st, attempt.id)) recordRcSummary(st, id, set, attempt.id, text, tone, checks, todayIso(), Date.now(), aiChecks ?? undefined, revised || undefined); });
     onDone();
   };
 
@@ -156,7 +159,7 @@ function SummaryStep({ set, model, attempt, onDone }: { set: RcSet; model: RcSum
           <>
             <SummaryPair text={text.trim()} tone={tone} model={model} />
             <Checklist checks={checks} onChange={setChecks} model={model} />
-            <SecondOpinion set={set} text={text.trim()} checks={checks} onVerdicts={setAiChecks} />
+            <SecondOpinion set={set} text={text.trim()} checks={checks} onVerdicts={setAiChecks} onRevised={setRevised} />
             <div><Button onClick={() => finish(true)}>Save and see the answers</Button></div>
           </>
         ) : (
@@ -187,7 +190,10 @@ function SummaryReview({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
         <ChevronDown className="size-5 shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-180 motion-reduce:transition-none" aria-hidden />
       </CollapsibleTrigger>
       <CollapsibleContent className="px-5 pb-5">
-        {mine ? <SummaryPair text={mine.text} tone={mine.tone} model={set.summary} /> : (
+        {mine ? <>
+          <SummaryPair text={mine.text} tone={mine.tone} model={set.summary} />
+          {mine.revised && <p className="rounded-lg bg-secondary px-4 py-3 text-base"><span className="font-semibold">Your revision:</span> {mine.revised}</p>}
+        </> : (
           <div className="flex flex-col gap-1.5">
             <ModelSummary s={set.summary} />
             <p className="text-sm text-muted-foreground">Tone: {set.summary.tone}. The highlighted words are the claim and the qualifier a good summary keeps.</p>
@@ -495,49 +501,167 @@ function SignInForAi({ children }: { children: ReactNode }) {
 
 /**
  * F36: after the student ticks their own checks, AI judges the same four without seeing the ticks, quoting the
- * student's words. Only the checks where the two differ are spelled out; the ticks stay the student's to change.
+ * student's words. All four verdicts are shown, each with its line, in the checklist's order: showing only the
+ * differences hid the notes whenever the two agreed (an empty checklist "agreed" with four misses). Where the AI and
+ * the tick differ, the row says so; the ticks stay the student's to change.
  */
-function SecondOpinion({ set, text, checks, onVerdicts }: { set: RcSet; text: string; checks: boolean[]; onVerdicts: (ai: boolean[] | null) => void }) {
+function SecondOpinion({ set, text, checks, onVerdicts, onRevised }: { set: RcSet; text: string; checks: boolean[]; onVerdicts: (ai: boolean[] | null) => void; onRevised: (text: string) => void }) {
   const ai = useAi();
-  const [state, setState] = useState<{ phase: "idle" | "busy" | "done" | "failed"; v?: SummaryVerdict[]; ticks?: boolean[]; key?: string; msg?: string; flagged?: boolean }>({ phase: "idle" });
+  type Round = { text: string; v: SummaryVerdict[]; key: string };
+  const [st, setSt] = useState<{ phase: "idle" | "busy" | "done" | "failed"; msg?: string; first?: Round; ticks?: boolean[]; flagged?: boolean }>({ phase: "idle" });
   if (ai === "none") return null;
   if (ai === "signin") return <SignInForAi>for a second opinion on your ticks from AI</SignInForAi>;
   const ask = async () => {
-    setState({ phase: "busy" });
-    const r = await checkSummary({ set: set.id, v: rcVersion(set), text });
-    if (!r.ok) { setState({ phase: "failed", msg: r.message }); return; }
-    const v = SUMMARY_CHECKS.map((c) => r.data.checks.find((x) => x.id === c.id));
-    if (v.some((x) => !x)) { setState({ phase: "failed", msg: "The second opinion did not come through. Your own ticks still count." }); return; }
+    setSt({ phase: "busy" });
+    const r = await askVerdicts(set, text);
+    if (typeof r === "string") { setSt({ phase: "failed", msg: r }); return; }
     // The ticks as they were when the student asked, so the list does not shift while they change a tick.
-    setState({ phase: "done", v: v as SummaryVerdict[], ticks: checks.slice(), key: r.data.key });
-    onVerdicts((v as SummaryVerdict[]).map((x) => x.ok));
+    setSt({ phase: "done", first: r, ticks: checks.slice() });
+    onVerdicts(r.v.map((x) => x.ok));
   };
-  if (state.phase === "idle" || state.phase === "busy") return (
+  if (st.phase === "idle" || st.phase === "busy") return (
     <div className="flex flex-col gap-1.5">
-      <Button variant="secondary" className="self-start" onClick={ask} disabled={state.phase === "busy"}>{state.phase === "busy" ? "Checking…" : "Get a second opinion"}</Button>
+      <Button variant="secondary" className="self-start" onClick={ask} disabled={st.phase === "busy"}>{st.phase === "busy" ? "Checking…" : "Get a second opinion"}</Button>
       <p className="text-sm text-muted-foreground">AI checks the same four against the passage, without seeing your ticks.</p>
     </div>
   );
-  if (state.phase === "failed") return <p className="text-base text-muted-foreground" role="status">{state.msg}</p>;
-  const v = state.v!, ticks = state.ticks!;
-  const differ = v.map((x, i) => ({ x, i })).filter(({ x, i }) => x.ok !== ticks[i]);
+  if (st.phase === "failed") return <p className="text-base text-muted-foreground" role="status">{st.msg}</p>;
+  const { first, ticks } = st as Required<typeof st>;
+  const met = first.v.filter((x) => x.ok).length;
+  const differ = first.v.filter((x, i) => x.ok !== ticks[i]).length;
   return (
-    <section className="flex flex-col gap-3 rounded-lg bg-accent px-4 py-3.5 text-accent-foreground" aria-label="Second opinion">
-      <h3 className="text-base font-semibold">{differ.length === 0 ? "AI agrees with all four of your ticks." : `AI sees ${differ.length === 1 ? "one check" : `${differ.length} checks`} differently.`}</h3>
-      {differ.map(({ x, i }) => (
-        <div key={x.id} className="flex flex-col gap-1">
-          <p className="text-base"><b className="font-semibold">{SUMMARY_CHECKS[i].label}:</b> {ticks[i] ? "you ticked it; AI says not yet." : "you left it; AI says you did."}</p>
-          {x.words && <p className="text-base">In yours: <q className="font-medium">{x.words}</q></p>}
-          <p className="text-base">{x.note}</p>
+    <div className="flex flex-col gap-4">
+      <section className="flex flex-col gap-3 rounded-lg bg-accent px-4 py-3.5 text-accent-foreground" aria-label="Second opinion">
+        <div className="flex flex-col gap-0.5">
+          <h3 className="text-base font-semibold">AI&rsquo;s verdict: {met} of 4 met.</h3>
+          <p className="text-base">{differ === 0 ? "The same as your ticks." : `It differs from your ticks on ${differ === 1 ? "one check" : `${differ} checks`}, marked below.`}</p>
         </div>
+        <Verdicts v={first.v} ticks={ticks} />
+        <p className="flex flex-wrap items-center gap-x-3 text-sm opacity-80">
+          <span>{differ ? "Change a tick above if it convinced you. " : ""}Written by AI; its quotes are checked against your summary.</span>
+          {st.flagged ? <span>Thanks, noted.</span>
+            : <button type="button" className="underline underline-offset-4" onClick={() => { void flagAi(first.key); setSt({ ...st, flagged: true }); }}>This is wrong</button>}
+        </p>
+      </section>
+      {met < 4 && <Revise set={set} first={first} onRevised={onRevised} />}
+    </div>
+  );
+}
+
+/** One check of a summary with AI, as a round of verdicts, or the message to show instead. */
+async function askVerdicts(set: RcSet, text: string): Promise<{ text: string; v: SummaryVerdict[]; key: string } | string> {
+  const r = await checkSummary({ set: set.id, v: rcVersion(set), text });
+  if (!r.ok) return r.message;
+  const v = SUMMARY_CHECKS.map((c) => r.data.checks.find((x) => x.id === c.id));
+  if (v.some((x) => !x)) return "The second opinion did not come through. Your own ticks still count.";
+  return { text, v: v as SummaryVerdict[], key: r.data.key };
+}
+
+/** The four verdicts in the checklist's order; with ticks, rows where AI and the tick differ are marked. */
+function Verdicts({ v, ticks }: { v: SummaryVerdict[]; ticks?: boolean[] }) {
+  return (
+    <ul className="flex flex-col gap-3">
+      {v.map((x, i) => (
+        <li key={x.id} className="flex gap-2.5">
+          {x.ok ? <Check className="mt-0.5 size-5 shrink-0 text-success" aria-hidden /> : <X className="mt-0.5 size-5 shrink-0" aria-hidden />}
+          <div className="flex min-w-0 flex-col gap-0.5">
+            <p className="text-base"><b className="font-semibold">{SUMMARY_SHORT[i]}: {x.ok ? "met" : "not yet"}.</b> {x.note}</p>
+            {x.words && <p className="text-base">In yours: <q className="font-medium">{x.words}</q></p>}
+            {ticks && x.ok !== ticks[i] && <p className="text-base font-medium"><mark className="hl text-foreground">{ticks[i] ? "You ticked this one." : "You left this one unticked."}</mark></p>}
+          </div>
+        </li>
       ))}
-      {differ.length > 0 && differ.length < 4 && <p className="text-base">It agrees with your other {4 - differ.length === 1 ? "tick" : `${4 - differ.length}`}.</p>}
-      <p className="flex flex-wrap items-center gap-x-3 text-sm opacity-80">
-        <span>{differ.length ? "Change a tick above if it convinced you. " : ""}Written by AI; its quotes are checked against your summary.</span>
-        {state.flagged ? <span>Thanks, noted.</span>
-          : <button type="button" className="underline underline-offset-4" onClick={() => { void flagAi(state.key!); setState({ ...state, flagged: true }); }}>This is wrong</button>}
-      </p>
+    </ul>
+  );
+}
+
+/**
+ * F36b: after the verdicts, one revision of the student's own summary, checked again; only if that still misses a
+ * check, the smallest fix of their words, with the changes marked. Effort first, the smallest hint next; the whole
+ * answer, the model summary, is already above.
+ */
+function Revise({ set, first, onRevised }: { set: RcSet; first: { text: string; v: SummaryVerdict[] }; onRevised: (text: string) => void }) {
+  const [draft, setDraft] = useState<string | null>(null);
+  const [round, setRound] = useState<{ phase: "busy" | "done" | "failed"; msg?: string; r?: { text: string; v: SummaryVerdict[]; key: string } } | null>(null);
+  const n = words(draft ?? "");
+  const same = draft !== null && draft.trim().replace(/\s+/g, " ").toLowerCase() === first.text.toLowerCase();
+  const check = async () => {
+    const t = draft!.trim().replace(/\s+/g, " ");
+    setRound({ phase: "busy" });
+    const r = await askVerdicts(set, t);
+    if (typeof r === "string") { setRound({ phase: "failed", msg: r }); return; }
+    setRound({ phase: "done", r });
+    onRevised(t);
+  };
+
+  if (round?.phase === "done") {
+    const r = round.r!, before = first.v.filter((x) => x.ok).length, now = r.v.filter((x) => x.ok).length;
+    return (
+      <section className="flex flex-col gap-3 rounded-lg bg-card px-4 py-3.5" aria-label="Your revision">
+        <div className="flex flex-col gap-0.5">
+          <h3 className="text-base font-semibold">Your revision: {now} of 4 met{now !== before ? `, up from ${before}` : ", as before"}.</h3>
+          <p className="text-base text-muted-foreground"><q>{r.text}</q></p>
+        </div>
+        <Verdicts v={r.v} />
+        {now < 4 ? <SmallestFix set={set} text={r.text} /> : <p className="text-base">All four met, in your own words.</p>}
+      </section>
+    );
+  }
+  if (draft === null) return (
+    <div className="flex flex-col gap-1.5">
+      <Button variant="secondary" className="self-start" onClick={() => setDraft(first.text)}>Revise yours</Button>
+      <p className="text-sm text-muted-foreground">Fix what it flagged in your own words, then check again. Revising is where a summary gets better.</p>
+    </div>
+  );
+  return (
+    <section className="flex flex-col gap-2 rounded-lg bg-card px-4 py-3.5" aria-label="Revise your summary">
+      <label className="flex flex-col gap-2">
+        <span className="text-base font-semibold">Your summary, revised</span>
+        <Textarea value={draft} onChange={(e) => setDraft(e.target.value)} rows={3} autoFocus className="min-h-24 bg-background text-base leading-relaxed" />
+        <span className={cn("text-sm", n > SUMMARY_MAX_WORDS ? "font-medium text-warning" : "text-muted-foreground")} aria-live="polite">{n} of {SUMMARY_MAX_WORDS} words</span>
+      </label>
+      {round?.phase === "failed" && <p className="text-base text-muted-foreground" role="status">{round.msg}</p>}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <Button variant="secondary" onClick={check} disabled={round?.phase === "busy" || n < 5 || n > SUMMARY_MAX_WORDS || same}>{round?.phase === "busy" ? "Checking…" : "Check again"}</Button>
+        <Button variant="ghost" onClick={() => { setDraft(null); setRound(null); }}>Cancel</Button>
+        {same && <span className="text-sm text-muted-foreground">Change something first.</span>}
+      </div>
     </section>
+  );
+}
+
+/** The fewest changes to the student's words that meet all four checks: struck words went, highlighted ones came in. */
+function SmallestFix({ set, text }: { set: RcSet; text: string }) {
+  const [f, setF] = useState<{ phase: "idle" | "busy" | "done" | "failed"; fix?: SummaryFix; msg?: string; flagged?: boolean }>({ phase: "idle" });
+  const ask = async () => {
+    setF({ phase: "busy" });
+    const r = await fixSummary({ set: set.id, v: rcVersion(set), text });
+    setF(r.ok ? { phase: "done", fix: r.data } : { phase: "failed", msg: r.message });
+  };
+  if (f.phase === "idle" || f.phase === "busy") return (
+    <div className="flex flex-col gap-1.5 border-t pt-3">
+      <Button variant="secondary" className="self-start" onClick={ask} disabled={f.phase === "busy"}>{f.phase === "busy" ? "Working…" : "Show the smallest fix"}</Button>
+      <p className="text-sm text-muted-foreground">The fewest changes to your words that would meet all four.</p>
+    </div>
+  );
+  if (f.phase === "failed") return <p className="text-base text-muted-foreground" role="status">{f.msg}</p>;
+  const fix = f.fix!;
+  if (fix.tooFar || !fix.fixed) return <p className="border-t pt-3 text-base">This is too far from the passage for a small fix. Start again from the model summary above, in your own words.</p>;
+  return (
+    <div className="flex flex-col gap-2 border-t pt-3">
+      <h4 className="text-base font-semibold">The smallest fix</h4>
+      <p className="text-base leading-relaxed">
+        {diffWords(text, fix.fixed).map((p, i) => (
+          <span key={i}>{i > 0 && " "}{p.op === "same" ? p.t : p.op === "add" ? <mark className="hl text-foreground">{p.t}</mark>
+            : <del className="text-muted-foreground decoration-1">{p.t}</del>}</span>
+        ))}
+      </p>
+      <p className="flex flex-wrap items-center gap-x-3 text-sm text-muted-foreground">
+        <span>Highlighted words are added, struck ones removed. Written by AI.</span>
+        {f.flagged ? <span>Thanks, noted.</span>
+          : <button type="button" className="underline underline-offset-4" onClick={() => { void flagAi(fix.key); setF({ ...f, flagged: true }); }}>This is wrong</button>}
+      </p>
+    </div>
   );
 }
 

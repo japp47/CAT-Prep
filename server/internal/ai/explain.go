@@ -26,6 +26,14 @@ const PromptV = 1
 
 const kindExplain = TaskExplain
 
+// taskOf is the models.json task a kind of answer uses: the smallest fix shares the summary models.
+func taskOf(kind string) string {
+	if kind == kindFix {
+		return TaskSummary
+	}
+	return kind
+}
+
 // Service serves the AI endpoints. Router nil means AI is off: every endpoint answers 503 and the site keeps its notes.
 type Service struct {
 	DB *pgxpool.Pool
@@ -193,7 +201,7 @@ func (s *Service) generate(ctx context.Context, identity, ip, kind string, key [
 	}
 	tokens, avoid := 0, ""
 	for try := 0; try < 2; try++ {
-		rep, err := s.Router.JSON(ctx, kind, avoid, system, user, name, schema)
+		rep, err := s.Router.JSON(ctx, taskOf(kind), avoid, system, user, name, schema)
 		tokens += rep.Tokens
 		if err != nil {
 			s.settle(ctx, t, tokens, false)

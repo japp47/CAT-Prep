@@ -77,6 +77,16 @@ Thinking practice (Arcade, Manager Lab, DILR and Quant ideas), community, and re
 
 ## 3. Consistency check: spec vs plan vs code
 
+### 13 Nov 2026, tone, revise and the smallest fix (D103; `docs/design/explain-mistake.md`)
+
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A130 | A wrong tone only said "you chose neutral" | No reason, so the same mix-up next time | The tones' meanings, a close-call table, and per set the passage line that shows the tone (content, tested) |
+| A131 | Feedback ended at the verdicts | Students read and move on; revising is where summaries improve | One revision of their own summary, checked again, the count shown before and after |
+| A132 | A full AI rewrite teaches copying, and the model summary is already shown | Less learning | After a revision only: the smallest edit of the student's words, refused by code if it rewrites or copies the model |
+
+**D103.** Tone is explained by written content; the student revises once before any AI edit; the AI edit is the smallest change to their own words, checked by code.
+
 ### 13 Nov 2026, models and keys (D102; `docs/design/explain-mistake.md`, "Models and keys")
 
 | # | Finding | Impact | Fix (where) |

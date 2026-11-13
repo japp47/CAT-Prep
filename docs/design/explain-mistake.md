@@ -54,9 +54,11 @@ thought proved it. So the explanation is built from exactly those, after the ans
   run generous. Summarising helps learning only with feedback (Dunlosky et al. 2013). So after the student ticks, a
   "Get a second opinion" button asks AI to judge the same four checks against the passage and the model summary.
 - **Ticks first, and not sent.** The student commits to their own verdict before seeing the AI's; the request carries
-  the set, its version and the summary text, never the ticks, so the model is not led by them. The site compares the
-  two and spells out only the checks where they differ ("you ticked it; AI says not yet"), with the student's own
-  words that show it and one line on what to change. The ticks stay editable and stay the score.
+  the set, its version and the summary text, never the ticks, so the model is not led by them. The site shows all
+  four verdicts ("AI's verdict: 1 of 4 met"), each met or not yet with its line and the student's own words, in the
+  checklist's order, and highlights the rows where the AI and the tick differ. (A first version spelled out only the
+  differences; an empty checklist then "agreed" with four misses and showed no notes at all.) The ticks stay editable
+  and stay the score.
 - **Never rewrites.** The model summary is already on screen; a second rewrite would teach copying. The model may only
   quote the student's words, and code refuses a reply whose quote is not in the student's text.
 - **Habits.** The verdicts are saved with the summary (`SummaryEntry.ai`, synced); the habit line in the report counts
@@ -65,6 +67,25 @@ thought proved it. So the explanation is built from exactly those, after the ans
   note, and requests are few. Same client, budget and caps.
 - **Limits.** 5 to 25 words and 300 characters, checked before anything is spent; the cache key is the normalised
   text (case and spacing ignored), so a replay costs nothing.
+
+## Tone, revise and the smallest fix (F36b, D103), 13 Nov 2026
+Effort first, the smallest hint next, the whole answer last (the model summary, already on screen).
+- **Tone.** The student picks the author's tone; "Analytical, you chose neutral" said only that it was wrong. Now a
+  wrong pick gets what each tone means ("neutral reports without judging; analytical weighs a claim"), whether it was
+  a close call (a fixed table of near pairs: neutral and analytical, critical and sceptical, …), and the passage line
+  that shows the author's tone (`summary.toneCue`, an exact phrase, and `summary.toneWhy`, one sentence). The line
+  depends only on the set, so it is written content, drafted once, checked by tests (the cue must be in the passage)
+  and free to show, signed in or not. The AI does not judge tone or overrule the key.
+- **Revise yours.** After the verdicts, while any check is not met, the student may edit their own summary once and
+  check it again; the panel shows the change in count ("was 1 of 4, now 3 of 4"). Revising after feedback is where
+  the learning is. The first verdicts are the ones kept for habits (they show what the student misses unprompted);
+  the revised text is kept beside the first.
+- **The smallest fix.** Only after a revision still misses a check: "Show the smallest fix" asks the AI to change as
+  few of the student's words as possible so all four checks are met. Code refuses a fix that rewrites (more than
+  about 40% of the words changed), runs over 25 words, copies the model summary, or carries links or markdown; the
+  site marks the words added and struck out. One AI answer from the same daily cap, cached by text.
+- **Not built:** judging the tone of the student's own writing (CAT does not test it), or letting the AI accept a
+  tone the key does not.
 
 ## Models and keys (D102), built 13 Nov 2026
 - **No model in code.** `server/internal/ai/models.json` lists providers (base URL and the environment variable that

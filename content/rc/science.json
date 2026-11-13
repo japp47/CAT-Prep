@@ -198,7 +198,9 @@
       "model": "Warming may be making some animals smaller, but what causes the trend and whether it helps them remain uncertain.",
       "tone": "analytical",
       "claim": "making some animals smaller",
-      "qualifier": "remain uncertain"
+      "qualifier": "remain uncertain",
+      "toneCue": "Documenting such trends is easier than interpreting them.",
+      "toneWhy": "The author reports a finding and weighs rival explanations without claiming certainty."
     }
   },
   {
@@ -401,7 +403,9 @@
       "model": "Underground fungal networks between trees are real, but popular claims that trees cooperate and nurture through them ran well ahead of the evidence.",
       "tone": "critical",
       "claim": "ran well ahead of the evidence",
-      "qualifier": "are real, but"
+      "qualifier": "are real, but",
+      "toneCue": "the popular account ran well ahead of its evidence",
+      "toneWhy": "The author faults the inflation of tentative findings into confident stories, while granting that the networks are real."
     }
   },
   {
@@ -600,7 +604,9 @@
       "model": "Placebo improvement partly reflects natural recovery, but expectation has real effects on symptoms the brain regulates, so the context of care is part of treatment.",
       "tone": "analytical",
       "claim": "expectation has real effects",
-      "qualifier": "on symptoms the brain regulates"
+      "qualifier": "on symptoms the brain regulates",
+      "toneCue": "Yet not all of the placebo response can be explained away.",
+      "toneWhy": "The author separates what is artefact from what is real and draws a measured conclusion."
     }
   },
   {
@@ -805,7 +811,9 @@
       "model": "Gut microbes matter to health, but most claimed effects show correlation rather than cause; proven treatments exist only where the mechanism is understood.",
       "tone": "sceptical",
       "claim": "correlation rather than cause",
-      "qualifier": "only where the mechanism is understood"
+      "qualifier": "only where the mechanism is understood",
+      "toneCue": "Enthusiasm soon outran the evidence.",
+      "toneWhy": "The author doubts most of the claimed effects because the studies show correlation, not cause."
     }
   },
   {
@@ -1006,7 +1014,9 @@
       "model": "Leap seconds, keeping atomic time in step with Earth, are being dropped because they trouble computers: a sensible trade, though not without costs.",
       "tone": "neutral",
       "claim": "dropped because they trouble computers",
-      "qualifier": "though not without costs"
+      "qualifier": "though not without costs",
+      "toneCue": "For most users, though, the decision exchanges a symbolic connection for practical reliability.",
+      "toneWhy": "The author reports the problem, the decision and the few objections plainly, without arguing for or against."
     }
   },
   {
@@ -1208,7 +1218,9 @@
       "model": "Fossil evidence overturned long-held doubts and showed birds are not just descended from dinosaurs but are living dinosaurs, though why they alone survived is debated.",
       "tone": "neutral",
       "claim": "birds are not just descended from dinosaurs but are living dinosaurs",
-      "qualifier": "though why they alone survived is debated"
+      "qualifier": "though why they alone survived is debated",
+      "toneCue": "Why birds survived when their relatives did not is still debated.",
+      "toneWhy": "The author recounts how the evidence built up and reports the open question, without taking a side."
     }
   },
   {
@@ -1407,7 +1419,9 @@
       "model": "The ozone threat was met by a swift, flexible treaty that worked, helped by conditions that may not carry over to climate change.",
       "tone": "appreciative",
       "claim": "met by a swift, flexible treaty that worked",
-      "qualifier": "may not carry over"
+      "qualifier": "may not carry over",
+      "toneCue": "The response was unusually swift.",
+      "toneWhy": "The author praises a treaty that worked and explains why, while noting the limits of comparing it with climate change."
     }
   },
   {
@@ -1584,7 +1598,9 @@
       "model": "A failed replication should start an investigation, not end one, since written methods can omit the practical conditions behind a result.",
       "tone": "analytical",
       "claim": "should start an investigation, not end one",
-      "qualifier": "can omit the practical conditions"
+      "qualifier": "can omit the practical conditions",
+      "toneCue": "It would be a mistake to conclude that scientific results are therefore merely local or subjective.",
+      "toneWhy": "The author complicates a simple picture of replication and argues for a balanced alternative."
     }
   },
   {
@@ -1761,7 +1777,9 @@
       "model": "Restoration needs explicit goals and working processes, because neither copying a past landscape nor improving one indicator shows real recovery.",
       "tone": "analytical",
       "claim": "needs explicit goals and working processes",
-      "qualifier": "neither copying a past landscape nor improving one indicator"
+      "qualifier": "neither copying a past landscape nor improving one indicator",
+      "toneCue": "The concern is serious.",
+      "toneWhy": "The author weighs two ways of setting restoration goals, granting each a point, and proposes a standard."
     }
   }
 ]

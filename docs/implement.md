@@ -390,6 +390,14 @@ Same branch and commit as 3b-1.
 - Tests: `ai_test.go` (summary prompt, quote check, key), `v1_ai_int_test.go` (`TestAIGateHoldsAgainstAbuse`: no account, 20 parallel requests stop at the cap, the budget reservation settles, one address across accounts; `TestSummaryFeedback`: limits, replay from cache, a made-up quote refused, an instruction inside a summary), `summary.test.ts` (habits prefer AI, verdicts survive save and restore).
 - By hand: signed in with Google, finish an RC set with a summary, compare, tick, "Get a second opinion"; signed out, the same spot says "Sign in with Google".
 
+### 3b-4. Tone, revise and the smallest fix (feature F36b, D103), built 13 Nov 2026
+`feat/summary-tone-revise-fix` · `feat: explain a wrong tone from the passage, let students revise their summary once, and show the smallest AI fix of their own words`.
+- Content: `summary.toneCue` (an exact passage phrase) and `summary.toneWhy` on all 55 RC sets; `practice/tone.ts` (what each tone means, the close-call pairs, `toneVerdict`).
+- Site: `components/Summary.tsx` (`ToneNote` in the comparison), `pages/practice/RcPlayer.tsx` (`Verdicts`, `Revise`, `SmallestFix`; the review shows the revision), `practice/wordDiff.ts`, `lib/ai.ts` (`fixSummary`), `lib/state.ts` and `practice/summary.ts` (`SummaryEntry.revised`; habits keep the first verdicts).
+- Server: `internal/ai/fix.go` (`POST /v1/ai/summary/fix`: prompt, word edit distance, "too far" when the edit is large or nearer the model summary than the student's), `summary.go` (`summaryRequest` shared), `explain.go` (`taskOf`: fixes use the summary models), route.
+- Tests: `practice/tone.test.ts` (every cue is in its passage, reasons are short), `practice/wordDiff.test.ts`, `summary.test.ts` (the revision is saved), `ai_test.go` (edit or too far), `v1_ai_int_test.go` (`TestTheSmallestFix`).
+- By hand: pick Neutral on an analytical set, compare: the tone note says close call with the passage line. Get a second opinion, Revise yours, Check again; while a check is still missed, Show the smallest fix.
+
 ### 3b-3. Models and keys (D102), built 13 Nov 2026
 Same branch and commit as 3b-1.
 - Server: `internal/ai/models.json` (catalog), `router.go` (load and check the catalog, order per task, fallback on 429 / 5xx / 404 / refused replies, keys that rest after 401/403, `Status`), `client.go` (one call, classified), `admin.go` (`ai.model_usage`, `GET /v1/admin/ai`), migration 16 (`ai.model_usage`), `config` (`AI_CATALOG`, `AI_EXPLAIN`, `AI_SUMMARY`; `AI_BASE_URL`, `AI_API_KEY`, `AI_MODEL`, `AI_SUMMARY_MODEL` gone), `main.go` (a bad catalog stops the start).

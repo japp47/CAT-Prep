@@ -299,3 +299,38 @@ func TestSummaryKeyIgnoresSpacingAndCase(t *testing.T) {
 		t.Error("a rewritten set gave the same key")
 	}
 }
+
+func TestTheSmallestFixMustBeAnEditOfTheStudentsWords(t *testing.T) {
+	text := "Opaque algorithms are acceptable if they are tested for fairness and open to appeal."
+	model := "Opaque automated decisions may be acceptable when public records, fairness testing and appeal make them accountable."
+	fix := func(s string) string { return fmt.Sprintf(`{"fixed":%q}`, s) }
+	var f Fix
+	out, err := checkFix(fix("Opaque algorithms may be acceptable if they are tested for fairness and open to appeal."), text, model)
+	if err != nil || json.Unmarshal(out, &f) != nil || f.TooFar || !strings.HasPrefix(f.Fixed, "Opaque algorithms may be") {
+		t.Fatalf("a two-word edit: %s %v", out, err)
+	}
+	// The model summary, or a rewrite, is not a small fix: the site points at the model instead.
+	for name, s := range map[string]string{"the model summary": model, "a rewrite": "Automated systems deserve trust only when records, testing and appeals hold them to account."} {
+		out, err := checkFix(fix(s), text, model)
+		var f Fix
+		if err != nil || json.Unmarshal(out, &f) != nil || !f.TooFar || f.Fixed != "" {
+			t.Errorf("%s: %s %v", name, out, err)
+		}
+	}
+	for name, raw := range map[string]string{
+		"unchanged": fix("  opaque ALGORITHMS are acceptable if they are tested for fairness and open to appeal. "),
+		"too long":  fix(text + " " + strings.Repeat("and more ", 10)),
+		"a link":    fix("Opaque algorithms may be acceptable, see https://x.example for fairness and appeal."),
+		"not json":  "Opaque algorithms may be acceptable.",
+	} {
+		if _, err := checkFix(raw, text, model); err == nil {
+			t.Errorf("%s: accepted", name)
+		}
+	}
+	if d := editDistance(tokens("a b c d"), tokens("a x c d e")); d != 2 {
+		t.Errorf("edit distance %d, want 2", d)
+	}
+	if maxEdit(5) != 4 || maxEdit(20) != 8 {
+		t.Errorf("maxEdit %d %d", maxEdit(5), maxEdit(20))
+	}
+}

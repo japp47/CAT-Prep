@@ -72,7 +72,11 @@ export const RC_PACKS: Record<RcPack, { label: string }> = {
   "cat-pattern": { label: "CAT-pattern sets" },
 };
 
-export interface RcSummary { model: string; tone: Tone; claim: string; qualifier: string }
+/**
+ * A set's model summary. toneCue is an exact phrase of the passage that shows the author's tone and toneWhy one
+ * sentence on how (F36b, D103; practice/tone.ts); a test checks the cue is in the passage.
+ */
+export interface RcSummary { model: string; tone: Tone; claim: string; qualifier: string; toneCue?: string; toneWhy?: string }
 
 /** Tones a student can pick for a passage, in the words CAT tone questions use. */
 export const TONES = ["analytical", "critical", "sceptical", "appreciative", "cautionary", "persuasive", "ironic", "optimistic", "neutral"] as const;

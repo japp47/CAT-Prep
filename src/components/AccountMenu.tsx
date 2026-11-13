@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { SIGNIN_ENABLED } from "@/lib/api";
-import { isStaff } from "@/lib/admin";
+import { useIsStaff } from "@/lib/admin";
 import { startSignIn, syncNow } from "@/lib/sync/runner";
 import type { Status } from "@/lib/sync/status";
 import GoogleButton from "./GoogleButton";
@@ -64,14 +64,8 @@ function Body({ s, close, signOut }: { s: Status; close: () => void; signOut: ()
   // Google comes back to /signin, which asks about this device's progress if it must, then returns here.
   const here = loc.pathname + loc.search;
   const google = () => startSignIn(here === "/" ? "/signin" : "/signin?then=" + encodeURIComponent(here));
-  // Staff see Admin (D33). Asked once a session, and only when signed in: no one else can be staff.
-  const [staff, setStaff] = useState(false);
-  useEffect(() => {
-    if (!s.account) return;
-    let live = true;
-    void isStaff().then((m) => { if (live) setStaff(!!m); });
-    return () => { live = false; };
-  }, [s.account]);
+  // Staff see Admin (D33).
+  const staff = useIsStaff(!!s.account);
   const you = <Row icon={<UserRound />} to="/you" onClick={close}>You</Row>;
   const on = s.phase !== "off";
   const busy = s.phase === "syncing";
