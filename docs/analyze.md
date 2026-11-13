@@ -77,6 +77,41 @@ Thinking practice (Arcade, Manager Lab, DILR and Quant ideas), community, and re
 
 ## 3. Consistency check: spec vs plan vs code
 
+### 13 Nov 2026, models and keys (D102; `docs/design/explain-mistake.md`, "Models and keys")
+
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A126 | Model names and the provider were settings read in code, one model per task | A model over its limit or retired stops AI | `internal/ai/models.json`: providers, models with their settings, an order per task; `AI_EXPLAIN` / `AI_SUMMARY` reorder on Render |
+| A127 | Groq's limits are per account and per model, not per key | Rotating keys adds no quota | Fall back across models on 429 for as long as `Retry-After`; keys are spares for a revoked one |
+| A128 | Qwen 3.8 27B takes `reasoning_effort: "none"`, gpt-oss only low/medium/high | One request shape breaks one model | Settings per model in the catalog; the router adds only model, messages and schema |
+| A129 | The owner could not see which model answered or why one failed | Problems found by students | `ai.model_usage` per model and day; Admin → AI with states, last problem and working keys as counts |
+
+**D102.** Models live in `models.json`, each task tries them in order and falls back on limits and errors, keys are spares named by count, and the admin page shows the state; switching is a Render setting, not an admin action.
+
+### 13 Nov 2026, summary feedback and an abuse audit (D101; `docs/design/explain-mistake.md`)
+
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A120 | Sync identities are free to make, and each brought its own daily cap | One script could spend the whole day's budget | A new generation needs a verified Google account (`ai/guard.go`) |
+| A121 | One machine could still hold many accounts | The same, more slowly | A per-address hourly limit before the student cap (`AI_PER_ADDRESS`) |
+| A122 | The cap and the budget were read, then written | Parallel requests passed together | One conditional upsert per check; the budget is reserved before the call and settled after |
+| A123 | The summary endpoint is the only one that takes text | A free model, prompt injection | Word, character and body caps; text fenced as data; strict schema; quotes must be in the student's text; cached by normalised text |
+| A124 | Self-ticks run generous, so the summary habit line flatters | The one feedback loop for summaries is weak | AI judges the same four checks without the ticks; differences are spelled out; habits count its verdicts |
+| A125 | A rewritten summary from AI would teach copying | Less learning | It never rewrites; it quotes the student and says what to change |
+
+**D101.** Summary feedback is a second opinion on the student's own four ticks, asked for after ticking, judged without them, quoting the student's words, never rewriting; every AI generation passes one gate (Google account, per-address limit, atomic student seat, reserved daily budget).
+
+### 13 Nov 2026, explain my mistake (D100; `docs/design/explain-mistake.md`)
+
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A116 | Every RC option already has a written note and trap; a model restating them adds nothing | AI for its own sake | Explain this student's mistake: their option, its trap, their marked line, against the deciding line |
+| A117 | Groq retired its free small Llama models (16 Aug 2026) | The planned 8B model is gone | `openai/gpt-oss-20b`, strict structured output, reasoning kept out; free tier about 1,000 requests and 200K tokens a day |
+| A118 | An endpoint that takes text would be a free model for anyone | Abuse and prompt injection | The browser sends ids; the server builds the prompt from the site's published content |
+| A119 | A model can misquote the passage | A wrong "proof" | The model cites a sentence number; code accepts only a deciding line and shows our own text |
+
+**D100.** AI v1 is "Explain my mistake" for RC, after the answer only, built from ids against published content, checked by code, cached per mistake, capped per student and per day, with a kill switch and a flag; summary feedback follows on the same plumbing.
+
 ### 13 Nov 2026, prove it from the passage (D99; `docs/design/prove-it.md`)
 
 | # | Finding | Impact | Fix (where) |

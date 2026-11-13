@@ -1,5 +1,7 @@
 # Everything is open to search except the API, which has nothing a person would look for.
 User-agent: *
 Disallow: /api/
+# The AI service's copy of the content (F35): data, not a page.
+Disallow: /ai/
 
 Sitemap: https://99ile.in/sitemap.xml

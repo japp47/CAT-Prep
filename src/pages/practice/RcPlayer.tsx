@@ -21,9 +21,11 @@ import { Checklist, ModelSummary, SummaryPair, WriteCard } from "../../component
 import { RC_CATALOG } from "../../practice/catalog.gen";
 import { rcOfDay } from "../../practice/daily";
 import { fmtSecs, LETTERS, rcError, rcErrorSrc, recordRc, scoreRc } from "../../practice/record";
-import { recordRcSummary, summaryFor, summaryScore } from "../../practice/summary";
+import { recordRcSummary, SUMMARY_CHECKS, summaryFor, summaryScore } from "../../practice/summary";
 import { rcStale } from "../../practice/versions";
-import { GENRES, RC_QTYPE, setWords, SUMMARY_MAX_WORDS, words, type RcQuestion, type RcSet, type RcSummary } from "../../practice/types";
+import { GENRES, RC_QTYPE, rcVersion, setWords, SUMMARY_MAX_WORDS, words, type RcQuestion, type RcSet, type RcSummary } from "../../practice/types";
+import { checkSummary, explainMistake, flagAi, useAi, type Explanation, type SummaryVerdict } from "../../lib/ai";
+import { startSignIn } from "../../lib/sync/runner";
 import { findLine, lineVerdict, sentences, type LineRef } from "../../practice/sentences";
 import NotFound from "../NotFound";
 import { BreakNote, Choice, ChoiceGroup, ComeBack, QuestionNav, Confirm, ElapsedTimer, TimeUp, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ResumeNote, type Resume, ReviewChoice, ScoreCard, timeShown, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
@@ -122,6 +124,7 @@ function SummaryStep({ set, model, attempt, onDone }: { set: RcSet; model: RcSum
   const [tone, setTone] = useState(saved?.tone ?? "");
   const [comparing, setComparing] = useState(false);
   const [checks, setChecks] = useState([false, false, false, false]);
+  const [aiChecks, setAiChecks] = useState<boolean[] | null>(null);
   const [pane, setPane] = useState<"p" | "q">("q");
   const [id] = useState(uid);
   useEffect(() => { if (!comparing) writeDraft(key, text.trim() || tone ? ({ text, tone } satisfies SummaryDraft) : null); }, [key, text, tone, comparing]);
@@ -130,7 +133,7 @@ function SummaryStep({ set, model, attempt, onDone }: { set: RcSet; model: RcSum
   const compare = () => { setComparing(true); setPane("q"); window.scrollTo(0, 0); };
   const finish = (save: boolean) => {
     writeDraft(key, null);
-    if (save) update((st) => { if (!summaryFor(st, attempt.id)) recordRcSummary(st, id, set, attempt.id, text, tone, checks, todayIso(), Date.now()); });
+    if (save) update((st) => { if (!summaryFor(st, attempt.id)) recordRcSummary(st, id, set, attempt.id, text, tone, checks, todayIso(), Date.now(), aiChecks ?? undefined); });
     onDone();
   };
 
@@ -153,6 +156,7 @@ function SummaryStep({ set, model, attempt, onDone }: { set: RcSet; model: RcSum
           <>
             <SummaryPair text={text.trim()} tone={tone} model={model} />
             <Checklist checks={checks} onChange={setChecks} model={model} />
+            <SecondOpinion set={set} text={text.trim()} checks={checks} onVerdicts={setAiChecks} />
             <div><Button onClick={() => finish(true)}>Save and see the answers</Button></div>
           </>
         ) : (
@@ -406,7 +410,7 @@ function FullReview({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
               return <PaletteCell key={i} n={i + 1} state={s} current={i === cur} onClick={() => { setCur(i); setPane("q"); }} label={`Question ${i + 1}, ${s === "right" ? "correct" : s === "wrong" ? "wrong" : "skipped"}`} />;
             })}
           </div>
-          <ReviewQuestion set={set} qi={cur} chosen={ans[cur]} att={attempt.id} mine={attempt.lines?.[cur] ?? null} />
+          <ReviewQuestion set={set} qi={cur} chosen={ans[cur]} att={attempt.id} mine={attempt.lines?.[cur] ?? null} explain />
           <QuestionNav cur={cur} n={n} onGo={setCur} />
         </>
       </Split>
@@ -440,6 +444,100 @@ function ProveIt({ line, picking, onPick, onRemove }: { line: string | null; pic
         <Button variant="ghost" size="sm" onClick={onRemove}>Remove</Button>
       </div>
     </div>
+  );
+}
+
+/**
+ * "Why did I pick this?" (F35, D100): an AI explanation of this student's wrong answer, after it is revealed, from ids
+ * only. The settling line is shown from our content, never quoted by the model; a wrong explanation can be flagged.
+ */
+function ExplainMine({ set, qi, chosen, mine }: { set: RcSet; qi: number; chosen: number; mine: LineRef | null }) {
+  const ai = useAi();
+  const [state, setState] = useState<{ phase: "idle" | "busy" | "done" | "failed"; e?: Explanation; msg?: string; flagged?: boolean }>({ phase: "idle" });
+  if (ai === "none") return null;
+  if (ai === "signin") return <SignInForAi>to ask AI why this option looked right</SignInForAi>;
+  const ask = async () => {
+    setState({ phase: "busy" });
+    const r = await explainMistake({ set: set.id, v: rcVersion(set), q: qi, chosen, line: mine });
+    setState(r.ok ? { phase: "done", e: r.data } : { phase: "failed", msg: r.message });
+  };
+  if (state.phase === "idle" || state.phase === "busy") return (
+    <Button variant="secondary" size="sm" className="self-start" onClick={ask} disabled={state.phase === "busy"}>{state.phase === "busy" ? "Thinking…" : "Why did I pick this?"}</Button>
+  );
+  if (state.phase === "failed") return <p className="text-base text-muted-foreground" role="status">{state.msg}</p>;
+  const e = state.e!;
+  const line = set.paras[e.settles[0]] ? sentences(set.paras[e.settles[0]])[e.settles[1]] : null;
+  return (
+    <div className="flex flex-col gap-2.5 rounded-lg bg-accent px-4 py-3.5 text-accent-foreground" role="note">
+      <p className="text-base"><b className="font-semibold">Why it looked right:</b> {e.tempting}</p>
+      {/* With a deciding line, the verdict below already shows it; without one, the model's pick from the proof paragraphs is new. */}
+      {line && !set.questions[qi].lines?.length && <p className="text-base"><b className="font-semibold">The line that settles it:</b> “{line}”</p>}
+      <p className="text-base"><b className="font-semibold">Next time:</b> {e.next}</p>
+      <p className="flex flex-wrap items-center gap-x-3 text-sm opacity-80">
+        <span>Written by AI from this question&rsquo;s notes; the line is checked against the passage.</span>
+        {state.flagged ? <span>Thanks, noted.</span>
+          : <button type="button" className="underline underline-offset-4" onClick={() => { void flagAi(e.key); setState({ ...state, flagged: true }); }}>This is wrong</button>}
+      </p>
+    </div>
+  );
+}
+
+/** One line in place of an AI button when the student is not signed in: the action sits in the sentence (as in reminders). */
+function SignInForAi({ children }: { children: ReactNode }) {
+  return (
+    <p className="text-base text-muted-foreground">
+      <button type="button" onClick={() => startSignIn(location.pathname + location.search)}
+        className="font-medium text-primary underline underline-offset-4 decoration-primary/40 transition-colors hover:decoration-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none motion-reduce:transition-none">Sign in with Google</button>{" "}
+      {children}.
+    </p>
+  );
+}
+
+/**
+ * F36: after the student ticks their own checks, AI judges the same four without seeing the ticks, quoting the
+ * student's words. Only the checks where the two differ are spelled out; the ticks stay the student's to change.
+ */
+function SecondOpinion({ set, text, checks, onVerdicts }: { set: RcSet; text: string; checks: boolean[]; onVerdicts: (ai: boolean[] | null) => void }) {
+  const ai = useAi();
+  const [state, setState] = useState<{ phase: "idle" | "busy" | "done" | "failed"; v?: SummaryVerdict[]; ticks?: boolean[]; key?: string; msg?: string; flagged?: boolean }>({ phase: "idle" });
+  if (ai === "none") return null;
+  if (ai === "signin") return <SignInForAi>for a second opinion on your ticks from AI</SignInForAi>;
+  const ask = async () => {
+    setState({ phase: "busy" });
+    const r = await checkSummary({ set: set.id, v: rcVersion(set), text });
+    if (!r.ok) { setState({ phase: "failed", msg: r.message }); return; }
+    const v = SUMMARY_CHECKS.map((c) => r.data.checks.find((x) => x.id === c.id));
+    if (v.some((x) => !x)) { setState({ phase: "failed", msg: "The second opinion did not come through. Your own ticks still count." }); return; }
+    // The ticks as they were when the student asked, so the list does not shift while they change a tick.
+    setState({ phase: "done", v: v as SummaryVerdict[], ticks: checks.slice(), key: r.data.key });
+    onVerdicts((v as SummaryVerdict[]).map((x) => x.ok));
+  };
+  if (state.phase === "idle" || state.phase === "busy") return (
+    <div className="flex flex-col gap-1.5">
+      <Button variant="secondary" className="self-start" onClick={ask} disabled={state.phase === "busy"}>{state.phase === "busy" ? "Checking…" : "Get a second opinion"}</Button>
+      <p className="text-sm text-muted-foreground">AI checks the same four against the passage, without seeing your ticks.</p>
+    </div>
+  );
+  if (state.phase === "failed") return <p className="text-base text-muted-foreground" role="status">{state.msg}</p>;
+  const v = state.v!, ticks = state.ticks!;
+  const differ = v.map((x, i) => ({ x, i })).filter(({ x, i }) => x.ok !== ticks[i]);
+  return (
+    <section className="flex flex-col gap-3 rounded-lg bg-accent px-4 py-3.5 text-accent-foreground" aria-label="Second opinion">
+      <h3 className="text-base font-semibold">{differ.length === 0 ? "AI agrees with all four of your ticks." : `AI sees ${differ.length === 1 ? "one check" : `${differ.length} checks`} differently.`}</h3>
+      {differ.map(({ x, i }) => (
+        <div key={x.id} className="flex flex-col gap-1">
+          <p className="text-base"><b className="font-semibold">{SUMMARY_CHECKS[i].label}:</b> {ticks[i] ? "you ticked it; AI says not yet." : "you left it; AI says you did."}</p>
+          {x.words && <p className="text-base">In yours: <q className="font-medium">{x.words}</q></p>}
+          <p className="text-base">{x.note}</p>
+        </div>
+      ))}
+      {differ.length > 0 && differ.length < 4 && <p className="text-base">It agrees with your other {4 - differ.length === 1 ? "tick" : `${4 - differ.length}`}.</p>}
+      <p className="flex flex-wrap items-center gap-x-3 text-sm opacity-80">
+        <span>{differ.length ? "Change a tick above if it convinced you. " : ""}Written by AI; its quotes are checked against your summary.</span>
+        {state.flagged ? <span>Thanks, noted.</span>
+          : <button type="button" className="underline underline-offset-4" onClick={() => { void flagAi(state.key!); setState({ ...state, flagged: true }); }}>This is wrong</button>}
+      </p>
+    </section>
   );
 }
 
@@ -541,7 +639,7 @@ function WordSheet({ word, source, onClose }: { word: string | null; source: str
   );
 }
 
-export function ReviewQuestion({ set, qi, chosen, att, mine = null }: { set: RcSet; qi: number; chosen: number | null; att?: string; mine?: LineRef | null }) {
+export function ReviewQuestion({ set, qi, chosen, att, mine = null, explain = false }: { set: RcSet; qi: number; chosen: number | null; att?: string; mine?: LineRef | null; explain?: boolean }) {
   const { state, update } = useStore();
   const q = set.questions[qi];
   const ok = chosen === q.answer;
@@ -561,6 +659,7 @@ export function ReviewQuestion({ set, qi, chosen, att, mine = null }: { set: RcS
           </ReviewChoice>
         ))}
       </ul>
+      {explain && !ok && chosen !== null && <ExplainMine key={`${qi}:${chosen}`} set={set} qi={qi} chosen={chosen} mine={mine} />}
       {q.lines?.length ? <ProofVerdict set={set} q={q} mine={mine} />
         : <p className="text-sm text-muted-foreground">The highlighted paragraph{q.proof.length > 1 ? "s settle" : " settles"} this question.</p>}
       {!ok && (inLog

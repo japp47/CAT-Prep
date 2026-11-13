@@ -60,3 +60,12 @@ export function groupReports(reports: Report[]): ReportGroup[] {
     .map(([itemId, rs]) => ({ itemId, reports: rs.sort((a, b) => b.id - a.id), latest: rs.reduce((m, r) => (r.createdAt > m ? r.createdAt : m), "") }))
     .sort((a, b) => b.reports.length - a.reports.length || (a.latest < b.latest ? 1 : a.latest > b.latest ? -1 : 0));
 }
+
+/** The AI panel (D102): the order each task tries its models in, which are resting and why, working keys, and the last seven days per model. */
+export interface AiModelStatus { name: string; id: string; provider: string; state: "ready" | "resting" | "no key"; until?: string; lastError?: string; lastErrorAt?: string; lastOk?: string }
+export interface AiPanel {
+  on: boolean; budget: number; perStudent: number; usedToday: number;
+  router?: { tasks: Record<string, string[]>; models: AiModelStatus[]; providers: { name: string; keysEnv?: string; keys: number; working: number }[] };
+  days: { day: string; model: string; answered: number; refused: number; limited: number; failed: number; tokens: number }[];
+}
+export const aiPanel = () => api<AiPanel>("/admin/ai");

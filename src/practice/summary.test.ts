@@ -60,6 +60,13 @@ describe("summary habits", () => {
     expect(h.weakest).toBe("You dropped the qualifier in 6 of your last 10. Look for words like often, partly, mainly, some and may.");
   });
 
+  it("counts AI's verdict instead of the ticks where the student asked for a second opinion", () => {
+    const generous = (i: number) => ({ ...entry(i, [true, true, true, true]), ai: [true, false, true, true] });
+    const h = summaryHabits([generous(1), generous(2), entry(3, [true, true, true, true])]);
+    expect(h.rows.map((r) => r.correct)).toEqual([3, 1, 3, 3]);
+    expect(h.weakest).toMatch(/^You dropped the qualifier in 2 of your last 3\./);
+  });
+
   it("says nothing about a check missed only once, or when there are no summaries", () => {
     expect(summaryHabits([entry(1, [true, true, true, false]), entry(2, [true, true, true, true])]).weakest).toBeNull();
     expect(summaryHabits([])).toEqual({ count: 0, rows: expect.any(Array), weakest: null });
@@ -74,7 +81,8 @@ describe("saved summaries", () => {
 
   it("keep everything through a save and a restore", () => {
     const st = blankState();
-    recordRcSummary(st, "s1", set, "a1", "Cities may partly teach skills.", "analytical", [true, false, true, false], "2026-10-20", 5);
+    recordRcSummary(st, "s1", set, "a1", "Cities may partly teach skills.", "analytical", [true, false, true, false], "2026-10-20", 5, [true, true, false, false]);
+    expect(st.summaries[0].ai).toEqual([true, true, false, false]);
     st.summaries.push({ id: "s2", d: "2026-10-20", src: "article", text: "A long read.", tone: "", checks: [true, true, true, true], words: 3, updatedAt: 6, from: "Aeon", url: "https://aeon.co/x" });
     expect(normalize(JSON.parse(JSON.stringify(st))).summaries).toEqual(st.summaries);
   });
@@ -88,5 +96,7 @@ describe("saved summaries", () => {
     expect(out.map((e) => e.id)).toEqual(["c"]);
     expect(out[0].checks).toEqual([true, false, false, false]);
     expect(out[0].src).toBe("rc");
+    expect(out[0].ai).toBeUndefined();
+    expect(normalize({ summaries: [{ id: "d", d: "2026-10-20", text: "Kept.", checks: [], ai: [true, "yes", false] }] }).summaries[0].ai).toBeUndefined();
   });
 });

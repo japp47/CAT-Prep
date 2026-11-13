@@ -15,9 +15,11 @@ export const SUMMARY_CHECKS = [
 export const summaryScore = (checks: boolean[]) => checks.filter(Boolean).length;
 
 /** Saves a summary of an RC set. The caller makes the id, because a state updater may run more than once. */
-export function recordRcSummary(st: AppState, id: string, set: RcSet, att: string, text: string, tone: string, checks: boolean[], d: string, now: number): void {
+export function recordRcSummary(st: AppState, id: string, set: RcSet, att: string, text: string, tone: string, checks: boolean[], d: string, now: number, ai?: boolean[]): void {
   const t = text.trim();
-  st.summaries.push({ id, d, src: "rc", set: set.id, att, text: t, tone, checks: checks.slice(0, 4), words: words(t), updatedAt: now });
+  const e: SummaryEntry = { id, d, src: "rc", set: set.id, att, text: t, tone, checks: checks.slice(0, 4), words: words(t), updatedAt: now };
+  if (ai?.length === 4) e.ai = ai.slice();
+  st.summaries.push(e);
 }
 
 /** Saves a summary of an outside article, from the Today reading block or the journal. There is no model to compare with. */
@@ -47,12 +49,14 @@ const HABIT = [
 export const HABIT_WINDOW = 10;
 
 /**
- * How often each check was ticked over the latest summaries, and one plain line about the weakest.
+ * How often each check was met over the latest summaries, and one plain line about the weakest.
  * The line appears only when a check was missed at least twice, so one slip does not become a lesson.
+ * Where AI gave a second opinion (F36), its verdicts count instead of the ticks: self-ticks run generous, and the
+ * habit line is only useful if it is honest.
  */
 export function summaryHabits(all: SummaryEntry[], n = HABIT_WINDOW) {
   const last = [...all].sort((a, b) => (a.d === b.d ? a.updatedAt - b.updatedAt : a.d < b.d ? -1 : 1)).slice(-n);
-  const rows = HABIT.map((h, i) => ({ key: SUMMARY_CHECKS[i].id, label: h.label, attempted: last.length, correct: last.filter((s) => s.checks[i]).length }));
+  const rows = HABIT.map((h, i) => ({ key: SUMMARY_CHECKS[i].id, label: h.label, attempted: last.length, correct: last.filter((s) => (s.ai ?? s.checks)[i]).length }));
   const worst = rows.reduce<number | null>((w, r, i) => (w === null || r.correct < rows[w].correct ? i : w), null);
   const missed = worst === null ? 0 : last.length - rows[worst].correct;
   const weakest = worst !== null && missed >= 2 ? `${HABIT[worst].miss} ${missed} of your last ${last.length}. ${HABIT[worst].tip}` : null;

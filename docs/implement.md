@@ -376,6 +376,27 @@ Full entries are written here when a step comes within two steps of being built:
 ### 4a. Logical reasoning first (D37)
 **4a.1 LR set format and content, built 24 Oct 2026** on `feat/lr-sets`: `LrSet` and `LR_TYPE` in `practice/types.ts`; `content/lr/<type>.json` (one file per type) joined in `practice/lr/index.ts`; `loadLrFile` in `bank.ts`; `Need.lr` and `Content.lrSets` in `content.ts`; `LR_CATALOG` and `LR_FILE` from `npm run catalog`; `titaMatches` and `lrRight` in `practice/lrcheck.ts`. Tests: every set's shape and answers (`content.test.ts`), file and catalog agreement, the import guard, typed-answer matching. One original example set (`arr-round-table`).
 
+### 3b-1. Explain my mistake (feature F35, D100), built 13 Nov 2026
+`feat/explain-mistake` · `feat: explain a wrong RC answer with AI, from ids and published content, checked by code and cached per mistake`.
+- Site: `practice/aipack.ts` and `scripts/aipack.ts` (`dist/ai/rc.json` at build: sentences, notes, traps, deciding lines as references), `lib/ai.ts`, `pages/practice/RcPlayer.tsx` (`ExplainMine` in the review, wrong answers only, when the server says AI is on and the browser syncs), `public/robots.txt` (`/ai/` out of search).
+- Server: `internal/ai` (`content.go` reads `/ai/rc.json` hourly and keeps the last good copy; `client.go` one OpenAI-compatible client with strict structured output; `explain.go` prompt, check, cache, caps, `GET /v1/ai`, `POST /v1/ai/explain`, `POST /v1/ai/flag`), migration `00016_ai.sql`, `config` (`AI_*`), `cleanup` (old daily counts), routes.
+- Tests: `internal/ai/ai_test.go` (prompt, check, key, client), `cmd/api/v1_ai_int_test.go` (cache across students, refusals that never reach the model, a refused reply falls back, the cap counts new ones only, the daily budget, three flags remake, off by default, signed-out refused).
+- By hand: with Ollama (`gpt-oss:20b`) or a Groq key and `AI_CONTENT_URL` at a preview build, answer an RC question wrong, open the review, "Why did I pick this?".
+
+### 3b-2. Summary feedback and the AI gate (feature F36, D101), built 13 Nov 2026
+Same branch and commit as 3b-1.
+- Server: `internal/ai/guard.go` (Google account, per-address limit, atomic student seat on `ai.daily`, budget reserved on `ai.usage` row `all` and settled), `internal/ai/summary.go` (`POST /v1/ai/summary`: limits, prompt with the text fenced as data, strict schema, quotes checked against the text, cache by normalised text), `explain.go` (`generate`, `refuse`, status with `signedIn`), `config` (`AI_SUMMARY_MODEL`, `AI_PER_ADDRESS`), `main.go`.
+- Site: `lib/ai.ts` (`useAi`, `checkSummary`, `flagAi`), `RcPlayer.tsx` (`SecondOpinion` in the summary step, `SignInForAi`), `lib/state.ts` (`SummaryEntry.ai`, normalised), `practice/summary.ts` (saves the verdicts; habits count them), `practice/aipack.ts` (the model summary in the pack).
+- Tests: `ai_test.go` (summary prompt, quote check, key), `v1_ai_int_test.go` (`TestAIGateHoldsAgainstAbuse`: no account, 20 parallel requests stop at the cap, the budget reservation settles, one address across accounts; `TestSummaryFeedback`: limits, replay from cache, a made-up quote refused, an instruction inside a summary), `summary.test.ts` (habits prefer AI, verdicts survive save and restore).
+- By hand: signed in with Google, finish an RC set with a summary, compare, tick, "Get a second opinion"; signed out, the same spot says "Sign in with Google".
+
+### 3b-3. Models and keys (D102), built 13 Nov 2026
+Same branch and commit as 3b-1.
+- Server: `internal/ai/models.json` (catalog), `router.go` (load and check the catalog, order per task, fallback on 429 / 5xx / 404 / refused replies, keys that rest after 401/403, `Status`), `client.go` (one call, classified), `admin.go` (`ai.model_usage`, `GET /v1/admin/ai`), migration 16 (`ai.model_usage`), `config` (`AI_CATALOG`, `AI_EXPLAIN`, `AI_SUMMARY`; `AI_BASE_URL`, `AI_API_KEY`, `AI_MODEL`, `AI_SUMMARY_MODEL` gone), `main.go` (a bad catalog stops the start).
+- Site: `pages/admin/AiView.tsx` (Admin → AI), `lib/admin.ts`, `pages/Admin.tsx` (the tab; four tabs fit one row on a phone).
+- Tests: `ai_test.go` (the built-in catalog loads, overrides and bad settings, a model's own settings reach the request, 429 falls to the next model for Retry-After, a refused key falls to the next key, keys never in the status, avoid), `v1_ai_int_test.go` (`TestAIPanel`, per-model counts).
+- By hand: Admin → AI with `AI_ENABLED=1` and `GROQ_API_KEYS` set; set `AI_EXPLAIN=qwen3.8-27b` and see the order change after the restart.
+
 ### 14. Prove it from the passage (feature F103, D99), built 13 Nov 2026
 `feat/prove-it` · `feat: let students prove an RC answer by tapping the line that settles it, with deciding lines for 203 questions`.
 - `practice/sentences.ts` (`sentences`, `findLine`, `lineVerdict`), `practice/types.ts` (`RcQuestion.lines`), `lib/state.ts` (`RcAttempt.lines`, normalised), `practice/record.ts` (`recordRc` keeps the marked lines), `pages/practice/RcPlayer.tsx` (the Prove it control, the line-aware passage, the review verdict, the summary count).

@@ -329,8 +329,8 @@ All AI features follow principle 3. They need the backend (the API key stays on 
 
 | # | Feature | Step | Input | Output, checked by code | Fallback |
 |---|---|---|---|---|---|
-| 35 | Explain my mistake | 3b | the question, the chosen and right options, their written explanations | 2 to 4 sentences on the gap between the two, naming passage evidence | the written explanation, which already exists |
-| 36 | Summary feedback | 3b | passage or article, the student's summary, the model summary | the four checklist items filled in, with one line each | the self-check, as today |
+| 35 | Explain my mistake (re-planned 13 Nov 2026, D100, `docs/design/explain-mistake.md`) | 3b | ids only: set, version, question, chosen option, the line the student marked; the server reads the passage, question, options, their notes and the deciding lines from published content | why it looked right (naming the trap and the student's own line), the deciding sentence by number (code accepts only a deciding line and shows our text), and one "next time" line | the written explanation, which already exists |
+| 36 | Summary feedback, built 13 Nov 2026 (D101) | 3b | an RC set's passage and model summary, the student's summary (not their ticks) | AI's verdict on each of the four checks, the student's words that show it and one line; only differences from the ticks are spelled out | the self-check, as today |
 | 34 | Article to RC set | 7 | an article the student pastes | 4 or 5 questions in the library's JSON shape, every option explained | the library |
 | 48 | Coach and weekly narrator | 7 | the computed weekly review and recommendations, not raw history | a short paragraph in plain words, with the numbers it was given | the computed review |
 | 53 | Quiz me on this article (Chrome extension) | 7 | the article the student is reading on any site (text they select, or the page's main text), sent only on a tap | 3 to 5 RC-style questions with explanations, answered in a side panel; results saved to 99ile and its Reading journal | "Save this article" to the Reading journal for a summary, as today |

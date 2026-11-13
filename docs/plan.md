@@ -78,8 +78,8 @@ Ground rule kept: **local-first.** The site works fully with no account and no i
 ### 1G. Needs the backend (Part 2)
 33. Accounts and sync, phone ↔ laptop.
 34. **AI: article → RC set.**
-35. **AI: "Explain my mistake"**, which says why your chosen option is wrong. Uses a small model and few tokens.
-36. **AI: para summary feedback.** You write a one-line summary and the AI grades it against the key idea.
+35. **AI: "Explain my mistake"**, built 13 Nov 2026 for RC (D100, `docs/design/explain-mistake.md`): why your option looked right, the line that settles it and what to check next time, from ids only, checked by code and cached per mistake on `openai/gpt-oss-20b`.
+36. **AI: summary feedback**, built 13 Nov 2026 for RC (D101, `docs/design/explain-mistake.md`): after you tick your own four checks, a second opinion from `openai/gpt-oss-120b` judges the same four without seeing your ticks, quotes your words and says what to change; it never rewrites. Every AI call now needs a Google account and passes a per-address limit and an atomic cap and budget.
 37. Shared daily leaderboard for the RC of the day.
 38. Accountability partner: a read-only progress link for a friend or mentor.
 39. Feedback inbox. Later, a story submission form.

@@ -13,6 +13,7 @@ import { VA_KIND, type VaKind } from "../practice/va/build";
 import NotFound from "./NotFound";
 
 const RemindersView = lazy(() => import("./admin/RemindersView"));
+const AiView = lazy(() => import("./admin/AiView"));
 
 /**
  * The admin page (docs/feature.md F79, B8): problem reports grouped by question, and counts. Only staff get here;
@@ -22,8 +23,8 @@ export default function Admin() {
   const [me, setMe] = useState<StaffMe | null | undefined>(undefined);
   useEffect(() => { if (API_ENABLED) void isStaff().then(setMe); else setMe(null); }, []);
   const can = (p: string) => !!me?.permissions.includes(p);
-  type Tab = "reports" | "overview" | "reminders";
-  const tabs = [can("feedback.read") && "reports", can("stats.read") && "overview", can("stats.read") && "reminders"].filter(Boolean) as Tab[];
+  type Tab = "reports" | "overview" | "reminders" | "ai";
+  const tabs = [can("feedback.read") && "reports", can("stats.read") && "overview", can("stats.read") && "reminders", can("stats.read") && "ai"].filter(Boolean) as Tab[];
   const [tab, setTab] = useState<Tab>("reports");
   const shown = tabs.includes(tab) ? tab : tabs[0];
 
@@ -31,11 +32,12 @@ export default function Admin() {
   if (me === null) return <NotFound />;
   return (
     <Page width="read">
-      <PageHeader title="Admin">Signed in as {me.email}. Problem reports, counts and reminders; no student&rsquo;s answers are ever shown here.</PageHeader>
-      {tabs.length > 1 && <Segmented label="Admin view" value={shown} onChange={setTab} options={([["reports", "Reports"], ["overview", "Overview"], ["reminders", "Reminders"]] as [Tab, string][]).filter(([t]) => tabs.includes(t))} />}
+      <PageHeader title="Admin">Signed in as {me.email}. Problem reports, counts, reminders and AI; no student&rsquo;s answers are ever shown here.</PageHeader>
+      {tabs.length > 1 && <Segmented label="Admin view" className="max-sm:w-full max-sm:flex-nowrap max-sm:[&>button]:flex-1 max-sm:[&>button]:px-2" value={shown} onChange={setTab} options={([["reports", "Reports"], ["overview", "Overview"], ["reminders", "Reminders"], ["ai", "AI"]] as [Tab, string][]).filter(([t]) => tabs.includes(t))} />}
       {shown === "reports" && <Reports canResolve={can("feedback.resolve")} />}
       {shown === "overview" && <OverviewView />}
       {shown === "reminders" && <Suspense fallback={<Skeleton className="h-64 w-full" />}><RemindersView canManage={can("reminders.manage")} /></Suspense>}
+      {shown === "ai" && <Suspense fallback={<Skeleton className="h-64 w-full" />}><AiView /></Suspense>}
     </Page>
   );
 }

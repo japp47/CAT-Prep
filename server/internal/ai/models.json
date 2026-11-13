@@ -1,0 +1,29 @@
+{
+  "_about": "Which AI models 99ile may use, and the order each task tries them in (docs/design/explain-mistake.md, 'Models and keys'). No secrets here: a provider names the environment variable that holds its keys. Change a task's order on Render without a deploy with AI_EXPLAIN / AI_SUMMARY (names from 'models', comma separated). A whole other file: AI_CATALOG=path.",
+  "providers": {
+    "groq": { "baseURL": "https://api.groq.com/openai/v1", "keysEnv": "GROQ_API_KEYS" },
+    "ollama": { "baseURL": "http://localhost:11434/v1" }
+  },
+  "models": {
+    "gpt-oss-20b": {
+      "provider": "groq", "id": "openai/gpt-oss-20b",
+      "params": { "reasoning_effort": "low", "include_reasoning": false }
+    },
+    "gpt-oss-120b": {
+      "provider": "groq", "id": "openai/gpt-oss-120b",
+      "params": { "reasoning_effort": "low", "include_reasoning": false }
+    },
+    "qwen3.8-27b": {
+      "provider": "groq", "id": "qwen/qwen3.8-27b",
+      "params": { "reasoning_effort": "none" }
+    },
+    "ollama-gpt-oss-20b": {
+      "provider": "ollama", "id": "gpt-oss:20b",
+      "params": { "reasoning_effort": "low" }
+    }
+  },
+  "tasks": {
+    "explain": ["gpt-oss-20b", "qwen3.8-27b", "gpt-oss-120b"],
+    "summary": ["gpt-oss-120b", "qwen3.8-27b", "gpt-oss-20b"]
+  }
+}
