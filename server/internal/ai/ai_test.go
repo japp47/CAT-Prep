@@ -110,6 +110,9 @@ func (f *fakeProvider) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case body.Model == "a":
 		w.Header().Set("Retry-After", "42")
 		w.WriteHeader(http.StatusTooManyRequests)
+	case body.Model == "m":
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte(`{"error":{"message":"Failed to validate JSON.","code":"json_validate_failed"}}`))
 	case key == "k1":
 		w.WriteHeader(http.StatusUnauthorized)
 		_, _ = w.Write([]byte(`{"error":{"message":"Invalid API Key k1"}}`))
@@ -166,6 +169,16 @@ func TestRouterFallsBackAcrossModelsAndKeys(t *testing.T) {
 	_, _ = r.JSON(context.Background(), TaskSummary, "", "s", "u", "x", summarySchema)
 	if len(fp.calls) == 0 || fp.calls[0] != "a/k2" {
 		t.Errorf("after the wait: %v", fp.calls)
+	}
+	// A malformed reply (Groq's json_validate_failed) moves on to the next model at once and rests nothing.
+	path3 := t.TempDir() + "/m3.json"
+	_ = os.WriteFile(path3, []byte(fmt.Sprintf(`{"providers":{"p":{"baseURL":%q}},"models":{"m":{"provider":"p","id":"m"},"c":{"provider":"p","id":"c"}},"tasks":{"summary":["m","c"]}}`, srv.URL)), 0o600)
+	r3, _ := LoadRouter(path3, nil, func(string) string { return "" }, slog.New(slog.DiscardHandler))
+	if rep, err := r3.JSON(context.Background(), TaskSummary, "", "s", "u", "x", summarySchema); err != nil || rep.Model != "c" {
+		t.Errorf("after a malformed reply: %+v %v", rep, err)
+	}
+	if st := r3.Status(); st.Models[1].Name != "m" || st.Models[1].State != "ready" || st.Models[1].LastError == "" {
+		t.Errorf("a malformed reply rested the model or was not noted: %+v", st.Models[1])
 	}
 	// A task whose only model rests says busy without a call.
 	path2 := t.TempDir() + "/m.json"

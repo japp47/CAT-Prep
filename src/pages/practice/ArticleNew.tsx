@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import ArticleProgress from "../../components/ArticleProgress";
 import { Field, Page, PageHeader, Section } from "../../components/kit";
 import { NativeSelect } from "../../components/Select";
 import { startArticle, useAi } from "../../lib/ai";
@@ -73,32 +74,6 @@ export default function ArticleNew() {
     } catch { setNote("This file could not be read. Try copying the text instead."); }
   };
 
-  async function poll(p: Pending) {
-    setJob({ phase: "queued" });
-    for (let i = 0; i < 200; i++) {
-      const r = await articleJob(p.job);
-      if (!r.ok) { setJob({ phase: "failed", msg: r.message }); return; }
-      const j = r.data;
-      if (j.state === "done" && j.set) {
-        const id = "art-" + p.job;
-        update((st) => {
-          if (st.articles.some((a) => a.id === id)) return;
-          // The student's title, else the one written with the set, else a plain fallback.
-          st.articles.push({ id, job: p.job, d: todayIso(), updatedAt: Date.now(), title: p.title || j.set!.title || "Your article", origin: p.origin ?? "paste", ...(p.file ? { file: p.file } : {}), ...(p.site ? { site: p.site } : {}), ...(p.link ? { link: p.link } : {}),
-            words: p.paras.reduce((t, x) => t + words(x), 0), dropped: j.set!.dropped, questions: j.set!.questions.map((q) => ({ ...q, lines: q.lines ?? [] })), summary: j.set!.summary });
-        });
-        saveArticleText(id, p.paras);
-        writePending(null);
-        nav("/practice/article/" + encodeURIComponent(id));
-        return;
-      }
-      if (j.state === "failed") { writePending(null); setJob({ phase: "failed", msg: j.error }); return; }
-      setJob({ phase: j.state === "running" ? "running" : "queued" });
-      await new Promise((res) => setTimeout(res, 3000));
-    }
-    setJob({ phase: "failed", msg: "This is taking too long. Your article is still here; try again in a few minutes." });
-  }
-
   const make = async () => {
     if (!fit || !win) return;
     setStarting({});
@@ -122,15 +97,7 @@ export default function ArticleNew() {
       </PageHeader>
 
       {busy ? (
-        <section className="flex flex-col gap-3 rounded-lg bg-card p-5" aria-live="polite">
-          <h2 className="text-lg font-semibold">{job.phase === "running" ? "Writing and checking your questions" : "Your set is in the queue"}</h2>
-          <p className="text-base text-muted-foreground">
-            {job.phase === "running" ? "One AI writes four questions; a second answers them without the key, and any it gets wrong are left out. About half a minute."
-              : "The free AI takes a few requests a minute, so sets are made one at a time. It starts shortly."}
-          </p>
-          <div className="h-1.5 overflow-hidden rounded-full bg-muted"><div className="h-full w-full animate-pulse rounded-full bg-primary/60 motion-reduce:animate-none" /></div>
-          <p className="text-sm text-muted-foreground">You can leave this page and carry on: we will tell you on any page when it is ready.</p>
-        </section>
+        <ArticleProgress job={job} />
       ) : (
         <>
           <Section title="Your article">

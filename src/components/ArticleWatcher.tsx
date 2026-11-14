@@ -63,7 +63,7 @@ export default function ArticleWatcher() {
         if (where.current !== ARTICLE_PAGE) toast(j.error ?? "The set could not be made.", { duration: 12_000, action: { label: "Open", onClick: () => nav(ARTICLE_PAGE) } });
         return;
       }
-      setJobState({ phase: j.state === "running" ? "running" : "queued" });
+      setJobState({ phase: j.state === "running" ? "running" : "queued", stage: j.stage, ahead: j.ahead });
       setTimeout(tick, 3000);
     };
     void tick();

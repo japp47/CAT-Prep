@@ -7,7 +7,7 @@ import type { ArticleOrigin } from "../practice/articleText";
  * localStorage, so it survives a reload; one at a time. Tiny on purpose: it is in the first download.
  */
 export interface Pending { job: string; title: string; site: string; link: string; paras: string[]; at: number; origin: ArticleOrigin; file?: string }
-export interface JobState { phase: "queued" | "running" | "failed"; msg?: string }
+export interface JobState { phase: "queued" | "running" | "failed"; msg?: string; stage?: "queued" | "writing" | "checking" | "waiting"; ahead?: number }
 
 const KEY = "cat-prep-article-pending";
 /** A set not done in 30 minutes is given up on; the job on the server ends well before. */

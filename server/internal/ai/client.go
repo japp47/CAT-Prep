@@ -21,12 +21,13 @@ var ErrBusy = errors.New("the model is busy")
 type outcome int
 
 const (
-	callOK      outcome = iota
-	callLimited         // 429: this model's quota for the account; wait retryAfter, try the next model
-	callKey             // 401 or 403: this key is revoked or wrong; try the next key
-	callGone            // 404: no such model here (retired or misspelt)
-	callBusy            // 5xx, a timeout or a network error: try the next model, come back soon
-	callBad             // another 4xx: the request itself was refused
+	callOK        outcome = iota
+	callLimited           // 429: this model's quota for the account; wait retryAfter, try the next model
+	callKey               // 401 or 403: this key is revoked or wrong; try the next key
+	callGone              // 404: no such model here (retired or misspelt)
+	callBusy              // 5xx, a timeout or a network error: try the next model, come back soon
+	callBad               // another 4xx: the request itself was refused
+	callMalformed         // 400 json_validate_failed: this one reply broke the schema; the next try usually lands
 )
 
 type result struct {
@@ -76,6 +77,9 @@ func call(ctx context.Context, hc *http.Client, baseURL, key, model string, para
 		return result{outcome: callGone, detail: fmt.Sprintf("404 %.160s", reply)}
 	case code >= 500:
 		return result{outcome: callBusy, detail: fmt.Sprintf("%d from the provider", code)}
+	case code == http.StatusBadRequest && bytes.Contains(reply, []byte("json_validate_failed")):
+		// The model's reply did not fit the schema (or was cut off): a fault of this reply, not of our request.
+		return result{outcome: callMalformed, detail: "400 the reply did not fit the schema"}
 	case code != http.StatusOK:
 		return result{outcome: callBad, detail: fmt.Sprintf("%d %.200s", code, reply)}
 	}
