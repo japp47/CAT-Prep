@@ -34,7 +34,7 @@ func TestCallAsksForStrictJSONWithTheModelsOwnSettings(t *testing.T) {
 		_, _ = w.Write([]byte(`{"choices":[{"message":{"content":"{\"a\":1}"}}],"usage":{"total_tokens":321}}`))
 	}))
 	defer srv.Close()
-	res := call(context.Background(), srv.Client(), srv.URL+"/v1", "k", "qwen/qwen3.8-27b", map[string]any{"reasoning_effort": "none"}, "sys", "user", "summary_checks", summarySchema)
+	res := call(context.Background(), srv.Client(), srv.URL+"/v1", "k", "qwen/qwen3.8-27b", map[string]any{"reasoning_effort": "none"}, "sys", "user", "summary_checks", summarySchema, 1500)
 	if res.outcome != callOK || res.raw != `{"a":1}` || res.tokens != 321 || auth != "Bearer k" {
 		t.Fatalf("%+v auth %q", res, auth)
 	}

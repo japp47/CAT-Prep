@@ -52,7 +52,7 @@ export interface ArticleStart { title: string; site: string; link: string; paras
 export const startArticle = (a: ArticleStart) => api<{ job: string }>("/ai/article", a);
 export interface ArticleJob {
   state: "queued" | "running" | "done" | "failed";
-  set?: { title?: string; questions: { type: string; stem: string; options: string[]; answer: number; notes: string[]; traps: string[]; lines: [number, number][] }[]; summary: { model: string; claim: string; qualifier: string; tone: string; toneCue: string; toneWhy: string }; dropped: number };
+  set?: { title?: string; questions: { type: string; stem: string; options: string[]; answer: number; notes: string[]; traps: string[]; lines: [number, number][] | null; proof?: number[] }[]; summary: { model: string; claim: string; qualifier: string; tone: string; toneCue: string; toneWhy: string }; dropped: number };
   error?: string;
 }
 export const articleJob = (job: string) => api<ArticleJob>("/ai/article/" + encodeURIComponent(job));
