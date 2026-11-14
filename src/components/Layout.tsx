@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { useFocus } from "../lib/focus";
 import { whenIdle } from "../lib/idle";
 import { API_ENABLED } from "../lib/api";
+import { useHasPending } from "../lib/articleJobs";
 import { usePref } from "../lib/prefs";
 import { RedoSeeder } from "./Content";
 import { AutoTicker } from "./AutoTicker";
@@ -22,6 +23,8 @@ import SiteHeader, { PRACTICE_PATH, SiteNavLink } from "./SiteHeader";
 import { SidebarNav } from "./Sidebar";
 import ThemeToggle, { type Theme as ThemeValue } from "./ThemeToggle";
 const SearchPalette = lazy(() => import("./SearchPalette"));
+// Watches an article set being made, on any page (F34); loaded only while one is.
+const ArticleWatcher = lazy(() => import("./ArticleWatcher"));
 
 /** Shown for the moment a page's code is loading. */
 function PageSkeleton() {
@@ -97,6 +100,7 @@ export default function Layout() {
   };
   const navigateFromSearch = (href: string) => navigate(href, { replace: searchOpen });
   const { run } = useFocus();
+  const making = useHasPending();
   useTheme();
   const [sidebarCollapsed, setSidebarCollapsed] = usePref<boolean>("sidebar-collapsed", false);
   const landing = loc.pathname === "/";
@@ -176,6 +180,7 @@ export default function Layout() {
       <RedoSeeder />
       <AutoTicker />
       {idle && <Suspense fallback={null}><Toaster /></Suspense>}
+      {API_ENABLED && making && <Suspense fallback={null}><ArticleWatcher /></Suspense>}
       {idle && API_ENABLED && weeklyReview && <Suspense fallback={null}><WeekMailer /></Suspense>}
 
       <nav aria-label="Quick" className={BOTTOM_BAR}>

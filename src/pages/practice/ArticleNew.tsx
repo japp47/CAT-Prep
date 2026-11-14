@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ClipboardPaste, FileUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,22 +7,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { Field, Page, PageHeader, Section } from "../../components/kit";
 import { NativeSelect } from "../../components/Select";
-import { articleJob, startArticle, useAi } from "../../lib/ai";
-import { todayIso } from "../../lib/date";
+import { startArticle, useAi } from "../../lib/ai";
+import { readPending, setJobState, setPending, useJobState, type Pending } from "../../lib/articleJobs";
 import { startSignIn } from "../../lib/sync/runner";
 import { useStore } from "../../lib/store";
-import { articleLine, saveArticleText } from "../../practice/articleSet";
+import { articleLine } from "../../practice/articleSet";
 import { chooseWindow, cleanArticle, fitCheck, headline, MAX_WORDS, MIN_WORDS, safeLink, siteOf, toSentences, type ArticleOrigin } from "../../practice/articleText";
 import { words } from "../../practice/types";
 
 /** Limits before anything is read: a 10 MB file, and 200,000 characters of text (a long article is about 10,000). */
 const MAX_FILE = 10 * 1048576, MAX_CHARS = 200_000;
-
-/** A job still being made, kept across a reload so the student can leave the page (D104). */
-const PENDING = "cat-prep-article-pending";
-interface Pending { job: string; title: string; site: string; link: string; paras: string[]; at: number; origin: ArticleOrigin; file?: string }
-const readPending = (): Pending | null => { try { return JSON.parse(localStorage.getItem(PENDING) ?? "null") as Pending | null; } catch { return null; } };
-const writePending = (p: Pending | null) => { try { if (p) localStorage.setItem(PENDING, JSON.stringify(p)); else localStorage.removeItem(PENDING); } catch { /* the job still runs */ } };
 
 /**
  * Practise an article (F34, D104, D107; docs/design/article-to-rc.md): paste or upload an article, see whether it is
@@ -31,8 +25,7 @@ const writePending = (p: Pending | null) => { try { if (p) localStorage.setItem(
  */
 export default function ArticleNew() {
   const ai = useAi();
-  const nav = useNavigate();
-  const { state, update } = useStore();
+  const { state } = useStore();
   const [raw, setRaw] = useState("");
   const [title, setTitle] = useState("");
   const [site, setSite] = useState("");
@@ -40,7 +33,10 @@ export default function ArticleNew() {
   const [note, setNote] = useState("");
   const [range, setRange] = useState<[number, number] | null>(null);
   const [origin, setOrigin] = useState<{ kind: ArticleOrigin; file?: string }>({ kind: "paste" });
-  const [job, setJob] = useState<{ phase: "starting" | "queued" | "running" | "failed"; msg?: string } | null>(null);
+  // Progress lives in lib/articleJobs.ts: the watcher in the site's frame finishes the set on any page (F34).
+  const shared = useJobState();
+  const [starting, setStarting] = useState<{ msg?: string } | null>(null);
+  const job = starting && !starting.msg ? { phase: "starting" as const } : starting?.msg ? { phase: "failed" as const, msg: starting.msg } : shared;
   const file = useRef<HTMLInputElement>(null);
 
   const paras = useMemo(() => cleanArticle(raw), [raw]);
@@ -50,8 +46,8 @@ export default function ArticleNew() {
   const whole = paras.reduce((t, p) => t + words(p), 0);
   const ready = !!fit && fit.words >= MIN_WORDS && fit.words <= MAX_WORDS;
 
-  // A set being made when the page was left: carry on waiting for it.
-  useEffect(() => { const p = readPending(); if (p && Date.now() - p.at < 30 * 60_000) { setRaw(p.paras.join("\n\n")); setTitle(p.title); setSite(p.site); setLink(p.link); poll(p); } }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // A set being made when the page was left: show its article again; the watcher is still waiting for it.
+  useEffect(() => { const p = readPending(); if (p) { setRaw(p.paras.join("\n\n")); setTitle(p.title); setSite(p.site); setLink(p.link); } }, []);
 
   /** New text in: its origin, and a title from its headline (or the file's name) when the student has not typed one. */
   const take = (text: string, from: { kind: ArticleOrigin; file?: string }, fallbackTitle = "") => {
@@ -105,13 +101,14 @@ export default function ArticleNew() {
 
   const make = async () => {
     if (!fit || !win) return;
-    setJob({ phase: "starting" });
+    setStarting({});
+    setJobState(null);
     const web = safeLink(link), from = site.trim() || siteOf(web);
     const r = await startArticle({ title: title.trim(), site: from, link: web, paras: toSentences(chosen) });
-    if (!r.ok) { setJob({ phase: "failed", msg: r.message }); return; }
+    if (!r.ok) { setStarting({ msg: r.message }); return; }
     const p: Pending = { job: r.data.job, title: title.trim(), site: from, link: web, paras: chosen, at: Date.now(), origin: origin.kind, ...(origin.file ? { file: origin.file } : {}) };
-    writePending(p);
-    void poll(p);
+    setStarting(null);
+    setPending(p);
   };
 
   const mine = [...state.articles].sort((a, b) => b.updatedAt - a.updatedAt);
@@ -132,7 +129,7 @@ export default function ArticleNew() {
               : "The free AI takes a few requests a minute, so sets are made one at a time. It starts shortly."}
           </p>
           <div className="h-1.5 overflow-hidden rounded-full bg-muted"><div className="h-full w-full animate-pulse rounded-full bg-primary/60 motion-reduce:animate-none" /></div>
-          <p className="text-sm text-muted-foreground">You can leave this page: the set waits here for 30 minutes.</p>
+          <p className="text-sm text-muted-foreground">You can leave this page and carry on: we will tell you on any page when it is ready.</p>
         </section>
       ) : (
         <>
