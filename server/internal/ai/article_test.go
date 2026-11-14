@@ -81,9 +81,24 @@ func TestCheckWriterTurnsReferencesIntoLinesAndRefusesBadSets(t *testing.T) {
 	if err != nil || len(set.Questions) != 4 || set.Questions[0].Lines[0] != [2]int{0, 0} || set.Summary.Tone != "analytical" || set.Title != "Why cities grow outward" {
 		t.Fatalf("a good set refused: %v %+v", err, set)
 	}
+	// Three traps, one per wrong option, get an empty slot at the answer.
+	three := goodWriter()
+	three["questions"].([]any)[2].(map[string]any)["traps"] = []string{"Out of scope", "Out of scope", "Distorts the passage"}
+	raw, _ = json.Marshal(three)
+	if set, err := checkWriter(string(raw), a); err != nil || set.Questions[2].Traps[0] != "" || set.Questions[2].Traps[3] != "Distorts the passage" {
+		t.Errorf("three traps: %v", err)
+	}
+	// A main idea citing five sentences keeps its paragraphs for the review but offers no Prove it.
+	wide := goodWriter()
+	wide["questions"].([]any)[0].(map[string]any)["lines"] = []int{1, 2, 7, 8, 13}
+	raw, _ = json.Marshal(wide)
+	if set, err := checkWriter(string(raw), a); err != nil || set.Questions[0].Lines != nil || fmt.Sprint(set.Questions[0].Proof) != "[0 1 2]" {
+		t.Errorf("five lines: %v %+v", err, set)
+	}
 	for name, change := range map[string]func(m map[string]any){
 		"three questions":      func(m map[string]any) { m["questions"] = m["questions"].([]any)[:3] },
 		"a sentence not there": func(m map[string]any) { m["questions"].([]any)[1].(map[string]any)["lines"] = []int{99} },
+		"no line at all":       func(m map[string]any) { m["questions"].([]any)[1].(map[string]any)["lines"] = []int{} },
 		"a trap on the answer": func(m map[string]any) {
 			m["questions"].([]any)[0].(map[string]any)["traps"] = []string{"Out of scope", "Out of scope", "Out of scope", "Out of scope"}
 		},

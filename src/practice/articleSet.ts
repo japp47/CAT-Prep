@@ -20,7 +20,7 @@ export function articleRcSet(e: ArticleEntry, paras: string[]): RcSet {
     id: e.id, title: e.title, genre: "society", difficulty: n > 800 ? "hard" : "medium", paras, recall: [],
     questions: e.questions.map((q) => ({
       type: q.type as RcQType, stem: q.stem, answer: q.answer,
-      proof: [...new Set(q.lines.map(([p]) => p))],
+      proof: q.proof?.length ? q.proof : [...new Set(q.lines.map(([p]) => p))],
       lines: q.lines.map(([p, s]) => cut[p]?.[s]).filter((l): l is string => !!l),
       options: q.options.map((t, i) => ({ t, why: q.notes[i] ?? "", ...(q.traps[i] ? { trap: q.traps[i] as OptionTrap } : {}) })),
     })),

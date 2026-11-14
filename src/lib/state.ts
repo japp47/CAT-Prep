@@ -129,7 +129,8 @@ export interface ArticleEntry {
   id: string; job: string; d: string; updatedAt: number; title: string; site?: string; link?: string; words: number; dropped: number;
   /** How it came in (practice/articleText.ts, ORIGIN_LABEL), and the file's name when it was a file. */
   origin?: "paste" | "pdf" | "txt" | "extension" | "share"; file?: string;
-  questions: { type: string; stem: string; options: string[]; answer: number; notes: string[]; traps: string[]; lines: [number, number][] }[];
+  /** lines: the deciding sentences for Prove it (empty when no one line settles it); proof: their paragraphs. */
+  questions: { type: string; stem: string; options: string[]; answer: number; notes: string[]; traps: string[]; lines: [number, number][]; proof?: number[] }[];
   summary: { model: string; claim: string; qualifier: string; tone: string; toneCue: string; toneWhy: string };
 }
 
@@ -362,6 +363,7 @@ export function normalize(raw: unknown): AppState {
       questions: list(x.questions, (q) => ({
         type: str(q.type), stem: str(q.stem), options: strs(q.options), answer: num(q.answer), notes: strs(q.notes), traps: strs(q.traps),
         lines: (Array.isArray(q.lines) ? q.lines : []).filter((l: unknown): l is [number, number] => Array.isArray(l) && l.length === 2 && l.every((n) => Number.isInteger(n) && n >= 0)),
+        ...(Array.isArray(q.proof) ? { proof: q.proof.filter((n: unknown): n is number => Number.isInteger(n) && (n as number) >= 0) } : {}),
       })).filter((q) => q.stem && q.options.length === 4 && q.answer >= 0 && q.answer < 4),
       summary: { model: str(sm.model), claim: str(sm.claim), qualifier: str(sm.qualifier), tone: str(sm.tone), toneCue: str(sm.toneCue), toneWhy: str(sm.toneWhy) },
     };

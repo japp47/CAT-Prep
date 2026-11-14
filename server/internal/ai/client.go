@@ -39,9 +39,9 @@ type result struct {
 
 // call makes one OpenAI-compatible /chat/completions request (Groq, Ollama and others speak the same API) for strict
 // JSON output: body is the model's settings from models.json, to which this adds the model, messages and schema.
-func call(ctx context.Context, hc *http.Client, baseURL, key, model string, params map[string]any, system, user, name string, schema any) result {
-	// The limit covers the model's hidden reasoning too, so it leaves room for medium effort (D106).
-	body := map[string]any{"temperature": 0.2, "max_completion_tokens": 1500}
+func call(ctx context.Context, hc *http.Client, baseURL, key, model string, params map[string]any, system, user, name string, schema any, maxTokens int) result {
+	// The limit covers the model's hidden reasoning too (D106); it is set per task (router.go, replyLimit).
+	body := map[string]any{"temperature": 0.2, "max_completion_tokens": maxTokens}
 	for k, v := range params {
 		body[k] = v
 	}

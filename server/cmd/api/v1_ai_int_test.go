@@ -521,7 +521,7 @@ func TestArticleSets(t *testing.T) {
 	before := model.calls.Load()
 	if code, job := start(b, testArticle("four")); code != http.StatusAccepted {
 		t.Fatalf("bad start: %d", code)
-	} else if state, res := waitJob(t, b, job); state != "failed" || !strings.Contains(fmt.Sprint(res["error"]), "fair set") || model.calls.Load() != before+4 {
+	} else if state, res := waitJob(t, b, job); state != "failed" || !strings.Contains(fmt.Sprint(res["error"]), "fair set") || model.calls.Load() != before+6 {
 		t.Errorf("not fair: %s %v, %d calls", state, res, model.calls.Load()-before)
 	}
 	model.bad.Store(false)

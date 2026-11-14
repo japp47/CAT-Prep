@@ -89,7 +89,7 @@ export default function ArticleNew() {
           if (st.articles.some((a) => a.id === id)) return;
           // The student's title, else the one written with the set, else a plain fallback.
           st.articles.push({ id, job: p.job, d: todayIso(), updatedAt: Date.now(), title: p.title || j.set!.title || "Your article", origin: p.origin ?? "paste", ...(p.file ? { file: p.file } : {}), ...(p.site ? { site: p.site } : {}), ...(p.link ? { link: p.link } : {}),
-            words: p.paras.reduce((t, x) => t + words(x), 0), dropped: j.set!.dropped, questions: j.set!.questions, summary: j.set!.summary });
+            words: p.paras.reduce((t, x) => t + words(x), 0), dropped: j.set!.dropped, questions: j.set!.questions.map((q) => ({ ...q, lines: q.lines ?? [] })), summary: j.set!.summary });
         });
         saveArticleText(id, p.paras);
         writePending(null);

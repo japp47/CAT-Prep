@@ -214,7 +214,7 @@ func (r *Router) JSON(ctx context.Context, task, avoid, system, user, name strin
 			if err := ctx.Err(); err != nil {
 				return Reply{}, fmt.Errorf("%w: %v", ErrBusy, err)
 			}
-			res := call(ctx, r.HTTP, m.p.baseURL, k.secret, m.id, m.params, system, user, name, schema)
+			res := call(ctx, r.HTTP, m.p.baseURL, k.secret, m.id, m.params, system, user, name, schema, replyLimit(task))
 			if r.Record != nil {
 				r.Record(m.name, res.outcome, res.tokens)
 			}
@@ -353,4 +353,18 @@ func (r *Router) Has(task string) bool {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	return len(r.order[task]) > 0
+}
+
+// replyLimit is the most tokens a task's reply may use, hidden reasoning included. A summary check fits in 1,500
+// (D106's eval). An article set is four questions with four options and a note each, a summary and a title: about
+// 1,200 tokens of JSON, and up to as much again of reasoning. At 1,500 Groq cut the reply off and refused it as
+// invalid JSON (14 Nov 2026), so the writer has 5,000 and the checker 2,500.
+func replyLimit(task string) int {
+	switch task {
+	case TaskArticle:
+		return 5000
+	case TaskArticleTest:
+		return 2500
+	}
+	return 1500
 }
