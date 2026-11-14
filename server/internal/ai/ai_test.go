@@ -55,7 +55,7 @@ func TestTheBuiltInCatalogLoads(t *testing.T) {
 		t.Fatal(err)
 	}
 	st := r.Status()
-	if strings.Join(st.Tasks[TaskSummary], ",") != "gpt-oss-120b,gpt-oss-20b" || strings.Join(st.Tasks[TaskArticleTest], ",") != "gpt-oss-20b,gpt-oss-120b" || !r.Has(TaskArticle) {
+	if strings.Join(st.Tasks[TaskSummary], ",") != "gpt-oss-120b,gpt-oss-20b" || strings.Join(st.Tasks[TaskArticleTest], ",") != "gpt-oss-120b,gpt-oss-20b" || !r.Has(TaskArticle) {
 		t.Errorf("orders %v", st.Tasks)
 	}
 	for _, p := range st.Providers {

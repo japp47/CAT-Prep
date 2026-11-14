@@ -95,8 +95,8 @@ func TestCheckWriterTurnsReferencesIntoLinesAndRefusesBadSets(t *testing.T) {
 	if set, err := checkWriter(string(raw), a); err != nil || set.Questions[0].Lines != nil || fmt.Sprint(set.Questions[0].Proof) != "[0 1 2]" {
 		t.Errorf("five lines: %v %+v", err, set)
 	}
+	// A slip in one question drops that question; the other three make the set.
 	for name, change := range map[string]func(m map[string]any){
-		"three questions":      func(m map[string]any) { m["questions"] = m["questions"].([]any)[:3] },
 		"a sentence not there": func(m map[string]any) { m["questions"].([]any)[1].(map[string]any)["lines"] = []int{99} },
 		"no line at all":       func(m map[string]any) { m["questions"].([]any)[1].(map[string]any)["lines"] = []int{} },
 		"a trap on the answer": func(m map[string]any) {
@@ -108,6 +108,21 @@ func TestCheckWriterTurnsReferencesIntoLinesAndRefusesBadSets(t *testing.T) {
 		"an unknown type": func(m map[string]any) { m["questions"].([]any)[2].(map[string]any)["type"] = "vocabulary" },
 		"a repeated option": func(m map[string]any) {
 			m["questions"].([]any)[0].(map[string]any)["options"] = []string{"A", "A", "B", "C"}
+		},
+	} {
+		m := goodWriter()
+		change(m)
+		raw, _ := json.Marshal(m)
+		if set, err := checkWriter(string(raw), a); err != nil || len(set.Questions) != 3 || set.Skipped != 1 {
+			t.Errorf("%s: %v, want the other three kept", name, err)
+		}
+	}
+	// Fewer than three good questions, or a faulty summary, refuse the set.
+	for name, change := range map[string]func(m map[string]any){
+		"two questions": func(m map[string]any) { m["questions"] = m["questions"].([]any)[:2] },
+		"two slips": func(m map[string]any) {
+			m["questions"].([]any)[0].(map[string]any)["type"] = "vocabulary"
+			m["questions"].([]any)[1].(map[string]any)["lines"] = []int{99}
 		},
 		"a cue not in the text": func(m map[string]any) { m["summary"].(map[string]any)["toneCue"] = "words the author never wrote" },
 		"a claim not in it":     func(m map[string]any) { m["summary"].(map[string]any)["claim"] = "something else" },
@@ -121,6 +136,15 @@ func TestCheckWriterTurnsReferencesIntoLinesAndRefusesBadSets(t *testing.T) {
 		if _, err := checkWriter(string(raw), a); err == nil {
 			t.Errorf("%s: accepted", name)
 		}
+	}
+	// Five agreed questions are trimmed to a set of four.
+	five := goodWriter()
+	five["questions"] = append(five["questions"].([]any), five["questions"].([]any)[0])
+	raw, _ = json.Marshal(five)
+	if set, err := checkWriter(string(raw), a); err != nil || len(set.Questions) != 5 {
+		t.Fatalf("five: %v", err)
+	} else if _, err := keepAgreed(`{"answers":[{"question":1,"line":1,"choice":0},{"question":2,"line":1,"choice":0},{"question":3,"line":1,"choice":0},{"question":4,"line":1,"choice":0},{"question":5,"line":1,"choice":0}]}`, set); err != nil || len(set.Questions) != 4 || set.Dropped != 0 {
+		t.Errorf("five agreed: %d kept, %d dropped, %v", len(set.Questions), set.Dropped, err)
 	}
 }
 
