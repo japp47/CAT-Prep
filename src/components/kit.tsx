@@ -86,9 +86,9 @@ export function Tnum({ children }: { children: string }) {
 
 export function Stat({ value, label, className }: { value: ReactNode; label: ReactNode; className?: string }) {
   return (
-    <div className={cn("flex flex-col", className)}>
-      <span className="text-heading font-semibold">{value}</span>
-      <span className="text-sm text-muted-foreground">{label}</span>
+    <div className={cn("flex min-w-0 flex-col", className)}>
+      <span className="min-w-0 text-heading font-semibold [overflow-wrap:anywhere]">{value}</span>
+      <span className="min-w-0 text-sm text-muted-foreground [overflow-wrap:anywhere]">{label}</span>
     </div>
   );
 }

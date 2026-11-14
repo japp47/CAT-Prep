@@ -34,8 +34,8 @@ export default function AiView() {
         <Section title="Models, in the order each task tries them" description="When a model is over its limit it rests for as long as the provider asks, and the next one answers.">
           <div className="grid gap-4 sm:grid-cols-2">
             {Object.entries(r.tasks).map(([task, names]) => (
-              <div key={task} className="flex flex-col gap-3 rounded-lg bg-card p-5">
-                <h3 className="text-base font-semibold">{TASK[task] ?? task}</h3>
+              <div key={task} className="flex min-w-0 flex-col gap-3 rounded-lg bg-card p-5">
+                <h3 className="text-base font-semibold [overflow-wrap:anywhere]">{TASK[task] ?? task}</h3>
                 <ol className="flex flex-col gap-3">
                   {names.map((name, i) => <ModelRow key={name} m={byName.get(name)} name={name} first={i === 0} />)}
                 </ol>
@@ -64,7 +64,7 @@ export default function AiView() {
                   {s.days.map((d) => (
                     <tr key={d.day + d.model} className={TR}>
                       <td className="px-4 py-3 whitespace-nowrap">{d.day.slice(5)}</td>
-                      <td className="px-4 py-3">{d.model}</td>
+                      <td className="px-4 py-3 [overflow-wrap:anywhere]">{d.model}</td>
                       {[d.answered, d.refused, d.limited, d.failed, d.tokens].map((v, i) => <td key={i} className="px-4 py-3 text-right"><N v={v} /></td>)}
                     </tr>
                   ))}
@@ -73,8 +73,8 @@ export default function AiView() {
             </div>
             <ul className="flex flex-col gap-px overflow-hidden rounded-lg bg-background sm:hidden">
               {s.days.map((d) => (
-                <li key={d.day + d.model} className="flex flex-col gap-0.5 bg-card px-4 py-3.5">
-                  <span className="text-base font-semibold">{d.model}, {d.day.slice(5)}</span>
+                <li key={d.day + d.model} className="flex min-w-0 flex-col gap-0.5 bg-card px-4 py-3.5">
+                  <span className="text-base font-semibold [overflow-wrap:anywhere]">{d.model}, {d.day.slice(5)}</span>
                   <span className="text-base"><N v={d.answered} /> answered, <N v={d.refused} /> refused, <N v={d.limited} /> limited, <N v={d.failed} /> failed</span>
                   <span className="text-base text-muted-foreground"><N v={d.tokens} /> tokens</span>
                 </li>
@@ -90,10 +90,10 @@ export default function AiView() {
 function ModelRow({ m, name, first }: { m?: AiModelStatus; name: string; first: boolean }) {
   const state = !m ? "" : m.state === "resting" ? `Resting until ${time(m.until)}` : m.state === "no key" ? "No key set" : first ? "Ready, answers first" : "Ready";
   return (
-    <li className="flex flex-col gap-0.5">
-      <span className="text-base"><span className="font-medium">{name}</span> <span className="text-muted-foreground">{m?.id}</span></span>
-      <span className={cn("text-sm", m?.state === "ready" ? "text-success" : "text-muted-foreground")}>{state}{m?.lastOk ? `, last answer at ${time(m.lastOk)}` : ""}</span>
-      {m?.lastError && <span className="text-sm text-muted-foreground">Last problem at {time(m.lastErrorAt)}: {m.lastError}</span>}
+    <li className="flex min-w-0 flex-col gap-0.5">
+      <span className="text-base [overflow-wrap:anywhere]"><span className="font-medium">{name}</span> <span className="text-muted-foreground">{m?.id}</span></span>
+      <span className={cn("text-sm [overflow-wrap:anywhere]", m?.state === "ready" ? "text-success" : "text-muted-foreground")}>{state}{m?.lastOk ? `, last answer at ${time(m.lastOk)}` : ""}</span>
+      {m?.lastError && <span className="text-sm text-muted-foreground [overflow-wrap:anywhere]">Last problem at {time(m.lastErrorAt)}: {m.lastError}</span>}
     </li>
   );
 }

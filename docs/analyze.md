@@ -2,7 +2,7 @@
 
 Checks that the spec (`docs/feature.md`), the plan (`docs/plan.md`, `docs/architecture.md`) and the code agree, before the next step is built.
 Redo this check at the start of each step; add findings at the top of section 3 with the date.
-Last updated 1 Nov 2026 (DI research and plan, F90 to F96; before that DILR Replay and the CAT-pattern RC sets; older sections kept below).
+Last updated 14 Nov 2026 (article practice page layout; admin responsive layout; DI research and plan, F90 to F96; older sections kept below).
 
 ---
 
@@ -76,6 +76,36 @@ The research is a product review (sections 1 to 8), a backend plan, and a note o
 Thinking practice (Arcade, Manager Lab, DILR and Quant ideas), community, and reminders. **Adopted** as F56 to F78 with these changes: CAT Coach first, nothing moves DILR or Quant; the Arcade is one daily puzzle in four DILR-like kinds, generated and proved unique by code; Manager Lab becomes the manager track after CAT 2027, in two seasons (getting in, then ready for the MBA), with PI, GD and MBA-ready basics added; community starts from discussions under our own questions with a spoiler gate, then the doubt forum, then private groups, public communities last; reminders go to the inbox first and web push only where it works. **Not adopted:** Sudoku and chess, direct messages, a social feed, image uploads at first, public communities at launch, more than one reminder a day.
 
 ## 3. Consistency check: spec vs plan vs code
+
+### 14 Nov 2026, article practice page
+
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A155 | The long introduction and form competed for the first screen | The paste action and article editor were hard to find on a phone | Shorten the introduction and bring the editor forward |
+| A156 | The form had no visual path from pasted text to a checked CAT set | The selection preview and privacy details felt like more form fields | Give the editor one clear column and a separate, responsive guide |
+
+**D109.** The article page is an editorial workspace: a focused article editor, passage preview and next action beside a short, stacked guide that explains the process and privacy.
+
+### 14 Nov 2026, admin layout and text wrapping
+
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A152 | The admin dashboard used the 760px reading layout despite having count grids and wide tables | Dense data looked cramped on desktop | Use the shared 1120px page width; keep the intro at the reading measure |
+| A153 | The four admin tabs were forced onto one line on phones | Labels competed for width and could spill out | Let the tab row wrap into two columns on narrow screens |
+| A154 | Report notes, reminder labels and provider/model details can contain long unbroken strings | Text could widen cards or the page on either screen size | Apply safe wrapping to dynamic text and shared stats; keep intentional table scrolling |
+
+**D108.** The admin dashboard uses the wide page layout, phone tabs wrap, and dynamic text wraps within its content.
+
+### 14 Nov 2026, article questions as hard as CAT's (D108; `docs/design/article-to-rc.md`)
+
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A152 | On three real articles the writer never put the answer at D (A 5, B 4, C 3) | Students learn a letter | Answers rotated across A to D in code, seeded by the article's hash |
+| A153 | Wrong options were easy to rule out ("solely", "government policy", "stay the same"); a right answer overstated the author's "may partly" | Easier than CAT; a careful reader marked wrong | The writer's prompt teaches CAT's option craft: each wrong option reuses the passage and differs in one way named by its trap; the right one keeps the author's strength and is paraphrased; a worked example |
+| A154 | Giveaways were not measured | Quality judged by feel | `article_eval_test.go` (`-tags articleeval`): right option clearly the longest, two or more absolute wrong options, the right option copied from the text, answers by letter, checker drops; the code drops a question with a giveaway |
+| A155 | First thresholds refused good questions (a hedged answer runs longer; "only" and "all" sit in fair options; the small model shortens trap names) | Two articles in three failed | Longest means 1.5 times the longest wrong option; only true absolutes count; short trap names mapped to ours |
+
+**D108.** Article questions are held to CAT's craft by the writer's prompt and by code (giveaways dropped, answers spread), measured by the article eval: after the change, three of three articles made sets with no giveaway and answers spread A 3, B 3, C 2, D 3. Still open: right answers that run longest just under the cutoff, and an occasional overstated answer; an editor pass is the next step.
 
 ### 14 Nov 2026, getting the article in and where it lives (D107; `docs/design/article-to-rc.md`)
 

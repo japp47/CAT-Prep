@@ -23,7 +23,7 @@ func sampleArticle() *ArticleIn {
 func goodWriter() map[string]any {
 	q := func(t string) map[string]any {
 		return map[string]any{"type": t, "stem": "According to the passage, what drives the growth of cities?",
-			"options": []string{"Cheap land at the edge", "Better roads alone", "Rising birth rates", "Government decree"},
+			"options": []string{"Cheap land at the edge draws growth", "Better roads alone draw growth outward", "Rising birth rates in the old centre", "A government decree on land use"},
 			"answer":  0, "notes": []string{"Sentence 1 says cheap land draws firms.", "Roads are not named as the cause.", "Births are not discussed at all.", "No decree is mentioned anywhere."},
 			"traps": []string{"", "Out of scope", "Out of scope", "Distorts the passage"}, "lines": []int{1}}
 	}
@@ -160,5 +160,49 @@ func TestTheCheckerDropsQuestionsItMisses(t *testing.T) {
 	p := checkerPrompt(sampleArticle(), set)
 	if strings.Contains(p, "Out of scope") || strings.Contains(p, "Sentence 1 says") || !strings.Contains(p, "A. Cheap land at the edge") {
 		t.Error("the checker prompt leaks the key or lacks the options")
+	}
+}
+
+func TestGiveawaysAreDroppedAndAnswersSpread(t *testing.T) {
+	a := sampleArticle()
+	for name, opts := range map[string][]string{
+		"two extreme wrong options":    {"Cheap land at the edge draws growth", "Roads always draw growth outward", "Birth rates never matter here at all", "A government decree on land use"},
+		"a right option twice as long": {"Cheap land at the edge draws firms and families outward over many long years", "Better roads draw growth", "Birth rates in the centre", "A decree on land"},
+		"the right option copied":      {"cheap land at the edge draws firms and families", "Better roads alone draw growth outward", "Rising birth rates in the old centre", "A government decree on land use"},
+	} {
+		m := goodWriter()
+		m["questions"].([]any)[0].(map[string]any)["options"] = opts
+		raw, _ := json.Marshal(m)
+		if set, err := checkWriter(string(raw), a); err != nil || len(set.Questions) != 3 || set.Skipped != 1 {
+			t.Errorf("%s: %v, want it dropped and three kept", name, err)
+		}
+	}
+	raw, _ := json.Marshal(goodWriter())
+	set, _ := checkWriter(string(raw), a)
+	right := set.Questions[0].Options[set.Questions[0].Answer]
+	spreadAnswers(set, 1)
+	seen := map[int]bool{}
+	for i, q := range set.Questions {
+		seen[q.Answer] = true
+		if q.Traps[q.Answer] != "" || q.Notes[q.Answer] != "Sentence 1 says cheap land draws firms." {
+			t.Errorf("q%d: the answer lost its note or gained a trap: %+v", i, q)
+		}
+	}
+	if len(seen) != 4 || set.Questions[0].Options[set.Questions[0].Answer] != right {
+		t.Errorf("answers at %v; want all four letters, each answer still the same option", seen)
+	}
+}
+
+func TestShortTrapNamesAreOurs(t *testing.T) {
+	for in, want := range map[string]string{"Distorts passage": "Distorts the passage", "Too narrow": "Too narrow or too broad", "too broad": "Too narrow or too broad",
+		"Extreme": "Extreme wording", "True but irrelevant": "True but not the answer", "Opposite view": "Wrong direction", "": "", "Silly": "Silly"} {
+		if got := trapName(in); got != want {
+			t.Errorf("%q: %q, want %q", in, got, want)
+		}
+	}
+	// "only" and "all" in fair options are not extreme.
+	q := ArticleQuestion{Answer: 0, Options: []string{"Cities may grow partly on cheap land", "Not only roads but all transport drives it", "Only birth rates matter for growth", "All growth comes from decree"}}
+	if g := giveaways(q, nil); g.absolutes != 0 {
+		t.Errorf("only and all counted as extreme: %d", g.absolutes)
 	}
 }

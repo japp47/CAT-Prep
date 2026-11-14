@@ -49,7 +49,7 @@ func (f *fakeModel) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		// The article writer: four questions on sentence 1, the answer always option A.
 		q := func(t string) map[string]any {
 			return map[string]any{"type": t, "stem": "According to the passage, what drives the growth of cities?",
-				"options": []string{"Cheap land at the edge", "Better roads alone", "Rising birth rates", "Government decree"},
+				"options": []string{"Cheap land at the edge draws growth", "Better roads alone draw growth outward", "Rising birth rates in the old centre", "A government decree on land use"},
 				"answer":  0, "notes": []string{"Sentence 1 says cheap land draws firms.", "Roads are not named as the cause.", "Births are not discussed at all.", "No decree is mentioned anywhere."},
 				"traps": []string{"", "Out of scope", "Out of scope", "Distorts the passage"}, "lines": []int{1}}
 		}
