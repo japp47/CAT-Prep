@@ -44,7 +44,7 @@ func notifyServer(t *testing.T) (*httptest.Server, *pgxpool.Pool) {
 	cfg := config.Config{Env: "dev", AllowedOrigin: "http://localhost:5173", NotifyTokenKey: notifyKey, NotifyVAPIDPublic: "BPub"}
 	opt := testOpts
 	opt.Practice = practiceHook()
-	srv := httptest.NewTLSServer(newHandler(cfg, fakeDB(nil), quiet, v1Routes(cfg, appPool(t), quiet, opt)))
+	srv := httptest.NewTLSServer(newHandler(cfg, fakeDB(nil), quiet, v1Routes(t.Context(), cfg, appPool(t), quiet, opt)))
 	t.Cleanup(srv.Close)
 	return srv, admin
 }

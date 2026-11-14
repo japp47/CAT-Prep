@@ -6,6 +6,7 @@ import { Empty, LinkButton, Meta, Section, Stat, TextLink } from "../../componen
 import { useStore } from "../../lib/store";
 import { sectionByLabel } from "../../sections";
 import { CR_CATALOG, RC_CATALOG } from "../../practice/catalog.gen";
+import { withArticles } from "../../practice/articleSet";
 import { useContent } from "../../practice/content";
 import { HABIT_WINDOW, summaryHabits } from "../../practice/summary";
 import { filterHref, typeMatches } from "../../practice/errorfilter";
@@ -56,7 +57,7 @@ function RcKindsLoaded() {
   const { state } = useStore();
   const { content } = useContent();
   if (!content) return <div className="flex flex-col gap-3" role="status"><span className="sr-only">Loading…</span><Skeleton className="h-5 w-1/3" /><Skeleton className="h-24" /></div>;
-  return <AccuracyList title="RC questions, by kind" rows={rcByQuestionType(state.rcAttempts, content.rcById)} empty="Answer an RC set in Practice and its kinds of question appear here."
+  return <AccuracyList title="RC questions, by kind" rows={rcByQuestionType(state.rcAttempts, withArticles(content.rcById, state.articles))} empty="Answer an RC set in Practice and its kinds of question appear here."
     link={mistakesLink(state.errors, "VARC", (r) => RC_QTYPE[r.key as RcQType]?.error)} />;
 }
 

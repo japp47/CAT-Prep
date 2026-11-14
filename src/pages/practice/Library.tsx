@@ -9,6 +9,7 @@ import { useStore } from "../../lib/store";
 import { Empty, LinkButton, Meta, Page, PageHeader } from "../../components/kit";
 import { NativeSelect } from "../../components/Select";
 import { RC_CATALOG } from "../../practice/catalog.gen";
+import { articleLine } from "../../practice/articleSet";
 import { DAILY_EPOCH, dayNumber, rcOfDay } from "../../practice/daily";
 import { GENRES, RC_PACKS, type Genre, type RcMeta, type RcPack } from "../../practice/types";
 
@@ -52,7 +53,7 @@ function Row({ set, label, best }: { set: RcMeta; label?: string; best?: Best })
 /** Every RC set, with filters, and the archive of past RCs of the day. */
 export default function Library() {
   const today = todayIso();
-  const [tab, setTab] = usePref<"all" | "daily">("libTab", "all");
+  const [tab, setTab] = usePref<"all" | "daily" | "mine">("libTab", "all");
   const [genre, setGenre] = usePref<Genre | "all">("libGenre", "all");
   const [diff, setDiff] = usePref<"all" | "easy" | "medium" | "hard">("libDiff", "all");
   const [attempted, setAttempted] = usePref<"all" | "tried" | "untried">("libAttempted", "all");
@@ -72,11 +73,17 @@ export default function Library() {
       <PageHeader title="RC library" back={{ to: "/varc/practice", label: "VARC practice" }}>
         {RC_CATALOG.length} original passages, {qRange} questions each, with every option explained. You have tried {tried.size}.
       </PageHeader>
-      <Tabs value={tab} onValueChange={(v) => setTab(v as "all" | "daily")} className="gap-6">
+      <Tabs value={tab} onValueChange={(v) => setTab(v as "all" | "daily" | "mine")} className="gap-6">
         <TabsList className="bg-secondary">
           <TabsTrigger value="all">All sets</TabsTrigger>
-          <TabsTrigger value="daily">Past RCs of the day</TabsTrigger>
+          {/* Three tabs fit a phone only with the shorter name. */}
+          <TabsTrigger value="daily"><span className="sm:hidden">Daily RCs</span><span className="max-sm:hidden">Past RCs of the day</span></TabsTrigger>
+          <TabsTrigger value="mine">Your articles</TabsTrigger>
         </TabsList>
+        {/* The student's own article sets (F34), beside the library's, so all their RC practice is in one place. */}
+        <TabsContent value="mine" className="flex flex-col gap-5">
+          <YourArticles />
+        </TabsContent>
         <TabsContent value="all" className="flex flex-col gap-5">
           <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
             <NativeSelect aria-label="Genre" value={genre} onChange={(e) => setGenre(e.target.value as Genre | "all")} className="w-auto min-w-52">
@@ -107,5 +114,32 @@ export default function Library() {
         </TabsContent>
       </Tabs>
     </Page>
+  );
+}
+
+/** Your articles (F34): the sets made from the student's own reading, newest first, with where each came from. */
+function YourArticles() {
+  const { state } = useStore();
+  const mine = [...state.articles].sort((a, b) => b.updatedAt - a.updatedAt);
+  const last = (id: string) => { const all = state.rcAttempts.filter((a) => a.set === id); return all[all.length - 1]?.c; };
+  return (
+    <>
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <LinkButton to="/practice/article" variant="secondary">Practise an article</LinkButton>
+        <span className="text-sm text-muted-foreground">Paste an essay or editorial, or upload a .txt or .pdf.</span>
+      </div>
+      {mine.length ? (
+        <ul className="flex flex-col gap-px overflow-hidden rounded-lg bg-background">
+          {mine.map((a) => (
+            <li key={a.id}>
+              <Link to={"/practice/article/" + encodeURIComponent(a.id)} className="flex flex-col gap-0.5 bg-card px-4 py-3.5 hover:bg-muted/60 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
+                <span className="text-base font-semibold">{a.title}</span>
+                <span className="text-sm text-muted-foreground">{articleLine(a, last(a.id))}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      ) : <Empty>Sets you make from your own reading appear here, with where each came from and your score.</Empty>}
+    </>
   );
 }

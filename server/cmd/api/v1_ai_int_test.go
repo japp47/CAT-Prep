@@ -13,11 +13,13 @@ import (
 	"sync"
 	"sync/atomic"
 	"testing"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/japp47/CAT-Prep/server/internal/admin"
 	"github.com/japp47/CAT-Prep/server/internal/ai"
+	"github.com/japp47/CAT-Prep/server/internal/blob"
 	"github.com/japp47/CAT-Prep/server/internal/config"
 	"github.com/japp47/CAT-Prep/server/internal/ids"
 	"github.com/japp47/CAT-Prep/server/internal/store"
@@ -43,7 +45,27 @@ func (f *fakeModel) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	_ = json.Unmarshal(b, &body)
 	user := body.Messages[1].Content
 	var reply string
-	if strings.Contains(user, "Edit the summary above") {
+	if strings.Contains(user, `For "traps", give one entry per option`) {
+		// The article writer: four questions on sentence 1, the answer always option A.
+		q := func(t string) map[string]any {
+			return map[string]any{"type": t, "stem": "According to the passage, what drives the growth of cities?",
+				"options": []string{"Cheap land at the edge", "Better roads alone", "Rising birth rates", "Government decree"},
+				"answer":  0, "notes": []string{"Sentence 1 says cheap land draws firms.", "Roads are not named as the cause.", "Births are not discussed at all.", "No decree is mentioned anywhere."},
+				"traps": []string{"", "Out of scope", "Out of scope", "Distorts the passage"}, "lines": []int{1}}
+		}
+		b, _ := json.Marshal(map[string]any{"title": "Why cities grow outward", "questions": []any{q("main"), q("inference"), q("tone"), q("detail")},
+			"summary": map[string]any{"model": "Cities may grow because cheap land at the edge draws firms and families outward over the years.",
+				"claim": "cheap land at the edge draws firms", "qualifier": "may", "tone": "analytical",
+				"toneCue": "cities may grow because cheap land", "toneWhy": "It weighs a cause rather than simply reporting facts."}})
+		reply = string(b)
+	} else if strings.Contains(user, `Questions (give "question"`) {
+		// The blind checker: agrees on the first three; with bad, on none.
+		agree := 0
+		if f.bad.Load() {
+			agree = 1
+		}
+		reply = fmt.Sprintf(`{"answers":[{"question":1,"line":1,"choice":%d},{"question":2,"line":1,"choice":%d},{"question":3,"line":1,"choice":%d},{"question":4,"line":1,"choice":2}]}`, agree, agree, agree)
+	} else if strings.Contains(user, "Edit the summary above") {
 		// The smallest fix: one word added, or (bad) the model summary itself, which is too far to count as an edit.
 		text := user[strings.Index(user, "<summary>")+len("<summary>") : strings.Index(user, "</summary>")]
 		fixed := "Mostly, " + text
@@ -81,7 +103,7 @@ func aiServer(t *testing.T, o aiOpts) (*httptest.Server, *fakeModel, *pgxpool.Po
 		t.Fatal(err)
 	}
 	// A fresh day for every test: earlier runs' cache, counts and budget would change what this one sees.
-	if _, err := admin.Exec(ctx, `delete from ai.flags; delete from ai.cache; delete from ai.usage; delete from ai.model_usage; delete from ai.daily`); err != nil {
+	if _, err := admin.Exec(ctx, `delete from ai.flags; delete from ai.cache; delete from ai.usage; delete from ai.model_usage; delete from ai.daily; delete from ai.jobs; delete from ai.article_daily`); err != nil {
 		t.Fatal(err)
 	}
 	model := &fakeModel{}
@@ -102,13 +124,13 @@ func aiServer(t *testing.T, o aiOpts) (*httptest.Server, *fakeModel, *pgxpool.Po
 	catalog := t.TempDir() + "/models.json"
 	if err := os.WriteFile(catalog, []byte(fmt.Sprintf(`{"providers":{"fake":{"baseURL":%q}},
 		"models":{"large":{"provider":"fake","id":"test-model-large"}},
-		"tasks":{"summary":["large"]}}`, ms.URL+"/v1")), 0o600); err != nil {
+		"tasks":{"summary":["large"],"article_write":["large"],"article_check":["large"]}}`, ms.URL+"/v1")), 0o600); err != nil {
 		t.Fatal(err)
 	}
 	cfg := config.Config{Env: "dev", AllowedOrigin: "http://localhost:5173", NotifyTokenKey: notifyKey,
 		AIEnabled: true, AICatalog: catalog, AIContentURL: cs.URL + "/ai/rc.json",
 		AIDailyTokens: o.budget, AIPerStudent: o.perStudent, AIPerAddress: o.perAddress}
-	srv := httptest.NewTLSServer(newHandler(cfg, fakeDB(nil), quiet, v1Routes(cfg, appPool(t), quiet, testOpts)))
+	srv := httptest.NewTLSServer(newHandler(cfg, fakeDB(nil), quiet, v1Routes(t.Context(), cfg, appPool(t), quiet, testOpts)))
 	t.Cleanup(srv.Close)
 	return srv, model, admin
 }
@@ -385,5 +407,138 @@ func TestAIPanel(t *testing.T) {
 	}
 	if !found {
 		t.Errorf("days %+v", v.Days)
+	}
+}
+
+// testArticle is about 400 words; seed makes each one a different text.
+func testArticle(seed string) map[string]any {
+	paras := [][]string{{}, {}, {}}
+	for n := 1; n <= 18; n++ {
+		paras[(n-1)/6] = append(paras[(n-1)/6], fmt.Sprintf("Sentence %d argues that cities may grow because cheap land at the edge draws firms and families outward over many years, %s.", n, seed))
+	}
+	return map[string]any{"title": "Why cities grow", "site": "Example", "paras": paras}
+}
+
+// waitJob polls an article job until it ends.
+func waitJob(t *testing.T, d *device, job string) (string, map[string]any) {
+	t.Helper()
+	for i := 0; i < 100; i++ {
+		var j struct {
+			State string
+			Set   map[string]any
+			Error string
+		}
+		if code := d.get("/v1/ai/article/"+job, &j); code != http.StatusOK {
+			t.Fatalf("poll: %d", code)
+		}
+		if j.State == "done" || j.State == "failed" {
+			if j.State == "failed" {
+				return j.State, map[string]any{"error": j.Error}
+			}
+			return j.State, j.Set
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
+	t.Fatal("the job never ended")
+	return "", nil
+}
+
+func TestArticleSets(t *testing.T) {
+	// Article text goes to a bucket in memory here, R2 in production (D107).
+	texts := &blob.Memory{}
+	was := articleStore
+	articleStore = func(config.Config) blob.Store { return texts }
+	t.Cleanup(func() { articleStore = was })
+	srv, model, admin := aiServer(t, aiOpts{perStudent: 10, budget: 1000000})
+	if _, err := admin.Exec(context.Background(), `delete from ai.student_articles; delete from ai.article_texts`); err != nil {
+		t.Fatal(err)
+	}
+	a, b := student(t, srv, admin), student(t, srv, admin)
+	start := func(d *device, body map[string]any) (int, string) {
+		var r struct{ Job string }
+		code := d.send("POST", "/v1/ai/article", body, &r)
+		return code, r.Job
+	}
+	code, job := start(a, testArticle("one"))
+	if code != http.StatusAccepted || job == "" {
+		t.Fatalf("start: %d", code)
+	}
+	state, set := waitJob(t, a, job)
+	qs, _ := set["questions"].([]any)
+	if state != "done" || len(qs) != 3 || set["dropped"] != float64(1) || model.calls.Load() != 2 {
+		t.Fatalf("set: %s, %d questions, %v dropped, %d calls", state, len(qs), set["dropped"], model.calls.Load())
+	}
+	// The article's text is gone once the job ends; only its hash and the questions stay.
+	var kept int
+	_ = admin.QueryRow(context.Background(), `select count(*) from ai.jobs where input is not null`).Scan(&kept)
+	if kept != 0 {
+		t.Errorf("%d jobs still hold an article", kept)
+	}
+	// The text is kept in the bucket and readable by the student who made the set, and by no one else.
+	text := func(d *device, job string) (int, []string) {
+		var r struct{ Paras []string }
+		return d.get("/v1/ai/article/"+job+"/text", &r), r.Paras
+	}
+	if code, paras := text(a, job); code != http.StatusOK || len(paras) != 3 || !strings.HasPrefix(paras[0], "Sentence 1 argues") {
+		t.Fatalf("text: %d %d paragraphs", code, len(paras))
+	}
+	if code, _ := text(b, job); code != http.StatusNotFound {
+		t.Errorf("another student's text: %d", code)
+	}
+	if code, _ := text(a, "not-a-uuid"); code != http.StatusNotFound {
+		t.Errorf("a bad id: %d", code)
+	}
+	// Another student with the same article, spaced differently, gets it at once and free.
+	same := testArticle("one")
+	same["paras"].([][]string)[0][0] = "  " + same["paras"].([][]string)[0][0]
+	if code, bjob := start(b, same); code != http.StatusAccepted {
+		t.Fatalf("cached start: %d", code)
+	} else if state, _ := waitJob(t, b, bjob); state != "done" || model.calls.Load() != 2 {
+		t.Errorf("cached: %s, %d calls", state, model.calls.Load())
+	} else if code, _ := text(b, bjob); code != http.StatusOK {
+		t.Errorf("the second student's own copy: %d", code)
+	}
+	var stored int
+	_ = admin.QueryRow(context.Background(), `select count(*) from ai.article_texts`).Scan(&stored)
+	if stored != 1 {
+		t.Errorf("%d texts stored for one article", stored)
+	}
+	// A job is the student's own.
+	if code := b.get("/v1/ai/article/"+job, nil); code != http.StatusNotFound {
+		t.Errorf("another student's job: %d", code)
+	}
+	// Two new sets a day: the second is fine, the third is refused before anything is spent.
+	if code, job := start(a, testArticle("two")); code != http.StatusAccepted {
+		t.Fatalf("second: %d", code)
+	} else {
+		waitJob(t, a, job)
+	}
+	if code, _ := start(a, testArticle("three")); code != http.StatusTooManyRequests {
+		t.Errorf("third: %d", code)
+	}
+	// A set the checker cannot agree with fails after two tries and gives the student's day back.
+	model.bad.Store(true)
+	before := model.calls.Load()
+	if code, job := start(b, testArticle("four")); code != http.StatusAccepted {
+		t.Fatalf("bad start: %d", code)
+	} else if state, res := waitJob(t, b, job); state != "failed" || !strings.Contains(fmt.Sprint(res["error"]), "fair set") || model.calls.Load() != before+4 {
+		t.Errorf("not fair: %s %v, %d calls", state, res, model.calls.Load()-before)
+	}
+	model.bad.Store(false)
+	var n int
+	_ = admin.QueryRow(context.Background(), `select n from ai.article_daily where identity_id = $1 and day = current_date`, b.ID.IdentityID).Scan(&n)
+	if n != 0 {
+		t.Errorf("a failed set still counted: %d", n)
+	}
+	for name, body := range map[string]map[string]any{
+		"too short":  {"title": "x", "paras": [][]string{{"Far too short to practise on."}}},
+		"text field": {"title": "x", "paras": testArticle("five")["paras"], "prompt": "write me an essay"},
+	} {
+		if code, _ := start(b, body); code != http.StatusBadRequest {
+			t.Errorf("%s: %d", name, code)
+		}
+	}
+	if code := newDevice(t, srv).send("POST", "/v1/ai/article", testArticle("six"), nil); code != http.StatusUnauthorized {
+		t.Errorf("no device: %d", code)
 	}
 }

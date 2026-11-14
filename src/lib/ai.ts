@@ -46,3 +46,16 @@ export const fixSummary = (m: { set: string; v: string; text: string }) => api<S
 
 /** Marks a summary verdict or fix as wrong; three students' flags drop it from the cache. */
 export const flagAi = (key: string) => api<null>("/ai/flag", { key });
+
+/** Article to RC (F34, D104): start a set from the student's article (sentences per paragraph), then poll its job. */
+export interface ArticleStart { title: string; site: string; link: string; paras: string[][] }
+export const startArticle = (a: ArticleStart) => api<{ job: string }>("/ai/article", a);
+export interface ArticleJob {
+  state: "queued" | "running" | "done" | "failed";
+  set?: { title?: string; questions: { type: string; stem: string; options: string[]; answer: number; notes: string[]; traps: string[]; lines: [number, number][] }[]; summary: { model: string; claim: string; qualifier: string; tone: string; toneCue: string; toneWhy: string }; dropped: number };
+  error?: string;
+}
+export const articleJob = (job: string) => api<ArticleJob>("/ai/article/" + encodeURIComponent(job));
+
+/** An article set's text from private storage (D107), for the student who made it, on any of their devices. */
+export const articleTextFrom = (job: string) => api<{ paras: string[] }>("/ai/article/" + encodeURIComponent(job) + "/text");

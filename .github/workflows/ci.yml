@@ -29,7 +29,11 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
+      # Built as production is (API and Google sign-in on), so the size check measures what students download.
       - run: npm run build
+        env:
+          VITE_API_ENABLED: "1"
+          VITE_GOOGLE_SIGNIN: "1"
       - name: Generated catalog is committed
         run: git diff --exit-code -- src/practice/catalog.gen.ts src/practice/leads.gen.ts || (echo "::error::Run npm run catalog and commit the result." && exit 1)
       - run: npm run size

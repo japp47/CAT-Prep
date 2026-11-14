@@ -30,6 +30,10 @@ var Rules = []Rule{
 		  and not exists (select 1 from account.devices d where d.identity_id = i.id and d.revoked_at is null)`},
 	{"problem reports closed over a year ago", `delete from support.feedback where status in ('fixed', 'wont_fix') and handled_at < now() - interval '365 days'`},
 	{"AI request counts over 14 days old (F35)", `delete from ai.daily where day < current_date - 14`},
+	{"article set counts over 14 days old (F34)", `delete from ai.article_daily where day < current_date - 14`},
+	{"article text records over 90 days old, as the bucket's lifecycle rule drops the text (D107)", `delete from ai.article_texts where stored_at < now() - interval '90 days'`},
+	{"students' article access over 90 days old (D107)", `delete from ai.student_articles where created_at < now() - interval '90 days'`},
+	{"failed article jobs over a day old, and finished ones over 30 days (F34, D104)", `delete from ai.jobs where (state = 'failed' and created_at < now() - interval '1 day') or created_at < now() - interval '30 days'`},
 }
 
 // Run applies every rule and returns how many rows each removed.

@@ -87,12 +87,14 @@ export function historyItems(st: AppState): HistoryItem[] {
 
   Object.keys(st.days).forEach((d) => planItems(st, d).forEach(add));
 
+  const articleTitle = new Map(st.articles.map((x) => [x.id, x.title]));
   st.rcAttempts.forEach((a) => {
-    const title = rcTitle.get(a.set) ?? "RC set";
+    const art = a.set.startsWith("art-");
+    const title = art ? "Your article: " + (articleTitle.get(a.set) ?? "an article") : rcTitle.get(a.set) ?? "RC set";
     const n = a.ans.length, skipped = a.ans.filter((x) => x == null).length;
     add({ id: "rc-" + a.id, d: a.d, kind: "practice", icon: "rc", title, secs: secsOf(a),
       detail: `RC${a.mode === "daily" ? " of the day" : ""}, ${right(a.c, n)}${skipped ? `, ${skipped} skipped` : ""}, ${took(a)}`,
-      href: `/practice/rc/${a.set}?review=${a.id}` });
+      href: `/practice/${art ? "article" : "rc"}/${a.set}?review=${a.id}` });
   });
   st.vaAttempts.forEach((a) => {
     const kinds = list(a.items.map((i) => VA_KIND[i.k.split(":")[0] as VaKind]?.label ?? "VA"));

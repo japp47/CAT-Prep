@@ -77,6 +77,29 @@ Thinking practice (Arcade, Manager Lab, DILR and Quant ideas), community, and re
 
 ## 3. Consistency check: spec vs plan vs code
 
+### 14 Nov 2026, getting the article in and where it lives (D107; `docs/design/article-to-rc.md`)
+
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A149 | On phones the pain is selecting a long article, not the clipboard's size | Students give up before the set exists | A Paste button, clean-up of pasted text by code, a Reader-view hint |
+| A150 | Editorials circulate as PDFs (Telegram compilations) | Paste does not reach them | .txt and .pdf upload, read on the device with `pdfjs-dist`, never stored |
+| A151 | Keeping article text only on the device ties review to one phone and fills its storage | No review on the laptop | Text in Cloudflare R2 by hash (10 GB free, no egress), private to the students who used it, 90 days after last use; device-only when R2 is not set |
+
+**D107.** Articles come in by paste (with a Paste button and clean-up) or a .txt or .pdf read on the device; their text is kept in Cloudflare R2, private, deduplicated by hash, for 90 days after last use.
+
+### 14 Nov 2026, the first run on real models (D106; `docs/design/explain-mistake.md`, "Measured on real models")
+
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A143 | A good summary scored 4 of 4, then 1 of 4 a minute later on `gpt-oss-120b` at low effort | Students told a correct summary is wrong | Medium reasoning effort; the reply limit raised to 1,500 tokens to leave room for it |
+| A144 | The checks were one-line rules; a kept example ("a person refused a mortgage") passed | The examples check did not work | Each check is a test with its ways of failing; one fault belongs to one check; meaning, not wording |
+| A145 | The schema's fields came out in Go's map order, so the model wrote "ok" before its evidence | Verdict before evidence | The schema is written in order: words, then ok, then note |
+| A146 | `qwen/qwen3.8-27b` looped ("ok=false → ok=false …") under strict JSON and Groq refused the reply | A fallback that never answers | Removed from the catalog |
+| A147 | Groq's free tier allows 8,000 tokens a minute per model; a check is about 1,600 | About five checks a minute per model before "busy" | Fallback across two models now; the Developer plan before launch (owner) |
+| A148 | Nothing measured the verdicts | Prompt changes judged by feel | `testdata/summary_eval.json` (24 summaries with right verdicts) and `eval_test.go`, run twice to count flips; AI stays off until it passes |
+
+**D106.** Summary verdicts are measured against a fixed set of summaries on the real models before AI is switched on, and after any change to a model, a setting or the prompt; the bar is 90% of scored checks right with no flips on clear cases.
+
 ### 13 Nov 2026, "Explain my mistake" removed (D105; `docs/design/explain-mistake.md`)
 
 | # | Finding | Impact | Fix (where) |

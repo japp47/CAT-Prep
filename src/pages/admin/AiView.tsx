@@ -7,7 +7,7 @@ import { aiPanel, type AiModelStatus, type AiPanel } from "../../lib/admin";
 const n = (x: number) => x.toLocaleString("en-IN");
 const N = ({ v }: { v: number }) => <Tnum>{n(v)}</Tnum>;
 const time = (iso?: string) => (iso ? new Date(iso).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }) : "");
-const TASK: Record<string, string> = { summary: "Summary second opinion and the smallest fix" };
+const TASK: Record<string, string> = { summary: "Summary second opinion and the smallest fix", article_write: "Article sets: writing", article_check: "Article sets: blind check" };
 const TR = "border-t align-top"; // taste-skill-ignore: rows of a real table
 
 /**

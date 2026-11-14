@@ -80,7 +80,7 @@ func TestTurningOnNeedsTheBotCheckWhenConfigured(t *testing.T) {
 
 	apiServer(t, testOpts) // migrates the test database and sets cat_app's password
 	cfg := config.Config{Env: "dev", AllowedOrigin: "http://localhost:5173", TurnstileSecret: "1x0000000000000000000000000000000AA"}
-	guarded := httptest.NewTLSServer(newHandler(cfg, fakeDB(nil), quiet, v1Routes(cfg, appPool(t), quiet, testOpts)))
+	guarded := httptest.NewTLSServer(newHandler(cfg, fakeDB(nil), quiet, v1Routes(t.Context(), cfg, appPool(t), quiet, testOpts)))
 	defer guarded.Close()
 	for token, want := range map[string]int{"": http.StatusForbidden, "bad-token": http.StatusForbidden, "good-token": http.StatusCreated} {
 		d := newDevice(t, guarded)

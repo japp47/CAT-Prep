@@ -12,6 +12,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/japp47/CAT-Prep/server/internal/account"
+	"github.com/japp47/CAT-Prep/server/internal/blob"
 	"github.com/japp47/CAT-Prep/server/internal/httpx"
 	"github.com/japp47/CAT-Prep/server/internal/limit"
 )
@@ -22,7 +23,7 @@ import (
 // answer is the same for every student who picks an option, so it belongs in the content, not in a live model.
 
 // PromptV is the prompts' version. Raising it makes fresh answers instead of serving cached ones.
-const PromptV = 1
+const PromptV = 2 // 2: the summary prompt with a test per check and evidence before the verdict (D106)
 
 // taskOf is the models.json task a kind of answer uses: the smallest fix shares the summary models.
 func taskOf(kind string) string {
@@ -43,6 +44,10 @@ type Service struct {
 	// IPs limits new generations per network address and hour (guard.go); nil turns the limit off (tests).
 	IPs *limit.Limiter
 	Log *slog.Logger
+	// Wake tells the job runner a job is waiting (article.go); nil means it finds out on its next look.
+	Wake chan struct{}
+	// Articles keeps article text (texts.go, D107); nil keeps it on the student's device only.
+	Articles blob.Store
 }
 
 // Errors the handler turns into plain answers.
@@ -64,7 +69,7 @@ func (s *Service) cachedOutput(ctx context.Context, key []byte) ([]byte, error) 
 // generate makes one reply through the gate: admitted, asked (one retry when the check refuses the reply), stored
 // under key, and settled. check turns the raw reply into what is stored, or refuses it.
 func (s *Service) generate(ctx context.Context, identity, ip, kind string, key []byte, system, user, name string,
-	schema map[string]any, check func(raw string) ([]byte, error)) ([]byte, error) {
+	schema any, check func(raw string) ([]byte, error)) ([]byte, error) {
 	t, err := s.admit(ctx, identity, ip, kind)
 	if err != nil {
 		return nil, err

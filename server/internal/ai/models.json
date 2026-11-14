@@ -1,28 +1,26 @@
 {
-  "_about": "Which AI models 99ile may use, and the order each task tries them in (docs/design/explain-mistake.md, 'Models and keys'). No secrets here: a provider names the environment variable that holds its keys. Change the summary order on Render without a deploy with AI_SUMMARY (names from 'models', comma separated). A whole other file: AI_CATALOG=path.",
+  "_about": "Which AI models 99ile may use, and the order each task tries them in (docs/design/explain-mistake.md, 'Models and keys'). No secrets here: a provider names the environment variable that holds its keys. Change the summary order on Render without a deploy with AI_SUMMARY (names from 'models', comma separated). A whole other file: AI_CATALOG=path. Medium effort since 14 Nov 2026 (D106): low gave a good summary 4 of 4 and then 1 of 4. qwen/qwen3.8-27b was removed: with strict JSON it looped and Groq refused its reply. Run the eval (go test -tags eval ./internal/ai) before changing a model or a setting.",
   "providers": {
     "groq": { "baseURL": "https://api.groq.com/openai/v1", "keysEnv": "GROQ_API_KEYS" },
     "ollama": { "baseURL": "http://localhost:11434/v1" }
   },
   "models": {
-    "gpt-oss-20b": {
-      "provider": "groq", "id": "openai/gpt-oss-20b",
-      "params": { "reasoning_effort": "low", "include_reasoning": false }
-    },
     "gpt-oss-120b": {
       "provider": "groq", "id": "openai/gpt-oss-120b",
-      "params": { "reasoning_effort": "low", "include_reasoning": false }
+      "params": { "reasoning_effort": "medium", "include_reasoning": false }
     },
-    "qwen3.8-27b": {
-      "provider": "groq", "id": "qwen/qwen3.8-27b",
-      "params": { "reasoning_effort": "none" }
+    "gpt-oss-20b": {
+      "provider": "groq", "id": "openai/gpt-oss-20b",
+      "params": { "reasoning_effort": "medium", "include_reasoning": false }
     },
     "ollama-gpt-oss-20b": {
       "provider": "ollama", "id": "gpt-oss:20b",
-      "params": { "reasoning_effort": "low" }
+      "params": { "reasoning_effort": "medium" }
     }
   },
   "tasks": {
-    "summary": ["gpt-oss-120b", "qwen3.8-27b", "gpt-oss-20b"]
+    "summary": ["gpt-oss-120b", "gpt-oss-20b"],
+    "article_write": ["gpt-oss-120b", "gpt-oss-20b"],
+    "article_check": ["gpt-oss-20b", "gpt-oss-120b"]
   }
 }

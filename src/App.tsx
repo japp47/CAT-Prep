@@ -23,6 +23,8 @@ const Plan = lazy(() => import("./pages/Plan"));
 const PracticeHub = lazy(load.practice);
 const Library = lazy(() => import("./pages/practice/Library"));
 const RcPlayer = lazy(() => import("./pages/practice/RcPlayer"));
+const ArticleNew = lazy(() => import("./pages/practice/ArticleNew"));
+const ArticlePractice = lazy(() => import("./pages/practice/ArticlePractice"));
 const LrPlayer = lazy(() => import("./pages/practice/LrPlayer"));
 const Redo = lazy(() => import("./pages/practice/Redo"));
 const Sectional = lazy(() => import("./pages/practice/Sectional"));
@@ -109,6 +111,8 @@ export const router = createBrowserRouter(createRoutesFromElements(
       <Route path=":sec/practice" element={<PracticeHub />} />
       <Route path="practice/library" element={<Library />} />
       <Route path="practice/rc/:id" element={<RcPlayer />} />
+      <Route path="practice/article" element={<ArticleNew />} />
+      <Route path="practice/article/:id" element={<ArticlePractice />} />
       <Route path="practice/lr/:id" element={<LrPlayer />} />
       <Route path="practice/va" element={<VaPlayer />} />
       <Route path="practice/cr" element={<CrPlayer />} />
