@@ -85,7 +85,7 @@ export default function VarcPractice({ t }: { t: VarcToday }) {
             </>}>
             <p>Six short arguments, one question each: assumption, strengthen, weaken, inference, flaw and paradox. CAT does not ask them, but XAT does, and they sharpen how you judge RC options.</p>
           </Row>
-          <Row title="Practise an article" action={<LinkButton to="/practice/article" variant="secondary">Paste an article</LinkButton>}>
+          <Row title="Practise an article" action={<LinkButton to="/practice/article" variant="secondary">Make an RC set</LinkButton>}>
             <p>Turn an essay or editorial you are reading into a CAT-style RC set, checked by a second AI. Paste it, or upload a .txt or .pdf.{state.articles.length ? ` You have made ${state.articles.length}.` : ""}</p>
           </Row>
           <PaperRow>

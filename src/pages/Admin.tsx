@@ -28,12 +28,12 @@ export default function Admin() {
   const [tab, setTab] = useState<Tab>("reports");
   const shown = tabs.includes(tab) ? tab : tabs[0];
 
-  if (me === undefined) return <Page width="read"><Skeleton className="h-10 w-48" /><Skeleton className="h-40 w-full" /></Page>;
+  if (me === undefined) return <Page width="wide"><Skeleton className="h-10 w-48" /><Skeleton className="h-40 w-full" /></Page>;
   if (me === null) return <NotFound />;
   return (
-    <Page width="read">
-      <PageHeader title="Admin">Signed in as {me.email}. Problem reports, counts, reminders and AI; no student&rsquo;s answers are ever shown here.</PageHeader>
-      {tabs.length > 1 && <Segmented label="Admin view" className="max-sm:w-full max-sm:flex-nowrap max-sm:[&>button]:flex-1 max-sm:[&>button]:px-2" value={shown} onChange={setTab} options={([["reports", "Reports"], ["overview", "Overview"], ["reminders", "Reminders"], ["ai", "AI"]] as [Tab, string][]).filter(([t]) => tabs.includes(t))} />}
+    <Page width="wide">
+      <PageHeader title="Admin">Signed in as <span className="[overflow-wrap:anywhere]">{me.email}</span>. Problem reports, counts, reminders and AI; no student&rsquo;s answers are ever shown here.</PageHeader>
+      {tabs.length > 1 && <Segmented label="Admin view" className="max-sm:w-full max-sm:flex-wrap max-sm:[&>button]:flex-1 max-sm:[&>button]:basis-[calc(50%-0.25rem)] max-sm:[&>button]:px-2" value={shown} onChange={setTab} options={([["reports", "Reports"], ["overview", "Overview"], ["reminders", "Reminders"], ["ai", "AI"]] as [Tab, string][]).filter(([t]) => tabs.includes(t))} />}
       {shown === "reports" && <Reports canResolve={can("feedback.resolve")} />}
       {shown === "overview" && <OverviewView />}
       {shown === "reminders" && <Suspense fallback={<Skeleton className="h-64 w-full" />}><RemindersView canManage={can("reminders.manage")} /></Suspense>}
@@ -100,10 +100,10 @@ function Reports({ canResolve }: { canResolve: boolean }) {
           const kinds = Object.entries(g.reports.reduce<Record<string, number>>((m, r) => ({ ...m, [r.kind]: (m[r.kind] ?? 0) + 1 }), {}));
           const fresh = g.reports.some((r) => r.status === "new");
           return (
-            <li key={g.itemId} className="flex flex-col gap-4 rounded-lg bg-card p-5 sm:p-6">
+            <li key={g.itemId} className="flex min-w-0 flex-col gap-4 rounded-lg bg-card p-5 sm:p-6">
               <div className="flex flex-col gap-1">
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                  <h3 className="text-heading font-semibold">{questionName(g.itemId)}</h3>
+                  <h3 className="min-w-0 text-heading font-semibold [overflow-wrap:anywhere]">{questionName(g.itemId)}</h3>
                   {fresh && <Badge variant="secondary">New</Badge>}
                 </div>
                 <p className="text-sm text-muted-foreground">
@@ -113,8 +113,8 @@ function Reports({ canResolve }: { canResolve: boolean }) {
               <ul className="flex flex-col gap-2">
                 {g.reports.map((r) => (
                   <li key={r.id} className="flex flex-col gap-1 rounded-md bg-background/60 px-4 py-3">
-                    <p className="text-base whitespace-pre-line break-words">{r.note || <span className="text-muted-foreground">No note.</span>}</p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-base whitespace-pre-line break-words [overflow-wrap:anywhere]">{r.note || <span className="text-muted-foreground">No note.</span>}</p>
+                    <p className="text-sm text-muted-foreground [overflow-wrap:anywhere]">
                       {KIND_LABEL[r.kind]}, {when(r.createdAt)}, on {r.page}
                       {r.handledAt && <>. {r.status === "fixed" ? "Fixed" : "Won't fix"} {when(r.handledAt)}{r.handledBy && <> by {r.handledBy}</>}</>}
                     </p>

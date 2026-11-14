@@ -127,6 +127,8 @@ filling the browser's storage.
 
 ## On the site: `/practice/article`
 
+**Page layout (14 Nov 2026, D109).** The page opens with a short promise, then a focused article editor beside a three-step guide and privacy note on wide screens. On phones the editor comes first and the guide follows it. The passage preview and the one next action stay with the editor, so pasting, checking the chosen passage and making a set read as one flow.
+
 1. **Receive.** From the extension, from a share, or pasted. The text is split into paragraphs and sentences with
    the site's own `sentences()` rule, the one Prove it uses.
 2. **Preview.** Title, source, the paragraphs that will be used and their word count, with "Use earlier / later

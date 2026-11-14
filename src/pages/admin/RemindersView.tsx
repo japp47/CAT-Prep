@@ -69,7 +69,7 @@ export default function RemindersView({ canManage }: { canManage: boolean }) {
           <ul className="flex flex-col gap-px overflow-hidden rounded-lg bg-background sm:hidden">
             {kinds.map((k) => (
               <li key={k.kind + k.channel} className="flex flex-col gap-0.5 bg-card px-4 py-3.5">
-                <span className="text-base font-semibold">{REMINDER_KIND[k.kind] ?? k.kind}, by {k.channel}</span>
+                <span className="text-base font-semibold [overflow-wrap:anywhere]">{REMINDER_KIND[k.kind] ?? k.kind}, by {k.channel}</span>
                 <span className="text-base"><N v={k.sent} /> sent, <N v={k.skipped} /> skipped, <N v={k.failed} /> failed</span>
                 <span className="text-base text-muted-foreground"><N v={k.practised} /> practised ({pct(k.practised, k.sent)})</span>
               </li>
@@ -87,7 +87,7 @@ export default function RemindersView({ canManage }: { canManage: boolean }) {
           <div className="flex flex-col gap-2 rounded-lg bg-card p-5">
             <h3 className="text-base font-semibold">Why messages were skipped</h3>
             {s.skips?.length ? (
-              <ul className="flex flex-col gap-1 text-base">{s.skips.map((k) => <li key={k.reason} className="flex justify-between gap-3"><span>{k.reason}</span><N v={k.n} /></li>)}</ul>
+              <ul className="flex flex-col gap-1 text-base">{s.skips.map((k) => <li key={k.reason} className="flex min-w-0 justify-between gap-3"><span className="min-w-0 [overflow-wrap:anywhere]">{k.reason}</span><span className="shrink-0"><N v={k.n} /></span></li>)}</ul>
             ) : <p className="text-base text-muted-foreground">None skipped.</p>}
           </div>
         </div>

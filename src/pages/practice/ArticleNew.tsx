@@ -91,80 +91,117 @@ export default function ArticleNew() {
   const busy = job && job.phase !== "failed";
 
   return (
-    <Page width="read">
+    <Page width="wide">
       <PageHeader title="Practise an article" back={{ to: "/varc/practice", label: "VARC practice" }}>
-        Paste an essay or editorial you are reading. 99ile turns it into a CAT-style RC set: four questions with close options, each answered by a second AI before you see it, so a doubtful question is left out.
+        Turn an essay or editorial into CAT-style practice: four close questions, checked before they reach you.
       </PageHeader>
 
       {busy ? (
-        <ArticleProgress job={job} />
+        <div className="max-w-[760px]"><ArticleProgress job={job} /></div>
       ) : (
-        <>
-          <Section title="Your article">
-            <div className="flex flex-wrap items-center gap-2">
-              <Button variant="secondary" onClick={paste}><ClipboardPaste data-icon="inline-start" /> Paste</Button>
-              <Button variant="secondary" onClick={() => file.current?.click()}><FileUp data-icon="inline-start" /> Upload .txt or .pdf</Button>
-              <input ref={file} type="file" accept=".txt,.pdf,text/plain,application/pdf" className="sr-only" onChange={(e) => { void upload(e.target.files?.[0]); e.target.value = ""; }} />
-            </div>
-            <Textarea value={raw} onChange={(e) => { const t = e.target.value.slice(0, MAX_CHARS); if (!raw.trim() && t.trim()) take(t, { kind: "paste" }); else { setRaw(t); setRange(null); } }} rows={8} aria-label="Article text"
-              className="field-sizing-fixed h-48 max-h-64 min-h-48 resize-y overflow-y-auto bg-card text-base leading-relaxed sm:h-56" placeholder="Paste the article here." />
-            <p className="text-sm text-muted-foreground">{note || "On a phone: open the article in Reader view, Select all, Copy, then Paste. Ads, links and captions are removed for you."}</p>
-            <div className="grid gap-4 sm:grid-cols-3">
-              <Field label="Title (optional)"><Input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={200} className="bg-card text-base" /></Field>
-              <Field label="Source (optional)"><Input value={site} onChange={(e) => setSite(e.target.value)} maxLength={100} placeholder="Aeon, The Hindu…" className="bg-card text-base" /></Field>
-              <Field label="Link (optional)"><Input value={link} onChange={(e) => setLink(e.target.value)} maxLength={500} inputMode="url" className="bg-card text-base" /></Field>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              What happens to your article: a file is read on your device and never uploaded. Only the paragraphs you choose are sent. They are kept privately for 90 days so you can review the set on any of your devices; no one else can read them. The set, its title, source and date stay in your history.
-            </p>
-          </Section>
-
-          {fit && win && (
-            <Section title="What will be used">
-              <div className="flex flex-col gap-3 rounded-lg bg-card p-5">
-                <p className={cn("text-base", fit.verdict === "good" && "font-medium")}>
-                  {fit.verdict === "good" ? <mark className="hl text-foreground">{fit.line}</mark> : fit.line}
-                </p>
-                {paras.length > 1 && (
-                  <div className="flex flex-wrap items-end gap-3">
-                    <Field label="From paragraph" className="w-36">
-                      <NativeSelect value={win[0]} onChange={(e) => { const a = +e.target.value; setRange([a, Math.max(a, win[1])]); }}>
-                        {paras.map((_, i) => <option key={i} value={i}>{i + 1}</option>)}
-                      </NativeSelect>
-                    </Field>
-                    <Field label="To paragraph" className="w-36">
-                      <NativeSelect value={win[1]} onChange={(e) => { const b = +e.target.value; setRange([Math.min(win[0], b), b]); }}>
-                        {paras.map((_, i) => <option key={i} value={i}>{i + 1}</option>)}
-                      </NativeSelect>
-                    </Field>
-                    <p className="pb-2 text-sm text-muted-foreground">{fit.words} of {whole} words; a CAT passage is 400 to 900.</p>
-                  </div>
-                )}
-                <ol className="flex flex-col gap-1.5" start={win[0] + 1}>
-                  {chosen.map((p, i) => <li key={i} className="text-sm text-muted-foreground"><span className="font-medium text-foreground">{win[0] + i + 1}.</span> {p.split(/\s+/).slice(0, 14).join(" ")}…</li>)}
-                </ol>
+        <div className="grid min-w-0 gap-8 xl:grid-cols-[minmax(0,1.65fr)_minmax(18rem,0.85fr)]">
+          <div className="flex min-w-0 flex-col gap-8">
+            <Section title="Your article" className="rounded-lg bg-card p-5 sm:p-7">
+              <div className="flex flex-wrap items-center gap-2">
+                <Button variant="secondary" onClick={paste}><ClipboardPaste data-icon="inline-start" /> Paste</Button>
+                <Button variant="secondary" onClick={() => file.current?.click()}><FileUp data-icon="inline-start" /> Upload .txt or .pdf</Button>
+                <input ref={file} type="file" accept=".txt,.pdf,text/plain,application/pdf" className="sr-only" onChange={(e) => { void upload(e.target.files?.[0]); e.target.value = ""; }} />
+              </div>
+              <Textarea value={raw} onChange={(e) => { const t = e.target.value.slice(0, MAX_CHARS); if (!raw.trim() && t.trim()) take(t, { kind: "paste" }); else { setRaw(t); setRange(null); } }} rows={8} aria-label="Article text"
+                className="field-sizing-fixed h-48 max-h-64 min-h-48 resize-y overflow-y-auto bg-background text-base leading-relaxed sm:h-56" placeholder="Paste the article here." />
+              <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+                <p className="max-w-prose text-sm text-muted-foreground">{note || "On a phone: open the article in Reader view, select all, copy, then paste. Ads, links and captions are removed for you."}</p>
+                {whole > 0 && <span className="shrink-0 text-sm text-muted-foreground">{whole.toLocaleString("en-IN")} words</span>}
+              </div>
+              <div className="grid gap-4 sm:grid-cols-3">
+                <Field label="Title (optional)"><Input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={200} className="bg-background text-base" /></Field>
+                <Field label="Source (optional)"><Input value={site} onChange={(e) => setSite(e.target.value)} maxLength={100} placeholder="Aeon, The Hindu…" className="bg-background text-base" /></Field>
+                <Field label="Link (optional)"><Input value={link} onChange={(e) => setLink(e.target.value)} maxLength={500} inputMode="url" className="bg-background text-base" /></Field>
               </div>
             </Section>
-          )}
 
-          <div className="flex flex-col gap-2">
-            {job?.phase === "failed" && <p className="text-base" role="alert">{job.msg}</p>}
-            {ai === "ask" ? (
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                <Button onClick={make} disabled={!ready}>Make my set</Button>
-                <span className="text-sm text-muted-foreground">Two new sets a day. An article practised before by anyone is ready at once and free.</span>
-              </div>
-            ) : ai === "signin" ? (
-              <p className="text-base"><button type="button" onClick={() => startSignIn("/practice/article")} className="font-medium text-primary underline underline-offset-4 decoration-primary/40 hover:decoration-primary">Sign in with Google</button> to make a set from your article.</p>
-            ) : (
-              <p className="text-base text-muted-foreground">Article sets are not switched on yet. Meanwhile, the <Link to="/practice/library" className="font-medium text-primary underline underline-offset-4">RC library</Link> has 55 sets.</p>
+            {fit && win && (
+              <Section title="What will be used">
+                <div className="flex min-w-0 flex-col gap-3 rounded-lg bg-muted/60 p-5">
+                  <p className={cn("text-base", fit.verdict === "good" && "font-medium")}>
+                    {fit.verdict === "good" ? <mark className="hl text-foreground">{fit.line}</mark> : fit.line}
+                  </p>
+                  {paras.length > 1 && (
+                    <div className="flex flex-wrap items-end gap-3">
+                      <Field label="From paragraph" className="w-36">
+                        <NativeSelect value={win[0]} onChange={(e) => { const a = +e.target.value; setRange([a, Math.max(a, win[1])]); }}>
+                          {paras.map((_, i) => <option key={i} value={i}>{i + 1}</option>)}
+                        </NativeSelect>
+                      </Field>
+                      <Field label="To paragraph" className="w-36">
+                        <NativeSelect value={win[1]} onChange={(e) => { const b = +e.target.value; setRange([Math.min(win[0], b), b]); }}>
+                          {paras.map((_, i) => <option key={i} value={i}>{i + 1}</option>)}
+                        </NativeSelect>
+                      </Field>
+                      <p className="pb-2 text-sm text-muted-foreground">{fit.words} of {whole} words; a CAT passage is 400 to 900.</p>
+                    </div>
+                  )}
+                  <ol className="flex flex-col gap-1.5" start={win[0] + 1}>
+                    {chosen.map((p, i) => <li key={i} className="text-sm text-muted-foreground"><span className="font-medium text-foreground">{win[0] + i + 1}.</span> {p.split(/\s+/).slice(0, 14).join(" ")}…</li>)}
+                  </ol>
+                </div>
+              </Section>
             )}
+
+            <div className="flex flex-col gap-3 rounded-lg bg-muted/60 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+              {job?.phase === "failed" && <p className="text-base" role="alert">{job.msg}</p>}
+              {ai === "ask" ? (
+                <>
+                  <Button onClick={make} disabled={!ready}>Make my set</Button>
+                  <span className="text-sm text-muted-foreground">Two new sets a day. An article practised before by anyone is ready at once and free.</span>
+                </>
+              ) : ai === "signin" ? (
+                <p className="text-base"><button type="button" onClick={() => startSignIn("/practice/article")} className="font-medium text-primary underline underline-offset-4 decoration-primary/40 hover:decoration-primary">Sign in with Google</button> to make a set from your article.</p>
+              ) : (
+                <p className="text-base text-muted-foreground">Article sets are not switched on yet. Meanwhile, the <Link to="/practice/library" className="font-medium text-primary underline underline-offset-4">RC library</Link> has 55 sets.</p>
+              )}
+            </div>
           </div>
-        </>
+
+          <aside className="flex min-w-0 flex-col gap-4">
+            <section className="rounded-lg bg-muted/60 p-5 sm:p-6">
+              <h2 className="text-heading font-semibold">From article to practice</h2>
+              <ol className="mt-5 flex flex-col gap-5">
+                <li className="flex gap-3">
+                  <span aria-hidden className="grid size-9 shrink-0 place-items-center rounded-full bg-accent font-semibold text-accent-foreground">1</span>
+                  <div className="min-w-0">
+                    <h3 className="text-base font-semibold">Bring a read</h3>
+                    <p className="text-sm text-muted-foreground">Paste an essay or upload a text file or PDF.</p>
+                  </div>
+                </li>
+                <li className="flex gap-3">
+                  <span aria-hidden className="grid size-9 shrink-0 place-items-center rounded-full bg-accent font-semibold text-accent-foreground">2</span>
+                  <div className="min-w-0">
+                    <h3 className="text-base font-semibold">Choose the passage</h3>
+                    <p className="text-sm text-muted-foreground">We find a useful stretch of paragraphs; you can adjust it.</p>
+                  </div>
+                </li>
+                <li className="flex gap-3">
+                  <span aria-hidden className="grid size-9 shrink-0 place-items-center rounded-full bg-accent font-semibold text-accent-foreground">3</span>
+                  <div className="min-w-0">
+                    <h3 className="text-base font-semibold">Practise and review</h3>
+                    <p className="text-sm text-muted-foreground">A second AI checks the questions before you answer them.</p>
+                  </div>
+                </li>
+              </ol>
+            </section>
+            <section className="rounded-lg bg-card p-5 sm:p-6">
+              <h2 className="text-base font-semibold">Your text stays private</h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                A text or PDF file is read on your device and never uploaded. Only the paragraphs you choose are sent; they stay private for 90 days so you can review the set on any device. No one else can read them.
+              </p>
+            </section>
+          </aside>
+        </div>
       )}
 
       {mine.length > 0 && (
-        <Section title="Your articles">
+        <Section title="Your articles" className="max-w-[760px]">
           <ul className="flex flex-col gap-px overflow-hidden rounded-lg bg-background">
             {mine.map((a) => {
               const last = tried(a.id);

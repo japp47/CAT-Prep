@@ -125,7 +125,7 @@ function YourArticles() {
   return (
     <>
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <LinkButton to="/practice/article" variant="secondary">Practise an article</LinkButton>
+        <LinkButton to="/practice/article" variant="secondary">Make an RC set</LinkButton>
         <span className="text-sm text-muted-foreground">Paste an essay or editorial, or upload a .txt or .pdf.</span>
       </div>
       {mine.length ? (
