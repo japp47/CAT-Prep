@@ -163,9 +163,14 @@ sets a student a day.
    and, for wrong options, a trap name from our list; deciding lines as sentence numbers; and a model summary with
    claim, qualifier, tone, tone cue and reason. Code checks every sentence number, that options differ, that the trap
    names are ours, the summary's length and that the tone cue is an exact phrase of the article.
-3. **Solver** (a different model, blind: no key, no notes): answers each question and names its line. Questions
-   where it misses the key are dropped. Fewer than three left: one more try, then "We could not make a fair set from
-   this article" (nothing is charged to the student's cap).
+3. **Solver** (blind: no key, no notes, in a call of its own): answers each question and names its line. Questions
+   where it misses the key are dropped. Fewer than three left: another try (three in all), then "We could not make a
+   fair set from this article" (nothing is charged to the student's cap).
+
+   Changed 14 Nov 2026 after live use: the writer writes **five** questions and the set keeps the first four that
+   pass; each question is checked on its own, so one slip drops that question, not the set; and the strong model
+   checks first, because the small one failed good questions often enough to sink sets. With these, a 636-word
+   article made a four-question set in three runs out of three (10 to 40 seconds).
 4. **Result** stored with the job for 24 hours, then deleted. The article text is never stored; only a hash of it.
 
 **Cache.** A finished set is kept 30 days under the hash of the normalised paragraphs, so a popular editorial
