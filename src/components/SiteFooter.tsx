@@ -49,7 +49,7 @@ export default function SiteFooter() {
       <div className="flex flex-col gap-10 lg:grid lg:grid-cols-3 lg:gap-x-8 lg:gap-y-12 xl:grid-cols-[1.4fr_repeat(5,minmax(0,1fr))]">
         <div className="flex max-w-80 flex-col items-start gap-4">
           <Brand />
-          <p className="text-sm leading-relaxed text-foreground/70">A free CAT study space for steady practice, clear review, and a plan that fits your day.</p>
+          <p className="text-sm leading-relaxed text-foreground/70">99ile is a free CAT study space for steady practice, clear review, and a plan that fits your day.</p>
           {/* Pulled left by the icon button's own padding, so the marks line up with the text above them. */}
           <div className="-ml-3 flex items-center gap-1">
             <Reach href={"mailto:" + CONTACT_EMAIL} label={`Email us at ${CONTACT_EMAIL}`}><Mail aria-hidden /></Reach>

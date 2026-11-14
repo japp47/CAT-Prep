@@ -1,4 +1,5 @@
 import { describe as suite, expect, it } from "vitest";
+import html from "../../index.html?raw";
 import { GUIDES } from "../data/guides";
 import { describe, guideDescription, publicPaths, sitemapXml } from "./seo";
 
@@ -45,5 +46,20 @@ suite("a page description", () => {
       expect(d, g.id).toContain("99ile");
       expect(d, g.id).toContain(`${g.minutes}-minute`);
     }
+  });
+});
+
+suite("the site's name as people type it", () => {
+  const graph = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)![1])["@graph"] as Record<string, unknown>[];
+
+  it("tells search that 99 ile and 99-ile mean this site, on the site and on its owner", () => {
+    for (const type of ["WebSite", "Organization"]) {
+      const names = graph.find((n) => n["@type"] === type)!.alternateName as string[];
+      expect(names, type).toEqual(expect.arrayContaining(["99 ile", "99-ile"]));
+    }
+  });
+  it("says the spaced spelling in the title and in the words a script-less reader gets", () => {
+    expect(html).toMatch(/<title>[^<]*99 ile[^<]*<\/title>/);
+    expect(html.match(/<noscript>[\s\S]*<\/noscript>/)![0]).toContain("99 ile");
   });
 });
