@@ -11,7 +11,7 @@ import (
 // The owner's view of AI (D102): which model each task tries, which are resting and why, how many keys work, and
 // the last seven days per model. Counts only: no prompt, reply or student is shown.
 
-var outcomeName = map[outcome]string{callOK: "answered", callLimited: "limited", callKey: "key", callGone: "failed", callBusy: "failed", callBad: "failed"}
+var outcomeName = map[outcome]string{callOK: "answered", callLimited: "limited", callKey: "key", callGone: "failed", callBusy: "failed", callBad: "failed", callMalformed: "refused"}
 
 // RecordCall is the router's hook: one row a day per model, with what happened to its calls.
 func (s *Service) RecordCall(model string, o outcome, tokens int) {

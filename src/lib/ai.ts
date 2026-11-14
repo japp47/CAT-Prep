@@ -50,8 +50,11 @@ export const flagAi = (key: string) => api<null>("/ai/flag", { key });
 /** Article to RC (F34, D104): start a set from the student's article (sentences per paragraph), then poll its job. */
 export interface ArticleStart { title: string; site: string; link: string; paras: string[][] }
 export const startArticle = (a: ArticleStart) => api<{ job: string }>("/ai/article", a);
+export type ArticleStage = "queued" | "writing" | "checking" | "waiting";
 export interface ArticleJob {
   state: "queued" | "running" | "done" | "failed";
+  /** Where the set is, for the progress bar; ahead: sets in line before it. */
+  stage?: ArticleStage; ahead?: number;
   set?: { title?: string; questions: { type: string; stem: string; options: string[]; answer: number; notes: string[]; traps: string[]; lines: [number, number][] | null; proof?: number[] }[]; summary: { model: string; claim: string; qualifier: string; tone: string; toneCue: string; toneWhy: string }; dropped: number };
   error?: string;
 }

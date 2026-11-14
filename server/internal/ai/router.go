@@ -229,6 +229,11 @@ func (r *Router) JSON(ctx context.Context, task, avoid, system, user, name strin
 				r.restKey(m.p, k, res.detail)
 				continue // the next key for the same model
 			}
+			if res.outcome == callMalformed {
+				// No rest: one malformed reply says nothing about the next. Note it and try the next model now.
+				r.noteProblem(m, res.detail)
+				break
+			}
 			r.rest(m, res)
 			break // the next model
 		}
@@ -367,4 +372,12 @@ func replyLimit(task string) int {
 		return 2500
 	}
 	return 1500
+}
+
+// noteProblem records a one-off failure for the admin page without resting the model.
+func (r *Router) noteProblem(m *model, detail string) {
+	r.mu.Lock()
+	m.lastErr, m.lastErrAt = detail, r.now()
+	r.mu.Unlock()
+	r.Log.Warn("ai: malformed reply; trying again", "model", m.name)
 }

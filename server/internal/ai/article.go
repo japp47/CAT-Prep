@@ -362,12 +362,15 @@ var errNotFair = errors.New("could not make a fair set")
 
 // makeArticleSet runs the writer and the checker, waiting out the provider's limits, and returns a set of three or
 // four agreed questions with the tokens used.
-func (s *Service) makeArticleSet(ctx context.Context, a *ArticleIn) (*ArticleSet, int, error) {
+func (s *Service) makeArticleSet(ctx context.Context, a *ArticleIn, stage func(string)) (*ArticleSet, int, error) {
+	if stage == nil {
+		stage = func(string) {}
+	}
 	tokens, avoid := 0, ""
 	// Three rounds: on real models one round in two or three can come back malformed (a fifth note, a tone outside the
 	// list); the next round, on another model when one is free, usually lands (14 Nov 2026).
 	for round := 0; round < 3; round++ {
-		rep, err := s.patient(ctx, TaskArticle, avoid, writerSystem, writerPrompt(a), "rc_set", writerSchema)
+		rep, err := s.patient(ctx, stage, "writing", TaskArticle, avoid, writerSystem, writerPrompt(a), "rc_set", writerSchema)
 		tokens += rep.Tokens
 		if err != nil {
 			return nil, tokens, err
@@ -380,7 +383,7 @@ func (s *Service) makeArticleSet(ctx context.Context, a *ArticleIn) (*ArticleSet
 			continue
 		}
 		// The checker is a different model when one is free, so the two do not share one blind spot.
-		chk, err := s.patient(ctx, TaskArticleTest, rep.Model, checkerSystem, checkerPrompt(a, set), "answers", checkerSchema)
+		chk, err := s.patient(ctx, stage, "checking", TaskArticleTest, rep.Model, checkerSystem, checkerPrompt(a, set), "answers", checkerSchema)
 		tokens += chk.Tokens
 		if err != nil {
 			return nil, tokens, err
@@ -399,12 +402,15 @@ func (s *Service) makeArticleSet(ctx context.Context, a *ArticleIn) (*ArticleSet
 }
 
 // patient asks the router, waiting while every model rests after a limit: a job has minutes, a request has seconds.
-func (s *Service) patient(ctx context.Context, task, avoid, system, user, name string, schema any) (Reply, error) {
+// It reports the stage it is at, and "waiting" while it waits, for the site's progress bar.
+func (s *Service) patient(ctx context.Context, stage func(string), at, task, avoid, system, user, name string, schema any) (Reply, error) {
 	for try := 0; ; try++ {
+		stage(at)
 		rep, err := s.Router.JSON(ctx, task, avoid, system, user, name, schema)
 		if err == nil || !errors.Is(err, ErrBusy) || try >= 12 {
 			return rep, err
 		}
+		stage("waiting")
 		select {
 		case <-ctx.Done():
 			return rep, ctx.Err()
@@ -491,11 +497,15 @@ func (s *Service) ArticleHandler() http.Handler {
 func (s *Service) JobHandler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		d, _ := account.FromContext(r.Context())
-		var state string
+		var state, stage string
 		var out []byte
 		var msg *string
-		err := s.DB.QueryRow(r.Context(), `select state, output, error from ai.jobs where id = $1 and identity_id = $2`,
-			r.PathValue("job"), d.IdentityID).Scan(&state, &out, &msg)
+		var ahead int
+		// ahead: the sets in line before this one, for "2 sets ahead of you".
+		err := s.DB.QueryRow(r.Context(), `select j.state, j.stage, j.output, j.error,
+			(select count(*) from ai.jobs q where j.state = 'queued' and q.state in ('queued', 'running') and q.created_at < j.created_at)
+			from ai.jobs j where j.id = $1 and j.identity_id = $2`,
+			r.PathValue("job"), d.IdentityID).Scan(&state, &stage, &out, &msg, &ahead)
 		if errors.Is(err, pgx.ErrNoRows) {
 			httpx.WriteError(w, http.StatusNotFound, "not_found", "That set could not be found.")
 			return
@@ -504,7 +514,7 @@ func (s *Service) JobHandler() http.Handler {
 			s.refuse(w, err, "")
 			return
 		}
-		res := map[string]any{"state": state}
+		res := map[string]any{"state": state, "stage": stage, "ahead": ahead}
 		if out != nil {
 			res["set"] = json.RawMessage(out)
 		}
@@ -554,7 +564,17 @@ func (s *Service) runOne(ctx context.Context) bool {
 	var a ArticleIn
 	_ = json.Unmarshal(input, &a)
 	jctx, cancel := context.WithTimeout(ctx, 6*time.Minute)
-	set, tokens, err := s.makeArticleSet(jctx, &a)
+	last := ""
+	stage := func(st string) {
+		if st == last {
+			return
+		}
+		last = st
+		if _, err := s.DB.Exec(ctx, `update ai.jobs set stage = $2 where id = $1`, id, st); err != nil {
+			s.Log.Warn("ai: job stage", "error", err)
+		}
+	}
+	set, tokens, err := s.makeArticleSet(jctx, &a, stage)
 	cancel()
 	t := &ticket{identity: identity, kind: kindArticle}
 	// The article's text is dropped as soon as the job ends, whatever the outcome.

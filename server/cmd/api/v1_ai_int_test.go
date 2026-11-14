@@ -463,6 +463,14 @@ func TestArticleSets(t *testing.T) {
 	if code != http.StatusAccepted || job == "" {
 		t.Fatalf("start: %d", code)
 	}
+	// Every answer names a stage for the site's progress bar, and how many sets are ahead in line.
+	var st struct {
+		Stage string
+		Ahead *int
+	}
+	if a.get("/v1/ai/article/"+job, &st); !strings.Contains("queued writing checking waiting", st.Stage) || st.Stage == "" || st.Ahead == nil {
+		t.Errorf("stage %q, ahead %v", st.Stage, st.Ahead)
+	}
 	state, set := waitJob(t, a, job)
 	qs, _ := set["questions"].([]any)
 	if state != "done" || len(qs) != 3 || set["dropped"] != float64(1) || model.calls.Load() != 2 {
