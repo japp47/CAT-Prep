@@ -194,17 +194,32 @@ day's budget reserved on the `ai.usage` row `all` before the call, then settled 
    it); `AI_PER_STUDENT` (10) is new summary checks and fixes a student a day. Removing `AI_ENABLED` hides the AI
    buttons at once (the site keeps the student's own ticks). A bad setting stops the API at start with the reason.
 
+**Before switching on, and after any change to a model, a setting or the prompt,** run the eval against the real
+models (needs `GROQ_API_KEYS` in `.env` and `npm run build` for `dist/ai/rc.json`; about 15 minutes, paced under the
+free tier's per-minute limit): `set -a && . ./.env && set +a && go test -tags eval -run TestSummaryEval -timeout 60m -v ./internal/ai`.
+It fails below 90% of checks right (D106).
+
 **Models.** `internal/ai/models.json` lists the providers, the models with their settings, and the order each task
-tries them: summaries `gpt-oss-120b`, then `qwen3.8-27b`, then `gpt-oss-20b`. A
+tries them: summaries `gpt-oss-120b`, then `gpt-oss-20b`, both at medium reasoning effort. A
 model over its limit (429) rests for as long as Groq's `Retry-After` says and the next one answers; a refused key
 (401/403) rests for an hour and the next key is used; a missing model (404) or a refused request rests and is logged
 as an error. To switch without a deploy, set `AI_SUMMARY` on Render to catalog names
-(`qwen3.8-27b,gpt-oss-20b`); a new model or provider is a change to `models.json` (any OpenAI-compatible API, its
+(`gpt-oss-20b,gpt-oss-120b`); a new model or provider is a change to `models.json` (any OpenAI-compatible API, its
 keys in the variable it names). Admin → AI shows each model's state, the keys that work (as counts) and seven days
 per model; in SQL, `select * from ai.model_usage order by day desc, model;`.
 3. In SQL: `select day, kind, generations, tokens from ai.usage order by day desc limit 14;` (kind `all` is the day's
    total against the budget; `summary` and `summary_fix` are the split) and flagged ones:
    `select kind, flags, output from ai.cache where flags > 0;` (three flags drop an answer; the next request remakes it).
+
+## Article text storage (D107)
+
+Article sets keep their article's text in a private Cloudflare R2 bucket, so a student can review a set on any of
+their devices. Set all four on Render (Environment): `R2_ACCOUNT_ID`, `R2_BUCKET` (`99ile-articles`),
+`R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` (an Account API token with Object Read & Write on that bucket only). The
+bucket stays private, with a lifecycle rule deleting objects after 90 days. Each article is stored once under its
+hash, compressed, at most 64 KB, and at most 500 new ones a day; only a student who made a set from it can read it
+(`GET /v1/ai/article/{job}/text`). Without the four settings the text stays on the student's device. Check the bucket
+from a laptop with `go test -tags r2 -run TestR2RoundTrip ./internal/blob` (puts, reads and deletes one object).
 
 ## Study reminders
 

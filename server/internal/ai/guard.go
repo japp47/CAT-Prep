@@ -17,8 +17,14 @@ import (
 // the last two taken atomically in the database before the model is called: a conditional upsert on one row, so fifty
 // requests fired at once cannot all read "under the cap" and all go through. Cached answers skip the gate entirely.
 
-// estimate is the tokens reserved before a call and settled against what the call used.
-const estimate = 2500
+// estimateFor is the tokens reserved before a generation and settled against what it used: a summary check is one
+// call; an article set is a writer and a checker, each with a whole article.
+func estimateFor(kind string) int {
+	if kind == kindArticle {
+		return 12000
+	}
+	return 2500
+}
 
 // budgetKind is the ai.usage row that holds the day's total; the other rows are per-kind figures for the owner.
 const budgetKind = "all"
@@ -62,10 +68,10 @@ func (s *Service) admit(ctx context.Context, identity, ip, kind string) (*ticket
 	var total int
 	err = s.DB.QueryRow(ctx, `insert into ai.usage (day, kind, tokens) values (current_date, $3, $1)
 		on conflict (day, kind) do update set tokens = ai.usage.tokens + $1 where ai.usage.tokens + $1 <= $2 returning tokens`,
-		estimate, s.DailyBudget, budgetKind).Scan(&total)
+		estimateFor(kind), s.DailyBudget, budgetKind).Scan(&total)
 	if errors.Is(err, pgx.ErrNoRows) || (err == nil && total > s.DailyBudget) {
 		if err == nil {
-			s.unreserve(ctx, estimate)
+			s.unreserve(ctx, estimateFor(kind))
 		}
 		s.giveBack(ctx, t)
 		return nil, errBudget
@@ -80,7 +86,7 @@ func (s *Service) admit(ctx context.Context, identity, ip, kind string) (*ticket
 // settle replaces the reservation with the tokens the call used, records the kind's figures, and gives the student's
 // seat back when nothing was made (the model was busy, or its reply failed the check twice).
 func (s *Service) settle(ctx context.Context, t *ticket, tokens int, made bool) {
-	s.unreserve(ctx, estimate-tokens)
+	s.unreserve(ctx, estimateFor(t.kind)-tokens)
 	gen := 0
 	if made {
 		gen = 1

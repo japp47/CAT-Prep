@@ -96,6 +96,35 @@ student must sign in first, the page keeps the id and asks again on return (the 
 Same tokens, fonts and rules as the site (no text under 14 px, tone over borders, one filled button, reduced
 motion). "Not an article" shows what to read instead, linking to the reading list.
 
+## Getting the article in (decided 14 Nov 2026, D107)
+
+On a phone the hard part is not the clipboard (it holds a whole article) but selecting one: dragging across many
+screens, with ads, "Also read" links and captions in the way. So:
+
+- **Paste button:** one tap reads the clipboard (after the browser asks once); the box still takes a long-press paste.
+- **Clean-up by code:** "Advertisement", "Also read …", share labels, captions, datelines and bylines are dropped,
+  and lines are joined back into paragraphs.
+- **A one-line hint per browser:** Reader view, Select all, Copy.
+- **Upload a .txt or .pdf:** daily editorials circulate as PDFs (Telegram compilations of The Hindu and others). The
+  file is read on the device with Mozilla's `pdfjs-dist`, loaded only on this page; it never leaves the device and is
+  never stored. In a PDF with many articles the student picks one by its heading, then the paragraphs. Text PDFs only;
+  a scanned PDF or a screenshot needs OCR, which is later.
+
+## Where the article text lives (decided 14 Nov 2026, D107)
+
+The owner chose object storage over the phone's storage, so a student sees the full article on every device without
+filling the browser's storage.
+
+- **Cloudflare R2** (S3-compatible; free tier 10 GB-month of storage, 1M write and 10M read operations a month, no
+  egress fees, checked 14 Nov 2026). At about 4 KB compressed, an article costs nothing for years, and a popular
+  editorial is stored once however many students use it (keyed by the text's hash).
+- **Private:** an article is read only through the API, and only by students who made a set from it
+  (`ai.student_articles`); there is no public link.
+- **Kept** 90 days after the last student opened it; a student can delete their own copy at any time. Questions,
+  scores and mistakes stay in their history.
+- **Without R2 configured** the text stays on the device that made the set; nothing else changes.
+- The uploaded file itself is never stored anywhere.
+
 ## On the site: `/practice/article`
 
 1. **Receive.** From the extension, from a share, or pasted. The text is split into paragraphs and sentences with
@@ -109,7 +138,16 @@ motion). "Not an article" shows what to read instead, linking to the reading lis
 5. **Review** as for any set: verdicts, deciding lines, option notes and traps, the model summary and tone, "Report a
    bad question". Wrong answers go to the error log with a cause; the article goes to the reading journal.
 
-The student's article sets are listed under VARC practice as "Your articles", newest first.
+The student's article sets are listed as "Your articles" (a tab of the RC library, and on the article page), newest
+first, each with where it came from (pasted, a PDF with its file name, a text file; later the extension or a share),
+its source (typed, or the site's name from the link), the date and the last score. A set's title is the student's,
+else the article's own headline (its first line, found by code), else the PDF's file name, else a 3 to 8 word title
+the writer gives in the same call. The page says what happens to the article: a file is read on the device and never
+uploaded; only the chosen paragraphs are sent, kept privately for 90 days in R2 so the set can be reviewed on any of
+the student's devices (built 14 Nov 2026: `internal/blob`, a hand-written SigV4 client checked against AWS's
+published example; `texts.go`; migration 18; `GET /v1/ai/article/{job}/text` for the student who made the set; at
+most 500 new texts a day across the site and 64 KB each). The same page serves
+phones and computers; the extension will open it with the article already in.
 
 ## Server
 

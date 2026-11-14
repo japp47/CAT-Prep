@@ -27,6 +27,7 @@ import (
 	"github.com/japp47/CAT-Prep/server/internal/admin"
 	"github.com/japp47/CAT-Prep/server/internal/ai"
 	"github.com/japp47/CAT-Prep/server/internal/auth"
+	"github.com/japp47/CAT-Prep/server/internal/blob"
 	"github.com/japp47/CAT-Prep/server/internal/config"
 	"github.com/japp47/CAT-Prep/server/internal/feedback"
 	"github.com/japp47/CAT-Prep/server/internal/httpx"
@@ -80,7 +81,7 @@ func run() error {
 
 	server := &http.Server{
 		Addr:              ":" + strconv.Itoa(cfg.Port),
-		Handler:           newHandler(cfg, ready, log, newV1(cfg, pool, log)),
+		Handler:           newHandler(cfg, ready, log, newV1(ctx, cfg, pool, log)),
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       15 * time.Second,
 		WriteTimeout:      30 * time.Second,
@@ -215,12 +216,12 @@ var turnstileEndpoint = turnstile.SiteVerify
 
 // SyncKinds are the record kinds the browser may push: every kind in docs/architecture.md §6.1. It must match
 // KINDS in src/lib/sync/records.ts (a test checks).
-var SyncKinds = []string{"rc", "va", "cr", "lr", "lrDrill", "arena", "speed", "sectional", "mockReview", "summary", "error", "word", "mock",
+var SyncKinds = []string{"rc", "va", "cr", "lr", "lrDrill", "arena", "speed", "sectional", "mockReview", "summary", "article", "error", "word", "mock",
 	"practice", "recommendation", "weekReview", "redo", "day", "tick", "setting", "profile"}
 
 // newV1 builds the student API (docs/architecture.md §5, §6), behind reqinfo.Gate.
-func newV1(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger) http.Handler {
-	return v1Routes(cfg, pool, log, syncapi.Options{Kinds: SyncKinds, MaxRecords: 20_000, MaxBytes: 8 << 20, PerMinute: 120, Practice: practiceHook()})
+func newV1(ctx context.Context, cfg config.Config, pool *pgxpool.Pool, log *slog.Logger) http.Handler {
+	return v1Routes(ctx, cfg, pool, log, syncapi.Options{Kinds: SyncKinds, MaxRecords: 20_000, MaxBytes: 8 << 20, PerMinute: 120, Practice: practiceHook()})
 }
 
 // practiceHook tells reminders that a sync push carried a new attempt (internal/notify, F65).
@@ -242,7 +243,8 @@ var signInProvider = func(cfg config.Config) auth.Provider {
 	return &auth.OIDC{Issuer: auth.GoogleIssuer, ClientID: cfg.GoogleClientID, ClientSecret: cfg.GoogleClientSecret, RedirectURL: cfg.SignInRedirect()}
 }
 
-func v1Routes(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger, opt syncapi.Options) http.Handler {
+// v1Routes builds the API; ctx bounds the background jobs it starts (article sets, D104).
+func v1Routes(ctx context.Context, cfg config.Config, pool *pgxpool.Pool, log *slog.Logger, opt syncapi.Options) http.Handler {
 	hash := reqinfo.NewHasher(cfg)
 	lim := account.Limits{NewIdentities: 5, CodeTries: 10, WrongInARow: 5}
 	if !cfg.Prod() {
@@ -305,7 +307,7 @@ func v1Routes(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger, opt synca
 	// AI (F36, D100 to D105): off unless AI_ENABLED=1 with a model; the site then keeps its written notes.
 	// New generations need a Google account, room under the address's hourly limit, the student's cap and the day's
 	// budget (internal/ai/guard.go).
-	aiSvc := &ai.Service{DB: pool, DailyBudget: cfg.AIDailyTokens, PerStudent: cfg.AIPerStudent, IPs: limit.New(cfg.AIPerAddress, time.Hour), Log: log}
+	aiSvc := &ai.Service{DB: pool, DailyBudget: cfg.AIDailyTokens, PerStudent: cfg.AIPerStudent, IPs: limit.New(cfg.AIPerAddress, time.Hour), Log: log, Wake: make(chan struct{}, 1)}
 	if cfg.AIEnabled {
 		// run() has already checked the catalog, so an error here only happens in tests; AI then stays off.
 		if r, err := ai.LoadRouter(cfg.AICatalog, cfg.AIOrders, os.Getenv, log); err != nil {
@@ -314,12 +316,18 @@ func v1Routes(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger, opt synca
 			r.Record = aiSvc.RecordCall
 			aiSvc.Router = r
 			aiSvc.Content = &ai.Content{URL: cfg.AIContentURL, TTL: time.Hour}
+			aiSvc.Articles = articleStore(cfg)
+			// Article sets are made one at a time in the background (internal/ai/article.go).
+			go aiSvc.RunJobs(ctx)
 		}
 	}
 	rt.Handle("GET /v1/ai", acc.Optional(aiSvc.StatusHandler()))
 	rt.Handle("POST /v1/ai/flag", acc.Require(aiSvc.FlagHandler()))
 	rt.Handle("POST /v1/ai/summary", acc.Require(aiSvc.SummaryHandler()))
 	rt.Handle("POST /v1/ai/summary/fix", acc.Require(aiSvc.FixHandler()))
+	rt.Handle("POST /v1/ai/article", acc.Require(aiSvc.ArticleHandler()))
+	rt.Handle("GET /v1/ai/article/{job}", acc.Require(aiSvc.JobHandler()))
+	rt.Handle("GET /v1/ai/article/{job}/text", acc.Require(aiSvc.TextHandler()))
 
 	adm := admin.New(pool, hash, log)
 	// The Reminders panel (R2): its setup, and a test sender when email or push is on here.
@@ -359,4 +367,13 @@ func deadline(d time.Duration) func(http.Handler) http.Handler {
 			next.ServeHTTP(w, r.WithContext(ctx))
 		})
 	}
+}
+
+// articleStore is where article text is kept (D107): the R2 bucket when its four settings are there, else nowhere
+// (the text stays on the student's device). Tests replace it.
+var articleStore = func(cfg config.Config) blob.Store {
+	if cfg.R2Bucket == "" {
+		return nil
+	}
+	return blob.NewR2(cfg.R2Account, cfg.R2Bucket, cfg.R2AccessKey, cfg.R2SecretKey)
 }

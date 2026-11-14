@@ -138,6 +138,14 @@ func TestReminderWorkerSettings(t *testing.T) {
 }
 
 func TestGmailAPISettingsGoTogether(t *testing.T) {
+	r2 := map[string]string{"DATABASE_URL": "postgres://x@db/cat", "R2_BUCKET": "b", "R2_ACCOUNT_ID": "a"}
+	if _, err := load(env(r2)); err == nil || !strings.Contains(err.Error(), "R2_SECRET_ACCESS_KEY") {
+		t.Errorf("half the R2 settings: %v", err)
+	}
+	r2["R2_ACCESS_KEY_ID"], r2["R2_SECRET_ACCESS_KEY"] = "k", "s"
+	if c, err := load(env(r2)); err != nil || c.R2Bucket != "b" {
+		t.Errorf("all four R2 settings: %v", err)
+	}
 	two := map[string]string{"DATABASE_URL": "postgres://x@db/cat", "NOTIFY_GMAIL_CLIENT_ID": "c", "NOTIFY_GMAIL_CLIENT_SECRET": "s"}
 	if _, err := load(env(two)); err == nil || !strings.Contains(err.Error(), "NOTIFY_GMAIL_REFRESH_TOKEN") {
 		t.Errorf("two of three: %v", err)

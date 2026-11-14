@@ -36,6 +36,8 @@ export function recordRc(st: AppState, id: string, set: RcSet, ans: (number | nu
   st.rcAttempts.push(a);
   if (c + w > 0) st.practice.push({ id: id + "p", d, sec: "VARC", t: "RC", a: c + w, c, src: "Practice: " + set.title });
   // A right answer marked "Not sure" was a lucky guess: it comes back once, like a miss (docs/research/step-2g.md).
+  // Article sets (F34) stay out of the redo queue for now: their text may not be on this device when a miss comes due.
+  if (set.id.startsWith("art-")) return;
   set.questions.forEach((q, qi) => { if (ans[qi] !== q.answer || unsure.includes(qi)) queueMiss(st, rcRedoKey(set.id, qi), d); });
 }
 

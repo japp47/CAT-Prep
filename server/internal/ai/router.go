@@ -24,10 +24,11 @@ import (
 //go:embed models.json
 var builtinCatalog []byte
 
-// Tasks the site asks for. (The explain task was removed with "Explain my mistake", D105.)
+// Tasks the site asks for: the summary checks and fix, and the article writer and checker (TaskArticle,
+// TaskArticleTest in article.go). The explain task was removed with "Explain my mistake" (D105).
 const TaskSummary = "summary"
 
-var tasks = []string{TaskSummary}
+var tasks = []string{TaskSummary, TaskArticle, TaskArticleTest}
 
 // Catalog is the shape of models.json.
 type Catalog struct {
@@ -143,6 +144,10 @@ func LoadRouter(path string, orders map[string][]string, env func(string) string
 		if o := orders[task]; len(o) > 0 {
 			names = o
 		}
+		// Only the summary task is required; a catalog without the article tasks switches article sets off.
+		if len(names) == 0 && task != TaskSummary {
+			continue
+		}
 		seen := map[string]bool{}
 		usable := 0
 		for _, n := range names {
@@ -162,7 +167,7 @@ func LoadRouter(path string, orders map[string][]string, env func(string) string
 			usable++
 		}
 		if usable == 0 {
-			return nil, fmt.Errorf("AI task %s has no model it can use: name one in models.json or AI_%s, and set its provider's keys", task, strings.ToUpper(task))
+			return nil, fmt.Errorf("AI task %s has no model it can use: name one in models.json (or AI_SUMMARY for the summary task), and set its provider's keys", task)
 		}
 	}
 	return r, nil
@@ -186,7 +191,7 @@ type Reply struct {
 
 // JSON asks the task's models in order for one strict-JSON reply. avoid moves a model to the back (the one whose last
 // reply failed the check), so a second try goes to another model when one is free.
-func (r *Router) JSON(ctx context.Context, task, avoid, system, user, name string, schema map[string]any) (Reply, error) {
+func (r *Router) JSON(ctx context.Context, task, avoid, system, user, name string, schema any) (Reply, error) {
 	r.mu.Lock()
 	order := slices.Clone(r.order[task])
 	r.mu.Unlock()
@@ -341,4 +346,11 @@ func (r *Router) Status() Status {
 		st.Providers = append(st.Providers, ps)
 	}
 	return st
+}
+
+// Has reports whether a task has a model, so a feature whose task the catalog leaves out stays off.
+func (r *Router) Has(task string) bool {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	return len(r.order[task]) > 0
 }

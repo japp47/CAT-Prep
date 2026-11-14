@@ -45,7 +45,7 @@ func apiServer(t *testing.T, opt syncapi.Options) (*httptest.Server, *pgxpool.Po
 		t.Fatal(err)
 	}
 	cfg := config.Config{Env: "dev", AllowedOrigin: "http://localhost:5173"}
-	srv := httptest.NewTLSServer(newHandler(cfg, fakeDB(nil), quiet, v1Routes(cfg, appPool(t), quiet, opt)))
+	srv := httptest.NewTLSServer(newHandler(cfg, fakeDB(nil), quiet, v1Routes(t.Context(), cfg, appPool(t), quiet, opt)))
 	t.Cleanup(srv.Close)
 	return srv, admin
 }

@@ -10,6 +10,7 @@ import { usePref } from "../lib/prefs";
 import { useStore } from "../lib/store";
 import { SECTIONS, sectionByLabel } from "../sections";
 import { arenaTrend } from "../practice/arena";
+import { isArticleSet, withArticles } from "../practice/articleSet";
 import { useContent } from "../practice/content";
 import { readiness, tracked, trend } from "../practice/recs";
 import { isDiSet, JUDGE_AT, skillMap, startHere, STATE_LABEL, stateCounts, weeklyAccuracy, type Skill, type SkillFamily, type SkillState } from "../practice/skills";
@@ -174,9 +175,10 @@ function MapWithDiSets() {
 
 function MapWithPassages() {
   const { state } = useStore();
-  const ids = useMemo(() => [...new Set(state.rcAttempts.map((a) => a.set))], [state.rcAttempts]);
+  // Article sets (F34) are the student's own, not library files: their question kinds come from the store.
+  const ids = useMemo(() => [...new Set(state.rcAttempts.map((a) => a.set).filter((id) => !isArticleSet(id)))], [state.rcAttempts]);
   const { content } = useContent({ rc: ids });
-  return <SkillMap sec="VARC" rcById={content ? content.rcById : null} />;
+  return <SkillMap sec="VARC" rcById={content ? withArticles(content.rcById, state.articles) : null} />;
 }
 
 const TONE: Record<SkillState, string> = {

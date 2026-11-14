@@ -11,7 +11,9 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { gzipSync } from "node:zlib";
 
 const KB = 1024;
-const BUDGET = { script: 150 * KB, style: 30 * KB, fonts: 100 * KB, content: 70 * KB };
+// The script budget was 150 KB until 14 Nov 2026; the production build (API and sign-in switched on) reached 152.9 KB
+// with sync, reminders and AI, so it is 155 KB, measured on that build in CI as well (owner's decision).
+const BUDGET = { script: 155 * KB, style: 30 * KB, fonts: 100 * KB, content: 70 * KB };
 
 const html = readFileSync("dist/index.html", "utf8");
 const first = (re) => html.match(re)?.[1];

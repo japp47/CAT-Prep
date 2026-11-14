@@ -93,6 +93,18 @@ Effort first, the smallest hint next, the whole answer last (the model summary, 
 - **Not built:** judging the tone of the student's own writing (CAT does not test it), or letting the AI accept a
   tone the key does not.
 
+## Measured on real models (D106), 14 Nov 2026
+Until then the service had only met a fake model. The first run on Groq showed what tests could not: a good summary
+scored 4 of 4 and then 1 of 4 a minute later, a kept example passed, Qwen looped under strict JSON, and the free tier
+allows about five checks a minute per model. The fixes: a test per check with its ways of failing (and one fault
+counted once), the evidence written before the verdict, medium reasoning effort, Qwen removed.
+
+The eval (`server/internal/ai/testdata/summary_eval.json`, `eval_test.go`, run with `-tags eval`) holds 24 summaries
+over four passages with the right verdict per check, `?` where teachers could differ. Each model answers every case
+twice: the score is the share of scored checks right, and a flip is a clear check answered differently in the two
+runs. AI is switched on only when the primary model scores at least 90% with no flips, and the eval is run again after
+any change to a model, a setting or the prompt. A student's report of a wrong verdict becomes a new case.
+
 ## Models and keys (D102), built 13 Nov 2026
 - **No model in code.** `server/internal/ai/models.json` lists providers (base URL and the environment variable that
   holds their keys), models (provider, id, settings such as `reasoning_effort`) and each task's order. `AI_EXPLAIN` and

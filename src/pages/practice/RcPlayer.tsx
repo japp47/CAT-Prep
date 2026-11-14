@@ -96,7 +96,10 @@ export const showQuestion = (setPane: (p: "p" | "q") => void) => { setPane("q");
 interface RcDraft { ans: (number | null)[]; marked: boolean[]; cur: number; secs: number; first: number | null; unsure?: boolean[]; lines?: (LineRef | null)[] }
 
 /** One RC set: answering it, then reviewing it on the same page. */
-function Player({ set, reviewId }: { set: RcSet; reviewId: string | null }) {
+/** The line above a set's title: its genre and level, or, for a student's own article (F34), just that. */
+const kickerOf = (set: RcSet, what: string) => set.id.startsWith("art-") ? `${what}, your article` : `${what}, ${GENRES[set.genre].toLowerCase()}, ${set.difficulty}`;
+
+export function Player({ set, reviewId }: { set: RcSet; reviewId: string | null }) {
   const { state } = useStore();
   // Right after a submit, a set with a model summary asks for the student's own first: the main-idea answer would give it away.
   // The pending step is kept as a draft, so a reload or a phone switching apps comes back to it instead of a fresh set.
@@ -159,7 +162,8 @@ function SummaryStep({ set, model, attempt, onDone }: { set: RcSet; model: RcSum
           <>
             <SummaryPair text={text.trim()} tone={tone} model={model} />
             <Checklist checks={checks} onChange={setChecks} model={model} />
-            <SecondOpinion set={set} text={text.trim()} checks={checks} onVerdicts={setAiChecks} onRevised={setRevised} />
+            {/* The server knows only library passages; an article set's summary is self-checked for now (F34). */}
+            {!set.id.startsWith("art-") && <SecondOpinion set={set} text={text.trim()} checks={checks} onVerdicts={setAiChecks} onRevised={setRevised} />}
             <div><Button onClick={() => finish(true)}>Save and see the answers</Button></div>
           </>
         ) : (
@@ -207,7 +211,7 @@ function SummaryReview({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
 /** The set behind its door (D83): after a long break it asks to start fresh or carry on. */
 function Attempt({ set, onDone }: { set: RcSet; onDone: (id: string) => void }) {
   return (
-    <ComeBack draftKey={"rc:" + set.id} kicker={`RC practice, ${GENRES[set.genre].toLowerCase()}, ${set.difficulty}`} title={set.title}>
+    <ComeBack draftKey={"rc:" + set.id} kicker={kickerOf(set, "RC practice")} title={set.title}>
       {(r) => <Solve set={set} onDone={onDone} resume={r} />}
     </ComeBack>
   );
@@ -305,7 +309,7 @@ function Solve({ set, onDone, resume }: { set: RcSet; onDone: (id: string) => vo
 
   return (
     <Page className="gap-6 lg:gap-8">
-      <PlayerBar kicker={`RC practice, ${GENRES[set.genre].toLowerCase()}, ${set.difficulty}`} title={set.title}>
+      <PlayerBar kicker={kickerOf(set, "RC practice")} title={set.title}>
         {hideTimer
           ? <Button variant="link" size="sm" onClick={() => setHideTimer(false)}>Show timer</Button>
           : <ElapsedTimer startAt={startAt} target={TARGET_SECS} onClick={() => setHideTimer(true)} title="Target 7 minutes. Tap to hide." />}
@@ -378,7 +382,7 @@ function StaleReview({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
   const skipped = attempt.ans.filter((a) => a === null).length;
   return (
     <Page className="gap-6 lg:gap-8">
-      <PlayerBar kicker={`Review, ${GENRES[set.genre].toLowerCase()}, ${set.difficulty}`} title={set.title}>
+      <PlayerBar kicker={kickerOf(set, "Review")} title={set.title}>
         <LinkButton to="/practice" variant="secondary" size="sm">Back to Practice</LinkButton>
       </PlayerBar>
       <ScoreCard score={(3 * attempt.c - attempt.w > 0 ? "+" : "") + (3 * attempt.c - attempt.w)} parts={[["Correct", attempt.c], ["Wrong", attempt.w], ["Skipped", skipped], ["Time", fmtSecs(attempt.secs)]]}>
@@ -397,7 +401,7 @@ function FullReview({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
   const ans = attempt.ans;
   return (
     <Page className="gap-6 lg:gap-8">
-      <PlayerBar kicker={`Review, ${GENRES[set.genre].toLowerCase()}, ${set.difficulty}`} title={set.title}>
+      <PlayerBar kicker={kickerOf(set, "Review")} title={set.title}>
         <LinkButton to="/practice" variant="secondary" size="sm">Back to Practice</LinkButton>
       </PlayerBar>
 

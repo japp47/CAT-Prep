@@ -120,6 +120,19 @@ export interface SummaryEntry {
   set?: string; att?: string; from?: string; title?: string; url?: string; ai?: boolean[]; revised?: string;
 }
 
+/**
+ * A student's article set (F34, D104): the questions and model summary made from their article, with deciding lines
+ * as [paragraph, sentence]. The article's text is not here: it is kept apart (practice/articleSet.ts, D107), so sync
+ * never carries it.
+ */
+export interface ArticleEntry {
+  id: string; job: string; d: string; updatedAt: number; title: string; site?: string; link?: string; words: number; dropped: number;
+  /** How it came in (practice/articleText.ts, ORIGIN_LABEL), and the file's name when it was a file. */
+  origin?: "paste" | "pdf" | "txt" | "extension" | "share"; file?: string;
+  questions: { type: string; stem: string; options: string[]; answer: number; notes: string[]; traps: string[]; lines: [number, number][] }[];
+  summary: { model: string; claim: string; qualifier: string; tone: string; toneCue: string; toneWhy: string };
+}
+
 /** What happened to the student on a question they got wrong. Labels are in data/traps.ts (CAUSES). */
 export type Cause = "misread" | "qualifier" | "beyond" | "trap" | "method" | "slip" | "guess" | "select" | "time";
 export const CAUSE_IDS: Cause[] = ["misread", "qualifier", "beyond", "trap", "method", "slip", "guess", "select", "time"];
@@ -177,6 +190,7 @@ export interface AppState {
   redo: RedoItem[];
   sectionals: SectionalAttempt[];
   summaries: SummaryEntry[];
+  articles: ArticleEntry[];
   mockReviews: MockReview[];
   recs: Recommendation[];
   weekReviews: WeekReview[];
@@ -201,7 +215,7 @@ const emptyDow = () => [null, null, null, null, null, null, null] as (number | n
 export function blankState(): AppState {
   const settings = {} as Record<SectionId, TimeSettings>;
   SECTION_IDS.forEach((id) => (settings[id] = { ...DEFAULT_TIME[id], dow: emptyDow() }));
-  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], crAttempts: [], lrAttempts: [], lrDrills: [], arenaRounds: [], speedRuns: [], redo: [], sectionals: [], summaries: [], mockReviews: [], recs: [], weekReviews: [], redoSeeded: true, lrRedoSeeded: true, targets: { varc: DEFAULT_TARGET }, about: {} };
+  return { version: 4, ticks: {}, settings, days: {}, since: todayIso(), mocks: [], errors: [], vocab: [], practice: [], rcAttempts: [], vaAttempts: [], crAttempts: [], lrAttempts: [], lrDrills: [], arenaRounds: [], speedRuns: [], redo: [], sectionals: [], summaries: [], articles: [], mockReviews: [], recs: [], weekReviews: [], redoSeeded: true, lrRedoSeeded: true, targets: { varc: DEFAULT_TARGET }, about: {} };
 }
 
 type Obj = Record<string, unknown>;
@@ -340,6 +354,21 @@ export function normalize(raw: unknown): AppState {
     qs: Array.isArray(x.qs) ? x.qs.map(str) : [], a: Array.isArray(x.a) ? x.a.map(str) : [], t: Array.isArray(x.t) ? x.t.map(num) : [],
     ...(Array.isArray(x.v) ? { v: x.v.map(str) } : {}),
   })).filter((x) => x.id && x.qs.length && x.a.length === x.qs.length);
+  b.articles = list(raw.articles, (x) => {
+    const sm = isObj(x.summary) ? x.summary : {};
+    const strs = (v: unknown) => (Array.isArray(v) ? v.map(str) : []);
+    const e: ArticleEntry = {
+      id: str(x.id), job: str(x.job), d: str(x.d), updatedAt: num(x.updatedAt), title: str(x.title) || "Your article", words: num(x.words), dropped: num(x.dropped),
+      questions: list(x.questions, (q) => ({
+        type: str(q.type), stem: str(q.stem), options: strs(q.options), answer: num(q.answer), notes: strs(q.notes), traps: strs(q.traps),
+        lines: (Array.isArray(q.lines) ? q.lines : []).filter((l: unknown): l is [number, number] => Array.isArray(l) && l.length === 2 && l.every((n) => Number.isInteger(n) && n >= 0)),
+      })).filter((q) => q.stem && q.options.length === 4 && q.answer >= 0 && q.answer < 4),
+      summary: { model: str(sm.model), claim: str(sm.claim), qualifier: str(sm.qualifier), tone: str(sm.tone), toneCue: str(sm.toneCue), toneWhy: str(sm.toneWhy) },
+    };
+    (["site", "link", "file"] as const).forEach((k) => { const v = x[k]; if (typeof v === "string" && v) e[k] = v.slice(0, 200); });
+    if (x.origin === "paste" || x.origin === "pdf" || x.origin === "txt" || x.origin === "extension" || x.origin === "share") e.origin = x.origin;
+    return e;
+  }).filter((e) => e.id.startsWith("art-") && e.questions.length >= 3 && isIsoDate(e.d));
   b.summaries = list(raw.summaries, (x) => {
     const e: SummaryEntry = {
       id: str(x.id), d: str(x.d), src: x.src === "article" ? "article" : "rc", text: str(x.text), tone: str(x.tone),

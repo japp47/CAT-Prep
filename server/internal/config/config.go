@@ -75,6 +75,9 @@ type Config struct {
 	// AIContentURL is where the published content is read (AI_CONTENT_URL; default ALLOWED_ORIGIN + /ai/rc.json, which
 	// the dev server does not serve: point it at a preview build or the live site on a laptop).
 	AIContentURL string
+	// R2* is the private Cloudflare R2 bucket for article text (D107): R2_ACCOUNT_ID, R2_BUCKET, R2_ACCESS_KEY_ID,
+	// R2_SECRET_ACCESS_KEY, all four or none. Without them the text stays on the student's device.
+	R2Account, R2Bucket, R2AccessKey, R2SecretKey string
 	// Commit is the Git commit this build came from. Render sets RENDER_GIT_COMMIT; "dev" elsewhere.
 	// /healthz reports it, so the deploy workflow can tell when the new version is live.
 	Commit string
@@ -202,6 +205,10 @@ func load(get func(string) string) (Config, error) {
 	}
 	c.AIDailyTokens, c.AIPerStudent = 150000, 10
 	c.AIContentURL = or(get("AI_CONTENT_URL"), c.AllowedOrigin+"/ai/rc.json")
+	c.R2Account, c.R2Bucket, c.R2AccessKey, c.R2SecretKey = get("R2_ACCOUNT_ID"), get("R2_BUCKET"), get("R2_ACCESS_KEY_ID"), get("R2_SECRET_ACCESS_KEY")
+	if n := countSet(c.R2Account, c.R2Bucket, c.R2AccessKey, c.R2SecretKey); n != 0 && n != 4 {
+		errs = append(errs, errors.New("R2_ACCOUNT_ID, R2_BUCKET, R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY go together: set all four for article storage, or none"))
+	}
 	c.AIPerAddress = 30
 	for name, dst := range map[string]*int{"AI_DAILY_TOKENS": &c.AIDailyTokens, "AI_PER_STUDENT": &c.AIPerStudent, "AI_PER_ADDRESS": &c.AIPerAddress} {
 		if v := get(name); v != "" {
@@ -232,4 +239,14 @@ func nonEmpty(vs ...string) []string {
 		}
 	}
 	return out
+}
+
+func countSet(vs ...string) int {
+	n := 0
+	for _, v := range vs {
+		if v != "" {
+			n++
+		}
+	}
+	return n
 }
