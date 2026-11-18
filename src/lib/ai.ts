@@ -9,7 +9,7 @@ import { loadLedger } from "./sync/ledger";
  * would let one person bring many caps.
  */
 /** articlesLeft: new article sets the student may still start today (IST day), when signed in. */
-export interface AiStatus { on: boolean; signedIn: boolean; articlesLeft?: number }
+export interface AiStatus { on: boolean; signedIn: boolean; articlesLeft?: number; words?: boolean }
 const OFF: AiStatus = { on: false, signedIn: false };
 
 let status: { who: string; p: Promise<AiStatus> } | null = null;
@@ -20,7 +20,7 @@ let status: { who: string; p: Promise<AiStatus> } | null = null;
 export function aiStatus(): Promise<AiStatus> {
   if (!API_ENABLED) return Promise.resolve(OFF);
   const L = loadLedger(), who = L.on ? `${L.who?.identityId ?? ""}:${L.who?.account ? "account" : ""}` : "off";
-  if (status?.who !== who) status = { who, p: api<AiStatus>("/ai").then((r) => (r.ok ? { on: r.data.on === true, signedIn: r.data.signedIn === true, ...(typeof r.data.articlesLeft === "number" ? { articlesLeft: r.data.articlesLeft } : {}) } : OFF)) };
+  if (status?.who !== who) status = { who, p: api<AiStatus>("/ai").then((r) => (r.ok ? { on: r.data.on === true, signedIn: r.data.signedIn === true, words: r.data.words === true, ...(typeof r.data.articlesLeft === "number" ? { articlesLeft: r.data.articlesLeft } : {}) } : OFF)) };
   return status.p;
 }
 
@@ -62,6 +62,9 @@ export const fixSummary = (m: { set: string; v: string; text: string }) => api<S
 
 /** Marks a summary verdict or fix as wrong; three students' flags drop it from the cache. */
 export const flagAi = (key: string) => api<null>("/ai/flag", { key });
+
+/** A word's meaning in its sentence (D113), from the small model, cached for everyone who asks about that sentence. */
+export const wordMeaning = (m: { word: string; sentence: string }) => api<{ meaning: string; cached: boolean }>("/ai/word", m);
 
 /** Article to RC (F34, D104): start a set from the student's article (sentences per paragraph), then poll its job. */
 export interface ArticleStart { title: string; site: string; link: string; paras: string[][] }

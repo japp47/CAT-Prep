@@ -47,3 +47,16 @@ export function locate(page: string, line: string): [number, number] | null {
   const last = end >= 0 && end - start <= l.length * 1.5 ? end + tail.length - 1 : start + head.length - 1;
   return [p.at[start], p.at[last] + 1];
 }
+
+/**
+ * A page title without the site's name after it: "The origins of the state | Aeon Essays" becomes the first part. Cut
+ * only after a "|", or when the part after a dash names the site, so "Self-control – a short history" stays whole.
+ */
+export function withoutSite(title: string, site = ""): string {
+  const t = title.replace(/\s+/g, " ").trim();
+  const m = t.match(/^(.{12,}?)\s+([|–—·-])\s+([^|–—·]{2,40})$/);
+  if (!m) return t;
+  const name = site.toLowerCase().replace(/^www\./, "").split(".")[0];
+  const tail = m[3].toLowerCase();
+  return m[2] === "|" || (name.length >= 3 && (tail.includes(name) || name.includes(tail.replace(/\s+/g, "")))) ? m[1].trim() : t;
+}

@@ -21,6 +21,7 @@
   "tasks": {
     "summary": ["gpt-oss-120b", "gpt-oss-20b"],
     "article_write": ["gpt-oss-120b", "gpt-oss-20b"],
-    "article_check": ["gpt-oss-120b", "gpt-oss-20b"]
+    "article_check": ["gpt-oss-120b", "gpt-oss-20b"],
+    "word": ["gpt-oss-20b", "gpt-oss-120b"]
   }
 }

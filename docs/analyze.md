@@ -77,6 +77,17 @@ Thinking practice (Arcade, Manager Lab, DILR and Quant ideas), community, and re
 
 ## 3. Consistency check: spec vs plan vs code
 
+### 19 Nov 2026, words in the panel and highlights on real pages (D113)
+
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A175 | A saved word asked for a meaning with no help to find it | Students left the panel to look it up | "Show the meaning here": the meaning in this sentence from the small model (`gpt-oss-20b` first), cached under the word and sentence for everyone, 20 an hour per student and outside the day's 10 AI answers (`server/internal/ai/word.go`, `POST /v1/ai/word`); and "Roots on Etymonline". The student still writes the meaning in their own words; the answer can be copied in |
+| A176 | On aeon.co the passage and the deciding line were not marked for the owner | The review's main feature looked broken | The reader works there (checked on the real essay). The panel had lost the tab: it now marks the tab beside it, says why when Chrome will not let it in, and offers the every-site switch then |
+| A177 | The "Add to RC set" button hid on any scroll and could sit below the window | On pages that scroll by themselves (Aeon) it vanished; long selections put it off-screen | It no longer hides on scroll (it is placed on the page and moves with the text) and is kept inside the window |
+| A178 | Titles kept the site's name ("… \| Aeon Essays") | Untidy set titles | Cut after "\|", or after a dash when the rest names the site |
+
+**D113.** A word saved from an article can be explained in its sentence by the small model, because the sentence is new input; the answer is cached for everyone and does not use the day's AI answers. Highlights target the tab beside the panel.
+
 ### 18 Nov 2026, "Add to RC set" beside a selection (D112; `docs/design/article-to-rc.md`, "Selecting")
 
 The owner asked for PracticeRC's gesture: select, a button appears, click, and the text is in the panel. A button that

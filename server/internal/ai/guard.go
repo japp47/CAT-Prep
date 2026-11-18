@@ -23,8 +23,11 @@ import (
 // estimateFor is the tokens reserved before a generation and settled against what it used: a summary check is one
 // call; an article set is a writer and a checker, each with a whole article.
 func estimateFor(kind string) int {
-	if kind == kindArticle {
+	switch kind {
+	case kindArticle:
 		return 12000
+	case kindWord:
+		return 1200
 	}
 	return 2500
 }
@@ -54,6 +57,11 @@ func (s *Service) admit(ctx context.Context, identity, ip, kind string) (*ticket
 			return nil, errIPLimit
 		}
 	}
+	t := &ticket{identity: identity, kind: kind}
+	// A word's meaning has its own hourly limit (word.go) and does not use one of the day's AI answers.
+	if kind == kindWord {
+		return t, s.reserve(ctx, t)
+	}
 	var n int
 	err := s.DB.QueryRow(ctx, `insert into ai.daily (identity_id, day, n) values ($1, (now() at time zone 'Asia/Kolkata')::date, 1)
 		on conflict (identity_id, day) do update set n = ai.daily.n + 1 where ai.daily.n < $2 returning n`, identity, s.PerStudent).Scan(&n)
@@ -63,13 +71,21 @@ func (s *Service) admit(ctx context.Context, identity, ip, kind string) (*ticket
 	if err != nil {
 		return nil, err
 	}
-	t := &ticket{identity: identity, kind: kind}
 	if n > s.PerStudent { // a cap of 0: the first insert still made a row
 		s.giveBack(ctx, t)
 		return nil, errStudentCap
 	}
+	if err := s.reserve(ctx, t); err != nil {
+		return nil, err
+	}
+	return t, nil
+}
+
+// reserve takes the generation's estimate from the day's budget, or gives the student's seat back and refuses.
+func (s *Service) reserve(ctx context.Context, t *ticket) error {
+	kind := t.kind
 	var total int
-	err = s.DB.QueryRow(ctx, `insert into ai.usage (day, kind, tokens) values ((now() at time zone 'Asia/Kolkata')::date, $3, $1)
+	err := s.DB.QueryRow(ctx, `insert into ai.usage (day, kind, tokens) values ((now() at time zone 'Asia/Kolkata')::date, $3, $1)
 		on conflict (day, kind) do update set tokens = ai.usage.tokens + $1 where ai.usage.tokens + $1 <= $2 returning tokens`,
 		estimateFor(kind), s.DailyBudget, budgetKind).Scan(&total)
 	if errors.Is(err, pgx.ErrNoRows) || (err == nil && total > s.DailyBudget) {
@@ -77,13 +93,13 @@ func (s *Service) admit(ctx context.Context, identity, ip, kind string) (*ticket
 			s.unreserve(ctx, estimateFor(kind))
 		}
 		s.giveBack(ctx, t)
-		return nil, errBudget
+		return errBudget
 	}
 	if err != nil {
 		s.giveBack(ctx, t)
-		return nil, err
+		return err
 	}
-	return t, nil
+	return nil
 }
 
 // settle replaces the reservation with the tokens the call used, records the kind's figures, and gives the student's
@@ -111,6 +127,9 @@ func (s *Service) unreserve(ctx context.Context, tokens int) {
 }
 
 func (s *Service) giveBack(ctx context.Context, t *ticket) {
+	if t.kind == kindWord {
+		return // words do not take a seat
+	}
 	if _, err := s.DB.Exec(ctx, `update ai.daily set n = greatest(n - 1, 0) where identity_id = $1 and day = (now() at time zone 'Asia/Kolkata')::date`, t.identity); err != nil {
 		s.Log.Warn("ai: student count", "error", err)
 	}

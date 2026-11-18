@@ -1,4 +1,4 @@
-import { asParagraphs, sentenceWith } from "./text";
+import { asParagraphs, sentenceWith, withoutSite } from "./text";
 
 /**
  * The "Add to RC set" button (F53, D112): when the student finishes selecting text, a small button appears beside the
@@ -70,8 +70,10 @@ function start() {
     const w = btn.offsetWidth, h = btn.offsetHeight;
     const x = Math.min(Math.max(8, r.right - w / 2), innerWidth - w - 8);
     const below = r.bottom + 10 + h < innerHeight;
+    // Beside the end of the selection, but always inside the window: a long or keyboard selection can end off-screen.
+    const y = Math.min(Math.max(8, below ? r.bottom + 10 : r.top - h - 10), innerHeight - h - 8);
     btn.style.left = `${x + scrollX}px`;
-    btn.style.top = `${(below ? r.bottom + 10 : r.top - h - 10) + scrollY}px`;
+    btn.style.top = `${y + scrollY}px`;
   };
 
   let timer = 0;
@@ -80,7 +82,7 @@ function start() {
   document.addEventListener("keyup", (e) => { if (e.key === "Escape") hide(); else if (e.shiftKey || e.key === "Shift") later(); }, true);
   document.addEventListener("mousedown", (e) => { if (!e.composedPath().includes(host)) hide(); }, true);
   document.addEventListener("selectionchange", () => { if (getSelection()?.isCollapsed) hide(); });
-  addEventListener("scroll", hide, { passive: true });
+  // No hiding on scroll: the button is placed on the page, so it moves with the text, and some sites scroll on their own.
 
   // The click is the student's: the background opens the panel in the same turn and adds the text to the set.
   btn.addEventListener("click", () => {
@@ -124,5 +126,6 @@ function selectionText(sel: Selection): string {
 
 const siteName = () =>
   document.querySelector<HTMLMetaElement>('meta[property="og:site_name"]')?.content?.trim() || location.hostname.replace(/^www\./, "");
-const pageTitle = () =>
-  document.querySelector<HTMLMetaElement>('meta[property="og:title"]')?.content?.trim() || document.querySelector("h1")?.textContent?.trim() || document.title;
+const pageTitle = () => withoutSite(
+  document.querySelector<HTMLMetaElement>('meta[property="og:title"]')?.content?.trim() || document.querySelector("h1")?.textContent?.trim() || document.title,
+  location.hostname);

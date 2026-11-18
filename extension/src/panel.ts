@@ -46,23 +46,38 @@ addEventListener("message", (e: MessageEvent) => {
   }
 });
 
-/** Runs the reader's highlight (a deciding line) or mark (the passage in use) in the tab that was read. */
+/**
+ * Runs the reader's highlight (a deciding line) or mark (the passage in use) in the article beside the panel: the tab
+ * that is active in this window, else the one last read. A panel that was closed and opened again forgets which tab it
+ * read, and the student is looking at the article anyway.
+ */
 async function paint(what: "highlight" | "mark", texts: string[], answer: boolean) {
+  const id = await beside();
   // An empty mark is allowed: it clears the passage's marks.
-  if (tabId === null || (!texts.length && what !== "mark")) { if (answer) post({ type: "highlighted", ok: false }); return; }
+  if (id === null || (!texts.length && what !== "mark")) { if (answer) post({ type: "highlighted", ok: false, reason: "tab" }); return; }
   // Once more after a moment on a miss: a page still settling (fonts, late content) can make the first try fail.
-  let ok = await tryPaint(tabId, what, texts);
-  if (!ok && texts.length) { await new Promise((r) => setTimeout(r, 400)); ok = await tryPaint(tabId, what, texts); }
-  if (answer) post({ type: "highlighted", ok });
+  let r = await tryPaint(id, what, texts);
+  if (r === "missing" && texts.length) { await new Promise((res) => setTimeout(res, 400)); r = await tryPaint(id, what, texts); }
+  if (answer) post({ type: "highlighted", ok: r === "ok", ...(r === "ok" ? {} : { reason: r }) });
+  // Chrome would not let 99ile into the page: offer the switch that would, even if it was put off before.
+  if (r === "access") void showBar(true);
 }
 
-async function tryPaint(id: number, what: string, texts: string[]): Promise<boolean> {
+async function beside(): Promise<number | null> {
+  try {
+    const [t] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (typeof t?.id === "number") return t.id;
+  } catch { /* fall back to the tab last read */ }
+  return tabId;
+}
+
+async function tryPaint(id: number, what: string, texts: string[]): Promise<"ok" | "missing" | "access"> {
   try {
     await chrome.scripting.executeScript({ target: { tabId: id }, files: ["reader.js"] });
     const [res] = await chrome.scripting.executeScript({ target: { tabId: id }, func: (w: string, t: string[]) => (globalThis as any).__ile99[w](t), args: [what, texts] }); // eslint-disable-line @typescript-eslint/no-explicit-any
-    return res?.result === true;
+    return res?.result === true ? "ok" : "missing";
   } catch {
-    return false;
+    return "access";
   }
 }
 
@@ -74,10 +89,10 @@ chrome.storage.onChanged.addListener((ch: Record<string, { newValue?: { msg: unk
 // "Add to RC set as you select" (D112): off until the student turns it on here, when Chrome asks them once.
 const bar = document.getElementById("bar") as HTMLDivElement;
 const ALL = { origins: ["<all_urls>"] };
-async function showBar() {
+async function showBar(always = false) {
   const on: boolean = await chrome.permissions.contains(ALL);
   const { selectBarDismissed } = await chrome.storage.local.get("selectBarDismissed");
-  bar.classList.toggle("on", !on && !selectBarDismissed);
+  bar.classList.toggle("on", !on && (always || !selectBarDismissed));
 }
 (document.getElementById("yes") as HTMLButtonElement).addEventListener("click", async () => {
   const granted: boolean = await chrome.permissions.request(ALL);

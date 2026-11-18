@@ -65,6 +65,13 @@ func (f *fakeModel) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			agree = 1
 		}
 		reply = fmt.Sprintf(`{"answers":[{"question":1,"line":1,"choice":%d},{"question":2,"line":1,"choice":%d},{"question":3,"line":1,"choice":%d},{"question":4,"line":1,"choice":2}]}`, agree, agree, agree)
+	} else if strings.Contains(user, "<word>") {
+		// A word's meaning: a short gloss, or (bad) one that repeats the word, which the check refuses.
+		meaning := "apparently, though not really"
+		if f.bad.Load() {
+			meaning = "in the manner of " + user[strings.Index(user, "<word>")+len("<word>"):strings.Index(user, "</word>")]
+		}
+		reply = fmt.Sprintf(`{"meaning":%q}`, meaning)
 	} else if strings.Contains(user, "Edit the summary above") {
 		// The smallest fix: one word added, or (bad) the model summary itself, which is too far to count as an edit.
 		text := user[strings.Index(user, "<summary>")+len("<summary>") : strings.Index(user, "</summary>")]
@@ -124,7 +131,7 @@ func aiServer(t *testing.T, o aiOpts) (*httptest.Server, *fakeModel, *pgxpool.Po
 	catalog := t.TempDir() + "/models.json"
 	if err := os.WriteFile(catalog, []byte(fmt.Sprintf(`{"providers":{"fake":{"baseURL":%q}},
 		"models":{"large":{"provider":"fake","id":"test-model-large"}},
-		"tasks":{"summary":["large"],"article_write":["large"],"article_check":["large"]}}`, ms.URL+"/v1")), 0o600); err != nil {
+		"tasks":{"summary":["large"],"article_write":["large"],"article_check":["large"],"word":["large"]}}`, ms.URL+"/v1")), 0o600); err != nil {
 		t.Fatal(err)
 	}
 	cfg := config.Config{Env: "dev", AllowedOrigin: "http://localhost:5173", NotifyTokenKey: notifyKey,
@@ -557,5 +564,46 @@ func TestArticleSets(t *testing.T) {
 	}
 	if code := newDevice(t, srv).send("POST", "/v1/ai/article", testArticle("six"), nil); code != http.StatusUnauthorized {
 		t.Errorf("no device: %d", code)
+	}
+}
+
+// A word's meaning in its sentence (D113): asked once and cached for everyone, outside the daily AI answers, refused
+// when the model only repeats the word, and only for signed-in students.
+func TestWordMeaning(t *testing.T) {
+	srv, model, admin := aiServer(t, aiOpts{perStudent: 1, budget: 100000})
+	a, b := student(t, srv, admin), student(t, srv, admin)
+	lookup := func(d *device, word, sentence string) (int, ai.Meaning) {
+		var m ai.Meaning
+		return d.send("POST", "/v1/ai/word", map[string]any{"word": word, "sentence": sentence}, &m), m
+	}
+	const sentence = "The reform was ostensibly about efficiency, but its aim was control."
+	var st struct{ Words bool }
+	if a.get("/v1/ai", &st); !st.Words {
+		t.Fatal("status does not say meanings are on")
+	}
+	code, m := lookup(a, "ostensibly", sentence)
+	if code != http.StatusOK || m.Meaning != "apparently, though not really" || m.Cached {
+		t.Fatalf("first: %d %+v", code, m)
+	}
+	calls := model.calls.Load()
+	if code, m := lookup(b, "Ostensibly", sentence); code != http.StatusOK || !m.Cached || model.calls.Load() != calls {
+		t.Errorf("another student's ask was not served from the cache: %d %+v", code, m)
+	}
+	// Words do not use the day's AI answers: a's one answer is still there for a summary.
+	if code, _ := ask(a, summaryText(1)); code != http.StatusOK {
+		t.Errorf("summary after a word: %d", code)
+	}
+	model.bad.Store(true)
+	if code, _ := lookup(a, "efficiency", sentence); code != http.StatusServiceUnavailable {
+		t.Errorf("a meaning that repeats the word: %d", code)
+	}
+	model.bad.Store(false)
+	for _, body := range []map[string]any{{"word": "control", "sentence": "Too short"}, {"word": "absent", "sentence": sentence}, {"word": "one two three four", "sentence": sentence}} {
+		if code := a.send("POST", "/v1/ai/word", body, nil); code != http.StatusBadRequest {
+			t.Errorf("%v: %d", body, code)
+		}
+	}
+	if code, _ := lookup(newDevice(t, srv), "control", sentence); code != http.StatusForbidden && code != http.StatusUnauthorized {
+		t.Errorf("signed out: %d", code)
 	}
 }

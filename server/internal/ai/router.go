@@ -28,7 +28,7 @@ var builtinCatalog []byte
 // TaskArticleTest in article.go). The explain task was removed with "Explain my mistake" (D105).
 const TaskSummary = "summary"
 
-var tasks = []string{TaskSummary, TaskArticle, TaskArticleTest}
+var tasks = []string{TaskSummary, TaskArticle, TaskArticleTest, TaskWord}
 
 // Catalog is the shape of models.json.
 type Catalog struct {
@@ -370,6 +370,8 @@ func replyLimit(task string) int {
 		return 5000
 	case TaskArticleTest:
 		return 2500
+	case TaskWord:
+		return 1200 // a dozen words, and the reasoning before them
 	}
 	return 1500
 }

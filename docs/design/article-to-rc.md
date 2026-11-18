@@ -147,6 +147,14 @@ beside a sample essay page (our own passage, a made-up magazine), with the promo
 copy the id and public key from its Package tab, switch the site and `extension/key.txt` to them, deploy, fill the
 listing, submit.
 
+## Words (19 Nov 2026, D113)
+
+The word card fills the panel: the word and its sentence at the top; "Show the meaning here" (signed-in students, when
+the `word` task is in `models.json`), which asks the small model for the meaning in this sentence in 3 to 14 words and
+shows it with "Use this as my meaning"; "Roots on Etymonline"; and at the foot the student's own meaning and Save. The
+server checks the gloss (short, no link, no markdown, not the word again), caches it under the word and sentence, and
+limits a student to 20 new meanings an hour, outside the day's AI answers.
+
 ## Selecting (18 Nov 2026, D112)
 
 Select text and, when the selection ends, a small button appears beside it: "Add to RC set · 212 words" for 15 words

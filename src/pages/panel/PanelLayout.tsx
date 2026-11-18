@@ -15,6 +15,13 @@ const ArticleWatcher = lazy(() => import("../../components/ArticleWatcher"));
 
 const BASE = import.meta.env.BASE_URL;
 
+/** Why "Show me in the article" could not mark the line, in the student's terms. */
+const HIGHLIGHT_FAILED: Record<string, string> = {
+  missing: "That line was not found on this page. Is the article's tab the one beside the panel?",
+  access: "99ile can't reach this page now. Turn on “Add to RC set as you select” below, or click the 99ile icon on the article, then try again.",
+  tab: "Open the article's tab beside the panel, then try again.",
+};
+
 /**
  * The frame of the extension's side panel (F53, D110): no sidebar and no bottom bar, a slim header, and the same
  * store, sync and article watcher as the site. Links to the rest of 99ile open in a new tab, so the panel stays beside
@@ -28,9 +35,9 @@ export default function PanelLayout() {
   useEffect(() => {
     const onMessage = (e: MessageEvent) => {
       if (!EXTENSION_ORIGINS.includes(e.origin)) return;
-      const d = e.data as { src?: string; type?: string; ok?: boolean } | null;
+      const d = e.data as { src?: string; type?: string; ok?: boolean; reason?: string } | null;
       if (d?.src === "99ile-ext" && d.type === "highlighted") {
-        if (!d.ok) toast("That line was not found on the page. The tab may have moved on, or the page changed since.");
+        if (!d.ok) toast(HIGHLIGHT_FAILED[d.reason ?? "missing"] ?? HIGHLIGHT_FAILED.missing, { duration: 8000 });
         return;
       }
       const m = readMessage(e.origin, e.data);

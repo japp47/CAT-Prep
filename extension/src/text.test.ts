@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { asParagraphs, locate, sentenceWith } from "./text";
+import { asParagraphs, locate, sentenceWith, withoutSite } from "./text";
 import { cleanArticle } from "../../src/practice/articleText";
 
 describe("the extension's text helpers (F53, D110)", () => {
@@ -29,5 +29,12 @@ describe("the extension's text helpers (F53, D110)", () => {
   it("finds nothing for a line that is not there, or too short to be sure", () => {
     expect(locate("Some page text about ships and planks.", "A sentence about something else entirely.")).toBeNull();
     expect(locate("Some page text.", "Some")).toBeNull();
+  });
+
+  it("drops the site's name from a page title, and nothing else", () => {
+    expect(withoutSite("The origins of the state are not agrarian but pastoralist | Aeon Essays")).toBe("The origins of the state are not agrarian but pastoralist");
+    expect(withoutSite("Why reforms fail - The Hindu", "thehindu.com")).toBe("Why reforms fail");
+    expect(withoutSite("Self-control – a short history", "aeon.co")).toBe("Self-control – a short history");
+    expect(withoutSite("A plain title", "aeon.co")).toBe("A plain title");
   });
 });

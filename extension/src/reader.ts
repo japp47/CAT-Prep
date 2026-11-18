@@ -1,5 +1,5 @@
 import { Readability } from "@mozilla/readability";
-import { asParagraphs, locate, sentenceWith } from "./text";
+import { asParagraphs, locate, sentenceWith, withoutSite } from "./text";
 
 /**
  * Runs in the student's tab, and only after their click (activeTab): reads the article or the selection, finds a
@@ -16,8 +16,9 @@ const MIN_SELECTION_WORDS = 30;
 const wordCount = (s: string) => s.trim().split(/\s+/).filter(Boolean).length;
 const siteName = () =>
   document.querySelector<HTMLMetaElement>('meta[property="og:site_name"]')?.content?.trim() || location.hostname.replace(/^www\./, "");
-const pageTitle = () =>
-  document.querySelector<HTMLMetaElement>('meta[property="og:title"]')?.content?.trim() || document.querySelector("h1")?.textContent?.trim() || document.title;
+const pageTitle = () => withoutSite(
+  document.querySelector<HTMLMetaElement>('meta[property="og:title"]')?.content?.trim() || document.querySelector("h1")?.textContent?.trim() || document.title,
+  location.hostname);
 
 /** The selection's blocks, as paragraphs; a selection inside one block comes back as itself. */
 function selectionText(sel: Selection): string {
@@ -40,7 +41,7 @@ function readArticle() {
   const blocks = [...box.querySelectorAll(BLOCKS)].filter((b) => !b.querySelector(BLOCKS)).map((b) => b.textContent ?? "");
   const text = asParagraphs(blocks.length ? blocks : (art.textContent ?? "").split(/\n+/));
   if (wordCount(text) < MIN_PAGE_WORDS) return chosen ? { type: "article", ...base, text: chosen, selection: true } : { type: "unreadable" };
-  return { type: "article", ...base, title: (art.title || base.title).slice(0, 200), site: (art.siteName || base.site).slice(0, 100), text, selection: false };
+  return { type: "article", ...base, title: withoutSite(art.title || base.title, location.hostname).slice(0, 200), site: (art.siteName || base.site).slice(0, 100), text, selection: false };
 }
 
 function readWord() {
