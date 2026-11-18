@@ -16,6 +16,7 @@ export const IconBell = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"
 /** Instagram, for the link to the page itself. lucide dropped its brand icons, so the mark is drawn here. */
 export const IconInstagram = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><path d="M17 7h.01" /></svg>;
 /** Updates: site news. A bell would now say "study reminders", which the sidebar's bell button means (7 Nov 2026). */
+export const IconPanel = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M15 4v16" /><path d="M6 9h6M6 13h5" /></svg>;
 export const IconMegaphone = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><path d="M4 10v4l12 5V5z" /><path d="M16 9h2a3 3 0 010 6h-2" /><path d="M7 15v4h3" /></svg>;
 export const IconExam = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2" /><path d="M9 2.5h6v3H9z" /><path d="M9 13l2 2 4-4" /></svg>;
 export const IconTrophy = () => <svg viewBox="0 0 24 24" {...P} aria-hidden="true"><path d="M8 4h8v6a4 4 0 01-8 0z" /><path d="M8 6H5v1a3 3 0 003 3M16 6h3v1a3 3 0 01-3 3" /><path d="M12 14v4M8 20h8" /></svg>;

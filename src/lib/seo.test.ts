@@ -58,8 +58,9 @@ suite("the site's name as people type it", () => {
       expect(names, type).toEqual(expect.arrayContaining(["99 ile", "99-ile"]));
     }
   });
-  it("says the spaced spelling in the title and in the words a script-less reader gets", () => {
-    expect(html).toMatch(/<title>[^<]*99 ile[^<]*<\/title>/);
-    expect(html.match(/<noscript>[\s\S]*<\/noscript>/)![0]).toContain("99 ile");
+  // Owner, 18 Nov 2026: the other spellings are for search only; people see the one name.
+  it("shows only the one name to people: the title and the script-less text say 99ile", () => {
+    expect(html).toMatch(/<title>99ile: free CAT prep<\/title>/);
+    expect(html.match(/<noscript>[\s\S]*<\/noscript>/)![0]).not.toContain("99 ile");
   });
 });

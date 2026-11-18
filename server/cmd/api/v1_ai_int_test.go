@@ -524,6 +524,15 @@ func TestArticleSets(t *testing.T) {
 	if code, _ := start(a, testArticle("three")); code != http.StatusTooManyRequests {
 		t.Errorf("third: %d", code)
 	}
+	// The status says how many are left, for the extension's panel: none for a, both for b.
+	var left struct{ ArticlesLeft *int }
+	if a.get("/v1/ai", &left); left.ArticlesLeft == nil || *left.ArticlesLeft != 0 {
+		t.Errorf("a's sets left: %v", left.ArticlesLeft)
+	}
+	left.ArticlesLeft = nil
+	if b.get("/v1/ai", &left); left.ArticlesLeft == nil || *left.ArticlesLeft != ai.ArticlesPerDay {
+		t.Errorf("b's sets left: %v", left.ArticlesLeft)
+	}
 	// A set the checker cannot agree with fails after two tries and gives the student's day back.
 	model.bad.Store(true)
 	before := model.calls.Load()

@@ -134,7 +134,13 @@ func (s *Service) on(w http.ResponseWriter) bool {
 func (s *Service) StatusHandler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		d, ok := account.FromContext(r.Context())
-		httpx.WriteJSON(w, http.StatusOK, map[string]any{"on": s.Router != nil && s.Content != nil, "signedIn": ok && s.signedIn(r.Context(), d.IdentityID)})
+		signed := ok && s.signedIn(r.Context(), d.IdentityID)
+		out := map[string]any{"on": s.Router != nil && s.Content != nil, "signedIn": signed}
+		// The new article sets left today, for the extension's panel and the article page (F53, D111).
+		if signed {
+			out["articlesLeft"] = s.articlesLeft(r.Context(), d.IdentityID)
+		}
+		httpx.WriteJSON(w, http.StatusOK, out)
 	})
 }
 

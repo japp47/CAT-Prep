@@ -5,13 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>99ile</title>
   <style>
-    html, body { margin: 0; height: 100%; background: #F5F6F8; }
-    @media (prefers-color-scheme: dark) { html, body { background: #0E1218; } }
-    iframe { display: block; width: 100%; height: 100%; border: 0; }
+    :root { --paper: #F5F6F8; --sheet: #FFFFFF; --ink: #141A24; --muted: #4B5565; --pen: #2340C8; --pen-soft: #E6EAFB; --line: #E3E6EC; }
+    @media (prefers-color-scheme: dark) {
+      :root { --paper: #0E1218; --sheet: #161B24; --ink: #E7EBF2; --muted: #A3ADBD; --pen: #8FA3FF; --pen-soft: #1F2740; --line: #222937; }
+    }
+    html, body { margin: 0; height: 100%; background: var(--paper); }
+    body { display: flex; flex-direction: column; }
+    iframe { display: block; width: 100%; flex: 1; border: 0; }
+    /* The one setting that has to live in the extension: Chrome lets only its own pages ask for access. */
+    .bar { display: none; gap: 12px; align-items: center; padding: 12px 16px; background: var(--sheet); border-top: 1px solid var(--line);
+      font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); }
+    .bar.on { display: flex; }
+    .bar p { margin: 0; flex: 1; }
+    .bar b { font-weight: 600; }
+    .bar span { color: var(--muted); }
+    .bar button { font: 600 14px/1 system-ui, -apple-system, "Segoe UI", sans-serif; border: 0; border-radius: 8px; cursor: pointer; padding: 10px 12px; white-space: nowrap; }
+    .bar .yes { background: var(--pen-soft); color: var(--pen); }
+    .bar .no { background: transparent; color: var(--muted); padding: 10px 6px; }
+    .bar button:focus-visible { outline: 2px solid var(--pen); outline-offset: 2px; }
   </style>
 </head>
 <body>
   <iframe id="site" title="99ile" allow="clipboard-read; clipboard-write"></iframe>
+  <div class="bar" id="bar" role="region" aria-label="Add to RC set as you select">
+    <p><b>Add to RC set as you select.</b> <span>A button appears beside text you select, on any site. Chrome asks you once.</span></p>
+    <button class="yes" id="yes" type="button">Turn on</button>
+    <button class="no" id="no" type="button" aria-label="Not now">Not now</button>
+  </div>
   <script src="panel.js"></script>
 </body>
 </html>

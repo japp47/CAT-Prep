@@ -744,3 +744,14 @@ func trapName(t string) string {
 	}
 	return strings.TrimSpace(t)
 }
+
+// articlesLeft is how many new article sets the student may still start today (the IST day, D110). On a database
+// error it says the full number: the start itself still enforces the cap.
+func (s *Service) articlesLeft(ctx context.Context, identity string) int {
+	var n int
+	err := s.DB.QueryRow(ctx, `select coalesce((select n from ai.article_daily where identity_id = $1 and day = (now() at time zone 'Asia/Kolkata')::date), 0)`, identity).Scan(&n)
+	if err != nil {
+		return ArticlesPerDay
+	}
+	return max(ArticlesPerDay-n, 0)
+}

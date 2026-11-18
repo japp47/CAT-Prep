@@ -123,6 +123,39 @@ Same tokens, fonts and rules as the site (no text under 14 px, tone over borders
 package. The manifest's `key` pins the id to `jdbigbpnbadjaphglkhomapjbhajbphe`, the one the site allows; when the
 store gives the listing its own id, it is added to `src/lib/panel.ts` and `public/_headers`.
 
+## Panel home and the store (18 Nov 2026, D111)
+
+**Panel home.** Guide first, then the student's own things. With no article sets yet, the whole panel is the guide: a
+drawing in HTML of selected lines and the right-click menu with "Make an RC set from this", three steps, and at the
+bottom "Sign in with Google" (the one filled button, when signed out) and "Paste the text instead". A returning student
+gets one line on how to start, sets left today (`articlesLeft` from `GET /v1/ai`, on the IST day), recent sets, words
+due and today's RC. There is no "Use this page" button: Chrome documents page access for the icon, the menu and the
+shortcut only, not for clicks inside a side panel.
+
+**Where the site points to it.** VARC practice ("Practise an article"), the article page (a card on computers only),
+the RC library's "Your articles", the sidebar's More ("Chrome extension"), and `/extension`, which opens at install
+with `?from=install` (sign-in is then its filled button; otherwise "Add to Chrome" is). The short link
+`99ile.in/chrome` goes to `/extension` until the listing is live, then to the listing.
+
+**Store.** `npm run ext:store` builds without the manifest `key` and zips it. The listing text, permission reasons,
+data answers and reviewer notes are in `extension/listing/listing.md`; the five 1280×800 screenshots show the real panel
+beside a sample essay page (our own passage, a made-up magazine), with the promo tile and icon. Order: upload a draft,
+copy the id and public key from its Package tab, switch the site and `extension/key.txt` to them, deploy, fill the
+listing, submit.
+
+## Selecting (18 Nov 2026, D112)
+
+Select text and, when the selection ends, a small button appears beside it: "Add to RC set · 212 words" for 15 words
+or more, "Add to my words" for one to three. A click opens the panel (Chrome 157 allows it from the click) and adds
+the text as a part of the passage; more selections add more parts ("2 parts, 498 words"), each marked lightly on the
+page, until "Start over", "Make my set" or a new page. The right-click entry adds a part the same way; the icon with
+nothing selected still takes the whole article.
+
+Where it appears: on every site once the student turns on "Add to RC set as you select" in the bar under the panel
+(Chrome asks once; `optional_host_permissions`), else on any page where they already clicked the icon or the
+right-click entry. The script (`extension/src/select.ts`) draws the button in a closed shadow root, loads nothing (the
+logo is inlined SVG), watches only for selections and sends nothing until the click.
+
 ## Getting the article in (decided 14 Nov 2026, D107)
 
 On a phone the hard part is not the clipboard (it holds a whole article) but selecting one: dragging across many

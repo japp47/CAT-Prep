@@ -376,6 +376,15 @@ Full entries are written here when a step comes within two steps of being built:
 ### 4a. Logical reasoning first (D37)
 **4a.1 LR set format and content, built 24 Oct 2026** on `feat/lr-sets`: `LrSet` and `LR_TYPE` in `practice/types.ts`; `content/lr/<type>.json` (one file per type) joined in `practice/lr/index.ts`; `loadLrFile` in `bank.ts`; `Need.lr` and `Content.lrSets` in `content.ts`; `LR_CATALOG` and `LR_FILE` from `npm run catalog`; `titaMatches` and `lrRight` in `practice/lrcheck.ts`. Tests: every set's shape and answers (`content.test.ts`), file and catalog agreement, the import guard, typed-answer matching. One original example set (`arr-round-table`).
 
+### 3b-10. "Add to RC set" beside a selection (feature F53, D112), built 18 Nov 2026
+Same branch as 3b-9. `extension/src/select.ts` (the button), `background.ts` (parts per tab, the click opens the panel, the switch registers the script on every site), `panel.ts` and `static/panel.html` (the switch bar, start over), `build.mjs` (`optional_host_permissions`, the inlined logo); site: `lib/panel.ts` (`parts`, `clear-parts`), `PanelArticle.tsx` (parts, Start over), `PanelHome.tsx` (the guide shows the button), `Extension.tsx`, `Privacy.tsx`; `extension/listing/listing.md`. Checked with a real mouse click on Chrome 157: the side panel opened and two parts arrived as one passage.
+
+### 3b-9. The extension store-ready (feature F53, D111), built 18 Nov 2026
+`feat/extension-store-ready` · `feat: get the extension ready for the Chrome Web Store: a guiding panel home, links from the site, a privacy section and the listing kit`.
+- Site: `pages/panel/PanelHome.tsx` (guide, then recent sets, words, sets left), `lib/ai.ts` (`useAiStatus`, `articlesLeft`), links in `VarcPractice.tsx`, `ArticleNew.tsx`, `Library.tsx`, `components/Sidebar.tsx` (`IconPanel` in `Icons.tsx`), `pages/Extension.tsx` (install-aware, Add to Chrome), `pages/Privacy.tsx` (AI features, the extension), `public/_redirects` (`/chrome`).
+- Server: `articlesLeft` in `GET /v1/ai` (`service.go`, `article.go`), checked in `TestArticleSets`.
+- Extension: `ext:store` (no `key`, zipped), the welcome opens with `?from=install`, highlight retried once and closing marks taken; `extension/listing/` (listing text and images).
+
 ### 3b-8. The extension's side panel (feature F53, D110), built 18 Nov 2026
 Plan: `docs/design/article-to-rc.md`, "Shape" and "The extension". Step 0 (does a framed site keep its cookie and store?) was tested on Chrome 157 and passed with host access (A158).
 1. `feat/extension-panel-route` · `feat: a slim panel route of the article page, questions and words for the extension's side panel`.

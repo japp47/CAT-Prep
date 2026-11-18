@@ -8,7 +8,8 @@ import { loadLedger } from "./sync/ledger";
  * prompt from published content, checks the reply and caches it. A new answer needs a Google account: the server caps answers per student and per day, and a free sync identity
  * would let one person bring many caps.
  */
-export interface AiStatus { on: boolean; signedIn: boolean }
+/** articlesLeft: new article sets the student may still start today (IST day), when signed in. */
+export interface AiStatus { on: boolean; signedIn: boolean; articlesLeft?: number }
 const OFF: AiStatus = { on: false, signedIn: false };
 
 let status: { who: string; p: Promise<AiStatus> } | null = null;
@@ -19,7 +20,7 @@ let status: { who: string; p: Promise<AiStatus> } | null = null;
 export function aiStatus(): Promise<AiStatus> {
   if (!API_ENABLED) return Promise.resolve(OFF);
   const L = loadLedger(), who = L.on ? `${L.who?.identityId ?? ""}:${L.who?.account ? "account" : ""}` : "off";
-  if (status?.who !== who) status = { who, p: api<AiStatus>("/ai").then((r) => (r.ok ? { on: r.data.on === true, signedIn: r.data.signedIn === true } : OFF)) };
+  if (status?.who !== who) status = { who, p: api<AiStatus>("/ai").then((r) => (r.ok ? { on: r.data.on === true, signedIn: r.data.signedIn === true, ...(typeof r.data.articlesLeft === "number" ? { articlesLeft: r.data.articlesLeft } : {}) } : OFF)) };
   return status.p;
 }
 
@@ -28,16 +29,24 @@ export function aiStatus(): Promise<AiStatus> {
  * sign-in exists on this site), else "none".
  */
 export function useAi(recheck = false): "ask" | "signin" | "none" {
+  const s = useAiStatus(recheck);
+  return !s.on ? "none" : s.signedIn ? "ask" : SIGNIN_ENABLED ? "signin" : "none";
+}
+
+/** The whole status, with the article sets left today. recheck: look again when the window gets focus. */
+export function useAiStatus(recheck = false): AiStatus {
   const [s, setS] = useState<AiStatus>(OFF);
   useEffect(() => {
     let live = true;
     const load = () => void aiStatus().then((v) => { if (live) setS(v); });
     load();
-    // recheck: the extension's panel, where sign-in happens in another tab; look again when the student comes back.
-    if (recheck) window.addEventListener("focus", load);
-    return () => { live = false; window.removeEventListener("focus", load); };
+    // recheck: the extension's panel, where sign-in happens in another tab and sets are used up; ask again, fresh,
+    // when the student comes back to it.
+    const again = () => { status = null; load(); };
+    if (recheck) window.addEventListener("focus", again);
+    return () => { live = false; window.removeEventListener("focus", again); };
   }, [recheck]);
-  return !s.on ? "none" : s.signedIn ? "ask" : SIGNIN_ENABLED ? "signin" : "none";
+  return s;
 }
 
 /** One check's verdict on a summary: met or not, the student's own words that show it ("" when none), one line. */

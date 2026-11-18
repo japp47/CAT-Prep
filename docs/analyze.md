@@ -77,6 +77,33 @@ Thinking practice (Arcade, Manager Lab, DILR and Quant ideas), community, and re
 
 ## 3. Consistency check: spec vs plan vs code
 
+### 18 Nov 2026, "Add to RC set" beside a selection (D112; `docs/design/article-to-rc.md`, "Selecting")
+
+The owner asked for PracticeRC's gesture: select, a button appears, click, and the text is in the panel. A button that
+appears on its own needs a script on every page, which is the permission Chrome warns about at install (A160).
+
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A171 | A button beside every selection needs access to every site | The install warning, if asked for at install | Asked only when the student turns it on, from a bar at the foot of the panel (`optional_host_permissions`); otherwise the button works on any page where the extension was already used (injected with `activeTab` after that click) |
+| A172 | Chrome may not let a click inside a page open the side panel | The button would add text that no one sees | Tested 18 Nov 2026 on Chrome 157 with a real mouse click: the panel opened. If it ever does not, the button says "Added. Click the 99ile icon to see your set" |
+| A173 | One selection of a long article is often not one passage | Too short, or the wrong part | Selections add up: each "Add to RC set" or right-click is a part of the same passage until the student starts over, makes the set, or leaves the page; each part stays marked |
+| A174 | Permissions can be asked for only by the extension's own pages | A switch inside 99ile's frame could not ask | The switch is a slim bar in the extension's panel page, under the frame |
+
+**D112.** "Add to RC set" appears beside a selection of 15 words or more ("Add to my words" for one to three), on every site once the student turns it on (Chrome asks then) and otherwise on pages where they already used the extension. Selections add up to one passage. The install still asks for 99ile.in alone.
+
+### 18 Nov 2026, the extension made store-ready (D111; `docs/design/article-to-rc.md`, "Panel home" and "Store")
+
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A165 | The panel's first screen was half empty and led nowhere | A new student does not know what to do | Guide first (a drawing of the right-click menu, three steps, sign-in pinned at the bottom), then for a returning student recent sets, words due, sets left today and today's RC |
+| A166 | A click inside the side panel is not documented to grant `activeTab` | A "Use this page" button would fail on most pages | No such button; the guide points at the icon, the right-click menu and the shortcut |
+| A167 | Nothing on the site linked to the extension | No one finds it | VARC practice, the article page (computers only), the RC library, the sidebar's More, `/extension`, and the short link 99ile.in/chrome |
+| A168 | The Privacy page said nothing about AI or the extension | The store's reviewers compare the policy with what the extension does | Sections "AI features" and "The Chrome extension"; Groq and Cloudflare R2 in "Where it is kept"; article text and counts in "How long" |
+| A169 | The store gives the listing its own id; the site allows only the development id | Reviewers would see a blank panel | Upload a draft first; its Package tab shows the id and public key; the key goes into `extension/key.txt`, so local and store builds share the id, and the id is allowed before review |
+| A170 | "Show me in the article" failed once in a run of three | A wrong "not found" | The panel tries once more after 400 ms; the highlight now takes the sentence's closing marks |
+
+**D111.** The extension is published as "99ile: CAT RC practice from any article" (Education, free, public), with five screenshots of the real panel beside a sample essay, a promo tile and an icon (`extension/listing/`). The site links to it from VARC practice, the article page, the RC library and the sidebar, and 99ile.in/chrome is its install link. The store's id replaces the development id before review.
+
 ### 18 Nov 2026, the extension opens a side panel (D110, reopens D104; `docs/design/article-to-rc.md`, "The extension")
 
 The owner asked for the shape students already know from PracticeRC: select on the article, click, and the set is made

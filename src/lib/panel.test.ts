@@ -28,6 +28,11 @@ describe("messages from the extension (F53, D110)", () => {
     expect(readMessage(OURS, { ...article, title: { toString: () => "x" } })).toBeNull();
   });
 
+  it("keeps how many selections were added up, when it is a sensible number", () => {
+    expect(readMessage(OURS, { ...article, parts: 3 })).toMatchObject({ parts: 3 });
+    for (const parts of [0, 13, 2.5, "3", -1]) expect(readMessage(OURS, { ...article, parts })).not.toHaveProperty("parts");
+  });
+
   it("refuses fields over their limits", () => {
     expect(readMessage(OURS, { ...article, text: "a".repeat(200_001) })).toBeNull();
     expect(readMessage(OURS, { ...article, title: "a".repeat(201) })).toBeNull();

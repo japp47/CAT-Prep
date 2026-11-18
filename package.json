@@ -13,7 +13,8 @@
     "size": "node scripts/size.mjs",
     "ext:build": "node extension/build.mjs",
     "ext:dev": "node extension/build.mjs --dev",
-    "ext:typecheck": "tsc --noEmit --strict --skipLibCheck --target es2022 --module esnext --moduleResolution bundler --lib es2022,dom,dom.iterable extension/src/text.ts extension/src/reader.ts extension/src/background.ts extension/src/panel.ts"
+    "ext:typecheck": "tsc --noEmit --strict --skipLibCheck --target es2022 --module esnext --moduleResolution bundler --lib es2022,dom,dom.iterable extension/src/text.ts extension/src/reader.ts extension/src/background.ts extension/src/panel.ts extension/src/select.ts",
+    "ext:store": "node extension/build.mjs --store"
   },
   "dependencies": {
     "class-variance-authority": "0.7.1",
