@@ -28,6 +28,7 @@ import { GENRES, RC_QTYPE, rcVersion, setWords, SUMMARY_MAX_WORDS, words, type R
 import { checkSummary, fixSummary, flagAi, useAi, type SummaryFix, type SummaryVerdict } from "../../lib/ai";
 import { diffWords } from "../../practice/wordDiff";
 import { startSignIn } from "../../lib/sync/runner";
+import { toExtension, useInPanel } from "../../lib/panel";
 import { findLine, lineVerdict, sentences, type LineRef } from "../../practice/sentences";
 import NotFound from "../NotFound";
 import { BreakNote, Choice, ChoiceGroup, ComeBack, QuestionNav, Confirm, ElapsedTimer, TimeUp, ErrorCause, NotSure, PaletteCell, PlayerBar, ReportLink, ResumeNote, type Resume, ReviewChoice, ScoreCard, timeShown, useLeaveConfirmation, useShownAttempt, useStartQuestion } from "./common";
@@ -54,6 +55,8 @@ function RcRoute({ set }: { set: RcSet | undefined }) {
 
 /** Passage or question, for phones, where the two cannot sit side by side. */
 export function PaneSwitch({ pane, setPane, q, p = "Passage" }: { pane: "p" | "q"; setPane: (p: "p" | "q") => void; q: string; p?: string }) {
+  // The extension's side panel shows no passage: it stays on the article's own page, highlighted (F53, D110).
+  if (useInPanel()) return null;
   return (
     <ToggleGroup type="single" value={pane} onValueChange={(v) => v && setPane(v as "p" | "q")} className="w-full rounded-lg bg-secondary p-1 lg:hidden" aria-label="Show">
       <ToggleGroupItem value="p" className="h-10 flex-1 rounded-md text-base data-[state=on]:bg-card data-[state=on]:font-semibold">{p}</ToggleGroupItem>
@@ -64,6 +67,8 @@ export function PaneSwitch({ pane, setPane, q, p = "Passage" }: { pane: "p" | "q
 
 /** Passage beside the questions on a wide screen; one or the other on a phone. */
 export function Split({ pane, children }: { pane: "p" | "q"; children: [React.ReactNode, React.ReactNode] }) {
+  // In the extension's side panel the article beside it is the passage: only the questions side is shown.
+  if (useInPanel()) return <div className="flex min-w-0 flex-col gap-4">{children[1]}</div>;
   return (
     <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-8">
       <div className={cn("min-w-0 lg:sticky lg:top-24 lg:max-h-[calc(100dvh-7rem)] lg:overflow-y-auto", pane === "q" && "max-lg:hidden")}>{children[0]}</div>
@@ -78,12 +83,14 @@ export function Split({ pane, children }: { pane: "p" | "q"; children: [React.Re
  */
 export function PaneJump({ onClick, children }: { onClick: () => void; children: ReactNode }) {
   const { run } = useFocus();
+  // The extension's side panel has no bottom bar and no focus bar: the jump sits at its bottom edge.
+  const panel = useInPanel();
   return (
     <>
-      <div className={cn("lg:hidden", run ? "h-40" : "h-20")} aria-hidden />
+      <div className={cn("lg:hidden", run && !panel ? "h-40" : "h-20")} aria-hidden />
       <div className={cn(
         "fixed inset-x-0 z-30 bg-background/95 px-gutter py-3 backdrop-blur-sm lg:hidden",
-        run ? "bottom-[calc(15rem+env(safe-area-inset-bottom))]" : "bottom-[calc(4rem+env(safe-area-inset-bottom))]",
+        panel ? "bottom-0 pb-[calc(0.75rem+env(safe-area-inset-bottom))]" : run ? "bottom-[calc(15rem+env(safe-area-inset-bottom))]" : "bottom-[calc(4rem+env(safe-area-inset-bottom))]",
       )}>
         <Button className="w-full" onClick={onClick}>{children}<ArrowRight aria-hidden /></Button>
       </div>
@@ -232,7 +239,9 @@ function Solve({ set, onDone, resume }: { set: RcSet; onDone: (id: string) => vo
   // Prove it (F103): the line marked for each question, and whether the passage is taking a tap now.
   const [lines, setLines] = useState<(LineRef | null)[]>(saved?.lines?.length === n ? saved.lines : Array(n).fill(null));
   const [picking, setPicking] = useState(false);
-  const [pane, setPane] = useState<"p" | "q">("p");
+  // In the extension's side panel the article is open beside it, so the questions come first.
+  const inPanel = useInPanel();
+  const [pane, setPane] = useState<"p" | "q">(inPanel ? "q" : "p");
   const [confirming, setConfirming] = useState(false);
   const [confirmRestart, setConfirmRestart] = useState(false);
   const [hideTimer, setHideTimer] = usePref("rcHideTimer", false);
@@ -298,7 +307,8 @@ function Solve({ set, onDone, resume }: { set: RcSet; onDone: (id: string) => vo
   const blanks = ans.filter((a) => a === null).length;
   const go = (i: number) => { setCur(i); setPane("q"); setPicking(false); };
   const q = set.questions[cur];
-  const canProve = !!q.lines?.length && ans[cur] !== null;
+  // Prove it taps a line of the passage, which the side panel does not show; review still marks it on the page.
+  const canProve = !!q.lines?.length && ans[cur] !== null && !inPanel;
   const startPick = () => { setPicking(true); setPane("p"); };
   const tapLine = (r: LineRef) => { setLines((l) => l.map((x, i) => (i === cur ? r : x))); setPicking(false); setPane("q"); };
   useEffect(() => {
@@ -371,6 +381,13 @@ function Solve({ set, onDone, resume }: { set: RcSet; onDone: (id: string) => vo
   );
 }
 
+/** Back to Practice; in the extension's side panel, back to the panel's own list instead of the site. */
+function BackLink() {
+  return useInPanel()
+    ? <LinkButton to="/panel" variant="secondary" size="sm">Your sets</LinkButton>
+    : <LinkButton to="/practice" variant="secondary" size="sm">Back to Practice</LinkButton>;
+}
+
 function Review({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
   if (rcStale(attempt)) return <StaleReview set={set} attempt={attempt} />;
   return <FullReview set={set} attempt={attempt} />;
@@ -383,7 +400,7 @@ function StaleReview({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
   return (
     <Page className="gap-6 lg:gap-8">
       <PlayerBar kicker={kickerOf(set, "Review")} title={set.title}>
-        <LinkButton to="/practice" variant="secondary" size="sm">Back to Practice</LinkButton>
+        <BackLink />
       </PlayerBar>
       <ScoreCard score={(3 * attempt.c - attempt.w > 0 ? "+" : "") + (3 * attempt.c - attempt.w)} parts={[["Correct", attempt.c], ["Wrong", attempt.w], ["Skipped", skipped], ["Time", fmtSecs(attempt.secs)]]}>
         <p className="measure text-base">This set was rewritten after you took it on {mediumDate(attempt.d)}, so your old answers no longer match its questions. Your score stays in Progress.</p>
@@ -402,7 +419,7 @@ function FullReview({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
   return (
     <Page className="gap-6 lg:gap-8">
       <PlayerBar kicker={kickerOf(set, "Review")} title={set.title}>
-        <LinkButton to="/practice" variant="secondary" size="sm">Back to Practice</LinkButton>
+        <BackLink />
       </PlayerBar>
 
       <Summary set={set} attempt={attempt} />
@@ -425,7 +442,7 @@ function FullReview({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
         </>
       </Split>
       {pane === "p" && <PaneJump onClick={() => showQuestion(setPane)}>Question {cur + 1} of {n}</PaneJump>}
-      <p className="text-sm text-muted-foreground">Tap any word in the passage, or type it below the passage, to save it to your Words. Passages and questions are original practice material written for this site.</p>
+      {!useInPanel() && <p className="text-sm text-muted-foreground">Tap any word in the passage, or type it below the passage, to save it to your Words. Passages and questions are original practice material written for this site.</p>}
     </Page>
   );
 }
@@ -636,14 +653,31 @@ function SmallestFix({ set, text }: { set: RcSet; text: string }) {
 
 /** The review's word on the student's line, and the deciding line itself (F103). */
 function ProofVerdict({ set, q, mine }: { set: RcSet; q: RcQuestion; mine: LineRef | null }) {
+  const panel = useInPanel();
   const deciding = (q.lines ?? []).join(" ");
   const v = mine ? lineVerdict(set.paras, q.lines ?? [], q.proof, mine) : null;
   const head = v === "proves" ? "That's the line." : v === "near" ? "Right paragraph." : v === "off" ? "That line doesn't settle it." : "The line that settles it:";
   return (
     <div className={cn("flex flex-col gap-1.5 rounded-lg px-4 py-3", v === "proves" ? "bg-success-soft" : "bg-muted")} role="note">
-      <p className="text-base"><b className="font-semibold">{head}</b>{v === "proves" ? " You found what settles this question." : v ? " The deciding line, highlighted in the passage:" : ""}</p>
+      <p className="text-base"><b className="font-semibold">{head}</b>{v === "proves" ? " You found what settles this question." : v ? (panel ? " The deciding line:" : " The deciding line, highlighted in the passage:") : ""}</p>
       {v !== "proves" && <p className="measure text-base">“{deciding}”</p>}
+      <ShowInArticle set={set} lines={q.lines ?? []} />
     </div>
+  );
+}
+
+/**
+ * In the extension's side panel (F53, D110), the article is open beside the review: this marks the deciding lines on
+ * the page itself, so going back to the line happens where the student read it.
+ */
+function ShowInArticle({ set, lines }: { set: RcSet; lines: string[] }) {
+  const panel = useInPanel();
+  if (!panel || !set.id.startsWith("art-") || !lines.length) return null;
+  return (
+    <button type="button" onClick={() => toExtension({ type: "highlight", lines })}
+      className="w-fit text-base font-medium text-primary underline underline-offset-4 decoration-primary/40 hover:decoration-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
+      Show me in the article
+    </button>
   );
 }
 

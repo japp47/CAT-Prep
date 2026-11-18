@@ -1,4 +1,4 @@
-import { lazy, useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { createBrowserRouter, createRoutesFromElements, Outlet, Route, useLocation } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
@@ -56,6 +56,12 @@ const Admin = lazy(() => import("./pages/Admin"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
+const Extension = lazy(() => import("./pages/Extension"));
+// The extension's side panel (F53, D110): its own slim frame, loaded only there.
+const PanelLayout = lazy(() => import("./pages/panel/PanelLayout"));
+const PanelHome = lazy(() => import("./pages/panel/PanelHome"));
+const PanelArticle = lazy(() => import("./pages/panel/PanelArticle"));
+const PanelWords = lazy(() => import("./pages/panel/PanelWords"));
 // Only in builds with the API on: where a scanned link code lands (B4).
 const LinkPage = API_ENABLED ? lazy(() => import("./pages/Link")) : null;
 
@@ -63,12 +69,13 @@ const TITLES: Record<string, string> = {
   "/": "99ile (99 ile): free CAT prep", "/today": "Today", "/plan": "Plan and time", "/practice": "Practice", "/varc/practice": "VARC practice", "/dilr/practice": "DILR practice", "/quant/practice": "Quant practice", "/practice/library": "RC library", "/practice/sectional": "VARC sectional", "/practice/va": "VA drill", "/practice/cr": "Critical reasoning drill", "/practice/speed": "Reading speed test", "/practice/redo": "Redo queue", "/practice/arena": "Set Selection Arena", "/practice/replay": "DILR replay", "/varc": "VARC", "/dilr": "DILR", "/quant": "Quant",
   "/progress": "Progress", "/progress/mock-review": "Analyse a mock", "/review": "Weekly review", "/errors": "Error log", "/words": "Words", "/journal": "Reading journal", "/updates": "Important updates", "/exams": "CAT and other exams",
   "/guides": "Guides", "/stories": "Topper stories", "/roadmap": "What's coming", "/settings": "Settings", "/link": "Link this device", "/privacy": "Privacy", "/contact": "Contact us",
+  "/extension": "The 99ile extension", "/panel": "99ile", "/panel/article": "Make an RC set", "/panel/words": "Save a word",
 };
 
 function Title() {
   const { pathname } = useLocation();
   useEffect(() => {
-    const t = TITLES[pathname] ?? (pathname.startsWith("/guides/") ? "Guide" : pathname.startsWith("/practice/rc/") ? "RC practice" : pathname.startsWith("/practice/lr/") ? "LR practice" : pathname.startsWith("/progress/mock-review/") ? "Mock review" : pathname.startsWith("/review/") ? "Weekly review" : "");
+    const t = TITLES[pathname] ?? (pathname.startsWith("/guides/") ? "Guide" : pathname.startsWith("/panel/article/") ? "RC practice" : pathname.startsWith("/practice/rc/") ? "RC practice" : pathname.startsWith("/practice/lr/") ? "LR practice" : pathname.startsWith("/progress/mock-review/") ? "Mock review" : pathname.startsWith("/review/") ? "Weekly review" : "");
     document.title = t && pathname !== "/" ? t + " · 99ile" : TITLES["/"];
     setDescription(); // back to the site's own; a page that has its own (a guide) sets it after this runs
     // One address per page for search engines, whichever address it was reached by (99ile.in is the only real one).
@@ -103,6 +110,12 @@ function App() {
 
 export const router = createBrowserRouter(createRoutesFromElements(
   <Route element={<App />}>
+    <Route path="panel" element={<Suspense fallback={null}><PanelLayout /></Suspense>}>
+      <Route index element={<PanelHome />} />
+      <Route path="article" element={<PanelArticle />} />
+      <Route path="article/:id" element={<ArticlePractice />} />
+      <Route path="words" element={<PanelWords />} />
+    </Route>
     <Route element={<Layout />}>
       <Route index element={<Home />} />
       <Route path="today" element={<Today />} />
@@ -148,6 +161,7 @@ export const router = createBrowserRouter(createRoutesFromElements(
       <Route path="contact" element={<Contact />} />
       <Route path="privacy" element={<Privacy />} />
       <Route path="unsubscribe" element={<Unsubscribe />} />
+      <Route path="extension" element={<Extension />} />
       {LinkPage && <Route path="link" element={<LinkPage />} />}
       <Route path=":id" element={<Section />} />
       <Route path="*" element={<NotFound />} />

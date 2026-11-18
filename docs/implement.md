@@ -376,11 +376,27 @@ Full entries are written here when a step comes within two steps of being built:
 ### 4a. Logical reasoning first (D37)
 **4a.1 LR set format and content, built 24 Oct 2026** on `feat/lr-sets`: `LrSet` and `LR_TYPE` in `practice/types.ts`; `content/lr/<type>.json` (one file per type) joined in `practice/lr/index.ts`; `loadLrFile` in `bank.ts`; `Need.lr` and `Content.lrSets` in `content.ts`; `LR_CATALOG` and `LR_FILE` from `npm run catalog`; `titaMatches` and `lrRight` in `practice/lrcheck.ts`. Tests: every set's shape and answers (`content.test.ts`), file and catalog agreement, the import guard, typed-answer matching. One original example set (`arr-round-table`).
 
+### 3b-8. The extension's side panel (feature F53, D110), built 18 Nov 2026
+Plan: `docs/design/article-to-rc.md`, "Shape" and "The extension". Step 0 (does a framed site keep its cookie and store?) was tested on Chrome 157 and passed with host access (A158).
+1. `feat/extension-panel-route` · `feat: a slim panel route of the article page, questions and words for the extension's side panel`.
+   - `App.tsx`: `panel/*` routes outside `<Layout>`: `panel/article` (ArticleNew in panel mode), `panel/article/:id` (ArticlePractice, questions only with "Show passage"), `panel/words`.
+   - `lib/extension.ts`: messages from the pinned extension ids only; shape and size checked; fills the editor with `origin: "extension"`; asks the extension to highlight a deciding line.
+   - `pages/Extension.tsx` (`/extension`): welcome at install, the three ways to start, privacy summary, sign-in.
+   - `public/_headers`: `frame-ancestors` relaxed to the extension's id on `/panel/*` only.
+   - Design pass first; screenshots of the panel at 360 and 500 px in both themes, `/extension` at 390 and 1440.
+   - Tests: the message filter (wrong origin, wrong shape, too long), panel routes render without the sidebar.
+2. `feat/chrome-extension` · `feat: a Chrome extension that opens 99ile beside any article and makes an RC set from it`.
+   - `extension/` (TypeScript bundled by esbuild, `npm run ext:build`): manifest (`activeTab`, `scripting`, `contextMenus`, `sidePanel`, `storage`; host `https://99ile.in/*`; Alt+Shift+R; pinned `key`), background (install welcome, icon, right-click, shortcut, open the panel then read the tab), reader (selection, else Readability; highlight), side panel page (frames `/panel/article`, posts the article in, relays highlights).
+   - Tests: the reader on saved article pages (paragraphs, title, site); load unpacked and run the whole flow by hand.
+3. Words came in with steps 1 and 2: `pages/panel/PanelWords.tsx` and the extension's right-click entry.
+   Built and checked 18 Nov 2026: the panel at 360 and 500 px in both themes against a mock API; the real extension build on a cluttered article page (Readability kept the article and the site's clean-up dropped the ad lines; the set opened in the panel; "Show me in the article" marked the deciding sentence on the page).
+4. Store listing: developer account (US$5, once), privacy fields, screenshots; the privacy page gains an extension section.
+
 ### 3b-7. Article to RC, part 2: the site (feature F34, D104, D107), 14 Nov 2026
 Same branch as 3b-6 · `feat: practise any article as a CAT RC set: paste or upload, a good-read check, and the RC player`.
 - `practice/articleText.ts` (clean-up of pasted text, the "good CAT read" check, the 600 to 900 word window), `practice/pdfText.ts` (PDFs read on the device with `pdfjs-dist`, loaded only there), `practice/articleSet.ts` (an article set as an RC set, the device text store until R2, `withArticles` for lookups), `pages/practice/ArticleNew.tsx` (`/practice/article`: Paste, upload, fields, what will be used, Make my set, the queue, Your articles), `pages/practice/ArticlePractice.tsx` (`/practice/article/:id` in the RC player), `lib/ai.ts` (`startArticle`, `articleJob`), `lib/state.ts` and `lib/sync/records.ts` (`articles`, kind `article`; the text never syncs), server `SyncKinds`, `practice/history.ts`, `pages/Progress.tsx`, `pages/tracker/Report.tsx` (article sets in history, the skill map and question kinds), `practice/record.ts` (article sets stay out of the redo queue for now), `RcPlayer.tsx` (`Player` exported; "your article" above the title; the summary second opinion hidden on article sets), `VarcPractice.tsx` (the way in).
 - Tests: `practice/articleText.test.ts`.
-- Not yet: R2 for the text (owner's bucket), the stronger writer prompt and the real-model article eval, the extension.
+- Not yet: R2 for the text (owner's bucket), the stronger writer prompt and the real-model article eval, the extension (planned in 3b-8).
 
 ### 3b-6. Article to RC, part 1: the server (feature F34, D104), 14 Nov 2026
 `feat/article-to-rc` · `feat: make CAT-style RC sets from a student's article in background jobs, checked by a blind second model`.

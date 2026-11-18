@@ -33,7 +33,8 @@ function detail(stage: Stage): string {
 
 const calm = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-export default function ArticleProgress({ job }: { job: JobState | { phase: "starting" } }) {
+/** note: the last line; the extension's panel says the set opens there, the site says any page will tell. */
+export default function ArticleProgress({ job, note = "You can leave this page and carry on: we will tell you on any page when it is ready." }: { job: JobState | { phase: "starting" }; note?: string }) {
   const stage: Stage = job.phase === "starting" ? "sending" : (job as JobState).stage ?? "queued";
   const ahead = job.phase === "starting" ? 0 : (job as JobState).ahead ?? 0;
   const [pct, setPct] = useState(2);
@@ -62,7 +63,7 @@ export default function ArticleProgress({ job }: { job: JobState | { phase: "sta
         <div className="h-full w-full origin-left rounded-full bg-primary transition-transform duration-300 ease-out motion-reduce:transition-none" style={{ transform: `scaleX(${pct / 100})` }} />
       </div>
       <p className="text-base text-muted-foreground">{detail(stage)}</p>
-      <p className="text-sm text-muted-foreground">You can leave this page and carry on: we will tell you on any page when it is ready.</p>
+      <p className="text-sm text-muted-foreground">{note}</p>
     </section>
   );
 }

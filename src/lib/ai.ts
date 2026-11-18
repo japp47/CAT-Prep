@@ -27,9 +27,16 @@ export function aiStatus(): Promise<AiStatus> {
  * What a screen offers: "ask" when the student can ask, "signin" when AI is on but they need to sign in first (and
  * sign-in exists on this site), else "none".
  */
-export function useAi(): "ask" | "signin" | "none" {
+export function useAi(recheck = false): "ask" | "signin" | "none" {
   const [s, setS] = useState<AiStatus>(OFF);
-  useEffect(() => { let live = true; void aiStatus().then((v) => { if (live) setS(v); }); return () => { live = false; }; }, []);
+  useEffect(() => {
+    let live = true;
+    const load = () => void aiStatus().then((v) => { if (live) setS(v); });
+    load();
+    // recheck: the extension's panel, where sign-in happens in another tab; look again when the student comes back.
+    if (recheck) window.addEventListener("focus", load);
+    return () => { live = false; window.removeEventListener("focus", load); };
+  }, [recheck]);
   return !s.on ? "none" : s.signedIn ? "ask" : SIGNIN_ENABLED ? "signin" : "none";
 }
 

@@ -2,7 +2,7 @@
 
 Checks that the spec (`docs/feature.md`), the plan (`docs/plan.md`, `docs/architecture.md`) and the code agree, before the next step is built.
 Redo this check at the start of each step; add findings at the top of section 3 with the date.
-Last updated 14 Nov 2026 (article practice page layout; admin responsive layout; DI research and plan, F90 to F96; older sections kept below).
+Last updated 18 Nov 2026 (the extension's side panel, D110; article practice page layout; admin responsive layout; DI research and plan, F90 to F96; older sections kept below).
 
 ---
 
@@ -76,6 +76,35 @@ The research is a product review (sections 1 to 8), a backend plan, and a note o
 Thinking practice (Arcade, Manager Lab, DILR and Quant ideas), community, and reminders. **Adopted** as F56 to F78 with these changes: CAT Coach first, nothing moves DILR or Quant; the Arcade is one daily puzzle in four DILR-like kinds, generated and proved unique by code; Manager Lab becomes the manager track after CAT 2027, in two seasons (getting in, then ready for the MBA), with PI, GD and MBA-ready basics added; community starts from discussions under our own questions with a spoiler gate, then the doubt forum, then private groups, public communities last; reminders go to the inbox first and web push only where it works. **Not adopted:** Sudoku and chess, direct messages, a social feed, image uploads at first, public communities at launch, more than one reminder a day.
 
 ## 3. Consistency check: spec vs plan vs code
+
+### 18 Nov 2026, the extension opens a side panel (D110, reopens D104; `docs/design/article-to-rc.md`, "The extension")
+
+The owner asked for the shape students already know from PracticeRC: select on the article, click, and the set is made
+and answered in a panel beside it, with sign-in asked for at install so every set is saved.
+
+**PracticeRC, as published** (Chrome Web Store listing v3.0.5 of 23 Oct 2026, its public plans API and page code,
+read 18 Nov 2026): select text, a floating "Add to quiz" button (several parts can be added), CAT or GMAT, a set in
+Chrome's side panel with a timer, score and an explanation and trap for every option. Its content script runs on every
+site, so installing it warns "read and change all your data on all websites"; its one store complaint is that the
+button or panel sometimes does not appear. 2,000 users. Paid from ₹199 a month; free is two tests a day with
+cooldowns, history for today only, no report card and no choice of difficulty or question type. A rival, PassageIQ,
+uses the whole article with no selection and keeps no account.
+
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A157 | A134 kept practice out of the extension to avoid a second player and data outside the site's store | A panel built inside the extension would bring both back | The panel is an extension page that frames a slim route of the site (`/panel/*`): the same player, store, sync and sign-in |
+| A158 | A framed page may not get the site's cookie or storage | No account in the panel; sets saved to an empty store | Tested 18 Nov 2026 on Chrome 157 with a throwaway extension: with host access to the site, the frame sent the SameSite=Lax `__Host-` cookie on a POST, its Origin was the site's own, and its localStorage was the same store as a normal tab; without host access, neither. So the extension asks for 99ile.in and nothing else |
+| A159 | The site sends `frame-ancestors 'none'` | The panel would be blank | Relax it for `/panel/*` only, to the extension's pinned id |
+| A160 | A floating button on every selection needs a content script on all sites | The all-sites install warning, and a button that can fail to appear | Start from the toolbar icon, the right-click menu or Alt+Shift+R; Chrome shows these itself, and each grants `activeTab` for that tab only |
+| A161 | Rivals use either a selection or the whole article | One or the other fails on many pages | The selection if there is one, else Readability's main text |
+| A162 | Two sets a day leaves the extension idle most days | Students forget it | Right-click a word to save it with its sentence to My words (no AI: a meaning is the same for everyone) |
+| A163 | An answer's deciding line is shown only as text in review | Going back to the line, the habit RC needs, stays abstract | "Show me in the article" highlights the deciding sentence on the real page beside the panel |
+| A164 | A137's rule, the extension holds no token and never calls the API | Still right | Kept: the framed site makes every API call with its own cookie; the extension only reads the page after a click and posts the text into the frame |
+
+**D110.** The extension opens a side panel that is 99ile itself (a framed `/panel/*` route of the site), started by
+the toolbar icon, the right-click menu or a shortcut, with access to 99ile.in only. The first release has the panel,
+"Show me in the article" and saving words; choosing a question type, adding several parts and tables to DI caselets
+come later. Sign-in is the site's own, asked for on a welcome page opened at install.
 
 ### 14 Nov 2026, article practice page
 

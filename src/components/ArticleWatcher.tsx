@@ -9,6 +9,8 @@ import { saveArticleText } from "../practice/articleSet";
 import { words } from "../practice/types";
 
 const ARTICLE_PAGE = "/practice/article";
+/** The extension's side panel (F53): its sets open in the panel, not on the site. */
+const PANEL_PAGE = "/panel/article";
 const UNTITLED = "Your article";
 
 /**
@@ -28,8 +30,9 @@ export default function ArticleWatcher() {
     const done = (id: string, title: string) => {
       setPending(null);
       setJobState(null);
-      if (where.current === ARTICLE_PAGE) { nav(ARTICLE_PAGE + "/" + encodeURIComponent(id)); return; }
-      toast(title === UNTITLED ? "Your RC is ready." : `Your RC from "${title}" is ready.`, { duration: 20_000, action: { label: "Start", onClick: () => nav(ARTICLE_PAGE + "/" + encodeURIComponent(id)) } });
+      const home = where.current.startsWith("/panel") ? PANEL_PAGE : ARTICLE_PAGE;
+      if (where.current === ARTICLE_PAGE || where.current === PANEL_PAGE) { nav(home + "/" + encodeURIComponent(id)); return; }
+      toast(title === UNTITLED ? "Your RC is ready." : `Your RC from "${title}" is ready.`, { duration: 20_000, action: { label: "Start", onClick: () => nav(home + "/" + encodeURIComponent(id)) } });
       if (document.hidden) markTab();
     };
     const tick = async () => {
@@ -60,7 +63,7 @@ export default function ArticleWatcher() {
       if (j.state === "failed") {
         setPending(null);
         setJobState({ phase: "failed", msg: j.error });
-        if (where.current !== ARTICLE_PAGE) toast(j.error ?? "The set could not be made.", { duration: 12_000, action: { label: "Open", onClick: () => nav(ARTICLE_PAGE) } });
+        if (where.current !== ARTICLE_PAGE && where.current !== PANEL_PAGE) toast(j.error ?? "The set could not be made.", { duration: 12_000, action: { label: "Open", onClick: () => nav(where.current.startsWith("/panel") ? PANEL_PAGE : ARTICLE_PAGE) } });
         return;
       }
       setJobState({ phase: j.state === "running" ? "running" : "queued", stage: j.stage, ahead: j.ahead });
