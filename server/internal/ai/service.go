@@ -48,12 +48,15 @@ type Service struct {
 	Wake chan struct{}
 	// Articles keeps article text (texts.go, D107); nil keeps it on the student's device only.
 	Articles blob.Store
+	// Words limits new word meanings per student and hour (word.go); nil turns the limit off (tests).
+	Words *limit.Limiter
 }
 
 // Errors the handler turns into plain answers.
 var (
 	errStudentCap = errors.New("student cap")
 	errBudget     = errors.New("daily budget")
+	errWordCap    = errors.New("word cap")
 )
 
 // cachedOutput is a stored reply for key, or nil.
@@ -108,6 +111,8 @@ func (s *Service) refuse(w http.ResponseWriter, err error, fallback string) {
 		httpx.WriteError(w, http.StatusForbidden, "ai_signin", "Sign in with Google to use this. "+fallback)
 	case errors.Is(err, errStudentCap):
 		httpx.WriteError(w, http.StatusTooManyRequests, "ai_cap", fmt.Sprintf("That is %d new AI answers today; more after midnight, India time. %s", s.PerStudent, fallback))
+	case errors.Is(err, errWordCap):
+		httpx.WriteError(w, http.StatusTooManyRequests, "ai_cap", fmt.Sprintf("That is %d meanings this hour; more in a while. %s", WordsPerHour, fallback))
 	case errors.Is(err, errIPLimit):
 		httpx.WriteError(w, http.StatusTooManyRequests, "rate_limited", "Too many requests from this network. Try again in an hour. "+fallback)
 	case errors.Is(err, errBudget), errors.Is(err, ErrBusy):
@@ -135,7 +140,7 @@ func (s *Service) StatusHandler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		d, ok := account.FromContext(r.Context())
 		signed := ok && s.signedIn(r.Context(), d.IdentityID)
-		out := map[string]any{"on": s.Router != nil && s.Content != nil, "signedIn": signed}
+		out := map[string]any{"on": s.Router != nil && s.Content != nil, "signedIn": signed, "words": s.Router != nil && s.Router.Has(TaskWord)}
 		// The new article sets left today, for the extension's panel and the article page (F53, D111).
 		if signed {
 			out["articlesLeft"] = s.articlesLeft(r.Context(), d.IdentityID)

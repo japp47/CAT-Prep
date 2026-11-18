@@ -307,7 +307,7 @@ func v1Routes(ctx context.Context, cfg config.Config, pool *pgxpool.Pool, log *s
 	// AI (F36, D100 to D105): off unless AI_ENABLED=1 with a model; the site then keeps its written notes.
 	// New generations need a Google account, room under the address's hourly limit, the student's cap and the day's
 	// budget (internal/ai/guard.go).
-	aiSvc := &ai.Service{DB: pool, DailyBudget: cfg.AIDailyTokens, PerStudent: cfg.AIPerStudent, IPs: limit.New(cfg.AIPerAddress, time.Hour), Log: log, Wake: make(chan struct{}, 1)}
+	aiSvc := &ai.Service{DB: pool, DailyBudget: cfg.AIDailyTokens, PerStudent: cfg.AIPerStudent, IPs: limit.New(cfg.AIPerAddress, time.Hour), Words: limit.New(ai.WordsPerHour, time.Hour), Log: log, Wake: make(chan struct{}, 1)}
 	if cfg.AIEnabled {
 		// run() has already checked the catalog, so an error here only happens in tests; AI then stays off.
 		if r, err := ai.LoadRouter(cfg.AICatalog, cfg.AIOrders, os.Getenv, log); err != nil {
@@ -325,6 +325,7 @@ func v1Routes(ctx context.Context, cfg config.Config, pool *pgxpool.Pool, log *s
 	rt.Handle("POST /v1/ai/flag", acc.Require(aiSvc.FlagHandler()))
 	rt.Handle("POST /v1/ai/summary", acc.Require(aiSvc.SummaryHandler()))
 	rt.Handle("POST /v1/ai/summary/fix", acc.Require(aiSvc.FixHandler()))
+	rt.Handle("POST /v1/ai/word", acc.Require(aiSvc.WordHandler()))
 	rt.Handle("POST /v1/ai/article", acc.Require(aiSvc.ArticleHandler()))
 	rt.Handle("GET /v1/ai/article/{job}", acc.Require(aiSvc.JobHandler()))
 	rt.Handle("GET /v1/ai/article/{job}/text", acc.Require(aiSvc.TextHandler()))

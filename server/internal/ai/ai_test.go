@@ -82,7 +82,7 @@ func TestTheBuiltInCatalogLoads(t *testing.T) {
 	}
 	// Ollama needs no key, so a laptop can run with no key at all.
 	local := []string{"ollama-gpt-oss-20b"}
-	if _, err := LoadRouter("", map[string][]string{TaskSummary: local, TaskArticle: local, TaskArticleTest: local}, func(string) string { return "" }, slog.New(slog.DiscardHandler)); err != nil {
+	if _, err := LoadRouter("", map[string][]string{TaskSummary: local, TaskArticle: local, TaskArticleTest: local, TaskWord: local}, func(string) string { return "" }, slog.New(slog.DiscardHandler)); err != nil {
 		t.Errorf("ollama without keys: %v", err)
 	}
 	bad := t.TempDir() + "/models.json"
