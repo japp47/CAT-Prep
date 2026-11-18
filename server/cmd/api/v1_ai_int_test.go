@@ -241,7 +241,7 @@ func TestAIGateHoldsAgainstAbuse(t *testing.T) {
 		}
 		wg.Wait()
 		var n int
-		_ = admin.QueryRow(context.Background(), `select n from ai.daily where identity_id = $1 and day = current_date`, d.ID.IdentityID).Scan(&n)
+		_ = admin.QueryRow(context.Background(), `select n from ai.daily where identity_id = $1 and day = (now() at time zone 'Asia/Kolkata')::date`, d.ID.IdentityID).Scan(&n)
 		if fresh.Load() != 3 || model.calls.Load() != 3 || n != 3 {
 			t.Errorf("%d made, %d model calls, count %d; want 3 each", fresh.Load(), model.calls.Load(), n)
 		}
@@ -263,7 +263,7 @@ func TestAIGateHoldsAgainstAbuse(t *testing.T) {
 			t.Errorf("%d model calls", model.calls.Load())
 		}
 		var spent int
-		_ = admin.QueryRow(context.Background(), `select tokens from ai.usage where day = current_date and kind = 'all'`).Scan(&spent)
+		_ = admin.QueryRow(context.Background(), `select tokens from ai.usage where day = (now() at time zone 'Asia/Kolkata')::date and kind = 'all'`).Scan(&spent)
 		if spent != int(model.calls.Load())*500 {
 			t.Errorf("budget row %d after %d calls of 500: reservations were not settled", spent, model.calls.Load())
 		}
@@ -320,7 +320,7 @@ func TestSummaryFeedback(t *testing.T) {
 	model.bad.Store(false)
 	// Each call is counted against the model that made it, for the owner's panel.
 	var answered, refused int
-	_ = admin.QueryRow(context.Background(), `select answered, refused from ai.model_usage where day = current_date and model = 'large'`).Scan(&answered, &refused)
+	_ = admin.QueryRow(context.Background(), `select answered, refused from ai.model_usage where day = (now() at time zone 'Asia/Kolkata')::date and model = 'large'`).Scan(&answered, &refused)
 	if answered != 3 || refused != 2 {
 		t.Errorf("model usage: %d answered, %d refused; want 3 and 2", answered, refused)
 	}
@@ -377,7 +377,7 @@ func TestAIOffByDefault(t *testing.T) {
 func TestAIPanel(t *testing.T) {
 	srv, owner, g := signInServer(t)
 	ctx := context.Background()
-	if _, err := owner.Exec(ctx, `insert into ai.model_usage (day, model, answered, limited, tokens) values (current_date, 'gpt-oss-20b', 4, 1, 2000)
+	if _, err := owner.Exec(ctx, `insert into ai.model_usage (day, model, answered, limited, tokens) values ((now() at time zone 'Asia/Kolkata')::date, 'gpt-oss-20b', 4, 1, 2000)
 		on conflict (day, model) do update set answered = 4, limited = 1, tokens = 2000`); err != nil {
 		t.Fatal(err)
 	}
@@ -534,7 +534,7 @@ func TestArticleSets(t *testing.T) {
 	}
 	model.bad.Store(false)
 	var n int
-	_ = admin.QueryRow(context.Background(), `select n from ai.article_daily where identity_id = $1 and day = current_date`, b.ID.IdentityID).Scan(&n)
+	_ = admin.QueryRow(context.Background(), `select n from ai.article_daily where identity_id = $1 and day = (now() at time zone 'Asia/Kolkata')::date`, b.ID.IdentityID).Scan(&n)
 	if n != 0 {
 		t.Errorf("a failed set still counted: %d", n)
 	}

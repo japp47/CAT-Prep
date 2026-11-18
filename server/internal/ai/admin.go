@@ -26,7 +26,7 @@ func (s *Service) recordCall(model, what string, tokens int) {
 	// Its own short deadline: the figure is worth keeping even when the student's request has gone.
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
-	if _, err := s.DB.Exec(ctx, `insert into ai.model_usage (day, model, `+col+`, tokens) values (current_date, $1, 1, $2)
+	if _, err := s.DB.Exec(ctx, `insert into ai.model_usage (day, model, `+col+`, tokens) values ((now() at time zone 'Asia/Kolkata')::date, $1, 1, $2)
 		on conflict (day, model) do update set `+col+` = ai.model_usage.`+col+` + 1, tokens = ai.model_usage.tokens + excluded.tokens`, model, tokens); err != nil {
 		s.Log.Warn("ai: model usage", "error", err)
 	}
@@ -60,9 +60,9 @@ func (s *Service) AdminHandler() http.Handler {
 			st := s.Router.Status()
 			v.Router = &st
 		}
-		_ = s.DB.QueryRow(r.Context(), `select coalesce((select tokens from ai.usage where day = current_date and kind = $1), 0)`, budgetKind).Scan(&v.UsedToday)
+		_ = s.DB.QueryRow(r.Context(), `select coalesce((select tokens from ai.usage where day = (now() at time zone 'Asia/Kolkata')::date and kind = $1), 0)`, budgetKind).Scan(&v.UsedToday)
 		rows, err := s.DB.Query(r.Context(), `select day::text, model, answered, refused, limited, failed, tokens from ai.model_usage
-			where day > current_date - 7 order by day desc, model`)
+			where day > (now() at time zone 'Asia/Kolkata')::date - 7 order by day desc, model`)
 		if err != nil {
 			httpx.WriteError(w, http.StatusInternalServerError, "internal", "Could not read AI figures.")
 			return

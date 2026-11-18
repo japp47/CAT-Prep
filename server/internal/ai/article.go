@@ -514,13 +514,13 @@ func (s *Service) ArticleHandler() http.Handler {
 			return
 		}
 		var n int
-		err = s.DB.QueryRow(ctx, `insert into ai.article_daily (identity_id, day, n) values ($1, current_date, 1)
+		err = s.DB.QueryRow(ctx, `insert into ai.article_daily (identity_id, day, n) values ($1, (now() at time zone 'Asia/Kolkata')::date, 1)
 			on conflict (identity_id, day) do update set n = ai.article_daily.n + 1 where ai.article_daily.n < $2 returning n`,
 			d.IdentityID, ArticlesPerDay).Scan(&n)
 		if err != nil {
 			s.settle(ctx, t, 0, false)
 			if errors.Is(err, pgx.ErrNoRows) {
-				httpx.WriteError(w, http.StatusTooManyRequests, "ai_cap", fmt.Sprintf("That is %d new article sets today; more tomorrow. An article practised before costs nothing.", ArticlesPerDay))
+				httpx.WriteError(w, http.StatusTooManyRequests, "ai_cap", fmt.Sprintf("That is %d new article sets today; more after midnight, India time. An article practised before costs nothing.", ArticlesPerDay))
 				return
 			}
 			s.refuse(w, err, "")
@@ -575,7 +575,7 @@ func (s *Service) JobHandler() http.Handler {
 }
 
 func (s *Service) giveBackArticle(ctx context.Context, identity string) {
-	if _, err := s.DB.Exec(ctx, `update ai.article_daily set n = greatest(n - 1, 0) where identity_id = $1 and day = current_date`, identity); err != nil {
+	if _, err := s.DB.Exec(ctx, `update ai.article_daily set n = greatest(n - 1, 0) where identity_id = $1 and day = (now() at time zone 'Asia/Kolkata')::date`, identity); err != nil {
 		s.Log.Warn("ai: article count", "error", err)
 	}
 }

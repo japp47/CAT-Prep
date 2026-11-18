@@ -7,6 +7,9 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
+// A day here is a day in India, where the students are: every cap and the budget reset at midnight IST. The
+// database's own date is UTC, which held yesterday's caps until 5:30 in the morning (15 Nov 2026).
+
 // The gate every model call passes (D100, docs/design/explain-mistake.md, "Security"). Tokens are the only thing a
 // stranger could steal here, so each new generation needs, in order:
 //  1. a verified Google account, since sync identities cost nothing to make and would each bring their own cap;
@@ -52,7 +55,7 @@ func (s *Service) admit(ctx context.Context, identity, ip, kind string) (*ticket
 		}
 	}
 	var n int
-	err := s.DB.QueryRow(ctx, `insert into ai.daily (identity_id, day, n) values ($1, current_date, 1)
+	err := s.DB.QueryRow(ctx, `insert into ai.daily (identity_id, day, n) values ($1, (now() at time zone 'Asia/Kolkata')::date, 1)
 		on conflict (identity_id, day) do update set n = ai.daily.n + 1 where ai.daily.n < $2 returning n`, identity, s.PerStudent).Scan(&n)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil, errStudentCap
@@ -66,7 +69,7 @@ func (s *Service) admit(ctx context.Context, identity, ip, kind string) (*ticket
 		return nil, errStudentCap
 	}
 	var total int
-	err = s.DB.QueryRow(ctx, `insert into ai.usage (day, kind, tokens) values (current_date, $3, $1)
+	err = s.DB.QueryRow(ctx, `insert into ai.usage (day, kind, tokens) values ((now() at time zone 'Asia/Kolkata')::date, $3, $1)
 		on conflict (day, kind) do update set tokens = ai.usage.tokens + $1 where ai.usage.tokens + $1 <= $2 returning tokens`,
 		estimateFor(kind), s.DailyBudget, budgetKind).Scan(&total)
 	if errors.Is(err, pgx.ErrNoRows) || (err == nil && total > s.DailyBudget) {
@@ -91,7 +94,7 @@ func (s *Service) settle(ctx context.Context, t *ticket, tokens int, made bool) 
 	if made {
 		gen = 1
 	}
-	if _, err := s.DB.Exec(ctx, `insert into ai.usage (day, kind, generations, tokens) values (current_date, $1, $2, $3)
+	if _, err := s.DB.Exec(ctx, `insert into ai.usage (day, kind, generations, tokens) values ((now() at time zone 'Asia/Kolkata')::date, $1, $2, $3)
 		on conflict (day, kind) do update set generations = ai.usage.generations + excluded.generations, tokens = ai.usage.tokens + excluded.tokens`,
 		t.kind, gen, tokens); err != nil {
 		s.Log.Warn("ai: usage", "error", err)
@@ -102,13 +105,13 @@ func (s *Service) settle(ctx context.Context, t *ticket, tokens int, made bool) 
 }
 
 func (s *Service) unreserve(ctx context.Context, tokens int) {
-	if _, err := s.DB.Exec(ctx, `update ai.usage set tokens = greatest(tokens - $1, 0) where day = current_date and kind = $2`, tokens, budgetKind); err != nil {
+	if _, err := s.DB.Exec(ctx, `update ai.usage set tokens = greatest(tokens - $1, 0) where day = (now() at time zone 'Asia/Kolkata')::date and kind = $2`, tokens, budgetKind); err != nil {
 		s.Log.Warn("ai: budget", "error", err)
 	}
 }
 
 func (s *Service) giveBack(ctx context.Context, t *ticket) {
-	if _, err := s.DB.Exec(ctx, `update ai.daily set n = greatest(n - 1, 0) where identity_id = $1 and day = current_date`, t.identity); err != nil {
+	if _, err := s.DB.Exec(ctx, `update ai.daily set n = greatest(n - 1, 0) where identity_id = $1 and day = (now() at time zone 'Asia/Kolkata')::date`, t.identity); err != nil {
 		s.Log.Warn("ai: student count", "error", err)
 	}
 }

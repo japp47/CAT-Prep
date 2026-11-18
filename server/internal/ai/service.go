@@ -107,7 +107,7 @@ func (s *Service) refuse(w http.ResponseWriter, err error, fallback string) {
 	case errors.Is(err, errNoAccount):
 		httpx.WriteError(w, http.StatusForbidden, "ai_signin", "Sign in with Google to use this. "+fallback)
 	case errors.Is(err, errStudentCap):
-		httpx.WriteError(w, http.StatusTooManyRequests, "ai_cap", fmt.Sprintf("That is %d new AI answers today; more tomorrow. %s", s.PerStudent, fallback))
+		httpx.WriteError(w, http.StatusTooManyRequests, "ai_cap", fmt.Sprintf("That is %d new AI answers today; more after midnight, India time. %s", s.PerStudent, fallback))
 	case errors.Is(err, errIPLimit):
 		httpx.WriteError(w, http.StatusTooManyRequests, "rate_limited", "Too many requests from this network. Try again in an hour. "+fallback)
 	case errors.Is(err, errBudget), errors.Is(err, ErrBusy):

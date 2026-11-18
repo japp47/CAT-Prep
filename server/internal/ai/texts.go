@@ -33,7 +33,7 @@ func (s *Service) keepText(ctx context.Context, identity, job string, hash []byt
 	}
 	var stored, today int
 	if err := s.DB.QueryRow(ctx, `select (select count(*) from ai.article_texts where hash = $1),
-		(select count(*) from ai.article_texts where stored_at > current_date)`, hash).Scan(&stored, &today); err != nil {
+		(select count(*) from ai.article_texts where (stored_at at time zone 'Asia/Kolkata')::date = (now() at time zone 'Asia/Kolkata')::date)`, hash).Scan(&stored, &today); err != nil {
 		s.Log.Warn("ai: article text", "error", err)
 		return
 	}
