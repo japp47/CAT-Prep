@@ -1,4 +1,4 @@
-# Article to RC and the 99ile extension (F34, F53), planned 13 Nov 2026
+# Article to RC and the 99ile extension (F34, F53), planned 13 Nov 2026, side panel 18 Nov 2026 (D110)
 
 Toppers' most repeated advice is "read editorials and long essays every day". Students do read, but reading alone
 gives no feedback: they cannot tell whether they caught the author's claim, the qualifier or the tone. This feature
@@ -24,21 +24,25 @@ General "quiz me on this page" extensions already exist (TakaQuiz, Refresher AI,
 - **"Is this a good CAT read?"** Before any AI, the extension says whether the page reads like a CAT passage
   (argument-heavy, dense) or like news or a list, worked out on the device. It teaches students what to read.
 
-## Shape: the extension is a doorway, 99ile is the room
+## Shape: the panel is 99ile itself (D110, 18 Nov 2026; replaces "the extension is a doorway", D104)
 
-The practice happens on 99ile.in, not inside the extension.
+The owner asked for the shape students know from PracticeRC: select on the article, click, and the set is made and
+answered in a panel beside it. D104 kept practice out of the extension for good reasons: one player, data in the
+site's store, no account in the extension. The panel keeps all three by being the site:
 
-- **Exam-like.** CAT shows a plain passage beside its questions. 99ile's RC player already does that, with the
-  passage pane, timer, Prove it and review; an article in our reader, without its ads and pictures, is closer to the
-  exam than the article in its own page.
-- **One player, one design.** A second player inside a side panel would drift from the site's and double the work.
-- **Data stays where it is.** Attempts, errors and the journal live in the site's storage and sync; the extension
-  holds nothing but the article it just read, for a few minutes.
-- **No account in the extension.** Sign-in, caps and AI stay on the site; the extension has no key, no token and
-  never calls the API.
+- **The side panel frames a slim route of 99ile** (`/panel/article`, `/panel/article/:id`, `/panel/words`), outside
+  the site's sidebar. The RC player, Prove it, review, error log, redo queue, journal and plan are the site's own
+  code; a fix to the site fixes the panel without a new extension release.
+- **Sign-in is the site's.** With host access to 99ile.in, Chrome sends the site's cookie to the framed page and
+  gives it the site's own storage (tested on Chrome 157, 18 Nov 2026, A158). The extension holds no token and never
+  calls the API; the framed page does, as any 99ile tab does.
+- **Still exam-like.** The passage is read where it is: the paragraphs the set uses are highlighted lightly on the
+  article's own page (owner, 18 Nov 2026), and the panel shows only the questions and the review, never the passage.
+  Prove it, which taps a line of the passage, is left out of the panel; review's "Show me in the article" marks the
+  deciding line on the page instead.
 
-So the extension does three things only: read the page when asked, judge whether it is a good CAT read, and hand the
-text to 99ile.
+So the extension does three things only: read the page when asked, put the text into the panel, and highlight a
+line on the page when the panel asks.
 
 ## Phones first, then the extension
 
@@ -57,44 +61,67 @@ arbitrary addresses.
 
 ## The extension
 
-**Permissions:** `activeTab` and `scripting` (read the current tab only after a click), `contextMenus` (right-click
-on a selection), `storage` (the hand-off, for a few minutes). No host permissions, so it cannot read any page on its
-own. `externally_connectable` lists 99ile.in, so only our site can ask it for the article.
+**Permissions:** `activeTab` and `scripting` (read the current tab only after a click), `contextMenus` (the
+right-click entries), `sidePanel`, `storage` (the article for a few minutes, in `chrome.storage.session`), and host
+access to `https://99ile.in/*` only, so the framed site has its cookie and store. No content script runs on any page
+until the student clicks, so the install shows no "all your data on all websites" warning (A160). Chrome 116 or
+later; Edge and Brave install from the same store.
 
-**Reading the page.** On a click, a script in the tab runs Mozilla's Readability (Apache 2.0, bundled, no remote
-code) on a copy of the page and returns the title, site name, link and paragraphs. A right-click on selected text
-uses the selection instead, for pages where Readability fails or for one section of a long piece.
+**Starting a set,** each of which grants `activeTab` for that tab:
+- the toolbar icon: opens the panel and reads the selection if there is one, else the article;
+- right-click a selection, "Make an RC set from this";
+- Alt+Shift+R.
 
-**The fit check (on the device, no AI).**
-- Length: 350 to 1,200 words is used as is. Longer pieces are cut to the run of paragraphs nearest 600 to 900 words,
-  which the student can move on the next page. Shorter ones are refused with the reason.
-- Argument: the share of sentences with claim and contrast markers (however, yet, argue, suggest, unless, …),
-  sentence length and the share of long words. Verdicts: "A good CAT read", "Easy, more news than argument", "Not an
-  article" (lists, product pages, threads).
-- Time at CAT pace: about seven minutes for a 700-word passage and four questions.
+**Reading the page.** A script run in the tab after the click takes the selection (`getSelection().toString()`,
+which keeps paragraph breaks) or, with nothing selected, runs Mozilla's Readability (Apache 2.0, bundled, no remote
+code) on a copy of the page, and returns the title, site name, link and text. Pages it cannot read (Chrome's own
+pages, the PDF viewer, Google Docs, which draws on a canvas) show "Copy the text and paste it here" in the panel.
 
-**Hand-off.** The popup saves the article in `chrome.storage.session` under a random id and opens
-`99ile.in/practice/article#from=<id>`. The page asks the extension for that id through `externally_connectable`;
-the extension answers once and deletes it. The text never goes into an address, a log or browsing history. If the
-student must sign in first, the page keeps the id and asks again on return (the article waits 30 minutes).
+**Into the panel.** The extension keeps the article in `chrome.storage.session` by tab and posts it into the framed
+page (`targetOrigin` 99ile.in). The page accepts messages only from the extension's pinned id, checks the shape and
+size, and fills the article editor with `origin: "extension"`. The text never goes into an address or history.
 
-**Popup (about 360 px wide), in the site's idiom.**
+**In the panel (360 to 500 px, the student can widen it),** the same steps as `/practice/article`: preview with the
+fit check (word count, "A good CAT read", "More news than argument", "Too short, select more"), paragraphs used with
+earlier and later, time at CAT pace and sets left today; one filled button, "Make my set" (signed out: "Sign in with
+Google to make a set", which opens a tab, since Google refuses to be framed); the progress bar; the questions; review.
+
+**Show me in the article.** In review, each deciding line has "Show me in the article": the panel asks the extension,
+which highlights that sentence on the real page in the highlighter's full yellow (CSS Custom Highlight API) and
+scrolls to it, still under the same `activeTab`. The passage in use is marked the same way, lighter, as soon as the
+article arrives, and again when the student moves to earlier or later paragraphs.
+
+**Words.** Right-click one to three selected words, "Add '<word>' to my words": the panel opens on `/panel/words`
+with the word, its sentence from the page and the source, and a meaning in the student's own words (required, as for
+every saved word, so no review card is blank). "Save" adds it to My words for spaced review (`vocab`, synced as kind
+`word`, "Seen in" holding the sentence and source); a word already there says so with its next review day. No AI: a
+meaning is the same for every student, and guessing it from the sentence first is what makes it stick.
+
+**At install** the extension opens `99ile.in/extension`: what it does, the three ways to start, the privacy summary,
+and "Sign in with Google" (the site's own flow). A student who is signed in sees "You're set".
+
+**Panel layout (about 360 px).**
 ```
-┌────────────────────────────────────┐
-│ 99ile                              │
-│ The case for slower cities         │
-│ Aeon · 1,240 words                 │
-│ ┌────────────────────────────────┐ │
-│ │ A good CAT read                │ │
-│ │ Dense argument; we'll use six  │ │
-│ │ paragraphs, about 7 minutes.   │ │
-│ └────────────────────────────────┘ │
-│ [  Practise as a CAT RC         ]  │  one filled button
-│    Write a summary instead         │  text link: reading journal
-└────────────────────────────────────┘
+┌──────────────────────────────┐
+│ The case for slower cities   │
+│ Aeon · 1,240 words           │
+│ ┌──────────────────────────┐ │
+│ │ A good CAT read          │ │  tone, no border
+│ │ Six paragraphs, about    │ │
+│ │ 7 minutes at CAT pace.   │ │
+│ └──────────────────────────┘ │
+│ [      Make my set        ]  │  one filled button
+│  Use earlier paragraphs      │  text links
+│  1 of 2 sets left today      │
+└──────────────────────────────┘
 ```
-Same tokens, fonts and rules as the site (no text under 14 px, tone over borders, one filled button, reduced
-motion). "Not an article" shows what to read instead, linking to the reading list.
+Same tokens, fonts and rules as the site (no text under 14 px, tone over borders, one filled button, reduced motion).
+
+**Build (built 18 Nov 2026):** `extension/` in this repo: three small TypeScript files (`background.ts`, `panel.ts`,
+`reader.ts`) and tested helpers (`text.ts`), bundled by the esbuild that Vite already brings (`npm run ext:build`, or
+`ext:dev` for the local site); no framework, since the shell is a frame and a relay. Readability is the one new
+package. The manifest's `key` pins the id to `jdbigbpnbadjaphglkhomapjbhajbphe`, the one the site allows; when the
+store gives the listing its own id, it is added to `src/lib/panel.ts` and `public/_headers`.
 
 ## Getting the article in (decided 14 Nov 2026, D107)
 
@@ -198,7 +225,7 @@ log, journal and Prove it read them like any set; the timed sectional, the arena
 
 ## Not in this version
 
-A side panel for answering beside the page; sharing a set with friends (it would republish the article); Firefox and
+Choosing a question type to focus on, and adding several parts of a page to one set (next, D110); sharing a set with friends (it would republish the article); Firefox and
 Safari; the summary second opinion and "Explain my mistake" on article sets (the server would need the article
 again); tables to DI caselets (F63, later, on the same extension); a premium tier.
 

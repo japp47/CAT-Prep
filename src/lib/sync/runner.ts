@@ -154,8 +154,11 @@ export const signInTicket = (ticket: string) => call((x) => ticketInfo(x, ticket
  * §5.2); the /signin page passes itself, with the page to return to after.
  */
 export function startSignIn(back = location.pathname) {
-  location.assign(import.meta.env.BASE_URL + "api/v1/auth/google/start?next=" + encodeURIComponent(back));
+  location.assign(signInUrl(back));
 }
+
+/** The address that starts Google sign-in. The extension's panel opens it in a tab: Google refuses to be framed. */
+export const signInUrl = (back: string) => import.meta.env.BASE_URL + "api/v1/auth/google/start?next=" + encodeURIComponent(back);
 
 /** Deletes this progress from the server and clears this device; on success sync is off here. */
 export async function deleteAll(): Promise<Outcome> {

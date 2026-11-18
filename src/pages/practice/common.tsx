@@ -19,6 +19,7 @@ import { Page, Tnum } from "../../components/kit";
 import { diffDays, iso, mediumDate, todayIso } from "../../lib/date";
 import { addAway, comeBack, dropCleared, peekCleared, readDraftAt, writeDraft } from "../../lib/draft";
 import KeepHint from "../../components/KeepHint";
+import { useInPanel } from "../../lib/panel";
 
 /** Seconds since the component mounted, ticking once a second while `running`. */
 export function useElapsed(running: boolean, startAt: number) {
@@ -169,8 +170,10 @@ export function ReportLink({ what, item }: { what: string; item: string }) {
 
 /** The sticky bar on top of every practice screen: what you are doing, the clock, and the main action. */
 export function PlayerBar({ kicker, title, children }: { kicker: ReactNode; title: ReactNode; children?: ReactNode }) {
+  // Below the phone header on the site; the extension's side panel has no fixed header, so it sticks to the top.
+  const panel = useInPanel();
   return (
-    <div className="sticky top-14 z-30 bleed-gutter flex flex-wrap items-center justify-between gap-x-4 gap-y-2 bg-background/95 px-gutter py-3 backdrop-blur-sm lg:top-0">
+    <div className={cn("sticky z-30 bleed-gutter flex flex-wrap items-center justify-between gap-x-4 gap-y-2 bg-background/95 px-gutter py-3 backdrop-blur-sm", panel ? "top-0" : "top-14 lg:top-0")}>
       <div className="flex min-w-0 flex-col">
         <span className="text-sm text-muted-foreground">{kicker}</span>
         <h1 className="truncate text-heading font-semibold">{title}</h1>
