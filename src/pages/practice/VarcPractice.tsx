@@ -86,7 +86,7 @@ export default function VarcPractice({ t }: { t: VarcToday }) {
             <p>Six short arguments, one question each: assumption, strengthen, weaken, inference, flaw and paradox. CAT does not ask them, but XAT does, and they sharpen how you judge RC options.</p>
           </Row>
           <Row title="Practise an article" action={<LinkButton to="/practice/article" variant="secondary">Make an RC set</LinkButton>}>
-            <p>Turn an essay or editorial you are reading into a CAT-style RC set, checked by a second AI. Paste it, or upload a .txt or .pdf.{state.articles.length ? ` You have made ${state.articles.length}.` : ""}</p>
+            <p>Turn an essay or editorial you are reading into a CAT-style RC set, checked by a second AI. Paste it, or upload a .txt or .pdf; on a computer, the <TextLink to="/extension">Chrome extension</TextLink> makes it beside the article you are reading.{state.articles.length ? ` You have made ${state.articles.length}.` : ""}</p>
           </Row>
           <PaperRow>
             <p>Full past papers with all three sections: {PAPER_PDFS.length} PDFs, 2017 to 2024 by slot and 1991 to 2008. Sit one whole as a mock, or the VARC section in 40 minutes. Papers up to 2020 come with solutions, later ones with answer keys. From <TextLink to={PAPERS_PAGE}>Bodhee Prep</TextLink>.</p>

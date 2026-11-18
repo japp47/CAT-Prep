@@ -16,7 +16,8 @@ export const PanelContext = createContext(false);
 export const useInPanel = () => useContext(PanelContext);
 
 /** What the extension sends. `text` is the selection or the page's main text, paragraphs split by blank lines. */
-export interface ArticleIn { type: "article"; title: string; site: string; link: string; text: string; selection: boolean }
+/** parts: how many selections were added up into this passage (D112), when it came from selections. */
+export interface ArticleIn { type: "article"; title: string; site: string; link: string; text: string; selection: boolean; parts?: number }
 export interface WordIn { type: "word"; word: string; sentence: string; title: string; site: string; link: string }
 /** The page could not be read (Chrome's own pages, the PDF viewer, Google Docs): the panel offers paste instead. */
 export interface UnreadableIn { type: "unreadable" }
@@ -40,7 +41,8 @@ export function readMessage(origin: string, data: unknown): Incoming | null {
   if (d.type === "article") {
     const text = str(d.text, LIMITS.text);
     if (!text || !text.trim()) return null;
-    return { type: "article", title: title.trim(), site: site.trim(), link: link.trim(), text, selection: d.selection === true, at };
+    const parts = typeof d.parts === "number" && Number.isInteger(d.parts) && d.parts >= 1 && d.parts <= 12 ? d.parts : undefined;
+    return { type: "article", title: title.trim(), site: site.trim(), link: link.trim(), text, selection: d.selection === true, ...(parts ? { parts } : {}), at };
   }
   if (d.type === "word") {
     const word = str(d.word, LIMITS.word)?.trim().replace(/\s+/g, " ");
@@ -62,8 +64,10 @@ export const useInbox = () => useSyncExternalStore(subscribe, () => inbox, () =>
 /**
  * highlight: the deciding lines of a question, as written in the article; the extension marks them on the page.
  * mark: the paragraphs the set is made from, marked lightly on the page, which is where the student reads them.
+ * clear-parts: the selections added up on the page are dropped: with their marks on starting over, keeping them once
+ * the set is made (the passage is still read there).
  */
-export type Outgoing = { type: "ready" } | { type: "highlight"; lines: string[] } | { type: "mark"; paras: string[] };
+export type Outgoing = { type: "ready" } | { type: "highlight"; lines: string[] } | { type: "mark"; paras: string[] } | { type: "clear-parts"; keepMarks?: boolean };
 
 /** Posts to the extension page around the frame, and only to it. Outside a frame (a normal tab) it does nothing. */
 export function toExtension(m: Outgoing, origin = parentOrigin()) {

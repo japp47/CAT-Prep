@@ -4,7 +4,7 @@ import { Page, Section } from "@/components/kit";
 import { CONTACT_EMAIL } from "@/data/site";
 
 /** When this notice last changed. Update it with any change below. */
-const UPDATED = "24 October 2026";
+const UPDATED = "18 November 2026";
 
 const P = ({ children }: { children: React.ReactNode }) => <p className="text-base leading-7 text-foreground/85">{children}</p>;
 const List = ({ items }: { items: React.ReactNode[] }) => (
@@ -40,6 +40,8 @@ export default function Privacy() {
           "Without sync, everything you do stays in this browser. We never see it.",
           "If you turn sync on, your progress is copied to the 99ile server so your devices show the same thing. Without an account we do not know your name, email or phone number, and there is no password.",
           "If you sign in with Google, we keep your email and the name Google gives, to show who is signed in and to bring your progress to a new device. Nothing else from Google.",
+          "AI features (summary feedback, sets from your own articles) need Google sign-in and send only the text you ask about.",
+          "The Chrome extension reads a page only when you click it, and never your browsing history.",
           "No ads, no selling of data, no tracking across sites.",
           <>You can download what the server has, and delete it, at any time on the <Link className="underline underline-offset-4" to="/you#sync">You page</Link>.</>,
         ]} />
@@ -61,6 +63,8 @@ export default function Privacy() {
               "Render runs the 99ile server, in Singapore.",
               "Supabase hosts the database, in Singapore.",
               "Google signs you in, if you choose Sign in with Google.",
+              "Groq runs the AI models that check summaries and write questions for your articles.",
+              "Cloudflare R2 keeps the text of articles you made sets from, privately.",
               "Cloudflare serves the website and runs a quick bot check (Turnstile) when you turn sync on.",
               "Google (Gmail) holds the team's daily email of problem reports, with any notes.",
               "GitHub holds the public list of reported questions, without notes.",
@@ -95,6 +99,25 @@ export default function Privacy() {
             <P>The servers that host 99ile see your network address with each request, as every website does, and keep it in their logs for 7 days.</P>
           </Section>
 
+          <Section title="AI features" className="rounded-xl bg-card p-5 sm:p-6">
+            <P>Only when you are signed in with Google and ask for them.</P>
+            <List items={[
+              "Summary feedback: the summary you wrote is sent to the 99ile server and to Groq, whose AI model checks it. The answer is kept under a scrambled key, so the same summary gets the same answer without asking again.",
+              "Sets from your own articles: only the paragraphs you choose are sent, when you tap “Make my set”. Groq's models write the questions and check them. The text is kept privately in Cloudflare R2 so you can review the set on your other devices; only you can read it, and it is deleted within 90 days.",
+              "We use what you send only to give you the answer or the set, and for nothing else.",
+            ]} />
+          </Section>
+
+          <Section title="The Chrome extension" className="rounded-xl bg-card p-5 sm:p-6">
+            <List items={[
+              "It reads the page you are on only when you click the 99ile icon, choose its entry in the right-click menu, or press its shortcut. It never reads pages on its own and never sees your browsing history.",
+              "What it reads (the text you selected or the article's text, its title and address) waits in your browser's memory until the 99ile panel takes it, then is dropped.",
+              "Nothing leaves your browser until you tap “Make my set”; then only the chosen paragraphs are sent, as on the article page. A word you save goes to your Words, like any other.",
+              "It has access to 99ile.in alone, so the panel, which is 99ile itself, keeps you signed in. The highlights it adds to a page stay on your screen and go when you reload.",
+              "Only if you turn on “Add to RC set as you select”: Chrome asks you to let 99ile read the pages you visit. A small script then waits on each page for text you select, to show the button beside it. It reads nothing else and sends nothing until you click the button. Turn it off in Chrome's settings for the extension, under Site access.",
+            ]} />
+          </Section>
+
           <Section title="Problem reports" className="rounded-xl bg-card p-5 sm:p-6">
             <P>When you use &ldquo;Report a problem with this question&rdquo;, with or without sync, we receive:</P>
             <List items={[
@@ -114,6 +137,8 @@ export default function Privacy() {
               "Link codes: they work for 10 minutes and are deleted a day after that.",
               "The security log: 400 days.",
               "Server request logs with network addresses: 7 days.",
+              "The text of an article you made a set from: up to 90 days, then it is deleted. The set's questions, your answers and mistakes stay in your progress.",
+              "Counts of AI requests and article sets, used for the daily limits: 14 days.",
               "Problem reports: until the question is dealt with, then one more year. The daily emails are deleted from the team's inbox within a year too.",
             ]} />
           </Section>

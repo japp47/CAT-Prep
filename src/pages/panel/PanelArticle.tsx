@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ClipboardPaste } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import ArticleProgress from "../../components/ArticleProgress";
 import { startArticle, useAi } from "../../lib/ai";
 import { readPending, setJobState, setPending, useJobState, type Pending } from "../../lib/articleJobs";
-import { toExtension, useInbox } from "../../lib/panel";
+import { setInbox, toExtension, useInbox } from "../../lib/panel";
 import { signInUrl } from "../../lib/sync/runner";
 import { chooseWindow, cleanArticle, fitCheck, headline, MAX_WORDS, MIN_WORDS, safeLink, siteOf, toSentences, type ArticleOrigin } from "../../practice/articleText";
 import { words } from "../../practice/types";
@@ -20,6 +21,7 @@ const n = (x: number) => x.toLocaleString("en-IN");
  */
 export default function PanelArticle() {
   const ai = useAi(true);
+  const nav = useNavigate();
   const inbox = useInbox();
   const incoming = inbox?.type === "article" ? inbox : null;
   const [raw, setRaw] = useState(incoming?.text ?? "");
@@ -56,6 +58,9 @@ export default function PanelArticle() {
     try { const t = (await navigator.clipboard.readText()).slice(0, MAX_CHARS); if (t.trim()) { setRaw(t); setRange(null); setNote(""); } else setNote("The clipboard is empty. Copy the article first."); }
     catch { setNote("The browser did not allow reading the clipboard. Click the box below and paste with Ctrl+V."); }
   };
+  // Drop the parts gathered on the page (and their marks); the panel waits for a new selection.
+  const startOver = () => { toExtension({ type: "clear-parts" }); setInbox(null); nav("/panel"); };
+
   const make = async () => {
     if (!fit || !win) return;
     setStarting({});
@@ -65,6 +70,8 @@ export default function PanelArticle() {
     const p: Pending = { job: r.data.job, title: incoming?.title ?? headline(raw), site, link, paras: chosen, at: Date.now(), origin };
     setStarting(null);
     setPending(p);
+    // The set is made from these parts: the next selection starts a new passage.
+    if (incoming?.selection) toExtension({ type: "clear-parts", keepMarks: true });
   };
 
   if (job && job.phase !== "failed") {
@@ -103,7 +110,7 @@ export default function PanelArticle() {
   return (
     <div className="flex flex-col gap-5">
       <header className="flex min-w-0 flex-col gap-1.5">
-        <p className="text-sm text-muted-foreground">{[site, `${n(whole)} words${incoming?.selection ? " selected" : ""}`].filter(Boolean).join(", ")}</p>
+        <p className="text-sm text-muted-foreground">{[site, incoming?.parts && incoming.parts > 1 ? `${incoming.parts} parts, ${n(whole)} words` : `${n(whole)} words${incoming?.selection ? " selected" : ""}`].filter(Boolean).join(", ")}</p>
         <h1 className="line-clamp-3 text-heading leading-snug font-semibold break-words">{title}</h1>
       </header>
 
@@ -115,8 +122,14 @@ export default function PanelArticle() {
               <p className="text-base">It argues a point. About {fit.minutes} minutes at CAT pace.</p>
             </div>
           ) : <p className="text-base">{fit.line}</p>}
-          {fit.verdict === "short" && incoming?.selection && (
-            <p className="text-sm text-muted-foreground">Select more of the article, or click the 99ile icon with nothing selected to use all of it.</p>
+          {incoming?.selection && (fit.verdict === "short"
+            ? <p className="text-sm text-muted-foreground">Select more and add it: parts add up to one passage. Or click the 99ile icon with nothing selected to use the whole article.</p>
+            : <p className="text-sm text-muted-foreground">Select more to add it to this passage, or make the set now.</p>)}
+          {incoming?.selection && (
+            <button type="button" onClick={startOver}
+              className="w-fit text-sm font-medium text-primary underline underline-offset-4 decoration-primary/40 hover:decoration-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
+              Start over
+            </button>
           )}
           {!wholePage && (
             <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">

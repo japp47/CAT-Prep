@@ -86,7 +86,10 @@ function paint(texts: string[], name: "ile99-used" | "ile99-proof", max: number)
   for (const t of texts.slice(0, max)) {
     const hit = locate(text, t);
     if (!hit) continue;
-    const a = at(hit[0]), b = at(hit[1] - 1);
+    // Take the sentence's closing marks too (a full stop, a closing quote), which the match leaves out.
+    let end = hit[1];
+    while (end < text.length && end - hit[1] < 3 && /[.,;:!?"'”’)\]]/.test(text[end])) end++;
+    const a = at(hit[0]), b = at(end - 1);
     const r = document.createRange();
     r.setStart(a.node, a.offset);
     r.setEnd(b.node, b.offset + 1);

@@ -126,7 +126,7 @@ function YourArticles() {
     <>
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <LinkButton to="/practice/article" variant="secondary">Make an RC set</LinkButton>
-        <span className="text-sm text-muted-foreground">Paste an essay or editorial, or upload a .txt or .pdf.</span>
+        <span className="text-sm text-muted-foreground">Paste an essay or editorial, or upload a .txt or .pdf. On a computer, the <Link to="/extension" className="font-medium text-primary underline underline-offset-4 decoration-primary/40 hover:decoration-primary">Chrome extension</Link> makes one beside the article.</span>
       </div>
       {mine.length ? (
         <ul className="flex flex-col gap-px overflow-hidden rounded-lg bg-background">
