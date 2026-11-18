@@ -4,12 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Page, PageHeader, Section } from "../components/kit";
 import { useAi } from "../lib/ai";
 import { startSignIn } from "../lib/sync/runner";
-
-/**
- * The Chrome Web Store listing, once it is published (set with the store's id, docs/design/article-to-rc.md, "Store").
- * Until then the page says it is coming. 99ile.in/chrome points here, and to the listing once it is live.
- */
-export const STORE_URL = "";
+import { STORE_LIVE, STORE_URL } from "../data/site";
 
 const KEY = "rounded-md bg-background px-1.5 py-0.5 font-sans text-sm font-medium";
 
@@ -35,7 +30,7 @@ export default function Extension() {
   // Opened by the extension right after it was installed: signing in is what is left to do, not installing.
   const [sp] = useSearchParams();
   const installed = sp.get("from") === "install";
-  const getIt = !installed && !!STORE_URL;
+  const getIt = !installed && STORE_LIVE;
   return (
     <Page width="read">
       <PageHeader title={installed ? "The extension is ready" : "The 99ile extension"}>
@@ -102,7 +97,7 @@ export default function Extension() {
       </Section>
 
       <p className="text-base text-muted-foreground">
-        {STORE_URL
+        {STORE_LIVE
           ? <>Get it from the <a href={STORE_URL} target="_blank" rel="noreferrer noopener" className="font-medium text-primary underline underline-offset-4">Chrome Web Store</a>. </>
           : "On the Chrome Web Store soon. "}
         On a phone, paste the article on the <a href={import.meta.env.BASE_URL + "practice/article"} className="font-medium text-primary underline underline-offset-4">article page</a> instead.

@@ -132,10 +132,14 @@ gets one line on how to start, sets left today (`articlesLeft` from `GET /v1/ai`
 due and today's RC. There is no "Use this page" button: Chrome documents page access for the icon, the menu and the
 shortcut only, not for clicks inside a side panel.
 
-**Where the site points to it.** VARC practice ("Practise an article"), the article page (a card on computers only),
+**Where the site points to it.** The home page (a band on computers only, with a drawing of the panel beside an
+article), VARC practice ("Practise an article"), the article page (a card on computers only),
 the RC library's "Your articles", the sidebar's More ("Chrome extension"), and `/extension`, which opens at install
 with `?from=install` (sign-in is then its filled button; otherwise "Add to Chrome" is). The short link
-`99ile.in/chrome` goes to `/extension` until the listing is live, then to the listing.
+`99ile.in/chrome` goes to `/extension` until the listing is live, then to the listing. Every install button is
+`components/GetExtension.tsx`: "See the extension" while the listing is in review, "Add to Chrome, free" to the listing
+once `STORE_LIVE` (in `data/site.ts`, with the store id `mjgmdkefkachokakimleommdodchkgfo`) is set. The store id is
+allowed beside the development id in `src/lib/panel.ts` and `public/_headers`.
 
 **Store.** `npm run ext:store` builds without the manifest `key` and zips it. The listing text, permission reasons,
 data answers and reviewer notes are in `extension/listing/listing.md`; the five 1280×800 screenshots show the real panel

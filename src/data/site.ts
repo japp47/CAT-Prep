@@ -16,6 +16,14 @@ export function reportUrl(what: string, page: string): string {
   return `${REPO_URL}/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
 }
 
+/**
+ * The Chrome extension's Chrome Web Store listing (F53). Submitted 18 Nov 2026; set STORE_LIVE once Google approves it,
+ * and every "Add to Chrome" on the site (components/GetExtension.tsx) and 99ile.in/chrome go to the listing.
+ */
+export const STORE_ID = "mjgmdkefkachokakimleommdodchkgfo";
+export const STORE_URL = `https://chromewebstore.google.com/detail/${STORE_ID}`;
+export const STORE_LIVE = false;
+
 /** Where privacy questions, requests and complaints go (the DPDP grievance contact on /privacy). */
 export const CONTACT_EMAIL = "99ile.team@gmail.com";
 
