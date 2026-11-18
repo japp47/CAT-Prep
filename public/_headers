@@ -7,15 +7,14 @@
   Content-Security-Policy: default-src 'self'; script-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'
 
 # The extension's side panel (F53, D110) frames these pages, and only these: the same policy, with framing allowed
-# for our own extension ids alone (development id below; add the Chrome Web Store id once listed, and in
-# src/lib/panel.ts). The "!" line drops the policy from /* first, so the two are not both enforced.
+# for our own extension ids alone: the Chrome Web Store's and the development build's (also in src/lib/panel.ts). The "!" line drops the policy from /* first, so the two are not both enforced.
 /panel/*
   ! Content-Security-Policy
-  Content-Security-Policy: default-src 'self'; script-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; frame-ancestors chrome-extension://jdbigbpnbadjaphglkhomapjbhajbphe; base-uri 'self'; form-action 'self'; object-src 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; frame-ancestors chrome-extension://mjgmdkefkachokakimleommdodchkgfo chrome-extension://jdbigbpnbadjaphglkhomapjbhajbphe; base-uri 'self'; form-action 'self'; object-src 'none'
   X-Robots-Tag: noindex
 /panel
   ! Content-Security-Policy
-  Content-Security-Policy: default-src 'self'; script-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; frame-ancestors chrome-extension://jdbigbpnbadjaphglkhomapjbhajbphe; base-uri 'self'; form-action 'self'; object-src 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; frame-ancestors chrome-extension://mjgmdkefkachokakimleommdodchkgfo chrome-extension://jdbigbpnbadjaphglkhomapjbhajbphe; base-uri 'self'; form-action 'self'; object-src 'none'
   X-Robots-Tag: noindex
 
 # Built files have a hash in their name, so they never change.

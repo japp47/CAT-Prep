@@ -11,6 +11,7 @@ import { buildDay } from "../../planner/engine";
 import { LR_CATALOG, RC_CATALOG, VA_CATALOG } from "../../practice/catalog.gen";
 import { SECTION_BY_ID } from "../../sections";
 import { Head } from "./Head";
+import GetExtension from "../../components/GetExtension";
 import { TodaysPassage } from "./Passage";
 
 /**
@@ -428,5 +429,60 @@ export function Closing({ to, label }: { to: string; label: string }) {
       </div>
       <Wordmark />
     </section>
+  );
+}
+
+/**
+ * The Chrome extension (F53), on computers only: phones cannot run extensions. What it does in one line, the way to
+ * get it, and a drawing of the panel beside an article with a passage selected.
+ */
+export function ExtensionBand() {
+  return (
+    <section aria-labelledby="ext-h" className="hidden items-center gap-16 rounded-2xl bg-card p-12 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
+      <div className="flex flex-col gap-6">
+        <h2 id="ext-h" className="text-[2.5rem] leading-[1.06] font-extrabold tracking-[-0.03em] text-balance">
+          Practise on any page you're reading. <span className="font-bold text-muted-foreground">The 99ile extension for Chrome, free.</span>
+        </h2>
+        <p className="measure text-lg text-foreground/85">
+          Select a passage on any site and click “Add to RC set”. 99ile opens beside the article with four CAT-style questions, and in review the line that decides each answer is highlighted on the page. Same account, nothing to pay.
+        </p>
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+          <GetExtension size="lg" />
+          <span className="text-sm text-muted-foreground">Chrome, Edge and Brave on a computer.</span>
+        </div>
+      </div>
+      <BrowserDrawing />
+    </section>
+  );
+}
+
+/** A browser with an article on the left (a passage selected, the button beside it) and 99ile's panel on the right. */
+function BrowserDrawing() {
+  const bar = (w: string, tone = "bg-foreground/12") => <span className={cn("block h-2.5 rounded-sm", tone)} style={{ width: w }} />;
+  return (
+    <div aria-hidden className="overflow-hidden rounded-xl bg-background ring-1 ring-foreground/10">
+      <div className="flex h-9 items-center gap-1.5 bg-muted px-3">
+        <i className="size-2.5 rounded-full bg-foreground/20" /><i className="size-2.5 rounded-full bg-foreground/20" /><i className="size-2.5 rounded-full bg-foreground/20" />
+        <span className="ml-3 h-5 flex-1 rounded-full bg-background" />
+      </div>
+      <div className="grid grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+        <div className="flex flex-col gap-2.5 p-6">
+          <span className="mb-2 block h-4 w-3/4 rounded-sm bg-foreground/25" />
+          {bar("94%")}{bar("88%")}{bar("96%", "bg-highlight/80")}{bar("91%", "bg-highlight/80")}{bar("58%", "bg-highlight/80")}
+          <span className="my-1 flex w-fit items-center gap-1.5 self-center rounded-md bg-primary px-2.5 py-1.5 text-sm font-semibold text-primary-foreground">Add to RC set</span>
+          {bar("90%")}{bar("84%")}{bar("72%")}
+        </div>
+        <div className="flex flex-col gap-2.5 bg-muted p-4">
+          <span className="text-sm font-semibold">99ile</span>
+          <span className="block h-3 w-4/5 rounded-sm bg-foreground/25" />
+          {["", "ring-2 ring-primary", "", ""].map((ring, i) => (
+            <span key={i} className={cn("flex items-center gap-2 rounded-md bg-background px-2.5 py-2", ring)}>
+              <i className={cn("grid size-4 shrink-0 place-items-center rounded-full", i === 1 ? "bg-primary" : "bg-secondary")} />
+              <span className="block h-2 flex-1 rounded-sm bg-foreground/12" />
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }

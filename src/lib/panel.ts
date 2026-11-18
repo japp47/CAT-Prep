@@ -7,8 +7,8 @@ import { createContext, useContext, useSyncExternalStore } from "react";
  * listens, and it accepts messages from our own extension ids alone.
  */
 
-/** Our extension's ids: the development build's (pinned by the manifest key) and, once listed, the store's. */
-export const EXTENSION_IDS = ["jdbigbpnbadjaphglkhomapjbhajbphe"];
+/** Our extension's ids: the Chrome Web Store's, and the development build's (pinned by the manifest key in extension/key.txt). */
+export const EXTENSION_IDS = ["mjgmdkefkachokakimleommdodchkgfo", "jdbigbpnbadjaphglkhomapjbhajbphe"];
 export const EXTENSION_ORIGINS = EXTENSION_IDS.map((id) => "chrome-extension://" + id);
 
 /** True inside the panel's routes: links to the rest of the site open in a tab, bars sit at the panel's own edges. */

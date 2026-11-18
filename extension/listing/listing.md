@@ -25,14 +25,14 @@ HOW IT WORKS
 WHAT MAKES IT DIFFERENT
 - Questions are checked before you see them: a second AI answers each one without the key, and any question it gets wrong is left out.
 - "Show me in the article": in review, the line that decides each answer is highlighted on the page itself.
-- Save words you meet: right-click a word, choose "Add to my words", and write its meaning in your own words. It comes back for spaced review.
+- Save words you meet: select a word and click "Add to my words", then write its meaning in your own words. It comes back for spaced review.
 - It joins the rest of your preparation on 99ile.in: every set, score and mistake is saved to your account, mistakes go to your error log and redo queue, and your plan ticks itself.
 
 FREE
 Two new sets a day, free. An article someone has practised before is ready at once and does not count. History, error log and words are kept with no time limit.
 
 PRIVACY
-The extension reads a page only when you click its icon, its "Add to RC set" button, its right-click entry or its shortcut. It never sees your browsing history. The button on every site is off until you turn it on, and Chrome asks you first. Nothing leaves your browser until you tap "Make my set", and then only the paragraphs used for your set are sent. It has access to 99ile.in alone. Details: https://99ile.in/privacy
+The extension reads a page only when you click its icon, its "Add to RC set" button, its right-click entry or its shortcut. It never sees your browsing history. The button on every site is off until you turn it on, and Chrome asks you first. Nothing leaves your browser until you tap "Make my set", and then only the paragraphs used for your set are sent. Until you turn the button on for every site, it has access to 99ile.in alone. Details: https://99ile.in/privacy
 
 Works in Chrome, Edge and Brave on a computer. On a phone, paste the article on https://99ile.in/practice/article instead.
 
@@ -46,6 +46,7 @@ Works in Chrome, Edge and Brave on a computer. On a phone, paste the article on 
 - Screenshots, in this order: `shot-1-passage.png`, `shot-2-questions.png`, `shot-3-review.png`, `shot-4-words.png`,
   `shot-5-saved.png`
 - Small promo tile: `promo-440x280.png`
+- Marquee promo tile (optional): `marquee-1400x560.png`
 
 ## Privacy practices tab
 

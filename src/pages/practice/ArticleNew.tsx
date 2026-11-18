@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import ArticleProgress from "../../components/ArticleProgress";
+import GetExtension from "../../components/GetExtension";
 import { Field, Page, PageHeader, Section } from "../../components/kit";
 import { NativeSelect } from "../../components/Select";
 import { startArticle, useAi } from "../../lib/ai";
@@ -194,7 +195,7 @@ export default function ArticleNew() {
             <section className="hidden rounded-lg bg-card p-5 sm:p-6 lg:block">
               <h2 className="text-base font-semibold">Reading on a computer?</h2>
               <p className="mt-2 text-sm text-muted-foreground">Skip the copy and paste: the 99ile Chrome extension makes the set from the page you are on, in a panel beside it, with the passage highlighted where you read it.</p>
-              <p className="mt-3 text-sm"><Link to="/extension" className="font-medium text-primary underline underline-offset-4 decoration-primary/40 hover:decoration-primary">Get the extension</Link></p>
+              <GetExtension className="mt-4" />
             </section>
             <section className="rounded-lg bg-card p-5 sm:p-6">
               <h2 className="text-base font-semibold">Your text stays private</h2>

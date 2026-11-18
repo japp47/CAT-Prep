@@ -25,6 +25,7 @@ const Showcase = lazy(() => import("./home/More").then((m) => ({ default: m.Show
 const Numbers = lazy(() => import("./home/More").then((m) => ({ default: m.Numbers })));
 const Statement = lazy(() => import("./home/More").then((m) => ({ default: m.Statement })));
 const Closing = lazy(() => import("./home/More").then((m) => ({ default: m.Closing })));
+const ExtensionBand = lazy(() => import("./home/More").then((m) => ({ default: m.ExtensionBand })));
 
 const STATUS = { official: ["Official", "success"], expected: ["Expected", "warning"], tip: ["Tip", "secondary"] } as const;
 
@@ -207,6 +208,7 @@ export default function Home() {
       <Suspense fallback={<div className="min-h-[48rem]" />}><Showcase /></Suspense>
       <Suspense fallback={<div className="min-h-[20rem]" />}><Numbers /></Suspense>
       <SectionOverview />
+      <Suspense fallback={null}><ExtensionBand /></Suspense>
       {isNew && today}
 
       <div className="grid gap-14 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:gap-16">
