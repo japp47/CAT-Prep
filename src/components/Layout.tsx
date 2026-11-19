@@ -117,9 +117,11 @@ export default function Layout() {
   }, [openSearch]);
   useEffect(() => {
     setOpen(false);
+    // A new page opens at its top at once: the page's smooth scrolling is for anchors, and applied here it made every
+    // navigation visibly glide up from wherever the last page was left.
     if (loc.hash) {
       requestAnimationFrame(() => document.getElementById(decodeURIComponent(loc.hash.slice(1)))?.scrollIntoView());
-    } else window.scrollTo(0, 0);
+    } else window.scrollTo({ top: 0, behavior: "instant" });
   }, [loc.pathname, loc.hash]);
   // Fetch the menu when the browser is idle, so the first tap opens it at once. The toast code mounts then too:
   // toasts only ever follow an action, so nothing needs it while the page is loading.

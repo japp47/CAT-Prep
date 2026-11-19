@@ -58,6 +58,7 @@ const Privacy = lazy(() => import("./pages/Privacy"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const Extension = lazy(() => import("./pages/Extension"));
+const Setup = lazy(() => import("./pages/Setup"));
 // The extension's side panel (F53, D110): its own slim frame, loaded only there.
 const PanelLayout = lazy(() => import("./pages/panel/PanelLayout"));
 const PanelHome = lazy(() => import("./pages/panel/PanelHome"));
@@ -70,7 +71,7 @@ const TITLES: Record<string, string> = {
   "/": "99ile: free CAT prep", "/today": "Today", "/plan": "Plan and time", "/practice": "Practice", "/varc/practice": "VARC practice", "/dilr/practice": "DILR practice", "/quant/practice": "Quant practice", "/practice/library": "RC library", "/practice/sectional": "VARC sectional", "/practice/va": "VA drill", "/practice/cr": "Critical reasoning drill", "/practice/speed": "Reading speed test", "/practice/redo": "Redo queue", "/practice/arena": "Set Selection Arena", "/practice/replay": "DILR replay", "/varc": "VARC", "/dilr": "DILR", "/quant": "Quant",
   "/progress": "Progress", "/progress/mock-review": "Analyse a mock", "/review": "Weekly review", "/errors": "Error log", "/words": "Words", "/journal": "Reading journal", "/updates": "Important updates", "/exams": "CAT and other exams",
   "/guides": "Guides", "/stories": "Topper stories", "/roadmap": "What's coming", "/settings": "Settings", "/link": "Link this device", "/privacy": "Privacy", "/contact": "Contact us",
-  "/extension": "The 99ile extension", "/panel": "99ile", "/panel/article": "Make an RC set", "/panel/words": "Save a word",
+  "/extension": "The 99ile extension", "/setup": "Make your plan", "/panel": "99ile", "/panel/article": "Make an RC set", "/panel/words": "Save a word",
 };
 
 function Title() {
@@ -164,6 +165,7 @@ export const router = createBrowserRouter(createRoutesFromElements(
       <Route path="privacy" element={<Privacy />} />
       <Route path="unsubscribe" element={<Unsubscribe />} />
       <Route path="extension" element={<Extension />} />
+      <Route path="setup" element={<Setup />} />
       {LinkPage && <Route path="link" element={<LinkPage />} />}
       <Route path=":id" element={<Section />} />
       <Route path="*" element={<NotFound />} />

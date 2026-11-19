@@ -12,7 +12,7 @@ const STATIC_PATHS = ["/", "/varc", "/dilr", "/practice", "/guides", "/exams", "
  * out of the sitemap, and a page there tells search not to index it: every page's header links to `/signin?then=<that page>`,
  * so a crawler otherwise finds a new "sign in" address for each page and lists it as a duplicate of `/signin`.
  */
-const PERSONAL = new Set(["/signin", "/today", "/plan", "/progress", "/history", "/errors", "/words", "/journal", "/review", "/settings", "/you", "/admin", "/link", "/unsubscribe"]);
+const PERSONAL = new Set(["/signin", "/today", "/plan", "/progress", "/history", "/errors", "/words", "/journal", "/review", "/settings", "/you", "/admin", "/link", "/unsubscribe", "/setup"]);
 
 /** True for a personal page, or anything under one (`/progress/mock-review/…`, `/review/…`). */
 export const isPersonalPath = (pathname: string): boolean => {

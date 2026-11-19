@@ -390,7 +390,7 @@ Full entries are written here when a step comes within two steps of being built:
 **Tests.** `practice/catalog.test.ts`: `sections/*`, `Layout`, `Sidebar`, `SiteHeader` and `Home` import neither `catalog.gen`, `daily`, `planner/engine` nor `planner/auto`. A new test: the sha256 of the inline script in `index.html` is in `public/_headers`.
 **Done when** `npm run size` shows the main script under 135 KB; on the slow phone (slow 4G, CPU 6x) the frame shows before the script on `/`, `/today` and `/practice` with no layout shift; a stored dark theme on a light system never flashes light; screenshots at 390 and 1440 in both themes.
 
-### 4b-2. A plan that fits you, part 1 (feature F82, D116), planned 19 Nov 2026
+### 4b-2. A plan that fits you, part 1 (feature F82, D116), built 19 Nov 2026 (`planner/fit.ts` with 9 tests, `pages/Setup.tsx`, Home, Today, Plan and You; the first download 128.8 KB)
 `feat/plan-that-fits` · `feat: a one-minute setup whose answers set each section's minutes and the first step of the plan`
 **Why.** Every student gets the same minutes; the answers on You are read by nothing (A187). Research: `docs/research/personal-plan.md`; design: `docs/design/personal-plan.md`.
 **Data.** `About` gains `work: "both"`, `level`, `weak`, `setup` (`lib/state.ts`, checked in `normalize`), carried by the existing `profile` sync record; no server change.

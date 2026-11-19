@@ -125,12 +125,14 @@ export default function PercentileField({ track, onReady, onFail }: { track: Ref
 
     const heightAt = (z: number) => Math.max(1, Math.round(rows * Math.exp((-z * z) / 2))) * GAP;
     const at = new Vector3();
-    const pin = (tag: HTMLDivElement | null, v: Vector3) => {
+    // The box's size is read when it changes (fit), not on every frame, and both labels' widths are read before either
+    // is moved, so a frame never reads a size right after writing a position (which makes the browser lay out again).
+    let boxW = el.clientWidth, boxH = el.clientHeight;
+    const pin = (tag: HTMLDivElement | null, v: Vector3, tw: number) => {
       if (!tag) return;
       at.copy(v).applyMatrix4(field.matrixWorld).project(camera);
-      const w = el.clientWidth, h = el.clientHeight, tw = tag.offsetWidth;
-      const x = Math.min(Math.max(((at.x + 1) / 2) * w, tw / 2), w - tw / 2);
-      tag.style.transform = `translate(${x}px, ${((1 - at.y) / 2) * h}px) translate(-50%, -100%)`;
+      const x = Math.min(Math.max(((at.x + 1) / 2) * boxW, tw / 2), boxW - tw / 2);
+      tag.style.transform = `translate(${x}px, ${((1 - at.y) / 2) * boxH}px) translate(-50%, -100%)`;
     };
     let youZ = 0, turn = 0;
     // As the student climbs, the field turns a little, so the tail they are heading for comes round to face them.
@@ -145,7 +147,8 @@ export default function PercentileField({ track, onReady, onFail }: { track: Ref
     // out as the pointer enters and leaves), and each click leaves a ripple that runs outwards and dies away.
     const touch = { px: 0, amp: 0, aim: 0 };
     const ripples: { x: number; t: number }[] = [];
-    const scale = (x: number) => 1 + touch.amp * 0.5 * Math.exp(-((x - touch.px) ** 2) / 0.3);
+    // With the pointer away the swell has eased to nothing (under 0.0001, far less than a pixel), so the exp is skipped.
+    const scale = (x: number) => (touch.amp < 1e-4 ? 1 : 1 + touch.amp * 0.5 * Math.exp(-((x - touch.px) ** 2) / 0.3));
     const wave = (x: number, now: number) => {
       let y = 0;
       for (const r of ripples) {
@@ -167,12 +170,21 @@ export default function PercentileField({ track, onReady, onFail }: { track: Ref
     for (let i = 0; i < count; i++) start[i] = target[i * 3 + 1] + 2.2 + Math.random() * 1.8;
     const mid = (cols.length - 1) / 2;
     const fall = { t: 1 };
+    // Each dot's swell is sin(now * 1.3 + phase). Its phase never changes, so its sine and cosine are worked out once and
+    // each frame needs only sin and cos of `now * 1.3` (sin(a + p) = sin a cos p + cos a sin p): the same motion for two
+    // trigonometric calls a frame instead of one per dot. The delay before a dot starts to fall is fixed too.
+    const sinP = new Float32Array(count), cosP = new Float32Array(count), delayOf = new Float32Array(count);
+    for (let i = 0; i < count; i++) {
+      const p = target[i * 3] * 1.7 + target[i * 3 + 2] * 6;
+      sinP[i] = Math.sin(p); cosP[i] = Math.cos(p);
+      delayOf[i] = (Math.abs(col[i] - mid) / mid) * 0.45;
+    }
     const step = (now: number) => {
+      const sa = Math.sin(now * 1.3), ca = Math.cos(now * 1.3);
       for (let i = 0; i < count; i++) {
-        const delay = (Math.abs(col[i] - mid) / mid) * 0.45;
-        const k = Math.min(1, Math.max(0, (fall.t - delay) / 0.55)), e = 1 - (1 - k) ** 3;
+        const k = Math.min(1, Math.max(0, (fall.t - delayOf[i]) / 0.55)), e = 1 - (1 - k) ** 3;
         const x = target[i * 3];
-        const swell = still ? 0 : 0.02 * Math.sin(now * 1.3 + x * 1.7 + target[i * 3 + 2] * 6) + wave(x, now);
+        const swell = still ? 0 : 0.02 * (sa * cosP[i] + ca * sinP[i]) + wave(x, now);
         pos[i * 3 + 1] = start[i] + (target[i * 3 + 1] * scale(x) - start[i]) * e + swell;
       }
       topIdx.forEach((i, j) => { glowPos[j * 3] = pos[i * 3]; glowPos[j * 3 + 1] = pos[i * 3 + 1]; glowPos[j * 3 + 2] = pos[i * 3 + 2]; });
@@ -184,12 +196,14 @@ export default function PercentileField({ track, onReady, onFail }: { track: Ref
       renderer.render(scene, camera);
       field.updateMatrixWorld();
       const yx = youZ * X, tx = (Z99 + 0.25) * X, now = performance.now() / 1000;
-      pin(youTag.current, new Vector3(yx, heightAt(youZ) * scale(yx) + wave(yx, now) + GAP * 4, 0));
-      pin(topTag.current, new Vector3(tx, heightAt(Z99) * scale(tx) + GAP * 6, 0));
+      const yw = youTag.current?.offsetWidth ?? 0, tw = topTag.current?.offsetWidth ?? 0;
+      pin(youTag.current, new Vector3(yx, heightAt(youZ) * scale(yx) + wave(yx, now) + GAP * 4, 0), yw);
+      pin(topTag.current, new Vector3(tx, heightAt(Z99) * scale(tx) + GAP * 6, 0), tw);
     };
     const fit = () => {
       const w = el.clientWidth, h = el.clientHeight;
       if (!w || !h) return;
+      boxW = w; boxH = h;
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
       // A narrow box steps back, so the whole curve still fits across it.

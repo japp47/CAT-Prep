@@ -205,11 +205,19 @@ export interface AppState {
   about: About;
 }
 
-/** First CAT or taken before; studying or working. Each is absent until the student picks it. */
-/** exam: the CAT year the student chose (D87); unset means the default for when they started (data/exam.ts). */
-export interface About { attempt?: "first" | "repeat"; work?: "studying" | "working"; exam?: number }
+/**
+ * What the student told us, each absent until they answer (You, and the one-minute setup, F82, D116).
+ * attempt: first CAT or taken before. work: studying, working or both. exam: the CAT year they chose (D87); unset means
+ * the default for when they started (data/exam.ts). level: where they stood at the setup. weak: the section that feels
+ * hardest. setup: when the setup was used, or skipped (then the plan stays the standard one).
+ */
+export interface About {
+  attempt?: "first" | "repeat"; work?: "studying" | "working" | "both"; exam?: number;
+  level?: "new" | "some" | "repeat"; weak?: SectionId; setup?: { at: string; skipped?: true };
+}
 export const ATTEMPTS = ["first", "repeat"] as const;
-export const WORKS = ["studying", "working"] as const;
+export const WORKS = ["studying", "working", "both"] as const;
+export const LEVELS = ["new", "some", "repeat"] as const;
 
 const emptyDow = () => [null, null, null, null, null, null, null] as (number | null)[];
 
@@ -442,7 +450,10 @@ export function normalize(raw: unknown): AppState {
   }
   if (isObj(raw.targets) && (TARGET_CHOICES as readonly number[]).includes(Number(raw.targets.varc))) b.targets.varc = Number(raw.targets.varc);
   if (isObj(raw.about)) {
-    const { attempt, work, exam } = raw.about;
+    const { attempt, work, exam, level, weak, setup } = raw.about;
+    if ((LEVELS as readonly unknown[]).includes(level)) b.about.level = level as About["level"];
+    if ((SECTION_IDS as readonly unknown[]).includes(weak)) b.about.weak = weak as SectionId;
+    if (isObj(setup) && isIsoDate(setup.at)) b.about.setup = setup.skipped === true ? { at: setup.at, skipped: true } : { at: setup.at };
     if ((ATTEMPTS as readonly unknown[]).includes(attempt)) b.about.attempt = attempt as About["attempt"];
     if ((WORKS as readonly unknown[]).includes(work)) b.about.work = work as About["work"];
     if (Number.isInteger(exam) && (exam as number) >= 2026 && (exam as number) <= 2100) b.about.exam = exam as number;

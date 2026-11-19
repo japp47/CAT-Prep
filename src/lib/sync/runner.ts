@@ -1,3 +1,4 @@
+import { signInNext } from "./words";
 import type { Account } from "./client";
 import { completeSignIn, deleteEverywhere, describe, leave, link, listDevices, newLinkCode, newRecoveryCode, removeDevice, round, serverExport, ticketInfo, turnOn, whoAmI, type Outcome, type SyncIO } from "./client";
 
@@ -158,7 +159,7 @@ export function startSignIn(back = location.pathname) {
 }
 
 /** The address that starts Google sign-in. The extension's panel opens it in a tab: Google refuses to be framed. */
-export const signInUrl = (back: string) => import.meta.env.BASE_URL + "api/v1/auth/google/start?next=" + encodeURIComponent(back);
+export const signInUrl = (back: string) => import.meta.env.BASE_URL + "api/v1/auth/google/start?next=" + encodeURIComponent(signInNext(back));
 
 /** Deletes this progress from the server and clears this device; on success sync is off here. */
 export async function deleteAll(): Promise<Outcome> {
