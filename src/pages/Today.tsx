@@ -26,7 +26,9 @@ import { daySummary, historyDays } from "../practice/history";
 import { nextSteps } from "../practice/next";
 import { loadDraft, secsLeft } from "../practice/sectional";
 import { FOCUS_DAYS, focusToday, reviewOf, reviewWeek } from "../practice/week";
-import { LIVE_SECTIONS } from "../sections";
+import { LIVE_SECTIONS, SECTION_BY_ID } from "../sections";
+import { why } from "../planner/fit";
+import { activityDays } from "../practice/streak";
 import type { SectionDef } from "../sections/types";
 import { useResources } from "../sections/useResources";
 
@@ -596,6 +598,8 @@ export default function Today() {
           </div>
         </header>
 
+        {isToday && <PlanFit today={today} />}
+
         <div data-rise className="grid gap-3 lg:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] lg:gap-6">
           <DayRing done={done} planned={planned} d={d} today={today} onPick={setD} />
           {isToday ? (allDone ? <DayDone today={today} /> : <UpNext today={today} />) : (
@@ -619,4 +623,32 @@ export default function Today() {
       </div>
     </Page>
   );
+}
+
+/**
+ * The one-minute setup (F82, D116) on Today: offered to a first visit that has neither practised nor answered, never
+ * forced; on the day it is used, one line says what the plan follows. "Use the standard plan" puts it aside for good.
+ */
+function PlanFit({ today }: { today: string }) {
+  const { state, update } = useStore();
+  const a = state.about;
+  if (!a.setup) {
+    if (activityDays(state).size > 0) return null;
+    return (
+      <section data-rise className="flex flex-col gap-4 rounded-2xl bg-card p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6" aria-labelledby="fit-h">
+        <div className="flex flex-col gap-1">
+          <h2 id="fit-h" className="text-heading font-semibold">Your plan in a minute</h2>
+          <p className="text-base text-muted-foreground">Four questions: your days, your time, where you stand and the hardest section. The plan below changes to fit.</p>
+        </div>
+        <div className="flex shrink-0 flex-wrap items-center gap-x-5 gap-y-2">
+          <LinkButton to="/setup" variant="secondary">Make my plan</LinkButton>
+          <button type="button" onClick={() => update((st) => { st.about.setup = { at: today, skipped: true }; })}
+            className="text-base font-medium text-primary underline underline-offset-4 decoration-primary/40 hover:decoration-primary">Use the standard plan</button>
+        </div>
+      </section>
+    );
+  }
+  const line = why(a.work, a.weak && SECTION_BY_ID[a.weak].short);
+  if (a.setup.skipped || a.setup.at !== today || !line) return null;
+  return <p data-rise className="text-base text-muted-foreground">Your plan: {line}. <TextLink to="/setup">Change it</TextLink></p>;
 }

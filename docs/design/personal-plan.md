@@ -1,4 +1,4 @@
-# A plan that fits you, part 1 (F82), planned 19 Nov 2026 (D116)
+# A plan that fits you, part 1 (F82), planned and built 19 Nov 2026 (D116)
 
 Every student gets the same plan today: VARC 60 minutes on a weekday and 120 at the weekend, DILR 30 and 60. The You page
 asks first attempt or repeat and studying or working, but nothing reads the answers. This is the one-minute setup that
@@ -89,3 +89,16 @@ themes; nothing animates beyond the panel's numbers changing, which is instant u
 - A short placement check, the commute set for working students and the reality check after mocks: part 2 (step 6).
 - Target percentile in the setup (it stays on You; the research found it adds a question without changing the first
   weeks).
+
+## Result (built 19 Nov 2026, `feat/plan-that-fits`)
+- `planner/fit.ts`: the defaults, the split (weights, the hardest section's 10 or 15 points, floors of 15 and 30 minutes,
+  multiples of five that add up), the first step and the one-line reason; `planner/fit.test.ts` checks every rule and every
+  time on offer.
+- `pages/Setup.tsx` at `/setup` (kept out of search, like the other personal pages): checked at 390 and 1440 in both
+  themes. "Working, DILR feels hardest" gives weekdays 45 min (VARC 25, DILR 20) and weekends 120 min (VARC 70, DILR 50),
+  and "Use this plan" writes exactly that and lands on Today.
+- Home's first visit: "Make my plan", with "Start here" beside it. Today's first open: "Your plan in a minute" with "Make
+  my plan" (a secondary button, so Today's "Start" stays the one filled button) and "Use the standard plan". On the day
+  of the setup Today says "Your plan: Working, DILR feels hardest. Change it". Plan's first line says the usual times
+  follow the answers; You has "Both" and "Change your answers".
+- `About` gained `level`, `weak` and `setup`, carried by the `profile` sync record with no server change.

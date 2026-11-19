@@ -114,7 +114,10 @@ export default function You() {
             </Choice>
             <Choice label="Right now you are">
               <Segmented label="Right now you are" value={state.about.work ?? ""} onChange={(v) => setAbout("work", v || undefined)}
-                options={[["studying", "Studying"], ["working", "Working"]]} />
+                options={[["studying", "Studying"], ["working", "Working"], ["both", "Both"]]} />
+            </Choice>
+            <Choice label="Your plan" hint="Four questions that set each section's usual time and where you start.">
+              <LinkButton to="/setup" variant="secondary" className="w-fit">{state.about.setup && !state.about.setup.skipped ? "Change your answers" : "Make my plan"}</LinkButton>
             </Choice>
           </Panel>
         </Section>

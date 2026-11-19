@@ -11,7 +11,8 @@ import { addDays, diffDays, DOW, mediumDate, todayIso } from "../lib/date";
 import { useStore } from "../lib/store";
 import { buildDay, sampleDate } from "../planner/engine";
 import { describe, estimate, marks } from "../practice/percentile";
-import { LIVE_SECTIONS } from "../sections";
+import { LIVE_SECTIONS, SECTION_BY_ID } from "../sections";
+import { why } from "../planner/fit";
 import type { SectionDef } from "../sections/types";
 import { TargetNeeds, TargetPicker } from "./tracker/Target";
 
@@ -172,6 +173,7 @@ export default function Plan() {
   return (
     <Page>
       <PageHeader title="Plan and time">{road.phases.some((p) => p.id === 0) ? "A head start, then five phases" : `${["No", "One", "Two", "Three", "Four", "Five"][numbered] ?? numbered} phases`} to {road.name} (<TextLink to="/you#cat">change it</TextLink>). Each day's timetable is built from the phase you are in and the time you have that day. Change your usual time here, or change a single day on Today.</PageHeader>
+      <FitLine />
       {road.short && <p className="measure rounded-lg bg-warning-soft px-5 py-4 text-base">You started with less time to {road.name}, so the early phases are shorter: the same steps, in the time there is. Use the Learn tab to cover the question types quickly.</p>}
       <TargetCard />
       {LIVE_SECTIONS.map((s) => <TimeCard key={s.id} sec={s} />)}
@@ -190,4 +192,14 @@ export default function Plan() {
       ))}
     </Page>
   );
+}
+
+/** What the usual times below follow (F82, D116): the setup's answers, or an offer to answer. */
+function FitLine() {
+  const a = useStore().state.about;
+  const line = why(a.work, a.weak && SECTION_BY_ID[a.weak].short);
+  if (a.setup && !a.setup.skipped) {
+    return <p className="measure text-base">Your usual times were set from your answers{line ? `: ${line.charAt(0).toLowerCase() + line.slice(1)}` : ""}. <TextLink to="/setup">Change your answers</TextLink></p>;
+  }
+  return <p className="measure text-base">Want times that fit your days? <TextLink to="/setup">Answer four questions</TextLink> and the plan sets them for you.</p>;
 }

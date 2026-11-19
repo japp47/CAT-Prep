@@ -568,7 +568,7 @@ Review: `docs/research/beyond-cat.md` §2. Practice counts only when a set, dril
 **Part 2, public and off by default (with community, F67 to F70, step 6b).** A nickname and a short bio; who can see the profile (only me, my study groups, everyone); accepted answers and helpful votes. Never public: email, scores, mistakes or answers (D14). Stored in `account.profiles` (per identity, `docs/database.md` §6).
 **Done when** part 1 replaces the scattered settings with one page that works on a phone, and a change of target there shows at once in the plan and the report card.
 
-#### F82. A plan that fits you — Part 1 planned 19 Nov 2026 (D116, `docs/design/personal-plan.md`), step 4b; part 2 step 6, Mar 2027
+#### F82. A plan that fits you — Part 1 built 19 Nov 2026 (D116, `docs/design/personal-plan.md`), step 4b; part 1b (weekly target) next; part 2 step 6, Mar 2027
 **Problem.** Every student gets the same plan: 60 minutes of VARC and 30 of DILR on a weekday, twice that at the weekend, the same split of work. A final-year student with four free hours, a working professional with 40 minutes on the metro, and a repeater aiming for the 99th percentile need different days. The You page (F81) already asks two of the questions, but nothing reads the answers yet.
 **What the student gets.**
 - **A one-minute setup**, on the first visit (skippable) and always editable on You: which CAT (year), studying, working or both, time on a weekday and at the weekend, target percentile (overall, and per section once DILR and Quant are live), first attempt or a repeat, and where they stand now (just starting, some prep, or taking mocks, with the last mock score).

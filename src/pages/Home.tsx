@@ -62,6 +62,8 @@ function StatusLine() {
 
 function Hero({ isNew }: { isNew: boolean }) {
   const road = useRoad();
+  // A first visit is offered the one-minute setup (F82, D116) until it is used or put aside.
+  const offerSetup = !useStore().state.about.setup;
   // A new year rolls into the headline, so the switch is seen to land (D93); nothing moves on arrival or when calm.
   const year = useRef<HTMLSpanElement>(null), shown = useRef(road.name);
   useLayoutEffect(() => {
@@ -86,7 +88,7 @@ function Hero({ isNew }: { isNew: boolean }) {
         <p className="max-w-[42ch] text-lg leading-relaxed text-foreground/80">A free CAT coach: a plan that fits your day, original practice, and a reason for every option. No sign-up; your progress stays on this device.</p>
         <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
           {isNew
-            ? <><LinkButton to="/guides/start-here" size="lg" className="min-w-44">Start here</LinkButton><ArrowLink to="/today">Open today’s plan</ArrowLink></>
+            ? <><LinkButton to={offerSetup ? "/setup" : "/guides/start-here"} size="lg" className="min-w-44">{offerSetup ? "Make my plan" : "Start here"}</LinkButton><ArrowLink to={offerSetup ? "/guides/start-here" : "/today"}>{offerSetup ? "Start here" : "Open today’s plan"}</ArrowLink></>
             : <><LinkButton to="/today" size="lg" className="min-w-48">Open today’s plan</LinkButton><ArrowLink to="/guides/start-here">Start here</ArrowLink></>}
         </div>
         <StatusLine />
