@@ -2,7 +2,7 @@
 
 Checks that the spec (`docs/feature.md`), the plan (`docs/plan.md`, `docs/architecture.md`) and the code agree, before the next step is built.
 Redo this check at the start of each step; add findings at the top of section 3 with the date.
-Last updated 18 Nov 2026 (the extension's side panel, D110; article practice page layout; admin responsive layout; DI research and plan, F90 to F96; older sections kept below).
+Last updated 19 Nov 2026 (step 4b planned: first paint D115, a plan that fits you D116; the extension's side panel, D110; article practice page layout; admin responsive layout; DI research and plan, F90 to F96; older sections kept below).
 
 ---
 
@@ -76,6 +76,30 @@ The research is a product review (sections 1 to 8), a backend plan, and a note o
 Thinking practice (Arcade, Manager Lab, DILR and Quant ideas), community, and reminders. **Adopted** as F56 to F78 with these changes: CAT Coach first, nothing moves DILR or Quant; the Arcade is one daily puzzle in four DILR-like kinds, generated and proved unique by code; Manager Lab becomes the manager track after CAT 2027, in two seasons (getting in, then ready for the MBA), with PI, GD and MBA-ready basics added; community starts from discussions under our own questions with a spoiler gate, then the doubt forum, then private groups, public communities last; reminders go to the inbox first and web push only where it works. **Not adopted:** Sudoku and chess, direct messages, a social feed, image uploads at first, public communities at launch, more than one reminder a day.
 
 ## 3. Consistency check: spec vs plan vs code
+
+### 19 Nov 2026, step 4b planned: a plan that fits you (D116; `docs/design/personal-plan.md`, research `docs/research/personal-plan.md`)
+
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A187 | Every student gets the same minutes (VARC 60/120, DILR 30/60); `about.work` and `about.attempt` are saved on You but nothing reads them; no "level" exists | A working student and a final-year student get the same day | A one-minute setup on one page whose answers set the minutes and the first step (`planner/fit.ts`, `pages/Setup.tsx`) |
+| A188 | A short quiz roughly doubled first steps in Headspace's trial, but did not keep people when they could not find their plan again | The setup must end on the plan, and the plan must stay where they look | The plan panel updates as they tap; "Use this plan" lands on Today with a one-line note; the same line on Plan and You |
+| A189 | High default goals hurt the habit (Duolingo); coaching and toppers' hours are where people end up | An ambitious default loses students in week one | Modest defaults by profile (60/120 studying, 45/120 working, 30/90 both), more one tap away |
+| A190 | Self-rated level correlates weakly with ability (r ≈ .34) | Placing students by self-report would misplace many | "Where you stand" sets the first step and tone only; part 2's reality check after mocks corrects the plan |
+| A191 | F82 assumed the one daily budget (F27), which is not built | The split cannot come from F27 yet | Per-section minutes from the answers, live sections only, at least 15 minutes each; F27 can replace the rule later without changing the setup |
+| A192 | No Indian prep app offers a plan without an account; all ask for a phone number first | An opening for a free site | No account, no sign-up, every question skippable; skipping keeps today's plan exactly |
+| A193 | Reddit's RSS search, used in October, returned 404 every time | What students report doing could not be read | The hours come from coaching and toppers and are marked as advice; practice corrects the plan |
+
+**D116.** The first visit offers a one-minute setup (Home's first visit and Today's first open, never forced): four questions, all skippable, whose answers set each live section's weekday and weekend minutes and the first step, shown as they tap. The year is the existing switch, the target stays on You, the weekly-target style is part 1b and the commute set part 2.
+
+### 19 Nov 2026, step 4b planned: a first paint without the script (D115; `docs/design/first-paint.md`)
+
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A184 | On a phone over slow 4G with a slow CPU the first paint is the background at 1.76 s and the first readable content 3.6 s later than the HTML (measured on `/`, `/today`, `/practice`) | Two seconds of an empty page on the phones most students use | A static frame in `index.html` (top bar, sidebar's place, page area), styled inline and replaced when React renders |
+| A185 | The main script is 154.2 KB of a 155 KB budget; 9.9 KB of it is the content catalog and about 13 KB more is plan templates, planner, redo and updates, pulled in because `sections` carries the plan templates and the sidebar's ring runs the planner during the first render | No room for the next feature | Templates move to a planner-side map; the ring's minutes, `AutoTicker` and `RedoSeeder` load after idle; Home's updates go lazy; a test keeps them out (target under 135 KB) |
+| A186 | A stored theme is applied only after React runs, and the security policy forbids inline scripts | An inline frame would flash the wrong theme for students who chose one | A tiny inline script sets `data-theme`, allowed in `_headers` by its sha256 hash, with a test that the hash matches |
+
+**D115.** The first download carries only what the first screen needs, and `index.html` paints the site's frame in the student's theme before any script runs; the 155 KB budget stays, with a target under 135 KB.
 
 ### 19 Nov 2026, the Error log made simple (D114)
 
