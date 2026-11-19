@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect } from "react";
 import { createBrowserRouter, createRoutesFromElements, Outlet, Route, useLocation, useRouteError } from "react-router-dom";
-import { isStaleChunk, reloadOnce } from "./lib/reload";
+import { isStaleChunk, reloadOnce, staleUrl } from "./lib/reload";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
@@ -120,14 +120,14 @@ function App() {
 function RouteError() {
   const err = useRouteError();
   const stale = isStaleChunk(err);
-  const reloading = stale && reloadOnce();
+  const reloading = stale && reloadOnce(Date.now(), staleUrl(err));
   if (reloading) return <p className="p-6 text-base text-muted-foreground">Loading the new version of 99ile…</p>;
   return (
     <main className="mx-auto flex min-h-dvh max-w-xl flex-col justify-center gap-4 px-6 py-10">
       <h1 className="text-title font-bold">{stale ? "99ile was just updated" : "Something went wrong"}</h1>
       <p className="text-base text-foreground/85">{stale ? "This page is from the version before. Reload to open the new one; your progress is safe on this device." : "This page could not open. Your progress is safe on this device. Reload, or go back to the home page."}</p>
       <div className="flex flex-wrap items-center gap-4">
-        <button type="button" onClick={() => location.reload()} className="h-11 rounded-md bg-primary px-5 text-base font-semibold text-primary-foreground">Reload</button>
+        <button type="button" onClick={() => { const u = staleUrl(err); if (u) void fetch(u, { cache: "reload" }).finally(() => location.reload()); else location.reload(); }} className="h-11 rounded-md bg-primary px-5 text-base font-semibold text-primary-foreground">Reload</button>
         <a href="/" className="text-base font-medium text-primary underline underline-offset-4">Home</a>
       </div>
     </main>

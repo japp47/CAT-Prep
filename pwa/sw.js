@@ -4,8 +4,21 @@ const BASE = "__BASE__";
 const FILES = ["__FILES__"];
 const CACHE = "cat-prep-" + VERSION;
 
+/**
+ * A page where a code file or stylesheet should be: what the host sends for a missing file, and what a cache kept by
+ * mistake during a deploy (20 Nov 2026). Never stored and never served.
+ */
+const wrong = (url, res) => /\.(m?js|css)$/.test(url.pathname) && (res.headers.get("content-type") || "").includes("text/html");
+
+// Each file straight from the network (not the browser's cache) and checked. One bad file fails the install: the
+// version before stays, and the browser tries again on a later visit.
 self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES.map((f) => BASE + f))).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then((c) => Promise.all(FILES.map(async (f) => {
+    const url = new URL(BASE + f, self.location.origin);
+    const res = await fetch(url, { cache: "reload" });
+    if (!res.ok || wrong(url, res)) throw new Error("Not ready: " + f);
+    await c.put(url, res);
+  }))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener("activate", (e) => {
@@ -26,8 +39,16 @@ self.addEventListener("fetch", (e) => {
       e.respondWith(fetch(req).catch(() => caches.match(BASE + "index.html")));
       return;
     }
-    // Built files have hashed names, so a cached copy is always the right one.
-    e.respondWith(caches.match(req).then((hit) => hit || fetch(req)));
+    // Built files have hashed names, so a cached copy is the right one, unless it is a page in place of code. A page
+    // from the network is asked for once more past the browser's cache; still a page, the load fails (and the site
+    // reloads once, lib/reload.ts) rather than running a page as code.
+    e.respondWith((async () => {
+      const hit = await caches.match(req);
+      if (hit && !wrong(url, hit)) return hit;
+      let res = await fetch(req);
+      if (wrong(url, res)) res = await fetch(req, { cache: "reload" });
+      return wrong(url, res) ? Response.error() : res;
+    })());
     return;
   }
 });

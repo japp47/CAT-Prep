@@ -17,9 +17,12 @@
   Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-w51Iw64rSWuhBrOom+IWSntiQJOLG5wfTMet5eBmsa8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; frame-ancestors chrome-extension://mjgmdkefkachokakimleommdodchkgfo chrome-extension://jdbigbpnbadjaphglkhomapjbhajbphe; base-uri 'self'; form-action 'self'; object-src 'none'
   X-Robots-Tag: noindex
 
-# Built files have a hash in their name, so they never change.
+# Built files have a hash in their name, but a request for a missing one gets the site's page (the /* rule in
+# _redirects), and these headers come with it. Marked "immutable for a year", that page was kept by Cloudflare and by
+# browsers in place of a real code file during a deploy, and the site broke for everyone until a purge (20 Nov 2026).
+# So the browser checks with Cloudflare each time (a quick 304); the service worker keeps the files for repeat visits.
 /assets/*
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=0, must-revalidate
 
 # Font files keep their name; a changed font gets a new name, so they can be cached for a year too.
 /fonts/*
