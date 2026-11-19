@@ -35,9 +35,34 @@
         {"@type":"Organization","@id":"https://99ile.in/#org","name":"99ile","alternateName":["99 ile","99-ile"],"url":"https://99ile.in/","logo":"https://99ile.in/icon-512.png","email":"99ile.team@gmail.com","sameAs":["https://www.instagram.com/the99ile/"]}
       ]}
     </script>
+    <!-- The first paint (F97, D115): before any script, the stored theme and the page's shape (Home without the sidebar,
+         the panel without a frame, every other page with it), so the frame in #root below matches the page that replaces
+         it. The security policy allows this one inline script by its sha256 hash (public/_headers; a test checks it). -->
+    <script>(function(){try{var d=document.documentElement,g=function(k,v){var x=localStorage.getItem("cat-prep-pref:"+k);return x===null?v:JSON.parse(x)},t=g("theme","auto"),p=location.pathname;if(t==="light"||t==="dark")d.setAttribute("data-theme",t);d.className+=p==="/"?" fp-home":p.indexOf("/panel")===0?" fp-none":" fp-app"+(g("sidebar-collapsed",false)?" fp-narrow":"")}catch(e){}})();</script>
+    <style>
+      /* The frame shown until the app renders: the bars where Layout.tsx puts them, in the site's own colours. */
+      .fp{min-height:100dvh}
+      .fp-top{position:sticky;top:0;display:flex;align-items:center;gap:10px;height:56px;padding:0 max(1rem,env(safe-area-inset-left));background:var(--sidebar)}
+      .fp-top img,.fp-side img{width:36px;height:36px;flex:none}
+      .fp-top span,.fp-side span{font:700 1.375rem/1 "Schibsted Grotesk",system-ui,sans-serif;letter-spacing:-.025em;color:var(--foreground)}
+      .fp-side{display:none}
+      .fp-bottom{display:none;position:fixed;inset:auto 0 0 0;height:calc(4rem + env(safe-area-inset-bottom));background:var(--card);border-top:1px solid var(--border)}
+      .fp-app .fp-bottom{display:block}
+      .fp-none .fp{display:none}
+      @media (min-width:40rem){.fp-top{padding:0 max(1.5rem,env(safe-area-inset-left))}}
+      @media (min-width:60rem){.fp-top{padding:0 max(3rem,env(safe-area-inset-left))}}
+      @media (min-width:64rem){
+        .fp-home .fp-top{height:4.5rem;background:var(--background);max-width:1440px;margin:0 auto}
+        .fp-app .fp-top,.fp-app .fp-bottom{display:none}
+        .fp-app .fp-side{display:block;position:fixed;top:0;bottom:0;left:0;width:288px;padding:26px 24px;background:var(--sidebar)}
+        .fp-brand{display:flex;align-items:center;gap:10px}
+        .fp-narrow .fp-side{width:72px;padding:26px 18px}
+        .fp-narrow .fp-side span{display:none}
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"><div class="fp" aria-hidden="true"><div class="fp-top"><img src="/favicon.svg" alt="" /><span>99ile</span></div><div class="fp-side"><div class="fp-brand"><img src="/favicon.svg" alt="" /><span>99ile</span></div></div><div class="fp-bottom"></div></div></div>
     <!-- For a reader that does not run scripts: a crawler that does not render, a text browser, a blocked script. With
          scripts on it is never shown, so it costs the first paint nothing. -->
     <noscript>

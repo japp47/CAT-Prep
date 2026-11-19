@@ -3,8 +3,6 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
 import { ExternalLink } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { RedoSeeder } from "../../components/Content";
-import { AutoTicker } from "../../components/AutoTicker";
 import { useTheme } from "../../components/Layout";
 import { API_ENABLED } from "../../lib/api";
 import { useHasPending } from "../../lib/articleJobs";
@@ -12,6 +10,7 @@ import { EXTENSION_ORIGINS, PanelContext, readMessage, setInbox, toExtension } f
 
 const Toaster = lazy(() => import("@/components/ui/sonner").then((m) => ({ default: m.Toaster })));
 const ArticleWatcher = lazy(() => import("../../components/ArticleWatcher"));
+const Background = lazy(() => import("../../components/Background"));
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -77,8 +76,7 @@ export default function PanelLayout() {
         <main id="main" className="min-w-0 px-gutter pt-2 pb-10">
           <Suspense fallback={<div className="flex flex-col gap-4"><Skeleton className="h-8 w-2/3" /><Skeleton className="h-40 w-full" /></div>}><Outlet /></Suspense>
         </main>
-        <RedoSeeder />
-        <AutoTicker />
+        <Suspense fallback={null}><Background /></Suspense>
         <Suspense fallback={null}><Toaster /></Suspense>
         {API_ENABLED && making && <Suspense fallback={null}><ArticleWatcher /></Suspense>}
       </div>

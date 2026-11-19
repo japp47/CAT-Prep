@@ -376,6 +376,32 @@ Full entries are written here when a step comes within two steps of being built:
 ### 4a. Logical reasoning first (D37)
 **4a.1 LR set format and content, built 24 Oct 2026** on `feat/lr-sets`: `LrSet` and `LR_TYPE` in `practice/types.ts`; `content/lr/<type>.json` (one file per type) joined in `practice/lr/index.ts`; `loadLrFile` in `bank.ts`; `Need.lr` and `Content.lrSets` in `content.ts`; `LR_CATALOG` and `LR_FILE` from `npm run catalog`; `titaMatches` and `lrRight` in `practice/lrcheck.ts`. Tests: every set's shape and answers (`content.test.ts`), file and catalog agreement, the import guard, typed-answer matching. One original example set (`arr-round-table`).
 
+### 4b-1. A first paint without the script (feature F97, D115), built 19 Nov 2026 (main script 128.5 KB; first contentful paint 1.8 s on the slow phone; `src/lib/firstpaint.test.ts`)
+`feat/first-paint` · `feat: paint the site's frame before any script runs and take the plan and content catalog out of the first download`
+**Why.** First readable content at 3.6 s on a slow phone, and the main script within 0.8 KB of its budget (A184, A185). Design: `docs/design/first-paint.md`.
+**Data.** None.
+**Files.**
+- `sections/varc/index.ts`, `sections/dilr/index.ts`, `sections/types.ts`: `template` leaves `SectionDef`; new `planner/templates.ts` (section id to template), read by `planner/engine.ts`.
+- `components/Sidebar.tsx`: the ring's planned minutes from a lazy module after `whenIdle`; the empty ring at the same size until then.
+- `components/Layout.tsx`, `pages/panel/PanelLayout.tsx`: `AutoTicker` and `RedoSeeder` as one lazy module after `whenIdle`.
+- `pages/Home.tsx`, `pages/home/More.tsx`: `LatestUpdates` and `data/updates` lazy. `main.tsx`: `takeReminderVisit` after idle.
+- `index.html`: the frame inside `#root` and its inline `<style>`; the inline theme and page-shape script. `public/_headers`: the script's `sha256-…` in `script-src`.
+**Tasks.** [ ] templates map [ ] sidebar minutes lazy [ ] background helpers lazy [ ] Home updates lazy [ ] frame and inline style [ ] theme script and CSP hash [ ] tests [ ] measure again.
+**Tests.** `practice/catalog.test.ts`: `sections/*`, `Layout`, `Sidebar`, `SiteHeader` and `Home` import neither `catalog.gen`, `daily`, `planner/engine` nor `planner/auto`. A new test: the sha256 of the inline script in `index.html` is in `public/_headers`.
+**Done when** `npm run size` shows the main script under 135 KB; on the slow phone (slow 4G, CPU 6x) the frame shows before the script on `/`, `/today` and `/practice` with no layout shift; a stored dark theme on a light system never flashes light; screenshots at 390 and 1440 in both themes.
+
+### 4b-2. A plan that fits you, part 1 (feature F82, D116), planned 19 Nov 2026
+`feat/plan-that-fits` · `feat: a one-minute setup whose answers set each section's minutes and the first step of the plan`
+**Why.** Every student gets the same minutes; the answers on You are read by nothing (A187). Research: `docs/research/personal-plan.md`; design: `docs/design/personal-plan.md`.
+**Data.** `About` gains `work: "both"`, `level`, `weak`, `setup` (`lib/state.ts`, checked in `normalize`), carried by the existing `profile` sync record; no server change.
+**Files.**
+- `planner/fit.ts` (new, pure): answers to per-section weekday and weekend minutes and the first step.
+- `pages/Setup.tsx` (new, lazy route `/setup`): the four questions, the live plan panel, "Use this plan", "Keep the standard plan"; the year through `components/YearSwitch.tsx`.
+- `pages/Home.tsx` (first visit: "Make my plan"), `pages/Today.tsx` (first open card, the one-line note), `pages/Plan.tsx` (first line: from your answers, change), `pages/You.tsx` (Your plan), `App.tsx` (route, title).
+**Tasks.** [ ] state fields [ ] fit rules with tests [ ] setup page [ ] Home and Today entry points [ ] Plan and You lines [ ] screenshots.
+**Tests.** `planner/fit.test.ts`: each default; the hardest section gains 10 points (15 for a repeater); every live section at least 15 (30 at weekends); minutes add up to the time chosen; skipping changes nothing; old saves load unchanged.
+**Done when** two different sets of answers give different, explained plans; changing an answer changes tomorrow's plan; skipping keeps today's plan exactly; `/setup`, Today and Plan checked at 390 and 1440 in both themes.
+
 ### 3b-10. "Add to RC set" beside a selection (feature F53, D112), built 18 Nov 2026
 Same branch as 3b-9. `extension/src/select.ts` (the button), `background.ts` (parts per tab, the click opens the panel, the switch registers the script on every site), `panel.ts` and `static/panel.html` (the switch bar, start over), `build.mjs` (`optional_host_permissions`, the inlined logo); site: `lib/panel.ts` (`parts`, `clear-parts`), `PanelArticle.tsx` (parts, Start over), `PanelHome.tsx` (the guide shows the button), `Extension.tsx`, `Privacy.tsx`; `extension/listing/listing.md`. Checked with a real mouse click on Chrome 157: the side panel opened and two parts arrived as one passage.
 

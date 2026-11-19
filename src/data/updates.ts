@@ -25,6 +25,12 @@ export interface Update {
 
 export const UPDATES: Update[] = [
   {
+    id: "extension-live", date: "2026-11-19", exam: "Other", status: "tip",
+    title: "The 99ile Chrome extension is live",
+    body: "Select a passage in any essay or editorial and click “Add to RC set”: 99ile opens beside the article with four CAT-style questions, and in review the line that decides each answer is highlighted on the page. Free, in Chrome, Edge and Brave on a computer.",
+    link: ["Add to Chrome", "https://99ile.in/chrome"],
+  },
+  {
     id: "cat26-admit", date: "2026-11-04", exam: "CAT", status: "expected",
     title: "CAT 2026 admit card: now expected on 6 November",
     body: "It was due on 4 November. Several coaching sites report that IIM Indore moved it to 6 November, though we have not seen the official notice. Log in at iimcat.ac.in with your registration user ID and password; it stays available until exam day. Check your slot, centre and photo at once, and print it with a valid photo ID.",

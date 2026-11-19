@@ -91,7 +91,6 @@ export interface SectionDef {
   practiceTypes: string[];
   errorTypes: string[];
   phaseText?: Record<number, PhaseText>;
-  template?: (d: string, ctx: PlanCtx) => DayTemplate;
   /** One-time setup for each phase (resource ids, ticked like the Learn tab's): Today's "Set up your prep" (D57) */
   setup?: Record<number, string[]>;
   /** The first day the section is in the timetable: earlier days plan no time for it and owe no catch-up (D56) */

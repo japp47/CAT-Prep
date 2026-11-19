@@ -1,6 +1,6 @@
 import { createContext, use, useCallback, useState, type ReactNode } from "react";
 import type { SectionId } from "../sections/types";
-import { markBlockDone } from "../planner/engine";
+import { markBlockDone } from "../planner/done";
 import { useStore } from "./store";
 
 /** One running focus session, tied to a timetable block. Times are epoch milliseconds. */

@@ -417,9 +417,9 @@ function Score({ set, attempt }: { set: LrSet; attempt: LrAttempt }) {
     <ScoreCard score={(s.marks > 0 ? "+" : "") + s.marks} of={3 * set.questions.length}
       parts={[["Correct", s.c], ["Wrong", s.w + s.tw], ["Skipped", s.skipped], ["Time", timeShown(attempt, over)]]}>
       <BreakNote away={attempt.away} />
-      <p className="text-base text-muted-foreground">Attempted {mediumDate(attempt.d)}, target {set.minutes} minutes. Logged in Progress as a DILR practice set. Wrong MCQs cost a mark; wrong typed answers cost nothing.</p>
+      <p className="text-base text-muted-foreground">Attempted {mediumDate(attempt.d)}, target {set.minutes} minutes. Logged in Progress as a DILR practice set. Wrong MCQs cost a mark; wrong typed answers cost nothing.{s.w + s.tw > 0 ? " Your wrong answers are already in your Error log: say why under each one below." : ""}</p>
       <div className="flex flex-wrap gap-3">
-        {missing.length > 0 && <Button onClick={() => { update((st) => { missing.forEach((i) => st.errors.push(lrError(set, i, attempt.ans[i], todayIso(), !!attempt.unsure?.includes(i), attempt.id))); }); toast(`Added ${missing.length} to your Error log.`); }}>Add {missing.length} to Error log</Button>}
+        {missing.length > 0 && <Button onClick={() => { update((st) => { missing.forEach((i) => st.errors.push(lrError(set, i, attempt.ans[i], todayIso(), !!attempt.unsure?.includes(i), attempt.id))); }); toast(`Added ${missing.length} to your Error log.`); }}>{missing.every((i) => attempt.ans[i] === null || attempt.ans[i] === "") ? `Add ${missing.length} skipped to Error log` : `Add ${missing.length} to Error log`}</Button>}
         {next && <Button asChild variant="secondary" className="h-auto min-h-10 max-w-full shrink whitespace-normal py-2 text-left"><Link to={`/practice/lr/${next.id}`}>Next set: {next.title}</Link></Button>}
         <Button asChild variant="ghost"><Link to={`/practice/lr/${set.id}?n=${seed}`}>Retake</Link></Button>
       </div>

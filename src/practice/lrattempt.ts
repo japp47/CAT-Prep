@@ -3,6 +3,7 @@ import type { AppState, ErrorEntry, LrAttempt, LrPostMortem, LrSlip, LrTimeSink 
 import { lrRight } from "./lrcheck";
 import { awayField, LETTERS } from "./record";
 import { lrRedoKey, queueMiss } from "./redo";
+import { logMiss } from "./record";
 import { isDi, LR_TYPE, lrVersion, type LrSet } from "./types";
 
 /** Labels for the post-mortem (F86), worded as the student would say them. */
@@ -51,6 +52,8 @@ export function recordLr(st: AppState, id: string, set: LrSet, ans: (number | st
   st.lrAttempts.push(a);
   if (c + w + tw > 0) st.practice.push({ id: id + "p", d, sec: "DILR", t: isDi(set.type) ? "DI" : "LR", a: c + w + tw, c, src: "Practice: " + set.title });
   set.questions.forEach((q, qi) => { if (!lrRight(q, ans[qi] ?? null) || unsure.includes(qi)) queueMiss(st, lrRedoKey(set.id, qi), d); });
+  // Wrong answers go into the Error log at once (D114); skipped ones stay optional.
+  set.questions.forEach((q, qi) => { const g = ans[qi] ?? null; if (g !== null && g !== "" && !lrRight(q, g)) logMiss(st, lrError(set, qi, g, d, unsure.includes(qi), id)); });
 }
 
 /** Saves the post-mortem onto its attempt. The newer copy wins in sync, so the change reaches other devices. */

@@ -23,6 +23,15 @@ export function scoreRc(set: RcSet, ans: (number | null)[]) {
  * Wrong and skipped questions go into the redo queue.
  * The caller makes the id, because a state updater may run more than once.
  */
+/**
+ * A wrong answer goes into the Error log as soon as the set is submitted (D114), once per question: the student only
+ * says why. Skipped questions are not logged on their own (skipping is often the right call in CAT); they keep their
+ * "Add to Error log" button.
+ */
+export function logMiss(st: AppState, e: ErrorEntry): void {
+  if (!st.errors.some((x) => x.src === e.src)) st.errors.push(e);
+}
+
 export function recordRc(st: AppState, id: string, set: RcSet, ans: (number | null)[], secs: number, first: number, mode: RcAttempt["mode"], d: string, unsure: number[] = [], away = 0, lines: ([number, number] | null)[] = []): void {
   const { c, w } = scoreRc(set, ans);
   const a: RcAttempt = { id, d, set: set.id, mode, ans, c, w, secs: Math.round(secs), first: Math.round(first), v: rcVersion(set), ...awayField(away) };
@@ -34,6 +43,7 @@ export function recordRc(st: AppState, id: string, set: RcSet, ans: (number | nu
     if (lucky.length) a.lucky = lucky;
   }
   st.rcAttempts.push(a);
+  set.questions.forEach((q, qi) => { if (ans[qi] !== null && ans[qi] !== q.answer) logMiss(st, rcError(set, qi, ans[qi], d, unsure.includes(qi), id)); });
   if (c + w > 0) st.practice.push({ id: id + "p", d, sec: "VARC", t: "RC", a: c + w, c, src: "Practice: " + set.title });
   // A right answer marked "Not sure" was a lucky guess: it comes back once, like a miss (docs/research/step-2g.md).
   // Article sets (F34) stay out of the redo queue for now: their text may not be on this device when a miss comes due.
@@ -46,6 +56,7 @@ export function recordVa(st: AppState, id: string, items: VaItem[], answers: str
   const rows = items.map((it, i) => { const s = scoreItem(it, answers[i] ?? ""); return { k: it.key, a: answers[i] ?? "", ok: s.ok, pts: s.pts, blank: s.blank, kind: it.kind, v: vaVersion(it.para), unsure: !!unsure[i] }; });
   st.vaAttempts.push({ id, d, mode, secs: Math.round(secs), items: rows.map(({ k, a, ok, pts, v, unsure: u }) => ({ k, a, ok, pts, v, ...(u ? { unsure: true as const } : {}) })), ...awayField(away) });
   rows.forEach((r) => { if (!r.ok || r.unsure) queueMiss(st, r.k, d); });
+  rows.forEach((r, i) => { if (!r.ok && !r.blank) logMiss(st, vaError(items[i], r.a, d, id)); });
   VA_KINDS.forEach((kind) => {
     const done = rows.filter((r) => r.kind === kind && !r.blank);
     if (done.length) st.practice.push({ id: id + kind, d, sec: "VARC", t: VA_KIND[kind].practice, a: done.length, c: done.filter((r) => r.ok).length, src: mode === "daily" ? "Daily VA drill" : "Custom VA drill" });
@@ -60,6 +71,7 @@ export function recordCr(st: AppState, id: string, items: CrItem[], answers: (nu
   const rows = items.map((it, i) => { const a = answers[i] ?? null; return { k: crRedoKey(it.id), a, ok: scoreCr(it, a).ok, v: contentHash(it), ...(unsure[i] ? { unsure: true as const } : {}) }; });
   st.crAttempts.push({ id, d, secs: Math.round(secs), items: rows, ...awayField(away) });
   rows.forEach((r) => { if (!r.ok || r.unsure) queueMiss(st, r.k, d); });
+  rows.forEach((r, i) => { if (!r.ok && r.a !== null) logMiss(st, crError(items[i], r.a, d, id)); });
   const done = rows.filter((r) => r.a !== null);
   if (done.length) st.practice.push({ id: id + "cr", d, sec: "VARC", t: "Critical reasoning", a: done.length, c: done.filter((r) => r.ok).length, src: "Critical reasoning drill" });
 }
@@ -118,7 +130,4 @@ export function crError(item: CrItem, chosen: number | null, d: string, att?: st
   };
 }
 
-export function fmtSecs(s: number) {
-  const m = Math.floor(s / 60), r = Math.round(s % 60);
-  return m + ":" + (r < 10 ? "0" : "") + r;
-}
+export { fmtSecs } from "../lib/date";

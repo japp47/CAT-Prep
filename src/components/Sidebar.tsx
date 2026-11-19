@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -6,8 +6,10 @@ import { todayIso } from "../lib/date";
 import { calm, loadGsap } from "../lib/motion";
 import { usePref } from "../lib/prefs";
 import { useStore } from "../lib/store";
-import { buildDay, budgetFor, doneMinutes } from "../planner/engine";
-import { LIVE_SECTIONS, SECTIONS } from "../sections";
+import { whenIdle } from "../lib/idle";
+import { doneMinutes } from "../planner/done";
+import type { AppState } from "../lib/state";
+import { SECTIONS } from "../sections";
 import { IconBook, IconChart, IconClock, IconExam, IconFlag, IconHistory, IconHome, IconJournal, IconMegaphone, IconPanel, IconMistake, IconPen, IconRedo, IconSliders, IconToday, IconTrophy, IconWeek, IconWords } from "./Icons";
 import { PRACTICE_PATH, SiteNavLink, type SiteNavItem } from "./SiteHeader";
 
@@ -47,16 +49,26 @@ export const SECTION_ITEMS: SiteNavItem[] = SECTIONS.map((s) => ({ to: "/" + s.i
 /** Practice's own redo page is a Practice address too, but in the sidebar the Redo queue item owns it. */
 const isRedo = (p: string) => p.startsWith("/practice/redo");
 
+/**
+ * The planner, fetched once the page is up: it carries the plan templates, which the first screen does not need (F97,
+ * D115). Until it arrives the ring is not shown; nothing else moves.
+ */
+type Planned = (st: AppState, d: string) => number;
+let plannedOf: Planned | null = null;
+const loadPlanned = () => import("../planner/planned").then((m) => { plannedOf = m.plannedMinutes; });
+
 /** Today's minutes done and planned (the same plan Today shows), and how many redo questions are due. */
 export function useWaiting() {
   const { state } = useStore();
+  const [, setReady] = useState(!!plannedOf);
+  useEffect(() => (plannedOf ? undefined : whenIdle(() => void loadPlanned().then(() => setReady(true)), 600)), []);
   return useMemo(() => {
     const d = todayIso();
-    const planned = LIVE_SECTIONS.reduce((s, sec) => s + buildDay(sec, state, d, budgetFor(sec, state, d), { today: d }).reduce((t, b) => t + b.mins, 0), 0);
+    const planned = plannedOf ? plannedOf(state, d) : 0;
     // Open and due, counted here rather than with dueRedo, whose content checks would join the first download; the
     // redo page itself drops the rare item whose question no longer exists.
     return { done: Math.min(doneMinutes(state, d), planned), planned, redo: state.redo.filter((r) => !r.cleared && r.due <= d).length };
-  }, [state]);
+  }, [state, plannedOf]); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
 /** A small ring of the day's minutes: primary while under way, success once the plan is done. */
