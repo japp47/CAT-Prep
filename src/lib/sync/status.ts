@@ -25,6 +25,17 @@ export function setStatus(next: Status) {
   status = next;
   listeners.forEach((f) => f());
 }
+// Sign-in or sign-out in another tab (or the extension's panel): show the new account here at once. The phase stays
+// this page's own, since its runner may be mid-round.
+if (typeof window !== "undefined") {
+  window.addEventListener("storage", (e) => {
+    if (e.key !== LEDGER_KEY && e.key !== null) return;
+    const now = getStatus(), next = fromStorage();
+    if (now.identityId === next.identityId && now.account?.email === next.account?.email && (now.phase === "off") === (next.phase === "off")) return;
+    setStatus(next.phase === "off" ? next : { ...next, phase: now.phase === "off" ? "idle" : now.phase });
+  });
+}
+
 export function subscribe(f: () => void) {
   listeners.add(f);
   return () => { listeners.delete(f); };

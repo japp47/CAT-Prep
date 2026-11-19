@@ -35,10 +35,10 @@
         {"@type":"Organization","@id":"https://99ile.in/#org","name":"99ile","alternateName":["99 ile","99-ile"],"url":"https://99ile.in/","logo":"https://99ile.in/icon-512.png","email":"99ile.team@gmail.com","sameAs":["https://www.instagram.com/the99ile/"]}
       ]}
     </script>
-    <!-- The first paint (F97, D115): before any script, the stored theme and the page's shape (Home without the sidebar,
+    <!-- The first paint (F97, D115): before any script, the stored theme (the panel's own on /panel) and the page's shape (Home without the sidebar,
          the panel without a frame, every other page with it), so the frame in #root below matches the page that replaces
          it. The security policy allows this one inline script by its sha256 hash (public/_headers; a test checks it). -->
-    <script>(function(){try{var d=document.documentElement,g=function(k,v){var x=localStorage.getItem("cat-prep-pref:"+k);return x===null?v:JSON.parse(x)},t=g("theme","auto"),p=location.pathname;if(t==="light"||t==="dark")d.setAttribute("data-theme",t);d.className+=p==="/"?" fp-home":p.indexOf("/panel")===0?" fp-none":" fp-app"+(g("sidebar-collapsed",false)?" fp-narrow":"")}catch(e){}})();</script>
+    <script>(function(){try{var d=document.documentElement,g=function(k,v){var x=localStorage.getItem("cat-prep-pref:"+k);return x===null?v:JSON.parse(x)},p=location.pathname,t=g(p.indexOf("/panel")===0?"panel-theme":"theme","auto");if(t==="light"||t==="dark")d.setAttribute("data-theme",t);d.className+=p==="/"?" fp-home":p.indexOf("/panel")===0?" fp-none":" fp-app"+(g("sidebar-collapsed",false)?" fp-narrow":"")}catch(e){}})();</script>
     <style>
       /* The frame shown until the app renders: the bars where Layout.tsx puts them, in the site's own colours. */
       .fp{min-height:100dvh}

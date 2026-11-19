@@ -7,6 +7,7 @@ import ArticleProgress from "../../components/ArticleProgress";
 import { startArticle, useAi } from "../../lib/ai";
 import { readPending, setJobState, setPending, useJobState, type Pending } from "../../lib/articleJobs";
 import { setInbox, toExtension, useInbox } from "../../lib/panel";
+import { PanelFoot } from "./PanelFoot";
 import { signInUrl } from "../../lib/sync/runner";
 import { chooseWindow, cleanArticle, fitCheck, headline, MAX_WORDS, MIN_WORDS, safeLink, siteOf, toSentences, type ArticleOrigin } from "../../practice/articleText";
 import { words } from "../../practice/types";
@@ -108,7 +109,7 @@ export default function PanelArticle() {
 
   const wholePage = !!win && win[0] === 0 && win[1] === paras.length - 1;
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-1 flex-col gap-5">
       <header className="flex min-w-0 flex-col gap-1.5">
         <p className="text-sm text-muted-foreground">{[site, incoming?.parts && incoming.parts > 1 ? `${incoming.parts} parts, ${n(whole)} words` : `${n(whole)} words${incoming?.selection ? " selected" : ""}`].filter(Boolean).join(", ")}</p>
         <h1 className="line-clamp-3 text-heading leading-snug font-semibold break-words">{title}</h1>
@@ -144,7 +145,7 @@ export default function PanelArticle() {
         </section>
       )}
 
-      <div className="flex flex-col gap-3">
+      <PanelFoot>
         {job?.phase === "failed" && <p className="text-base" role="alert">{job.msg}</p>}
         {ai === "ask" ? (
           <>
@@ -159,9 +160,8 @@ export default function PanelArticle() {
         ) : (
           <p className="text-base text-muted-foreground">Article sets are not switched on yet.</p>
         )}
-      </div>
-
-      {incoming && <p className="text-sm text-muted-foreground">Only the highlighted paragraphs are sent, to make your set. They stay private.</p>}
+        {incoming && <p className="text-sm text-muted-foreground">Only the highlighted paragraphs are sent, to make your set. They stay private.</p>}
+      </PanelFoot>
     </div>
   );
 }

@@ -70,7 +70,7 @@ export default function PanelWords() {
   };
 
   return (
-    <div className="flex min-h-[calc(100dvh-6.5rem)] flex-col gap-5">
+    <div className="flex flex-1 flex-col gap-5">
       <header className="flex min-w-0 flex-col gap-1">
         {from && <p className="text-sm text-muted-foreground">From {from}</p>}
         <h1 className="font-serif text-[2rem] leading-tight font-semibold break-words">{item.word}</h1>

@@ -1,9 +1,11 @@
 import { lazy, Suspense, useEffect, type MouseEvent } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, SunMoon } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { useTheme } from "../../components/Layout";
+import { useTheme, type Theme } from "../../components/Layout";
+import { Segmented } from "../../components/kit";
 import { API_ENABLED } from "../../lib/api";
 import { useHasPending } from "../../lib/articleJobs";
 import { EXTENSION_ORIGINS, PanelContext, readMessage, setInbox, toExtension } from "../../lib/panel";
@@ -27,7 +29,8 @@ const HIGHLIGHT_FAILED: Record<string, string> = {
  * the article.
  */
 export default function PanelLayout() {
-  useTheme();
+  // The panel's own theme, not the site's: it sits inside Chrome, beside any website, so by default it matches Chrome.
+  const [theme, setTheme] = useTheme("panel-theme");
   const nav = useNavigate();
   const making = useHasPending();
 
@@ -62,18 +65,21 @@ export default function PanelLayout() {
 
   return (
     <PanelContext.Provider value={true}>
-      <div className="min-h-dvh bg-background" onClickCapture={outward}>
-        <header className="flex h-14 items-center justify-between gap-3 px-gutter">
+      <div className="flex min-h-dvh flex-col bg-background" onClickCapture={outward}>
+        <header className="flex h-14 shrink-0 items-center justify-between gap-3 px-gutter">
           <Link to="/panel" className="flex items-center gap-2 rounded-md text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none" aria-label="99ile panel home">
             <img src={BASE + "favicon.svg"} alt="" className="size-8 shrink-0" width={32} height={32} />
             <span className="text-lg leading-none font-bold tracking-tight">99ile</span>
           </Link>
-          <a href={BASE} className="grid size-10 place-items-center rounded-md text-foreground/70 transition-colors hover:bg-card hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+          <div className="flex items-center gap-1">
+          <PanelTheme value={theme} onChange={setTheme} />
+          <a href={BASE} className={ICON_BUTTON}
             aria-label="Open 99ile in a new tab" title="Open 99ile in a new tab">
             <ExternalLink className="size-5" aria-hidden />
           </a>
+          </div>
         </header>
-        <main id="main" className="min-w-0 px-gutter pt-2 pb-10">
+        <main id="main" className="flex min-w-0 flex-1 flex-col px-gutter pt-2 pb-6">
           <Suspense fallback={<div className="flex flex-col gap-4"><Skeleton className="h-8 w-2/3" /><Skeleton className="h-40 w-full" /></div>}><Outlet /></Suspense>
         </main>
         <Suspense fallback={null}><Background /></Suspense>
@@ -81,5 +87,23 @@ export default function PanelLayout() {
         {API_ENABLED && making && <Suspense fallback={null}><ArticleWatcher /></Suspense>}
       </div>
     </PanelContext.Provider>
+  );
+}
+
+const ICON_BUTTON = "grid size-10 place-items-center rounded-md text-foreground/70 transition-colors hover:bg-card hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none";
+
+/** The panel's theme: Chrome's by default (Chrome passes its light or dark mode to pages), or always light or dark. */
+function PanelTheme({ value, onChange }: { value: Theme; onChange: (t: Theme) => void }) {
+  return (
+    <Popover>
+      <PopoverTrigger className={ICON_BUTTON} aria-label="Panel theme" title="Panel theme">
+        <SunMoon className="size-5" aria-hidden />
+      </PopoverTrigger>
+      <PopoverContent align="end" className="flex w-auto flex-col gap-3">
+        <p className="text-base font-semibold">Panel theme</p>
+        <Segmented label="Panel theme" value={value} onChange={onChange}
+          options={[["auto", "Match Chrome"], ["light", "Light"], ["dark", "Dark"]]} />
+      </PopoverContent>
+    </Popover>
   );
 }

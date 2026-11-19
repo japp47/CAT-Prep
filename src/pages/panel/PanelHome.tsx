@@ -9,6 +9,7 @@ import { signInUrl } from "../../lib/sync/runner";
 import { articleLine } from "../../practice/articleSet";
 import { rcOfDay } from "../../practice/daily";
 import { dueWords } from "../Words";
+import { PanelFoot } from "./PanelFoot";
 
 const BASE = import.meta.env.BASE_URL;
 const KEY = "rounded-md bg-background px-1.5 py-0.5 font-sans text-sm font-medium";
@@ -30,7 +31,7 @@ export default function PanelHome() {
   const signIn = ai.on && !ai.signedIn;
 
   const bottom = (
-    <div className="mt-auto flex flex-col gap-3 pt-8">
+    <PanelFoot>
       {signIn && (
         <>
           <Button size="lg" className="w-full" onClick={() => window.open(signInUrl("/extension"), "_blank", "noopener")}>Sign in with Google</Button>
@@ -38,12 +39,12 @@ export default function PanelHome() {
         </>
       )}
       <p className="text-base">Page can't be read? <Link to="/panel/article" className={LINK}>Paste the text instead</Link></p>
-    </div>
+    </PanelFoot>
   );
 
   if (!recent.length) {
     return (
-      <div className="flex min-h-[calc(100dvh-6.5rem)] flex-col gap-6">
+      <div className="flex flex-1 flex-col gap-6">
         <header className="flex flex-col gap-2">
           <h1 className="text-[1.625rem] leading-tight font-semibold tracking-tight">Make an RC set from what you're reading</h1>
           <p className="text-base text-foreground/85">Any essay or editorial becomes four CAT-style questions, answered here while the article stays open beside them.</p>
@@ -60,7 +61,7 @@ export default function PanelHome() {
   }
 
   return (
-    <div className="flex min-h-[calc(100dvh-6.5rem)] flex-col gap-7">
+    <div className="flex flex-1 flex-col gap-7">
       <header className="flex flex-col gap-2">
         <h1 className="text-heading font-semibold">Practise what you're reading</h1>
         <p className="text-base text-foreground/85">Select a passage and click “Add to RC set” beside it, or click the 99ile icon for the whole article.</p>
