@@ -13,3 +13,14 @@ export const SIGNIN_WORDS: Record<string, string> = {
 
 /** A return page that stays on this site: a path with one leading slash. */
 export const safeBack = (p: string | null) => (p && p.startsWith("/") && !p.startsWith("//") && !p.includes("\\") ? p : "/");
+
+/**
+ * Where Google should send the student back. Only /signin and the sync card on You (Settings forwards there) read the
+ * ?signin= the server adds, so any other page goes through /signin, which redeems the ticket, asks about this device's
+ * progress and then returns to that page (?then=). Before 19 Nov 2026 the extension's welcome, the panel, the article
+ * page and the RC player sent Google straight back to themselves, and the ticket was never read: no sign-in.
+ */
+export function signInNext(back: string): string {
+  const path = safeBack(back);
+  return /^\/(signin|you|settings)(?=$|[/?#])/.test(path) ? path : "/signin?then=" + encodeURIComponent(path);
+}
