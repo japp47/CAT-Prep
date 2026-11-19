@@ -10,6 +10,11 @@ import { movedTo } from "./lib/domain";
 import { whenIdle } from "./lib/idle";
 import { takeReminderVisit } from "./lib/notify";
 import "./index.css";
+import { reloadOnce } from "./lib/reload";
+
+// A deploy renamed the code files while this tab was open: Vite reports the failed load here; a reload fetches the new
+// version (lib/reload.ts, at most once a minute).
+window.addEventListener("vite:preloadError", (e) => { if (reloadOnce()) e.preventDefault(); });
 
 // The old address (99ile.pages.dev) only sends students to 99ile.in. Nothing boots there: no service worker, no store.
 const moved = movedTo(location);
