@@ -124,17 +124,24 @@ export function NotSure({ on, onChange }: { on: boolean; onChange: (v: boolean) 
  */
 export function ErrorCause({ src }: { src: string }) {
   const { state, update } = useStore();
+  const [saved, setSaved] = useState(false);
   const e = [...state.errors].reverse().find((x) => x.src === src);
   if (!e) return null;
-  const pick = (c: Cause) => update((st) => {
-    const x = st.errors.find((y) => y.id === e.id);
-    if (!x || x.cause === c) return;
-    if (x.cause && !x.causeWas) x.causeWas = x.cause;
-    x.cause = c;
-  });
+  const pick = (c: Cause) => {
+    update((st) => {
+      const x = st.errors.find((y) => y.id === e.id);
+      if (!x || x.cause === c) return;
+      if (x.cause && !x.causeWas) x.causeWas = x.cause;
+      x.cause = c;
+    });
+    setSaved(true);
+  };
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-base"><span className="text-success">In your Error log.</span> Why did you miss it?</p>
+      <p className="text-base">
+        <span className="text-success">In your Error log.</span> Why did you miss it?
+        {saved && <span className="ml-2 text-sm text-muted-foreground" role="status">Saved.</span>}
+      </p>
       <ToggleGroup type="single" value={e.cause ?? ""} onValueChange={(v) => v && pick(v as Cause)} aria-label="Why did you miss it" className="flex flex-wrap justify-start gap-2">
         {CAUSE_IDS.map((c) => (
           <ToggleGroupItem key={c} value={c} className="min-h-11 flex-none rounded-md bg-secondary px-3.5 text-base data-[state=on]:bg-card data-[state=on]:font-semibold data-[state=on]:text-primary data-[state=on]:ring-1 data-[state=on]:ring-inset data-[state=on]:ring-primary/40">

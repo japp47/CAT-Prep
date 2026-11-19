@@ -77,6 +77,21 @@ Thinking practice (Arcade, Manager Lab, DILR and Quant ideas), community, and re
 
 ## 3. Consistency check: spec vs plan vs code
 
+### 19 Nov 2026, the Error log made simple (D114)
+
+The owner found the Error log confusing: a button to add misses after every set, a separate one-tap reason, and a page
+whose own mistakes came last.
+
+| # | Finding | Impact | Fix (where) |
+|---|---|---|---|
+| A179 | Misses reached the log only through "Add N to Error log" | Students skipped it, so the log, patterns and "still happening" missed most mistakes | Wrong answers are logged when the set is submitted (RC, article sets, VA, CR, LR: `logMiss` in `practice/record.ts`, `recordLr`), once per question; skipped questions stay optional ("Add N skipped to Error log") |
+| A180 | Tapping a reason gave no sign it saved | Students tapped again or left unsure | "Saved." after the tap (`ErrorCause`) |
+| A181 | The page ran patterns, two charts and a large form before the student's mistakes | The log, what the page is for, came last | Order: what to do now ("N to try again", the one filled button, and how many still need a reason), patterns, the mistakes (short: type, "Chose B, which was Too narrow", the reason or "Say why"; details, edit and delete a tap away; 20 at a time), the charts, then "Add one from a mock or a book" |
+| A182 | "What got you" and "What happened to you" read as the same question | The trap and the reason were mixed up | "What the wrong option did" and "Why you picked it" |
+| A183 | History counted practice misses as a separate "mistakes logged" row | With automatic logging every practice day would repeat its set | History counts only mistakes the student adds (a mock, a book) |
+
+**D114.** Wrong answers go into the Error log on their own; the student only says why, and the page leads with what to try again.
+
 ### 19 Nov 2026, words in the panel and highlights on real pages (D113)
 
 | # | Finding | Impact | Fix (where) |

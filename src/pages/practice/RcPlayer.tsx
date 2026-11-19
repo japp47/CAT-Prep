@@ -815,10 +815,10 @@ function Summary({ set, attempt }: { set: RcSet; attempt: RcAttempt }) {
   return (
     <ScoreCard score={(s.marks > 0 ? "+" : "") + s.marks} of={3 * set.questions.length} parts={parts}>
       <BreakNote away={attempt.away} />
-      <p className="text-base text-muted-foreground">Attempted {mediumDate(attempt.d)}. Logged in Progress as an RC practice set. Each wrong option shows its trap: the reason it looked right.</p>
+      <p className="text-base text-muted-foreground">Attempted {mediumDate(attempt.d)}. Logged in Progress as an RC practice set. Each wrong option shows its trap: the reason it looked right.{s.w > 0 ? " Your wrong answers are already in your Error log: say why under each one below." : ""}</p>
       {proved && <p className="text-base"><b className="font-semibold">Lines: {proved.found} of {proved.marked}</b> <span className="text-muted-foreground">of the lines you marked are the ones that settle their questions.</span></p>}
       <div className="flex flex-wrap gap-3">
-        {missing.length > 0 && <Button onClick={() => { update((st) => { missing.forEach((i) => st.errors.push(rcError(set, i, attempt.ans[i], todayIso(), !!attempt.unsure?.includes(i), attempt.id))); }); toast(`Added ${missing.length} to your Error log.`); }}>Add {missing.length} to Error log</Button>}
+        {missing.length > 0 && <Button onClick={() => { update((st) => { missing.forEach((i) => st.errors.push(rcError(set, i, attempt.ans[i], todayIso(), !!attempt.unsure?.includes(i), attempt.id))); }); toast(`Added ${missing.length} to your Error log.`); }}>{missing.every((i) => attempt.ans[i] === null) ? `Add ${missing.length} skipped to Error log` : `Add ${missing.length} to Error log`}</Button>}
         <Button asChild variant="secondary" className="h-auto min-h-10 max-w-full shrink whitespace-normal py-2 text-left"><Link to={`/practice/rc/${next.id}`}>Next set: {next.title}</Link></Button>
         <Button asChild variant="ghost"><Link to={`/practice/rc/${set.id}?n=${seed}`}>Retake</Link></Button>
       </div>

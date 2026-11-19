@@ -156,7 +156,9 @@ export function historyItems(st: AppState): HistoryItem[] {
     detail: `${s.words} words, ${s.checks.filter(Boolean).length} of ${s.checks.length} checks`, href: "/journal" }));
 
   const mistakes = new Map<string, number>();
-  st.errors.forEach((e) => mistakes.set(e.d, (mistakes.get(e.d) ?? 0) + 1));
+  // Mistakes the student logged themselves (a mock, a book). Misses from practice are logged on their own (D114) and
+  // belong to their set's row.
+  st.errors.forEach((e) => { if (!e.att) mistakes.set(e.d, (mistakes.get(e.d) ?? 0) + 1); });
   mistakes.forEach((n, d) => add({ id: "err-" + d, d, kind: "mistakes", icon: "mistake", title: plural(n, "mistake") + " logged", detail: "In your Error log", href: "/errors" }));
 
   return out.filter((x) => /^\d{4}-\d{2}-\d{2}$/.test(x.d));
