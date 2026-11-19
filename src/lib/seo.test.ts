@@ -1,7 +1,7 @@
 import { describe as suite, expect, it } from "vitest";
 import html from "../../index.html?raw";
 import { GUIDES } from "../data/guides";
-import { describe, guideDescription, publicPaths, sitemapXml } from "./seo";
+import { describe, guideDescription, isPersonalPath, publicPaths, sitemapXml } from "./seo";
 
 suite("the sitemap", () => {
   const paths = publicPaths(GUIDES.map((g) => g.id));
@@ -62,5 +62,15 @@ suite("the site's name as people type it", () => {
   it("shows only the one name to people: the title and the script-less text say 99ile", () => {
     expect(html).toMatch(/<title>99ile: free CAT prep<\/title>/);
     expect(html.match(/<noscript>[\s\S]*<\/noscript>/)![0]).not.toContain("99 ile");
+  });
+});
+
+suite("pages search is asked not to index", () => {
+  it("covers Sign in and the personal pages, with or without a slash or a sub-page", () => {
+    for (const p of ["/signin", "/today", "/progress/", "/progress/mock-review/abc", "/review/2026-w46", "/settings", "/you"]) expect(isPersonalPath(p), p).toBe(true);
+  });
+  it("never covers a page the sitemap lists", () => {
+    const paths = publicPaths(GUIDES.map((g) => g.id));
+    for (const p of paths) expect(isPersonalPath(p), p).toBe(false);
   });
 });

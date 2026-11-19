@@ -8,6 +8,19 @@ import { SITE_URL } from "./domain";
 const STATIC_PATHS = ["/", "/varc", "/dilr", "/practice", "/guides", "/exams", "/updates", "/stories", "/roadmap", "/contact", "/privacy"];
 
 /**
+ * Pages that are only for the signed-in or the one student at this device (Sign in, Today, Progress, Settings…). They stay
+ * out of the sitemap, and a page there tells search not to index it: every page's header links to `/signin?then=<that page>`,
+ * so a crawler otherwise finds a new "sign in" address for each page and lists it as a duplicate of `/signin`.
+ */
+const PERSONAL = new Set(["/signin", "/today", "/plan", "/progress", "/history", "/errors", "/words", "/journal", "/review", "/settings", "/you", "/admin", "/link", "/unsubscribe"]);
+
+/** True for a personal page, or anything under one (`/progress/mock-review/…`, `/review/…`). */
+export const isPersonalPath = (pathname: string): boolean => {
+  const path = pathname.replace(/\/+$/, "") || "/";
+  return [...PERSONAL].some((p) => path === p || path.startsWith(p + "/"));
+};
+
+/**
  * Guides left out of the list. The owner's decision (memory: not targeting CAT 2026 takers) is that nothing is built or
  * promoted around the current exam; its guide still opens for anyone who finds it, but is not offered to search.
  */
