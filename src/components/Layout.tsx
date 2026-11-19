@@ -40,8 +40,9 @@ function PageSkeleton() {
 const BAR_COLOR = { light: "#eef0f4", dark: "#12161e" };
 
 export type Theme = ThemeValue;
-export function useTheme(): [Theme, (t: Theme) => void] {
-  const [theme, setTheme] = usePref<Theme>("theme", "auto");
+/** The site's theme; the extension's panel keeps its own ("panel-theme"), so it can match Chrome around it. */
+export function useTheme(key: "theme" | "panel-theme" = "theme"): [Theme, (t: Theme) => void] {
+  const [theme, setTheme] = usePref<Theme>(key, "auto");
   useEffect(() => {
     const el = document.documentElement;
     if (theme === "auto") el.removeAttribute("data-theme"); else el.setAttribute("data-theme", theme);

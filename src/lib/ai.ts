@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { api, API_ENABLED, SIGNIN_ENABLED } from "./api";
-import { loadLedger } from "./sync/ledger";
+import { LEDGER_KEY, loadLedger } from "./sync/ledger";
 
 /**
  * The AI service from the site's side (F36, D100 to D105, docs/design/explain-mistake.md): the summary second
@@ -42,9 +42,22 @@ export function useAiStatus(recheck = false): AiStatus {
     load();
     // recheck: the extension's panel, where sign-in happens in another tab and sets are used up; ask again, fresh,
     // when the student comes back to it.
+    // The panel does not get focus until it is clicked, so it also asks when it is shown again, and at once when
+    // sign-in in another tab saves the new identity (load() asks the server only when the identity changed).
     const again = () => { status = null; load(); };
-    if (recheck) window.addEventListener("focus", again);
-    return () => { live = false; window.removeEventListener("focus", again); };
+    const shown = () => { if (document.visibilityState === "visible") again(); };
+    const signedIn = (e: StorageEvent) => { if (e.key === LEDGER_KEY || e.key === null) load(); };
+    if (recheck) {
+      window.addEventListener("focus", again);
+      document.addEventListener("visibilitychange", shown);
+      window.addEventListener("storage", signedIn);
+    }
+    return () => {
+      live = false;
+      window.removeEventListener("focus", again);
+      document.removeEventListener("visibilitychange", shown);
+      window.removeEventListener("storage", signedIn);
+    };
   }, [recheck]);
   return s;
 }
