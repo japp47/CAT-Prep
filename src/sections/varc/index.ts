@@ -1,5 +1,4 @@
 import type { SectionDef } from "../types";
-import { varcTemplate } from "./plan";
 
 export const VARC: SectionDef = {
   id: "varc",
@@ -25,7 +24,6 @@ export const VARC: SectionDef = {
     5: { goal: "Light practice, error log revision and sleep at hours that match your slot.",
       check: "Walk in rested, with a fixed attempt order and time split." },
   },
-  template: varcTemplate,
   // One-time setup per phase for Today's "Set up your prep" (D57): things done once, not the daily banks.
   setup: { 1: ["iim-site", "gejo", "b-arun", "bharath"], 2: ["2iim-free", "lawhub"], 3: ["xat"], 4: ["iim-mock", "cracku-mock", "cl-mock"] },
   // The list is about 10 KB, so it loads with the pages that show it rather than on every page.

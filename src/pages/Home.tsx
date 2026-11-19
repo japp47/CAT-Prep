@@ -1,14 +1,12 @@
 import { lazy, Suspense, useLayoutEffect, useRef, useState } from "react";
 import SyncPrompt from "../components/SyncPrompt";
-import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { daysLeft } from "../components/Countdown";
 import { ArrowLink, LinkButton, Page, Section, TextLink } from "../components/kit";
 import { CAT_PATTERN, CHECKED_ON, phaseIn, phaseLabel } from "../data/exam";
 import { useRoad } from "../lib/useRoad";
-import { UPDATES } from "../data/updates";
-import { shortDate, todayIso } from "../lib/date";
+import { todayIso } from "../lib/date";
 import { calm, loadGsap } from "../lib/motion";
 import { YearSwitch } from "../components/YearSwitch";
 import { useStore } from "../lib/store";
@@ -26,8 +24,9 @@ const Numbers = lazy(() => import("./home/More").then((m) => ({ default: m.Numbe
 const Statement = lazy(() => import("./home/More").then((m) => ({ default: m.Statement })));
 const Closing = lazy(() => import("./home/More").then((m) => ({ default: m.Closing })));
 const ExtensionBand = lazy(() => import("./home/More").then((m) => ({ default: m.ExtensionBand })));
+// The updates list sits far down the page: it loads with the rest of it, not in the first download (F97).
+const LatestUpdates = lazy(() => import("./home/More").then((m) => ({ default: m.LatestUpdates })));
 
-const STATUS = { official: ["Official", "success"], expected: ["Expected", "warning"], tip: ["Tip", "secondary"] } as const;
 
 /** Data Saver, 2G or no WebGL: the flat drawing of the curve stays and three.js is never fetched. */
 function canDraw3d(): boolean {
@@ -158,39 +157,6 @@ function SectionOverview() {
   );
 }
 
-function LatestUpdates() {
-  const latest = [...UPDATES].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 4);
-  const [featured, ...rest] = latest;
-  if (!featured) return null;
-  const [featuredLabel, featuredVariant] = STATUS[featured.status];
-  return (
-    <Section title="Latest updates" action={<ArrowLink to="/updates">All updates</ArrowLink>}>
-      <div className="flex flex-col gap-2">
-        <article className="flex flex-col gap-3 rounded-xl bg-card p-5 sm:p-6">
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="secondary">{featured.exam}</Badge>
-            <Badge variant={featuredVariant}>{featuredLabel}</Badge>
-            <span className="text-sm text-muted-foreground">{shortDate(featured.date)}</span>
-          </div>
-          <h3 className="text-heading font-semibold leading-snug">{featured.title}</h3>
-          <p className="line-clamp-2 text-base leading-relaxed text-muted-foreground">{featured.body}</p>
-          <ArrowLink to="/updates" className="pt-1">Read the update</ArrowLink>
-        </article>
-        {rest.length > 0 && <ul className="flex flex-col gap-1" aria-label="More recent updates">
-          {rest.map((u) => {
-            const [label, variant] = STATUS[u.status];
-            return <li key={u.id}>
-              <Link to="/updates" className="group flex flex-col gap-2 rounded-lg px-3 py-3 transition-colors hover:bg-card sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-                <span className="min-w-0 text-base font-semibold leading-snug group-hover:text-primary">{u.title}</span>
-                <span className="flex shrink-0 items-center gap-2 text-sm text-muted-foreground"><Badge variant={variant}>{label}</Badge>{shortDate(u.date)}</span>
-              </Link>
-            </li>;
-          })}
-        </ul>}
-      </div>
-    </Section>
-  );
-}
 
 export default function Home() {
   const road = useRoad();
@@ -212,7 +178,7 @@ export default function Home() {
       {isNew && today}
 
       <div className="grid gap-14 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:gap-16">
-        <LatestUpdates />
+        <Suspense fallback={<div className="min-h-[24rem]" />}><LatestUpdates /></Suspense>
         <Section title="The exam" action={<ArrowLink to="/exams">Pattern and marking</ArrowLink>}>
           <div className="flex flex-col gap-1 rounded-lg bg-card p-2">
             {CAT_PATTERN.map((s) => (

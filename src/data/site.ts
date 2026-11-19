@@ -17,12 +17,12 @@ export function reportUrl(what: string, page: string): string {
 }
 
 /**
- * The Chrome extension's Chrome Web Store listing (F53). Submitted 18 Nov 2026; set STORE_LIVE once Google approves it,
+ * The Chrome extension's Chrome Web Store listing (F53). Submitted 18 Nov 2026, published 19 Nov 2026; STORE_LIVE,
  * and every "Add to Chrome" on the site (components/GetExtension.tsx) and 99ile.in/chrome go to the listing.
  */
 export const STORE_ID = "mjgmdkefkachokakimleommdodchkgfo";
-export const STORE_URL = `https://chromewebstore.google.com/detail/${STORE_ID}`;
-export const STORE_LIVE = false;
+export const STORE_URL = `https://chromewebstore.google.com/detail/99ile-cat-rc-practice-fro/${STORE_ID}`;
+export const STORE_LIVE = true; // approved and published 19 Nov 2026
 
 /** Where privacy questions, requests and complaints go (the DPDP grievance contact on /privacy). */
 export const CONTACT_EMAIL = "99ile.team@gmail.com";

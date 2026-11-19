@@ -130,7 +130,4 @@ export function crError(item: CrItem, chosen: number | null, d: string, att?: st
   };
 }
 
-export function fmtSecs(s: number) {
-  const m = Math.floor(s / 60), r = Math.round(s % 60);
-  return m + ":" + (r < 10 ? "0" : "") + r;
-}
+export { fmtSecs } from "../lib/date";

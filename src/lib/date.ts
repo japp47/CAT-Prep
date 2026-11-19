@@ -56,3 +56,9 @@ export const uid = () => {
   return Date.now().toString(36) + Array.from(r, (b) => (b % 36).toString(36)).join("");
 };
 export const isIsoDate = (s: unknown): s is string => typeof s === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s);
+
+/** Seconds as m:ss, for timers and times taken. */
+export function fmtSecs(s: number) {
+  const m = Math.floor(s / 60), r = Math.round(s % 60);
+  return m + ":" + (r < 10 ? "0" : "") + r;
+}

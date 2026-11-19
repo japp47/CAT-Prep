@@ -2,6 +2,9 @@ import { roadOf, type Road } from "../data/exam";
 import { addDays, dow, isWeekend, shortDate } from "../lib/date";
 import type { AppState } from "../lib/state";
 import type { Block, DayTemplate, PlanCtx, SectionDef } from "../sections/types";
+import { TEMPLATES } from "./templates";
+import { carryId, doneKey } from "./done";
+export { carryId, doneKey, doneMinutes, markBlockDone } from "./done";
 
 export interface PlacedBlock extends Block {
   /** Key in DayRec.done, "section:block" */
@@ -10,14 +13,14 @@ export interface PlacedBlock extends Block {
   carryFrom?: string;
 }
 
-export const doneKey = (sec: SectionDef, id: string) => sec.id + ":" + id;
 const ctxOf = (st: AppState): PlanCtx => ({ ticks: st.ticks, mocks: st.mocks, road: roadOf(st) });
 
 /** Before a section joined the timetable (`liveSince`) it has no blocks and no time, so nothing is owed (D56). */
 const notYet = (sec: SectionDef, d: string) => !!sec.liveSince && d < sec.liveSince;
 
 export function templateFor(sec: SectionDef, st: AppState, d: string): DayTemplate {
-  return sec.template && !notYet(sec, d) ? sec.template(d, ctxOf(st)) : { base: [], extra: [] };
+  const t = TEMPLATES[sec.id];
+  return t && !notYet(sec, d) ? t(d, ctxOf(st)) : { base: [], extra: [] };
 }
 
 /** The section's usual minutes for this date, before any one-day change. */
@@ -35,8 +38,6 @@ export function coreOf(sec: SectionDef, st: AppState, d: string): Block | null {
   return templateFor(sec, st, d).base.find((b) => b.pri === 1) ?? null;
 }
 
-/** A catch-up block's id carries the day it makes up for, so a newer catch-up never inherits an older one's tick. */
-export const carryId = (date: string) => "carry:" + date;
 const CARRY_KEY = /^[a-z]+:carry(?::(\d{4}-\d{2}-\d{2}))?$/;
 
 /** Core tasks from the last 7 days that had time planned and were not done, caught up or skipped; most recent first. */
@@ -104,20 +105,7 @@ export function buildDay(sec: SectionDef, st: AppState, d: string, budget: numbe
   return out.sort((a, b) => a.ord - b.ord);
 }
 
-/**
- * Ticks a block as done. Its minutes are the focus-timer time if there is any, else the planned length.
- * Finishing a catch-up block also marks the missed day as caught up.
- */
-export function markBlockDone(st: AppState, d: string, secId: SectionDef["id"], key: string, planned: number, carryFrom?: string): void {
-  const rec = (st.days[d] ??= {});
-  (rec.done ??= {})[key] = rec.spent?.[key] || planned;
-  if (carryFrom) ((st.days[carryFrom] ??= {}).carried ??= {})[secId] = 1;
-}
 
-export function doneMinutes(st: AppState, d: string, sec?: SectionDef): number {
-  const m = st.days[d]?.done ?? {};
-  return Object.keys(m).filter((k) => !sec || k.startsWith(sec.id + ":")).reduce((s, k) => s + m[k], 0);
-}
 
 /** A date inside the phase to preview a typical weekday or Saturday. */
 export function sampleDate(road: Road, phaseId: number, weekend: boolean, today: string): string {

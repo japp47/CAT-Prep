@@ -8,14 +8,14 @@ import { whenIdle } from "../lib/idle";
 import { API_ENABLED } from "../lib/api";
 import { useHasPending } from "../lib/articleJobs";
 import { usePref } from "../lib/prefs";
-import { RedoSeeder } from "./Content";
-import { AutoTicker } from "./AutoTicker";
 import FocusBar from "./FocusBar";
 import InstallButton from "./InstallButton";
 import { IconChart, IconHome, IconPen, IconToday } from "./Icons";
 import ReminderBell, { ReminderLink } from "./ReminderBell";
 
 const WeekMailer = lazy(() => import("./WeekMailer"));
+// The plan ticking itself and the redo queue for old saves: after idle, with the planner and the catalog (F97).
+const Background = lazy(() => import("./Background"));
 import Brand from "./Brand";
 import SiteFooter from "./SiteFooter";
 import { DataNote, SyncNavRow } from "./SyncNav";
@@ -177,8 +177,7 @@ export default function Layout() {
       </div>
 
       <FocusBar />
-      <RedoSeeder />
-      <AutoTicker />
+      {idle && <Suspense fallback={null}><Background /></Suspense>}
       {idle && <Suspense fallback={null}><Toaster /></Suspense>}
       {API_ENABLED && making && <Suspense fallback={null}><ArticleWatcher /></Suspense>}
       {idle && API_ENABLED && weeklyReview && <Suspense fallback={null}><WeekMailer /></Suspense>}

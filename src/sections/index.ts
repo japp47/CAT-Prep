@@ -1,10 +1,10 @@
-import { DILR_PHASE_TEXT, dilrTemplate } from "./dilr/plan";
+import { DILR_PHASE_TEXT } from "./dilr/phases";
 import type { SectionDef, SectionId } from "./types";
 import { VARC } from "./varc";
 
 /**
  * DILR is live: its LR sets, drills and plan blocks are in the timetable (F22, D56); data interpretation sets started
- * on 1 Nov 2026 (F90), with more through December. Quant is a placeholder. To make a section live, give it a template and phaseText, then set status to "live".
+ * on 1 Nov 2026 (F90), with more through December. Quant is a placeholder. To make a section live, give it a plan template in planner/templates.ts and phaseText, then set status to "live".
  */
 const DILR: SectionDef = {
   id: "dilr",
@@ -15,7 +15,6 @@ const DILR: SectionDef = {
   defaults: { wd: 30, we: 60 },
   maxQ: 22,
   phaseText: DILR_PHASE_TEXT,
-  template: dilrTemplate,
   // The day DILR joined the timetable: set it to the day this ships, so no earlier day owes a catch-up.
   liveSince: "2026-10-30",
   setup: { 1: ["d-quant-basics", "d-di-wallah", "d-t-dipak"], 2: ["d-cr-pyq"], 3: ["d-cr-sect"], 4: ["d-cr-mock"] },

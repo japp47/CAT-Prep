@@ -1,10 +1,13 @@
+import { UPDATES } from "../../data/updates";
+import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
 import { useEffect, useRef, useState, type PointerEvent, type ReactNode } from "react";
 import { ArrowUpRight, Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { LinkButton, Segmented } from "../../components/kit";
+import { ArrowLink, LinkButton, Section, Segmented } from "../../components/kit";
 import { INSTAGRAM_HANDLE, INSTAGRAM_URL } from "../../data/site";
 import { IconInstagram } from "../../components/Icons";
-import { todayIso } from "../../lib/date";
+import { shortDate, todayIso } from "../../lib/date";
 import { calm, loadGsap, loadScrollTrigger, useGsap, type Gsap } from "../../lib/motion";
 import { useStore } from "../../lib/store";
 import { buildDay } from "../../planner/engine";
@@ -484,5 +487,41 @@ function BrowserDrawing() {
         </div>
       </div>
     </div>
+  );
+}
+
+const STATUS = { official: ["Official", "success"], expected: ["Expected", "warning"], tip: ["Tip", "secondary"] } as const;
+
+export function LatestUpdates() {
+  const latest = [...UPDATES].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 4);
+  const [featured, ...rest] = latest;
+  if (!featured) return null;
+  const [featuredLabel, featuredVariant] = STATUS[featured.status];
+  return (
+    <Section title="Latest updates" action={<ArrowLink to="/updates">All updates</ArrowLink>}>
+      <div className="flex flex-col gap-2">
+        <article className="flex flex-col gap-3 rounded-xl bg-card p-5 sm:p-6">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="secondary">{featured.exam}</Badge>
+            <Badge variant={featuredVariant}>{featuredLabel}</Badge>
+            <span className="text-sm text-muted-foreground">{shortDate(featured.date)}</span>
+          </div>
+          <h3 className="text-heading font-semibold leading-snug">{featured.title}</h3>
+          <p className="line-clamp-2 text-base leading-relaxed text-muted-foreground">{featured.body}</p>
+          <ArrowLink to="/updates" className="pt-1">Read the update</ArrowLink>
+        </article>
+        {rest.length > 0 && <ul className="flex flex-col gap-1" aria-label="More recent updates">
+          {rest.map((u) => {
+            const [label, variant] = STATUS[u.status];
+            return <li key={u.id}>
+              <Link to="/updates" className="group flex flex-col gap-2 rounded-lg px-3 py-3 transition-colors hover:bg-card sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                <span className="min-w-0 text-base font-semibold leading-snug group-hover:text-primary">{u.title}</span>
+                <span className="flex shrink-0 items-center gap-2 text-sm text-muted-foreground"><Badge variant={variant}>{label}</Badge>{shortDate(u.date)}</span>
+              </Link>
+            </li>;
+          })}
+        </ul>}
+      </div>
+    </Section>
   );
 }
